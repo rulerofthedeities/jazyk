@@ -1,0 +1,44 @@
+<form
+  [formGroup]="courseForm"
+  (ngSubmit) = "onSubmit(courseForm.value)"
+  *ngIf="formReady"
+  class="form-horizontal">
+
+  <!-- LANGUAGE -->
+  <div class="form-group form-group-lg">
+    <label for="language" class="control-label col-xs-2">Taal</label>
+    <div class="col-xs-10">
+      <km-language-selector 
+        [languages]="languages"
+        [currentLanguage]="course.language"
+        (languageSelected)="onLanguageSelected($event)">
+      </km-language-selector>
+    </div>
+  </div>
+
+  <!-- NAME -->
+  <div class="form-group form-group-lg">
+    <label for="name" class="control-label col-xs-2">Naam</label>
+    <div class="col-xs-10">
+      <input 
+        type="text" 
+        class="form-control" 
+        id="name" 
+        placeholder="Naam van de cursus"
+        [formControl]="courseForm.controls['name']">
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-2">
+      <button *ngIf="isNewCourse"
+        type="submit" 
+        class="btn btn-success" 
+        [disabled]="!courseForm.valid">
+        Voeg cursus toe
+      </button>
+    </div>
+  </div>
+  
+</form>

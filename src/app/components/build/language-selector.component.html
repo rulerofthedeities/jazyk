@@ -1,0 +1,20 @@
+<div *ngIf="dataReady">
+  <div class="selector">
+    <div class="input-group col-xs-12">
+      <div class="btn btn-default btn-dropdown btn-lg" (click)="toggleDropdown()">
+        <img src="/assets/img/{{selectedLanguage._id}}.png" alt="{{selectedLanguage.name}}" class="flag" />{{selectedLanguage.name}}<span class="caret"></span>
+      </div>
+    </div>
+    <ul class="list-group dropdown" *ngIf="showDropdown">
+      <li 
+        class="list-group-item" 
+        [ngClass]="{active:lan._id===selectedDropdown}"
+        *ngFor="let lan of languages; let i:index"
+        (click)="selectLanguage(i)"
+        (mouseover)="hoverLanguage(i)"
+        >
+        <img src="/assets/img/{{lan._id}}.png" alt="{{lan.name}}" class="flag" />{{lan.name}}
+      </li>
+    </ul>
+  </div>
+</div>

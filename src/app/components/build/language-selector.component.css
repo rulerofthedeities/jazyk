@@ -1,0 +1,30 @@
+.btn-dropdown {
+  text-align: left;
+  width: 100%;
+}
+.selector {
+  position: relative;
+  z-index: 10;
+}
+.dropdown {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 46px;
+}
+.flag {
+  border: 1px solid #999;
+  border-radius: 2px;
+  height: 20px;
+  margin-right: 8px;
+  width: 30px;
+}
+.caret {
+  float: right;
+  margin-top: 8px;
+}
+.list-group-item {
+  cursor: pointer;
+  font-size: 18px;
+}
