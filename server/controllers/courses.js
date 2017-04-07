@@ -5,7 +5,12 @@ const response = require('../response'),
 
 module.exports = {
   getCourses: function(req, res) {
-    const language = req.params.lan;
+    const languageId = req.params.lan;
+    Course.find({languageId}, function(err, courses) {
+      response.handleError(err, res, 500, 'Error fetching courses', function(){
+        response.handleSuccess(res, courses, 200, 'Fetched courses');
+      });
+    });
   },
   getCourse: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
@@ -36,7 +41,7 @@ module.exports = {
         name: course.name
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating course', function(){
-        response.handleSuccess(res, result, 200, 'Updating course');
+        response.handleSuccess(res, result, 200, 'Updated course');
       });
     });
   }

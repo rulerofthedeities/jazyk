@@ -6,10 +6,10 @@ import {Component} from '@angular/core';
     <nav class="clearfix">
       <ul class="nav navbar-nav">
         <li routerLinkActive="active">
-          <a routerLink="home" class="item">Home</a>
+          <a routerLink="learn" class="item">Leer</a>
         </li>
         <li routerLinkActive="active">
-          <a routerLink="build" class="item">Build</a>
+          <a routerLink="learn/courses" class="item">Cursussen</a>
         </li>
       </ul>
     </nav>

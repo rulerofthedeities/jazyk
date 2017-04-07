@@ -9,7 +9,7 @@ var languageSchema = new Schema({
 
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
-    language: {type: languageSchema, required: true},
+    languageId: {type: String, required: true},
     name: String,
     attendance: Number,
     difficulty: Number

@@ -1,26 +1,26 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {RouterModule} from '@angular/router';
-import {HttpModule} from '@angular/http';
 
 import {routes} from './learn.routes';
 
-import {ErrorService} from './services/error.service';
-//import {LearnService} from './services/jazyk.service';
+import {LearnService} from './services/learn.service';
 
 import {LearnComponent} from './components/learn/learn.component';
+import {CoursesComponent} from './components/learn/courses.component';
+
 
 @NgModule({
   imports: [
     SharedModule,
-    HttpModule,
     RouterModule.forChild(routes)
   ],
   providers: [
-    ErrorService
+    LearnService
   ],
   declarations: [
-    LearnComponent
+    LearnComponent,
+    CoursesComponent
   ]
 })
 export class LearnModule {}

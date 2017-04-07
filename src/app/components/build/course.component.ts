@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CourseService} from '../../services/course.service';
+import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {Course, Language} from '../../models/course.model';
@@ -19,29 +19,30 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   isSubmitted = false;
   isFormReady = false;
   languages: Language[];
+  currentLanguage: Language;
   course: Course;
+  initialCourse: Course; // For cancel
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private courseService: CourseService,
+    private buildService: BuildService,
     private errorService: ErrorService,
     private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
+    this.languages = this.utilsService.getActiveLanguages();
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
-        console.log('params course', params);
         if (params['id']) {
           const courseId = params['id'];
           if (courseId === 'new') {
             this.createNewCourse();
           } else {
-            console.log('Editing course', courseId);
             this.editCourse(courseId);
           }
         }
@@ -50,6 +51,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   editCourse(id: string) {
+    console.log('editing id', id);
     // Find course Id in db
     // If course is found, set id and build form
     // If course is not found, show message (invalid course id)
@@ -63,9 +65,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     // Get language preference from profile settings
     this.isNewCourse = true;
     this.isEditMode = true;
+    this.currentLanguage = {_id: 'cs-cz', name: 'Tsjechisch', active: true}; // TODO: fetch from user settings
     this.course = {
       _id: '',
-      language: { _id: 'cs-cz', name: 'Tsjechisch', active: true }, // TODO: fetch from user settings
+      languageId: this.currentLanguage._id,
       name: '',
       attendance: 0,
       difficulty: 0
@@ -74,9 +77,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   buildForm() {
-    this.languages = this.utilsService.getActiveLanguages();
     this.courseForm = this.formBuilder.group({
-      language: [this.course.language],
+      languageId: [this.currentLanguage._id],
       name: [this.course.name, Validators.required]
     });
     this.isFormReady = true;
@@ -93,11 +95,16 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   onSetEdit() {
     this.isEditMode = true;
+    this.buildForm(); // Set values back to original
+  }
+
+  onCancel() {
+    this.isEditMode = false;
   }
 
   addCourse(name: string) {
     this.course.name = name;
-    this.courseService
+    this.buildService
     .addCourse(this.course)
     .takeWhile(() => this.componentActive)
     .subscribe(
@@ -111,30 +118,31 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   updateCourse(newName: string) {
     this.course.name = newName;
-    this.courseService
+    this.buildService
     .updateCourse(this.course)
     .takeWhile(() => this.componentActive)
     .subscribe(
       updatedCourse => {
-        this.course = updatedCourse;
+        this.isEditMode = false;
       },
       error => this.errorService.handleError(error)
     );
   }
 
   onLanguageSelected(newLanguage: Language) {
-    this.course.language = newLanguage;
-    this.courseForm.patchValue({language: newLanguage});
+    this.currentLanguage = newLanguage;
+    this.course.languageId = newLanguage._id;
+    this.courseForm.patchValue({languageId: newLanguage._id});
   }
 
   getCourse(id: string) {
-    this.courseService
+    this.buildService
     .fetchCourse(id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       course => {
-    console.log('fetched course1', course);
         this.course = course;
+        this.currentLanguage = this.languages.filter(lan => lan._id === course.languageId)[0];
         this.buildForm();
       },
       error => this.errorService.handleError(error)

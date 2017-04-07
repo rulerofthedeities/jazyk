@@ -5,12 +5,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {routes} from './build.routes';
 
-import {CourseService} from './services/course.service';
+import {BuildService} from './services/build.service';
 
 import {BuildComponent} from './components/build/build.component';
 import {BuildCourseComponent} from './components/build/course.component';
 import {BuildLessonComponent} from './components/build/lesson.component';
-import {LanguageSelectorComponent} from './components/build/language-selector.component';
+import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
 
 
 @NgModule({
@@ -21,13 +21,13 @@ import {LanguageSelectorComponent} from './components/build/language-selector.co
     RouterModule.forChild(routes)
   ],
   providers: [
-    CourseService
+    BuildService
   ],
   declarations: [
     BuildComponent,
     BuildCourseComponent,
     BuildLessonComponent,
-    LanguageSelectorComponent
+    ModalConfirmComponent
   ]
 })
 export class BuildModule {}

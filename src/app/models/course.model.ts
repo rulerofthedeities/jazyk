@@ -14,7 +14,7 @@ export interface Lesson {
 
 export interface Course {
   _id?: string;
-  language: Language;
+  languageId: string;
   name: string;
   attendance: number;
   difficulty: number;

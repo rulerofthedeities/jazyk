@@ -4,7 +4,7 @@ export const routes: Routes = [
   {
     path: '',
     children: [
-      {path: 'home', loadChildren: './learn.module#LearnModule'},
+      {path: 'learn', loadChildren: './learn.module#LearnModule'},
       {path: 'build', loadChildren: './build.module#BuildModule'}
     ]
   }
