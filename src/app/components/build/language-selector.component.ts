@@ -9,6 +9,7 @@ import {Language} from '../../models/course.model';
 export class LanguageSelectorComponent implements OnInit {
   @Input() languages: [Language];
   @Input() private currentLanguage: Language;
+  @Input() disabled = false;
   @Output() languageSelected = new EventEmitter<Language>();
   selectedLanguage: Language;
   showDropdown = false;
@@ -21,8 +22,10 @@ export class LanguageSelectorComponent implements OnInit {
   }
 
   toggleDropdown() {
-    this.showDropdown = !this.showDropdown;
-    this.selectedDropdown = this.selectedLanguage._id;
+    if (!this.disabled) {
+      this.showDropdown = !this.showDropdown;
+      this.selectedDropdown = this.selectedLanguage._id;
+    }
   }
 
   selectLanguage(newLanguage: Language) {

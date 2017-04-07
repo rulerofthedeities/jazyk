@@ -1,8 +1,13 @@
-var path = require("path");
+var path = require("path"),
+    courses = require("./controllers/courses");
 
 module.exports.initialize = function(app, router) {
 
-  //router.get('/sync/connections', sync_connections.load);
+  router.get('/courses/:lan', courses.getCourses);
+  router.get('/course/:id', courses.getCourse);
+
+  router.post('/course', courses.addCourse);
+  router.put('/course', courses.updateCourse);
 
   app.use('/api/', router);
 

@@ -8,6 +8,7 @@ export interface Lesson {
   _id?: string;
   courseId: string;
   name: string;
+  chapter: string;
   difficulty: number;
 }
 

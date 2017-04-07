@@ -28,3 +28,10 @@
   cursor: pointer;
   font-size: 18px;
 }
+.disabled .btn-default{
+  cursor: default;
+  border-color: #fff;
+}
+.disabled .btn-default:hover {
+  background-color: #fff;
+}

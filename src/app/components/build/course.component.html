@@ -1,7 +1,7 @@
 <form
   [formGroup]="courseForm"
   (ngSubmit) = "onSubmit(courseForm.value)"
-  *ngIf="formReady"
+  *ngIf="isFormReady"
   class="form-horizontal">
 
   <!-- LANGUAGE -->
@@ -11,6 +11,7 @@
       <km-language-selector 
         [languages]="languages"
         [currentLanguage]="course.language"
+        [disabled]="!isNewCourse"
         (languageSelected)="onLanguageSelected($event)">
       </km-language-selector>
     </div>
@@ -21,23 +22,45 @@
     <label for="name" class="control-label col-xs-2">Naam</label>
     <div class="col-xs-10">
       <input 
+        *ngIf="isEditMode"
         type="text" 
         class="form-control" 
         id="name" 
         placeholder="Naam van de cursus"
         [formControl]="courseForm.controls['name']">
+      <div *ngIf="!isEditMode" class="form-control-static">
+        {{course.name}}
+      </div>
     </div>
   </div>
+
+  <p>Form value: {{ courseForm.value | json }}</p>
+  <p>Form status: {{ courseForm.status | json }}</p>
+  <p>Form dirty: {{courseForm.dirty |json}}</p>
 
   <!-- BUTTONS -->
   <div class="row">
     <div class="col-xs-10 col-xs-offset-2">
-      <button *ngIf="isNewCourse"
-        type="submit" 
-        class="btn btn-success" 
-        [disabled]="!courseForm.valid">
-        Voeg cursus toe
-      </button>
+
+    <!-- EDIT MODE -->
+      <div *ngIf="isEditMode">
+        <button
+          type="submit" 
+          class="btn btn-success" 
+          [disabled]="!courseForm.valid || !courseForm.dirty">
+          {{isNewCourse ? 'Voeg cursus toe' : 'Voer wijzigingen door'}}
+        </button>
+      </div>
+
+    <!-- READ MODE -->
+      <div *ngIf="!isEditMode">
+        <button
+          class="btn btn-success" 
+          (click)="onSetEdit()"
+          [disabled]="!courseForm.valid">
+          Wijzig cursusgegevens
+        </button>
+      </div>
     </div>
   </div>
   
