@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Course, Language} from '../../models/course.model';
+import {Course, Lesson, Language} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -14,14 +14,17 @@ import 'rxjs/add/operator/takeWhile';
 export class BuildCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   courseForm: FormGroup;
+  course: Course;
+  initialCourse: Course; // For cancel
+  languages: Language[];
+  currentLanguage: Language;
+  lessons: Lesson[];
+  currentLesson: Lesson;
   isNewCourse = false;
   isEditMode = false;
   isSubmitted = false;
   isFormReady = false;
-  languages: Language[];
-  currentLanguage: Language;
-  course: Course;
-  initialCourse: Course; // For cancel
+  isEditLesson = false;
 
   constructor(
     private router: Router,
@@ -125,6 +128,17 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     );
   }
 
+  onAddLesson() {
+    this.isEditLesson = true;
+  }
+
+  onLessonDone(lessonAdded: Lesson) {
+    this.isEditLesson = false;
+    if (lessonAdded) {
+      this.lessons.push(lessonAdded);
+    }
+  }
+
   onLanguageSelected(newLanguage: Language) {
     this.currentLanguage = newLanguage;
     this.course.languageId = newLanguage._id;
@@ -132,12 +146,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   setDefaultLanguage(languageId: string) {
-    console.log('setting language', languageId);
     let selLan: Language[];
     if (languageId) {
       selLan = this.languages.filter(lan => lan._id === languageId);
     }
-    console.log(selLan);
     if (selLan && selLan.length > 0) {
       this.currentLanguage = selLan[0];
     } else {
@@ -145,15 +157,28 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCourse(id: string) {
+  getCourse(courseId: string) {
     this.buildService
-    .fetchCourse(id)
+    .fetchCourse(courseId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       course => {
         this.course = course;
         this.currentLanguage = this.languages.filter(lan => lan._id === course.languageId)[0];
         this.buildForm();
+        this.getLessons(courseId);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  getLessons(courseId: string) {
+    this.buildService
+    .fetchLessons(courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      lessons => {
+        this.lessons = lessons;
       },
       error => this.errorService.handleError(error)
     );

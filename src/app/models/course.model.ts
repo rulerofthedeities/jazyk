@@ -4,12 +4,19 @@ export interface Language {
   active: boolean;
 }
 
+export interface Chapter {
+  nr: number;
+  name: string;
+}
+
 export interface Lesson {
   _id?: string;
   courseId: string;
   name: string;
-  chapter: string;
+  nr: number;
+  chapter?: Chapter;
   difficulty: number;
+  isPublished: boolean;
 }
 
 export interface Course {

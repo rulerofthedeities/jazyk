@@ -8,8 +8,7 @@ export const routes: Routes = [
     path: '',
     component: BuildComponent,
     children: [
-      {path: 'course/:id', component: BuildCourseComponent},
-      {path: 'lesson/:id', component: BuildLessonComponent}
+      {path: 'course/:id', component: BuildCourseComponent}
     ]
   }
 ];

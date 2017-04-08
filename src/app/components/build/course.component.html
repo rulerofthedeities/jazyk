@@ -27,7 +27,7 @@
         class="form-control" 
         id="name" 
         placeholder="Naam van de cursus"
-        [formControl]="courseForm.controls['name']">
+        [formControlName]="'name'">
       <div *ngIf="!isEditMode" class="form-control-static">
         {{course.name}}
       </div>
@@ -50,7 +50,7 @@
           [disabled]="!courseForm.valid || !courseForm.dirty">
           {{isNewCourse ? 'Voeg cursus toe' : 'Voer wijzigingen door'}}
         </button>
-        <button *ngIf="courseForm.dirty"
+        <button 
           class="btn btn-warning" 
           (click)="onCancel()">
           Cancel
@@ -58,7 +58,7 @@
       </div>
 
     <!-- READ MODE -->
-      <div *ngIf="!isEditMode">
+      <div *ngIf="!isEditMode && !isEditLesson">
         <button
           class="btn btn-success" 
           (click)="onSetEdit()">
@@ -66,16 +66,28 @@
         </button>
         <button
           class="btn btn-success" 
-          (click)="onAddWord()">
-          Voeg nieuw woord toe
+          (click)="onAddLesson()">
+          Voeg nieuwe les toe
         </button>
       </div>
     </div>
-  </div>
-  
+  </div>  
 </form>
 
-New word form
+<!-- NEW LESSON -->
+<div *ngIf="isEditLesson">
+  <km-build-lesson
+    [lesson]="currentLesson"
+    [courseId]="course._id"
+    (done)="onLessonDone($event)">
+  </km-build-lesson>
+</div>
 
-Word List
+<!-- CHAPTER LIST -->
+
+<div *ngIf="lessons">
+  COMPONENT with Lesson List / Collapsible chapters (if they exist)
+
+  {{lessons | json}}
+</div>
 
