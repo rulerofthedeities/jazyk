@@ -12,7 +12,9 @@ var courseSchema = new Schema({
     languageId: {type: String, required: true},
     name: String,
     attendance: Number,
-    difficulty: Number
+    difficulty: Number,
+    isPublished: Boolean,
+    isPublic: Boolean
   }, {collection: 'courses'}
 );
 

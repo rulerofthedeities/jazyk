@@ -6,7 +6,7 @@ const response = require('../response'),
 module.exports = {
   getCourses: function(req, res) {
     const languageId = req.params.lan;
-    Course.find({languageId}, function(err, courses) {
+    Course.find({languageId, isPublished: true, isPublic: true}, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched courses');
       });

@@ -18,4 +18,6 @@ export interface Course {
   name: string;
   attendance: number;
   difficulty: number;
+  isPublic: boolean;
+  isPublished: boolean;
 }

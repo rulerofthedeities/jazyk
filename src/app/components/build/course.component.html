@@ -61,12 +61,21 @@
       <div *ngIf="!isEditMode">
         <button
           class="btn btn-success" 
-          (click)="onSetEdit()"
-          [disabled]="!courseForm.valid">
+          (click)="onSetEdit()">
           Wijzig cursusgegevens
+        </button>
+        <button
+          class="btn btn-success" 
+          (click)="onAddWord()">
+          Voeg nieuw woord toe
         </button>
       </div>
     </div>
   </div>
   
 </form>
+
+New word form
+
+Word List
+

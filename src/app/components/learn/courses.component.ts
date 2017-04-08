@@ -8,8 +8,6 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   template: `
-    COURSES
-
   <button class="btn btn-success" (click)="onNewCourse()">
     Nieuwe cursus
   </button>
@@ -24,6 +22,16 @@ import 'rxjs/add/operator/takeWhile';
       </km-language-selector>
     </div>
   </div>
+
+  <div class="clearfix"></div>
+
+  <!-- COURSE LIST -->
+  <ul class="list-unstyled" *ngIf="courses">
+    <li *ngFor="let course of courses">
+      <km-course-summary [course]="course">
+      </km-course-summary>
+    </li>
+  </ul>
 
 <pre>{{courses|json}}</pre>
   `
@@ -55,8 +63,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
   onNewCourse() {
     this.router.navigate(['/build/course/new', {lan: this.selectedLanguage._id}]);
-    console.log('creating new course for', this.selectedLanguage._id);
-
   }
 
   getCourses() {

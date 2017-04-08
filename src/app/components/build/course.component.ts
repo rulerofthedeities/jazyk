@@ -52,18 +52,12 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   editCourse(id: string) {
-    console.log('editing id', id);
-    // Find course Id in db
-    // If course is found, set id and build form
-    // If course is not found, show message (invalid course id)
     this.isNewCourse = false;
     this.isEditMode = false;
     this.getCourse(id);
   }
 
   createNewCourse() {
-    // TODO //
-    // Get language preference from profile settings
     this.isNewCourse = true;
     this.isEditMode = true;
     this.course = {
@@ -71,7 +65,9 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       languageId: this.currentLanguage._id,
       name: '',
       attendance: 0,
-      difficulty: 0
+      difficulty: 0,
+      isPublic: true,
+      isPublished: false
     };
     this.buildForm();
   }

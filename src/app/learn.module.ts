@@ -8,6 +8,8 @@ import {LearnService} from './services/learn.service';
 
 import {LearnComponent} from './components/learn/learn.component';
 import {CoursesComponent} from './components/learn/courses.component';
+import {CourseSummaryComponent} from './components/learn/course-summary.component';
+
 
 
 @NgModule({
@@ -20,7 +22,8 @@ import {CoursesComponent} from './components/learn/courses.component';
   ],
   declarations: [
     LearnComponent,
-    CoursesComponent
+    CoursesComponent,
+    CourseSummaryComponent
   ]
 })
 export class LearnModule {}
