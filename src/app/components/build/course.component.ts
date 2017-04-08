@@ -38,6 +38,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
+        this.setDefaultLanguage(params['lan']);
         if (params['id']) {
           const courseId = params['id'];
           if (courseId === 'new') {
@@ -65,7 +66,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     // Get language preference from profile settings
     this.isNewCourse = true;
     this.isEditMode = true;
-    this.currentLanguage = {_id: 'cs-cz', name: 'Tsjechisch', active: true}; // TODO: fetch from user settings
     this.course = {
       _id: '',
       languageId: this.currentLanguage._id,
@@ -133,6 +133,20 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.currentLanguage = newLanguage;
     this.course.languageId = newLanguage._id;
     this.courseForm.patchValue({languageId: newLanguage._id});
+  }
+
+  setDefaultLanguage(languageId: string) {
+    console.log('setting language', languageId);
+    let selLan: Language[];
+    if (languageId) {
+      selLan = this.languages.filter(lan => lan._id === languageId);
+    }
+    console.log(selLan);
+    if (selLan && selLan.length > 0) {
+      this.currentLanguage = selLan[0];
+    } else {
+      this.currentLanguage = this.languages[0];
+    }
   }
 
   getCourse(id: string) {
