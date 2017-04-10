@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Course, Lesson, Language} from '../../models/course.model';
+import {Chapter, Course, Lesson, Language} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -20,6 +20,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   currentLanguage: Language;
   lessons: Lesson[];
   currentLesson: Lesson;
+  chapters: Chapter[];
   isNewCourse = false;
   isEditMode = false;
   isSubmitted = false;
@@ -44,6 +45,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         this.setDefaultLanguage(params['lan']);
         if (params['id']) {
           const courseId = params['id'];
+          this.getChapters(courseId);
           if (courseId === 'new') {
             this.createNewCourse();
           } else {
@@ -54,10 +56,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  editCourse(id: string) {
+  editCourse(courseId: string) {
     this.isNewCourse = false;
     this.isEditMode = false;
-    this.getCourse(id);
+    this.getCourse(courseId);
   }
 
   createNewCourse() {
@@ -136,6 +138,11 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.isEditLesson = false;
     if (lessonAdded) {
       this.lessons.push(lessonAdded);
+      // Check if new chapter was added
+      if (lessonAdded.chapter && lessonAdded.chapter.nr > this.chapters.length) {
+        console.log('add chapter', lessonAdded.chapter);
+        this.chapters.push(lessonAdded.chapter);
+      }
     }
   }
 
@@ -179,6 +186,18 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       lessons => {
         this.lessons = lessons;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  getChapters(courseId: string) {
+    this.buildService
+    .fetchChapters(courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      chapters => {
+        this.chapters = chapters;
       },
       error => this.errorService.handleError(error)
     );

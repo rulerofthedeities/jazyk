@@ -78,16 +78,19 @@
 <div *ngIf="isEditLesson">
   <km-build-lesson
     [lesson]="currentLesson"
+    [chapters]="chapters"
     [courseId]="course._id"
+    [nr]="lessons.length"
     (done)="onLessonDone($event)">
   </km-build-lesson>
 </div>
 
-<!-- CHAPTER LIST -->
+<!-- CHAPTER / LESSON LIST -->
 
 <div *ngIf="lessons">
-  COMPONENT with Lesson List / Collapsible chapters (if they exist)
-
-  {{lessons | json}}
+  <km-build-lessons
+    [lessons]="lessons"
+    [courseId]="course._id">
+  </km-build-lessons>
 </div>
 

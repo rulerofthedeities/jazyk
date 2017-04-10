@@ -73,4 +73,14 @@ export class BuildService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
+
+  /*** CHAPTERS ***/
+
+  fetchChapters(courseId: string) {
+    return this.http
+    .get('/api/lessons/chapters/' + courseId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
 }

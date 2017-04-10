@@ -5,7 +5,6 @@
   class="form-horizontal">
 
   <!-- NAME -->
-  editmode: {{isEditMode}}
   <div class="form-group form-group-lg">
     <label for="name" class="control-label col-xs-2">Naam</label>
     <div class="col-xs-10">
@@ -13,11 +12,28 @@
         *ngIf="isEditMode"
         type="text" 
         class="form-control" 
+        autocomplete="off"
         id="name" 
         placeholder="Naam van de les"
+        (focus)="onFocusName()"
         [formControlName]="'name'">
       <div *ngIf="!isEditMode" class="form-control-static">
         {{lesson.name}}
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER -->
+  <div class="form-group form-group-lg">
+    <label for="name" class="control-label col-xs-2">Hoofdstuk</label>
+    <div class="col-xs-10">
+      <km-autocomplete
+        [items]="chapters"
+        [currentItem]="lesson.chapter"
+        [placeholder]="'Naam van het hoofstuk'">
+      </km-autocomplete>
+      <div *ngIf="!isEditMode" class="form-control-static">
+        {{lesson.chapter?.name}}
       </div>
     </div>
   </div>
@@ -43,5 +59,3 @@
     </div>
   </div>
 </form>
-
-{{lesson | json}}

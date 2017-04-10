@@ -1,8 +1,9 @@
-import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson} from '../../models/course.model';
+import {Chapter, Lesson} from '../../models/course.model';
+import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 @Component({
   selector: 'km-build-lesson',
@@ -12,7 +13,10 @@ import {Lesson} from '../../models/course.model';
 export class BuildLessonComponent implements OnInit, OnDestroy {
   @Input() courseId: string;
   @Input() lesson: Lesson;
+  @Input() chapters: Chapter[];
+  @Input() nr: number;
   @Output() done = new EventEmitter<Lesson>();
+  @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
   lessonForm: FormGroup;
   chapterForm: FormGroup;
@@ -42,7 +46,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       _id: '',
       courseId: this.courseId,
       name: '',
-      nr: 0,
+      nr: this.nr + 1,
       difficulty: 0,
       isPublished: false
     };
@@ -67,12 +71,17 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(formValues: any) {
+    this.lesson.chapter = this.autocomplete.currentItem;
     if (this.lesson._id) {
       this.updateLesson(formValues.name);
     } else {
       this.addLesson(formValues.name);
     }
     this.isSubmitted = true;
+  }
+
+  onFocusName() {
+    this.autocomplete.showList = false;
   }
 
   addLesson(name: string) {
