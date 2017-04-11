@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Course, Lesson, Language} from '../models/course.model';
+import {Chapter, Course, Lesson, Language} from '../models/course.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -49,7 +49,7 @@ export class BuildService {
 
   /*** LESSONS ***/
 
-  fetchLessons(courseId: string) {
+  fetchLessonsAndChapters(courseId: string) {
     return this.http
     .get('/api/lessons/' + courseId)
     .map(response => response.json().obj)
@@ -78,7 +78,16 @@ export class BuildService {
 
   fetchChapters(courseId: string) {
     return this.http
-    .get('/api/lessons/chapters/' + courseId)
+    .get('/api/chapters/' + courseId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  addChapter(chapter: Chapter) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .post('/api/chapter', JSON.stringify(chapter), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

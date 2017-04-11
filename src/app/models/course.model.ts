@@ -5,6 +5,8 @@ export interface Language {
 }
 
 export interface Chapter {
+  _id?: string;
+  courseId: string;
   nr: number;
   name: string;
 }
@@ -14,7 +16,7 @@ export interface Lesson {
   courseId: string;
   name: string;
   nr: number;
-  chapter?: Chapter;
+  chapter: string;
   difficulty: number;
   isPublished: boolean;
 }

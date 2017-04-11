@@ -1,13 +1,18 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Lesson = require('../models/lesson');
+      Lesson = require('../models/lesson'),
+      Chapter = require('../models/chapter');
 
 module.exports = {
   getLessons: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
-    Lesson.find({courseId}, {}, function(err, lessons) {
+    Lesson.find({courseId}, {}, {sort:{nr:1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
-        response.handleSuccess(res, lessons, 200, 'Fetched lessons');
+        Chapter.find({courseId}, {} , {sort:{nr:1}}, function(err, chapters) {
+          response.handleError(err, res, 500, 'Error fetching chapters', function(){
+            response.handleSuccess(res, {lessons,chapters}, 200, 'Fetched chapters and lessons');
+          });
+        });
       });
     });
   },
@@ -44,12 +49,13 @@ module.exports = {
       });
     });
   },
-  getChapters: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
-    console.log('fetching chapters for ', courseId)
-    Lesson.find({courseId}).distinct('chapter', function(err, chapters) {
-      response.handleError(err, res, 500, 'Error fetching chapters', function(){
-        response.handleSuccess(res, chapters, 200, 'Fetched chapters');
+  addChapter: function(req, res) {
+    let chapter = new Chapter(req.body);
+    chapter._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
+
+    chapter.save(function(err, result) {
+      response.handleError(err, res, 500, 'Error adding chapter', function(){
+        response.handleSuccess(res, result, 200, 'Added chapter');
       });
     });
   }

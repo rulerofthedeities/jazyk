@@ -7,29 +7,7 @@ interface Item {
 
 @Component({
   selector: 'km-autocomplete',
-  template: `
-    <div class="form-group form-group-lg selector">
-      <div class="col-xs-12">
-        <input 
-          type="text" 
-          class="form-control" 
-          id="name" 
-          autocomplete="off"
-          [placeholder]="placeholder"
-          [(ngModel)]="entry"
-          (ngModelChange)="showItemList()"
-          (click)="toggleItemList()"
-          >
-      </div>
-    </div>
-    <ul class="list-group dropdown" *ngIf="showList">
-      <li *ngFor="let item of showItems"
-        class="list-group-item"
-        (click)="selectItem(item.nr - 1)">
-        {{item.nr}}. {{item.name}}
-      </li>
-    </ul>
-  `,
+  templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.css']
 })
 export class AutocompleteComponent implements OnInit {

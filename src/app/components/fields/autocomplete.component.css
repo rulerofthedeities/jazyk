@@ -19,3 +19,17 @@
   background-color: #1e90ff;
   color: #fff;
 }
+.dropdownField{
+  display: inline-block;
+  position: relative;
+}
+.dropdownField::before{
+  position: absolute;
+  font-family: FontAwesome;
+  font-size: 18px;
+  content: "\f0d7";
+  right: 20px;
+  height: 20px;
+  width: 20px;
+  top: 10px;
+}

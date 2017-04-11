@@ -45,7 +45,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         this.setDefaultLanguage(params['lan']);
         if (params['id']) {
           const courseId = params['id'];
-          this.getChapters(courseId);
           if (courseId === 'new') {
             this.createNewCourse();
           } else {
@@ -139,9 +138,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     if (lessonAdded) {
       this.lessons.push(lessonAdded);
       // Check if new chapter was added
-      if (lessonAdded.chapter && lessonAdded.chapter.nr > this.chapters.length) {
-        console.log('add chapter', lessonAdded.chapter);
-        this.chapters.push(lessonAdded.chapter);
+      if (this.chapters.filter(chapter => chapter.name === lessonAdded.chapter).length < 1) {
+        this.addChapter(lessonAdded.chapter);
       }
     }
   }
@@ -173,34 +171,42 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         this.course = course;
         this.currentLanguage = this.languages.filter(lan => lan._id === course.languageId)[0];
         this.buildForm();
-        this.getLessons(courseId);
+        this.getLessonsAndChapters(courseId);
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  getLessons(courseId: string) {
+  getLessonsAndChapters(courseId: string) {
     this.buildService
-    .fetchLessons(courseId)
+    .fetchLessonsAndChapters(courseId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      lessons => {
-        this.lessons = lessons;
+      data => {
+        this.lessons = data.lessons;
+        this.chapters = data.chapters;
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  getChapters(courseId: string) {
-    this.buildService
-    .fetchChapters(courseId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      chapters => {
-        this.chapters = chapters;
-      },
-      error => this.errorService.handleError(error)
-    );
+  addChapter(chapterName: string) {
+    if (chapterName) {
+      console.log('add chapter', chapterName);
+      const newChapter = {
+        courseId: this.course._id,
+        name: chapterName,
+        nr: this.chapters.length + 1
+      };
+      this.chapters.push(newChapter);
+      this.buildService
+      .addChapter(newChapter)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        savedChapter => {},
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   ngOnDestroy() {

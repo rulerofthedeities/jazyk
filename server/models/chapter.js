@@ -1,14 +1,11 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var lessonSchema = new Schema({
+var chapterSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
   name: String,
-  chapter: String,
-  nr: Number,
-  difficulty: Number,
-  isPublished: Boolean
-})
+  nr: Number
+});
 
-module.exports = mongoose.model('Lesson', lessonSchema);
+module.exports = mongoose.model('Chapter', chapterSchema);

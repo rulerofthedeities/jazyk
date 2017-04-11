@@ -13,6 +13,7 @@ import {AutocompleteComponent} from '../fields/autocomplete.component';
 export class BuildLessonComponent implements OnInit, OnDestroy {
   @Input() courseId: string;
   @Input() lesson: Lesson;
+  @Input() lessons: Lesson[];
   @Input() chapters: Chapter[];
   @Input() nr: number;
   @Output() done = new EventEmitter<Lesson>();
@@ -46,7 +47,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       _id: '',
       courseId: this.courseId,
       name: '',
-      nr: this.nr + 1,
+      chapter: '',
+      nr: 1,
       difficulty: 0,
       isPublished: false
     };
@@ -71,7 +73,9 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(formValues: any) {
-    this.lesson.chapter = this.autocomplete.currentItem;
+    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
+    this.lesson.chapter = chapterName;
+
     if (this.lesson._id) {
       this.updateLesson(formValues.name);
     } else {
@@ -86,6 +90,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   addLesson(name: string) {
     this.lesson.name = name;
+    this.lesson.nr = this.lessons.filter(lesson => lesson.chapter === this.lesson.chapter).length + 1;
     this.buildService
     .addLesson(this.lesson)
     .takeWhile(() => this.componentActive)

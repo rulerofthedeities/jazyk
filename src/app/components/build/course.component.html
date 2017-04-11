@@ -25,6 +25,7 @@
         *ngIf="isEditMode"
         type="text" 
         class="form-control" 
+        autocomplete="off"
         id="name" 
         placeholder="Naam van de cursus"
         [formControlName]="'name'">
@@ -78,6 +79,7 @@
 <div *ngIf="isEditLesson">
   <km-build-lesson
     [lesson]="currentLesson"
+    [lessons]="lessons"
     [chapters]="chapters"
     [courseId]="course._id"
     [nr]="lessons.length"
@@ -90,6 +92,7 @@
 <div *ngIf="lessons">
   <km-build-lessons
     [lessons]="lessons"
+    [chapters]="chapters"
     [courseId]="course._id">
   </km-build-lessons>
 </div>
