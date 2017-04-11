@@ -1,0 +1,35 @@
+
+<ng-template ngFor [ngForOf]="chapters" let-chapter let-i="index">
+  <km-chapter
+    [lessons]="getLessons(chapter.name)"
+    [title]="chapter.nr + '. ' + chapter.name"
+    [total]="getLessons(chapter.name).length"
+    [isOpen]="isCurrent(chapter)"
+    (toggleOpen)="onToggleChapter(chapter.nr)">
+  </km-chapter>
+</ng-template>
+
+<!--
+<ng-template ngFor [ngForOf]="chapters" let-chapter let-i="index">
+  <km-chapter-bar
+    [title]="chapter.nr + '. ' + chapter.name"
+    [total]="getLessons(chapter.name).length"
+    [isOpen]="isCurrent(chapter)"
+    (toggleOpen)="onToggleChapter(chapter.nr)">
+  </km-chapter-bar>
+  <ul class="lessons" [ngStyle]="{display: isCurrent(chapter) ? 'block' : 'none'}">
+    <li *ngFor="let lesson of getLessons(chapter.name)">
+      {{lesson.nr}}. {{lesson.name}}
+    </li>
+  </ul>
+</ng-template>
+-->
+
+>>>> NO CHAPTER
+<ul class="nochapters list-unstyled">
+  <li *ngFor="let lesson of getLessons('')">
+    {{lesson.nr}}. {{lesson.name}}
+  </li>
+</ul>
+
+

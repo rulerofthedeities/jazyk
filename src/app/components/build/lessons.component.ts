@@ -6,26 +6,9 @@ import {Chapter, Lesson} from '../../models/course.model';
 
 @Component({
   selector: 'km-build-lessons',
-  template: `
-    <ul class="chapters">
-      <li *ngFor="let chapter of chapters">
-        {{chapter.nr}}. {{chapter.name}}
-        <ul class="lessons">
-          <li *ngFor="let lesson of getLessons(chapter.name)">
-            {{lesson.nr}}. {{lesson.name}}
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    >>>> NO CHAPTER
-    <ul class="nochapters">
-      <li *ngFor="let lesson of getLessons('')">
-        {{lesson.nr}}. {{lesson.name}}
-      </li>
-    </ul>
-
-  `
+  templateUrl: 'lessons.component.html',
+  styles: [`
+  `]
 })
 
 export class BuildLessonsComponent {
@@ -33,7 +16,7 @@ export class BuildLessonsComponent {
   @Input() lessons: Lesson[];
   @Input() chapters: Chapter[];
   lessonswithnochapter: Lesson[] = [];
-  private componentActive = true;
+  private currentChapter = -1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,14 +28,11 @@ export class BuildLessonsComponent {
     return this.lessons.filter(lesson => lesson.chapter === chapterName);
   }
 
-/*
-  getChapters() {
-    this.lessons.map(lesson => {if (!lesson.chapter) {
-        lesson.chapter = {nr: 0, name: ''};
-        this.lessonswithnochapter.push(lesson);
-      }
-    });
-    this.lessons = this.lessons.filter(lesson => lesson.chapter.nr > 0);
+  onToggleChapter(chapterNr: number) {
+    this.currentChapter = chapterNr === this.currentChapter ? -1 : chapterNr;
   }
-*/
+
+  isCurrent(chapter: Chapter) {
+    return chapter.nr === this.currentChapter;
+  }
 }

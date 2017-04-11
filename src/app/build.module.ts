@@ -11,6 +11,7 @@ import {BuildComponent} from './components/build/build.component';
 import {BuildCourseComponent} from './components/build/course.component';
 import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
+import {BuildChapterComponent} from './components/build/chapter.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
 
@@ -30,6 +31,7 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
     BuildCourseComponent,
     BuildLessonComponent,
     BuildLessonsComponent,
+    BuildChapterComponent,
     AutocompleteComponent,
     ModalConfirmComponent
   ]
