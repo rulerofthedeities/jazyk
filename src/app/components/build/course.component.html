@@ -77,14 +77,15 @@
 
 <!-- NEW LESSON -->
 <div *ngIf="isEditLesson">
-  <km-build-lesson
+  <km-build-lesson-header
     [lesson]="currentLesson"
     [lessons]="lessons"
     [chapters]="chapters"
     [courseId]="course._id"
+    [languageId]="course.languageId"
     [nr]="lessons.length"
     (done)="onLessonDone($event)">
-  </km-build-lesson>
+  </km-build-lesson-header>
 </div>
 
 <!-- CHAPTER / LESSON LIST -->

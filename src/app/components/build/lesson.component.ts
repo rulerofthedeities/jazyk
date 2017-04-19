@@ -1,9 +1,10 @@
-import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Lesson} from '../../models/course.model';
-import {AutocompleteComponent} from '../fields/autocomplete.component';
+import {Lesson, Question} from '../../models/course.model';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-build-lesson',
@@ -11,108 +12,54 @@ import {AutocompleteComponent} from '../fields/autocomplete.component';
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {
-  @Input() courseId: string;
-  @Input() lesson: Lesson;
-  @Input() lessons: Lesson[];
-  @Input() chapters: Chapter[];
-  @Input() nr: number;
-  @Output() done = new EventEmitter<Lesson>();
-  @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
-  private componentActive = true;
-  lessonForm: FormGroup;
-  chapterForm: FormGroup;
+  componentActive = true;
+  wordForm: FormGroup;
+  lesson: Lesson;
+  question: Question;
   isFormReady = false;
-  isNew = true;
-  isEditMode = false;
-  isSubmitted = false;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
     private buildService: BuildService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
-    if (this.lesson) {
-      this.editLesson();
-    } else {
-      this.createNewLesson();
-    }
+    this.route.params
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      params => {
+        if (params['id']) {
+          const lessonId = params['id'];
+          this.getLesson(lessonId);
+        }
+      }
+    );
   }
 
-  createNewLesson() {
-    this.isNew = true;
-    this.isEditMode = true;
-    this.lesson = {
-      _id: '',
-      courseId: this.courseId,
-      name: '',
-      chapter: '',
-      nr: 1,
-      difficulty: 0,
-      isPublished: false
+  newWord() {
+    this.question = {
+      wordPairId: '',
+      testTypes: []
     };
     this.buildForm();
   }
 
-  editLesson() {
-    this.isNew = false;
-    this.isEditMode = true;
-  }
-
   buildForm() {
-    this.lessonForm = this.formBuilder.group({
-      name: [this.lesson.name],
-      nr: [this.lesson.nr]
+    this.wordForm = this.formBuilder.group({
+      wordPairId: [this.question.wordPairId],
+      testTypes: [this.question.testTypes]
     });
     this.isFormReady = true;
   }
 
-  onCancel() {
-    this.done.emit(null);
-  }
-
-  onSubmit(formValues: any) {
-    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
-    this.lesson.chapter = chapterName;
-
-    if (this.lesson._id) {
-      this.updateLesson(formValues.name);
-    } else {
-      this.addLesson(formValues.name);
-    }
-    this.isSubmitted = true;
-  }
-
-  onFocusName() {
-    this.autocomplete.showList = false;
-  }
-
-  addLesson(name: string) {
-    this.lesson.name = name;
-    this.lesson.nr = this.lessons.filter(lesson => lesson.chapter === this.lesson.chapter).length + 1;
+  getLesson(lessonId: string) {
     this.buildService
-    .addLesson(this.lesson)
+    .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      savedLesson => {
-        this.lesson = savedLesson;
-        this.isEditMode = false;
-        this.done.emit(savedLesson);
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  updateLesson(newName: string) {
-    this.lesson.name = newName;
-    this.buildService
-    .updateLesson(this.lesson)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      updatedCourse => {
-        this.isEditMode = false;
-      },
+      lesson => this.lesson = lesson,
       error => this.errorService.handleError(error)
     );
   }

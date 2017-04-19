@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Chapter, Course, Lesson, Language} from '../models/course.model';
+import {Filter} from '../models/question.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -47,11 +48,36 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  /*** CHAPTERS ***/
+
+  fetchChapters(courseId: string) {
+    return this.http
+    .get('/api/chapters/' + courseId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  addChapter(chapter: Chapter) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .post('/api/chapter', JSON.stringify(chapter), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** LESSONS ***/
 
   fetchLessonsAndChapters(courseId: string) {
     return this.http
     .get('/api/lessons/' + courseId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchLesson(lessonId: string) {
+    return this.http
+    .get('/api/lesson/' + lessonId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -74,22 +100,25 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  /*** CHAPTERS ***/
+  /*** WORDS ***/
 
-  fetchChapters(courseId: string) {
+  fetchFilterWordPairs(filter: Filter) {
+    const params = new URLSearchParams();
+    params.set('word', filter.word);
+    params.set('languagePair', filter.languagePair);
+    params.set('languageId', filter.languageId);
+    params.set('isFromStart', filter.isFromStart.toString());
     return this.http
-    .get('/api/chapters/' + courseId)
+    .get('/api/wordpairs/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  addChapter(chapter: Chapter) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-
+  fetchWordPair(wordpairId: string) {
+    console.log('fetching', wordpairId);
     return this.http
-    .post('/api/chapter', JSON.stringify(chapter), {headers})
+    .get('/api/wordpair/' + wordpairId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-
 }

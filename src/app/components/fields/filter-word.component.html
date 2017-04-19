@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="form-inline col-xs-12">
+    <div class="form-group">
+      <label for="wordFilter" class="sr-only">Filter woord:</label>
+      <input
+        type="text"
+        id="wordFilter"
+        placeholder="Filter woord"
+        class="form-control"
+        [(ngModel)]="filter.word"
+        (ngModelChange)="onFilterChanged()">
+    </div>
+    <div class="checkbox">
+      <label>
+        <input 
+        type="checkbox" 
+        name="startcb"
+        (change)="onFilterChanged()"
+        [(ngModel)]="filter.isFromStart">
+        Vanaf begin
+      </label>
+    </div>
+    <input type="radio" 
+      [(ngModel)]="filter.languageId" 
+      name="language" 
+      [value]="'nl_nl'" 
+      (ngModelChange)="onFilterChanged()">nl
+    <input type="radio"
+      [(ngModel)]="filter.languageId"
+      name="language"
+      [value]="languageId"
+      (ngModelChange)="onFilterChanged()">{{languageId}}
+    <div class="text-muted">
+      Aantal woorden: <strong>{{totalWords}}</strong>
+    </div>
+  </div>
+    <div class="wordlist col-xs-2">
+      <ul class="list-group scroll">
+        <li *ngFor="let wordpair of wordpairs; let i = index"
+          class="list-group-item"
+          (click)="selectListWord(i)"
+          [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+          {{showListWord(wordpair)}}
+        </li>
+      </ul>
+    </div>
+</div>
+<pre>
+  {{filter|json}}
+  {{wordpairs|json}}
+</pre>

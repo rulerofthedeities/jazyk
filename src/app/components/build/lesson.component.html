@@ -1,61 +1,25 @@
-<form
-  [formGroup]="lessonForm"
-  (ngSubmit) = "onSubmit(lessonForm.value)"
-  *ngIf="isFormReady"
-  class="form-horizontal">
+BUILD LESSON
+<pre>{{lesson|json}}</pre>
+<div *ngIf="lesson && !isFormReady; else addWord">
+  <div class="btn btn-success" (click)="newWord()">Nieuw Woord</div>
+</div>
 
-  <!-- NAME -->
-  <div class="form-group form-group-lg">
-    <label for="name" class="control-label col-xs-2">Naam</label>
-    <div class="col-xs-10">
-      <input 
-        *ngIf="isEditMode"
-        type="text" 
-        class="form-control" 
-        autocomplete="off"
-        id="name" 
-        placeholder="Naam van de les"
-        (focus)="onFocusName()"
-        [formControlName]="'name'">
-      <div *ngIf="!isEditMode" class="form-control-static">
-        {{lesson.name}}
-      </div>
-    </div>
+<ng-template #addWord>
+  <km-filter-word *ngIf="lesson"
+    [languageId]="lesson.languageId">
+  </km-filter-word>
+  <div *ngIf="wordForm">
+    <form
+      [formGroup]="wordForm"
+      (ngSubmit) = "onSubmit(wordForm.value)"
+      class="form-horizontal">
+      <!-- BUTTONS -->
+      <button
+        type="submit" 
+        class="btn btn-success" 
+        [disabled]="!wordForm.valid">
+        Voeg woord toe
+      </button>
+    </form>
   </div>
-
-  <!-- CHAPTER -->
-  <div class="form-group form-group-lg">
-    <label for="name" class="control-label col-xs-2">Hoofdstuk</label>
-    <div class="col-xs-10">
-      <km-autocomplete
-        [items]="chapters"
-        [currentItem]="lesson.chapter"
-        [placeholder]="'Naam van het hoofstuk'">
-      </km-autocomplete>
-      <div *ngIf="!isEditMode" class="form-control-static">
-        {{lesson.chapter?.name}}
-      </div>
-    </div>
-  </div>
-
-  <!-- BUTTONS -->
-  <div class="row">
-    <div class="col-xs-10 col-xs-offset-2">
-
-    <!-- EDIT MODE -->
-      <div *ngIf="isEditMode">
-        <button
-          type="submit" 
-          class="btn btn-success" 
-          [disabled]="!lessonForm.valid || !lessonForm.dirty">
-          {{isNew ? 'Voeg les toe' : 'Voer wijzigingen door'}}
-        </button>
-        <button 
-          class="btn btn-warning" 
-          (click)="onCancel()">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-</form>
+</ng-template>

@@ -1,0 +1,14 @@
+.navbar-default {
+  background-color: #428bca;
+  font-size: 22px;
+}
+
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-brand {
+  color: white;
+}
+.panel {
+  margin:0 5px 5px 5px;
+}
+.btn {
+  margin-right: 4px;
+}

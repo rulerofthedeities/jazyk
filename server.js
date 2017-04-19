@@ -7,7 +7,6 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     bearerToken  = require('express-bearer-token'),
     routes = require('./server/routes'),
-    indexes = require('./server/indexes'),
     db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk';
 
 //config
@@ -40,9 +39,7 @@ var options = {
 };
 //mongoose.Promise = require('bluebird');
 mongoose.connect(db_url, options, function(err) {
-  indexes.create(function() {
-    app.listen(app.get('port'), function() { 
-      console.log('Server up: http://localhost:' + app.get('port'));
-    });
+  app.listen(app.get('port'), function() { 
+    console.log('Server up: http://localhost:' + app.get('port'));
   });
 });

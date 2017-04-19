@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 var lessonSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
+  languageId: String,
   name: String,
   chapter: String,
   nr: Number,
