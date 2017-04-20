@@ -20,7 +20,7 @@
   <!-- NAME -->
   <div class="form-group form-group-lg">
     <label for="name" class="control-label col-xs-2">Naam</label>
-    <div class="col-xs-10">
+    <div class="col-xs-6">
       <input 
         *ngIf="isEditMode"
         type="text" 
@@ -31,6 +31,24 @@
         [formControlName]="'name'">
       <div *ngIf="!isEditMode" class="form-control-static">
         {{course.name}}
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <button *ngIf="!isEditMode && !isEditLesson" class="btn btn-info" (click)="onSetEdit()">
+        <span class="fa fa-pencil"></span>
+      </button>
+      <div *ngIf="isEditMode">
+        <button 
+          type="submit"
+          class="btn btn-success"
+          [disabled]="!courseForm.valid || !courseForm.dirty">
+          <span class="fa fa-check"></span>
+        </button>
+        <button 
+          class="btn btn-warning" 
+          (click)="onCancel()">
+          <span class="fa fa-times"></span>
+        </button>
       </div>
     </div>
   </div>

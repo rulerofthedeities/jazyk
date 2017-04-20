@@ -111,9 +111,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .publicCourse(this.course._id, this.course.isPublic)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
-        this.isSavingPublic = false;
-      }
+      data => this.isSavingPublic = false,
+      error => this.errorService.handleError(error)
     );
   }
 
@@ -124,9 +123,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .publishCourse(this.course._id, this.course.isPublished)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
-        this.isSavingPublished = false;
-      }
+      data => this.isSavingPublished = false,
+      error => this.errorService.handleError(error)
     );
   }
 

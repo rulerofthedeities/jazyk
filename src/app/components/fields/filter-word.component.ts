@@ -69,14 +69,13 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   getWordPair(i: number) {
     const wordPair: WordPair = this.wordpairs[i];
     if (wordPair) {
-      console.log('fetching wordpair', wordPair);
       this.buildService
       .fetchWordPair(wordPair._id)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        wordpair => {
-          console.log('retrieved', wordpair);
-          this.selectedWordpair = wordPair;
+        data => {
+          console.log('retrieved', data);
+          this.selectedWordpair = data.wordPair;
         },
         error => this.errorService.handleError(error)
       );
