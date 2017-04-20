@@ -5,11 +5,13 @@ var path = require("path"),
 
 module.exports.initialize = function(app, router) {
 
-  router.get('/courses/:lan', courses.getCourses);
+  router.get('/courses/:lan', courses.getAllCourses);
   router.get('/course/:id', courses.getCourse);
 
   router.post('/course', courses.addCourse);
   router.put('/course', courses.updateCourse);
+  router.patch('/course/public/:id/:status', courses.setPublic);
+  router.patch('/course/publish/:id/:status', courses.setPublish);
 
   router.post('/chapter', lessons.addChapter);
 

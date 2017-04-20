@@ -48,6 +48,24 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  publishCourse(id: string, isPublish: boolean) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .patch('/api/course/publish/' + id + '/' + +isPublish, {}, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  publicCourse(id: string, isPublic: boolean) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .patch('/api/course/public/' + id + '/' + +isPublic, {}, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** CHAPTERS ***/
 
   fetchChapters(courseId: string) {
@@ -115,7 +133,6 @@ export class BuildService {
   }
 
   fetchWordPair(wordpairId: string) {
-    console.log('fetching', wordpairId);
     return this.http
     .get('/api/wordpair/' + wordpairId)
     .map(response => response.json().obj)

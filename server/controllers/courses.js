@@ -4,9 +4,9 @@ const response = require('../response'),
 
 
 module.exports = {
-  getCourses: function(req, res) {
+  getAllCourses: function(req, res) {
     const languageId = req.params.lan;
-    Course.find({languageId, isPublished: true, isPublic: true}, {}, function(err, courses) {
+    Course.find({languageId}, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched courses');
       });
@@ -42,6 +42,32 @@ module.exports = {
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating course', function(){
         response.handleSuccess(res, result, 200, 'Updated course');
+      });
+    });
+  },
+  setPublic: function(req, res) {
+    const courseId = req.params.id;
+    const status = req.params.status;
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      {$set: {
+        isPublic: status === '1' ? true : false
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating public flag in course', function(){
+        response.handleSuccess(res, result, 200, 'Updated public flag in course');
+      });
+    });
+  },
+  setPublish: function(req, res) {
+    const courseId = req.params.id;
+    const status = req.params.status;
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      {$set: {
+        isPublished: status === '1' ? true : false
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating publish flag in course', function(){
+        response.handleSuccess(res, result, 200, 'Updated publish flag in course');
       });
     });
   }

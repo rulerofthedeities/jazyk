@@ -26,6 +26,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   isSubmitted = false;
   isFormReady = false;
   isEditLesson = false;
+  isSavingPublic = false;
+  isSavingPublished = false;
 
   constructor(
     private router: Router,
@@ -100,6 +102,32 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   onCancel() {
     this.isEditMode = false;
+  }
+
+  onTogglePublic() {
+    this.isSavingPublic = true;
+    this.course.isPublic = !this.course.isPublic;
+    this.buildService
+    .publicCourse(this.course._id, this.course.isPublic)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => {
+        this.isSavingPublic = false;
+      }
+    );
+  }
+
+  onTogglePublished() {
+    this.isSavingPublished = true;
+    this.course.isPublished = !this.course.isPublished;
+    this.buildService
+    .publishCourse(this.course._id, this.course.isPublished)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => {
+        this.isSavingPublished = false;
+      }
+    );
   }
 
   addCourse(name: string) {

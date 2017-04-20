@@ -29,7 +29,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   filter: Filter;
   totalWords = 0;
   selectedListWord: number;
-  // selectedWordpair: WordPair;
+  selectedWordpair: WordPair;
 
   constructor(
     private buildService: BuildService,
@@ -76,13 +76,10 @@ export class FilterWordComponent implements OnInit, OnDestroy {
       .subscribe(
         wordpair => {
           console.log('retrieved', wordpair);
-          // Now get nl + other word (just one from array) i.o. wordpair
-
-          
+          this.selectedWordpair = wordPair;
         },
         error => this.errorService.handleError(error)
       );
-      
     }
   }
 

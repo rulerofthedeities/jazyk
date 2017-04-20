@@ -35,6 +35,27 @@
     </div>
   </div>
 
+  <!-- PUBLIC & PUBLISH -->
+  <div class="form-group form-group-lg">
+    <label for="status" class="control-label col-xs-2">Status</label>
+    <div class="col-xs-10">
+      <button 
+        class="btn"
+        id="status" 
+        (click)="onTogglePublic()"
+        [ngClass]="{'disabled':isSavingPublic,'btn-success':course.isPublic,'btn-muted':!course.isPublic}">
+        <span class="fa fa-user"></span>
+        {{course.isPublic ? 'Publiek' : 'Privaat'}}
+      </button>
+      <button 
+        class="btn"
+        (click)="onTogglePublished()"
+        [ngClass]="{disabled:isSavingPublished,'btn-success':course.isPublished,'btn-muted':!course.isPublished}">
+        <span class="fa fa-power-off"></span>
+        {{course.isPublished ? 'Gepubliceerd' : 'Niet Publiceerd' }}
+      </button>
+    </div>
+  </div>
   <p>Form value: {{ courseForm.value | json }}</p>
   <p>Form status: {{ courseForm.status | json }}</p>
   <p>Form dirty: {{courseForm.dirty |json}}</p>
