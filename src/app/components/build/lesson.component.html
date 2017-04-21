@@ -1,25 +1,24 @@
-BUILD LESSON
 <pre>{{lesson|json}}</pre>
-<div *ngIf="lesson && !isFormReady; else addWord">
-  <div class="btn btn-success" (click)="newWord()">Nieuw Woord</div>
+<div *ngIf="!isNewWord; else addWord">
+  <div class="btn btn-success" (click)="onNewWord()">Nieuw Woord</div>
 </div>
 
 <ng-template #addWord>
-  <km-filter-word *ngIf="lesson"
-    [languageId]="lesson.languageId">
-  </km-filter-word>
-  <div *ngIf="wordForm">
-    <form
-      [formGroup]="wordForm"
-      (ngSubmit) = "onSubmit(wordForm.value)"
-      class="form-horizontal">
-      <!-- BUTTONS -->
+  <div class="lesson">
+    <div class="filter">
+      <km-filter-word *ngIf="lesson"
+        [languagePair]="lesson.languagePair"
+        (selectedWord)="onWordSelected($event)">
+      </km-filter-word>
+    </div>
+    <div class="exercise">
       <button
-        type="submit" 
         class="btn btn-success" 
-        [disabled]="!wordForm.valid">
-        Voeg woord toe
+        [disabled]="!currentWordPairDetail">
       </button>
-    </form>
+      <km-build-exercise
+        [word]="currentWordPairDetail" >
+      </km-build-exercise>
+    </div>
   </div>
 </ng-template>

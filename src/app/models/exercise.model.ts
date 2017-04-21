@@ -1,7 +1,6 @@
 export interface Filter {
   word: string;
   languageId: string;
-  languagePair: string;
   isFromStart: boolean;
 }
 
@@ -51,3 +50,32 @@ export interface WordDetail {
   aspectPair?: string;
   conjugation?: Conjugation;
 }
+
+export interface WordPairDetail {
+  wordPair: WordPair;
+  cs?: WordDetail;
+  de?: WordDetail;
+  fr?: WordDetail;
+  gb?: WordDetail;
+  nl?: WordDetail;
+  us?: WordDetail;
+}
+
+export interface Exercise {
+  wordPairId: string;
+  evxerciseTypes: Array<ExerciseType>;
+}
+
+export enum ExerciseDirection {
+  fromNl = -1,
+  same = 0,
+  toNl = 1
+};
+
+export interface ExerciseType {
+  nr: number;
+  label: string;
+  direction: ExerciseDirection;
+  isOption?: boolean;
+  isSelected?: boolean;
+};

@@ -44,10 +44,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
-        this.setDefaultLanguage(params['lan']);
         if (params['id']) {
           const courseId = params['id'];
           if (courseId === 'new') {
+            this.setDefaultLanguage(params['lan']);
             this.createNewCourse();
           } else {
             this.editCourse(courseId);
@@ -68,7 +68,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
     this.course = {
       _id: '',
-      languageId: this.currentLanguage._id,
+      languagePair: {
+        from: 'nl-nl',
+        to: this.currentLanguage._id
+      },
       name: '',
       attendance: 0,
       difficulty: 0,
@@ -80,7 +83,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   buildForm() {
     this.courseForm = this.formBuilder.group({
-      languageId: [this.currentLanguage._id],
+      languagePair: [this.course.languagePair],
       name: [this.course.name, Validators.required]
     });
     this.isFormReady = true;
@@ -172,8 +175,11 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   onLanguageSelected(newLanguage: Language) {
     this.currentLanguage = newLanguage;
-    this.course.languageId = newLanguage._id;
-    this.courseForm.patchValue({languageId: newLanguage._id});
+    this.course.languagePair = {
+      from: 'nl-nl',
+      to: newLanguage._id
+    };
+    this.courseForm.patchValue({'languagePair.to': newLanguage._id});
   }
 
   setDefaultLanguage(languageId: string) {
@@ -195,7 +201,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.currentLanguage = this.languages.filter(lan => lan._id === course.languageId)[0];
+        this.currentLanguage = this.languages.filter(lan => lan._id === course.languagePair.to)[0];
         this.buildForm();
         this.getLessonsAndChapters(courseId);
       },
@@ -218,7 +224,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   addChapter(chapterName: string) {
     if (chapterName) {
-      console.log('add chapter', chapterName);
       const newChapter = {
         courseId: this.course._id,
         name: chapterName,

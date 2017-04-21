@@ -13,6 +13,7 @@ import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildChapterComponent} from './components/build/chapter.component';
+import {BuildExerciseComponent} from './components/build/exercise.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterWordComponent} from './components/fields/filter-word.component';
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
@@ -30,10 +31,11 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
   declarations: [
     BuildComponent,
     BuildCourseComponent,
+    BuildChapterComponent,
+    BuildLessonsComponent,
     BuildLessonComponent,
     BuildLessonHeaderComponent,
-    BuildLessonsComponent,
-    BuildChapterComponent,
+    BuildExerciseComponent,
     AutocompleteComponent,
     FilterWordComponent,
     ModalConfirmComponent

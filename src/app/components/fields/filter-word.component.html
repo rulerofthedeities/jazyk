@@ -23,29 +23,25 @@
     <input type="radio" 
       [(ngModel)]="filter.languageId" 
       name="language" 
-      [value]="'nl_nl'" 
-      (ngModelChange)="onFilterChanged()">nl
+      [value]="languagePair.from" 
+      (ngModelChange)="onFilterChanged()">{{languagePair.from}}
     <input type="radio"
       [(ngModel)]="filter.languageId"
       name="language"
-      [value]="languageId"
-      (ngModelChange)="onFilterChanged()">{{languageId}}
+      [value]="languagePair.to"
+      (ngModelChange)="onFilterChanged()">{{languagePair.to}}
     <div class="text-muted">
       Aantal woorden: <strong>{{totalWords}}</strong>
     </div>
   </div>
-    <div class="wordlist col-xs-2">
-      <ul class="list-group scroll">
-        <li *ngFor="let wordpair of wordpairs; let i = index"
-          class="list-group-item"
-          (click)="selectListWord(i)"
-          [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
-          {{showListWord(wordpair)}}
-        </li>
-      </ul>
-    </div>
+  <div class="wordlist col-xs-12">
+    <ul class="list-group scroll">
+      <li *ngFor="let wordpair of wordpairs; let i = index"
+        class="list-group-item"
+        (click)="selectListWord(i)"
+        [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+        {{showListWord(wordpair)}}
+      </li>
+    </ul>
+  </div>
 </div>
-<pre>
-  {{filter|json}}
-  {{wordpairs|json}}
-</pre>

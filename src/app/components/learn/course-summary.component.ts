@@ -9,7 +9,7 @@ import {Course} from '../../models/course.model';
       <div class="panel-body">
         <h3>{{course.name}}</h3>
         <button class="btn btn-warning" (click)="onEditCourse(course._id)">
-          Pas Cursus aan
+          Pas cursus aan
         </button>
       </div>
     </div>
@@ -24,7 +24,6 @@ export class CourseSummaryComponent {
   ) {}
 
   onEditCourse(courseId: string) {
-    console.log('editing course', courseId);
     this.router.navigate(['/build/course/' + courseId]);
   }
 }

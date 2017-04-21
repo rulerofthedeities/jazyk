@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Chapter, Course, Lesson, Language} from '../models/course.model';
-import {Filter} from '../models/question.model';
+import {Chapter, Course, Lesson, Language, LanPair} from '../models/course.model';
+import {Filter} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -120,10 +120,10 @@ export class BuildService {
 
   /*** WORDS ***/
 
-  fetchFilterWordPairs(filter: Filter) {
+  fetchFilterWordPairs(filter: Filter, lanpair: LanPair) {
     const params = new URLSearchParams();
     params.set('word', filter.word);
-    params.set('languagePair', filter.languagePair);
+    params.set('languagePair', lanpair.from.slice(0, 2) + lanpair.to.slice(0, 2));
     params.set('languageId', filter.languageId);
     params.set('isFromStart', filter.isFromStart.toString());
     return this.http

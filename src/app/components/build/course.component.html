@@ -8,7 +8,7 @@
   <div class="form-group form-group-lg">
     <label for="language" class="control-label col-xs-2">Taal</label>
     <div class="col-xs-10">
-      <km-language-selector 
+      <km-language-selector
         [languages]="languages"
         [currentLanguage]="currentLanguage"
         [disabled]="!isNewCourse"
@@ -121,7 +121,7 @@
     [lessons]="lessons"
     [chapters]="chapters"
     [courseId]="course._id"
-    [languageId]="course.languageId"
+    [languagePair]="course.languagePair"
     [nr]="lessons.length"
     (done)="onLessonDone($event)">
   </km-build-lesson-header>

@@ -1,13 +1,17 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Filter, WordPair} from '../../models/question.model';
+import {LanPair} from '../../models/course.model';
+import {Filter, WordPair, WordPairDetail} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-filter-word',
   templateUrl: 'filter-word.component.html',
   styles: [`
+    .wordlist {
+      width: 250px; 
+    }
     li {
       cursor:pointer;
     }
@@ -22,14 +26,14 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class FilterWordComponent implements OnInit, OnDestroy {
-  @Input() languageId: string;
+  @Input() languagePair: LanPair;
   @Input() isFromStart = false;
+  @Output() selectedWord = new EventEmitter<WordPairDetail>();
   wordpairs: WordPair[];
   componentActive = true;
   filter: Filter;
   totalWords = 0;
   selectedListWord: number;
-  selectedWordpair: WordPair;
 
   constructor(
     private buildService: BuildService,
@@ -39,8 +43,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.filter = {
       word: '',
-      languagePair: 'nl' + this.languageId.slice(0, 2),
-      languageId: this.languageId,
+      languageId: this.languagePair.from,
       isFromStart: false
     };
   }
@@ -75,7 +78,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
       .subscribe(
         data => {
           console.log('retrieved', data);
-          this.selectedWordpair = data.wordPair;
+          this.selectedWord.emit(data);
         },
         error => this.errorService.handleError(error)
       );
@@ -85,7 +88,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   getWordList(filter: Filter) {
     console.log('fetch', filter);
     this.buildService
-    .fetchFilterWordPairs(filter)
+    .fetchFilterWordPairs(filter, this.languagePair)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (data) => {

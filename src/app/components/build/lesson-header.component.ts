@@ -2,7 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} fr
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Lesson} from '../../models/course.model';
+import {Chapter, Lesson, LanPair} from '../../models/course.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 @Component({
@@ -12,7 +12,7 @@ import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() courseId: string;
-  @Input() languageId: string;
+  @Input() languagePair: LanPair;
   @Input() lesson: Lesson;
   @Input() lessons: Lesson[];
   @Input() chapters: Chapter[];
@@ -47,7 +47,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lesson = {
       _id: '',
       courseId: this.courseId,
-      languageId: this.languageId,
+      languagePair: this.languagePair,
       name: '',
       chapter: '',
       nr: 1,
