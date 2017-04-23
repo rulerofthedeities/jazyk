@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Chapter, Course, Lesson, Language, LanPair} from '../models/course.model';
-import {Filter} from '../models/exercise.model';
+import {Filter, Exercise} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -126,15 +126,43 @@ export class BuildService {
     params.set('languagePair', lanpair.from.slice(0, 2) + lanpair.to.slice(0, 2));
     params.set('languageId', filter.languageId);
     params.set('isFromStart', filter.isFromStart.toString());
+    params.set('isExact', filter.isExact.toString());
     return this.http
     .get('/api/wordpairs/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  fetchWordPair(wordpairId: string) {
+  fetchWordPairDetail(wordpairId: string) {
     return this.http
     .get('/api/wordpair/' + wordpairId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  /*** EXERCISES ***/
+
+  fetchExercises(lessonId: string) {
+    return this.http
+    .get('/api/exercises/' + lessonId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  addExercise(exercise: Exercise) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .post('/api/exercise', JSON.stringify(exercise), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateExercise(exercise: Exercise) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http
+    .put('/api/exercise', JSON.stringify(exercise), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

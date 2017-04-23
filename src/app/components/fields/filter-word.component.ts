@@ -8,29 +8,16 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-filter-word',
   templateUrl: 'filter-word.component.html',
-  styles: [`
-    .wordlist {
-      width: 250px; 
-    }
-    li {
-      cursor:pointer;
-    }
-    .list-group-item.inactive:hover {
-      background-color:#eee;
-    }
-    .scroll {
-      overflow: auto;
-      height: 100%;
-    }
-  `]
+  styleUrls: ['filter-word.component.css']
 })
 
 export class FilterWordComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() isFromStart = false;
+  @Input() isExact = false;
   @Output() selectedWord = new EventEmitter<WordPairDetail>();
-  wordpairs: WordPair[];
   componentActive = true;
+  wordpairs: WordPair[];
   filter: Filter;
   totalWords = 0;
   selectedListWord: number;
@@ -43,8 +30,9 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.filter = {
       word: '',
-      languageId: this.languagePair.from,
-      isFromStart: false
+      languageId: this.languagePair.to,
+      isFromStart: this.isFromStart,
+      isExact: this.isExact
     };
   }
 
@@ -73,11 +61,11 @@ export class FilterWordComponent implements OnInit, OnDestroy {
     const wordPair: WordPair = this.wordpairs[i];
     if (wordPair) {
       this.buildService
-      .fetchWordPair(wordPair._id)
+      .fetchWordPairDetail(wordPair._id)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        data => {
-          console.log('retrieved', data);
+        (data: WordPairDetail) => {
+          data._id = wordPair._id;
           this.selectedWord.emit(data);
         },
         error => this.errorService.handleError(error)
@@ -86,7 +74,6 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   }
 
   getWordList(filter: Filter) {
-    console.log('fetch', filter);
     this.buildService
     .fetchFilterWordPairs(filter, this.languagePair)
     .takeWhile(() => this.componentActive)

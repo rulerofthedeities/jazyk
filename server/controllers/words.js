@@ -21,11 +21,12 @@ module.exports = {
     const lan = query.languageId.slice(0, 2);
     const lanpair = query.languagePair;
     const key = lan + '.word';
+    const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
 
-    WordPair.find({langPair: lanpair, [key]:{$regex: word, $options:'i'}}, {}, {limit:10}, function(err, wordpairs) {
+    WordPair.find({langPair: lanpair, [key]:search}, {}, {limit: 50, sort:{[key]:1}}, function(err, wordpairs) {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
         // Count workaround until v3.4 (aggregate)
-        WordPair.count({langPair: lanpair, [key]:{$regex: word, $options:'i'}}, function(err, total) {
+        WordPair.count({langPair: lanpair, [key]:search}, function(err, total) {
           response.handleError(err, res, 500, 'Error fetching wordpairs total', function(){
             response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
           });
@@ -33,7 +34,7 @@ module.exports = {
       });
     });
   },
-  getWordPair: function(req, res) {
+  getWordPairDetail: function(req, res) {
     const wordpairId = new mongoose.Types.ObjectId(req.params.id);
     WordPair.findOne({_id: wordpairId}, {}, function(err, wordpair) {
       //get detail docs
@@ -42,7 +43,7 @@ module.exports = {
       languages[1] = wordpair.langPair.slice(2);
       getDetail(wordpair[languages[0]], function(err, detail0) {
         getDetail(wordpair[languages[1]], function(err, detail1) {
-          words = {wordpair, [languages[0]]:detail0, [languages[1]]:detail1};
+          words = {wordPair:wordpair, [languages[0]]:detail0, [languages[1]]:detail1};
           response.handleError(err, res, 500, 'Error fetching wordpair', function(){
             response.handleSuccess(res, words, 200, 'Fetched wordpair');
           });

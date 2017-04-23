@@ -1,7 +1,8 @@
 var path = require("path"),
     courses = require("./controllers/courses"),
     lessons = require("./controllers/lessons"),
-    words = require("./controllers/words");
+    words = require("./controllers/words"),
+    exercises = require("./controllers/exercises");
 
 module.exports.initialize = function(app, router) {
 
@@ -22,8 +23,11 @@ module.exports.initialize = function(app, router) {
   router.put('/lesson', lessons.updateLesson);
 
   router.get('/wordpairs', words.getWordPairs);
-  router.get('/wordpair/:id', words.getWordPair);
+  router.get('/wordpair/:id', words.getWordPairDetail);
 
+  router.get('/exercises/:id', exercises.getExercises);
+  router.post('/exercise', exercises.addExercise);
+  router.put('/exercise', exercises.updateExercise);
 
   app.use('/api/', router);
 

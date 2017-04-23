@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row filter">
   <div class="form-inline col-xs-12">
     <div class="form-group">
       <label for="wordFilter" class="sr-only">Filter woord:</label>
@@ -20,6 +20,16 @@
         Vanaf begin
       </label>
     </div>
+    <div class="checkbox">
+      <label>
+        <input 
+        type="checkbox" 
+        name="startcb"
+        (change)="onFilterChanged()"
+        [(ngModel)]="filter.isExact">
+        Exact match
+      </label>
+    </div>
     <input type="radio" 
       [(ngModel)]="filter.languageId" 
       name="language" 
@@ -31,7 +41,7 @@
       [value]="languagePair.to"
       (ngModelChange)="onFilterChanged()">{{languagePair.to}}
     <div class="text-muted">
-      Aantal woorden: <strong>{{totalWords}}</strong>
+      Aantal woorden: <strong>{{wordpairs?.length}} / {{totalWords}}</strong>
     </div>
   </div>
   <div class="wordlist col-xs-12">

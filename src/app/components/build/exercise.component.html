@@ -1,0 +1,31 @@
+NIEUWE OEFENING
+
+<h1>{{wordPairTitle}}</h1>
+
+<form *ngIf="exerciseForm"
+  [formGroup]="exerciseForm"
+  (ngSubmit) = "onSubmit(exerciseForm)"
+  class="form-horizontal">
+
+  <div *ngFor="let control of exerciseForm.controls['exerciseTypes'].controls; let i=index">
+    <input 
+      type="checkbox"
+      id="checkbox-1"
+      value="value-1"
+      [formControl]="control" />
+      {{getExerciseTypeLabel(exerciseTypes[i])}}
+  </div>
+
+  <button *ngIf="isNew"
+    type="submit" 
+    class="btn btn-success" 
+    [disabled]="!exerciseForm.valid || isSubmitted">
+    Voeg oefening toe
+  </button>
+
+
+<p>Form value: {{ exerciseForm.value | json }}</p>
+<p>Form status: {{ exerciseForm.status | json }}</p>
+<p>Form dirty: {{ exerciseForm.dirty |json }}</p>
+
+</form>

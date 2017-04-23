@@ -3,6 +3,7 @@
   <div class="btn btn-success" (click)="onNewWord()">Nieuw Woord</div>
 </div>
 
+<div>
 <ng-template #addWord>
   <div class="lesson">
     <div class="filter">
@@ -12,13 +13,18 @@
       </km-filter-word>
     </div>
     <div class="exercise">
-      <button
-        class="btn btn-success" 
-        [disabled]="!currentWordPairDetail">
-      </button>
       <km-build-exercise
-        [word]="currentWordPairDetail" >
+        [languagePair]="lesson.languagePair"
+        [lessonId]="lesson._id"
+        [nr]="exercises?.length">
       </km-build-exercise>
     </div>
   </div>
 </ng-template>
+
+
+<div class="exercises" *ngIf="lesson">
+  <div *ngFor="let exercise of exercises">
+    {{exercise.nr + 1}}. {{exercise[lanFrom].word}} / {{exercise[lanTo].word}}
+  </div>
+</div>

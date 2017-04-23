@@ -2,6 +2,7 @@ export interface Filter {
   word: string;
   languageId: string;
   isFromStart: boolean;
+  isExact: boolean;
 }
 
 interface Conjugation {
@@ -48,10 +49,13 @@ export interface WordDetail {
   superlative?: string;
   aspect?: string;
   aspectPair?: string;
+  images?: string[];
+  audio?: string[];
   conjugation?: Conjugation;
 }
 
 export interface WordPairDetail {
+  _id?: string; // equals wordpair id
   wordPair: WordPair;
   cs?: WordDetail;
   de?: WordDetail;
@@ -61,9 +65,25 @@ export interface WordPairDetail {
   us?: WordDetail;
 }
 
+interface ExerciseWord {
+  word: string;
+  casesensitive?: boolean;
+}
+
 export interface Exercise {
-  wordPairId: string;
-  evxerciseTypes: Array<ExerciseType>;
+  _id?: string;
+  nr: number;
+  lessonId: string;
+  wordPairDetailId: string;
+  languagePair: string;
+  exerciseTypes: Array<ExerciseType>;
+  wordTpe: string;
+  cs?: ExerciseWord;
+  de?: ExerciseWord;
+  fr?: ExerciseWord;
+  gb?: ExerciseWord;
+  nl?: ExerciseWord;
+  us?: ExerciseWord;
 }
 
 export enum ExerciseDirection {
@@ -76,6 +96,7 @@ export interface ExerciseType {
   nr: number;
   label: string;
   direction: ExerciseDirection;
+  isDefault: boolean;
   isOption?: boolean;
   isSelected?: boolean;
 };
