@@ -1,3 +1,5 @@
+import {Exercise} from './exercise.model';
+
 export interface Language {
   _id: string;
   name: string;
@@ -33,7 +35,7 @@ export interface Lesson {
   name: string;
   nr: number;
   chapter: string;
+  exercises: Exercise[];
   difficulty: number;
   isPublished: boolean;
 }
-

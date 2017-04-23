@@ -31,7 +31,6 @@ import 'rxjs/add/operator/takeWhile';
 export class BuildLessonComponent implements OnInit, OnDestroy {
   componentActive = true;
   lesson: Lesson;
-  exercises: Exercise[];
   isNewWord = false;
   lanFrom: string;
   lanTo: string;
@@ -51,7 +50,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         if (params['id']) {
           const lessonId = params['id'];
           this.getLesson(lessonId);
-          this.getExercises(lessonId);
         }
       }
     );
@@ -65,6 +63,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.isNewWord = true;
   }
 
+  onExerciseAdded(exercise: Exercise) {
+    this.lesson.exercises.push(exercise);
+  }
+
   getLesson(lessonId: string) {
     this.buildService
     .fetchLesson(lessonId)
@@ -75,16 +77,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanFrom = lesson.languagePair.from.slice(0, 2);
         this.lanTo = lesson.languagePair.to.slice(0, 2);
       },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  getExercises(lessonId: string) {
-    this.buildService
-    .fetchExercises(lessonId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      exercises => {console.log('exercises', exercises); this.exercises = exercises; },
       error => this.errorService.handleError(error)
     );
   }

@@ -73,9 +73,7 @@ interface ExerciseWord {
 export interface Exercise {
   _id?: string;
   nr: number;
-  lessonId: string;
   wordPairDetailId: string;
-  languagePair: string;
   exerciseTypes: Array<ExerciseType>;
   wordTpe: string;
   cs?: ExerciseWord;

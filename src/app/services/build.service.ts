@@ -142,27 +142,28 @@ export class BuildService {
 
   /*** EXERCISES ***/
 
+/*
   fetchExercises(lessonId: string) {
     return this.http
     .get('/api/exercises/' + lessonId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-
-  addExercise(exercise: Exercise) {
+*/
+  addExercise(exercise: Exercise, lessonId: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
 
     return this.http
-    .post('/api/exercise', JSON.stringify(exercise), {headers})
+    .post('/api/exercise/' + lessonId, JSON.stringify(exercise), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  updateExercise(exercise: Exercise) {
+  updateExercise(exercise: Exercise, lessonId: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
 
     return this.http
-    .put('/api/exercise', JSON.stringify(exercise), {headers})
+    .put('/api/exercise/' + lessonId, JSON.stringify(exercise), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

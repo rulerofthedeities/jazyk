@@ -26,8 +26,8 @@ module.exports.initialize = function(app, router) {
   router.get('/wordpair/:id', words.getWordPairDetail);
 
   router.get('/exercises/:id', exercises.getExercises);
-  router.post('/exercise', exercises.addExercise);
-  router.put('/exercise', exercises.updateExercise);
+  router.post('/exercise/:id', exercises.addExercise);
+  router.put('/exercise/:id', exercises.updateExercise);
 
   app.use('/api/', router);
 

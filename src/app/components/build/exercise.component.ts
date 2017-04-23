@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
@@ -16,6 +16,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() nr: number;
+  @Output() addedExercise = new EventEmitter<Exercise>();
   exerciseForm: FormGroup;
   exerciseTypes: ExerciseType[];
   componentActive = true;
@@ -41,14 +42,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
   // Entry point from filter
   newExercise(word: WordPairDetail) {
+    this.isNew = true;
     this.setTitle(word.wordPair);
     this.getExerciseTypes(word);
     console.log('wpd', word);
     this.exercise = {
       nr: this.nr,
-      lessonId: this.lessonId,
       wordPairDetailId: word._id,
-      languagePair: this.lanFrom + this.lanTo,
       exerciseTypes: this.exerciseTypes,
       wordTpe: word.wordPair.wordTpe,
       [this.lanFrom]: {word: word.wordPair[this.lanFrom].word},
@@ -116,7 +116,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     }
     this.exercise.exerciseTypes = selectedExerciseTypes;
 
-    // TODO: fetch score / wordcount if alternative word is selected!!
+    //TODO: fetch score / wordcount if alternative word is selected!!
 
     console.log('exercise', this.exercise);
   }
@@ -124,19 +124,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   saveExercise() {
     if (this.isNew) {
       this.buildService
-      .addExercise(this.exercise)
+      .addExercise(this.exercise, this.lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
         exercise => {
           this.isNew = false;
           this.isSubmitted = false;
-          console.log('saved exercise ', exercise._id);
-          //TODO: send update to lesson component
+          console.log('saved exercise ', exercise);
+          this.addedExercise.emit(exercise);
         },
         error => this.errorService.handleError(error)
       );
     } else {
-      console.log('updating exercise ', this.exercise._id);
+      console.log('updating exercise ', this.exercise);
     }
   }
 

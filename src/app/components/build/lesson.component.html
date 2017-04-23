@@ -16,7 +16,8 @@
       <km-build-exercise
         [languagePair]="lesson.languagePair"
         [lessonId]="lesson._id"
-        [nr]="exercises?.length">
+        [nr]="lesson.exercises?.length"
+        (addedExercise)="onExerciseAdded($event)">
       </km-build-exercise>
     </div>
   </div>
