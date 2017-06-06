@@ -8,7 +8,6 @@ module.exports.initialize = function(app, router) {
 
   router.get('/courses/:lan', courses.getAllCourses);
   router.get('/course/:id', courses.getCourse);
-
   router.post('/course', courses.addCourse);
   router.put('/course', courses.updateCourse);
   router.patch('/course/public/:id/:status', courses.setPublic);
@@ -17,7 +16,6 @@ module.exports.initialize = function(app, router) {
   router.post('/chapter', lessons.addChapter);
 
   router.get('/lessons/:id', lessons.getLessons);
-  
   router.get('/lesson/:id', lessons.getLesson);
   router.post('/lesson', lessons.addLesson);
   router.put('/lesson', lessons.updateLesson);

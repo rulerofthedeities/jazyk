@@ -28,6 +28,10 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.languagePair = {
+      from: this.languagePair.from.slice(0, 2),
+      to: this.languagePair.to.slice(0, 2)
+    };
     this.filter = {
       word: '',
       languageId: this.languagePair.to,
@@ -74,6 +78,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   }
 
   getWordList(filter: Filter) {
+    console.log(filter);
     this.buildService
     .fetchFilterWordPairs(filter, this.languagePair)
     .takeWhile(() => this.componentActive)

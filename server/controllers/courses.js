@@ -23,6 +23,7 @@ module.exports = {
   },
   addCourse: function(req, res) {
     const course = new Course(req.body);
+    console.log('course', course);
     course._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
 
     course.save(function(err, result) {

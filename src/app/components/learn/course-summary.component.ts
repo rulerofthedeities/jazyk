@@ -8,6 +8,9 @@ import {Course} from '../../models/course.model';
     <div class="panel panel-default">
       <div class="panel-body">
         <h3>{{course.name}}</h3>
+        <button class="btn btn-success" (click)="onStartCourse(course._id)">
+          Start Cursus
+        </button>
         <button class="btn btn-warning" (click)="onEditCourse(course._id)">
           Pas cursus aan
         </button>
@@ -25,5 +28,9 @@ export class CourseSummaryComponent {
 
   onEditCourse(courseId: string) {
     this.router.navigate(['/build/course/' + courseId]);
+  }
+
+  onStartCourse(courseId: string) {
+    // Subscribe to course
   }
 }

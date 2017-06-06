@@ -74,7 +74,7 @@ export interface Exercise {
   _id?: string;
   nr: number;
   wordPairDetailId: string;
-  exerciseTypes: Array<ExerciseType>;
+  tpes: Array<number>;
   wordTpe: string;
   cs?: ExerciseWord;
   de?: ExerciseWord;

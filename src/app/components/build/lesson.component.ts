@@ -67,7 +67,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.lesson.exercises.push(exercise);
   }
 
-  getLesson(lessonId: string) {
+  private getLesson(lessonId: string) {
     this.buildService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)

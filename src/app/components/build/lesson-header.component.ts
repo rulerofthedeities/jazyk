@@ -49,8 +49,9 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       courseId: this.courseId,
       languagePair: this.languagePair,
       name: '',
-      chapter: '',
       nr: 1,
+      chapter: '',
+      exercises: [],
       difficulty: 0,
       isPublished: false
     };
@@ -93,6 +94,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   addLesson(name: string) {
     this.lesson.name = name;
     this.lesson.nr = this.lessons.filter(lesson => lesson.chapter === this.lesson.chapter).length + 1;
+    this.lesson.languagePair = this.languagePair;
     this.buildService
     .addLesson(this.lesson)
     .takeWhile(() => this.componentActive)

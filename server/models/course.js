@@ -5,11 +5,16 @@ var languageSchema = new Schema({
   _id: {type: String, required: true},
   name: String,
   active: Boolean
-})
+});
+
+var lanPairSchema = new Schema({
+  from: String,
+  to: String
+}, {_id: false});
 
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
-    languageId: {type: String, required: true},
+    languagePair: {type: lanPairSchema, required: true},
     name: String,
     attendance: Number,
     difficulty: Number,

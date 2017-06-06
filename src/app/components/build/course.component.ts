@@ -5,6 +5,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {Chapter, Course, Lesson, Language} from '../../models/course.model';
+import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -69,7 +70,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.course = {
       _id: '',
       languagePair: {
-        from: 'nl-nl',
+        from: config.language,
         to: this.currentLanguage._id
       },
       name: '',
@@ -132,6 +133,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   addCourse(name: string) {
+    console.log(this.course);
     this.course.name = name;
     this.buildService
     .addCourse(this.course)

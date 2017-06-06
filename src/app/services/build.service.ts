@@ -121,9 +121,10 @@ export class BuildService {
   /*** WORDS ***/
 
   fetchFilterWordPairs(filter: Filter, lanpair: LanPair) {
+    console.log('filter', filter);
     const params = new URLSearchParams();
     params.set('word', filter.word);
-    params.set('languagePair', lanpair.from.slice(0, 2) + lanpair.to.slice(0, 2));
+    params.set('languagePair', lanpair.from + ';' + lanpair.to);
     params.set('languageId', filter.languageId);
     params.set('isFromStart', filter.isFromStart.toString());
     params.set('isExact', filter.isExact.toString());

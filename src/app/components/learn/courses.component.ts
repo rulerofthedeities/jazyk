@@ -32,8 +32,6 @@ import 'rxjs/add/operator/takeWhile';
       </km-course-summary>
     </li>
   </ul>
-
-<pre>{{courses|json}}</pre>
   `
 })
 
@@ -61,6 +59,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.selectedLanguage = newLanguage;
     this.getCourses();
   }
+
   onNewCourse() {
     this.router.navigate(['/build/course/new', {lan: this.selectedLanguage._id}]);
   }

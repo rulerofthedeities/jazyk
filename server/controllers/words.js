@@ -16,17 +16,18 @@ getDetail= function(word, callback) {
 
 module.exports = {
   getWordPairs: function(req, res) {
-    const query = req.query;
-    const word = query.isFromStart === 'true' ? "^" + query.word : query.word;
-    const lan = query.languageId.slice(0, 2);
-    const lanpair = query.languagePair;
-    const key = lan + '.word';
-    const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
+    const query = req.query,
+          word = query.isFromStart === 'true' ? "^" + query.word : query.word,
+          lanpair = query.languagePair.split(';'),
+          key =  query.languageId + '.word',
+          search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'},
+          q = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], [key]:search};
 
-    WordPair.find({langPair: lanpair, [key]:search}, {}, {limit: 50, sort:{[key]:1}}, function(err, wordpairs) {
+    WordPair.find(q, {}, {limit: 50, sort:{[key]:1}}, function(err, wordpairs) {
+      console.log(wordpairs);
       response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
         // Count workaround until v3.4 (aggregate)
-        WordPair.count({langPair: lanpair, [key]:search}, function(err, total) {
+        WordPair.count(q, function(err, total) {
           response.handleError(err, res, 500, 'Error fetching wordpairs total', function(){
             response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
           });

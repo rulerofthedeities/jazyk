@@ -1,10 +1,17 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+/*
 var exerciseTypeSchema = new Schema({
   nr: {type: Number, required: true},
   direction: {type: Number, required: true}
 }, {_id: false})
+*/
+
+var lanPairSchema = new Schema({
+  from: String,
+  to: String
+}, {_id: false});
 
 var wordSchema = new Schema({
   word: {type: String, required: true}
@@ -14,7 +21,7 @@ var exerciseSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
   wordPairDetailId: Schema.Types.ObjectId,
   nr: { type:Number, required: true },
-  exerciseTypes: [exerciseTypeSchema],
+  tpes: [Number],
   wordTpe: String,
   cs: wordSchema,
   de: wordSchema,
@@ -27,7 +34,7 @@ var exerciseSchema = new Schema({
 var lessonSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
   courseId: Schema.Types.ObjectId,
-  languageId: String,
+  languagePair: {type: lanPairSchema, required: true},
   name: String,
   chapter: String,
   nr: Number,

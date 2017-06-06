@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 var wordLangSchema = new Schema({
   detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
-  alt: String,
+  alt: [String],
   hint: String,
   info: String,
   score: Number,
@@ -14,7 +14,7 @@ var wordLangSchema = new Schema({
 var wordSchema = new Schema({
     docTpe: {type: String, required: true},
     wordTpe: {type: String, required: true},
-    langPair: String,
+    lanPair: [String],
     tags: [String],
     cs: wordLangSchema,
     de: wordLangSchema,

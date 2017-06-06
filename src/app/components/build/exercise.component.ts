@@ -49,7 +49,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.exercise = {
       nr: this.nr,
       wordPairDetailId: word._id,
-      exerciseTypes: this.exerciseTypes,
+      tpes: [],
       wordTpe: word.wordPair.wordTpe,
       [this.lanFrom]: {word: word.wordPair[this.lanFrom].word},
       [this.lanTo]: {word: word.wordPair[this.lanTo].word}
@@ -108,13 +108,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
   processSubmittedData(data: any) {
     // Exercise types
-    const selectedExerciseTypes: ExerciseType[] = [];
+    const selectedExerciseTypes: number[] = [];
     for (let i = 0; i < this.exerciseTypes.length; i++) {
       if (data.exerciseTypes[i]) {
-        selectedExerciseTypes.push(this.exerciseTypes[i]);
+        selectedExerciseTypes.push(this.exerciseTypes[i].nr);
       }
     }
-    this.exercise.exerciseTypes = selectedExerciseTypes;
+    this.exercise.tpes = selectedExerciseTypes;
 
     //TODO: fetch score / wordcount if alternative word is selected!!
 

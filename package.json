@@ -1,14 +1,16 @@
 {
   "name": "jazyk",
   "version": "0.0.0",
-  "license": "MIT",
   "scripts": {
+    "preinstall": "npm install pm2 -g",
     "ng": "ng",
-    "start": "nodemon server.js",
-    "build": "ng build",
+    "start": "pm2 start km-jazyk.js --watch",
+    "build": "ng build -w",
+    "build:prod": "ng build -prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ng build -prod"
   },
   "private": true,
   "dependencies": {
