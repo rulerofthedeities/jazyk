@@ -1,5 +1,5 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Chapter, Lesson, LanPair} from '../../models/course.model';
@@ -7,7 +7,18 @@ import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 @Component({
   selector: 'km-build-lesson-header',
-  templateUrl: 'lesson-header.component.html'
+  templateUrl: 'lesson-header.component.html',
+  styles: [`
+    .btn-group .fa {
+      width: 18px;
+    }
+    .fa-check {
+      color: green;
+    }
+    .fa-times {
+      color: red;
+    }
+  `]
 })
 
 export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
@@ -26,6 +37,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   isNew = true;
   isEditMode = false;
   isSubmitted = false;
+  tpeLabels = ['Leer', 'Oefen', 'Test', 'Examen'];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,6 +63,12 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       name: '',
       nr: 1,
       chapter: '',
+      exerciseTpes: {
+        learn: true,
+        practise: true,
+        test: true,
+        exam: true
+      },
       exercises: [],
       difficulty: 0,
       isPublished: false
@@ -64,9 +82,14 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   buildForm() {
+    const exerciseTpeControls: FormControl[] = [];
+    for (let i = 0; i < 4; i++) {
+      exerciseTpeControls.push(new FormControl(true));
+    }
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name],
-      nr: [this.lesson.nr]
+      nr: [this.lesson.nr],
+      exerciseTpes: new FormArray(exerciseTpeControls)
     });
     this.isFormReady = true;
   }
@@ -76,13 +99,12 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(formValues: any) {
-    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
-    this.lesson.chapter = chapterName;
+    this.processLesson(formValues);
 
     if (this.lesson._id) {
-      this.updateLesson(formValues.name);
+      this.updateLesson();
     } else {
-      this.addLesson(formValues.name);
+      this.addLesson();
     }
     this.isSubmitted = true;
   }
@@ -91,8 +113,28 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.autocomplete.showList = false;
   }
 
-  addLesson(name: string) {
-    this.lesson.name = name;
+  test(formvalues: any) {
+    const test = {
+      learn: formvalues.exerciseTpes[0],
+      practise: formvalues.exerciseTpes[1],
+      test: formvalues.exerciseTpes[2],
+      exam: formvalues.exerciseTpes[3]
+    };
+  }
+
+  private processLesson(formValues: any) {
+    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
+    this.lesson.chapter = chapterName;
+    this.lesson.name = formValues.name;
+    this.lesson.exerciseTpes = {
+      learn: formValues.exerciseTpes[0],
+      practise: formValues.exerciseTpes[1],
+      test: formValues.exerciseTpes[2],
+      exam: formValues.exerciseTpes[3]
+    };
+  }
+
+  private addLesson() {
     this.lesson.nr = this.lessons.filter(lesson => lesson.chapter === this.lesson.chapter).length + 1;
     this.lesson.languagePair = this.languagePair;
     this.buildService
@@ -108,8 +150,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateLesson(newName: string) {
-    this.lesson.name = newName;
+  private updateLesson() {
     this.buildService
     .updateLesson(this.lesson)
     .takeWhile(() => this.componentActive)

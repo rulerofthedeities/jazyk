@@ -1,9 +1,9 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {WordPairDetail, WordPair, Exercise, ExerciseType, ExerciseDirection} from '../../models/exercise.model';
+import {WordPairDetail, WordPair, Exercise} from '../../models/exercise.model';
 import {LanPair} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,7 +18,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() nr: number;
   @Output() addedExercise = new EventEmitter<Exercise>();
   exerciseForm: FormGroup;
-  exerciseTypes: ExerciseType[];
+  // exerciseTypes: ExerciseType[];
   componentActive = true;
   isFormReady = false;
   isNew = true;
@@ -44,7 +44,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   newExercise(word: WordPairDetail) {
     this.isNew = true;
     this.setTitle(word.wordPair);
-    this.getExerciseTypes(word);
+    // this.getExerciseTypes(word);
     console.log('wpd', word);
     this.exercise = {
       nr: this.nr,
@@ -57,16 +57,24 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.buildForm();
   }
 
-  getExerciseTypes(word: WordPairDetail) {
+  setTitle(wordPair: WordPair) {
+    this.wordPairTitle = wordPair[this.lanTo].word;
+  }
+
+  onSubmit(form: FormGroup) {
+    console.log('submitting');
+    this.isSubmitted = true;
+    this.processSubmittedData(form.value);
+    this.saveExercise();
+  }
+
+/*
+  private getExerciseTypes(word: WordPairDetail) {
     console.log('getting exercise types for', word);
     this.exerciseTypes = this.utilsService.getExerciseTypes(word, this.languagePair);
   }
 
-  setTitle(wordPair: WordPair) {
-    this.wordPairTitle = wordPair[this.lanFrom].word + ' / ' + wordPair[this.lanTo].word;
-  }
-
-  getExerciseTypeLabel(exerciseType: ExerciseType): string {
+  private getExerciseTypeLabel(exerciseType: ExerciseType): string {
     let direction = '';
 
     switch (exerciseType.direction) {
@@ -83,31 +91,38 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
     return exerciseType.label + direction;
   }
+  */
 
-  buildForm() {
-
+  private buildForm() {
     // Test Type options
+    /*
     const testTypeControls: FormControl[] = [];
     this.exerciseTypes.forEach(tpe => {
       testTypeControls.push(new FormControl(tpe.isDefault));
     });
+    */
 
+
+    // woord in nl (mogelijk alt woord)
+    // alt woorden in nl
+    // hint
+    // info
+    // foto -> default auto (laat selecteren of removen)
+    // audio -> default auto (laat selecteren of removen)
+    // verb -> indien conjugations, laat selecteren (test ook vervoegingen)
+    // noun -> indien diminutive, laat selecteren (test ook diminutive)?
+    // adj -> indien comparative / superlative, laat selecteren (test ook comp/sup?)
+    // ...
     this.exerciseForm = this.formBuilder.group({
-      exerciseTypes: new FormArray(testTypeControls)
+      // exerciseTypes: new FormArray(testTypeControls)
     });
 
     this.isFormReady = true;
   }
 
-  onSubmit(form: FormGroup) {
-    console.log('submitting');
-    this.isSubmitted = true;
-    this.processSubmittedData(form.value);
-    this.saveExercise();
-  }
-
-  processSubmittedData(data: any) {
+  private processSubmittedData(data: any) {
     // Exercise types
+    /*
     const selectedExerciseTypes: number[] = [];
     for (let i = 0; i < this.exerciseTypes.length; i++) {
       if (data.exerciseTypes[i]) {
@@ -115,13 +130,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       }
     }
     this.exercise.tpes = selectedExerciseTypes;
+*/
 
     //TODO: fetch score / wordcount if alternative word is selected!!
 
     console.log('exercise', this.exercise);
   }
 
-  saveExercise() {
+  private saveExercise() {
     if (this.isNew) {
       this.buildService
       .addExercise(this.exercise, this.lessonId)

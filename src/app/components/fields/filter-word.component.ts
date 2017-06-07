@@ -16,7 +16,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   @Input() isFromStart = false;
   @Input() isExact = false;
   @Output() selectedWord = new EventEmitter<WordPairDetail>();
-  componentActive = true;
+  private componentActive = true;
   wordpairs: WordPair[];
   filter: Filter;
   totalWords = 0;
@@ -61,24 +61,28 @@ export class FilterWordComponent implements OnInit, OnDestroy {
     this.getWordPair(i);
   }
 
-  getWordPair(i: number) {
+  private getWordPair(i: number) {
     const wordPair: WordPair = this.wordpairs[i];
+    console.log('word selected', this.wordpairs[i]);
     if (wordPair) {
       this.buildService
       .fetchWordPairDetail(wordPair._id)
       .takeWhile(() => this.componentActive)
       .subscribe(
         (data: WordPairDetail) => {
-          data._id = wordPair._id;
-          this.selectedWord.emit(data);
+          if (data) {
+            data._id = wordPair._id;
+            this.selectedWord.emit(data);
+          } else {
+            console.log('Error finding data for wordpair id ' + wordPair._id);
+          }
         },
         error => this.errorService.handleError(error)
       );
     }
   }
 
-  getWordList(filter: Filter) {
-    console.log(filter);
+  private getWordList(filter: Filter) {
     this.buildService
     .fetchFilterWordPairs(filter, this.languagePair)
     .takeWhile(() => this.componentActive)

@@ -38,7 +38,34 @@
     </div>
   </div>
 
+  <!-- EXERCISETPES -->
+  <div class="form-group form-group-lg">
+    <label for="name" class="control-label col-xs-2">Lestypes</label>
+    <div class="col-xs-10">
+      <div class="btn-group" data-toggle="buttons">
+        <label 
+          *ngFor="let control of lessonForm.controls['exerciseTpes'].controls; let i = index" 
+          class="btn btn-default"
+          [ngClass]="{active: !control.value}">
+          <span 
+            class="fa" 
+            [ngClass]="{'fa-check': control.value, 'fa-times': !control.value}">
+          </span>
+          <input 
+            type="checkbox"
+            name="options"
+            value="{{value-1}}"
+            [formControl]="control">
+            {{tpeLabels[i]}}
+        </label>
+      </div>
+    </div>
+  </div>
+
   <!-- BUTTONS -->
+
+  <div class="btn btn-alert" (click)="test(lessonForm.value)">Test</div>
+
   <div class="row">
     <div class="col-xs-10 col-xs-offset-2">
 

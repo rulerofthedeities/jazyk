@@ -1,4 +1,4 @@
-import {Exercise} from './exercise.model';
+import {Exercise, ExerciseTpes} from './exercise.model';
 
 export interface Language {
   _id: string;
@@ -35,6 +35,7 @@ export interface Lesson {
   name: string;
   nr: number;
   chapter: string;
+  exerciseTpes: ExerciseTpes;
   exercises: Exercise[];
   difficulty: number;
   isPublished: boolean;

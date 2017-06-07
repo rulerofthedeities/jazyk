@@ -1,5 +1,3 @@
-OEFENING
-
 <h1>{{wordPairTitle}}</h1>
 
 <form *ngIf="exerciseForm"
@@ -7,6 +5,7 @@ OEFENING
   (ngSubmit) = "onSubmit(exerciseForm)"
   class="form-horizontal">
 
+<!--
   <div *ngFor="let control of exerciseForm.controls['exerciseTypes'].controls; let i=index">
     <input 
       type="checkbox"
@@ -15,12 +14,13 @@ OEFENING
       [formControl]="control" />
       {{getExerciseTypeLabel(exerciseTypes[i])}}
   </div>
+-->
 
   <button *ngIf="isNew"
     type="submit" 
     class="btn btn-success" 
     [disabled]="!exerciseForm.valid || isSubmitted">
-    Voeg oefening toe
+    Voeg woord toe
   </button>
 
 

@@ -31,6 +31,13 @@ var exerciseSchema = new Schema({
   us: wordSchema
 })
 
+var ExerciseTpesSchema = new Schema({
+  learn: Boolean,
+  practise: Boolean,
+  test: Boolean,
+  exam: Boolean
+}, {_id: false})
+
 var lessonSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
   courseId: Schema.Types.ObjectId,
@@ -38,6 +45,7 @@ var lessonSchema = new Schema({
   name: String,
   chapter: String,
   nr: Number,
+  exerciseTpes: ExerciseTpesSchema,
   exercises: [exerciseSchema],
   difficulty: Number,
   isPublished: Boolean,

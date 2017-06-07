@@ -84,13 +84,21 @@ export interface Exercise {
   us?: ExerciseWord;
 }
 
-export enum ExerciseDirection {
+export interface ExerciseTpes {
+  learn: boolean;
+  practise: boolean;
+  test: boolean;
+  exam: boolean;
+}
+
+/*
+export enum TestDirection {
   fromNl = -1,
   same = 0,
   toNl = 1
 };
 
-export interface ExerciseType {
+export interface TestType {
   nr: number;
   label: string;
   direction: ExerciseDirection;
@@ -98,3 +106,4 @@ export interface ExerciseType {
   isOption?: boolean;
   isSelected?: boolean;
 };
+*/
