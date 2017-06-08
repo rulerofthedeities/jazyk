@@ -5,6 +5,8 @@ import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
 
 import {ErrorMessageComponent} from './components/msg/error-message.component';
+import {ErrorMessageUserComponent} from './components/msg/error-message-user.component';
+import {InfoMessageComponent} from './components/msg/info-message.component';
 import {LanguageSelectorComponent} from './components/fields/language-selector.component';
 
 @NgModule({
@@ -14,6 +16,8 @@ import {LanguageSelectorComponent} from './components/fields/language-selector.c
   ],
   declarations: [
     ErrorMessageComponent,
+    InfoMessageComponent,
+    ErrorMessageUserComponent,
     LanguageSelectorComponent
   ],
   providers: [
@@ -22,6 +26,8 @@ import {LanguageSelectorComponent} from './components/fields/language-selector.c
   ],
   exports: [
     ErrorMessageComponent,
+    InfoMessageComponent,
+    ErrorMessageUserComponent,
     LanguageSelectorComponent,
     CommonModule,
     HttpModule

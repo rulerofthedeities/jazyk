@@ -1,10 +1,14 @@
 var path = require("path"),
     courses = require("./controllers/courses"),
     lessons = require("./controllers/lessons"),
+    errors = require("./controllers/errors"),
     words = require("./controllers/words"),
+    translations = require("./controllers/translations"),
     exercises = require("./controllers/exercises");
 
 module.exports.initialize = function(app, router) {
+  router.post('/error', errors.addError);
+  router.get('/translations/:lan/:component', translations.getTranslations);
 
   router.get('/courses/:lan', courses.getAllCourses);
   router.get('/course/:id', courses.getCourse);

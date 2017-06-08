@@ -31,6 +31,11 @@ export class CourseSummaryComponent {
   }
 
   onStartCourse(courseId: string) {
-    // Subscribe to course
+    this.subscribeToCourse(courseId);
+    this.router.navigate(['/learn/course/' + courseId]);
+  }
+
+  private subscribeToCourse(courseId: string) {
+    // TODO: Subscribe to course if not anonymous
   }
 }

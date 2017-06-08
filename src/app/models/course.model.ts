@@ -40,3 +40,8 @@ export interface Lesson {
   difficulty: number;
   isPublished: boolean;
 }
+
+export interface Translation {
+  key: string,
+  txt: string
+}

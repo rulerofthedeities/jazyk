@@ -13,13 +13,19 @@ module.exports = {
     });
   },
   getCourse: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
-    
-    Course.findOne({_id: courseId}, {}, function(err, course) {
-      response.handleError(err, res, 500, 'Error fetching course', function(){
-        response.handleSuccess(res, course, 200, 'Fetched course');
+    console.log(req.params.id);
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      const courseId = new mongoose.Types.ObjectId(req.params.id);
+      
+      Course.findOne({_id: courseId}, {}, function(err, course) {
+        response.handleError(err, res, 500, 'Error fetching course', function(){
+          response.handleSuccess(res, course, 200, 'Fetched course');
+        });
       });
-    });
+    } else {
+      //invalid id
+      response.handleSuccess(res, null, 200, 'Invalid course id');
+    }
   },
   addCourse: function(req, res) {
     const course = new Course(req.body);

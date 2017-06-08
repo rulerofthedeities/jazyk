@@ -5,3 +5,11 @@ export class Error {
     public details: string
   ) {}
 }
+
+export interface UserError {
+  code: string;
+  src: any;
+  msg?: string;
+  module?: string;
+}
+

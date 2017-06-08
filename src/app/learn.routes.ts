@@ -4,7 +4,7 @@ import {CoursesComponent} from './components/learn/courses.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'course/:id',
     component: LearnComponent
   },
   {

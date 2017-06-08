@@ -1,7 +1,22 @@
+import {Injectable} from '@angular/core';
+import {Http, Headers} from '@angular/http';
 import {Language, LanPair} from '../models/course.model';
-import {WordPairDetail, ExerciseType, ExerciseDirection} from '../models/exercise.model';
+import {WordPairDetail} from '../models/exercise.model';
+import {Observable} from 'rxjs/Observable';
 
+@Injectable()
 export class UtilsService {
+
+  constructor(
+    private http: Http
+  ) {}
+
+  fetchTranslations(lan: string, component: string) {
+    return this.http
+    .get('/api/translations/' + lan + '/' + component)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
 
   getActiveLanguages() {
     const languages = this.getLanguages();
@@ -40,6 +55,7 @@ export class UtilsService {
     return languages;
   }
 
+/*
   getExerciseTypes(word: WordPairDetail, lan: LanPair): ExerciseType[] {
     const tpes: ExerciseType[] = [],
           lanFrom = lan.from.slice(-2),
@@ -165,4 +181,5 @@ export class UtilsService {
 
     return tpes;
   }
+  */
 }
