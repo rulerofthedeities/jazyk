@@ -16,10 +16,14 @@ var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
     languagePair: {type: lanPairSchema, required: true},
     name: String,
+    image: String,
     attendance: Number,
     difficulty: Number,
     isPublished: Boolean,
-    isPublic: Boolean
+    isPublic: Boolean,
+    exerciseCount: { type: Number, default: 0 },
+    exercisesDone: { type: Number, default: 0 },
+    dtAdded: { type: Date, default: Date.now }
   }, {collection: 'courses'}
 );
 

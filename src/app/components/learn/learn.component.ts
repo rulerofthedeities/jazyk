@@ -5,11 +5,19 @@ import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Language, Translation} from '../../models/course.model';
 import {config} from '../../app.config';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   template: `
-    {{translations|json}}
-    {{course|json}}
+    <pre>
+      {{translations|json}}
+      {{course|json}}
+    </pre>
+
+    <div *ngIf="course">
+      {{course.name}} - {{text.Chapter}} 
+    </div>
+
     <km-info-msg
       [msg]="infoMsg">
     </km-info-msg>
@@ -22,10 +30,10 @@ import {config} from '../../app.config';
 export class LearnComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
-  private translations: Translation[];
   errorMsg: string;
   infoMsg: string;
   course: Course;
+  text: Object = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -48,13 +56,9 @@ export class LearnComponent implements OnInit, OnDestroy {
     );
   }
 
-  getTranslation(key: string): string {
-    const translation = this.translations.find( translation => translation.key === key);
-    let txt = '';
-    if (translation) {
-      txt = translation.txt;
-    }
-    return txt;
+  private setText(translations: Translation[]) {
+    const keys = ['Chapter'];
+    this.text = this.utilsService.getTranslatedText(translations, keys);
   }
 
   private getTranslations() {
@@ -64,14 +68,14 @@ export class LearnComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
-        this.translations = translations;
-        this.getCourse(this.courseId);
+        this.getCourse(translations, this.courseId);
+        this.setText(translations);
       },
       error => this.errorService.handleError(error)
-    )
+    );
   }
 
-  private getCourse(courseId: string) {
+  private getCourse(translations: Translation[], courseId: string) {
     this.learnService
     .fetchCourse(courseId)
     .takeWhile(() => this.componentActive)
@@ -81,7 +85,7 @@ export class LearnComponent implements OnInit, OnDestroy {
           if (course.isPublished) {
             this.course = course;
           } else {
-            this.infoMsg = this.getTranslation('notpublished');
+            this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
         } else {
           this.errorMsg = this.errorService.userError({code: 'learn01', src: courseId});

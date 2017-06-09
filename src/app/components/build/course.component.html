@@ -70,7 +70,7 @@
         class="btn"
         (click)="onTogglePublished()"
         [ngClass]="{disabled:isSavingPublished,'btn-success':course.isPublished,'btn-muted':!course.isPublished}">
-        <span class="fa fa-power-off"></span>
+        <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
         {{course.isPublished ? 'Gepubliceerd' : 'Niet Gepubliceerd' }}
       </button>
     </div>

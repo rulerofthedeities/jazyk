@@ -15,10 +15,13 @@ export interface Course {
   _id?: string;
   languagePair: LanPair;
   name: string;
+  image: string;
   attendance: number;
   difficulty: number;
   isPublic: boolean;
   isPublished: boolean;
+  exerciseCount: number;
+  exercisesDone: number;
 }
 
 export interface Chapter {

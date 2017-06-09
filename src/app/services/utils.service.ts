@@ -3,6 +3,10 @@ import {Http, Headers} from '@angular/http';
 import {Language, LanPair} from '../models/course.model';
 import {WordPairDetail} from '../models/exercise.model';
 import {Observable} from 'rxjs/Observable';
+import {Translation} from '../models/course.model';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class UtilsService {
@@ -16,6 +20,21 @@ export class UtilsService {
     .get('/api/translations/' + lan + '/' + component)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  getTranslation(translations: Translation[], key: string): string {
+    const translation = translations.find( translation => translation.key === key);
+    let txt = '';
+    if (translation) {
+      txt = translation.txt;
+    }
+    return txt;
+  }
+
+  getTranslatedText(translations: Translation[], keys: string[]): Object {
+    const text = {};
+    keys.forEach(key => {text[key] = this.getTranslation(translations, key);})
+    return text;
   }
 
   getActiveLanguages() {
