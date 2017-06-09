@@ -44,6 +44,7 @@ var lessonSchema = new Schema({
   languagePair: {type: lanPairSchema, required: true},
   name: String,
   chapter: String,
+  chapterNr: Number,
   nr: Number,
   exerciseTpes: ExerciseTpesSchema,
   exercises: [exerciseSchema],

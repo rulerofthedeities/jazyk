@@ -14,7 +14,7 @@
   <li *ngFor="let item of showItems"
     class="list-group-item"
     (click)="selectItem(item.nr - 1)">
-    {{item.nr}}. {{item.name}}
+    <span class="nr">{{item.nr}}.</span> {{item.name}}
   </li>
 </ul>
 

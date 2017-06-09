@@ -38,6 +38,7 @@ export interface Lesson {
   name: string;
   nr: number;
   chapter: string;
+  chapterNr: number;
   exerciseTpes: ExerciseTpes;
   exercises: Exercise[];
   difficulty: number;
@@ -45,6 +46,6 @@ export interface Lesson {
 }
 
 export interface Translation {
-  key: string,
-  txt: string
+  key: string;
+  txt: string;
 }

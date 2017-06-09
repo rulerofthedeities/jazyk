@@ -8,34 +8,7 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  template: `
-  <button class="btn btn-success" (click)="onNewCourse()">
-    {{text.newcourse}}
-  </button>
-
-  <!-- LANGUAGE -->
-  <div class="form-group form-group-lg">
-    <div class="col-xs-12 lanselector">
-      <km-language-selector 
-        [languages]="languages"
-        [currentLanguage]="selectedLanguage"
-        (languageSelected)="onLanguageSelected($event)">
-      </km-language-selector>
-    </div>
-  </div>
-
-  <div class="clearfix"></div>
-
-  <!-- COURSE LIST -->
-  <ul class="list-unstyled" *ngIf="courses">
-    <li *ngFor="let course of courses">
-      <km-course-summary
-        [course]="course"
-        [text]="text">
-      </km-course-summary>
-    </li>
-  </ul>
-  `,
+  templateUrl: 'courses.component.html',
   styles: [`
     .lanselector {
       padding: 0;
@@ -60,7 +33,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.languages = this.utilsService.getActiveLanguages();
-    // TODO: get language for user
+    // TODO: get language for user from settings
     this.selectedLanguage = this.languages[0];
     this.getTranslations();
   }

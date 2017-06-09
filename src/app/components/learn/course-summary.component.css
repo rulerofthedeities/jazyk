@@ -1,0 +1,31 @@
+.image {
+  width: 162px;
+  height: 202px;
+  border: 1px solid #333;
+  float: left;
+}
+.course {
+  margin-left: 180px;
+}
+.info {
+  height: 107px;
+}
+h3 {
+  margin-top:0;
+}
+.icons {
+  font-size: 16px;
+  color: #999;
+  display: inline-block;
+  margin-left: 10px;
+}
+.icons .fa-user, .icons .fa-check {
+  color: green;
+}
+.progress {
+  height: 26px;
+}
+.progress-bar {
+  font-size: inherit;
+  line-height: 26px;
+}

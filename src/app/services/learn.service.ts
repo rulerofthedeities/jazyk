@@ -26,4 +26,11 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
+
+  fetchFirstLesson(courseId: string) {
+    return this.http
+    .get('/api/lesson/first/' + courseId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
 }

@@ -6,13 +6,21 @@ const response = require('../response'),
 module.exports = {
   getLessons: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
-    Lesson.find({courseId}, {}, {sort:{nr:1}}, function(err, lessons) {
+    Lesson.find({courseId}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
         Chapter.find({courseId}, {} , {sort:{nr:1}}, function(err, chapters) {
           response.handleError(err, res, 500, 'Error fetching chapters', function(){
             response.handleSuccess(res, {lessons,chapters}, 200, 'Fetched chapters and lessons');
           });
         });
+      });
+    });
+  },
+  getFirstLesson: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    Lesson.find({courseId}, {}, {sort: {chapterNr: 1, nr: 1}}, function(err, lessons) {
+      response.handleError(err, res, 500, 'Error fetching lesson', function(){
+        response.handleSuccess(res, lessons[0], 200, 'Fetched lesson');
       });
     });
   },

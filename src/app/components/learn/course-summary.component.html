@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="image">
+      <img src="/assets/img/courses/{{course.image}}">
+    </div>
+    <div class="course">
+      <h3>{{course.name}}
+        <span class="icons">
+          <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
+          <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
+        </span>
+      </h3>
+      <button class="btn btn-success" (click)="onStartCourse(course._id)">
+        {{text.startcourse}}
+      </button>
+      <button class="btn btn-warning" (click)="onEditCourse(course._id)">
+        {{text.updatecourse}}
+      </button>
+      <div class="info">
+      
+      </div>
+      <div class="progress">
+        <div 
+          class="progress-bar progress-bar-striped" 
+          role="progressbar" 
+          [attr.aria-valuenow]="course.exercisesDone"
+          aria-valuemin="0" 
+          [attr.aria-valuemax]="course.exerciseCount" 
+          [style.width.%]="percDone">
+          <span>
+            {{course.exercisesDone}}/{{course.exerciseCount}} ({{percDone}}%)
+          </span>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>

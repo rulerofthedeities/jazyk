@@ -6,11 +6,10 @@ import {routes} from './learn.routes';
 
 import {LearnService} from './services/learn.service';
 
-import {LearnComponent} from './components/learn/learn.component';
 import {CoursesComponent} from './components/learn/courses.component';
 import {CourseSummaryComponent} from './components/learn/course-summary.component';
-
-
+import {LearnComponent} from './components/learn/learn.component';
+import {LearnStudyComponent} from './components/learn/learn-study.component';
 
 @NgModule({
   imports: [
@@ -21,9 +20,10 @@ import {CourseSummaryComponent} from './components/learn/course-summary.componen
     LearnService
   ],
   declarations: [
-    LearnComponent,
     CoursesComponent,
-    CourseSummaryComponent
+    CourseSummaryComponent,
+    LearnComponent,
+    LearnStudyComponent
   ]
 })
 export class LearnModule {}

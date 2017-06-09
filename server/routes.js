@@ -21,6 +21,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:id', lessons.getLesson);
+  router.get('/lesson/first/:id', lessons.getFirstLesson);
   router.post('/lesson', lessons.addLesson);
   router.put('/lesson', lessons.updateLesson);
 

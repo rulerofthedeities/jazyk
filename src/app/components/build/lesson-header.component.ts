@@ -63,6 +63,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       name: '',
       nr: 1,
       chapter: '',
+      chapterNr: 1,
       exerciseTpes: {
         learn: true,
         practise: true,
@@ -123,8 +124,10 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private processLesson(formValues: any) {
-    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
+    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '',
+          chapterNr = this.autocomplete.currentItem.nr ? this.autocomplete.currentItem.nr : 0;
     this.lesson.chapter = chapterName;
+    this.lesson.chapterNr = chapterNr;
     this.lesson.name = formValues.name;
     this.lesson.exerciseTpes = {
       learn: formValues.exerciseTpes[0],

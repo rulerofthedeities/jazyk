@@ -3,20 +3,21 @@ import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Language, Translation} from '../../models/course.model';
+import {Course, Lesson, Language, Translation} from '../../models/course.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   template: `
-    <pre>
-      {{translations|json}}
-      {{course|json}}
-    </pre>
-
-    <div *ngIf="course">
-      {{course.name}} - {{text.Chapter}} 
+    <div *ngIf="lesson">
+      <h2>{{course.name}} - {{lesson.chapter}}</h2>
+      <h3>{{lesson.nr}}. {{lesson.name}}</h3>
     </div>
+
+    <km-learn-study *ngIf="lesson"
+      [exercises]="lesson.exercises.slice(0, 10)"
+    >
+    </km-learn-study>
 
     <km-info-msg
       [msg]="infoMsg">
@@ -33,6 +34,7 @@ export class LearnComponent implements OnInit, OnDestroy {
   errorMsg: string;
   infoMsg: string;
   course: Course;
+  lesson: Lesson;
   text: Object = {};
 
   constructor(
@@ -84,12 +86,26 @@ export class LearnComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
+            this.getCurrentLesson(courseId);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
         } else {
           this.errorMsg = this.errorService.userError({code: 'learn01', src: courseId});
         }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getCurrentLesson(courseId: string) {
+    this.learnService
+    .fetchFirstLesson(courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      lesson => {
+        console.log(lesson);
+        this.lesson = lesson;
       },
       error => this.errorService.handleError(error)
     );
