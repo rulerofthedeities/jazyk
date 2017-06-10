@@ -1,0 +1,51 @@
+<div *ngIf="lesson">
+  <h2>{{course.name}} - {{lesson.chapter}}</h2>
+  <h3>{{lesson.nr}}. {{lesson.name}}</h3>
+</div>
+
+<div *ngIf="exercises">
+
+  <ul class="list-unstyled list-inline lead steps">
+    <li (click)="stepTo('study')" class="btn btn-success btn-lg" [class.inactive]="step!=='study'">
+      1. {{text.Study}}
+    </li>
+    <li class="arrow">
+      <span class="fa fa-arrow-right"></span>
+    </li>
+    <li (click)="stepTo('practise')" class="btn btn-yellow btn-lg" [class.inactive]="step!=='practise'">
+      2. {{text.Practise}}
+    </li>
+    <li class="arrow">
+      <span class="fa fa-arrow-right"></span>
+    </li>
+    <li (click)="stepTo('test')" class="btn btn-warning btn-lg" [class.inactive]="step!=='test'">
+      3. {{text.Test}}
+    </li>
+  </ul>
+
+  <div [ngSwitch]="step" class="learn" [ngClass]="step">
+  <km-learn-study  *ngSwitchCase="'study'"
+    [exercises]="exercises"
+    [lanPair]="course.languagePair"
+    [text]="text"
+    (skipStep)="onSkipStep($event)"
+  >
+  </km-learn-study>
+  <km-learn-practise *ngSwitchCase="'practise'"
+    [exercises]="exercises"
+    [lanPair]="course.languagePair"
+  >
+  </km-learn-practise>
+  <km-learn-test *ngSwitchCase="'test'"
+    [exercises]="exercises"
+    [lanPair]="course.languagePair"
+  >
+  </km-learn-test>
+</div>
+
+<km-info-msg
+  [msg]="infoMsg">
+</km-info-msg>
+<km-error-user-msg
+  [msg]="errorMsg">
+</km-error-user-msg>

@@ -10,6 +10,8 @@ import {CoursesComponent} from './components/learn/courses.component';
 import {CourseSummaryComponent} from './components/learn/course-summary.component';
 import {LearnComponent} from './components/learn/learn.component';
 import {LearnStudyComponent} from './components/learn/learn-study.component';
+import {LearnPractiseComponent} from './components/learn/learn-practise.component';
+import {LearnTestComponent} from './components/learn/learn-test.component';
 
 @NgModule({
   imports: [
@@ -23,7 +25,9 @@ import {LearnStudyComponent} from './components/learn/learn-study.component';
     CoursesComponent,
     CourseSummaryComponent,
     LearnComponent,
-    LearnStudyComponent
+    LearnStudyComponent,
+    LearnPractiseComponent,
+    LearnTestComponent
   ]
 })
 export class LearnModule {}

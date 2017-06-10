@@ -4,38 +4,25 @@ import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
+import {Exercise} from '../../models/exercise.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  template: `
-    <div *ngIf="lesson">
-      <h2>{{course.name}} - {{lesson.chapter}}</h2>
-      <h3>{{lesson.nr}}. {{lesson.name}}</h3>
-    </div>
-
-    <km-learn-study *ngIf="lesson"
-      [exercises]="lesson.exercises.slice(0, 10)"
-    >
-    </km-learn-study>
-
-    <km-info-msg
-      [msg]="infoMsg">
-    </km-info-msg>
-    <km-error-user-msg
-      [msg]="errorMsg">
-    </km-error-user-msg>
-  `
+  templateUrl: 'learn.component.html',
+  styleUrls : ['learn.component.css']
 })
 
 export class LearnComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
+  private lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
   course: Course;
-  lesson: Lesson;
+  exercises: Exercise[];
   text: Object = {};
+  step = 'study';
 
   constructor(
     private route: ActivatedRoute,
@@ -58,8 +45,19 @@ export class LearnComponent implements OnInit, OnDestroy {
     );
   }
 
+  stepTo(step: string) {
+    this.step = step;
+  }
+
+  onSkipStep(step: string) {
+    console.log('skipping to', step);
+    this.step = step;
+  }
+
   private setText(translations: Translation[]) {
-    const keys = ['Chapter'];
+    let keys = [
+      'Chapter', 'Study', 'Practise', 'Test', 'Next', 'Previous', 'Skip'];
+    keys = keys.concat(this.utilsService.getWordTypes());
     this.text = this.utilsService.getTranslatedText(translations, keys);
   }
 
@@ -106,6 +104,7 @@ export class LearnComponent implements OnInit, OnDestroy {
       lesson => {
         console.log(lesson);
         this.lesson = lesson;
+        this.exercises = lesson.exercises.slice(0, 10);
       },
       error => this.errorService.handleError(error)
     );

@@ -74,6 +74,24 @@ export class UtilsService {
     return languages;
   }
 
+  getWordTypes(): string[] {
+    return [
+      'noun',
+      'adjective',
+      'adverb',
+      'verb',
+      'conjunction',
+      'preposition',
+      'interjection',
+      'pronoun',
+      'propernoun',
+      'numeral',
+      'particle',
+      'determiner',
+      'phrase'
+    ];
+  }
+
 /*
   getExerciseTypes(word: WordPairDetail, lan: LanPair): ExerciseType[] {
     const tpes: ExerciseType[] = [],
