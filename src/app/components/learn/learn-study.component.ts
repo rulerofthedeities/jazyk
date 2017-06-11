@@ -11,6 +11,16 @@ import 'rxjs/add/operator/takeWhile';
   template: `
     STUDY
     <div class="col-xs-8">
+      <div class="bullets">
+        <span 
+          *ngFor="let exercise of exercises; let i=index"
+          class="fa"
+          [ngClass]="{
+            'fa-circle-o': !isCurrent(i), 
+            'fa-circle': isCurrent(i), 
+            'green': isWordDone(i)}">
+        </span>
+      </div>
       <div class="center">
         <h1>{{wordForeign}}</h1>
         <div class="word type">{{text[currentExercise.wordTpe]}}</div>
@@ -56,6 +66,16 @@ import 'rxjs/add/operator/takeWhile';
       margin-top: 40px;
       width: 100px;
     }
+    .bullets{
+      color: grey;
+      font-size: 20px;
+    }
+    .bullets span {
+      margin: 0 2px
+    }
+    .green {
+      color: green;
+    }
   `]
 })
 
@@ -71,6 +91,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timerActive: boolean;
   private dotLength = 0;
   private currentExercises: Exercise[];
+  isDone: boolean[] = [];
   currentExercise: Exercise;
   wordLocal: string;
   wordForeign: string;
@@ -92,6 +113,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onNextWord(delta: number) {
+    if (this.current > -1) {
+      this.isDone[this.current] = true;
+    }
     this.dotLength = this.delayMs / 200;
     this.dotArr = Array(this.dotLength).fill(0);
     this.current += delta;
@@ -114,6 +138,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   onSkip() {
     console.log('skipping');
     this.skipStep.emit('practise');
+  }
+
+  isCurrent(i: number): boolean {
+    return this.current === i;
+  }
+
+  isWordDone(i: number): boolean {
+    return this.isDone[i];
   }
 
   private timeDelay() {
