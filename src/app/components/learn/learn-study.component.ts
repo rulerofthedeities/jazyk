@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angula
 import {LanPair} from '../../models/course.model';
 import {Exercise} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/takeWhile';
 
@@ -14,13 +15,12 @@ import 'rxjs/add/operator/takeWhile';
         <h1>{{wordForeign}}</h1>
         <div class="word type">{{text[currentExercise.wordTpe]}}</div>
 
-        <h1 *ngIf="showLocal">{{wordLocal}}</h1>
+        <h1 *ngIf="showLocal else loading">{{wordLocal}}</h1>
       </div>
     </div>
     <div class="col-xs-4">
       <div class="btn btn-success" (click)="onNextWord(-1)">
         <span class="fa fa-step-backward"></span>
-        
       </div>
       <div class="btn btn-success" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>
@@ -35,10 +35,26 @@ import 'rxjs/add/operator/takeWhile';
     <pre>{{exercises|json}}</pre>
     <pre>{{lanPair|json}}</pre>
 
+    <ng-template #loading>
+      <div class="loading">
+        <span *ngFor="let dot of dotArr">
+          <span class="fa fa-circle">
+          </span>
+        </span>
+      </div>
+    </ng-template>
   `,
   styles: [`
     .center {
       text-align: center;
+    }
+    .loading {
+      margin: 0 auto;
+      text-align: left;
+      font-size: 8px;
+      color: #999;
+      margin-top: 40px;
+      width: 100px;
     }
   `]
 })
@@ -53,32 +69,42 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private lanForeign: string;
   private current = -1;
   private timerActive: boolean;
+  private dotLength = 0;
+  private currentExercises: Exercise[];
   currentExercise: Exercise;
   wordLocal: string;
   wordForeign: string;
   delayMs: number;
-  subscription: Subscription;
+  subscription: Subscription[] = [];
   showLocal = false;
+  dotArr: number[] = [];
+
+  constructor(
+    private learnService: LearnService
+  ) {}
 
   ngOnInit() {
-    this.delayMs = 1000;
+    this.delayMs = 2000;
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
+    this.currentExercises = this.learnService.shuffle(this.exercises);
     this.onNextWord(1);
   }
 
   onNextWord(delta: number) {
+    this.dotLength = this.delayMs / 200;
+    this.dotArr = Array(this.dotLength).fill(0);
     this.current += delta;
     if (delta > 0) {
-      if (this.current >= this.exercises.length) {
+      if (this.current >= this.currentExercises.length) {
         this.current = 0;
       }
     } else {
       if (this.current <= -1) {
-        this.current = this.exercises.length - 1;
+        this.current = this.currentExercises.length - 1;
       }
     }
-    this.currentExercise = this.exercises[this.current];
+    this.currentExercise = this.currentExercises[this.current];
     this.showLocal = false;
     this.wordLocal = this.currentExercise[this.lanLocal].word;
     this.wordForeign = this.currentExercise[this.lanForeign].word;
@@ -92,16 +118,24 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private timeDelay() {
     if (this.delayMs > 0) {
-      if (this.subscription) {
-        this.subscription.unsubscribe();
+      if (this.subscription.length > 0) {
+        this.subscription.forEach( sub => sub.unsubscribe());
       }
-      const timer = TimerObservable.create(this.delayMs);
-      this.subscription = timer
+      // Timer for the local word display
+      const wordTimer = TimerObservable.create(this.delayMs);
+      this.subscription[0] = wordTimer
       .takeWhile(() => this.componentActive)
+      .subscribe(t => this.showLocal = true);
+
+      // Timer for the dots countdown
+      const dotTimer = TimerObservable.create(0, 200);
+      this.subscription[1] = dotTimer
+      .takeWhile(() => this.componentActive && this.dotLength > 0)
       .subscribe(
         t => {
-          console.log('timed out', t, timer);
-          this.showLocal = true;
+          this.dotLength = this.dotLength - 1;
+          this.dotArr = this.dotArr.slice(0, this.dotLength);
+          console.log('timed out', this.dotLength, dotTimer);
         }
       );
     } else {
