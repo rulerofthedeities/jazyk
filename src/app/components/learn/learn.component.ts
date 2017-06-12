@@ -56,7 +56,18 @@ export class LearnComponent implements OnInit, OnDestroy {
 
   private setText(translations: Translation[]) {
     let keys = [
-      'Chapter', 'Study', 'Practise', 'Test', 'Next', 'Previous', 'Skip'];
+      'Chapter',
+      'Study',
+      'Practise',
+      'Test',
+      'Next',
+      'Previous',
+      'Skip',
+      'Restart',
+      'Yes',
+      'No',
+      'Warning'
+    ];
     keys = keys.concat(this.utilsService.getWordTypes());
     this.text = this.utilsService.getTranslatedText(translations, keys);
   }

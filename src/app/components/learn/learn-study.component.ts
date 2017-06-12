@@ -4,56 +4,12 @@ import {Exercise} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-learn-study',
-  template: `
-    STUDY
-    <div class="col-xs-8">
-      <div class="bullets">
-        <span 
-          *ngFor="let exercise of exercises; let i=index"
-          class="fa"
-          [ngClass]="{
-            'fa-circle-o': !isCurrent(i), 
-            'fa-circle': isCurrent(i), 
-            'green': isWordDone(i)}">
-        </span>
-      </div>
-      <div class="center">
-        <h1>{{wordForeign}}</h1>
-        <div class="word type">{{text[currentExercise.wordTpe]}}</div>
-
-        <h1 *ngIf="showLocal else loading">{{wordLocal}}</h1>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="btn btn-success" (click)="onNextWord(-1)">
-        <span class="fa fa-step-backward"></span>
-      </div>
-      <div class="btn btn-success" (click)="onNextWord(1)">
-        <span class="fa fa-step-forward"></span>
-        {{text.Next}}
-      </div>
-      <div class="btn btn-warning" (click)="onSkip()">
-        <span class="fa fa-fast-forward"></span>
-        {{text.Skip}}
-      </div>
-      SCORE
-    </div>
-    <pre>{{exercises|json}}</pre>
-    <pre>{{lanPair|json}}</pre>
-
-    <ng-template #loading>
-      <div class="loading">
-        <span *ngFor="let dot of dotArr">
-          <span class="fa fa-circle">
-          </span>
-        </span>
-      </div>
-    </ng-template>
-  `,
+  templateUrl: 'learn-study.component.html',
   styles: [`
     .center {
       text-align: center;
@@ -84,6 +40,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Output() skipStep = new EventEmitter<string>();
+
   private componentActive = true;
   private lanLocal: string;
   private lanForeign: string;
@@ -91,6 +48,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timerActive: boolean;
   private dotLength = 0;
   private currentExercises: Exercise[];
+  private isStudyDone = false; // toggles with every replay
+  private isWordsDone =  false; // true once words are done once
   isDone: boolean[] = [];
   currentExercise: Exercise;
   wordLocal: string;
@@ -99,6 +58,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   subscription: Subscription[] = [];
   showLocal = false;
   dotArr: number[] = [];
+  score = 0;
 
   constructor(
     private learnService: LearnService
@@ -109,35 +69,37 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
     this.currentExercises = this.learnService.shuffle(this.exercises);
-    this.onNextWord(1);
+    this.nextWord(1);
   }
 
   onNextWord(delta: number) {
-    if (this.current > -1) {
-      this.isDone[this.current] = true;
+    if (!this.isWordsDone) {
+      this.score = this.score + 2;
     }
-    this.dotLength = this.delayMs / 200;
-    this.dotArr = Array(this.dotLength).fill(0);
-    this.current += delta;
-    if (delta > 0) {
-      if (this.current >= this.currentExercises.length) {
-        this.current = 0;
-      }
-    } else {
-      if (this.current <= -1) {
-        this.current = this.currentExercises.length - 1;
-      }
-    }
-    this.currentExercise = this.currentExercises[this.current];
-    this.showLocal = false;
-    this.wordLocal = this.currentExercise[this.lanLocal].word;
-    this.wordForeign = this.currentExercise[this.lanForeign].word;
-    this.timeDelay();
+    this.nextWord(delta);
   }
 
-  onSkip() {
-    console.log('skipping');
-    this.skipStep.emit('practise');
+  onSkipRequested(confirm: ModalConfirmComponent) {
+    // Only show a modal if it is not a restart
+    if (this.isWordsDone) {
+      this.skip();
+    } else {
+      confirm.showModal = true;
+    }
+  }
+
+  onSkipConfirmed(skipOk: boolean) {
+    if (skipOk) {
+      this.skip();
+    }
+  }
+
+  onEnter() {
+    if (!this.isStudyDone) {
+      this.nextWord(1);
+    } else {
+      this.skip();
+    }
   }
 
   isCurrent(i: number): boolean {
@@ -146,6 +108,51 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   isWordDone(i: number): boolean {
     return this.isDone[i];
+  }
+
+  private nextWord(delta: number) {
+    if (this.isStudyDone) {
+      this.isWordsDone = true;
+      this.restart();
+    } else {
+      this.showNextWord(delta);
+    }
+  }
+
+  private showNextWord(delta: number) {
+    if (this.current > -1) {
+      this.isDone[this.current] = true;
+    }
+    this.dotLength = this.delayMs / 200;
+    this.dotArr = Array(this.dotLength).fill(0);
+    this.current += delta;
+    if (delta > 0) {
+      if (this.current >= this.currentExercises.length) {
+        this.isStudyDone = true;
+      }
+    } else {
+      if (this.current <= -1) {
+        this.current = this.currentExercises.length - 1;
+      }
+    }
+    if (!this.isStudyDone) {
+      this.currentExercise = this.currentExercises[this.current];
+      this.showLocal = false;
+      this.wordLocal = this.currentExercise[this.lanLocal].word;
+      this.wordForeign = this.currentExercise[this.lanForeign].word;
+      this.timeDelay();
+    }
+  }
+
+  private skip() {
+    this.skipStep.emit('practise');
+  }
+
+  private restart() {
+    this.current = -1;
+    this.currentExercises = this.learnService.shuffle(this.exercises);
+    this.isStudyDone = false;
+    this.nextWord(1);
   }
 
   private timeDelay() {
@@ -167,7 +174,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         t => {
           this.dotLength = this.dotLength - 1;
           this.dotArr = this.dotArr.slice(0, this.dotLength);
-          console.log('timed out', this.dotLength, dotTimer);
         }
       );
     } else {

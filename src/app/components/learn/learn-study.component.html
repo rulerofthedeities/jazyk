@@ -1,0 +1,65 @@
+<section pressed 
+[keyPressed]="'Enter'"
+(onKeyPressed)="onEnter()">
+  <div class="col-xs-8">
+    <div class="bullets">
+      <span 
+        *ngFor="let exercise of exercises; let i=index"
+        class="fa"
+        [ngClass]="{
+          'fa-circle-o': !isCurrent(i), 
+          'fa-circle': isCurrent(i), 
+          'green': isWordDone(i)}">
+      </span>
+    </div>
+    <div *ngIf="!isStudyDone">
+      <div class="center">
+        <h1>{{wordForeign}}</h1>
+        <div class="word type">{{text[currentExercise.wordTpe]}}</div>
+
+        <h1 *ngIf="showLocal else loading">{{wordLocal}}</h1>
+      </div>
+    </div>
+    <div *ngIf="isStudyDone">
+      SCORE : {{score}}
+      <div class="btn btn-success" (click)="onNextWord(1)">
+        <span class="fa fa-step-forward"></span>
+        {{text.Restart}}
+      </div>
+      <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+        <span class="fa fa-fast-forward"></span>
+        {{text.Practise}}
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-4">
+    <div class="btn btn-success" (click)="onNextWord(1)">
+      <span class="fa fa-step-forward"></span>
+      {{isStudyDone ? text.Restart : text.Next}}
+    </div>
+    <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+      <span class="fa fa-fast-forward"></span>
+      {{isStudyDone ? text.Practise : text.Skip}}
+    </div>
+    SCORE : {{score}}
+  </div>
+  <pre>{{exercises|json}}</pre>
+  <pre>{{lanPair|json}}</pre>
+</section>
+
+<ng-template #loading>
+  <div class="loading">
+    <span *ngFor="let dot of dotArr">
+      <span class="fa fa-circle">
+      </span>
+    </span>
+  </div>
+</ng-template>
+
+<km-modal-confirm #confirm
+  [level]="'warning'"
+  [text]="text"
+  (confirmed)="onSkipConfirmed($event)">
+  <div title>{{text.Warning}}</div>
+  <div message>Ben je zeker dat je de studie wil onderbreken?</div>
+</km-modal-confirm>

@@ -13,6 +13,8 @@ import {LearnStudyComponent} from './components/learn/learn-study.component';
 import {LearnPractiseComponent} from './components/learn/learn-practise.component';
 import {LearnTestComponent} from './components/learn/learn-test.component';
 
+import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
+
 @NgModule({
   imports: [
     SharedModule,
@@ -27,7 +29,8 @@ import {LearnTestComponent} from './components/learn/learn-test.component';
     LearnComponent,
     LearnStudyComponent,
     LearnPractiseComponent,
-    LearnTestComponent
+    LearnTestComponent,
+    GetKeyPressDirective
   ]
 })
 export class LearnModule {}

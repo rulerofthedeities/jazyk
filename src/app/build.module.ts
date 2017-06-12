@@ -16,7 +16,6 @@ import {BuildChapterComponent} from './components/build/chapter.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterWordComponent} from './components/fields/filter-word.component';
-import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
 
 @NgModule({
   imports: [
@@ -37,8 +36,7 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
     BuildLessonHeaderComponent,
     BuildExerciseComponent,
     AutocompleteComponent,
-    FilterWordComponent,
-    ModalConfirmComponent
+    FilterWordComponent
   ]
 })
 export class BuildModule {}
