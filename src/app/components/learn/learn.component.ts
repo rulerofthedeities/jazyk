@@ -58,12 +58,14 @@ export class LearnComponent implements OnInit, OnDestroy {
     let keys = [
       'Chapter',
       'Study',
-      'Practise',
       'Test',
       'Next',
       'Previous',
       'Skip',
       'Restart',
+      'RestartStudy',
+      'Practise',
+      'PractiseStudy',
       'Yes',
       'No',
       'Warning'

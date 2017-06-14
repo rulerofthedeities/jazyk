@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 import {routes} from './learn.routes';
 
 import {LearnService} from './services/learn.service';
+import {TimeService} from './services/time.service';
 
 import {CoursesComponent} from './components/learn/courses.component';
 import {CourseSummaryComponent} from './components/learn/course-summary.component';
@@ -21,7 +22,8 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     RouterModule.forChild(routes)
   ],
   providers: [
-    LearnService
+    LearnService,
+    TimeService
   ],
   declarations: [
     CoursesComponent,

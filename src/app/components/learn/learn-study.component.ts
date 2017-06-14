@@ -111,11 +111,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private nextWord(delta: number) {
-    if (this.isStudyDone) {
-      this.isWordsDone = true;
-      this.restart();
+    if (!this.showLocal && this.currentExercise) {
+      this.showLocal = true;
     } else {
-      this.showNextWord(delta);
+      if (this.isStudyDone) {
+        this.restart();
+      } else {
+        this.showNextWord(delta);
+      }
     }
   }
 
@@ -129,6 +132,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (delta > 0) {
       if (this.current >= this.currentExercises.length) {
         this.isStudyDone = true;
+        this.isWordsDone = true;
       }
     } else {
       if (this.current <= -1) {
@@ -156,7 +160,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private timeDelay() {
-    if (this.delayMs > 0) {
+    if (this.delayMs > 0 && !this.showLocal) {
       if (this.subscription.length > 0) {
         this.subscription.forEach( sub => sub.unsubscribe());
       }

@@ -21,14 +21,17 @@
       </div>
     </div>
     <div *ngIf="isStudyDone">
-      SCORE : {{score}}
+      Gestudeerde woorden:
+      <div *ngFor="let exercise of exercises; let i=index">
+        {{exercise[lanForeign].word}} / {{exercise[lanLocal].word}}
+      </div>
       <div class="btn btn-success" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>
-        {{text.Restart}}
+        {{text.RestartStudy}}
       </div>
       <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
         <span class="fa fa-fast-forward"></span>
-        {{text.Practise}}
+        {{text.PractiseStudy}}
       </div>
     </div>
   </div>

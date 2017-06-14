@@ -29,6 +29,7 @@
     "express": "^4.15.2",
     "express-bearer-token": "^2.1.0",
     "font-awesome": "^4.7.0",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.25",
     "mongoose": "^4.9.3",
     "path": "^0.12.7",
