@@ -40,6 +40,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Output() skipStep = new EventEmitter<string>();
+  @Output() stepCompleted = new EventEmitter<number>();
 
   private componentActive = true;
   private lanLocal: string;
@@ -133,6 +134,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.currentExercises.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
+        this.stepCompleted.emit(0);
       }
     } else {
       if (this.current <= -1) {

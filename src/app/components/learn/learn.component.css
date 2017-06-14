@@ -23,6 +23,9 @@
   padding-left: 12px;
   padding-right: 12px;
 }
+.btn .fa {
+  margin-right: 4px;
+}
 .arrow {
   color: #666;
   margin:10px 12px 0 12px;

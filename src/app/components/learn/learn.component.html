@@ -7,19 +7,19 @@
 
   <ul class="list-unstyled list-inline lead steps">
     <li (click)="stepTo('study')" class="btn btn-success btn-lg" [class.inactive]="step!=='study'">
-      1. {{text.Study}}
+      <span class="fa fa-check" *ngIf="stepCompleted[0]"></span>{{text.Study}}
     </li>
     <li class="arrow">
       <span class="fa fa-arrow-right"></span>
     </li>
     <li (click)="stepTo('practise')" class="btn btn-yellow btn-lg" [class.inactive]="step!=='practise'">
-      2. {{text.Practise}}
+      {{text.Practise}}
     </li>
     <li class="arrow">
       <span class="fa fa-arrow-right"></span>
     </li>
     <li (click)="stepTo('test')" class="btn btn-warning btn-lg" [class.inactive]="step!=='test'">
-      3. {{text.Test}}
+      {{text.Test}}
     </li>
   </ul>
 
@@ -29,6 +29,7 @@
     [lanPair]="course.languagePair"
     [text]="text"
     (skipStep)="onSkipStep($event)"
+    (stepCompleted)="onStepCompleted($event)"
   >
   </km-learn-study>
   <km-learn-practise *ngSwitchCase="'practise'"

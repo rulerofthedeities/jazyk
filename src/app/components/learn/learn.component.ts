@@ -23,6 +23,7 @@ export class LearnComponent implements OnInit, OnDestroy {
   exercises: Exercise[];
   text: Object = {};
   step = 'study';
+  stepCompleted = [false, false, false];
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +53,10 @@ export class LearnComponent implements OnInit, OnDestroy {
   onSkipStep(step: string) {
     console.log('skipping to', step);
     this.step = step;
+  }
+
+  onStepCompleted(step: string) {
+    this.stepCompleted[0] = true;
   }
 
   private setText(translations: Translation[]) {
