@@ -73,7 +73,8 @@ export class LearnComponent implements OnInit, OnDestroy {
       'PractiseStudy',
       'Yes',
       'No',
-      'Warning'
+      'Warning',
+      'hint'
     ];
     keys = keys.concat(this.utilsService.getWordTypes());
     this.text = this.utilsService.getTranslatedText(translations, keys);

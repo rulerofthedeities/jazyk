@@ -14,7 +14,9 @@ var lanPairSchema = new Schema({
 }, {_id: false});
 
 var wordSchema = new Schema({
-  word: {type: String, required: true}
+  word: {type: String, required: true},
+  hint: String,
+  info: String
 }, {_id: false})
 
 var exerciseSchema = new Schema({

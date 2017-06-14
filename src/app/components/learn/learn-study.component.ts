@@ -32,6 +32,14 @@ import 'rxjs/add/operator/takeWhile';
     .green {
       color: green;
     }
+    .settings {
+      color: #333;
+      font-size: 26px;
+      cursor: pointer;
+    }
+    .wordinfo .label{
+      font-size: 100%;
+    }
   `]
 })
 

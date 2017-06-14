@@ -13,9 +13,19 @@
       </span>
     </div>
     <div *ngIf="!isStudyDone">
+
+<pre>{{currentExercise|json}}</pre>
       <div class="center">
         <h1>{{wordForeign}}</h1>
-        <div class="word type">{{text[currentExercise.wordTpe]}}</div>
+        <div class="wordinfo">
+          <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
+          <div class="hint" *ngIf="currentExercise[lanLocal].hint">
+            {{text.hint}}: {{currentExercise[lanLocal].hint}}
+          </div>
+          <div class="info" *ngIf="currentExercise[lanLocal].info">
+            {{currentExercise[lanLocal].info}}
+          </div>
+        </div>
 
         <h1 *ngIf="showLocal else loading">{{wordLocal}}</h1>
       </div>
@@ -44,6 +54,9 @@
       <span class="fa fa-fast-forward"></span>
       {{isStudyDone ? text.Practise : text.Skip}}
     </div>
+    <div class="settings pull-right" (click)="updateSettings()">
+      <span class="fa fa-cog"></span>
+    </div>
     SCORE : {{score}}
   </div>
   <pre>{{exercises|json}}</pre>
@@ -66,3 +79,12 @@
   <div title>{{text.Warning}}</div>
   <div message>Ben je zeker dat je de studie wil onderbreken?</div>
 </km-modal-confirm>
+
+<!--
+<km-modal-settings #settings
+  [tpe]="'study'"
+  (updated)="onSettingsUpdated($event)">
+  <div title>{{text.Warning}}</div>
+  <div message>Ben je zeker dat je de studie wil onderbreken?</div>
+</km-modal-confirm>
+-->

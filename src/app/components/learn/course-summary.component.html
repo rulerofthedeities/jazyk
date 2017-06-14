@@ -10,10 +10,13 @@
           <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
         </span>
       </h3>
-      <button class="btn btn-success" (click)="onStartCourse(course._id)">
+      <button class="btn btn-success"
+        [class.disabled]="!course.isPublished"
+        (click)="onStartCourse(course._id)">
         {{text.startcourse}}
       </button>
-      <button class="btn btn-warning" (click)="onEditCourse(course._id)">
+      <button class="btn btn-warning"
+        (click)="onEditCourse(course._id)">
         {{text.updatecourse}}
       </button>
       <div class="info">

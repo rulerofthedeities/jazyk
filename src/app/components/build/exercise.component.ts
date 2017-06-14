@@ -51,8 +51,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       wordPairDetailId: word._id,
       tpes: [],
       wordTpe: word.wordPair.wordTpe,
-      [this.lanFrom]: {word: word.wordPair[this.lanFrom].word},
-      [this.lanTo]: {word: word.wordPair[this.lanTo].word}
+      [this.lanFrom]: {
+        word: word.wordPair[this.lanFrom].word,
+        hint: word.wordPair[this.lanFrom].hint,
+        info: word.wordPair[this.lanFrom].info
+      },
+      [this.lanTo]: {
+        word: word.wordPair[this.lanTo].word
+      }
     };
     this.buildForm();
   }
