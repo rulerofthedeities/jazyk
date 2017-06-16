@@ -61,6 +61,7 @@ module.exports = {
     const lessonId = new mongoose.Types.ObjectId(req.params.id);
     const exercise = req.body;
     exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
+    
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$addToSet: {

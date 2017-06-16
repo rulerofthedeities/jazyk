@@ -20,14 +20,14 @@
         {{text.updatecourse}}
       </button>
       <div class="info">
-      
+        Words: {{course.exerciseCount || 0}}
       </div>
       <div class="progress">
         <div 
           class="progress-bar progress-bar-striped" 
           role="progressbar" 
           [attr.aria-valuenow]="course.exercisesDone"
-          aria-valuemin="0" 
+          aria-valuemin="0"
           [attr.aria-valuemax]="course.exerciseCount" 
           [style.width.%]="percDone">
           <span>

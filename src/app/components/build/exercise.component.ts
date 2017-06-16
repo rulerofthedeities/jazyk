@@ -17,16 +17,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() lessonId: string;
   @Input() nr: number;
   @Output() addedExercise = new EventEmitter<Exercise>();
+  private componentActive = true;
+  private lanForeign: string;
+  private lanLocal: string;
   exerciseForm: FormGroup;
-  // exerciseTypes: ExerciseType[];
-  componentActive = true;
   isFormReady = false;
   isNew = true;
   isSubmitted = false;
   wordPairTitle: String;
   exercise: Exercise;
-  lanFrom: string;
-  lanTo: string;
 
   constructor(
     private utilsService: UtilsService,
@@ -36,35 +35,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.lanFrom = this.languagePair.from.slice(0, 2);
-    this.lanTo = this.languagePair.to.slice(0, 2);
+    this.lanLocal = this.languagePair.from.slice(0, 2);
+    this.lanForeign = this.languagePair.to.slice(0, 2);
   }
 
   // Entry point from filter
   newExercise(word: WordPairDetail) {
+    console.log('word', word);
     this.isNew = true;
     this.setTitle(word.wordPair);
-    // this.getExerciseTypes(word);
-    console.log('wpd', word);
-    this.exercise = {
-      nr: this.nr,
-      wordPairDetailId: word._id,
-      tpes: [],
-      wordTpe: word.wordPair.wordTpe,
-      [this.lanFrom]: {
-        word: word.wordPair[this.lanFrom].word,
-        hint: word.wordPair[this.lanFrom].hint,
-        info: word.wordPair[this.lanFrom].info
-      },
-      [this.lanTo]: {
-        word: word.wordPair[this.lanTo].word
-      }
-    };
-    this.buildForm();
-  }
-
-  setTitle(wordPair: WordPair) {
-    this.wordPairTitle = wordPair[this.lanTo].word;
+    this.createExercise(word);
   }
 
   onSubmit(form: FormGroup) {
@@ -74,30 +54,43 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.saveExercise();
   }
 
-/*
-  private getExerciseTypes(word: WordPairDetail) {
-    console.log('getting exercise types for', word);
-    this.exerciseTypes = this.utilsService.getExerciseTypes(word, this.languagePair);
-  }
+  private createExercise(word: WordPairDetail) {
+    const localWord = word.wordPair[this.lanLocal],
+          foreignWord = word.wordPair[this.lanForeign],
+          localDetail = word[this.lanLocal],
+          foreignDetail = word[this.lanForeign];
+    console.log('local detail', localDetail);
+    console.log('foreign detail', foreignDetail);
 
-  private getExerciseTypeLabel(exerciseType: ExerciseType): string {
-    let direction = '';
-
-    switch (exerciseType.direction) {
-      case ExerciseDirection.fromNl:
-        direction = ' (' + this.lanFrom + ' -> ' + this.lanTo + ')';
-      break;
-      case ExerciseDirection.toNl:
-        direction = ' (' + this.lanTo + ' -> ' + this.lanFrom + ')';
-      break;
-      case ExerciseDirection.same:
-        ;
-      break;
+    this.exercise = {
+      nr: this.nr,
+      wordPairDetailId: word._id,
+      tpes: [],
+      wordTpe: word.wordPair.wordTpe,
+      [this.lanLocal]: {
+        word: localWord.word,
+        hint: localWord.hint,
+        info: localWord.info
+      },
+      [this.lanForeign]: {
+        word: foreignWord.word
+      }
+    };
+    if (foreignDetail.aspect) {
+      this.exercise[this.lanForeign].aspect = foreignDetail.aspect;
     }
-
-    return exerciseType.label + direction;
+    if (foreignDetail.followingCase) {
+      this.exercise[this.lanForeign].followingCase = foreignDetail.followingCase;
+    }
+    if (foreignDetail.genus) {
+      this.exercise[this.lanForeign].genus = foreignDetail.genus;
+    }
+    this.buildForm();
   }
-  */
+
+  private setTitle(wordPair: WordPair) {
+    this.wordPairTitle = wordPair[this.lanForeign].word;
+  }
 
   private buildForm() {
     // Test Type options

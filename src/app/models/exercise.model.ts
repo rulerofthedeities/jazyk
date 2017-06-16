@@ -67,7 +67,9 @@ export interface WordPairDetail {
 
 interface ExerciseWord {
   word: string;
-  casesensitive?: boolean;
+  aspect?: boolean;
+  followingCase?: boolean;
+  genus?: boolean;
 }
 
 export interface Exercise {

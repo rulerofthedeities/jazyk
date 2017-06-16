@@ -1,0 +1,46 @@
+.center {
+  text-align: center;
+}
+.loading {
+  margin: 0 auto;
+  text-align: left;
+  font-size: 8px;
+  color: #999;
+  margin-top: 40px;
+  width: 100px;
+}
+.bullets{
+  color: grey;
+  font-size: 20px;
+}
+.bullets span {
+  margin: 0 2px
+}
+.green {
+  color: green;
+}
+.settings {
+  color: #333;
+  font-size: 26px;
+  cursor: pointer;
+}
+.wordinfo .label{
+  font-size: 100%;
+}
+.foreignWord {
+}
+.suffix {
+  font-size: 20px;
+}
+.red {
+  color: red;
+}
+.green {
+  color: green;
+}
+.lblue {
+  color: DeepSkyBlue;
+}
+.dblue {
+  color: navy;
+}

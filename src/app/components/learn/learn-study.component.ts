@@ -10,37 +10,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-learn-study',
   templateUrl: 'learn-study.component.html',
-  styles: [`
-    .center {
-      text-align: center;
-    }
-    .loading {
-      margin: 0 auto;
-      text-align: left;
-      font-size: 8px;
-      color: #999;
-      margin-top: 40px;
-      width: 100px;
-    }
-    .bullets{
-      color: grey;
-      font-size: 20px;
-    }
-    .bullets span {
-      margin: 0 2px
-    }
-    .green {
-      color: green;
-    }
-    .settings {
-      color: #333;
-      font-size: 26px;
-      cursor: pointer;
-    }
-    .wordinfo .label{
-      font-size: 100%;
-    }
-  `]
+  styleUrls: ['learn-study.component.css']
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
@@ -117,6 +87,27 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   isWordDone(i: number): boolean {
     return this.isDone[i];
+  }
+
+  getSuffix(): string {
+    const foreign = this.currentExercise[this.lanForeign];
+    let suffix = '';
+    if (foreign && foreign.followingCase) {
+      suffix =  this.text['case' + foreign.followingCase];
+      if (suffix) {
+        suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
+      }
+    }
+    return suffix;
+  }
+
+  getGenus(): string {
+    const foreign = this.currentExercise[this.lanForeign];
+    let genus = '';
+    if (foreign && foreign.genus) {
+      genus = '(' + foreign.genus.toLowerCase() + ')';
+    }
+    return genus;
   }
 
   private nextWord(delta: number) {

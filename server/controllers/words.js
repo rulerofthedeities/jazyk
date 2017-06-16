@@ -40,9 +40,7 @@ module.exports = {
     WordPair.findOne({_id: wordpairId}, {}, function(err, wordpair) {
       console.log('wordpair', wordpair);
       //get detail docs
-      languages = [];
-      languages[0] = wordpair.lanPair.from;
-      languages[1] = wordpair.lanPair.to;
+      languages = wordpair.lanPair;
       getDetail(wordpair[languages[0]], function(err, detail0) {
         getDetail(wordpair[languages[1]], function(err, detail1) {
           words = {wordPair:wordpair, [languages[0]]:detail0, [languages[1]]:detail1};

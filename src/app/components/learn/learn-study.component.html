@@ -16,14 +16,26 @@
 
 <pre>{{currentExercise|json}}</pre>
       <div class="center">
-        <h1>{{wordForeign}}</h1>
+        <h1>
+          <span class="foreignWord" [ngClass]="{
+            'red': currentExercise[lanForeign].genus === 'F',
+            'lblue': currentExercise[lanForeign].genus === 'Ma',
+            'dblue': currentExercise[lanForeign].genus === 'Mi',
+            'green': currentExercise[lanForeign].genus === 'N'
+            }">
+            {{wordForeign}}
+          </span>
+          <span class="suffix">{{getSuffix()}}</span>
+          <span class="suffix">{{getGenus()}}</span>
+        </h1>
         <div class="wordinfo">
           <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
-          <div class="hint" *ngIf="currentExercise[lanLocal].hint">
-            {{text.hint}}: {{currentExercise[lanLocal].hint}}
+          <div class="label label-default">{{text[currentExercise[lanForeign].aspect]}}</div>
+          <div class="hint" *ngIf="currentExercise[lanLocal]?.hint">
+            {{text.hint}}: {{currentExercise[lanLocal]?.hint}}
           </div>
-          <div class="info" *ngIf="currentExercise[lanLocal].info">
-            {{currentExercise[lanLocal].info}}
+          <div class="info" *ngIf="currentExercise[lanLocal]?.info">
+            {{currentExercise[lanLocal]?.info}}
           </div>
         </div>
 
