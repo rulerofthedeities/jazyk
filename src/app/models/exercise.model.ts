@@ -10,14 +10,12 @@ interface Conjugation {
   plural: string[];
 }
 
-interface Word {
+export interface Word {
   detailId: string;
   word: string;
   alt?: string;
   hint?: string;
   info?: string;
-  wordCount: number;
-  score: number;
 }
 
 export interface WordPair {
@@ -52,6 +50,8 @@ export interface WordDetail {
   images?: string[];
   audio?: string[];
   conjugation?: Conjugation;
+  wordCount: number;
+  score: number;
 }
 
 export interface WordPairDetail {
@@ -78,6 +78,7 @@ export interface Exercise {
   wordPairDetailId: string;
   tpes: Array<number>;
   wordTpe: string;
+  score: number;
   cs?: ExerciseWord;
   de?: ExerciseWord;
   fr?: ExerciseWord;

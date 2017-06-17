@@ -30,3 +30,67 @@ h3 {
   font-size: inherit;
   line-height: 26px;
 }
+.difficulty {
+  margin-left: 2px;
+  height: 32px;
+  padding: 0;
+  display: inline-block;
+}
+
+.led {
+  width: 6px;
+  height: 14px;
+  margin-right: 4px;
+  border-radius: 20%;
+  display: inline-block;
+}
+
+.led-0 {
+  background-color: #0f0; /* green */
+  box-shadow: #555 0 0 3px 1px, inset #0e0 0 -1px 6px;
+}
+
+.led-1 {
+  background-color: #4cff00;
+  box-shadow: #555 0 0 3px 1px, inset #47ed00 0 -1px 6px;
+}
+
+.led-2 {
+  background-color: #99ff00;
+  box-shadow: #555 0 0 3px 1px, inset #8eed00 0 -1px 6px;
+}
+
+.led-3 {
+  background-color: #e1ff00;
+  box-shadow: #555 0 0 3px 1px, inset #d1ed00 0 -1px 6px;
+}
+
+.led-4 {
+  background-color: #ffd400;
+  box-shadow: #555 0 0 3px 1px, inset #edc600 0 -1px 6px;
+}
+
+.led-5 {
+  background-color: #ff8c00; /* orange */
+  box-shadow: #555 0 0 3px 1px, inset #ed8200 0 -1px 6px;
+}
+
+.led-6 {
+  background-color: #ff6600;
+  box-shadow: #555 0 0 3px 1px, inset #ed5f00 0 -1px 6px;
+}
+
+.led-7 {
+  background-color: #ff4000;
+  box-shadow: #555 0 0 3px 1px, inset #ed3b00 0 -1px 6px;
+}
+
+.led-8 {
+  background-color: #ff1e00;
+  box-shadow: #555 0 0 3px 1px, inset #ed1c00 0 -1px 6px;
+}
+
+.led-9 {
+  background-color: #f00; /* red */
+  box-shadow: #555 0 0 3px 1px, inset #e00 0 -1px 6px;
+}

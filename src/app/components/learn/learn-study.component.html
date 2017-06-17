@@ -2,20 +2,18 @@
 [keyPressed]="'Enter'"
 (onKeyPressed)="onEnter()">
   <div class="col-xs-8">
-    <div class="bullets">
-      <span 
-        *ngFor="let exercise of exercises; let i=index"
-        class="fa"
-        [ngClass]="{
-          'fa-circle-o': !isCurrent(i), 
-          'fa-circle': isCurrent(i), 
-          'green': isWordDone(i)}">
-      </span>
-    </div>
-    <div *ngIf="!isStudyDone">
-
-<pre>{{currentExercise|json}}</pre>
-      <div class="center">
+    <div class="panel centerpanel">
+      <div class="bullets">
+        <span 
+          *ngFor="let exercise of exercises; let i=index"
+          class="fa"
+          [ngClass]="{
+            'fa-circle-o': !isCurrent(i), 
+            'fa-circle': isCurrent(i), 
+            'green': isWordDone(i)}">
+        </span>
+      </div>
+      <div *ngIf="!isStudyDone">
         <h1>
           <span class="foreignWord" [ngClass]="{
             'red': currentExercise[lanForeign].genus === 'F',
@@ -39,21 +37,25 @@
           </div>
         </div>
 
-        <h1 *ngIf="showLocal else loading">{{wordLocal}}</h1>
+        <h1 *ngIf="showLocal else loading" class="localWord">{{wordLocal}}</h1>
       </div>
-    </div>
-    <div *ngIf="isStudyDone">
-      Gestudeerde woorden:
-      <div *ngFor="let exercise of exercises; let i=index">
-        {{exercise[lanForeign].word}} / {{exercise[lanLocal].word}}
-      </div>
-      <div class="btn btn-success" (click)="onNextWord(1)">
-        <span class="fa fa-step-forward"></span>
-        {{text.RestartStudy}}
-      </div>
-      <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
-        <span class="fa fa-fast-forward"></span>
-        {{text.PractiseStudy}}
+
+      <!-- STUDY DONE -->
+      <div *ngIf="isStudyDone">
+        <h3>Gestudeerde woorden:</h3>
+        <div class="studiedList">
+          <div *ngFor="let exercise of exercises; let i=index">
+            {{exercise[lanForeign].word}} <span class="studiedLocal">- {{exercise[lanLocal].word}}</span>
+          </div>
+        </div>
+        <div class="btn btn-success" (click)="onNextWord(1)">
+          <span class="fa fa-step-forward"></span>
+          {{text.RestartStudy}}
+        </div>
+        <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+          <span class="fa fa-fast-forward"></span>
+          {{text.PractiseStudy}}
+        </div>
       </div>
     </div>
   </div>
@@ -66,7 +68,7 @@
       <span class="fa fa-fast-forward"></span>
       {{isStudyDone ? text.Practise : text.Skip}}
     </div>
-    <div class="settings pull-right" (click)="updateSettings()">
+    <div class="settings pull-right" (click)="onUpdateSettings()">
       <span class="fa fa-cog"></span>
     </div>
     SCORE : {{score}}

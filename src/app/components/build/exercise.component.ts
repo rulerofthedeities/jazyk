@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {WordPairDetail, WordPair, Exercise} from '../../models/exercise.model';
+import {WordPairDetail, WordPair, WordDetail, Word, Exercise} from '../../models/exercise.model';
 import {LanPair} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -55,10 +55,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   private createExercise(word: WordPairDetail) {
-    const localWord = word.wordPair[this.lanLocal],
-          foreignWord = word.wordPair[this.lanForeign],
-          localDetail = word[this.lanLocal],
-          foreignDetail = word[this.lanForeign];
+    const localWord: Word = word.wordPair[this.lanLocal],
+          foreignWord: Word = word.wordPair[this.lanForeign],
+          localDetail: WordDetail = word[this.lanLocal],
+          foreignDetail: WordDetail = word[this.lanForeign];
     console.log('local detail', localDetail);
     console.log('foreign detail', foreignDetail);
 
@@ -66,6 +66,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       nr: this.nr,
       wordPairDetailId: word._id,
       tpes: [],
+      score: foreignDetail.score,
       wordTpe: word.wordPair.wordTpe,
       [this.lanLocal]: {
         word: localWord.word,

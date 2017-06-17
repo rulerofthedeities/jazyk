@@ -81,6 +81,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
+  onUpdateSettings() {
+    
+  }
+
   isCurrent(i: number): boolean {
     return this.current === i;
   }

@@ -28,6 +28,7 @@ var exerciseSchema = new Schema({
   nr: { type:Number, required: true },
   tpes: [Number],
   wordTpe: String,
+  score: { type: Number, default: 0 },
   cs: wordSchema,
   de: wordSchema,
   fr: wordSchema,

@@ -20,7 +20,9 @@ var detailSchema = new Schema({
     superlative: String,
     aspect: String,
     aspectPair: String,
-    conjugation: conjugationSchema
+    conjugation: conjugationSchema,
+    score: Number,
+    wordCount: Number
   }, {collection: 'wordpairs'}
 );
 

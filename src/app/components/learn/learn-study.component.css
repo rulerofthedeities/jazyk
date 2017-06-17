@@ -1,13 +1,15 @@
+.centerpanel {
+  margin: 0 auto;
+  width: 400px;
+}
 .center {
   text-align: center;
 }
 .loading {
-  margin: 0 auto;
   text-align: left;
   font-size: 8px;
   color: #999;
   margin-top: 40px;
-  width: 100px;
 }
 .bullets{
   color: grey;
@@ -43,4 +45,16 @@
 }
 .dblue {
   color: navy;
+}
+.studiedList {
+  margin-left: 12px;
+  margin-bottom: 24px;
+  font-size: 20px;
+  line-height: 32px;
+}
+.studiedLocal {
+  color: #999;
+}
+.localWord {
+  margin-top:32 px;
 }

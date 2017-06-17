@@ -20,7 +20,13 @@
         {{text.updatecourse}}
       </button>
       <div class="info">
-        Words: {{course.exerciseCount || 0}}
+        <div>{{course.exerciseCount || 0}} words</div>
+        <div>
+          <div class="difficulty">
+            <div *ngFor="let led of leds; let i=index" class="led led-{{i}}">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="progress">
         <div 

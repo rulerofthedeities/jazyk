@@ -6,9 +6,7 @@ var wordLangSchema = new Schema({
   word: {type: String, required: true},
   alt: [String],
   hint: String,
-  info: String,
-  score: Number,
-  wordCount: Number
+  info: String
 }, {_id: false})
 
 var wordSchema = new Schema({

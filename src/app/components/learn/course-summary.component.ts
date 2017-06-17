@@ -12,6 +12,8 @@ export class CourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() text: {};
   percDone = 0;
+  private allLeds = Array(10).fill(0);
+  leds: number[];
 
   constructor(
     private router: Router
@@ -21,6 +23,7 @@ export class CourseSummaryComponent implements OnInit {
     if (this.course.exercisesDone) {
       this.percDone = Math.trunc(this.course.exercisesDone / this.course.exerciseCount);
     }
+    this.setDifficulty();
   }
 
   onEditCourse(courseId: string) {
@@ -30,6 +33,15 @@ export class CourseSummaryComponent implements OnInit {
   onStartCourse(courseId: string) {
     this.subscribeToCourse(courseId);
     this.router.navigate(['/learn/course/' + courseId]);
+  }
+
+  setDifficulty() {
+    let difficulty = 0;
+    if (this.course.difficulty) {
+      difficulty = Math.round((1000 - this.course.difficulty) / 100);
+    }
+    this.leds = this.allLeds.slice(0, difficulty);
+    return difficulty;
   }
 
   private subscribeToCourse(courseId: string) {

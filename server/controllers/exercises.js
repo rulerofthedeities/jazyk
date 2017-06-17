@@ -8,7 +8,8 @@ updateCourseWordCount = function(courseId, total) {
   Course.findOneAndUpdate(
     {_id: courseId},
     {$set: {
-      exerciseCount: total
+      exerciseCount: total.total,
+      difficulty: total.scores
     }}, function(err, result) {
       if (err) {
         console.log('ERREXE02: Error updating total # of exercises for course "' + courseId + '"')
@@ -18,18 +19,23 @@ updateCourseWordCount = function(courseId, total) {
 
 getCourseWordCount = function(id) {
   const courseId = new mongoose.Types.ObjectId(id);
-  //get # of words for all lessons in course
+  //get # of words and avg score for all exercises in lessons
   const pipeline = [
     {$match: {courseId}},
-    {$project: {count: {$size: "$exercises"}}},
-    {$group: {_id: null, 'total': {$sum: "$count"}}}
+    {$unwind: {
+      path : "$exercises",
+      includeArrayIndex : "arrayIndex",
+      preserveNullAndEmptyArrays : false
+    }},
+    {$project: {'score': '$exercises.score'}},
+    {$group: {_id: null, 'total': {$sum: 1}, 'scores': {$avg: "$score"}}}
   ];
 
   Lesson.aggregate(pipeline, function(err, count) {
     if (!err) {
       if (count[0]) {
-        let total = count[0].total;
-        updateCourseWordCount(courseId, total);
+        console.log('TOTAL/SCORE', count[0]);
+        updateCourseWordCount(courseId, count[0]);
       }
     } else {
       console.log('ERREXE01: Error getting total number of exercise for course "' + courseId + '"')
