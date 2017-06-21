@@ -1,10 +1,45 @@
+EXERCISE
 <h1>{{wordPairTitle}}</h1>
+
+<pre>{{exercise|json}}</pre>
 
 <form *ngIf="exerciseForm"
   [formGroup]="exerciseForm"
   (ngSubmit) = "onSubmit(exerciseForm)"
   class="form-horizontal">
 
+  <label 
+    for="alt" 
+    class="control-label col-xs-2">
+    Alternative words:
+  </label>
+  <div class="col-xs-10">
+    A
+  </div>
+
+  <label 
+    for="translation" 
+    class="control-label col-xs-2">
+    Translation:
+  </label>
+  <div class="col-xs-10">
+    <div class="form-control">
+      {{exercise[lanLocal].word}}
+    </div>
+  </div>
+
+  <label 
+    for="photo" 
+    class="control-label col-xs-2">
+    Translation:
+  </label>
+  <div class="col-xs-10">
+    <div class="form-control">
+      {{exercise.image}}
+    </div>
+  </div>
+
+  
 <!--
   <div *ngFor="let control of exerciseForm.controls['exerciseTypes'].controls; let i=index">
     <input 
@@ -15,6 +50,18 @@
       {{getExerciseTypeLabel(exerciseTypes[i])}}
   </div>
 -->
+
+  <label 
+    for="images" 
+    class="control-label col-xs-2">
+    Images:
+  </label>
+  <div class="col-xs-10">
+    <km-image-list
+      [images]="images"
+      (clickedImage)=onClickImage($event)>
+    </km-image-list>
+  </div>
 
   <button *ngIf="isNew"
     type="submit" 

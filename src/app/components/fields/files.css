@@ -1,0 +1,21 @@
+.files .fdata {
+  float: right;
+  width: 170px;
+}
+.files .thumb {
+  border: 1px solid #333;
+  width: 80px;
+}
+.files .image, .files .audio {
+  float: left;
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
+.fa {
+  cursor: pointer;
+  font-size: 24px;
+}
+.flag {
+  border: 1px solid #333;
+  margin-bottom: 5px;
+}

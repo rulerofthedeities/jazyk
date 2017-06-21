@@ -27,6 +27,8 @@ var exerciseSchema = new Schema({
   wordPairDetailId: Schema.Types.ObjectId,
   nr: { type:Number, required: true },
   tpes: [Number],
+  image: String,
+  audio: [String],
   wordTpe: String,
   score: { type: Number, default: 0 },
   cs: wordSchema,

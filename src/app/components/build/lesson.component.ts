@@ -3,29 +3,14 @@ import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
-import {WordPairDetail, Exercise} from '../../models/exercise.model';
+import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import {BuildExerciseComponent} from './exercise.component';
+import {FilterListComponent} from '../fields/filter-list.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-build-lesson',
-  templateUrl: 'lesson.component.html',
-  styles: [`
-    .lesson {position: relative;}
-    .filter {
-      position: absolute;
-    }
-    .exercise {
-      position: relative;
-      top: 50px;
-      left: 250px;
-    }
-    .exercises {
-      position: relative;
-      top: 60px;
-      left: 250px;
-    }
-  `]
+  templateUrl: 'lesson.component.html'
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {
@@ -35,6 +20,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   lanFrom: string;
   lanTo: string;
   @ViewChild(BuildExerciseComponent) exerciseComponent;
+  @ViewChild(FilterListComponent) listComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,7 +41,12 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     );
   }
 
+  onFilterSelected(filter: Filter) {
+    this.listComponent.filterUpdated(filter);
+  }
+
   onWordSelected(word: WordPairDetail) {
+    console.log('word selected', word);
     this.exerciseComponent.newExercise(word);
   }
 

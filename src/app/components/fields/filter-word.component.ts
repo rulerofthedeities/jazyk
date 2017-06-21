@@ -15,7 +15,7 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() isFromStart = false;
   @Input() isExact = false;
-  @Output() selectedWord = new EventEmitter<WordPairDetail>();
+  @Output() selectedFilter = new EventEmitter<Filter>();
   private componentActive = true;
   wordpairs: WordPair[];
   filter: Filter;
@@ -41,58 +41,8 @@ export class FilterWordComponent implements OnInit, OnDestroy {
   }
 
   onFilterChanged() {
-    this.wordpairs = [];
-    this.selectedListWord = null;
-    this.getWordList(this.filter);
-  }
-
-  showListWord(wordpair: WordPair): string {
-    // Display filtered word in list
-    const lan = this.filter.languageId.slice(0, 2);
-    let word = '';
-    if (wordpair[lan]) {
-      word = wordpair[lan].word;
-    }
-    return word;
-  }
-
-  selectListWord(i: number) {
-    this.selectedListWord = i;
-    this.getWordPair(i);
-  }
-
-  private getWordPair(i: number) {
-    const wordPair: WordPair = this.wordpairs[i];
-    console.log('word selected', this.wordpairs[i]);
-    if (wordPair) {
-      this.buildService
-      .fetchWordPairDetail(wordPair._id)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        (data: WordPairDetail) => {
-          if (data) {
-            data._id = wordPair._id;
-            this.selectedWord.emit(data);
-          } else {
-            console.log('Error finding data for wordpair id ' + wordPair._id);
-          }
-        },
-        error => this.errorService.handleError(error)
-      );
-    }
-  }
-
-  private getWordList(filter: Filter) {
-    this.buildService
-    .fetchFilterWordPairs(filter, this.languagePair)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (data) => {
-        this.wordpairs = data.wordpairs;
-        this.totalWords = data.total;
-      },
-      error => this.errorService.handleError(error)
-    );
+    console.log('emitting filter', this.filter);
+    this.selectedFilter.emit(this.filter);
   }
 
   ngOnDestroy() {

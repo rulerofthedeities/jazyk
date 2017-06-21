@@ -44,15 +44,4 @@
       Aantal woorden: <strong>{{wordpairs?.length}} / {{totalWords}}</strong>
     </div>
   </div>
-  <div class="wordlist col-xs-12">
-  FILTER
-    <ul class="list-group scroll">
-      <li *ngFor="let wordpair of wordpairs; let i = index"
-        class="list-group-item"
-        (click)="selectListWord(i)"
-        [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
-        {{showListWord(wordpair)}}
-      </li>
-    </ul>
-  </div>
 </div>

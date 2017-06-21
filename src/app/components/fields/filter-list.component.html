@@ -1,0 +1,8 @@
+<ul class="list-group scroll">
+  <li *ngFor="let wordpair of wordpairs; let i = index"
+    class="list-group-item"
+    (click)="selectListWord(i)"
+    [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+    {{showListWord(wordpair)}}
+  </li>
+</ul>

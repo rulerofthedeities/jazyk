@@ -16,6 +16,8 @@ import {BuildChapterComponent} from './components/build/chapter.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterWordComponent} from './components/fields/filter-word.component';
+import {FilterListComponent} from './components/fields/filter-list.component';
+import {ImageListComponent} from './components/fields/image-list-field.component';
 
 @NgModule({
   imports: [
@@ -36,7 +38,9 @@ import {FilterWordComponent} from './components/fields/filter-word.component';
     BuildLessonHeaderComponent,
     BuildExerciseComponent,
     AutocompleteComponent,
-    FilterWordComponent
+    FilterWordComponent,
+    FilterListComponent,
+    ImageListComponent
   ]
 })
 export class BuildModule {}

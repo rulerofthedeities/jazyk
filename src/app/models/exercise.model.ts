@@ -5,6 +5,11 @@ export interface Filter {
   isExact: boolean;
 }
 
+export interface File {
+  s3: string;
+  local: string;
+}
+
 interface Conjugation {
   singular: string[];
   plural: string[];
@@ -21,7 +26,6 @@ export interface Word {
 export interface WordPair {
   _id: string;
   docTpe: string;
-  wordTpe: string;
   langPair: string;
   cs?: Word;
   de?: Word;
@@ -47,8 +51,8 @@ export interface WordDetail {
   superlative?: string;
   aspect?: string;
   aspectPair?: string;
-  images?: string[];
-  audio?: string[];
+  images?: File[];
+  audio?: File[];
   conjugation?: Conjugation;
   wordCount: number;
   score: number;
@@ -79,6 +83,7 @@ export interface Exercise {
   tpes: Array<number>;
   wordTpe: string;
   score: number;
+  image?: string;
   cs?: ExerciseWord;
   de?: ExerciseWord;
   fr?: ExerciseWord;

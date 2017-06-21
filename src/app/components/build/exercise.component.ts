@@ -5,6 +5,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {WordPairDetail, WordPair, WordDetail, Word, Exercise} from '../../models/exercise.model';
 import {LanPair} from '../../models/course.model';
+import {File} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -18,14 +19,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() nr: number;
   @Output() addedExercise = new EventEmitter<Exercise>();
   private componentActive = true;
-  private lanForeign: string;
-  private lanLocal: string;
+  lanForeign: string;
+  lanLocal: string;
   exerciseForm: FormGroup;
   isFormReady = false;
   isNew = true;
   isSubmitted = false;
   wordPairTitle: String;
   exercise: Exercise;
+  images: File[];
 
   constructor(
     private utilsService: UtilsService,
@@ -39,12 +41,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.lanForeign = this.languagePair.to.slice(0, 2);
   }
 
-  // Entry point from filter
+  // Entry point from filter list
   newExercise(word: WordPairDetail) {
-    console.log('word', word);
     this.isNew = true;
     this.setTitle(word.wordPair);
     this.createExercise(word);
+  }
+
+  onClickImage(i: number) {
+    this.exercise.image = this.images[i].s3;
+    console.log(this.exercise);
   }
 
   onSubmit(form: FormGroup) {
@@ -61,13 +67,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
           foreignDetail: WordDetail = word[this.lanForeign];
     console.log('local detail', localDetail);
     console.log('foreign detail', foreignDetail);
-
+    this.images = foreignDetail.images;
     this.exercise = {
       nr: this.nr,
       wordPairDetailId: word._id,
       tpes: [],
       score: foreignDetail.score,
-      wordTpe: word.wordPair.wordTpe,
+      wordTpe: foreignDetail.wordTpe,
+      image: '',
       [this.lanLocal]: {
         word: localWord.word,
         hint: localWord.hint,
