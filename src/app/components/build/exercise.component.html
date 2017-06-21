@@ -33,17 +33,34 @@ EXERCISE
     </div>
   </div>
 
-  <label 
-    for="images" 
-    class="control-label col-xs-2">
-    Image:
-  </label>
-  <div class="col-xs-10">
-    <km-image-list
-      [images]="images"
-      [selected]="exercise.image"
-      (clickedImage)=onClickImage($event)>
-    </km-image-list>
+  <div class="form-group">
+    <label 
+      for="images" 
+      class="control-label col-xs-2">
+      Image:
+    </label>
+    <div class="col-xs-10">
+      <km-image-list
+        [images]="images"
+        [selected]="exercise.image"
+        (clickedImage)=onClickImage($event)>
+      </km-image-list>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label 
+      for="images" 
+      class="control-label col-xs-2">
+      Audio:
+    </label>
+    <div class="col-xs-10">
+      <km-audio-list
+        [audios]="audios"
+        [selected]="exercise.audios"
+        (clickedAudio)=onClickAudio($event)>
+      </km-audio-list>
+    </div>
   </div>
   
 <!--

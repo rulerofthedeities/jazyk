@@ -19,6 +19,9 @@
   border: 1px solid #333;
   margin-bottom: 5px;
 }
+.image, .audio {
+  cursor: pointer;
+}
 .image .thumb{
   opacity: 0.6;
   border: 2px solid grey;
@@ -45,4 +48,11 @@
 }
 .fa-times {
   color: red;
+}
+.audio .name {
+  font-size: 16px;
+}
+.audio .marks {
+  left: 0;
+  top: 12px;
 }

@@ -52,7 +52,7 @@ export interface WordDetail {
   aspect?: string;
   aspectPair?: string;
   images?: File[];
-  audio?: File[];
+  audios?: File[];
   conjugation?: Conjugation;
   wordCount: number;
   score: number;
@@ -84,6 +84,7 @@ export interface Exercise {
   wordTpe: string;
   score: number;
   image?: string;
+  audios?: string[];
   cs?: ExerciseWord;
   de?: ExerciseWord;
   fr?: ExerciseWord;

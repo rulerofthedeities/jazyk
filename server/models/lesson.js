@@ -28,7 +28,7 @@ var exerciseSchema = new Schema({
   nr: { type:Number, required: true },
   tpes: [Number],
   image: String,
-  audio: [String],
+  audios: [String],
   wordTpe: String,
   score: { type: Number, default: 0 },
   cs: wordSchema,

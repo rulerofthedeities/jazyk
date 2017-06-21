@@ -18,7 +18,9 @@ import {BuildExerciseListComponent} from './components/build/exercise-list.compo
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterWordComponent} from './components/fields/filter-word.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
-import {ImageListComponent} from './components/fields/image-list-field.component';
+import {ImageListComponent} from './components/fields/image-list.component';
+import {AudioListComponent} from './components/fields/audio-list.component';
+import {AudioFileComponent} from './components/fields/audio-file.component';
 
 @NgModule({
   imports: [
@@ -42,7 +44,9 @@ import {ImageListComponent} from './components/fields/image-list-field.component
     AutocompleteComponent,
     FilterWordComponent,
     FilterListComponent,
-    ImageListComponent
+    ImageListComponent,
+    AudioListComponent,
+    AudioFileComponent
   ]
 })
 export class BuildModule {}

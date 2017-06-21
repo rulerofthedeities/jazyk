@@ -28,6 +28,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   wordPairTitle: String;
   exercise: Exercise;
   images: File[];
+  audios: File[];
 
   constructor(
     private utilsService: UtilsService,
@@ -50,7 +51,22 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
   onClickImage(i: number) {
     this.exercise.image = this.images[i].s3;
-    console.log(this.exercise);
+  }
+
+  onClickAudio(i: number) {
+    const audioFile = this.audios[i].s3;
+    let exists = false;
+    if (this.exercise.audios) {
+      exists = this.exercise.audios.filter(audio => audio === audioFile).length > 0 ? true: false;
+    } else {
+      this.exercise.audios = [];
+    }
+
+    if (exists) {
+      this.exercise.audios = this.exercise.audios.filter(audio => audio !== audioFile);
+    } else {
+      this.exercise.audios.push(audioFile);
+    }
   }
 
   onSubmit(form: FormGroup) {
@@ -67,6 +83,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     console.log('local detail', localDetail);
     console.log('foreign detail', foreignDetail);
     this.images = foreignDetail.images;
+    this.audios = foreignDetail.audios;
     this.exercise = {
       nr: this.nr,
       wordPairDetailId: word._id,
