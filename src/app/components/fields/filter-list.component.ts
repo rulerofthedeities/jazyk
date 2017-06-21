@@ -75,7 +75,6 @@ export class FilterListComponent implements OnInit, OnDestroy {
   }
 
   private getWordList(filter: Filter) {
-    this.wordpairs = [];
     this.buildService
     .fetchFilterWordPairs(filter, this.languagePair)
     .takeWhile(() => this.componentActive)

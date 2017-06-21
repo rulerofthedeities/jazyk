@@ -54,7 +54,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: FormGroup) {
-    console.log('submitting');
     this.isSubmitted = true;
     this.processSubmittedData(form.value);
     this.saveExercise();

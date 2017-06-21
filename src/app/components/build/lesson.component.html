@@ -1,4 +1,6 @@
 <h1>{{lesson?.nr}}. {{lesson?.name}}</h1>
+
+
 <pre>{{lesson|json}}</pre>
 <div *ngIf="!isNewWord; else addWord">
   <div class="btn btn-success" (click)="onNewWord()">
@@ -33,8 +35,9 @@
   </div>
 </ng-template>
 
-<div class="exercises" *ngIf="lesson">
-  <div *ngFor="let exercise of exercises">
-    {{exercise.nr + 1}}. {{exercise[lanFrom].word}} / {{exercise[lanTo].word}}
-  </div>
-</div>
+<km-exercise-list 
+  *ngIf="lesson"
+  [exercises]="lesson.exercises"
+  [lanLocal]="lanFrom"
+  [lanForeign]="lanTo">
+</km-exercise-list>

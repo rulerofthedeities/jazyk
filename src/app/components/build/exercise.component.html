@@ -1,19 +1,21 @@
 EXERCISE
 <h1>{{wordPairTitle}}</h1>
-
 <pre>{{exercise|json}}</pre>
 
 <form *ngIf="exerciseForm"
   [formGroup]="exerciseForm"
   (ngSubmit) = "onSubmit(exerciseForm)"
-  class="form-horizontal">
+  class="form-group">
+
+  <div class="col-xs-12">
+  </div>
 
   <label 
     for="alt" 
     class="control-label col-xs-2">
     Alternative words:
   </label>
-  <div class="col-xs-10">
+  <div class="col-xs-10" style="background-color:red">
     A
   </div>
 

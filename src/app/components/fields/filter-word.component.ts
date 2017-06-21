@@ -7,8 +7,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-filter-word',
-  templateUrl: 'filter-word.component.html',
-  styleUrls: ['filter-word.component.css']
+  templateUrl: 'filter-word.component.html'
 })
 
 export class FilterWordComponent implements OnInit, OnDestroy {
