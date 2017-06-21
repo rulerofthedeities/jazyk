@@ -13,7 +13,7 @@ import {Exercise} from '../../models/exercise.model';
       font-size: 20px;
       width: 32px;
     }
-    .item.actice {
+    .item.active {
       color: black;
     }
     .word {

@@ -5,42 +5,46 @@ EXERCISE
 <form *ngIf="exerciseForm"
   [formGroup]="exerciseForm"
   (ngSubmit) = "onSubmit(exerciseForm)"
-  class="form-group">
+  class="form-horizontal">
 
-  <div class="col-xs-12">
+  <div class="form-group">
+    <label 
+      for="alt" 
+      class="control-label col-xs-2">
+      Alternative words:
+    </label>
+    <div class="col-xs-10">
+      <div class="form-control">
+        A
+      </div>
+    </div>
   </div>
 
-  <label 
-    for="alt" 
-    class="control-label col-xs-2">
-    Alternative words:
-  </label>
-  <div class="col-xs-10" style="background-color:red">
-    A
-  </div>
-
-  <label 
-    for="translation" 
-    class="control-label col-xs-2">
-    Translation:
-  </label>
-  <div class="col-xs-10">
-    <div class="form-control">
-      {{exercise[lanLocal].word}}
+  <div class="form-group">
+    <label 
+      for="translation" 
+      class="control-label col-xs-2">
+      Translation:
+    </label>
+    <div class="col-xs-10">
+      <div class="form-control">
+        {{exercise[lanLocal].word}}
+      </div>
     </div>
   </div>
 
   <label 
-    for="photo" 
+    for="images" 
     class="control-label col-xs-2">
-    Translation:
+    Image:
   </label>
   <div class="col-xs-10">
-    <div class="form-control">
-      {{exercise.image}}
-    </div>
+    <km-image-list
+      [images]="images"
+      [selected]="exercise.image"
+      (clickedImage)=onClickImage($event)>
+    </km-image-list>
   </div>
-
   
 <!--
   <div *ngFor="let control of exerciseForm.controls['exerciseTypes'].controls; let i=index">
@@ -53,17 +57,6 @@ EXERCISE
   </div>
 -->
 
-  <label 
-    for="images" 
-    class="control-label col-xs-2">
-    Images:
-  </label>
-  <div class="col-xs-10">
-    <km-image-list
-      [images]="images"
-      (clickedImage)=onClickImage($event)>
-    </km-image-list>
-  </div>
 
   <button *ngIf="isNew"
     type="submit" 

@@ -4,7 +4,7 @@
 }
 .files .thumb {
   border: 1px solid #333;
-  width: 80px;
+  width: 120px;
 }
 .files .image, .files .audio {
   float: left;
@@ -18,4 +18,31 @@
 .flag {
   border: 1px solid #333;
   margin-bottom: 5px;
+}
+.image .thumb{
+  opacity: 0.6;
+  border: 2px solid grey;
+  border-radius: 2px;
+  margin: -10px;
+}
+.image .selected {
+  border: 2px solid green;
+  opacity: 1;
+}
+.marks {
+  display: inline-block;
+  position: relative;
+  left: -26px;
+  top: 40px;
+  width: 16px;
+}
+.marks .fa {
+  font-size: 32px;
+}
+.fa-check {
+  color: green;
+  text-shadow: 1px 1px #ddd;
+}
+.fa-times {
+  color: red;
 }

@@ -2,10 +2,10 @@
   <div class="list-group">
     <a class="list-group-item" *ngFor="let exercise of exercises">
       {{exercise.nr + 1}}. 
-      <span class="item" [class.active]="exercise.image">
+      <span class="item" [class.active]="!!exercise.audio && exercise.audio.length > 0">
         <span class="fa fa-volume-up"></span>
       </span>
-      <span class="item" [class.active]="exercise.audio">
+      <span class="item" [class.active]="!!exercise.image">
         <span class="fa fa-camera"></span>
       </span>
       <span class="word">
