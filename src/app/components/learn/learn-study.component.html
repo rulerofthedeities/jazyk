@@ -17,7 +17,7 @@
         <div class="foreign">
           <h1>
             <span class="flag">
-              <img src="/assets/img/{{lanPair.from}}.png">
+              <img src="/assets/img/{{lanPair.to}}.png">
             </span>
             <span class="word" [ngClass]="{
               'red': currentExercise[lanForeign].genus === 'F',
@@ -29,6 +29,12 @@
             </span>
             <span class="suffix">{{getSuffix()}}</span>
             <span class="suffix">{{getGenus()}}</span>
+            <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
+              <km-audio-file
+                [fileName]="currentExercise.audios[0]"
+                autoPlay="true">
+              </km-audio-file>
+            </span>
           </h1>
           <div class="wordinfo">
             <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
@@ -44,7 +50,7 @@
         <div class="local">
           <h1 class="word">
             <span class="flag">
-              <img src="/assets/img/{{lanPair.to}}.png">
+              <img src="/assets/img/{{lanPair.from}}.png">
             </span>
               <span *ngIf="showLocal else loading">
                 {{wordLocal}}  
@@ -86,7 +92,8 @@
     </div>
     SCORE : {{score}}
   </div>
-  <pre>{{lanPair|json}}</pre>
+  <!-- <pre>{{currentExercise|json}}</pre>
+  <pre>{{lanPair|json}}</pre> -->
   <div class="clearfix"></div>
 </section>
 

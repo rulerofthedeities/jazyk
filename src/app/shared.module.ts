@@ -9,6 +9,7 @@ import {ErrorMessageUserComponent} from './components/msg/error-message-user.com
 import {InfoMessageComponent} from './components/msg/info-message.component';
 import {LanguageSelectorComponent} from './components/fields/language-selector.component';
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
+import {AudioFileComponent} from './components/fields/audio-file.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
     InfoMessageComponent,
     ErrorMessageUserComponent,
     LanguageSelectorComponent,
-    ModalConfirmComponent
+    ModalConfirmComponent,
+    AudioFileComponent
   ],
   providers: [
     UtilsService,
@@ -32,6 +34,7 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
     ErrorMessageUserComponent,
     LanguageSelectorComponent,
     ModalConfirmComponent,
+    AudioFileComponent,
     CommonModule,
     HttpModule
   ]

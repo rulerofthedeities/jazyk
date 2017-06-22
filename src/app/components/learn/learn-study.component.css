@@ -86,3 +86,10 @@ h1 {
   border: 1px solid #333;
   border-radius: 2px;
 }
+.audio {
+  margin-top: 4px;
+}
+.audio >>> .fa {
+  font-size: 40px;
+  color: #333;
+}

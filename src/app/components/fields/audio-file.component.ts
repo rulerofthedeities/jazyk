@@ -1,24 +1,38 @@
-import {Component, Input} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {File} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-audio-file',
   template: `
-    <span (click)="onPlay()" class="audio fa fa-play-circle" [ngClass]="{
-      'fa-play-circle': !audio || audio.ended ? true : false,
-      'fa-pause-circle': audio && !audio.ended ? true : false
+    <span 
+      (click)="onPlay()"
+      class="audio fa fa-play-circle"
+      [ngClass]="{
+        'fa-play-circle': !audio || audio.ended ? true : false,
+        'fa-pause-circle': audio && !audio.ended ? true : false
       }">
     </span>
   `,
   styleUrls: ['./files.css']
 })
 
-export class AudioFileComponent {
+export class AudioFileComponent implements OnInit {
   @Input() fileName: string;
+  @Input() autoPlay = false;
   audio: any;
+
+  ngOnInit() {
+    if (this.autoPlay) {
+      this.play();
+    }
+  }
 
   onPlay() {
     event.stopPropagation();
+    this.play();
+  }
+
+  private play() {
     if (!this.audio) {
       this.audio = new Audio();
       this.audio.src = this.fileName;

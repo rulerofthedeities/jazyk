@@ -20,7 +20,6 @@ import {FilterWordComponent} from './components/fields/filter-word.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
-import {AudioFileComponent} from './components/fields/audio-file.component';
 
 @NgModule({
   imports: [
@@ -45,8 +44,7 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
     FilterWordComponent,
     FilterListComponent,
     ImageListComponent,
-    AudioListComponent,
-    AudioFileComponent
+    AudioListComponent
   ]
 })
 export class BuildModule {}
