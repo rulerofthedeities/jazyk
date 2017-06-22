@@ -13,31 +13,44 @@
             'green': isWordDone(i)}">
         </span>
       </div>
-      <div *ngIf="!isStudyDone">
-        <h1>
-          <span class="foreignWord" [ngClass]="{
-            'red': currentExercise[lanForeign].genus === 'F',
-            'lblue': currentExercise[lanForeign].genus === 'Ma',
-            'dblue': currentExercise[lanForeign].genus === 'Mi',
-            'green': currentExercise[lanForeign].genus === 'N'
-            }">
-            {{wordForeign}}
-          </span>
-          <span class="suffix">{{getSuffix()}}</span>
-          <span class="suffix">{{getGenus()}}</span>
-        </h1>
-        <div class="wordinfo">
-          <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
-          <div class="label label-default">{{text[currentExercise[lanForeign].aspect]}}</div>
-          <div class="hint" *ngIf="currentExercise[lanLocal]?.hint">
-            {{text.hint}}: {{currentExercise[lanLocal]?.hint}}
-          </div>
-          <div class="info" *ngIf="currentExercise[lanLocal]?.info">
-            {{currentExercise[lanLocal]?.info}}
+      <div *ngIf="!isStudyDone" class="card">
+        <div class="foreign">
+          <h1>
+            <span class="flag">
+              <img src="/assets/img/{{lanPair.from}}.png">
+            </span>
+            <span class="word" [ngClass]="{
+              'red': currentExercise[lanForeign].genus === 'F',
+              'lblue': currentExercise[lanForeign].genus === 'Ma',
+              'dblue': currentExercise[lanForeign].genus === 'Mi',
+              'green': currentExercise[lanForeign].genus === 'N'
+              }">
+              {{wordForeign}}
+            </span>
+            <span class="suffix">{{getSuffix()}}</span>
+            <span class="suffix">{{getGenus()}}</span>
+          </h1>
+          <div class="wordinfo">
+            <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
+            <div class="label label-default">{{text[currentExercise[lanForeign].aspect]}}</div>
+            <div class="hint" *ngIf="currentExercise[lanLocal]?.hint">
+              {{text.hint}}: {{currentExercise[lanLocal]?.hint}}
+            </div>
+            <div class="info" *ngIf="currentExercise[lanLocal]?.info">
+              {{currentExercise[lanLocal]?.info}}
+            </div>
           </div>
         </div>
-
-        <h1 *ngIf="showLocal else loading" class="localWord">{{wordLocal}}</h1>
+        <div class="local">
+          <h1 class="word">
+            <span class="flag">
+              <img src="/assets/img/{{lanPair.to}}.png">
+            </span>
+              <span *ngIf="showLocal else loading">
+                {{wordLocal}}  
+              </span>
+          </h1>
+        </div>
       </div>
 
       <!-- STUDY DONE -->
@@ -73,17 +86,17 @@
     </div>
     SCORE : {{score}}
   </div>
-  <pre>{{exercises|json}}</pre>
   <pre>{{lanPair|json}}</pre>
+  <div class="clearfix"></div>
 </section>
 
 <ng-template #loading>
-  <div class="loading">
+  <span class="loading">
     <span *ngFor="let dot of dotArr">
       <span class="fa fa-circle">
       </span>
     </span>
-  </div>
+  </span>
 </ng-template>
 
 <km-modal-confirm #confirm

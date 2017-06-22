@@ -42,4 +42,6 @@
 .learn {
   border-radius: 6px;
   padding: 4px;
+  background-color: #eee;
+  background: linear-gradient(90deg, #efefef , #fff);
 }
