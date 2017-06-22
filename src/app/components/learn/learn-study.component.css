@@ -3,7 +3,8 @@
 }
 .centerpanel {
   margin: 0 auto;
-  width: 400px;
+  width: 100%;
+  min-width: 300px;
 }
 .center {
   text-align: center;

@@ -19,12 +19,12 @@
             <span class="flag">
               <img src="/assets/img/{{lanPair.to}}.png">
             </span>
-            <span class="word" [ngClass]="{
-              'red': currentExercise[lanForeign].genus === 'F',
-              'lblue': currentExercise[lanForeign].genus === 'Ma',
-              'dblue': currentExercise[lanForeign].genus === 'Mi',
-              'green': currentExercise[lanForeign].genus === 'N'
-              }">
+
+            <span 
+              class="word" 
+              wordColor 
+                [identifier]="currentExercise[lanForeign].genus" 
+                [tpe]="currentExercise.wordTpe">
               {{wordForeign}}
             </span>
             <span class="suffix">{{getSuffix()}}</span>

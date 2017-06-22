@@ -15,6 +15,8 @@ import {LearnPractiseComponent} from './components/learn/learn-practise.componen
 import {LearnTestComponent} from './components/learn/learn-test.component';
 
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
+import {WordColorDirective} from './directives/word-color.directive';
+
 
 @NgModule({
   imports: [
@@ -32,7 +34,8 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     LearnStudyComponent,
     LearnPractiseComponent,
     LearnTestComponent,
-    GetKeyPressDirective
+    GetKeyPressDirective,
+    WordColorDirective
   ]
 })
 export class LearnModule {}
