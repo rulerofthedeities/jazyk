@@ -9,7 +9,8 @@ import {File} from '../../models/exercise.model';
       class="audio fa fa-play-circle"
       [ngClass]="{
         'fa-play-circle': !audio || audio.ended ? true : false,
-        'fa-pause-circle': audio && !audio.ended ? true : false
+        'fa-pause-circle': audio && !audio.ended ? true : false,
+        inactive: !active
       }">
     </span>
   `,
@@ -19,6 +20,7 @@ import {File} from '../../models/exercise.model';
 export class AudioFileComponent implements OnInit {
   @Input() fileName: string;
   @Input() autoPlay = false;
+  @Input() active = true;
   audio: any;
 
   ngOnInit() {
@@ -33,26 +35,28 @@ export class AudioFileComponent implements OnInit {
   }
 
   private play() {
-    if (!this.audio) {
-      this.audio = new Audio();
-      this.audio.src = this.fileName;
-      this.audio.load();
-    } else {
-      if (this.audio.ended || this.audio.paused) {
-        this.audio.play();
+    if (this.active) {
+      if (!this.audio) {
+        this.audio = new Audio();
+        this.audio.src = this.fileName;
+        this.audio.load();
       } else {
-        this.audio.pause();
+        if (this.audio.ended || this.audio.paused) {
+          this.audio.play();
+        } else {
+          this.audio.pause();
+        }
       }
+      this.audio.onended = () => {
+        console.log('The audio has ended');
+      };
+      this.audio.onloadeddata = () => {
+        console.log('The audio has loaded');
+        this.audio.play();
+      };
+      this.audio.onplaying = () => {
+        console.log('The audio is now playing');
+      };
     }
-    this.audio.onended = () => {
-      console.log('The audio has ended');
-    };
-    this.audio.onloadeddata = () => {
-      console.log('The audio has loaded');
-      this.audio.play();
-    };
-    this.audio.onplaying = () => {
-      console.log('The audio is now playing');
-    };
   }
 }

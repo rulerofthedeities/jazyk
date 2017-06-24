@@ -22,9 +22,10 @@
 
             <span 
               class="word" 
-              wordColor 
+              kmWordColor 
                 [identifier]="currentExercise[lanForeign].genus" 
-                [tpe]="currentExercise.wordTpe">
+                [tpe]="currentExercise.wordTpe"
+                [active]="settings.color">
               {{wordForeign}}
             </span>
             <span class="suffix">{{getSuffix()}}</span>
@@ -32,6 +33,7 @@
             <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
               <km-audio-file
                 [fileName]="currentExercise.audios[0]"
+                [active]="!settings.mute"
                 autoPlay="true">
               </km-audio-file>
             </span>
@@ -79,16 +81,40 @@
     </div>
   </div>
   <div class="col-xs-4">
-    <div class="btn btn-success" (click)="onNextWord(1)">
-      <span class="fa fa-step-forward"></span>
-      {{isStudyDone ? text.Restart : text.Next}}
+    <div class="settings">
+      <span class="fa "
+        [ngClass]="{
+          'fa-volume-up': !settings.mute,
+          'fa-volume-off': settings.mute,
+          'on': !settings.mute
+          }"
+        (click)="onToggleAudio()">
+      </span>
+      <span class="fa fa-tint"
+        (click)="onToggleColor()"
+        [class.on] = "settings.color"
+        [class.inactive]="!currentExercise[lanForeign].genus">
+      </span>
+      <span
+        (click)="onNextDelay()"
+        [class.on] = "settings.delay">
+        {{settings.delay}}s
+      </span>
     </div>
-    <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
-      <span class="fa fa-fast-forward"></span>
-      {{isStudyDone ? text.Practise : text.Skip}}
+    <div class="slashed">
+      <span [class.off]="settings.mute"></span>
+      <span [class.off]="!settings.color"></span>
+      <span [class.off]="!settings.delay"></span>
     </div>
-    <div class="settings pull-right" (click)="onUpdateSettings()">
-      <span class="fa fa-cog"></span>
+    <div class="actions">
+      <div class="btn btn-success" (click)="onNextWord(1)">
+        <span class="fa fa-step-forward"></span>
+        {{isStudyDone ? text.Restart : text.Next}}
+      </div>
+      <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+        <span class="fa fa-fast-forward"></span>
+        {{isStudyDone ? text.Practise : text.Skip}}
+      </div>
     </div>
     SCORE : {{score}}
   </div>

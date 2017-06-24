@@ -7,6 +7,12 @@ import {Subscription} from 'rxjs/Subscription';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import 'rxjs/add/operator/takeWhile';
 
+interface LearnSettings {
+  mute: boolean;
+  color: boolean;
+  delay: number; // # of seconds before local word appears
+}
+
 @Component({
   selector: 'km-learn-study',
   templateUrl: 'learn-study.component.html',
@@ -29,11 +35,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private currentExercises: Exercise[];
   private isStudyDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
+  private settings: LearnSettings;
   isDone: boolean[] = [];
   currentExercise: Exercise;
   wordLocal: string;
   wordForeign: string;
-  delayMs: number;
   subscription: Subscription[] = [];
   showLocal = false;
   dotArr: number[] = [];
@@ -44,7 +50,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.delayMs = 2000;
+    this.settings = {
+      mute: false,
+      color: true,
+      delay: 2
+    };
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
     this.currentExercises = this.learnService.shuffle(this.exercises);
@@ -81,8 +91,24 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUpdateSettings() {
-    
+  onToggleAudio() {
+    this.settings.mute = !this.settings.mute;
+  }
+
+  onToggleColor() {
+    if (this.currentExercise[this.lanForeign].genus) {
+      this.settings.color = !this.settings.color;
+    }
+  }
+
+  onNextDelay() {
+    this.settings.delay = (this.settings.delay + 1) % 11;
+    if (this.settings.delay === 4) {
+      this.settings.delay = 5;
+    }
+    if (this.settings.delay > 5) {
+      this.settings.delay = 10;
+    }
   }
 
   isCurrent(i: number): boolean {
@@ -130,7 +156,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (this.current > -1) {
       this.isDone[this.current] = true;
     }
-    this.dotLength = this.delayMs / 200;
+    this.dotLength = this.settings.delay * 1000 / 200;
     this.dotArr = Array(this.dotLength).fill(0);
     this.current += delta;
     if (delta > 0) {
@@ -165,12 +191,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private timeDelay() {
-    if (this.delayMs > 0 && !this.showLocal) {
+    if (this.settings.delay > 0 && !this.showLocal) {
       if (this.subscription.length > 0) {
         this.subscription.forEach( sub => sub.unsubscribe());
       }
       // Timer for the local word display
-      const wordTimer = TimerObservable.create(this.delayMs);
+      const wordTimer = TimerObservable.create(this.settings.delay * 1000);
       this.subscription[0] = wordTimer
       .takeWhile(() => this.componentActive)
       .subscribe(t => this.showLocal = true);

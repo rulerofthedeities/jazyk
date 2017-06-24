@@ -24,17 +24,52 @@ h1 {
 .bullets{
   color: grey;
   font-size: 20px;
+  margin-top: 8px;
+  height: 26px;
 }
 .bullets span {
   margin: 0 2px
 }
+.settings {
+  font-size: 20px;
+  margin-top: 9px;
+  height: 26px;
+  color: black;
+}
+.settings span {
+  width: 24px;
+  padding: 0 2px;
+  cursor: pointer;
+  text-align: center;
+}
+.settings .on {
+  color: red;
+}
+.settings .inactive {
+  color: #ccc;
+  cursor: initial;
+}
+.slashed {
+  position: relative;
+  top: -24px;
+  left: 7px;
+  pointer-events: none;
+}
+.slashed span {
+  display: inline-block;
+  width: 24px;
+}
+.slashed .off:before {
+  content: "╱";   
+  display: block;
+  color: #333;
+  font-weight: bold;
+}
+.actions {
+  margin-top: 20px;
+}
 .green {
   color: green;
-}
-.settings {
-  color: #333;
-  font-size: 26px;
-  cursor: pointer;
 }
 .wordinfo {
   margin-left: 44px;

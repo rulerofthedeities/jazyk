@@ -56,3 +56,7 @@
   left: 0;
   top: 12px;
 }
+.audio.inactive {
+  color: #ccc;
+  cursor: initial;
+}

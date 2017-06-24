@@ -1,12 +1,13 @@
 import {Directive, ElementRef, Renderer2, Input, OnChanges} from '@angular/core';
 
 @Directive({
-  selector: '[wordColor]'
+  selector: '[kmWordColor]'
 })
 
 export class WordColorDirective implements OnChanges {
   @Input() identifier: string;
   @Input() tpe: string;
+  @Input() active = true;
 
   constructor(
     private element: ElementRef,
@@ -23,7 +24,7 @@ export class WordColorDirective implements OnChanges {
 
   private getColor() {
     let color = 'black';
-    if (this.identifier) {
+    if (this.identifier && this.active) {
       switch (this.identifier.toLowerCase()) {
         case 'f': color = 'red'; break;
         case 'mi': color = 'darkBlue'; break;
@@ -31,7 +32,6 @@ export class WordColorDirective implements OnChanges {
         case 'n': color = 'green'; break;
         default: color = 'black';
       }
-      console.log(color);
     }
     return color;
   }
