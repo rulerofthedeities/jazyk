@@ -1,10 +1,15 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+var altSchema = new Schema({
+  word: String,
+  detailId: Schema.Types.ObjectId
+}, {_id: false})
+
 var wordLangSchema = new Schema({
   detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
-  alt: [String],
+  alt: [altSchema],
   hint: String,
   info: String
 }, {_id: false})

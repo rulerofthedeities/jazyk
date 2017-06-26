@@ -34,7 +34,7 @@ h1 {
   font-size: 20px;
   margin-top: 9px;
   height: 26px;
-  color: black;
+  color: #666;
 }
 .settings span {
   width: 24px;
@@ -43,7 +43,7 @@ h1 {
   text-align: center;
 }
 .settings .on {
-  color: red;
+  color: #428bca;
 }
 .settings .inactive {
   color: #ccc;

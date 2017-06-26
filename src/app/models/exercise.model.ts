@@ -15,10 +15,15 @@ interface Conjugation {
   plural: string[];
 }
 
+interface Alt {
+  word: string;
+  detailId: string;
+}
+
 export interface Word {
   detailId: string;
   word: string;
-  alt?: string;
+  alt?: Alt[];
   hint?: string;
   info?: string;
 }

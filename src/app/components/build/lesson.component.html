@@ -1,6 +1,14 @@
 <h1>{{lesson?.nr}}. {{lesson?.name}}</h1>
 
 <!-- <pre>{{lesson|json}}</pre> -->
+
+<km-exercise-list 
+  *ngIf="lesson"
+  [exercises]="lesson.exercises"
+  [lanLocal]="lanLocal"
+  [lanForeign]="lanForeign">
+</km-exercise-list>
+
 <div *ngIf="!isNewWord; else addWord">
   <div class="btn btn-success" (click)="onNewWord()">
     Nieuw Woord
@@ -8,35 +16,10 @@
 </div>
 
 <ng-template #addWord>
-  <div class="row">
-    <div class="filter col-xs-12">
-      <km-filter-word *ngIf="lesson"
-        [languagePair]="lesson.languagePair"
-        (selectedFilter)="onFilterSelected($event)">
-      </km-filter-word>
-    </div>
-  </div>
-  <div class="row">
-    <div class="filterlist col-xs-3">
-      <km-filter-list
-        [languagePair]="lesson.languagePair"
-        (selectedWord)="onWordSelected($event)">
-      </km-filter-list>
-    </div>
-    <div class="exercise col-xs-9">
-      <km-build-exercise
-        [languagePair]="lesson.languagePair"
-        [lessonId]="lesson._id"
-        [nr]="lesson.exercises?.length"
-        (addedExercise)="onExerciseAdded($event)">
-      </km-build-exercise>
-    </div>
-  </div>
+  <km-build-exercise
+    [languagePair]="lesson?.languagePair"
+    [lessonId]="lesson?._id"
+    [text]="text"
+  >
+  </km-build-exercise>
 </ng-template>
-
-<km-exercise-list 
-  *ngIf="lesson"
-  [exercises]="lesson.exercises"
-  [lanLocal]="lanFrom"
-  [lanForeign]="lanTo">
-</km-exercise-list>

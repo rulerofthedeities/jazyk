@@ -1,8 +1,9 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
+import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson} from '../../models/course.model';
+import {Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import {BuildExerciseComponent} from './exercise.component';
 import {FilterListComponent} from '../fields/filter-list.component';
@@ -17,14 +18,16 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   componentActive = true;
   lesson: Lesson;
   isNewWord = false;
-  lanFrom: string;
-  lanTo: string;
+  lanLocal: string;
+  lanForeign: string;
+  text: Object = {};
   @ViewChild(BuildExerciseComponent) exerciseComponent;
   @ViewChild(FilterListComponent) listComponent;
 
   constructor(
     private route: ActivatedRoute,
     private buildService: BuildService,
+    private utilsService: UtilsService,
     private errorService: ErrorService
   ) {}
 
@@ -41,6 +44,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     );
   }
 
+/*
   onFilterSelected(filter: Filter) {
     this.listComponent.filterUpdated(filter);
   }
@@ -50,12 +54,22 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.exerciseComponent.newExercise(word);
   }
 
+  onExerciseAdded(exercise: Exercise) {
+    this.lesson.exercises.push(exercise);
+  }
+  */
+
   onNewWord() {
     this.isNewWord = true;
   }
 
-  onExerciseAdded(exercise: Exercise) {
-    this.lesson.exercises.push(exercise);
+  private setText(translations: Translation[]) {
+    let keys = [
+      'Enterword' + this.lanForeign,
+      'Enterword' + this.lanLocal
+    ];
+    keys = keys.concat(this.utilsService.getWordTypes());
+    this.text = this.utilsService.getTranslatedText(translations, keys);
   }
 
   private getLesson(lessonId: string) {
@@ -65,12 +79,26 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       lesson => {
         this.lesson = lesson;
-        this.lanFrom = lesson.languagePair.from.slice(0, 2);
-        this.lanTo = lesson.languagePair.to.slice(0, 2);
+        this.lanLocal = lesson.languagePair.from.slice(0, 2);
+        this.lanForeign = lesson.languagePair.to.slice(0, 2);
+        this.getTranslations();
       },
       error => this.errorService.handleError(error)
     );
   }
+
+  private getTranslations() {
+    this.utilsService
+    .fetchTranslations(this.lanLocal, 'LessonComponent')
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      translations => {
+        this.setText(translations);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
 
   ngOnDestroy() {
     this.componentActive = false;
