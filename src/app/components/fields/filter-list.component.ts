@@ -13,11 +13,10 @@ import 'rxjs/add/operator/takeWhile';
 
 export class FilterListComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
+  @Input() languageId: string;
+  @Input() wordpairs: WordPair[];
   @Output() selectedWord = new EventEmitter<WordPairDetail>();
   private componentActive = true;
-  filter: Filter;
-  wordpairs: WordPair[];
-  totalWords = 0;
   selectedListWord: number;
 
   constructor(
@@ -32,29 +31,26 @@ export class FilterListComponent implements OnInit, OnDestroy {
     };
   }
 
-  // Entry point from lesson component
-  filterUpdated(filter: Filter) {
-    this.filter = filter;
-    this.selectedListWord = null;
-    this.getWordList(filter);
-  }
-
   selectListWord(i: number) {
     this.selectedListWord = i;
-    this.getWordPair(i);
+    this.getWordPairDetails(i);
   }
 
   showListWord(wordpair: WordPair): string {
     // Display filtered word in list
-    const lan = this.filter.languageId;
+    let lan = this.languageId;
     let word = '';
     if (wordpair[lan]) {
       word = wordpair[lan].word;
     }
+    lan = lan === this.languagePair.from ? this.languagePair.to : this.languagePair.from;
+    if (wordpair[lan]) {
+      word = word + ' (' + wordpair[lan].word + ')';
+    }
     return word;
   }
 
-  private getWordPair(i: number) {
+  private getWordPairDetails(i: number) {
     const wordPair: WordPair = this.wordpairs[i];
     if (wordPair) {
       this.buildService
@@ -72,19 +68,6 @@ export class FilterListComponent implements OnInit, OnDestroy {
         error => this.errorService.handleError(error)
       );
     }
-  }
-
-  private getWordList(filter: Filter) {
-    this.buildService
-    .fetchFilterWordPairs(filter, this.languagePair)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (data) => {
-        this.wordpairs = data.wordpairs;
-        this.totalWords = data.total;
-      },
-      error => this.errorService.handleError(error)
-    );
   }
 
   ngOnDestroy() {

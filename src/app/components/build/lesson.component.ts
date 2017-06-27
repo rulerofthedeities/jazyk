@@ -6,7 +6,6 @@ import {ErrorService} from '../../services/error.service';
 import {Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import {BuildExerciseComponent} from './exercise.component';
-import {FilterListComponent} from '../fields/filter-list.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -22,7 +21,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   lanForeign: string;
   text: Object = {};
   @ViewChild(BuildExerciseComponent) exerciseComponent;
-  @ViewChild(FilterListComponent) listComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,7 +64,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private setText(translations: Translation[]) {
     let keys = [
       'Enterword' + this.lanForeign,
-      'Enterword' + this.lanLocal
+      'Enterword' + this.lanLocal,
+      'Addword'
     ];
     keys = keys.concat(this.utilsService.getWordTypes());
     this.text = this.utilsService.getTranslatedText(translations, keys);

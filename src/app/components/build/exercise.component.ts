@@ -1,56 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {BuildService} from '../../services/build.service';
+import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
+import {Filter, WordPair, WordPairDetail} from '../../models/exercise.model';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-build-exercise',
-  template: `
-    <section>
-      <form *ngIf="isFormReady"
-        [formGroup]="exerciseForm"
-        class="form-horizontal">
-
-        <div class="form-group">
-          <label 
-            for="foreignWord" 
-            class="control-label col-xs-1">
-            <img src="/assets/img/flags/{{this.languagePair.to}}.png">
-          </label>
-          <div class="col-xs-11">
-            <input 
-              class="form-control" 
-              id="foreignWord"
-              autocomplete="off"
-              autofocus
-              placeholder="{{text['Enterword' + lanForeign]}}"
-              required
-              formControlName="foreignWord">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label 
-            for="localWord" 
-            class="control-label col-xs-1">
-            <img src="/assets/img/flags/{{this.languagePair.from}}.png">
-          </label>
-          <div class="col-xs-11">
-            <input 
-              class="form-control" 
-              id="localWord"
-              autocomplete="off"
-              autofocus
-              placeholder="{{text['Enterword' + lanLocal]}}"
-              required
-              formControlName="localWord">
-          </div>
-        </div>
-
-      </form>
-    </section>
-  `,
+  templateUrl: 'exercise.component.html',
   styles: [`
-    section {
+    :host {
+      display: block;
       background-color: #efefef;
       padding: 16px;
       border-radius: 6px;
@@ -58,23 +19,56 @@ import {LanPair} from '../../models/course.model';
   `]
 })
 
-export class BuildExerciseComponent implements OnInit {
+export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() text: Object;
+  private componentActive = true;
+  selected: WordPairDetail;
+  wordpairs: WordPair[];
   exerciseForm: FormGroup;
   lanForeign: string;
   lanLocal: string;
+  lanList: string; // Language of the current dropdown
   isFormReady = false;
+  isSelected = false;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private buildService: BuildService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
     this.buildForm();
+  }
+
+  onFocus(word: string, lan: string) {
+    this.isSelected = false;
+    this.changeFilter(word, lan);
+  }
+
+  onFilterChanged(word: string, lan: string) {
+    // Only show list after user puts focus in field
+    if (!this.isSelected) {
+      this.changeFilter(word, lan);
+    }
+  }
+
+  onWordSelected(wordpairDetail: WordPairDetail) {
+    this.lanList = null;
+    this.isSelected = true;
+    this.selected = wordpairDetail;
+    this.exerciseForm.patchValue({foreignWord: wordpairDetail.wordPair[this.lanForeign].word});
+    this.exerciseForm.patchValue({localWord: wordpairDetail.wordPair[this.lanLocal].word});
+    console.log('selected', wordpairDetail);
+  }
+
+
+  onSaveNewWord(formValues: any) {
+    console.log('saving', formValues);
   }
 
   private buildForm() {
@@ -86,4 +80,34 @@ export class BuildExerciseComponent implements OnInit {
     this.isFormReady = true;
   }
 
+  private getWordList(filter: Filter) {
+    this.buildService
+    .fetchFilterWordPairs(filter, this.languagePair)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      wordpairs => this.wordpairs = wordpairs,
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private changeFilter(word: string, lan: string) {
+    const filter: Filter = {
+      isExact: false,
+      isFromStart: false,
+      getTotal: false,
+      languageId: lan,
+      limit: 8,
+      word
+    };
+    if (this.lanList !== lan) {
+      this.wordpairs = null;
+    }
+    this.lanList = lan;
+    this.getWordList(filter);
+  }
+
+
+  ngOnDestroy() {
+    this.componentActive = false;
+  }
 }

@@ -3,6 +3,8 @@ export interface Filter {
   languageId: string;
   isFromStart: boolean;
   isExact: boolean;
+  getTotal: boolean;
+  limit: number;
 }
 
 export interface File {

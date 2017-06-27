@@ -17,21 +17,26 @@ getDetail= function(word, callback) {
 module.exports = {
   getWordPairs: function(req, res) {
     const query = req.query,
+          getTotal = query.getTotal === 'true' ? true : false;
+          limit = parseInt(query.limit, 10) > 0 ? parseInt(query.limit, 10) : 50,
           word = query.isFromStart === 'true' ? "^" + query.word : query.word,
           lanpair = query.languagePair.split(';'),
           key =  query.languageId + '.word',
           search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'},
           q = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], [key]:search};
 
-    WordPair.find(q, {}, {limit: 50, sort:{[key]:1}}, function(err, wordpairs) {
-      console.log(wordpairs);
+    WordPair.find(q, {}, {limit}, function(err, wordpairs) {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
         // Count workaround until v3.4 (aggregate)
-        WordPair.count(q, function(err, total) {
-          response.handleError(err, res, 500, 'Error fetching wordpairs total', function(){
-            response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
+        if (query.getTotal === 'true') {
+          WordPair.count(q, function(err, total) {
+            response.handleError(err, res, 500, 'Error fetching wordpairs total', function(){
+              response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
+            });
           });
-        });
+        } else {
+          response.handleSuccess(res, wordpairs, 200, 'Fetched wordpairs');
+        }
       });
     });
   },

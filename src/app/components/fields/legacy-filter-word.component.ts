@@ -35,7 +35,9 @@ export class FilterWordComponent implements OnInit, OnDestroy {
       word: '',
       languageId: this.languagePair.to,
       isFromStart: this.isFromStart,
-      isExact: this.isExact
+      isExact: this.isExact,
+      limit: 20,
+      getTotal: true
     };
   }
 

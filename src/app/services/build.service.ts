@@ -123,10 +123,12 @@ export class BuildService {
   fetchFilterWordPairs(filter: Filter, lanpair: LanPair) {
     const params = new URLSearchParams();
     params.set('word', filter.word);
-    params.set('languagePair', lanpair.from + ';' + lanpair.to);
+    params.set('languagePair', lanpair.from.slice(0, 2) + ';' + lanpair.to.slice(0, 2));
     params.set('languageId', filter.languageId);
+    params.set('limit', filter.limit.toString());
     params.set('isFromStart', filter.isFromStart.toString());
     params.set('isExact', filter.isExact.toString());
+    params.set('getTotal', filter.getTotal.toString());
     return this.http
     .get('/api/wordpairs/', {search: params})
     .map(response => response.json().obj)

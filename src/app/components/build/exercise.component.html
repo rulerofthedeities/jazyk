@@ -1,0 +1,79 @@
+<form *ngIf="isFormReady"
+  [formGroup]="exerciseForm"
+  class="form-horizontal">
+
+  <div class="form-group">
+    <label 
+      for="foreignWord" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{languagePair.to}}.png">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control" 
+        id="foreignWord"
+        autocomplete="off"
+        autofocus
+        placeholder="{{text['Enterword' + lanForeign]}}"
+        required
+        formControlName="foreignWord"
+        (focus)="onFocus(foreign.value, lanForeign)"
+        (ngModelChange)="onFilterChanged(foreign.value, lanForeign)"
+        #foreign>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="lanList===lanForeign">
+    <div class="col-xs-11 col-xs-offset-1">
+      <km-filter-list
+        [wordpairs]="wordpairs"
+        [languageId]="lanList"
+        [languagePair]="languagePair"
+        (selectedWord)="onWordSelected($event)">
+      </km-filter-list>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label 
+      for="localWord" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{this.languagePair.from}}.png">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control" 
+        id="localWord"
+        autocomplete="off"
+        autofocus
+        placeholder="{{text['Enterword' + lanLocal]}}"
+        required
+        formControlName="localWord"
+        (focus)="onFocus(local.value, lanLocal)"
+        (ngModelChange)="onFilterChanged(local.value, lanLocal)"
+        #local>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="lanList===lanLocal">
+    <div class="col-xs-11 col-xs-offset-1">
+      <km-filter-list
+        [wordpairs]="wordpairs"
+        [languageId]="lanList"
+        [languagePair]="languagePair"
+        (selectedWord)="onWordSelected($event)">
+      </km-filter-list>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-xs-11 col-xs-offset-1">
+      <div class="btn btn-success"
+        (click)="onSaveNewWord(exerciseForm.value)"
+        *ngIf="exerciseForm.valid">
+        {{text.Addword}}
+      </div>
+    </div>
+  </div>
+
+</form>
