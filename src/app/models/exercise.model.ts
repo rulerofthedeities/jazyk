@@ -86,18 +86,12 @@ interface ExerciseWord {
 export interface Exercise {
   _id?: string;
   nr: number;
-  wordPairDetailId: string;
-  tpes: Array<number>;
-  wordTpe: string;
-  score: number;
+  wordTpe?: string;
+  score?: number;
   image?: string;
   audios?: string[];
-  cs?: ExerciseWord;
-  de?: ExerciseWord;
-  fr?: ExerciseWord;
-  gb?: ExerciseWord;
-  nl?: ExerciseWord;
-  us?: ExerciseWord;
+  local: ExerciseWord;
+  foreign: ExerciseWord;
 }
 
 export interface ExerciseTpes {

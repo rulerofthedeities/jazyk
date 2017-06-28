@@ -98,6 +98,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     console.log('foreign detail', foreignDetail);
     this.images = foreignDetail.images;
     this.audios = foreignDetail.audios;
+    /*
     this.exercise = {
       nr: this.nr,
       wordPairDetailId: word._id,
@@ -114,6 +115,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
         word: foreignWord.word
       }
     };
+    */
     if (foreignDetail.aspect) {
       this.exercise[this.lanForeign].aspect = foreignDetail.aspect;
     }

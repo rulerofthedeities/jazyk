@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
-import {Filter, WordPair, WordPairDetail} from '../../models/exercise.model';
+import {Filter, WordPair, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -22,6 +22,7 @@ import 'rxjs/add/operator/takeWhile';
 export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
+  @Input() nr: number;
   @Input() text: Object;
   private componentActive = true;
   selected: WordPairDetail;
@@ -68,7 +69,38 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
 
   onSaveNewWord(formValues: any) {
-    console.log('saving', formValues);
+    console.log('saving', formValues, this.selected);
+    // If selected words are the same as wordpair values from selected wordpairDetail
+    // Save additional data from selected wordpairDetail
+    this.buildNewExercise(formValues);
+  }
+
+  private buildNewExercise(formValues: any) {
+    const exercise = {
+      nr: 1,
+      local: {word: formValues.localWord},
+      foreign: {word: formValues.foreignWord}
+    };
+
+    if (formValues.localWord === this.selected[this.lanLocal].word &&
+        formValues.foreignWord === this.selected[this.lanForeign].word) {
+      console.log('add data from wordpair');
+    }
+
+    this.saveNewExercise(exercise);
+  }
+
+  private saveNewExercise(exercise: Exercise) {
+    this.buildService
+      .addExercise(exercise, this.lessonId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        savedExercise => {
+          console.log('saved exercise ', exercise);
+          // this.addedExercise.emit(exercise);
+        },
+        error => this.errorService.handleError(error)
+      );
   }
 
   private buildForm() {
@@ -105,7 +137,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.lanList = lan;
     this.getWordList(filter);
   }
-
 
   ngOnDestroy() {
     this.componentActive = false;

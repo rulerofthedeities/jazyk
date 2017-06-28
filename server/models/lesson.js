@@ -24,19 +24,13 @@ var wordSchema = new Schema({
 
 var exerciseSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
-  wordPairDetailId: Schema.Types.ObjectId,
   nr: { type:Number, required: true },
-  tpes: [Number],
   image: String,
   audios: [String],
   wordTpe: String,
   score: { type: Number, default: 0 },
-  cs: wordSchema,
-  de: wordSchema,
-  fr: wordSchema,
-  gb: wordSchema,
-  nl: wordSchema,
-  us: wordSchema
+  local: wordSchema,
+  foreign: wordSchema
 })
 
 var ExerciseTpesSchema = new Schema({
