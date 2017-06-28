@@ -1,4 +1,5 @@
 import {Component, Input, Output} from '@angular/core';
+import {LanPair} from '../../models/course.model';
 import {Exercise} from '../../models/exercise.model';
 
 @Component({
@@ -25,14 +26,16 @@ import {Exercise} from '../../models/exercise.model';
 
 export class BuildExerciseListComponent {
   @Input() exercises: Exercise[];
-  @Input() lanLocal: string;
-  @Input() lanForeign: string;
+  @Input() languagePair: LanPair;
+  @Input() lessonId: string;
+  @Input() text: Object;
+  editing = null;
 
-  onEditExercise(exercise: Exercise) {
-    console.log('edit exercise');
+  onEditExercise(i: number) {
+    this.editing = i === this.editing ? null : i;
   }
 
-  onMoveExercise(exercise: Exercise) {
+  onMoveExercise(i: number) {
     console.log('move exercise');
   }
 }

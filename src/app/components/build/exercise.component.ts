@@ -22,6 +22,7 @@ import 'rxjs/add/operator/takeWhile';
 export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
+  @Input() exercise: Exercise;
   @Input() text: Object;
   @Output() addedExercise = new EventEmitter<Exercise>();
   private componentActive = true;
@@ -44,7 +45,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
-    this.buildForm();
+    this.buildForm(this.exercise);
   }
 
   onFocus(word: string, lan: string) {
@@ -106,11 +107,18 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       );
   }
 
-  private buildForm() {
-    this.exerciseForm = this.formBuilder.group({
-      localWord: ['', [Validators.required]],
-      foreignWord: ['', [Validators.required]]
-    });
+  private buildForm(exercise: Exercise) {
+    if (!this.exercise) {
+      this.exerciseForm = this.formBuilder.group({
+        localWord: ['', [Validators.required]],
+        foreignWord: ['', [Validators.required]]
+      });
+    } else {
+      this.exerciseForm = this.formBuilder.group({
+        localWord: [exercise.local.word, [Validators.required]],
+        foreignWord: [exercise.foreign.word, [Validators.required]]
+      });
+    }
 
     this.isFormReady = true;
   }

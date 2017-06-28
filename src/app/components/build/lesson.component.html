@@ -4,9 +4,10 @@
 
 <km-exercise-list 
   *ngIf="lesson"
-  [exercises]="lesson.exercises"
-  [lanLocal]="lanLocal"
-  [lanForeign]="lanForeign">
+  [languagePair]="lesson?.languagePair"
+  [lessonId]="lesson?._id"
+  [text]="text"
+  [exercises]="lesson.exercises">
 </km-exercise-list>
 
 <div *ngIf="!isNewWord; else addWord">
@@ -20,7 +21,6 @@
     [languagePair]="lesson?.languagePair"
     [lessonId]="lesson?._id"
     [text]="text"
-    (addedExercise)="onExerciseAdded($event)"
-  >
+    (addedExercise)="onExerciseAdded($event)">
   </km-build-exercise>
 </ng-template>

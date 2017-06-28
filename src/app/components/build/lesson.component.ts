@@ -13,11 +13,11 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {
-  componentActive = true;
+  private componentActive = true;
+  private lanLocal: string;
+  private lanForeign: string;
   lesson: Lesson;
   isNewWord = false;
-  lanLocal: string;
-  lanForeign: string;
   text: Object = {};
 
   constructor(
@@ -86,7 +86,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-
 
   ngOnDestroy() {
     this.componentActive = false;

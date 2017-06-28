@@ -1,26 +1,34 @@
 <div class="exercises">
   <div class="list-group">
-    <a class="list-group-item" *ngFor="let exercise of exercises">
-      {{exercise.nr + 1}}. 
-      <span class="item" [class.active]="!!exercise.audios && exercise.audios.length > 0">
-        <span class="fa fa-volume-up"></span>
-      </span>
-      <span class="item" [class.active]="!!exercise.image">
-        <span class="fa fa-camera"></span>
-      </span>
-      <span class="word">
-        {{exercise.local.word}} / {{exercise.foreign.word}}
-      </span>
-      <div class="pull-right">
-        <span 
-          class="btn btn-primary fa fa-pencil"
-          (click)="onEditExercise(exercise)">
+    <div *ngFor="let exercise of exercises; let i = index;">
+      <a class="list-group-item">
+        {{exercise.nr + 1}}. 
+        <span class="item" [class.active]="!!exercise.audios && exercise.audios.length > 0">
+          <span class="fa fa-volume-up"></span>
         </span>
-        <span 
-          class="move fa fa-arrows"
-          (click)="onMoveExercise(exercise)">
+        <span class="item" [class.active]="!!exercise.image">
+          <span class="fa fa-camera"></span>
         </span>
-      </div>
-    </a>
+        <span class="word">
+          {{exercise.local.word}} / {{exercise.foreign.word}}
+        </span>
+        <div class="pull-right">
+          <span 
+            class="btn btn-primary fa fa-pencil"
+            (click)="onEditExercise(i)">
+          </span>
+          <span 
+            class="move fa fa-arrows"
+            (click)="onMoveExercise(i)">
+          </span>
+        </div>
+      </a>
+      <km-build-exercise *ngIf="i===editing"
+        [languagePair]="languagePair"
+        [lessonId]="lessonId"
+        [exercise]="exercises[editing]"
+        [text]="text">
+      </km-build-exercise>
+    </div>
   </div>
 </div>
