@@ -69,6 +69,7 @@
   <div class="form-group">
     <div class="col-xs-11 col-xs-offset-1">
       <div class="btn btn-success"
+        [attr.disabled] = "isSaving ? '' : null"
         (click)="onSaveNewWord(exerciseForm.value)"
         *ngIf="exerciseForm.valid">
         {{text.Addword}}

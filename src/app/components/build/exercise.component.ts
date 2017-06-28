@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
@@ -22,17 +22,18 @@ import 'rxjs/add/operator/takeWhile';
 export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
-  @Input() nr: number;
   @Input() text: Object;
+  @Output() addedExercise = new EventEmitter<Exercise>();
   private componentActive = true;
-  selected: WordPairDetail;
+  private isSelected = false;
+  private selected: WordPairDetail;
   wordpairs: WordPair[];
   exerciseForm: FormGroup;
   lanForeign: string;
   lanLocal: string;
   lanList: string; // Language of the current dropdown
   isFormReady = false;
-  isSelected = false;
+  isSaving = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,16 +63,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.lanList = null;
     this.isSelected = true;
     this.selected = wordpairDetail;
-    this.exerciseForm.patchValue({foreignWord: wordpairDetail.wordPair[this.lanForeign].word});
-    this.exerciseForm.patchValue({localWord: wordpairDetail.wordPair[this.lanLocal].word});
+    this.exerciseForm.patchValue({
+      foreignWord: wordpairDetail.wordPair[this.lanForeign].word,
+      localWord: wordpairDetail.wordPair[this.lanLocal].word}
+    );
     console.log('selected', wordpairDetail);
   }
 
 
   onSaveNewWord(formValues: any) {
-    console.log('saving', formValues, this.selected);
-    // If selected words are the same as wordpair values from selected wordpairDetail
-    // Save additional data from selected wordpairDetail
+    this.isSaving = true;
     this.buildNewExercise(formValues);
   }
 
@@ -96,8 +97,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedExercise => {
-          console.log('saved exercise ', exercise);
-          // this.addedExercise.emit(exercise);
+          console.log('saved exercise ', savedExercise);
+          this.addedExercise.emit(savedExercise);
+          this.exerciseForm.reset();
+          this.isSaving = false;
         },
         error => this.errorService.handleError(error)
       );
@@ -113,13 +116,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   private getWordList(filter: Filter) {
-    this.buildService
-    .fetchFilterWordPairs(filter, this.languagePair)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      wordpairs => this.wordpairs = wordpairs,
-      error => this.errorService.handleError(error)
-    );
+    if (filter.word) {
+      this.buildService
+      .fetchFilterWordPairs(filter, this.languagePair)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        wordpairs => this.wordpairs = wordpairs,
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private changeFilter(word: string, lan: string) {

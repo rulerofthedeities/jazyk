@@ -20,6 +20,7 @@
     [languagePair]="lesson?.languagePair"
     [lessonId]="lesson?._id"
     [text]="text"
+    (addedExercise)="onExerciseAdded($event)"
   >
   </km-build-exercise>
 </ng-template>

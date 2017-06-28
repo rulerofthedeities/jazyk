@@ -5,7 +5,6 @@ import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
-import {BuildExerciseComponent} from './exercise.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -20,7 +19,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   lanLocal: string;
   lanForeign: string;
   text: Object = {};
-  @ViewChild(BuildExerciseComponent) exerciseComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,20 +40,11 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     );
   }
 
-/*
-  onFilterSelected(filter: Filter) {
-    this.listComponent.filterUpdated(filter);
-  }
-
-  onWordSelected(word: WordPairDetail) {
-    console.log('word selected', word);
-    this.exerciseComponent.newExercise(word);
-  }
-
   onExerciseAdded(exercise: Exercise) {
+    console.log('exercise added to lesson', exercise);
     this.lesson.exercises.push(exercise);
+    this.isNewWord = false;
   }
-  */
 
   onNewWord() {
     this.isNewWord = true;
