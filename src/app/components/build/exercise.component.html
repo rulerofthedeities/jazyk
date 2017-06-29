@@ -71,8 +71,14 @@
       <div class="btn btn-success"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onSaveNewWord(exerciseForm.value)"
-        *ngIf="exerciseForm.valid">
+        *ngIf="!exercise && exerciseForm.valid">
         {{text.Addword}}
+      </div>
+      <div class="btn btn-success"
+        [attr.disabled] = "isSaving ? '' : null"
+        (click)="onEditWord(exerciseForm.value)"
+        *ngIf="exercise && exerciseForm.valid">
+        {{text.Editword}}
       </div>
     </div>
   </div>

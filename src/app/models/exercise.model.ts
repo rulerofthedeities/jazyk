@@ -76,22 +76,18 @@ export interface WordPairDetail {
   us?: WordDetail;
 }
 
-interface ExerciseWord {
-  word: string;
-  aspect?: boolean;
-  followingCase?: boolean;
-  genus?: boolean;
-}
-
 export interface Exercise {
   _id?: string;
   nr: number;
+  localWord: string;
+  foreignWord: string;
   wordTpe?: string;
-  score?: number;
+  aspect?: string;
+  followingCase?: string;
+  genus?: string;
   image?: string;
   audios?: string[];
-  local: ExerciseWord;
-  foreign: ExerciseWord;
+  score?: number;
 }
 
 export interface ExerciseTpes {

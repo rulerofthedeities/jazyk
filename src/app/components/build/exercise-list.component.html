@@ -10,25 +10,37 @@
           <span class="fa fa-camera"></span>
         </span>
         <span class="word">
-          {{exercise.local.word}} / {{exercise.foreign.word}}
+          {{exercise._id}} - {{exercise.foreignWord}} / {{exercise.localWord}} / {{exercise.wordTpe}} / {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}}
         </span>
         <div class="pull-right">
           <span 
+            class="btn btn-danger fa fa-trash-o"
+            (click)="onRemoveExercise(confirm, exercise._id)">
+          </span>
+          <span 
             class="btn btn-primary fa fa-pencil"
-            (click)="onEditExercise(i)">
+            (click)="onEditExercise(exercise._id)">
           </span>
           <span 
             class="move fa fa-arrows"
-            (click)="onMoveExercise(i)">
+            (click)="onMoveExercise(exercise._id)">
           </span>
         </div>
       </a>
-      <km-build-exercise *ngIf="i===editing"
+      <km-build-exercise *ngIf="exercise._id===editingId"
         [languagePair]="languagePair"
         [lessonId]="lessonId"
-        [exercise]="exercises[editing]"
+        [exercise]="exercise"
         [text]="text">
       </km-build-exercise>
     </div>
   </div>
 </div>
+
+<km-modal-confirm #confirm
+  [level]="'warning'"
+  [text]="text"
+  (confirmed)="onRemoveConfirmed($event)">
+  <div title>{{text.Warning}}</div>
+  <div message>{{getRemoveMessage()}}</div>
+</km-modal-confirm>

@@ -66,8 +66,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     this.selected = wordpairDetail;
     this.exerciseForm.patchValue({
       foreignWord: wordpairDetail.wordPair[this.lanForeign].word,
-      localWord: wordpairDetail.wordPair[this.lanLocal].word}
-    );
+      localWord: wordpairDetail.wordPair[this.lanLocal].word
+    });
+    if (!this.exercise) {
+      // Update word
+      this.exerciseForm.patchValue({
+        genus: wordpairDetail[this.lanLocal].genus
+      });
+    }
     console.log('selected', wordpairDetail);
   }
 
@@ -78,15 +84,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   private buildNewExercise(formValues: any) {
-    const exercise = {
+    const exercise: Exercise = {
       nr: 1,
-      local: {word: formValues.localWord},
-      foreign: {word: formValues.foreignWord}
+      localWord: formValues.localWord,
+      foreignWord: formValues.foreignWord
     };
 
     if (formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
       console.log('add data from wordpair');
+      exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
+      exercise.genus = this.selected[this.lanForeign].genus;
+      exercise.aspect = this.selected[this.lanForeign].aspect;
+      exercise.followingCase = this.selected[this.lanForeign].followingCase;
     }
 
     this.saveNewExercise(exercise);
@@ -94,17 +104,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
   private saveNewExercise(exercise: Exercise) {
     this.buildService
-      .addExercise(exercise, this.lessonId)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        savedExercise => {
-          console.log('saved exercise ', savedExercise);
-          this.addedExercise.emit(savedExercise);
-          this.exerciseForm.reset();
-          this.isSaving = false;
-        },
-        error => this.errorService.handleError(error)
-      );
+    .addExercise(exercise, this.lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      savedExercise => {
+        console.log('saved exercise ', savedExercise);
+        this.addedExercise.emit(savedExercise);
+        this.exerciseForm.reset();
+        this.isSaving = false;
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private buildForm(exercise: Exercise) {
@@ -115,8 +125,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       });
     } else {
       this.exerciseForm = this.formBuilder.group({
-        localWord: [exercise.local.word, [Validators.required]],
-        foreignWord: [exercise.foreign.word, [Validators.required]]
+        localWord: [exercise.localWord, [Validators.required]],
+        foreignWord: [exercise.foreignWord, [Validators.required]]
       });
     }
 
@@ -132,6 +142,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
         wordpairs => this.wordpairs = wordpairs,
         error => this.errorService.handleError(error)
       );
+    } else {
+      this.lanList = null; // collapse dropdown list
     }
   }
 

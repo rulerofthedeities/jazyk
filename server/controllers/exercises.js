@@ -94,5 +94,22 @@ module.exports = {
       });
     });
     */
+  },
+  removeExercise: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+    const exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);
+
+    console.log('removing exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
+
+    Lesson.findOneAndUpdate(
+      {_id: lessonId},
+      { $pull: { exercises: {_id : exerciseId }}},
+      function(err, result) {
+        response.handleError(err, res, 500, 'Error removing exercise', function(){
+          getCourseWordCount(result.courseId);
+          response.handleSuccess(res, null, 200, 'Removed exercise');
+        });
+      }
+    );
   }
 }

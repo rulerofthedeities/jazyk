@@ -13,24 +13,18 @@ var lanPairSchema = new Schema({
   to: String
 }, {_id: false});
 
-var wordSchema = new Schema({
-  word: {type: String, required: true},
-  hint: String,
-  info: String,
-  aspect: String,
-  followingCase: String,
-  genus: String
-}, {_id: false})
-
 var exerciseSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
-  nr: { type:Number, required: true },
+  nr: { type: Number, required: true },
+  localWord: { type: String, required: true },
+  foreignWord: { type: String, required: true },
+  wordTpe: String,
+  aspect: String,
+  followingCase: String,
+  genus: String,
   image: String,
   audios: [String],
-  wordTpe: String,
-  score: { type: Number, default: 0 },
-  local: wordSchema,
-  foreign: wordSchema
+  score: { type: Number, default: 0 }
 })
 
 var ExerciseTpesSchema = new Schema({
