@@ -92,12 +92,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
     if (formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
-      console.log('add data from wordpair');
       exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.aspect = this.selected[this.lanForeign].aspect;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
+      exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
     }
+
+    console.log('saving exercise ', exercise);
 
     this.saveNewExercise(exercise);
   }
