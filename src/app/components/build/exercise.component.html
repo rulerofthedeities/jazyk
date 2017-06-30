@@ -6,18 +6,17 @@
     <label 
       for="foreignWord" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{languagePair.to}}.png">
+      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
     </label>
     <div class="col-xs-11">
       <input 
         class="form-control" 
         id="foreignWord"
         autocomplete="off"
-        autofocus
         placeholder="{{text['Enterword' + lanForeign]}}"
         required
         formControlName="foreignWord"
-        (focus)="onFocus(foreign.value, lanForeign)"
+        (focus)="onFocus(foreign.value, lanForeign)" 
         (ngModelChange)="onFilterChanged(foreign.value, lanForeign)"
         #foreign>
     </div>
@@ -38,14 +37,13 @@
     <label 
       for="localWord" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{this.languagePair.from}}.png">
+      <img src="/assets/img/flags/{{this.languagePair.from}}.png" class="flag">
     </label>
     <div class="col-xs-11">
       <input 
         class="form-control" 
         id="localWord"
         autocomplete="off"
-        autofocus
         placeholder="{{text['Enterword' + lanLocal]}}"
         required
         formControlName="localWord"
@@ -79,6 +77,12 @@
         (click)="onEditWord(exerciseForm.value)"
         *ngIf="exercise && exerciseForm.valid">
         {{text.Editword}}
+      </div>
+      <div class="btn btn-warning"
+        [attr.disabled] = "isSaving ? '' : null"
+        (click)="onCancelEdit()"
+        *ngIf="exercise">
+        {{text.cancel}}
       </div>
     </div>
   </div>

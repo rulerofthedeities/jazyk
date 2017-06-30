@@ -59,7 +59,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       'Yes',
       'No',
       'Warning',
-      'RemoveWord'
+      'RemoveWord',
+      'cancel'
     ];
     keys = keys.concat(this.utilsService.getWordTypes());
     this.text = this.utilsService.getTranslatedText(translations, keys);

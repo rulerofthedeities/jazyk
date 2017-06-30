@@ -24,6 +24,12 @@ import {ModalConfirmComponent} from '../modals/modal-confirm.component';
       margin-left: 8px;
       font-size: 16px;
     }
+    .word {
+      cursor: default;
+    }
+    .word span {
+      cursor: text;
+    }
   `]
 })
 
@@ -35,6 +41,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   private componentActive = true;
   editingId: string = null;
   removingId: string = null;
+  focusField: string = null;
   isRemoving = false;
 
   constructor(
@@ -42,10 +49,15 @@ export class BuildExerciseListComponent implements OnDestroy {
     private errorService: ErrorService
   ) {}
 
-  onEditExercise(id: string) {
+  onEditExercise(id: string, focus = null) {
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
+      this.focusField = focus;
     }
+  }
+
+  onCancelEdit() {
+    this.editingId = null;
   }
 
   onRemoveExercise(confirm: ModalConfirmComponent, id: string) {
@@ -101,7 +113,6 @@ export class BuildExerciseListComponent implements OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-
   }
 
   ngOnDestroy() {

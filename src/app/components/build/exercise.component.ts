@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, AfterViewInit, ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
@@ -16,15 +16,22 @@ import 'rxjs/add/operator/takeWhile';
       padding: 16px;
       border-radius: 6px;
     }
+    .flag {
+      border: 1px solid #333;
+      border-radius: 3px;
+      box-shadow: 2px 2px 4px #999;
+    }
   `]
 })
 
-export class BuildExerciseComponent implements OnInit, OnDestroy {
+export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() exercise: Exercise;
   @Input() text: Object;
+  @Input() focus: string;
   @Output() addedExercise = new EventEmitter<Exercise>();
+  @Output() cancelEdit = new EventEmitter<boolean>();
   private componentActive = true;
   private isSelected = false;
   private selected: WordPairDetail;
@@ -39,13 +46,22 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private buildService: BuildService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private element: ElementRef,
+    private ref: ChangeDetectorRef,
+    private renderer: Renderer
   ) {}
 
   ngOnInit() {
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
     this.buildForm(this.exercise);
+  }
+
+  ngAfterViewInit() {
+    const focusElement = this.element.nativeElement.querySelector('#' + this.focus);
+    this.renderer.invokeElementMethod(focusElement, 'focus', []);
+    this.ref.detectChanges();
   }
 
   onFocus(word: string, lan: string) {
@@ -77,10 +93,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     console.log('selected', wordpairDetail);
   }
 
-
   onSaveNewWord(formValues: any) {
     this.isSaving = true;
     this.buildNewExercise(formValues);
+  }
+
+  onCancelEdit() {
+    this.cancelEdit.emit(true);
   }
 
   private buildNewExercise(formValues: any) {
@@ -96,7 +115,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.aspect = this.selected[this.lanForeign].aspect;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
-      exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
+      if (this.selected[this.lanForeign].audios) {
+        exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
+      }
     }
 
     console.log('saving exercise ', exercise);

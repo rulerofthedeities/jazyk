@@ -10,7 +10,12 @@
           <span class="fa fa-camera"></span>
         </span>
         <span class="word">
-          {{exercise._id}} - {{exercise.foreignWord}} / {{exercise.localWord}} / {{exercise.wordTpe}} / {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}}
+          <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+            <strong>{{exercise.foreignWord}}</strong>
+          </span> / 
+          <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+            {{exercise.localWord}}
+          </span> / {{exercise.wordTpe}} / {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}}
         </span>
         <div class="pull-right">
           <span 
@@ -31,7 +36,9 @@
         [languagePair]="languagePair"
         [lessonId]="lessonId"
         [exercise]="exercise"
-        [text]="text">
+        [text]="text"
+        [focus]="focusField"
+        (cancelEdit)="onCancelEdit()">
       </km-build-exercise>
     </div>
   </div>

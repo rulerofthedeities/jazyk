@@ -1,6 +1,7 @@
 import {Directive, HostListener, Input, Output, EventEmitter} from '@angular/core';
 
-@Directive({selector: '[pressed]'})
+@Directive({selector: '[kmPressed]'})
+
 export class GetKeyPressDirective {
   @Input() keyPressed: string;
   @Output() onKeyPressed = new EventEmitter();
