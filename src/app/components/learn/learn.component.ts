@@ -60,35 +60,7 @@ export class LearnComponent implements OnInit, OnDestroy {
   }
 
   private setText(translations: Translation[]) {
-    let keys = [
-      'Chapter',
-      'Study',
-      'Test',
-      'Next',
-      'Previous',
-      'Skip',
-      'Restart',
-      'RestartStudy',
-      'Practise',
-      'PractiseStudy',
-      'Yes',
-      'No',
-      'Warning',
-      'hint',
-      'imperfective',
-      'perfective',
-      'biaspectual',
-      'aspectless',
-      'case1',
-      'case2',
-      'case3',
-      'case4',
-      'case5',
-      'case6',
-      'case7'
-    ];
-    keys = keys.concat(this.utilsService.getWordTypes());
-    this.text = this.utilsService.getTranslatedText(translations, keys);
+    this.text = this.utilsService.getTranslatedText(translations);
   }
 
   private getTranslations() {

@@ -12,22 +12,28 @@ import {ModalConfirmComponent} from '../modals/modal-confirm.component';
     .move {
       margin-left: 10px;
     }
+    .items {
+      float: left;
+    }
     .item {
       color: gainsboro ;
       font-size: 20px;
-      width: 32px;
+      max-width: 21px;
+      text-align: center;
+      display: inline-block;
     }
     .item.active {
       color: black;
     }
-    .word {
+    .words {
+      display: inline-block;
       margin-left: 8px;
       font-size: 16px;
     }
-    .word {
+    .words {
       cursor: default;
     }
-    .word span {
+    .words span {
       cursor: text;
     }
   `]

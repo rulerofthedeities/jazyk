@@ -1,13 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-/*
-var exerciseTypeSchema = new Schema({
-  nr: {type: Number, required: true},
-  direction: {type: Number, required: true}
-}, {_id: false})
-*/
-
 var lanPairSchema = new Schema({
   from: String,
   to: String
@@ -22,6 +15,10 @@ var exerciseSchema = new Schema({
   aspect: String,
   followingCase: String,
   genus: String,
+  hint: String,
+  info: String,
+  localAlt: String,
+  foreignAlt: String,
   image: String,
   audios: [String],
   score: { type: Number, default: 0 }

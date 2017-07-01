@@ -1,10 +1,15 @@
 <div class="wordlist">
   <ul class="list-group">
-    <li *ngFor="let wordpair of wordpairs; let i = index"
-      class="list-group-item"
-      (click)="selectListWord(i)"
-      [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
-      {{showListWord(wordpair)}}
+    <div class="list">
+      <li *ngFor="let wordpair of wordpairs; let i = index"
+        class="list-group-item"
+        (click)="selectListWord(i)"
+        [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+        {{showListWord(wordpair)}}
+      </li>
+    </div>
+    <li class="closetab btn btn-info" (click)="onClose()">
+      <span class="fa fa-times"></span> Close
     </li>
   </ul>
 </div>

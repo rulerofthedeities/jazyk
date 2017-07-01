@@ -1,22 +1,7 @@
 <div class="exercises">
   <div class="list-group">
     <div *ngFor="let exercise of exercises; let i = index;">
-      <a class="list-group-item">
-        {{exercise.nr + 1}}. 
-        <span class="item" [class.active]="!!exercise.audios && exercise.audios.length > 0">
-          <span class="fa fa-volume-up"></span>
-        </span>
-        <span class="item" [class.active]="!!exercise.image">
-          <span class="fa fa-camera"></span>
-        </span>
-        <span class="word">
-          <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-            <strong>{{exercise.foreignWord}}</strong>
-          </span> / 
-          <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-            {{exercise.localWord}}
-          </span> / {{exercise.wordTpe}} / {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}}
-        </span>
+      <li class="list-group-item row">
         <div class="pull-right">
           <span 
             class="btn btn-danger fa fa-trash-o"
@@ -31,7 +16,32 @@
             (click)="onMoveExercise(exercise._id)">
           </span>
         </div>
-      </a>
+        <div class="items">
+          {{exercise.nr + 1}}. 
+          <span class="item" [class.active]="!!exercise.audios && exercise.audios.length > 0">
+            <span class="fa fa-volume-up"></span>
+          </span>
+          <span class="item" [class.active]="!!exercise.image">
+            <span class="fa fa-camera"></span>
+          </span>
+        </div>
+        <div class="col-xs-4">
+          <div class="words">
+            <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+              <strong>{{exercise.foreignWord}}</strong>
+            </span> / 
+            <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+              {{exercise.localWord}}
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-1">
+          {{exercise.wordTpe}}
+        </div>
+        <div class="col-xs-3">
+          {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}} / {{exercise.hint}} / {{exercise.info}} / {{exercise.localAlt}} / {{exercise.foreignAlt}}
+        </div>
+      </li>
       <km-build-exercise *ngIf="exercise._id===editingId"
         [languagePair]="languagePair"
         [lessonId]="lessonId"

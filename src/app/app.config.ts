@@ -1,3 +1,3 @@
 export const config = {
-  language: 'nl-nl'
+  language: 'fr-fr'
 };

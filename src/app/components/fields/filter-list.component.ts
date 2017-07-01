@@ -16,6 +16,7 @@ export class FilterListComponent implements OnInit, OnDestroy {
   @Input() languageId: string;
   @Input() wordpairs: WordPair[];
   @Output() selectedWord = new EventEmitter<WordPairDetail>();
+  @Output() close = new EventEmitter<boolean>();
   private componentActive = true;
   selectedListWord: number;
 
@@ -34,6 +35,10 @@ export class FilterListComponent implements OnInit, OnDestroy {
   selectListWord(i: number) {
     this.selectedListWord = i;
     this.getWordPairDetails(i);
+  }
+
+  onClose() {
+    this.close.emit(true);
   }
 
   showListWord(wordpair: WordPair): string {

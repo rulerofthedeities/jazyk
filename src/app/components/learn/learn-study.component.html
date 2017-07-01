@@ -23,7 +23,7 @@
             <span 
               class="word" 
               kmWordColor 
-                [identifier]="currentExercise[lanForeign].genus" 
+                [identifier]="currentExercise.genus" 
                 [tpe]="currentExercise.wordTpe"
                 [active]="settings.color">
               {{wordForeign}}
@@ -40,12 +40,12 @@
           </h1>
           <div class="wordinfo">
             <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
-            <div class="label label-default">{{text[currentExercise[lanForeign].aspect]}}</div>
-            <div class="hint" *ngIf="currentExercise[lanLocal]?.hint">
-              {{text.hint}}: {{currentExercise[lanLocal]?.hint}}
+            <div class="label label-default">{{text[currentExercise.aspect]}}</div>
+            <div class="hint" *ngIf="currentExercise.hint">
+              {{text.hint}}: {{currentExercise.hint}}
             </div>
-            <div class="info" *ngIf="currentExercise[lanLocal]?.info">
-              {{currentExercise[lanLocal]?.info}}
+            <div class="info" *ngIf="currentExercise.info">
+              {{currentExercise.info}}
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
         <h3>Gestudeerde woorden:</h3>
         <div class="studiedList">
           <div *ngFor="let exercise of exercises; let i=index">
-            {{exercise[lanForeign].word}} <span class="studiedLocal">- {{exercise[lanLocal].word}}</span>
+            {{exercise.foreignWord}} <span class="studiedLocal">- {{exercise.localWord}}</span>
           </div>
         </div>
         <div class="btn btn-success" (click)="onNextWord(1)">
@@ -93,7 +93,7 @@
       <span class="fa fa-tint"
         (click)="onToggleColor()"
         [class.on] = "settings.color"
-        [class.inactive]="!currentExercise[lanForeign].genus">
+        [class.inactive]="!currentExercise.genus">
       </span>
       <span
         (click)="onNextDelay()"
@@ -139,12 +139,3 @@
   <div title>{{text.Warning}}</div>
   <div message>Ben je zeker dat je de studie wil onderbreken?</div>
 </km-modal-confirm>
-
-<!--
-<km-modal-settings #settings
-  [tpe]="'study'"
-  (updated)="onSettingsUpdated($event)">
-  <div title>{{text.Warning}}</div>
-  <div message>Ben je zeker dat je de studie wil onderbreken?</div>
-</km-modal-confirm>
--->

@@ -31,9 +31,9 @@ export class UtilsService {
     return txt;
   }
 
-  getTranslatedText(translations: Translation[], keys: string[]): Object {
+  getTranslatedText(translations: Translation[]): Object {
     const text = {};
-    keys.forEach(key => {text[key] = this.getTranslation(translations, key);})
+    translations.forEach(translation => {text[translation.key] = translation.txt})
     return text;
   }
 
@@ -46,27 +46,27 @@ export class UtilsService {
     const languages: Language[] = [
       {
         _id: 'en-us',
-        name: 'Amerikaans Engels',
+        name: 'AE',
         active: true
       },
       {
         _id: 'en-gb',
-        name: 'Brits Engels',
+        name: 'BE',
         active: true
       },
       {
         _id: 'de-de',
-        name: 'Duits',
+        name: 'DE',
         active: false
       },
       {
         _id: 'fr-fr',
-        name: 'Frans',
+        name: 'FR',
         active: true
       },
       {
         _id: 'cs-cz',
-        name: 'Tsjechisch',
+        name: 'CS',
         active: true
       }
     ];

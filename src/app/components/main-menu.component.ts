@@ -23,7 +23,6 @@ import 'rxjs/add/operator/takeWhile';
 
 export class MainMenuComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  private translations: Translation[];
   text: Object = {};
 
   constructor(
@@ -35,9 +34,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getTranslations();
   }
 
-  private setText() {
-    const keys = ['Learn', 'Courses'];
-    this.text = this.utilsService.getTranslatedText(this.translations, keys);
+  private setText(translations: Translation[]) {
+    this.text = this.utilsService.getTranslatedText(translations);
   }
 
   private getTranslations() {
@@ -46,10 +44,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .fetchTranslations(lan, 'MainMenuComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
-      translations => {
-        this.translations = translations;
-        this.setText();
-      },
+      translations => this.setText(translations),
       error => this.errorService.handleError(error)
     );
   }

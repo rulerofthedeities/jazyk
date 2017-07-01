@@ -21,6 +21,11 @@ import 'rxjs/add/operator/takeWhile';
       border-radius: 3px;
       box-shadow: 2px 2px 4px #999;
     }
+    .clearer {
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 2;
+    }
   `]
 })
 
@@ -60,8 +65,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   ngAfterViewInit() {
     const focusElement = this.element.nativeElement.querySelector('#' + this.focus);
-    this.renderer.invokeElementMethod(focusElement, 'focus', []);
-    this.ref.detectChanges();
+    if (focusElement) {
+      this.renderer.invokeElementMethod(focusElement, 'focus', []);
+      this.ref.detectChanges();
+    }
   }
 
   onFocus(word: string, lan: string) {
@@ -102,6 +109,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.cancelEdit.emit(true);
   }
 
+  onCloseDropdown() {
+    this.lanList = null;
+  }
+
   private buildNewExercise(formValues: any) {
     const exercise: Exercise = {
       nr: 1,
@@ -115,8 +126,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.aspect = this.selected[this.lanForeign].aspect;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
+      exercise.hint = this.selected.wordPair[this.lanForeign].hint;
+      exercise.info = this.selected.wordPair[this.lanForeign].info;
       if (this.selected[this.lanForeign].audios) {
         exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
+      }
+      if (this.selected[this.lanForeign].images) {
+        exercise.image = this.selected[this.lanForeign].images[0].s3;
+      }
+      if (this.selected.wordPair[this.lanForeign].alt) {
+        exercise.foreignAlt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
+      }
+      if (this.selected.wordPair[this.lanLocal].alt) {
+        exercise.localAlt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
       }
     }
 

@@ -10,6 +10,7 @@ export class LanguageSelectorComponent implements OnInit {
   @Input() languages: [Language];
   @Input() private currentLanguage: Language;
   @Input() disabled = false;
+  @Input() text: Object = {};
   @Output() languageSelected = new EventEmitter<Language>();
   selectedLanguage: Language;
   showDropdown = false;
@@ -40,6 +41,8 @@ export class LanguageSelectorComponent implements OnInit {
   }
 
   private setSelectedLanguage(currentLanguage: Language) {
-    this.selectedLanguage = this.languages.filter( language => language._id === currentLanguage._id)[0];
+    if (this.languages) {
+      this.selectedLanguage = this.languages.filter( language => language._id === currentLanguage._id)[0];
+    }
   }
 }

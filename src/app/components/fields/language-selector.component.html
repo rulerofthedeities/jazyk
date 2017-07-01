@@ -2,7 +2,7 @@
   <div class="selector" [class.disabled]="disabled">
     <div class="input-group col-xs-12">
       <div class="btn btn-default btn-dropdown btn-lg" (click)="toggleDropdown()">
-        <img src="/assets/img/flags/{{selectedLanguage._id}}.png" alt="{{selectedLanguage.name}}" class="flag" />{{selectedLanguage.name}}<span class="caret" *ngIf="!disabled"></span>
+        <img src="/assets/img/flags/{{selectedLanguage._id}}.png" alt="{{text[selectedLanguage.name]}}" class="flag" />{{text[selectedLanguage.name]}}<span class="caret" *ngIf="!disabled"></span>
       </div>
     </div>
     <ul class="list-group dropdown" *ngIf="showDropdown">
@@ -13,7 +13,7 @@
         (click)="selectLanguage(i)"
         (mouseover)="hoverLanguage(i)"
         >
-        <img src="/assets/img/flags/{{lan._id}}.png" alt="{{lan.name}}" class="flag" />{{lan.name}}
+        <img src="/assets/img/flags/{{lan._id}}.png" alt="{{text[lan.name]}}" class="flag" />{{text[lan.name]}}
       </li>
     </ul>
   </div>

@@ -51,19 +51,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   private setText(translations: Translation[]) {
-    let keys = [
-      'Enterword' + this.lanForeign,
-      'Enterword' + this.lanLocal,
-      'Addword',
-      'Editword',
-      'Yes',
-      'No',
-      'Warning',
-      'RemoveWord',
-      'cancel'
-    ];
-    keys = keys.concat(this.utilsService.getWordTypes());
-    this.text = this.utilsService.getTranslatedText(translations, keys);
+    this.text = this.utilsService.getTranslatedText(translations);
   }
 
   private getLesson(lessonId: string) {

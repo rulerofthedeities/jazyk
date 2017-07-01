@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Chapter, Course, Lesson, Language} from '../../models/course.model';
+import {Chapter, Course, Lesson, Language, Translation} from '../../models/course.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
@@ -29,6 +29,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   isEditLesson = false;
   isSavingPublic = false;
   isSavingPublished = false;
+  text: Object = {};
 
   constructor(
     private router: Router,
@@ -40,6 +41,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getTranslations();
     this.languages = this.utilsService.getActiveLanguages();
     this.route.params
     .takeWhile(() => this.componentActive)
@@ -243,6 +245,22 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         error => this.errorService.handleError(error)
       );
     }
+  }
+
+  private setText(translations: Translation[]) {
+    this.text = this.utilsService.getTranslatedText(translations);
+  }
+
+  private getTranslations() {
+    this.utilsService
+    .fetchTranslations(config.language.slice(0, 2), 'LessonComponent')
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      translations => {
+        this.setText(translations);
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

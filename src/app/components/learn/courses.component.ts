@@ -32,10 +32,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getTranslations();
     this.languages = this.utilsService.getActiveLanguages();
     // TODO: get language for user from settings
     this.selectedLanguage = this.languages[0];
-    this.getTranslations();
   }
 
   onLanguageSelected(newLanguage: Language) {
@@ -48,8 +48,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   private setText(translations: Translation[]) {
-    const keys = ['newcourse', 'startcourse', 'updatecourse'];
-    this.text = this.utilsService.getTranslatedText(translations, keys);
+    this.text = this.utilsService.getTranslatedText(translations);
   }
 
   private getTranslations() {

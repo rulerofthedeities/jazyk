@@ -28,6 +28,7 @@
         [wordpairs]="wordpairs"
         [languageId]="lanList"
         [languagePair]="languagePair"
+        (close)="onCloseDropdown()"
         (selectedWord)="onWordSelected($event)">
       </km-filter-list>
     </div>
@@ -59,6 +60,7 @@
         [wordpairs]="wordpairs"
         [languageId]="lanList"
         [languagePair]="languagePair"
+        (close)="onCloseDropdown()"
         (selectedWord)="onWordSelected($event)">
       </km-filter-list>
     </div>

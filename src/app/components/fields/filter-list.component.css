@@ -1,6 +1,11 @@
 .wordlist {
   margin-top: -16px;
 }
+.list {
+  border: 1px solid #5bc0de;
+  border-top: 0;
+  border-radius: 3px;
+}
 li {
   cursor:pointer;
 }
@@ -9,4 +14,9 @@ li {
 }
 .list-group-item.inactive:hover {
   background-color:#eee;
+}
+.closetab {
+  text-align: center;
+  max-width: 120px;
+  float: right;
 }

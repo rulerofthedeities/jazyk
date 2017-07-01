@@ -85,6 +85,10 @@ export interface Exercise {
   aspect?: string;
   followingCase?: string;
   genus?: string;
+  hint?: string;
+  info?: string;
+  localAlt?: string;
+  foreignAlt?: string;
   image?: string;
   audios?: string[];
   score?: number;
