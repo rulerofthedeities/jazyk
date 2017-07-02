@@ -91,7 +91,7 @@ export class BuildExerciseListComponent implements OnDestroy {
       msg = this.text['RemoveWord'];
       const exerciseToRemove = this.exercises.find(exercise => exercise._id === this.removingId);
       if (exerciseToRemove) {
-        const wordToRemove = exerciseToRemove.foreignWord;
+        const wordToRemove = exerciseToRemove.foreign.word;
         msg = msg.replace('%s', wordToRemove);
       }
     }

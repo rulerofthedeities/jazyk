@@ -28,10 +28,10 @@
         <div class="col-xs-4">
           <div class="words">
             <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-              <strong>{{exercise.foreignWord}}</strong>
+              <strong>{{exercise.foreign?.word}}</strong>
             </span> / 
             <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-              {{exercise.localWord}}
+              {{exercise.local?.word}}
             </span>
           </div>
         </div>
@@ -39,7 +39,7 @@
           {{exercise.wordTpe}}
         </div>
         <div class="col-xs-3">
-          {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}} / {{exercise.hint}} / {{exercise.info}} / {{exercise.localAlt}} / {{exercise.foreignAlt}}
+          {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}} / {{exercise.foreign?.hint}} / {{exercise.foreign?.info}} / {{exercise.foreign?.alt}}
         </div>
       </li>
       <km-build-exercise *ngIf="exercise._id===editingId"

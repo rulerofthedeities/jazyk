@@ -9,7 +9,12 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'course.component.html'
+  templateUrl: 'course.component.html',
+  styles: [`
+    .panel {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  `]
 })
 
 export class BuildCourseComponent implements OnInit, OnDestroy {
@@ -253,7 +258,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language.slice(0, 2), 'LessonComponent')
+    .fetchTranslations(config.language.slice(0, 2), 'CourseComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

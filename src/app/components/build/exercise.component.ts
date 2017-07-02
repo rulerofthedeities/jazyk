@@ -9,24 +9,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-build-exercise',
   templateUrl: 'exercise.component.html',
-  styles: [`
-    :host {
-      display: block;
-      background-color: #efefef;
-      padding: 16px;
-      border-radius: 6px;
-    }
-    .flag {
-      border: 1px solid #333;
-      border-radius: 3px;
-      box-shadow: 2px 2px 4px #999;
-    }
-    .clearer {
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 2;
-    }
-  `]
+  styleUrls: ['exercise.component.css']
 })
 
 export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -113,32 +96,56 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.lanList = null;
   }
 
+  onAddAlt(tpe: string, word: string) {
+    console.log('adding alt', word);
+    if (word) {
+      if (this.exercise[tpe].alt) {
+        this.exercise[tpe].alt += '|';
+      }
+      this.exercise[tpe].alt += word;
+    }
+  }
+
+  onRemoveAlt(tpe: string, i: number) {
+    const alts: string[] = this.exercise[tpe].alt.split('|');
+    this.exercise[tpe].alt = alts.filter((alt, alti) => alti !== i).join('|');
+  }
+
   private buildNewExercise(formValues: any) {
     const exercise: Exercise = {
       nr: 1,
-      localWord: formValues.localWord,
-      foreignWord: formValues.foreignWord
+      local: {word: formValues.localWord},
+      foreign: {word: formValues.foreignWord}
     };
+    const foreignAnnotations: string[] = [];
 
     if (formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
+      /* Foreign */
+      exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
+      exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
       exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
-      exercise.aspect = this.selected[this.lanForeign].aspect;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
-      exercise.hint = this.selected.wordPair[this.lanForeign].hint;
-      exercise.info = this.selected.wordPair[this.lanForeign].info;
+      if (this.selected[this.lanForeign].aspect) {
+        foreignAnnotations.push(this.selected[this.lanForeign].aspect);
+      }
+      exercise.foreign.annotations = foreignAnnotations.join('|');
+      console.log('annotations', foreignAnnotations);
+      if (this.selected.wordPair[this.lanForeign].alt) {
+        exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
+      }
       if (this.selected[this.lanForeign].audios) {
         exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
       }
       if (this.selected[this.lanForeign].images) {
         exercise.image = this.selected[this.lanForeign].images[0].s3;
       }
-      if (this.selected.wordPair[this.lanForeign].alt) {
-        exercise.foreignAlt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
-      }
+      /* Local */
+      exercise.local.hint = this.selected.wordPair[this.lanLocal].hint;
+      exercise.local.info = this.selected.wordPair[this.lanLocal].info;
       if (this.selected.wordPair[this.lanLocal].alt) {
-        exercise.localAlt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
+        exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
       }
     }
 
@@ -170,8 +177,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       });
     } else {
       this.exerciseForm = this.formBuilder.group({
-        localWord: [exercise.localWord, [Validators.required]],
-        foreignWord: [exercise.foreignWord, [Validators.required]]
+        localWord: [exercise.local.word, [Validators.required]],
+        foreignWord: [exercise.foreign.word, [Validators.required]]
       });
     }
 

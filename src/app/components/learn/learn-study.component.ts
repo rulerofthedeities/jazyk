@@ -173,8 +173,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (!this.isStudyDone) {
       this.currentExercise = this.currentExercises[this.current];
       this.showLocal = false;
-      this.wordLocal = this.currentExercise.localWord;
-      this.wordForeign = this.currentExercise.foreignWord;
+      this.wordLocal = this.currentExercise.local.word;
+      this.wordForeign = this.currentExercise.foreign.word;
       this.timeDelay();
     }
   }

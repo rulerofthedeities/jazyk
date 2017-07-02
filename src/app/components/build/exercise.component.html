@@ -2,6 +2,8 @@
   [formGroup]="exerciseForm"
   class="form-horizontal">
 
+  <!-- FOREIGN WORD -->
+  
   <div class="form-group">
     <label 
       for="foreignWord" 
@@ -33,6 +35,46 @@
       </km-filter-list>
     </div>
   </div>
+
+  <!-- UPDATE FOREIGN -->
+
+  <div class="form-group">
+    <label 
+      for="foreignAlt" 
+      class="control-label col-xs-1">
+    </label>
+    <div 
+      class="control-label col-xs-3">
+      <div class="input-group">
+        <span class="input-group-addon">
+          Alt.: 
+        </span>
+        <input 
+          type="text"
+          class="form-control" 
+          id="foreignAlt"
+          autocomplete="off"
+          #altforeign>
+        <span class="input-group-btn">
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="onAddAlt('foreign', altforeign.value)">
+            Add
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="col-xs-8">
+
+      <ul class="list-inline" *ngIf="exercise.foreign.alt">
+        <li *ngFor="let alt of exercise.foreign.alt.split('|'); let i = index" class="list-group-item">
+          {{alt}} <span class="fa fa-times" (click)="onRemoveAlt('foreign', i)"></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
 
   <div class="form-group">
     <label 

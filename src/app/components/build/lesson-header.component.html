@@ -51,21 +51,24 @@
             class="fa" 
             [ngClass]="{'fa-check': control.value, 'fa-times': !control.value}">
           </span>
+          <span *ngIf="i > 0"
+            (click)="onToggleBidirectional($event, i)"
+            [class.sel]="bidirectional[i] && control.value"
+            class="fa fa-exchange">
+          </span>
           <input 
             type="checkbox"
             name="options"
             value="{{value-1}}"
             [formControl]="control">
-            {{tpeLabels[i]}}
+            {{text[tpeLabels[i]]}}
         </label>
       </div>
     </div>
   </div>
 
   <!-- BUTTONS -->
-
-  <div class="btn btn-alert" (click)="test(lessonForm.value)">Test</div>
-
+  
   <div class="row">
     <div class="col-xs-10 col-xs-offset-2">
 

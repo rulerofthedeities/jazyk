@@ -41,11 +41,11 @@
           <div class="wordinfo">
             <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
             <div class="label label-default">{{text[currentExercise.aspect]}}</div>
-            <div class="hint" *ngIf="currentExercise.hint">
-              {{text.hint}}: {{currentExercise.hint}}
+            <div class="hint" *ngIf="currentExercise.foreign?.hint">
+              {{text.hint}}: {{currentExercise.foreign?.hint}}
             </div>
-            <div class="info" *ngIf="currentExercise.info">
-              {{currentExercise.info}}
+            <div class="info" *ngIf="currentExercise.foreign?.info">
+              {{currentExercise.foreign?.info}}
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
         <h3>Gestudeerde woorden:</h3>
         <div class="studiedList">
           <div *ngFor="let exercise of exercises; let i=index">
-            {{exercise.foreignWord}} <span class="studiedLocal">- {{exercise.localWord}}</span>
+            {{exercise.foreign?.word}} <span class="studiedLocal">- {{exercise.local.word}}</span>
           </div>
         </div>
         <div class="btn btn-success" (click)="onNextWord(1)">

@@ -76,29 +76,37 @@ export interface WordPairDetail {
   us?: WordDetail;
 }
 
+interface ExerciseWord {
+  word: string;
+  annotations?: string;
+  hint?: string;
+  info?: string;
+  alt?: string;
+}
+
 export interface Exercise {
   _id?: string;
   nr: number;
-  localWord: string;
-  foreignWord: string;
+  local: ExerciseWord;
+  foreign: ExerciseWord;
   wordTpe?: string;
-  aspect?: string;
   followingCase?: string;
   genus?: string;
-  hint?: string;
-  info?: string;
-  localAlt?: string;
-  foreignAlt?: string;
   image?: string;
   audios?: string[];
   score?: number;
 }
 
+interface ExerciseTpe {
+  active: boolean;
+  bidirectional: boolean;
+}
+
 export interface ExerciseTpes {
-  learn: boolean;
-  practise: boolean;
-  test: boolean;
-  exam: boolean;
+  learn: ExerciseTpe;
+  practise: ExerciseTpe;
+  test: ExerciseTpe;
+  exam: ExerciseTpe;
 }
 
 /*

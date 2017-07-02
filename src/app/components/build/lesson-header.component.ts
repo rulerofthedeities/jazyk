@@ -18,6 +18,15 @@ import {AutocompleteComponent} from '../fields/autocomplete.component';
     .fa-times {
       color: red;
     }
+    .fa-exchange {
+      color: #ccc;
+    }
+    .fa-exchange:hover {
+      color: #999;
+    }
+    .fa-exchange.sel {
+      color: green;
+    }
   `]
 })
 
@@ -28,16 +37,18 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() lessons: Lesson[];
   @Input() chapters: Chapter[];
   @Input() nr: number;
+  @Input() text: Object;
   @Output() done = new EventEmitter<Lesson>();
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
+  private bidirectional = [false, true, false, false];
   lessonForm: FormGroup;
   chapterForm: FormGroup;
   isFormReady = false;
   isNew = true;
   isEditMode = false;
   isSubmitted = false;
-  tpeLabels = ['Leer', 'Oefen', 'Test', 'Examen'];
+  tpeLabels = ['Study', 'Practise', 'Test', 'Exam'];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -53,46 +64,9 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  createNewLesson() {
-    this.isNew = true;
-    this.isEditMode = true;
-    this.lesson = {
-      _id: '',
-      courseId: this.courseId,
-      languagePair: this.languagePair,
-      name: '',
-      nr: 1,
-      chapter: '',
-      chapterNr: 1,
-      exerciseTpes: {
-        learn: true,
-        practise: true,
-        test: true,
-        exam: true
-      },
-      exercises: [],
-      difficulty: 0,
-      isPublished: false
-    };
-    this.buildForm();
-  }
-
   editLesson() {
     this.isNew = false;
     this.isEditMode = true;
-  }
-
-  buildForm() {
-    const exerciseTpeControls: FormControl[] = [];
-    for (let i = 0; i < 4; i++) {
-      exerciseTpeControls.push(new FormControl(true));
-    }
-    this.lessonForm = this.formBuilder.group({
-      name: [this.lesson.name],
-      nr: [this.lesson.nr],
-      exerciseTpes: new FormArray(exerciseTpeControls)
-    });
-    this.isFormReady = true;
   }
 
   onCancel() {
@@ -114,13 +88,47 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.autocomplete.showList = false;
   }
 
-  test(formvalues: any) {
-    const test = {
-      learn: formvalues.exerciseTpes[0],
-      practise: formvalues.exerciseTpes[1],
-      test: formvalues.exerciseTpes[2],
-      exam: formvalues.exerciseTpes[3]
+  onToggleBidirectional(event: MouseEvent, i: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.bidirectional[i] = !this.bidirectional[i];
+  }
+
+  private createNewLesson() {
+    this.isNew = true;
+    this.isEditMode = true;
+    this.lesson = {
+      _id: '',
+      courseId: this.courseId,
+      languagePair: this.languagePair,
+      name: '',
+      nr: 1,
+      chapter: '',
+      chapterNr: 1,
+      exerciseTpes: {
+        learn: {active: true, bidirectional: false},
+        practise: {active: true, bidirectional: true},
+        test: {active: true, bidirectional: false},
+        exam: {active: true, bidirectional: false}
+      },
+      exercises: [],
+      difficulty: 0,
+      isPublished: false
     };
+    this.buildForm();
+  }
+
+  private buildForm() {
+    const exerciseTpeControls: FormControl[] = [];
+    for (let i = 0; i < 4; i++) {
+      exerciseTpeControls.push(new FormControl(true));
+    }
+    this.lessonForm = this.formBuilder.group({
+      name: [this.lesson.name],
+      nr: [this.lesson.nr],
+      exerciseTpes: new FormArray(exerciseTpeControls)
+    });
+    this.isFormReady = true;
   }
 
   private processLesson(formValues: any) {
@@ -130,10 +138,10 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lesson.chapterNr = chapterNr;
     this.lesson.name = formValues.name;
     this.lesson.exerciseTpes = {
-      learn: formValues.exerciseTpes[0],
-      practise: formValues.exerciseTpes[1],
-      test: formValues.exerciseTpes[2],
-      exam: formValues.exerciseTpes[3]
+      learn: {active: formValues.exerciseTpes[0], bidirectional: this.bidirectional[0]},
+      practise: {active: formValues.exerciseTpes[1], bidirectional: this.bidirectional[1]},
+      test: {active: formValues.exerciseTpes[2], bidirectional: this.bidirectional[2]},
+      exam: {active: formValues.exerciseTpes[3], bidirectional: this.bidirectional[3]}
     };
   }
 

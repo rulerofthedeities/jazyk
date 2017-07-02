@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  background-color: #efefef;
+  padding: 16px;
+  border-radius: 6px;
+  margin: 0 -15px;
+}
+.flag {
+  border: 1px solid #333;
+  border-radius: 3px;
+  box-shadow: 2px 2px 4px #999;
+}
+.clearer {
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 2;
+}
+.fa-times {
+  color: red;
+  font-size: 20px;
+  padding: 0 6px;
+  cursor: pointer;
+}
+
+/* override bootstrap */
+.list-group-item {
+  padding: 5px 6px;
+  background-color: #b5eeff;
+  margin-right: 6px;
+}
+.form-horizontal .control-label {
+  padding-top:0;
+}
