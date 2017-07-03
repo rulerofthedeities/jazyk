@@ -11,6 +11,29 @@ export interface LanPair {
   to: string;
 }
 
+interface Lans {
+  de: string;
+  en: string;
+  fr: string;
+  nl: string;
+}
+
+export interface Case {
+  value: string;
+  code: string;
+}
+
+export interface LanConfig  {
+  tpe: string;
+  code: string;
+  articles?: string[];
+  genera?: string[];
+  aspects?: string[];
+  cases?: Case[];
+  name: Lans;
+  regions?: string[];
+}
+
 export interface Course {
   _id?: string;
   languagePair: LanPair;

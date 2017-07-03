@@ -169,4 +169,11 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  /*** Config ***/
+
+  fetchLanConfig(lanCode: string) {
+    return this.http.get('/api/config/lan/' + lanCode)
+      .map(conn => conn.json().obj)
+      .catch(error => Observable.throw(error));
+  }
 }

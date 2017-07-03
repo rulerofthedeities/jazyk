@@ -3,11 +3,15 @@ var path = require("path"),
     lessons = require("./controllers/lessons"),
     errors = require("./controllers/errors"),
     words = require("./controllers/words"),
+    config = require("./controllers/config"),
     translations = require("./controllers/translations"),
     exercises = require("./controllers/exercises");
 
 module.exports.initialize = function(app, router) {
   router.post('/error', errors.addError);
+
+  router.get('/config/lan/:lan', config.getLanConfig);
+
   router.get('/translations/:lan/:component', translations.getTranslations);
 
   router.get('/courses/:lan', courses.getAllCourses);

@@ -39,6 +39,47 @@
   <!-- UPDATE FOREIGN -->
 
   <div *ngIf="exercise">
+    <!-- Foreign word tpe -->
+    <div class="form-group">
+      <label 
+        class="control-label col-xs-1">
+      </label>
+      <label 
+        for="foreignWordTpe" 
+        class="control-label col-xs-1 txt">
+        Type:
+      </label>
+      <div class="col-xs-4">
+        <select 
+          class="form-control" 
+          id="foreignWordTpe"
+          formControlName="wordTpe" #wordTpe>
+          <option 
+            *ngFor="let tpe of formData.wordTpes"
+            [value]="tpe.name">
+            {{tpe.nameLocal}}
+          </option>
+        </select>
+      </div>
+      <label 
+        *ngIf="wordTpe"
+        class="control-label col-xs-1 txt">
+        {{getDynamicFieldLabel()}}
+      </label>
+      <div class="col-xs-4" *ngIf="wordTpe">
+        <select 
+          *ngIf="customField==='genus'"
+          class="form-control" 
+          id="genus"
+          formControlName="genus">
+          <option 
+            *ngFor="let genus of this.config.genera"
+            [value]="genus">
+            {{genus}}
+          </option>
+        </select>
+      </div>
+    </div>
     <!-- Foreign Alt words -->
     <div class="form-group">
       <label 
@@ -113,8 +154,6 @@
         </ul>
       </div>
     </div>
-    
-
   </div>
 
   <!-- LOCAL WORD -->

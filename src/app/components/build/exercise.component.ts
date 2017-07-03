@@ -1,15 +1,25 @@
 import {Component, Input, Output, OnInit, AfterViewInit,
   ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {LanPair} from '../../models/course.model';
+import {LanPair, LanConfig} from '../../models/course.model';
 import {Filter, WordPair, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface AddFields {
   altForeign: boolean;
   annotationsForeign: boolean;
+}
+
+interface WordTpe {
+  name: string;
+  nameLocal: string;
+}
+
+interface FormData {
+  wordTpes: WordTpe[];
 }
 
 @Component({
@@ -37,8 +47,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   isFormReady = false;
   isSaving = false;
   addFields: AddFields;
+  formData: FormData;
+  customField: string; // field dependent on wordtpe
+  config: LanConfig;
 
   constructor(
+    private utilsService: UtilsService,
     private formBuilder: FormBuilder,
     private buildService: BuildService,
     private errorService: ErrorService,
@@ -51,7 +65,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
     this.addFields = {altForeign: false, annotationsForeign: false};
-    this.buildForm(this.exercise);
+    this.setFormData();
+    this.getConfig(this.lanForeign);
   }
 
   ngAfterViewInit() {
@@ -125,6 +140,63 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.addFields[field] = true;
   }
 
+  getDynamicFieldLabel(): string {
+    let label = '';
+    this.customField = '';
+    if (this.exerciseForm.value['wordTpe']) {
+      switch (this.exerciseForm.value['wordTpe']) {
+        case 'noun':
+          if (this.lanForeign === 'cs' || this.lanForeign === 'de' || this.lanForeign === 'fr') {
+            label = 'gender';
+            this.customField = 'genus';
+          }
+          if (this.lanForeign === 'nl') {
+            label = 'article';
+            this.customField = 'article';
+          }
+          break;
+        case 'preposition':
+          if (this.lanForeign === 'cs' || this.lanForeign === 'de') {
+            label = '+case';
+            this.customField = 'followingCase';
+          }
+          break;
+        case 'verb':
+          if (this.lanForeign === 'cs') {
+            label = 'aspect';
+            this.customField = 'aspect';
+          }
+          break;
+      }
+      label += label === '' ? '' : ':';
+    }
+    return label;
+  }
+
+  private getConfig(lanCode: string) {
+    this.buildService
+    .fetchLanConfig(lanCode)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      config => {
+        if (config) {
+          console.log('config', config);
+          this.config = config;
+          this.buildForm(this.exercise);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private setFormData() {
+    const tpes: string[] = this.utilsService.getWordTypes();
+    this.formData = {wordTpes: []};
+    tpes.forEach(tpe => {
+      this.formData.wordTpes.push({name: tpe, nameLocal: this.text[tpe]});
+    });
+  }
+
   private buildNewExercise(formValues: any) {
     const exercise: Exercise = {
       nr: 1,
@@ -138,10 +210,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Foreign */
       exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
       exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
+      exercise.wordTpe = this.selected.wordPair[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
       this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].aspect);
-      this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].wordTpe);
+      // this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].wordTpe);
       exercise.foreign.annotations = foreignAnnotations.join('|');
       if (this.selected.wordPair[this.lanForeign].alt) {
         exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
@@ -195,7 +268,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     } else {
       this.exerciseForm = this.formBuilder.group({
         localWord: [exercise.local.word, [Validators.required]],
-        foreignWord: [exercise.foreign.word, [Validators.required]]
+        foreignWord: [exercise.foreign.word, [Validators.required]],
+        wordTpe: [exercise.wordTpe],
+        genus: [exercise.genus]
       });
     }
 
