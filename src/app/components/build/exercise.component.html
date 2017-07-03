@@ -38,43 +38,86 @@
 
   <!-- UPDATE FOREIGN -->
 
-  <div class="form-group">
-    <label 
-      for="foreignAlt" 
-      class="control-label col-xs-1">
-    </label>
-    <div 
-      class="control-label col-xs-3">
-      <div class="input-group">
-        <span class="input-group-addon">
-          Alt.: 
-        </span>
-        <input 
-          type="text"
-          class="form-control" 
-          id="foreignAlt"
-          autocomplete="off"
-          #altforeign>
-        <span class="input-group-btn">
-          <button
-            type="button"
-            class="btn btn-success"
-            (click)="onAddAlt('foreign', altforeign.value)">
-            Add
-          </button>
-        </span>
+  <div *ngIf="exercise">
+    <!-- Foreign Alt words -->
+    <div class="form-group">
+      <label 
+        class="control-label col-xs-1">
+      </label>
+      <label 
+        for="foreignAlt" 
+        class="control-label col-xs-1 txt">
+        Alt.:
+      </label>
+      <div class="control-label col-xs-3" *ngIf="addFields['altForeign']">
+        <div class="input-group">
+          <input 
+            type="text"
+            class="form-control" 
+            id="foreignAlt"
+            autocomplete="off"
+            #altforeign>
+          <span class="input-group-btn">
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="onAdd('alt', 'foreign', altforeign.value); altforeign.value = '';">
+              Add
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="col-xs-7">
+        <span (click)="onActivateField('altForeign')" class="fa fa-plus txt add"  *ngIf="!addFields['altForeign']"></span>
+        <ul class="list-inline" *ngIf="exercise.foreign.alt">
+          <li *ngFor="let alt of exercise.foreign.alt.split('|'); let i = index" class="list-group-item">
+            {{alt}} <span class="fa fa-times" (click)="onRemove('alt', 'foreign', i)"></span>
+          </li>
+        </ul>
       </div>
     </div>
-    <div class="col-xs-8">
-
-      <ul class="list-inline" *ngIf="exercise.foreign.alt">
-        <li *ngFor="let alt of exercise.foreign.alt.split('|'); let i = index" class="list-group-item">
-          {{alt}} <span class="fa fa-times" (click)="onRemoveAlt('foreign', i)"></span>
-        </li>
-      </ul>
+    <!-- Foreign Annotations -->
+    <div class="form-group">
+      <label 
+        class="control-label col-xs-1">
+      </label>
+      <label 
+        for="foreignAnnotations" 
+        class="control-label col-xs-1 txt">
+        Annot.:
+      </label>
+      <div class="control-label col-xs-3" *ngIf="addFields['annotationsForeign']">
+        <div class="input-group">
+          <input 
+            type="text"
+            class="form-control" 
+            id="foreignAnnotations"
+            autocomplete="off"
+            #annotationsForeign>
+          <span class="input-group-btn">
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="onAdd('annotations', 'foreign', annotationsForeign.value); annotationsForeign.value = ''">
+              Add
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="col-xs-7">
+        <span (click)="onActivateField('annotationsForeign')" class="fa fa-plus txt add"  *ngIf="!addFields['annotationsForeign']"></span>
+        <ul class="list-inline" *ngIf="exercise.foreign.annotations">
+          <li *ngFor="let annotation of exercise.foreign.annotations.split('|'); let i = index" class="list-group-item">
+            {{annotation}} <span class="fa fa-times" (click)="onRemove('annotations', 'foreign', i)"></span>
+          </li>
+        </ul>
+      </div>
     </div>
+    
+
   </div>
-  
+
+  <!-- LOCAL WORD -->
 
   <div class="form-group">
     <label 

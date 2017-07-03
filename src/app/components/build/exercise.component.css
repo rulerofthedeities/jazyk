@@ -5,6 +5,11 @@
   border-radius: 6px;
   margin: 0 -15px;
 }
+:host.edit {
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #428bca;
+  margin-bottom: 6px;
+}
 .flag {
   border: 1px solid #333;
   border-radius: 3px;
@@ -21,13 +26,28 @@
   padding: 0 6px;
   cursor: pointer;
 }
+.fa-plus {
+  color: green;
+  font-size: 20px;
+  cursor: pointer;
+}
+.txt {
+  line-height: 32px;
+}
+.add {
+  float: left;
+  margin-right: 12px;
+}
 
 /* override bootstrap */
+.list-inline {
+  margin-bottom: 0px;
+}
 .list-group-item {
   padding: 5px 6px;
   background-color: #b5eeff;
   margin-right: 6px;
 }
 .form-horizontal .control-label {
-  padding-top:0;
+  padding-top: 0;
 }

@@ -89,7 +89,6 @@ export interface Exercise {
   nr: number;
   local: ExerciseWord;
   foreign: ExerciseWord;
-  wordTpe?: string;
   followingCase?: string;
   genus?: string;
   image?: string;

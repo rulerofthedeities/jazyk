@@ -1,7 +1,7 @@
 <div class="exercises">
   <div class="list-group">
     <div *ngFor="let exercise of exercises; let i = index;">
-      <li class="list-group-item row">
+      <li class="list-group-item row" [class.editing]="editingId === exercise._id">
         <div class="pull-right">
           <span 
             class="btn btn-danger fa fa-trash-o"
@@ -42,7 +42,7 @@
           {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}} / {{exercise.foreign?.hint}} / {{exercise.foreign?.info}} / {{exercise.foreign?.alt}}
         </div>
       </li>
-      <km-build-exercise *ngIf="exercise._id===editingId"
+      <km-build-exercise *ngIf="exercise._id===editingId" class="edit"
         [languagePair]="languagePair"
         [lessonId]="lessonId"
         [exercise]="exercise"

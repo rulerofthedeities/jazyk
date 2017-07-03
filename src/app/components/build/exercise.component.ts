@@ -1,10 +1,16 @@
-import {Component, Input, Output, OnInit, AfterViewInit, ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, AfterViewInit,
+  ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
 import {Filter, WordPair, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
+
+interface AddFields {
+  altForeign: boolean;
+  annotationsForeign: boolean;
+}
 
 @Component({
   selector: 'km-build-exercise',
@@ -30,6 +36,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   lanList: string; // Language of the current dropdown
   isFormReady = false;
   isSaving = false;
+  addFields: AddFields;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,6 +50,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   ngOnInit() {
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
+    this.addFields = {altForeign: false, annotationsForeign: false};
     this.buildForm(this.exercise);
   }
 
@@ -96,19 +104,25 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.lanList = null;
   }
 
-  onAddAlt(tpe: string, word: string) {
-    console.log('adding alt', word);
+  onAdd(fld: string, tpe: string, word: string) {
+    console.log('adding', fld, word);
     if (word) {
-      if (this.exercise[tpe].alt) {
-        this.exercise[tpe].alt += '|';
+      if (this.exercise[tpe][fld]) {
+        this.exercise[tpe][fld] += '|';
+      } else {
+        this.exercise[tpe][fld] = '';
       }
-      this.exercise[tpe].alt += word;
+      this.exercise[tpe][fld] += word;
     }
   }
 
-  onRemoveAlt(tpe: string, i: number) {
-    const alts: string[] = this.exercise[tpe].alt.split('|');
-    this.exercise[tpe].alt = alts.filter((alt, alti) => alti !== i).join('|');
+  onRemove(fld: string, tpe: string, i: number) {
+    const items: string[] = this.exercise[tpe][fld].split('|');
+    this.exercise[tpe][fld] = items.filter((item, itemi) => itemi !== i).join('|');
+  }
+
+  onActivateField(field: string) {
+    this.addFields[field] = true;
   }
 
   private buildNewExercise(formValues: any) {
@@ -124,14 +138,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Foreign */
       exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
       exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
-      exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
-      if (this.selected[this.lanForeign].aspect) {
-        foreignAnnotations.push(this.selected[this.lanForeign].aspect);
-      }
+      this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].aspect);
+      this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].wordTpe);
       exercise.foreign.annotations = foreignAnnotations.join('|');
-      console.log('annotations', foreignAnnotations);
       if (this.selected.wordPair[this.lanForeign].alt) {
         exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
       }
@@ -152,6 +163,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     console.log('saving exercise ', exercise);
 
     this.saveNewExercise(exercise);
+  }
+
+  private addAnnotation(annotations: string[], newAnnotation: string) {
+    if (newAnnotation) {
+      annotations.push(newAnnotation);
+    }
   }
 
   private saveNewExercise(exercise: Exercise) {

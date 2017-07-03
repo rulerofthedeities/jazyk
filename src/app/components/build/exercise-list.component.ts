@@ -8,35 +8,7 @@ import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 @Component({
   selector: 'km-exercise-list',
   templateUrl: 'exercise-list.component.html',
-  styles: [`
-    .move {
-      margin-left: 10px;
-    }
-    .items {
-      float: left;
-    }
-    .item {
-      color: gainsboro ;
-      font-size: 20px;
-      max-width: 21px;
-      text-align: center;
-      display: inline-block;
-    }
-    .item.active {
-      color: black;
-    }
-    .words {
-      display: inline-block;
-      margin-left: 8px;
-      font-size: 16px;
-    }
-    .words {
-      cursor: default;
-    }
-    .words span {
-      cursor: text;
-    }
-  `]
+  styleUrls: ['exercise-list.component.css']
 })
 
 export class BuildExerciseListComponent implements OnDestroy {
