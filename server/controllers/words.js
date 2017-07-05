@@ -55,5 +55,13 @@ module.exports = {
         });
       });
     });
+  },
+  getWordDetailMedia: function(req, res) {
+    const wordDetailId = new mongoose.Types.ObjectId(req.params.id);
+    WordDetail.findOne({_id: wordDetailId}, {audios:1, images:1}, function(err, media) {
+      response.handleError(err, res, 500, 'Error fetching detail media', function(){
+        response.handleSuccess(res, media, 200, 'Fetched detail media');
+      });
+    });
   }
 }

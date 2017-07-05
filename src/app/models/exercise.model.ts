@@ -86,14 +86,17 @@ interface ExerciseWord {
 
 export interface Exercise {
   _id?: string;
+  wordDetailId?: string;
   nr: number;
   local: ExerciseWord;
   foreign: ExerciseWord;
   wordTpe?: string;
   followingCase?: string;
   genus?: string;
+  article?: string;
+  aspect?: string;
   image?: string;
-  audios?: string[];
+  audio?: string;
   score?: number;
 }
 

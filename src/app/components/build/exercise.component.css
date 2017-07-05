@@ -28,8 +28,9 @@
 }
 .fa-plus {
   color: green;
-  font-size: 20px;
   cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
 }
 .txt {
   line-height: 32px;
@@ -38,7 +39,10 @@
   float: left;
   margin-right: 12px;
 }
-
+.image img {
+  border: 1px solid #333;
+  width: 120px;
+}
 /* override bootstrap */
 .list-inline {
   margin-bottom: 0px;

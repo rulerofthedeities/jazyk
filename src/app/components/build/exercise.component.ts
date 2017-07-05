@@ -5,12 +5,14 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Filter, WordPair, WordPairDetail, Exercise} from '../../models/exercise.model';
+import {Filter, WordPair, WordPairDetail, Exercise, File} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface AddFields {
   altForeign: boolean;
   annotationsForeign: boolean;
+  images: boolean;
+  audios: boolean;
 }
 
 interface WordTpe {
@@ -45,11 +47,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   lanLocal: string;
   lanList: string; // Language of the current dropdown
   isFormReady = false;
+  isMediaLoaded = false;
   isSaving = false;
   addFields: AddFields;
   formData: FormData;
   customField: string; // field dependent on wordtpe
   config: LanConfig;
+  images: File[];
+  audios: File[];
 
   constructor(
     private utilsService: UtilsService,
@@ -64,13 +69,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   ngOnInit() {
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
-    this.addFields = {altForeign: false, annotationsForeign: false};
+    this.addFields = {
+      altForeign: false,
+      annotationsForeign: false,
+      images: false,
+      audios: false
+    };
     this.setFormData();
     this.getConfig(this.lanForeign);
   }
 
   ngAfterViewInit() {
     const focusElement = this.element.nativeElement.querySelector('#' + this.focus);
+    console.log('focus', this.focus, focusElement);
     if (focusElement) {
       this.renderer.invokeElementMethod(focusElement, 'focus', []);
       this.ref.detectChanges();
@@ -90,6 +101,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onWordSelected(wordpairDetail: WordPairDetail) {
+    console.log('word selected');
     this.lanList = null;
     this.isSelected = true;
     this.selected = wordpairDetail;
@@ -140,6 +152,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.addFields[field] = true;
   }
 
+  onLoadMedia() {
+    // Fetching audio and images for wordpairId if wordpairId exists
+    if (!this.isMediaLoaded) {
+      this.loadMedia();
+    }
+  }
+
+  onClickImage(i: number) {
+    this.exercise.image = this.images[i].s3;
+  }
+
   getDynamicFieldLabel(): string {
     let label = '';
     this.customField = '';
@@ -147,27 +170,34 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       switch (this.exerciseForm.value['wordTpe']) {
         case 'noun':
           if (this.lanForeign === 'cs' || this.lanForeign === 'de' || this.lanForeign === 'fr') {
-            label = 'gender';
+            label = 'Gender';
             this.customField = 'genus';
           }
           if (this.lanForeign === 'nl') {
-            label = 'article';
+            label = 'Article';
             this.customField = 'article';
+          }
+          break;
+        case 'adjective':
+          if (this.lanForeign === 'fr') {
+            label = 'Gender';
+            this.customField = 'genus';
           }
           break;
         case 'preposition':
           if (this.lanForeign === 'cs' || this.lanForeign === 'de') {
-            label = '+case';
+            label = '+Case';
             this.customField = 'followingCase';
           }
           break;
         case 'verb':
           if (this.lanForeign === 'cs') {
-            label = 'aspect';
+            label = 'Aspect';
             this.customField = 'aspect';
           }
           break;
       }
+      label = this.text[label] ? this.text[label] : label;
       label += label === '' ? '' : ':';
     }
     return label;
@@ -189,6 +219,24 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     );
   }
 
+  private loadMedia() {
+    if (this.exercise.wordDetailId) {
+      this.buildService
+      .fetchMedia(this.exercise.wordDetailId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        media => {
+          if (media) {
+            this.images = media.images;
+            this.audios = media.audios;
+            this.isMediaLoaded = true;
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
   private setFormData() {
     const tpes: string[] = this.utilsService.getWordTypes();
     this.formData = {wordTpes: []};
@@ -207,20 +255,23 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
     if (formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
+      exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
       /* Foreign */
       exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
       exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
-      exercise.wordTpe = this.selected.wordPair[this.lanForeign].wordTpe;
+      exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
+      exercise.article = this.selected[this.lanForeign].article;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
-      this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].aspect);
+      exercise.aspect = this.selected[this.lanForeign].aspect;
+      // this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].aspect);
       // this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].wordTpe);
       exercise.foreign.annotations = foreignAnnotations.join('|');
       if (this.selected.wordPair[this.lanForeign].alt) {
         exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
       }
       if (this.selected[this.lanForeign].audios) {
-        exercise.audios = this.selected[this.lanForeign].audios.map(audio => audio.s3);
+        exercise.audio = this.selected[this.lanForeign].audios[0].s3;
       }
       if (this.selected[this.lanForeign].images) {
         exercise.image = this.selected[this.lanForeign].images[0].s3;
@@ -269,8 +320,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       this.exerciseForm = this.formBuilder.group({
         localWord: [exercise.local.word, [Validators.required]],
         foreignWord: [exercise.foreign.word, [Validators.required]],
+        localHint: [exercise.local.hint],
+        foreignHint: [exercise.foreign.hint],
         wordTpe: [exercise.wordTpe],
-        genus: [exercise.genus]
+        genus: [exercise.genus],
+        article: [exercise.article],
+        followingCase: [exercise.followingCase],
+        aspect: [exercise.aspect],
+        info: [exercise.foreign.info]
       });
     }
 

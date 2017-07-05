@@ -142,6 +142,13 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchMedia(wordPairId: string) {
+    return this.http
+    .get('/api/wordpair/media/' + wordPairId)
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** EXERCISES ***/
 
   addExercise(exercise: Exercise, lessonId: string) {
@@ -172,8 +179,9 @@ export class BuildService {
   /*** Config ***/
 
   fetchLanConfig(lanCode: string) {
-    return this.http.get('/api/config/lan/' + lanCode)
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/config/lan/' + lanCode)
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
 }

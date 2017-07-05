@@ -43,12 +43,14 @@ export class AudioListComponent {
 
   getLocalName(i: number): string {
     let name = this.audios[i].local;
-    name = name.substring(3);
 
-    let pos = name.indexOf('.');
-    name = name.substring(0, pos !== -1 ? pos : name.length);
-    pos = name.indexOf('#');
-    name = name.substring(0, pos !== -1 ? pos : name.length);
+    if (name) {
+      name = name.substring(3);
+      let pos = name.indexOf('.');
+      name = name.substring(0, pos !== -1 ? pos : name.length);
+      pos = name.indexOf('#');
+      name = name.substring(0, pos !== -1 ? pos : name.length);
+    }
 
     return name;
   }

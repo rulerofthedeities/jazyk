@@ -70,6 +70,21 @@ export class BuildExerciseListComponent implements OnDestroy {
     return msg;
   }
 
+  getInfo(exercise: Exercise): string {
+    let info = '';
+    if (exercise.genus) {
+      info = exercise.genus;
+    } else {
+      if (exercise.followingCase) {
+        info = '+' + exercise.followingCase;
+      } else {
+        info = exercise.genus;
+      }
+    }
+    info = info ? info.toLowerCase() : '';
+    return this.text[info];
+  }
+
   private removeCurrentExercise() {
     this.isRemoving = true;
     this.buildService

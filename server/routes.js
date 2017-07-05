@@ -31,6 +31,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/wordpairs', words.getWordPairs);
   router.get('/wordpair/:id', words.getWordPairDetail);
+  router.get('/wordpair/media/:id', words.getWordDetailMedia);
 
   router.get('/exercises/:id', exercises.getExercises);
   router.post('/exercise/:id', exercises.addExercise);

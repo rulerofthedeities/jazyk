@@ -18,7 +18,7 @@
         </div>
         <div class="items">
           {{exercise.nr + 1}}. 
-          <span class="item" [class.active]="!!exercise.audios && exercise.audios.length > 0">
+          <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
           </span>
           <span class="item" [class.active]="!!exercise.image">
@@ -36,10 +36,12 @@
           </div>
         </div>
         <div class="col-xs-1">
-          {{exercise.wordTpe}}
+          <span (dblclick)="onEditExercise(exercise._id, 'foreignWordTpe')">
+            {{text[exercise.wordTpe]}}
+          </span>
         </div>
         <div class="col-xs-3">
-          {{exercise.aspect}} / {{exercise.genus}} / +{{exercise.followingCase}} / {{exercise.foreign?.hint}} / {{exercise.foreign?.info}} / {{exercise.foreign?.alt}}
+          {{getInfo(exercise)}} / {{exercise.foreign?.hint}} / {{exercise.foreign?.info}} / {{exercise.foreign?.alt}}
         </div>
       </li>
       <km-build-exercise *ngIf="exercise._id===editingId" class="edit"

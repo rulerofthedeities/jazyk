@@ -19,11 +19,14 @@ var exerciseSchema = new Schema({
   nr: { type: Number, required: true },
   local: { type: wordSchema, required: true },
   foreign: { type: wordSchema, required: true },
+  wordDetailId: String,
   wordTpe: String,
   followingCase: String,
   genus: String,
+  article: String,
+  aspect: String,
   image: String,
-  audios: [String],
+  audio: String,
   score: { type: Number, default: 0 }
 })
 
