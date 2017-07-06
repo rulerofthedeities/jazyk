@@ -30,3 +30,9 @@
   border-color: #428bca;
   margin-top: 6px;
 }
+.sublines {
+  font-size: 13px;
+  line-height: 15px;
+  color: #333;
+  font-style: italic;
+}

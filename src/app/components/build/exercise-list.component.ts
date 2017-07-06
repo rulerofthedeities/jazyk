@@ -39,7 +39,13 @@ export class BuildExerciseListComponent implements OnDestroy {
     this.editingId = null;
   }
 
-  onUpdatedExercise(exercise: Exercise) {
+  onUpdatedExercise(updatedExercise: Exercise) {
+    this.exercises.forEach((exercise, i) => {
+      if (exercise._id === this.editingId) {
+        this.exercises[i] = updatedExercise;
+      }
+    });
+
     this.editingId = null;
   }
 
@@ -88,6 +94,35 @@ export class BuildExerciseListComponent implements OnDestroy {
     }
     info = info ? info.toLowerCase() : '';
     return this.text[info];
+  }
+
+  getInfoHint(exercise: Exercise): string {
+    let hint = '';
+    if (exercise.foreign.hint) {
+      if (hint) {
+        hint = hint + '<br>';
+      }
+      hint = exercise.foreign.hint;
+    }
+    if (exercise.foreign.info) {
+      if (hint) {
+        hint = hint + '<br>';
+      }
+      hint = exercise.foreign.info;
+    }
+    return hint;
+  }
+
+  getInfoAlt(exercise: Exercise): string {
+    let alt = '';
+    const alts = exercise.foreign.alt.split('|');
+    alts.forEach( (altItem, i) => {
+      if (i > 0) {
+        alt = alt + '<br>';
+      }
+      alt = alt + altItem;
+    });
+    return alt;
   }
 
   private removeCurrentExercise() {

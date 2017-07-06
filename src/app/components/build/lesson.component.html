@@ -1,4 +1,10 @@
-<h1>{{lesson?.nr}}. {{lesson?.name}}</h1>
+<h1>
+  <img src="/assets/img/flags/{{lesson?.languagePair.to}}.png" class="flag">
+  {{lesson?.nr}}. {{lesson?.name}}
+  <div class="btn btn-warning">
+    <span class="fa fa-pencil"></span> {{text["Edit"]}}
+  </div>
+</h1>
 
 <!-- <pre>{{lesson|json}}</pre> -->
 
@@ -11,9 +17,11 @@
   [exercises]="lesson.exercises">
 </km-exercise-list>
 
-<div *ngIf="!isNewWord; else addWord">
-  <div class="btn btn-success btn-lg"(click)="onNewWord()">
-    Nieuw Woord
+<div class="footer">
+  <div *ngIf="!isNewWord; else addWord">
+    <div class="btn btn-success btn-lg"(click)="onNewWord()">
+      <span class="fa fa-file"></span> {{text["Newword"]}}
+    </div>
   </div>
 </div>
 

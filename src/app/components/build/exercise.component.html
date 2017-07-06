@@ -11,7 +11,7 @@
     </label>
     <div class="col-xs-11">
       <input 
-        class="form-control" 
+        class="form-control input-lg" 
         id="foreignWord"
         autocomplete="off"
         placeholder="{{text['Enterword' + lanForeign]}}"
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="form-group" *ngIf="lanList===lanForeign && !exercise">
+  <div class="form-group" *ngIf="lanList===lanForeign && !currentExercise">
     <div class="col-xs-11 col-xs-offset-1">
       <km-filter-list
         [wordpairs]="wordpairs"
@@ -37,7 +37,7 @@
 
   <!-- UPDATE FOREIGN -->
 
-  <div *ngIf="exercise">
+  <div *ngIf="currentExercise">
     <!-- Foreign word tpe -->
     <div class="form-group">
       <label 
@@ -176,8 +176,8 @@
           class="fa fa-plus txt add" 
           *ngIf="!addFields['altForeign']">
         </span>
-        <ul class="list-inline" *ngIf="exercise.foreign.alt">
-          <li *ngFor="let alt of exercise.foreign.alt.split('|'); let i = index" class="list-group-item">
+        <ul class="list-inline" *ngIf="currentExercise.foreign.alt">
+          <li *ngFor="let alt of currentExercise.foreign.alt.split('|'); let i = index" class="list-group-item">
             {{alt}} <span class="fa fa-times" (click)="onRemove('alt', 'foreign', i)"></span>
           </li>
         </ul>
@@ -213,8 +213,8 @@
       </div>
       <div class="col-xs-7">
         <span (click)="onActivateField('annotationsForeign')" class="fa fa-plus txt add"  *ngIf="!addFields['annotationsForeign']"></span>
-        <ul class="list-inline" *ngIf="exercise.foreign.annotations">
-          <li *ngFor="let annotation of exercise.foreign.annotations.split('|'); let i = index" class="list-group-item">
+        <ul class="list-inline" *ngIf="currentExercise.foreign.annotations">
+          <li *ngFor="let annotation of currentExercise.foreign.annotations.split('|'); let i = index" class="list-group-item">
             {{annotation}} <span class="fa fa-times" (click)="onRemove('annotations', 'foreign', i)"></span>
           </li>
         </ul>
@@ -237,13 +237,13 @@
           class="fa fa-plus txt add">    
         </span>
         <div class="image" 
-          *ngIf="exercise.image && !addFields['images']">
-          <img src="{{exercise.image}}">
+          *ngIf="currentExercise.image && !addFields['images']">
+          <img src="{{currentExercise.image}}">
         </div>
         <div class="images">
           <km-image-list *ngIf="addFields['images']"
             [images]="images"
-            [selected]="exercise.image"
+            [selected]="currentExercise.image"
             (clickedImage)=onClickImage($event)>
           </km-image-list>
         </div>
@@ -268,12 +268,12 @@
         <div class="audio" 
           *ngIf="!addFields['audios']">
           <km-audio-file
-            [fileName]="exercise.audio">
+            [fileName]="currentExercise.audio">
           </km-audio-file>
         </div>
         <km-audio-list *ngIf="addFields['audios']" 
           [audios]="audios"
-          [selected]="exercise.audio"
+          [selected]="currentExercise.audio"
           (clickedAudio)=onClickAudio($event)>
         </km-audio-list>
       </div>
@@ -290,7 +290,7 @@
     </label>
     <div class="col-xs-11">
       <input 
-        class="form-control" 
+        class="form-control input-lg" 
         id="localWord"
         autocomplete="off"
         placeholder="{{text['Enterword' + lanLocal]}}"
@@ -302,7 +302,7 @@
     </div>
   </div>
 
-  <div class="form-group" *ngIf="lanList===lanLocal && !exercise">
+  <div class="form-group" *ngIf="lanList===lanLocal && !currentExercise">
     <div class="col-xs-11 col-xs-offset-1">
       <km-filter-list
         [wordpairs]="wordpairs"
@@ -314,7 +314,7 @@
     </div>
   </div>
 
-  <div *ngIf="exercise && isBidirectional">
+  <div *ngIf="currentExercise && isBidirectional">
     <!-- Local Hint -->
     <div class="form-group">
       <label 
@@ -367,8 +367,8 @@
           class="fa fa-plus txt add"
           *ngIf="!addFields['altLocal']">    
         </span>
-        <ul class="list-inline" *ngIf="exercise.local.alt">
-          <li *ngFor="let alt of exercise.local.alt.split('|'); let i = index" class="list-group-item">
+        <ul class="list-inline" *ngIf="currentExercise.local.alt">
+          <li *ngFor="let alt of currentExercise.local.alt.split('|'); let i = index" class="list-group-item">
             {{alt}} <span class="fa fa-times" (click)="onRemove('alt', 'local', i)"></span>
           </li>
         </ul>
@@ -381,19 +381,19 @@
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onSaveNewWord(exerciseForm.value)"
-        *ngIf="!exercise && exerciseForm.valid">
+        *ngIf="!currentExercise && exerciseForm.valid">
         {{text.Addword}}
       </div>
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onUpdateWord(exerciseForm.value)"
-        *ngIf="exercise && exerciseForm.valid">
+        *ngIf="currentExercise && exerciseForm.valid">
         {{text.Editword}}
       </div>
       <div class="btn btn-warning btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onCancelEdit()"
-        *ngIf="exercise">
+        *ngIf="currentExercise">
         {{text.cancel}}
       </div>
     </div>

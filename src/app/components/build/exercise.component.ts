@@ -43,6 +43,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private componentActive = true;
   private isSelected = false;
   private selected: WordPairDetail;
+  currentExercise: Exercise;
   wordpairs: WordPair[];
   exerciseForm: FormGroup;
   lanForeign: string;
@@ -69,6 +70,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   ) {}
 
   ngOnInit() {
+    this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
     this.addFields = {
@@ -111,7 +113,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       foreignWord: wordpairDetail.wordPair[this.lanForeign].word,
       localWord: wordpairDetail.wordPair[this.lanLocal].word
     });
-    if (!this.exercise) {
+    if (!this.currentExercise) {
       // Update word
       this.exerciseForm.patchValue({
         genus: wordpairDetail[this.lanLocal].genus
@@ -139,20 +141,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onAdd(fld: string, tpe: string, word: string) {
-    console.log('adding', fld, word);
     if (word) {
-      if (this.exercise[tpe][fld]) {
-        this.exercise[tpe][fld] += '|';
+      if (this.currentExercise[tpe][fld]) {
+        this.currentExercise[tpe][fld] += '|';
       } else {
-        this.exercise[tpe][fld] = '';
+        this.currentExercise[tpe][fld] = '';
       }
-      this.exercise[tpe][fld] += word;
+      this.currentExercise[tpe][fld] += word;
     }
   }
 
   onRemove(fld: string, tpe: string, i: number) {
-    const items: string[] = this.exercise[tpe][fld].split('|');
-    this.exercise[tpe][fld] = items.filter((item, itemi) => itemi !== i).join('|');
+    const items: string[] = this.currentExercise[tpe][fld].split('|');
+    this.currentExercise[tpe][fld] = items.filter((item, itemi) => itemi !== i).join('|');
   }
 
   onActivateField(field: string) {
@@ -167,11 +168,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onClickImage(i: number) {
-    this.exercise.image = this.images[i].s3;
+    this.currentExercise.image = this.images[i].s3;
   }
 
   onClickAudio(i: number) {
-    this.exercise.audio = this.audios[i].s3;
+    this.currentExercise.audio = this.audios[i].s3;
   }
 
   getDynamicFieldLabel(): string {
@@ -223,7 +224,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         if (config) {
           console.log('config', config);
           this.config = config;
-          this.buildForm(this.exercise);
+          this.buildForm(this.currentExercise);
         }
       },
       error => this.errorService.handleError(error)
@@ -231,9 +232,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private loadMedia() {
-    if (this.exercise.wordDetailId) {
+    if (this.currentExercise.wordDetailId) {
       this.buildService
-      .fetchMedia(this.exercise.wordDetailId)
+      .fetchMedia(this.currentExercise.wordDetailId)
       .takeWhile(() => this.componentActive)
       .subscribe(
         media => {
@@ -299,7 +300,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private buildExistingExercise(formValues: any) {
-    const exercise: Exercise = this.exercise;
+    const exercise: Exercise = this.currentExercise;
     exercise.local.word = this.exerciseForm.value['localWord'];
     exercise.foreign.word = this.exerciseForm.value['localWord'];
     exercise.foreign.hint = this.exerciseForm.value['foreignHint'];
@@ -334,6 +335,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private saveNewExercise(exercise: Exercise) {
+    console.log('saving exercise ', exercise);
     this.buildService
     .addExercise(exercise, this.lessonId)
     .takeWhile(() => this.componentActive)
@@ -349,13 +351,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private saveUpdatedExercise(exercise: Exercise) {
+    console.log('updating exercise ', exercise);
     this.buildService
     .updateExercise(exercise, this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      updatedExercise => {
-        console.log('updated exercise ', updatedExercise);
-        this.updatedExercise.emit(updatedExercise);
+      saved => {
+        console.log('updated exercise ', exercise);
+        this.updatedExercise.emit(exercise);
+        this.currentExercise = exercise;
         this.exercise = exercise;
         this.isSaving = false;
       },
@@ -364,7 +368,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private buildForm(exercise: Exercise) {
-    if (!this.exercise) {
+    if (!exercise) {
       this.exerciseForm = this.formBuilder.group({
         localWord: ['', [Validators.required]],
         foreignWord: ['', [Validators.required]]

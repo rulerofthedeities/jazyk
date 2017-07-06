@@ -9,7 +9,20 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-build-lesson',
-  templateUrl: 'lesson.component.html'
+  templateUrl: 'lesson.component.html',
+  styles: [`
+    h1, .footer {
+      display: block;
+      background-color: rgba(239, 239, 239, .9);
+      padding: 16px;
+      border-radius: 6px;
+      margin: 0 -15px 15px -15px;
+    }
+    h1 .btn {
+      margin-bottom: 6px;
+      margin-left: 24px;
+    }
+  `]
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {

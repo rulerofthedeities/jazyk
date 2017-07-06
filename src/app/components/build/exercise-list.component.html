@@ -33,6 +33,7 @@
             <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
               {{exercise.local?.word}}
             </span>
+            <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
           </div>
         </div>
         <div class="col-xs-1">
@@ -41,7 +42,8 @@
           </span>
         </div>
         <div class="col-xs-3">
-          {{getInfo(exercise)}} / {{exercise.foreign?.hint}} / {{exercise.foreign?.info}} / {{exercise.foreign?.alt}}
+          {{getInfo(exercise)}}
+          <div [innerHTML]="getInfoHint(exercise)"></div>
         </div>
       </li>
       <km-build-exercise *ngIf="exercise._id===editingId" class="edit"
