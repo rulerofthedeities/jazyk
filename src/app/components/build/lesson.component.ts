@@ -31,6 +31,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private lanForeign: string;
   lesson: Lesson;
   isNewWord = false;
+  isEditMode = false;
   isBidirectional = false;
   text: Object = {};
 
@@ -62,6 +63,14 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   onNewWord() {
     this.isNewWord = true;
+  }
+
+  onEditLesson() {
+    this.isEditMode = true;
+  }
+
+  onCloseHeader() {
+    this.isEditMode = false;
   }
 
   private setText(translations: Translation[]) {

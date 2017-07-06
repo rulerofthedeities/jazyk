@@ -46,7 +46,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   chapterForm: FormGroup;
   isFormReady = false;
   isNew = true;
-  isEditMode = false;
   isSubmitted = false;
   tpeLabels = ['Study', 'Practise', 'Test', 'Exam'];
 
@@ -62,11 +61,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     } else {
       this.createNewLesson();
     }
-  }
-
-  editLesson() {
-    this.isNew = false;
-    this.isEditMode = true;
   }
 
   onCancel() {
@@ -94,9 +88,16 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.bidirectional[i] = !this.bidirectional[i];
   }
 
+  private editLesson() {
+    console.log('editing lesson', this.lesson);
+    this.isNew = false;
+    this.courseId = this.lesson.courseId;
+    this.languagePair = this.lesson.languagePair;
+    this.getChapters();
+  }
+
   private createNewLesson() {
     this.isNew = true;
-    this.isEditMode = true;
     this.lesson = {
       _id: '',
       courseId: this.courseId,
@@ -154,7 +155,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     .subscribe(
       savedLesson => {
         this.lesson = savedLesson;
-        this.isEditMode = false;
         this.done.emit(savedLesson);
       },
       error => this.errorService.handleError(error)
@@ -162,12 +162,26 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateLesson() {
+    console.log('updating lesson', this.lesson);
     this.buildService
     .updateLesson(this.lesson)
     .takeWhile(() => this.componentActive)
     .subscribe(
       updatedCourse => {
-        this.isEditMode = false;
+        this.done.emit(null);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getChapters() {
+    this.buildService
+    .fetchChapters(this.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      chapters => {
+        this.chapters = chapters;
+        this.buildForm();
       },
       error => this.errorService.handleError(error)
     );

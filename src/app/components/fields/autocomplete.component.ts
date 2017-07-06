@@ -41,12 +41,13 @@ export class AutocompleteComponent implements OnInit {
   }
 
   fetchList(entry: string) {
-
-    if (entry) {
-      const regex = new RegExp(entry);
-      this.showItems = this.items.filter(item => regex.test(item.name)).slice(-this.maxList);
-    } else {
-      this.showItems = this.items.slice(-this.maxList);
+    if (this.items) {
+      if (entry) {
+        const regex = new RegExp(entry);
+        this.showItems = this.items.filter(item => regex.test(item.name)).slice(-this.maxList);
+      } else {
+        this.showItems = this.items.slice(-this.maxList);
+      }
     }
   }
 

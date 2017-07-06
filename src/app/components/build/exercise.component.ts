@@ -70,7 +70,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   ) {}
 
   ngOnInit() {
-    this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
+    if (this.exercise) {
+      this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
+    }
     this.lanLocal = this.languagePair.from.slice(0, 2);
     this.lanForeign = this.languagePair.to.slice(0, 2);
     this.addFields = {

@@ -1,12 +1,16 @@
-<h1>
+<h1 *ngIf="!isEditMode">
   <img src="/assets/img/flags/{{lesson?.languagePair.to}}.png" class="flag">
   {{lesson?.nr}}. {{lesson?.name}}
-  <div class="btn btn-warning">
+  <div class="btn btn-warning" (click)="onEditLesson()">
     <span class="fa fa-pencil"></span> {{text["Edit"]}}
   </div>
 </h1>
 
-<!-- <pre>{{lesson|json}}</pre> -->
+<km-build-lesson-header *ngIf="isEditMode"
+  [lesson]="lesson"
+  [text]="text"
+  (done)="onCloseHeader()">
+</km-build-lesson-header>
 
 <km-exercise-list 
   *ngIf="lesson"

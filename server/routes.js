@@ -22,6 +22,7 @@ module.exports.initialize = function(app, router) {
   router.patch('/course/publish/:id/:status', courses.setPublish);
 
   router.post('/chapter', lessons.addChapter);
+  router.get('/chapters/:id', lessons.getChapters);
 
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:id', lessons.getLesson);

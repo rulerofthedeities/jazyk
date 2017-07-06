@@ -102,13 +102,13 @@ export class BuildExerciseListComponent implements OnDestroy {
       if (hint) {
         hint = hint + '<br>';
       }
-      hint = exercise.foreign.hint;
+      hint = hint + exercise.foreign.hint;
     }
     if (exercise.foreign.info) {
       if (hint) {
         hint = hint + '<br>';
       }
-      hint = exercise.foreign.info;
+      hint = hint + exercise.foreign.info;
     }
     return hint;
   }

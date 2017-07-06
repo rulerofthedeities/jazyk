@@ -47,7 +47,7 @@ module.exports = {
     const lesson = new Lesson(req.body);
     const lessonId = new mongoose.Types.ObjectId(lesson._id);
 
-    Course.findOneAndUpdate(
+    Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$set: {
         name: lesson.name
@@ -62,6 +62,16 @@ module.exports = {
     chapter._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
 
     chapter.save(function(err, result) {
+      response.handleError(err, res, 500, 'Error adding chapter', function(){
+        response.handleSuccess(res, result, 200, 'Added chapter');
+      });
+    });
+  },
+  getChapters: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    console.log('course id', courseId);
+
+    Chapter.find({courseId}, {}, {sort: {nr: 1}}, function(err, result) {
       response.handleError(err, res, 500, 'Error adding chapter', function(){
         response.handleSuccess(res, result, 200, 'Added chapter');
       });
