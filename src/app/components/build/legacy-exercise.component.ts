@@ -67,6 +67,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   onClickAudio(i: number) {
     const audioFile = this.audios[i].s3;
     let exists = false;
+    /*
     if (this.exercise.audios) {
       exists = this.exercise.audios.filter(audio => audio === audioFile).length > 0 ? true : false;
     } else {
@@ -78,6 +79,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     } else {
       this.exercise.audios.push(audioFile);
     }
+    */
   }
 
   onSubmit(form: FormGroup) {

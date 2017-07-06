@@ -18,6 +18,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private lanForeign: string;
   lesson: Lesson;
   isNewWord = false;
+  isBidirectional = false;
   text: Object = {};
 
   constructor(
@@ -64,6 +65,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanLocal = lesson.languagePair.from.slice(0, 2);
         this.lanForeign = lesson.languagePair.to.slice(0, 2);
         this.getTranslations();
+        this.setBidirectional();
       },
       error => this.errorService.handleError(error)
     );
@@ -79,6 +81,18 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private setBidirectional() {
+    const exerciseTpes = this.lesson.exerciseTpes;
+    if (exerciseTpes) {
+      if (exerciseTpes.exam.bidirectional ||
+          exerciseTpes.learn.bidirectional ||
+          exerciseTpes.practise.bidirectional ||
+          exerciseTpes.test.bidirectional) {
+        this.isBidirectional = true;
+      }
+    }
   }
 
   ngOnDestroy() {

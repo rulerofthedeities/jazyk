@@ -60,3 +60,6 @@
   color: #ccc;
   cursor: initial;
 }
+.list-group {
+  margin-bottom: 0;
+}

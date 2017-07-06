@@ -4,7 +4,7 @@ import {File} from '../../models/exercise.model';
 @Component({
   selector: 'km-audio-file',
   template: `
-    <span 
+    <span *ngIf="fileName"
       (click)="onPlay()"
       class="audio fa fa-play-circle"
       [ngClass]="{

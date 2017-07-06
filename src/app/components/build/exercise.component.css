@@ -43,6 +43,13 @@
   border: 1px solid #333;
   width: 120px;
 }
+.images {
+  margin-left: 12px;
+}
+.buttons {
+  margin-left: 12px;
+  margin-top: 24px;
+}
 /* override bootstrap */
 .list-inline {
   margin-bottom: 0px;

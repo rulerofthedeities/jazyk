@@ -50,6 +50,8 @@
         [exercise]="exercise"
         [text]="text"
         [focus]="focusField"
+        [isBidirectional]="isBidirectional"
+        (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
       </km-build-exercise>
     </div>

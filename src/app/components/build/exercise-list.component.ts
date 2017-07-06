@@ -16,6 +16,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() text: Object;
+  @Input() isBidirectional: boolean;
   private componentActive = true;
   editingId: string = null;
   removingId: string = null;
@@ -35,6 +36,10 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   onCancelEdit() {
+    this.editingId = null;
+  }
+
+  onUpdatedExercise(exercise: Exercise) {
     this.editingId = null;
   }
 

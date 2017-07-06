@@ -7,11 +7,12 @@
   [languagePair]="lesson?.languagePair"
   [lessonId]="lesson?._id"
   [text]="text"
+  [isBidirectional]="isBidirectional"
   [exercises]="lesson.exercises">
 </km-exercise-list>
 
 <div *ngIf="!isNewWord; else addWord">
-  <div class="btn btn-success"(click)="onNewWord()">
+  <div class="btn btn-success btn-lg"(click)="onNewWord()">
     Nieuw Woord
   </div>
 </div>

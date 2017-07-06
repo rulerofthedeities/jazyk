@@ -22,7 +22,7 @@ import {File} from '../../models/exercise.model';
   styleUrls: ['files.css']
 })
 export class AudioListComponent {
-  @Input() selected: string[];
+  @Input() selected: string;
   @Input() audios: File[];
   @Output() clickedAudio = new EventEmitter<number>();
 
@@ -31,14 +31,7 @@ export class AudioListComponent {
   }
 
   isSelected(i: number): boolean {
-    const audioFile = this.audios[i].s3;
-    let audioSelected = false;
-
-    if (this.selected) {
-      audioSelected = this.selected.filter(audio => audio === audioFile).length > 0 ? true: false;
-    }
-
-    return audioSelected;
+    return this.audios[i].s3 === this.selected ? true : false;
   }
 
   getLocalName(i: number): string {

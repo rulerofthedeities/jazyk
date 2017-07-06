@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Filter, WordPair, WordPairDetail, Exercise, File} from '../../models/exercise.model';
+import {Filter, WordPair, WordPairDetail, WordDetail, Exercise, File} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface AddFields {
@@ -36,7 +36,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   @Input() exercise: Exercise;
   @Input() text: Object;
   @Input() focus: string;
+  @Input() isBidirectional: boolean;
   @Output() addedExercise = new EventEmitter<Exercise>();
+  @Output() updatedExercise = new EventEmitter<Exercise>();
   @Output() cancelEdit = new EventEmitter<boolean>();
   private componentActive = true;
   private isSelected = false;
@@ -123,6 +125,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.buildNewExercise(formValues);
   }
 
+  onUpdateWord(formValues: any) {
+    this.isSaving = true;
+    this.buildExistingExercise(formValues);
+  }
+
   onCancelEdit() {
     this.cancelEdit.emit(true);
   }
@@ -161,6 +168,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   onClickImage(i: number) {
     this.exercise.image = this.images[i].s3;
+  }
+
+  onClickAudio(i: number) {
+    this.exercise.audio = this.audios[i].s3;
   }
 
   getDynamicFieldLabel(): string {
@@ -264,8 +275,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.article = this.selected[this.lanForeign].article;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
       exercise.aspect = this.selected[this.lanForeign].aspect;
-      // this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].aspect);
-      // this.addAnnotation(foreignAnnotations, this.selected[this.lanForeign].wordTpe);
+      this.addAnnotations(foreignAnnotations, this.selected[this.lanForeign]);
       exercise.foreign.annotations = foreignAnnotations.join('|');
       if (this.selected.wordPair[this.lanForeign].alt) {
         exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
@@ -278,7 +288,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
       /* Local */
       exercise.local.hint = this.selected.wordPair[this.lanLocal].hint;
-      exercise.local.info = this.selected.wordPair[this.lanLocal].info;
       if (this.selected.wordPair[this.lanLocal].alt) {
         exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
       }
@@ -289,10 +298,39 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.saveNewExercise(exercise);
   }
 
-  private addAnnotation(annotations: string[], newAnnotation: string) {
-    if (newAnnotation) {
-      annotations.push(newAnnotation);
+  private buildExistingExercise(formValues: any) {
+    const exercise: Exercise = this.exercise;
+    exercise.local.word = this.exerciseForm.value['localWord'];
+    exercise.foreign.word = this.exerciseForm.value['localWord'];
+    exercise.foreign.hint = this.exerciseForm.value['foreignHint'];
+    exercise.foreign.info = this.exerciseForm.value['info'];
+    exercise.wordTpe = this.exerciseForm.value['wordTpe'];
+    exercise.genus = this.exerciseForm.value['genus'];
+    exercise.article = this.exerciseForm.value['article'];
+    exercise.followingCase = this.exerciseForm.value['followingCase'];
+    exercise.aspect = this.exerciseForm.value['aspect'];
+
+    if (this.isBidirectional) {
+      exercise.local.hint = this.exerciseForm.value['localHint'];
     }
+
+    this.saveUpdatedExercise(exercise);
+  }
+
+  private addAnnotations(annotations: string[], foreignDetail: WordDetail) {
+    if (foreignDetail.isPlural) {
+      annotations.push(this.text['plural']);
+    }
+    if (foreignDetail.isDiminutive) {
+      annotations.push(this.text['diminutive']);
+    }
+    if (foreignDetail.isComparative) {
+      annotations.push(this.text['comparative']);
+    }
+    if (foreignDetail.isSuperlative) {
+      annotations.push(this.text['superlative']);
+    }
+    console.log('annotations:', annotations, foreignDetail);
   }
 
   private saveNewExercise(exercise: Exercise) {
@@ -304,6 +342,21 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         console.log('saved exercise ', savedExercise);
         this.addedExercise.emit(savedExercise);
         this.exerciseForm.reset();
+        this.isSaving = false;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private saveUpdatedExercise(exercise: Exercise) {
+    this.buildService
+    .updateExercise(exercise, this.lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      updatedExercise => {
+        console.log('updated exercise ', updatedExercise);
+        this.updatedExercise.emit(updatedExercise);
+        this.exercise = exercise;
         this.isSaving = false;
       },
       error => this.errorService.handleError(error)
@@ -322,12 +375,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         foreignWord: [exercise.foreign.word, [Validators.required]],
         localHint: [exercise.local.hint],
         foreignHint: [exercise.foreign.hint],
+        info: [exercise.foreign.info],
         wordTpe: [exercise.wordTpe],
         genus: [exercise.genus],
         article: [exercise.article],
         followingCase: [exercise.followingCase],
-        aspect: [exercise.aspect],
-        info: [exercise.foreign.info]
+        aspect: [exercise.aspect]
       });
     }
 

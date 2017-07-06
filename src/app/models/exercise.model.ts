@@ -49,6 +49,7 @@ export interface WordDetail {
   word: string;
   docTpe: string;
   wordTpe: string;
+  region?: string;
   case?: string;
   followingCase?: string;
   genus?: string;
@@ -56,6 +57,10 @@ export interface WordDetail {
   diminutive?: string;
   comparative?: string;
   superlative?: string;
+  isPlural?: boolean;
+  isDiminutive?: boolean;
+  isComparative?: boolean;
+  isSuperlative?: boolean;
   aspect?: string;
   aspectPair?: string;
   images?: File[];
@@ -100,7 +105,7 @@ export interface Exercise {
   score?: number;
 }
 
-interface ExerciseTpe {
+export interface ExerciseTpe {
   active: boolean;
   bidirectional: boolean;
 }
