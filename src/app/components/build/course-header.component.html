@@ -1,0 +1,81 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form
+      [formGroup]="courseForm"
+      *ngIf="isFormReady"
+      class="form-horizontal">
+
+      <!-- LANGUAGE -->
+      <div class="form-group form-group-lg" *ngIf="languages">
+        <label for="language" class="control-label col-xs-2">{{text["Language"]}}</label>
+        <div class="col-xs-10">
+          <km-language-selector
+            [languages]="languages"
+            [currentLanguage]="currentLanguage"
+            [disabled]="!isNew"
+            [text]="text"
+            (languageSelected)="onLanguageSelected($event)">
+          </km-language-selector>
+        </div>
+      </div>
+
+      <!-- NAME -->
+      <div class="form-group form-group-lg">
+        <label for="name" class="control-label col-xs-2">{{text["Name"]}}</label>
+        <div class="col-xs-6">
+          <input 
+            type="text" 
+            class="form-control" 
+            autocomplete="off"
+            id="name" 
+            maxlength="50" 
+            placeholder="Naam van de cursus"
+            formControlName="name">
+        </div>
+      </div>
+
+      <!-- PUBLIC & PUBLISH -->
+      <div class="form-group form-group-lg" *ngIf="!isNewCourse">
+        <label for="status" class="control-label col-xs-2">
+          {{text['Status']}}
+        </label>
+        <div class="col-xs-10">
+          <button 
+            class="btn btn-default"
+            id="status" 
+            (click)="onToggle('isPublic')"
+            [ngClass]="{'disabled':isSaving}">
+            <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
+            {{course.isPublic ? text['Public'] : text['Private']}}
+          </button>
+          <button 
+            class="btn btn-default"
+            (click)="onToggle('isPublished')"
+            [ngClass]="{disabled:isSaving}">
+            <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
+            {{course.isPublished ? text['Published'] : text['Notpublished'] }}
+          </button>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="row">
+        <div class="col-xs-10 col-xs-offset-2">
+          <button
+            type="button" 
+            class="btn btn-success" 
+            (click)="onSubmit(courseForm.value)"
+            [disabled]="!courseForm.valid">
+            {{isNewCourse ? text['Addcourse'] : text['Update']}}
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-warning" 
+            (click)="onCancel()">
+            {{text['cancel']}}
+          </button>
+        </div>
+      </div>  
+    </form>
+  </div>
+</div>

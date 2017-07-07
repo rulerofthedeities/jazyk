@@ -39,29 +39,11 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  updateCourse(course: Course) {
+  updateCourseHeader(course: Course) {
     const headers = new Headers({'Content-Type': 'application/json'});
 
     return this.http
-    .put('/api/course', JSON.stringify(course), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-
-  publishCourse(id: string, isPublish: boolean) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-
-    return this.http
-    .patch('/api/course/publish/' + id + '/' + +isPublish, {}, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-
-  publicCourse(id: string, isPublic: boolean) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-
-    return this.http
-    .patch('/api/course/public/' + id + '/' + +isPublic, {}, {headers})
+    .put('/api/course/header', JSON.stringify(course), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -109,11 +91,11 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  updateLesson(lesson: Lesson) {
+  updateLessonHeader(lesson: Lesson) {
     const headers = new Headers({'Content-Type': 'application/json'});
 
     return this.http
-    .put('/api/lesson', JSON.stringify(lesson), {headers})
+    .put('/api/lesson/header', JSON.stringify(lesson), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

@@ -38,10 +38,12 @@ module.exports = {
       });
     });
   },
-  updateCourse: function(req, res) {
+  updateCourseHeader: function(req, res) {
     const course = new Course(req.body);
     const courseId = new mongoose.Types.ObjectId(course._id);
     
+    console.log('updating course header', course);
+
     Course.findOneAndUpdate(
       {_id: courseId},
       {$set: {
@@ -51,7 +53,7 @@ module.exports = {
         response.handleSuccess(res, result, 200, 'Updated course');
       });
     });
-  },
+  }/*,
   setPublic: function(req, res) {
     const courseId = req.params.id;
     const status = req.params.status;
@@ -77,5 +79,5 @@ module.exports = {
         response.handleSuccess(res, result, 200, 'Updated publish flag in course');
       });
     });
-  }
+  }*/
 }

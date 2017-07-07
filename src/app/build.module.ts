@@ -9,6 +9,7 @@ import {BuildService} from './services/build.service';
 
 import {BuildComponent} from './components/build/build.component';
 import {BuildCourseComponent} from './components/build/course.component';
+import {BuildCourseHeaderComponent} from './components/build/course-header.component';
 import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
@@ -33,6 +34,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
   declarations: [
     BuildComponent,
     BuildCourseComponent,
+    BuildCourseHeaderComponent,
     BuildChapterComponent,
     BuildLessonsComponent,
     BuildLessonComponent,

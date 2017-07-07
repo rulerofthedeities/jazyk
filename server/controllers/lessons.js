@@ -43,14 +43,17 @@ module.exports = {
       });
     });
   },
-  updateLesson: function(req, res) {
+  updateLessonHeader: function(req, res) {
     const lesson = new Lesson(req.body);
     const lessonId = new mongoose.Types.ObjectId(lesson._id);
 
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$set: {
-        name: lesson.name
+        name: lesson.name,
+        exerciseTpes: lesson.exerciseTpes,
+        chapter : lesson.chapter, 
+        chapterNr : lesson.chapterNr
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating lesson', function(){
         response.handleSuccess(res, result, 200, 'Updated lesson');

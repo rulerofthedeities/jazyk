@@ -1,6 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -11,43 +10,47 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   templateUrl: 'course.component.html',
   styles: [`
-    .panel {
-      background-color: rgba(255, 255, 255, 0.9);
+    .header, .footer {
+      display: block;
+      background-color: rgba(239, 239, 239, .9);
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .indicators {
+      margin-right: 24px;
+    }
+    .indicators .fa {
+      font-size: 24px;
+      color: #ccc;
+    }
+    .indicators .fa-user, .indicators .fa-check {
+      color: green;
     }
   `]
 })
 
 export class BuildCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  courseForm: FormGroup;
   course: Course;
-  initialCourse: Course; // For cancel
   languages: Language[];
   currentLanguage: Language;
   lessons: Lesson[];
-  currentLesson: Lesson;
   chapters: Chapter[];
-  isNewCourse = false;
   isEditMode = false;
-  isSubmitted = false;
-  isFormReady = false;
-  isEditLesson = false;
-  isSavingPublic = false;
-  isSavingPublished = false;
+  isNewLesson = false;
   text: Object = {};
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
     private buildService: BuildService,
     private errorService: ErrorService,
     private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
     this.languages = this.utilsService.getActiveLanguages();
+    this.getTranslations();
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
@@ -55,99 +58,34 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         if (params['id']) {
           const courseId = params['id'];
           if (courseId === 'new') {
+            this.isEditMode = true;
             this.setDefaultLanguage(params['lan']);
-            this.createNewCourse();
           } else {
-            this.editCourse(courseId);
+            this.isEditMode = false;
+            this.getCourse(courseId);
           }
         }
       }
     );
   }
 
-  editCourse(courseId: string) {
-    this.isNewCourse = false;
-    this.isEditMode = false;
-    this.getCourse(courseId);
-  }
-
-  createNewCourse() {
-    this.isNewCourse = true;
+  onEditCourse() {
     this.isEditMode = true;
-    this.course = {
-      _id: '',
-      languagePair: {
-        from: config.language,
-        to: this.currentLanguage._id
-      },
-      name: '',
-      image: config.language + '-' + this.currentLanguage._id + 'course1.jpg', // temporary
-      attendance: 0,
-      difficulty: 0,
-      isPublic: true,
-      isPublished: false,
-      exerciseCount: 0,
-      exercisesDone: 0
-    };
-    this.buildForm();
   }
 
-  buildForm() {
-    this.courseForm = this.formBuilder.group({
-      languagePair: [this.course.languagePair],
-      name: [this.course.name, Validators.required]
-    });
-    this.isFormReady = true;
-  }
-
-  onSubmit(formValues: any) {
-    if (this.course._id) {
-      this.updateCourse(formValues.name);
-    } else {
-      this.addCourse(formValues.name);
+  onCloseHeader(updatedCourse: Course) {
+    if (updatedCourse) {
+      this.course = updatedCourse;
     }
-    this.isSubmitted = true;
-  }
-
-  onSetEdit() {
-    this.isEditMode = true;
-    this.buildForm(); // Set values back to original
-  }
-
-  onCancel() {
     this.isEditMode = false;
   }
 
-  onTogglePublic() {
-    this.isSavingPublic = true;
-    this.course.isPublic = !this.course.isPublic;
-    this.buildService
-    .publicCourse(this.course._id, this.course.isPublic)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      data => this.isSavingPublic = false,
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  onTogglePublished() {
-    this.isSavingPublished = true;
-    this.course.isPublished = !this.course.isPublished;
-    this.buildService
-    .publishCourse(this.course._id, this.course.isPublished)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      data => this.isSavingPublished = false,
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  onAddLesson() {
-    this.isEditLesson = true;
+  onNewLesson() {
+    this.isNewLesson = true;
   }
 
   onLessonDone(lessonAdded: Lesson) {
-    this.isEditLesson = false;
+    this.isNewLesson = false;
     if (lessonAdded) {
       this.lessons.push(lessonAdded);
       // Check if new chapter was added
@@ -157,55 +95,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLanguageSelected(newLanguage: Language) {
-    this.currentLanguage = newLanguage;
-    this.course.languagePair = {
-      from: 'nl-nl',
-      to: newLanguage._id
-    };
-    this.courseForm.patchValue({'languagePair.to': newLanguage._id});
-  }
-
-  private setDefaultLanguage(languageId: string) {
-    let selLan: Language[];
-    if (languageId) {
-      selLan = this.languages.filter(lan => lan._id === languageId);
-    }
-    if (selLan && selLan.length > 0) {
-      this.currentLanguage = selLan[0];
-    } else {
-      this.currentLanguage = this.languages[0];
-    }
-  }
-
-  private addCourse(name: string) {
-    console.log(this.course);
-    this.course.name = name;
-    this.buildService
-    .addCourse(this.course)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      savedCourse => {
-        this.course = savedCourse;
-        this.router.navigate(['/build/course/', savedCourse._id]);
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private updateCourse(newName: string) {
-    this.course.name = newName;
-    this.buildService
-    .updateCourse(this.course)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      updatedCourse => {
-        this.isEditMode = false;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
   private getCourse(courseId: string) {
     this.buildService
     .fetchCourse(courseId)
@@ -213,8 +102,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.currentLanguage = this.languages.filter(lan => lan._id === course.languagePair.to)[0];
-        this.buildForm();
+        this.setDefaultLanguage(course.languagePair.to);
         this.getLessonsAndChapters(courseId);
       },
       error => this.errorService.handleError(error)
@@ -249,6 +137,18 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         savedChapter => {},
         error => this.errorService.handleError(error)
       );
+    }
+  }
+
+  private setDefaultLanguage(languageId: string) {
+    let selLan: Language[];
+    if (languageId) {
+      selLan = this.languages.filter(lan => lan._id === languageId);
+    }
+    if (selLan && selLan.length > 0) {
+      this.currentLanguage = selLan[0];
+    } else {
+      this.currentLanguage = this.languages[0];
     }
   }
 

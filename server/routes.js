@@ -17,9 +17,7 @@ module.exports.initialize = function(app, router) {
   router.get('/courses/:lan', courses.getAllCourses);
   router.get('/course/:id', courses.getCourse);
   router.post('/course', courses.addCourse);
-  router.put('/course', courses.updateCourse);
-  router.patch('/course/public/:id/:status', courses.setPublic);
-  router.patch('/course/publish/:id/:status', courses.setPublish);
+  router.put('/course/header', courses.updateCourseHeader);
 
   router.post('/chapter', lessons.addChapter);
   router.get('/chapters/:id', lessons.getChapters);
@@ -28,7 +26,7 @@ module.exports.initialize = function(app, router) {
   router.get('/lesson/:id', lessons.getLesson);
   router.get('/lesson/first/:id', lessons.getFirstLesson);
   router.post('/lesson', lessons.addLesson);
-  router.put('/lesson', lessons.updateLesson);
+  router.put('/lesson/header', lessons.updateLessonHeader);
 
   router.get('/wordpairs', words.getWordPairs);
   router.get('/wordpair/:id', words.getWordPairDetail);

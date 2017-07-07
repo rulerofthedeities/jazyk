@@ -1,4 +1,4 @@
-<h1 *ngIf="!isEditMode">
+<h1 *ngIf="!isEditMode" class="header">
   <img src="/assets/img/flags/{{lesson?.languagePair.to}}.png" class="flag">
   {{lesson?.nr}}. {{lesson?.name}}
   <div class="btn btn-warning" (click)="onEditLesson()">
@@ -6,10 +6,10 @@
   </div>
 </h1>
 
-<km-build-lesson-header *ngIf="isEditMode"
+<km-build-lesson-header *ngIf="isEditMode" class="header"
   [lesson]="lesson"
   [text]="text"
-  (done)="onCloseHeader()">
+  (done)="onCloseHeader($event)">
 </km-build-lesson-header>
 
 <km-exercise-list 

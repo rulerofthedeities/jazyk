@@ -42,6 +42,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
   private bidirectional = [false, true, false, false];
+  private active = [true, true, true, true];
   lessonForm: FormGroup;
   chapterForm: FormGroup;
   isFormReady = false;
@@ -93,6 +94,18 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.isNew = false;
     this.courseId = this.lesson.courseId;
     this.languagePair = this.lesson.languagePair;
+    this.bidirectional = [
+      this.lesson.exerciseTpes.learn.bidirectional,
+      this.lesson.exerciseTpes.practise.bidirectional,
+      this.lesson.exerciseTpes.test.bidirectional,
+      this.lesson.exerciseTpes.exam.bidirectional
+    ];
+    this.active = [
+      this.lesson.exerciseTpes.learn.active,
+      this.lesson.exerciseTpes.practise.active,
+      this.lesson.exerciseTpes.test.active,
+      this.lesson.exerciseTpes.exam.active
+      ];
     this.getChapters();
   }
 
@@ -122,7 +135,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   private buildForm() {
     const exerciseTpeControls: FormControl[] = [];
     for (let i = 0; i < 4; i++) {
-      exerciseTpeControls.push(new FormControl(true));
+      exerciseTpeControls.push(new FormControl(this.active[i]));
     }
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name],
@@ -164,11 +177,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   private updateLesson() {
     console.log('updating lesson', this.lesson);
     this.buildService
-    .updateLesson(this.lesson)
+    .updateLessonHeader(this.lesson)
     .takeWhile(() => this.componentActive)
     .subscribe(
       updatedCourse => {
-        this.done.emit(null);
+        this.done.emit(this.lesson);
       },
       error => this.errorService.handleError(error)
     );

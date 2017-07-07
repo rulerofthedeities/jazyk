@@ -41,7 +41,7 @@ export class LanguageSelectorComponent implements OnInit {
   }
 
   private setSelectedLanguage(currentLanguage: Language) {
-    if (this.languages) {
+    if (this.languages && currentLanguage) {
       this.selectedLanguage = this.languages.filter( language => language._id === currentLanguage._id)[0];
     }
   }

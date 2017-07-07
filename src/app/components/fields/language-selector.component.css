@@ -30,8 +30,13 @@
 }
 .disabled .btn-default{
   cursor: default;
-  border-color: #fff;
+  border: 0;
+  background-color: inherit;
+  padding-left: 0;
 }
 .disabled .btn-default:hover {
-  background-color: #fff;
+  background-color: inherit;
+}
+.disabled .btn-default:active {
+  box-shadow: inherit;
 }

@@ -11,7 +11,7 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-build-lesson',
   templateUrl: 'lesson.component.html',
   styles: [`
-    h1, .footer {
+    .header, .footer {
       display: block;
       background-color: rgba(239, 239, 239, .9);
       padding: 16px;
@@ -69,7 +69,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
   }
 
-  onCloseHeader() {
+  onCloseHeader(updatedLesson: Lesson) {
+    if (updatedLesson) {
+      this.lesson = updatedLesson;
+    }
     this.isEditMode = false;
   }
 

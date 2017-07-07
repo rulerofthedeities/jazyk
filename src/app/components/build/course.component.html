@@ -1,144 +1,30 @@
-<div class="panel panel-default panel1">
-  <div class="panel-body">
-    <form
-      [formGroup]="courseForm"
-      (ngSubmit) = "onSubmit(courseForm.value)"
-      *ngIf="isFormReady"
-      class="form-horizontal">
-
-      <!-- LANGUAGE -->
-      <div class="form-group form-group-lg">
-        <label for="language" class="control-label col-xs-2">Taal</label>
-        <div class="col-xs-10">
-          <km-language-selector
-            [languages]="languages"
-            [currentLanguage]="currentLanguage"
-            [disabled]="!isNewCourse"
-            [text]="text"
-            (languageSelected)="onLanguageSelected($event)">
-          </km-language-selector>
-        </div>
-      </div>
-
-      <!-- NAME -->
-      <div class="form-group form-group-lg">
-        <label for="name" class="control-label col-xs-2">Naam</label>
-        <div class="col-xs-6">
-          <input 
-            *ngIf="isEditMode"
-            type="text" 
-            class="form-control" 
-            autocomplete="off"
-            id="name" 
-            maxlength="50" 
-            placeholder="Naam van de cursus"
-            formControlName="name">
-          <div *ngIf="!isEditMode" class="form-control-static">
-            {{course.name}}
-          </div>
-        </div>
-        <div class="col-xs-4" [style.display]="isNewCourse ? 'none' : 'block'">
-          <button *ngIf="!isEditMode && !isEditLesson" class="btn btn-info" (click)="onSetEdit()">
-            <span class="fa fa-pencil"></span>
-          </button>
-          <div *ngIf="isEditMode">
-            <button 
-              type="submit"
-              class="btn btn-success"
-              [disabled]="!courseForm.valid || !courseForm.dirty">
-              <span class="fa fa-check"></span>
-            </button>
-            <button 
-              class="btn btn-warning" 
-              (click)="onCancel()">
-              <span class="fa fa-times"></span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PUBLIC & PUBLISH -->
-      <div class="form-group form-group-lg" *ngIf="!isNewCourse">
-        <label for="status" class="control-label col-xs-2">Status</label>
-        <div class="col-xs-10">
-          <button 
-            class="btn"
-            id="status" 
-            (click)="onTogglePublic()"
-            [ngClass]="{'disabled':isSavingPublic,'btn-success':course.isPublic,'btn-muted':!course.isPublic}">
-            <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
-            {{course.isPublic ? 'Publiek' : 'Privaat'}}
-          </button>
-          <button 
-            class="btn"
-            (click)="onTogglePublished()"
-            [ngClass]="{disabled:isSavingPublished,'btn-success':course.isPublished,'btn-muted':!course.isPublished}">
-            <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
-            {{course.isPublished ? 'Gepubliceerd' : 'Niet Gepubliceerd' }}
-          </button>
-        </div>
-      </div>
-
-      <!-- BUTTONS -->
-      <div class="row">
-        <div class="col-xs-10 col-xs-offset-2">
-
-        <!-- EDIT MODE -->
-          <div *ngIf="isEditMode">
-            <button
-              type="submit" 
-              class="btn btn-success" 
-              [disabled]="!courseForm.valid || !courseForm.dirty">
-              {{isNewCourse ? 'Voeg cursus toe' : 'Voer wijzigingen door'}}
-            </button>
-            <button 
-              class="btn btn-warning" 
-              (click)="onCancel()">
-              Annuleer
-            </button>
-          </div>
-
-        <!-- READ MODE -->
-          <div *ngIf="!isEditMode && !isEditLesson">
-            <button
-              class="btn btn-success" 
-              (click)="onSetEdit()">
-              Wijzig cursusgegevens
-            </button>
-            <button
-              class="btn btn-success" 
-              (click)="onAddLesson()">
-              Voeg nieuwe les toe
-            </button>
-          </div>
-        </div>
-      </div>  
-    </form>
+<h1 *ngIf="!isEditMode && course" class="header">
+  <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
+  {{course.name}}
+  <span class="indicators">
+    <span class="fa"
+      [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}">
+    </span>
+    <span class="fa"
+      [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}">
+    </span>
+  </span>
+  <div class="btn btn-warning" (click)="onEditCourse()">
+    <span class="fa fa-pencil"></span> {{text["Edit"]}}
   </div>
-</div>
+</h1>
 
-<!-- NEW LESSON -->
-
-<div class="panel panel-default panel2" *ngIf="isEditLesson">
-  <div class="panel-body">
-    <div>
-      <km-build-lesson-header
-        [lesson]="currentLesson"
-        [lessons]="lessons"
-        [chapters]="chapters"
-        [courseId]="course._id"
-        [languagePair]="course.languagePair"
-        [nr]="lessons.length"
-        [text]="text"
-        (done)="onLessonDone($event)">
-      </km-build-lesson-header>
-    </div>
-  </div>
-</div>
+<km-build-course-header *ngIf="isEditMode"
+  [text]="text"
+  [course]="course"
+  [languages]="languages"
+  [currentLanguage]="currentLanguage"
+  (done)="onCloseHeader($event)">
+</km-build-course-header>
 
 <!-- CHAPTER / LESSON LIST -->
 
-<div class="panel panel-default panel3" *ngIf="lessons">
+<div class="panel panel-default" *ngIf="lessons">
   <div class="panel-body">
     <div>
       <km-build-lessons
@@ -149,3 +35,31 @@
     </div>
   </div>
 </div>
+
+<!-- NEW LESSON -->
+
+<div class="footer" *ngIf="course">
+  <div *ngIf="!isNewLesson; else addLesson">
+    <div class="btn btn-success btn-lg"(click)="onNewLesson()">
+      <span class="fa fa-file"></span> {{text["Addlesson"]}}
+    </div>
+  </div>
+</div>
+
+<ng-template #addLesson>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div>
+        <km-build-lesson-header
+          [lessons]="lessons"
+          [chapters]="chapters"
+          [courseId]="course._id"
+          [languagePair]="course.languagePair"
+          [nr]="lessons.length"
+          [text]="text"
+          (done)="onLessonDone($event)">
+        </km-build-lesson-header>
+      </div>
+    </div>
+  </div>
+</ng-template>
