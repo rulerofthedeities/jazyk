@@ -9,24 +9,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   templateUrl: 'course.component.html',
-  styles: [`
-    .header, .footer {
-      display: block;
-      background-color: rgba(239, 239, 239, .9);
-      padding: 16px;
-      border-radius: 6px;
-    }
-    .indicators {
-      margin-right: 24px;
-    }
-    .indicators .fa {
-      font-size: 24px;
-      color: #ccc;
-    }
-    .indicators .fa-user, .indicators .fa-check {
-      color: green;
-    }
-  `]
+  styleUrls: ['headers.css', 'course.css']
 })
 
 export class BuildCourseComponent implements OnInit, OnDestroy {

@@ -1,0 +1,18 @@
+<h1 class="header">
+  <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
+  {{course.name}}
+  <span class="indicators">
+    <span class="fa"
+      [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}">
+    </span>
+    <span class="fa"
+      [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}">
+    </span>
+  </span>
+  <div 
+    class="btn btn-warning" 
+    *ngIf="canEditCourse" 
+    (click)="onEditCourse()">
+    <span class="fa fa-pencil"></span> {{text["Edit"]}}
+  </div>
+</h1>

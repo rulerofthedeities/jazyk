@@ -3,32 +3,21 @@ import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Lesson, Translation} from '../../models/course.model';
+import {Course, Chapter, Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-build-lesson',
   templateUrl: 'lesson.component.html',
-  styles: [`
-    .header, .footer {
-      display: block;
-      background-color: rgba(239, 239, 239, .9);
-      padding: 16px;
-      border-radius: 6px;
-      margin: 0 -15px 15px -15px;
-    }
-    h1 .btn {
-      margin-bottom: 6px;
-      margin-left: 24px;
-    }
-  `]
+  styleUrls: ['headers.css']
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private lanLocal: string;
   private lanForeign: string;
+  course: Course;
   chapters: Chapter[];
   lesson: Lesson;
   isNewWord = false;
@@ -97,6 +86,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.getTranslations();
         this.setBidirectional();
         this.getChapters();
+        this.getCourse(); // for header
       },
       error => this.errorService.handleError(error)
     );
@@ -130,6 +120,18 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         error => this.errorService.handleError(error)
       );
     }
+  }
+
+  private getCourse() {
+    this.buildService
+    .fetchCourse(this.lesson.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      course => {
+        this.course = course;
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getTranslations() {

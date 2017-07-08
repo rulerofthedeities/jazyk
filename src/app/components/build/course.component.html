@@ -1,18 +1,10 @@
-<h1 *ngIf="!isEditMode && course" class="header">
-  <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
-  {{course.name}}
-  <span class="indicators">
-    <span class="fa"
-      [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}">
-    </span>
-    <span class="fa"
-      [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}">
-    </span>
-  </span>
-  <div class="btn btn-warning" (click)="onEditCourse()">
-    <span class="fa fa-pencil"></span> {{text["Edit"]}}
-  </div>
-</h1>
+<km-build-course-header-bar
+  *ngIf="!isEditMode && course"
+  [text]="text"
+  [course]="course"
+  [canEditCourse]="true"
+  (edit)="onEditCourse()">
+</km-build-course-header-bar>
 
 <km-build-course-header *ngIf="isEditMode"
   [text]="text"
@@ -24,15 +16,13 @@
 
 <!-- CHAPTER / LESSON LIST -->
 
-<div class="panel panel-default" *ngIf="lessons">
+<div class="panel panel-default chapters" *ngIf="lessons">
   <div class="panel-body">
-    <div>
-      <km-build-lessons
-        [lessons]="lessons"
-        [chapters]="chapters"
-        [courseId]="course._id">
-      </km-build-lessons>
-    </div>
+    <km-build-lessons
+      [lessons]="lessons"
+      [chapters]="chapters"
+      [courseId]="course._id">
+    </km-build-lessons>
   </div>
 </div>
 
