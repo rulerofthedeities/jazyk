@@ -106,7 +106,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       this.lesson.exerciseTpes.test.active,
       this.lesson.exerciseTpes.exam.active
       ];
-    this.getChapters();
+    this.buildForm();
   }
 
   private createNewLesson() {
@@ -175,26 +175,13 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateLesson() {
-    console.log('updating lesson', this.lesson);
     this.buildService
     .updateLessonHeader(this.lesson)
     .takeWhile(() => this.componentActive)
     .subscribe(
       updatedCourse => {
+        console.log('updated lesson', this.lesson);
         this.done.emit(this.lesson);
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private getChapters() {
-    this.buildService
-    .fetchChapters(this.courseId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      chapters => {
-        this.chapters = chapters;
-        this.buildForm();
       },
       error => this.errorService.handleError(error)
     );

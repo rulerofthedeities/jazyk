@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson, Translation} from '../../models/course.model';
+import {Chapter, Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -29,6 +29,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private lanLocal: string;
   private lanForeign: string;
+  chapters: Chapter[];
   lesson: Lesson;
   isNewWord = false;
   isEditMode = false;
@@ -72,6 +73,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   onCloseHeader(updatedLesson: Lesson) {
     if (updatedLesson) {
       this.lesson = updatedLesson;
+      // Check if new chapter was added
+      if (this.chapters.filter(chapter => chapter.name === updatedLesson.chapter).length < 1) {
+        this.addChapter(updatedLesson.chapter);
+      }
     }
     this.isEditMode = false;
   }
@@ -91,9 +96,40 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanForeign = lesson.languagePair.to.slice(0, 2);
         this.getTranslations();
         this.setBidirectional();
+        this.getChapters();
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private getChapters() {
+    this.buildService
+    .fetchChapters(this.lesson.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      chapters => {
+        this.chapters = chapters;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private addChapter(chapterName: string) {
+    if (chapterName) {
+      const newChapter = {
+        courseId: this.lesson.courseId,
+        name: chapterName,
+        nr: this.chapters.length + 1
+      };
+      this.chapters.push(newChapter);
+      this.buildService
+      .addChapter(newChapter)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        savedChapter => {},
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private getTranslations() {

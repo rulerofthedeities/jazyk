@@ -139,24 +139,6 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addChapter(chapterName: string) {
-    if (chapterName) {
-      const newChapter = {
-        courseId: this.course._id,
-        name: chapterName,
-        nr: this.chapters.length + 1
-      };
-      this.chapters.push(newChapter);
-      this.buildService
-      .addChapter(newChapter)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        savedChapter => {},
-        error => this.errorService.handleError(error)
-      );
-    }
-  }
-
   ngOnDestroy() {
     this.componentActive = false;
   }
