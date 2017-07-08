@@ -5,7 +5,8 @@ var chapterSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
   name: String,
-  nr: Number
+  nr: Number,
+  isDeleted: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Chapter', chapterSchema);

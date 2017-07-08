@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Lesson} from '../../models/course.model';
+import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 
 @Component({
   selector: 'km-chapter',
@@ -12,25 +13,59 @@ export class BuildChapterComponent {
   @Input() title: string;
   @Input() total: number;
   @Input() isOpen: boolean;
+  @Input() text: Object;
   @Output() toggleOpen = new EventEmitter();
+  @Output() remove = new EventEmitter();
+  private isRemoving = false;
 
   constructor(
     private router: Router
   ) {}
 
   onClick(e: any, action: string) {
-    e.preventDefault();
+    event.preventDefault();
     switch (action) {
-      case 'open' : this.openChapter();
+      case 'openchapter':
+        this.openChapter();
+      break;
+      case 'removechapter':
+        this.askRemoveChapter(e);
+      break;
+      case 'editlesson':
+        this.editLesson(e);
       break;
     }
   }
 
-  openChapter() {
+  getRemoveMessage(tpe): string {
+    let msg = '';
+    if (this.text['Remove' + tpe]) {
+      msg = this.text['Remove' + tpe];
+      msg = msg.replace('%s', this.title);
+    }
+    return msg;
+  }
+
+
+  onRemoveConfirmed(removeOk: boolean) {
+    if (removeOk) {
+      this.isRemoving = true;
+      this.remove.emit(true);
+    }
+  }
+
+  private openChapter() {
     this.toggleOpen.emit();
   }
 
-  onEditLesson(lessonId: string) {
+
+  private askRemoveChapter(confirm: ModalConfirmComponent) {
+    if (!this.isRemoving) {
+      confirm.showModal = true;
+    }
+  }
+
+  private editLesson(lessonId: string) {
     this.router.navigate(['/build/lesson/' + lessonId]);
   }
 }

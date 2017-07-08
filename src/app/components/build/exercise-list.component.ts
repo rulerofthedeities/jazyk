@@ -18,10 +18,10 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() text: Object;
   @Input() isBidirectional: boolean;
   private componentActive = true;
+  private isRemoving = false;
   editingId: string = null;
   removingId: string = null;
   focusField: string = null;
-  isRemoving = false;
 
   constructor(
     private buildService: BuildService,

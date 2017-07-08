@@ -12,3 +12,9 @@
 .btn {
   margin-right: 4px;
 }
+ul .btn {
+  margin-top: 8px;
+}
+.btn-danger{
+  margin-right: 12px;
+}

@@ -1,6 +1,7 @@
 <h1 class="header">
   <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
-  {{course.name}}
+  <a routerLink="/build/course/{{course._id}}" *ngIf="showLink">{{course.name}}</a>
+  <span *ngIf="!showLink">{{course.name}}</span>
   <span class="indicators">
     <span class="fa"
       [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}">
@@ -13,6 +14,6 @@
     class="btn btn-warning" 
     *ngIf="canEditCourse" 
     (click)="onEditCourse()">
-    <span class="fa fa-pencil"></span> {{text["Edit"]}}
+    <span class="fa fa-pencil"></span> {{text["Editcourse"]}}
   </div>
 </h1>

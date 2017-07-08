@@ -8,17 +8,36 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-main-menu',
   template: `
-    <nav class="clearfix">
+    <nav class="clearfix menu">
+      <div class="logo pull-left">
+        <img src="/assets/img/logobadge.png">
+      </div>
       <ul class="nav navbar-nav">
         <li routerLinkActive="active">
-          <a routerLink="learn" class="item">{{text.Learn}}</a>
+          <a routerLink="learn" class="item">
+            <span class="fa fa-book"></span>
+            {{text.Learn}}
+           </a>
         </li>
         <li routerLinkActive="active">
-          <a routerLink="learn/courses" class="item">{{text.Courses}}</a>
+          <a routerLink="learn/courses" class="item">
+            <span class="fa fa-th-list"></span>
+            {{text.Courses}}
+          </a>
         </li>
       </ul>
     </nav>
-  `
+  `,
+  styles: [`
+    .menu {
+      color: #02506b;
+      margin: 2px 0 10px -5px;
+      font-size: 20px;
+    }
+    .menu a {
+      color: #02506b;
+    }
+  `]
 })
 
 export class MainMenuComponent implements OnInit, OnDestroy {

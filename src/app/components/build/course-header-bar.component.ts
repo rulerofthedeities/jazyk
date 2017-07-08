@@ -11,10 +11,10 @@ export class BuildCourseHeaderBarComponent {
   @Input() course: Course;
   @Input() text: Object;
   @Input() canEditCourse = false;
+  @Input() showLink = false;
   @Output() edit = new EventEmitter<boolean>();
 
   onEditCourse() {
-    console.log('edit course', this.canEditCourse);
     if (this.canEditCourse) {
       this.edit.emit(true);
     }

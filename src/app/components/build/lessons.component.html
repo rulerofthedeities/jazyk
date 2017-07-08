@@ -5,7 +5,9 @@
     [title]="chapter.nr + '. ' + chapter.name"
     [total]="getLessons(chapter.name).length"
     [isOpen]="isCurrent(chapter)"
-    (toggleOpen)="onToggleChapter(chapter.nr)">
+    [text]="text"
+    (toggleOpen)="onToggleChapter(chapter.nr)"
+    (remove)="onRemoveChapter(chapter._id)">
   </km-chapter>
 </ng-template>
 
@@ -28,7 +30,7 @@
 >>>> NO CHAPTER
 <ul class="nochapters list-unstyled">
   <li *ngFor="let lesson of getLessons('')">
-    {{lesson.nr}}. {{lesson.name}}
+    {{lesson.nr}}. {{lesson.name}}  ({{lesson.exercises?.length}})
   </li>
 </ul>
 

@@ -59,9 +59,15 @@ export class BuildService {
 
   addChapter(chapter: Chapter) {
     const headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http
     .post('/api/chapter', JSON.stringify(chapter), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  removeChapter(chapterId: string) {
+    return this.http
+    .delete('/api/chapter/' + chapterId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

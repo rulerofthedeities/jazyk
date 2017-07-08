@@ -8,7 +8,7 @@ module.exports = {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     Lesson.find({courseId}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
-        Chapter.find({courseId}, {} , {sort:{nr:1}}, function(err, chapters) {
+        Chapter.find({courseId, isDeleted: false}, {} , {sort:{nr:1}}, function(err, chapters) {
           response.handleError(err, res, 500, 'Error fetching chapters', function(){
             response.handleSuccess(res, {lessons,chapters}, 200, 'Fetched chapters and lessons');
           });
@@ -72,11 +72,23 @@ module.exports = {
   },
   getChapters: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
-    console.log('course id', courseId);
 
-    Chapter.find({courseId}, {}, {sort: {nr: 1}}, function(err, result) {
+    Chapter.find({courseId, isDeleted: false}, {}, {sort: {nr: 1}}, function(err, result) {
       response.handleError(err, res, 500, 'Error adding chapter', function(){
         response.handleSuccess(res, result, 200, 'Added chapter');
+      });
+    });
+  },
+  removeChapter: function(req, res) {
+    const chapterId = new mongoose.Types.ObjectId(req.params.id);
+
+    console.log('removing chapter with id', chapterId);
+
+    Chapter.findOneAndUpdate(
+      {_id: chapterId},
+      {$set: {isDeleted: true}}, function(err, result) {
+      response.handleError(err, res, 500, 'Error removing chapter with id "' + chapterId+ '"', function(){
+        response.handleSuccess(res, result, 200, 'Removed chapter with id "' + chapterId+ '"');
       });
     });
   }
