@@ -115,8 +115,12 @@ h1 {
   margin-top: 50px;
   height: 70px;
 }
-.label-default {
-  background-color: #bbb;
+.label-annotation {
+  background-color: #f3f3f3;
+  border: 1px dotted black;
+  color: #333;
+  margin-right: 3px;
+  border-radius: 6px;
 }
 .audio {
   margin-top: 4px;

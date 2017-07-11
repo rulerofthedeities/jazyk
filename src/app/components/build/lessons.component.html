@@ -1,4 +1,3 @@
-
 <ng-template ngFor [ngForOf]="chapters" let-chapter let-i="index">
   <km-chapter
     [lessons]="getLessons(chapter.name)"
@@ -6,7 +5,7 @@
     [total]="getLessons(chapter.name).length"
     [isOpen]="isCurrent(chapter)"
     [text]="text"
-    (toggleOpen)="onToggleChapter(chapter.nr)"
+    (toggleOpen)="onToggleChapter(chapter._id)"
     (remove)="onRemoveChapter(chapter._id)">
   </km-chapter>
 </ng-template>

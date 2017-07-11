@@ -97,6 +97,22 @@ module.exports = {
       }
     );
   },
+  updateExercises: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const exercises = req.body;
+
+    console.log('updating all exercises for lesson ' + lessonId);
+
+    Lesson.findOneAndUpdate(
+      {_id: lessonId},
+      { $set: { 'exercises': exercises}},
+      function(err, result) {
+        response.handleError(err, res, 500, 'Error updating exercises in lesson ' + lessonId, function(){
+          response.handleSuccess(res, null, 200, 'Updated exercises in lesson ' + lessonId);
+        });
+      }
+    );
+  },
   removeExercise: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     const exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);

@@ -16,7 +16,6 @@ var wordSchema = new Schema({
 
 var exerciseSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
-  nr: { type: Number, required: true },
   local: { type: wordSchema, required: true },
   foreign: { type: wordSchema, required: true },
   wordDetailId: String,
@@ -49,7 +48,6 @@ var lessonSchema = new Schema({
   name: String,
   chapter: String,
   chapterNr: Number,
-  nr: Number,
   exerciseTpes: ExerciseTpesSchema,
   exercises: [exerciseSchema],
   difficulty: Number,

@@ -5,7 +5,6 @@ var chapterSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
   name: String,
-  nr: Number,
   isDeleted: { type: Boolean, default: false }
 });
 

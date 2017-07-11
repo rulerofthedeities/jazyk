@@ -17,7 +17,7 @@ export class BuildLessonsComponent implements OnDestroy {
   @Input() chapters: Chapter[];
   @Input() text: Object;
   private componentActive = true;
-  private currentChapter = -1;
+  private currentChapter = '';
 
   lessonswithnochapter: Lesson[] = [];
 
@@ -31,8 +31,8 @@ export class BuildLessonsComponent implements OnDestroy {
     return this.lessons.filter(lesson => lesson.chapter === chapterName);
   }
 
-  onToggleChapter(chapterNr: number) {
-    this.currentChapter = chapterNr === this.currentChapter ? -1 : chapterNr;
+  onToggleChapter(chapterId: string) {
+    this.currentChapter = chapterId === this.currentChapter ? '' : chapterId;
   }
 
   onRemoveChapter(chapterId: string) {
@@ -51,7 +51,7 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   isCurrent(chapter: Chapter) {
-    return chapter.nr === this.currentChapter;
+    return chapter._id === this.currentChapter;
   }
 
   ngOnDestroy() {

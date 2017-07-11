@@ -16,8 +16,8 @@
       <div *ngIf="!isStudyDone" class="card">
         <div class="foreign">
           <h1>
-            <span class="flag">
-              <img src="/assets/img/flags/{{lanPair.to}}.png">
+            <span>
+              <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
             </span>
 
             <span 
@@ -28,8 +28,8 @@
                 [active]="settings.color">
               {{wordForeign}}
             </span>
-            <span class="suffix">{{getSuffix()}}</span>
-            <span class="suffix">{{getGenus()}}</span>
+            <span class="suffix">{{currentData.suffix}}</span>
+            <span class="suffix">{{currentData.genus}}</span>
             <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
               <km-audio-file
                 [fileName]="currentExercise.audios[0]"
@@ -39,8 +39,11 @@
             </span>
           </h1>
           <div class="wordinfo">
-            <div class="label label-default">{{text[currentExercise.wordTpe]}}</div>
-            <div class="label label-default">{{text[currentExercise.aspect]}}</div>
+            <div
+              class="label label-annotation"
+              *ngFor="let annotation of currentData.annotations">
+              {{annotation}}
+            </div>
             <div class="hint" *ngIf="currentExercise.foreign?.hint">
               {{text.hint}}: {{currentExercise.foreign?.hint}}
             </div>
@@ -51,8 +54,8 @@
         </div>
         <div class="local">
           <h1 class="word">
-            <span class="flag">
-              <img src="/assets/img/flags/{{lanPair.from}}.png">
+            <span>
+              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
             </span>
               <span *ngIf="showLocal else loading">
                 {{wordLocal}}  

@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {DndModule} from 'ng2-dnd';
 
 import {routes} from './build.routes';
 
@@ -27,7 +28,8 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    DndModule.forRoot()
   ],
   providers: [
     BuildService

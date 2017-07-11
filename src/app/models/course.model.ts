@@ -50,7 +50,6 @@ export interface Course {
 export interface Chapter {
   _id?: string;
   courseId: string;
-  nr: number;
   name: string;
 }
 
@@ -59,7 +58,6 @@ export interface Lesson {
   courseId: string;
   languagePair: LanPair;
   name: string;
-  nr: number;
   chapter: string;
   chapterNr: number;
   exerciseTpes: ExerciseTpes;

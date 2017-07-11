@@ -1,7 +1,15 @@
 <div class="exercises">
   <div class="list-group">
-    <div *ngFor="let exercise of exercises; let i = index;">
-      <li class="list-group-item row" [class.editing]="editingId === exercise._id">
+    <ul 
+      *ngFor="let exercise of exercises; let i = index;"
+      class="list-unstyled list"
+      dnd-sortable-container
+      [sortableData]="exercises">
+      <li
+        class="list-group-item row"
+        [class.editing]="editingId === exercise._id"
+        dnd-sortable
+        [sortableIndex]="i" (onDropSuccess)="onResorted($event)">
         <div class="pull-right">
           <span 
             class="btn btn-danger fa fa-trash-o"
@@ -11,13 +19,9 @@
             class="btn btn-primary fa fa-pencil"
             (click)="onEditExercise(exercise._id)">
           </span>
-          <span 
-            class="move fa fa-arrows"
-            (click)="onMoveExercise(exercise._id)">
-          </span>
         </div>
         <div class="items">
-          {{exercise.nr + 1}}. 
+          {{i + 1}}. 
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
           </span>
@@ -56,7 +60,7 @@
         (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
       </km-build-exercise>
-    </div>
+    </ul>
   </div>
 </div>
 

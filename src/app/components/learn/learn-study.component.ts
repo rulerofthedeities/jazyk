@@ -13,6 +13,12 @@ interface LearnSettings {
   delay: number; // # of seconds before local word appears
 }
 
+interface ExerciseData {
+  annotations: string[];
+  genus: string;
+  suffix: string;
+}
+
 @Component({
   selector: 'km-learn-study',
   templateUrl: 'learn-study.component.html',
@@ -33,17 +39,20 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timerActive: boolean;
   private dotLength = 0;
   private currentExercises: Exercise[];
+  private exerciseData: ExerciseData[];
   private isStudyDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
   private settings: LearnSettings;
   isDone: boolean[] = [];
   currentExercise: Exercise;
+  currentData: ExerciseData;
   wordLocal: string;
   wordForeign: string;
   subscription: Subscription[] = [];
   showLocal = false;
   dotArr: number[] = [];
   score = 0;
+
 
   constructor(
     private learnService: LearnService
@@ -58,6 +67,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
     this.currentExercises = this.learnService.shuffle(this.exercises);
+    this.buildExerciseData();
     this.nextWord(1);
   }
 
@@ -118,7 +128,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   isWordDone(i: number): boolean {
     return this.isDone[i];
   }
-
+/*
   getSuffix(): string {
     const foreign = this.currentExercise[this.lanForeign];
     let suffix = '';
@@ -138,6 +148,47 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       genus = '(' + foreign.genus.toLowerCase() + ')';
     }
     return genus;
+  }
+*/
+  private buildExerciseData() {
+    this.exerciseData = [];
+    let annotations: string[] = [];
+    let suffix: string;
+    let genus: string;
+    this.currentExercises.forEach( (exercise, i) => {
+      annotations = [];
+      genus = '';
+      suffix = '';
+      // Annotations
+      if (exercise.wordTpe) {
+        annotations.push(this.text[exercise.wordTpe]);
+      }
+      if (exercise.aspect) {
+        annotations.push(this.text[exercise.aspect]);
+      }
+      if (exercise.foreign.annotations) {
+        const annotationArr = exercise.foreign.annotations.split('|');
+        annotationArr.forEach(annotation => {
+          annotations.push(annotation);
+        });
+      }
+      // genus
+      if (exercise.genus) {
+        genus = '(' + exercise.genus.toLowerCase() + ')';
+      }
+      // suffix
+      if (exercise.followingCase) {
+        suffix =  this.text['case' + exercise.followingCase];
+        if (suffix) {
+          suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
+        }
+      }
+      this.exerciseData[i] = {
+        annotations: annotations,
+        genus: genus,
+        suffix: suffix
+      };
+    });
   }
 
   private nextWord(delta: number) {
@@ -172,6 +223,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     if (!this.isStudyDone) {
       this.currentExercise = this.currentExercises[this.current];
+      this.currentData = this.exerciseData[this.current];
       this.showLocal = false;
       this.wordLocal = this.currentExercise.local.word;
       this.wordForeign = this.currentExercise.foreign.word;

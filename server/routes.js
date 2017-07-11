@@ -36,6 +36,7 @@ module.exports.initialize = function(app, router) {
   router.get('/exercises/:id', exercises.getExercises);
   router.post('/exercise/:id', exercises.addExercise);
   router.put('/exercise/:id', exercises.updateExercise);
+  router.put('/exercises/:id', exercises.updateExercises);
   router.delete('/exercise/:lessonId/:exerciseId', exercises.removeExercise);
 
   app.use('/api/', router);

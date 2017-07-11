@@ -4,6 +4,7 @@ import {Exercise} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-exercise-list',
@@ -66,6 +67,11 @@ export class BuildExerciseListComponent implements OnDestroy {
     if (!this.isRemoving) {
       console.log('move exercise');
     }
+  }
+
+  onResorted(event) {
+    console.log('resorted', event);
+    this.saveResortedExercises();
   }
 
   getRemoveMessage(): string {
@@ -144,6 +150,16 @@ export class BuildExerciseListComponent implements OnDestroy {
         this.removingId = null;
         this.isRemoving = false;
       },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private saveResortedExercises() {
+    this.buildService
+    .updateExercises(this.exercises, this.lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      () => {console.log('updated exercises'); },
       error => this.errorService.handleError(error)
     );
   }

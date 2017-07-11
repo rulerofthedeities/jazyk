@@ -150,9 +150,16 @@ export class BuildService {
 
   updateExercise(exercise: Exercise, lessonId: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http
     .put('/api/exercise/' + lessonId, JSON.stringify(exercise), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateExercises(exercises: Exercise[], lessonId: string) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    return this.http
+    .put('/api/exercises/' + lessonId, JSON.stringify(exercises), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
