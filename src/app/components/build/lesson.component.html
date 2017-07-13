@@ -6,7 +6,7 @@
 </km-build-course-header-bar>
 
 <h2 *ngIf="!isEditMode" class="header">
-  {{lesson?.nr}}. {{lesson?.name}}
+  {{lesson?.name}}
   <div class="btn btn-warning" (click)="onEditLesson()">
     <span class="fa fa-pencil"></span> {{text["Edit"]}}
   </div>

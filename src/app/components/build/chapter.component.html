@@ -1,4 +1,7 @@
-<div class="navbar navbar-default">
+<div 
+  class="navbar navbar-default" 
+  dnd-sortable
+  [sortableIndex]="nr">
   <div class="navbar-header">
     <a href="#" (click)="onClick($event, 'open')" class="navbar-brand">
       <span class="fa" [ngClass]="{'fa-caret-down': isOpen, 'fa-caret-right': !isOpen}"></span>
@@ -6,18 +9,13 @@
   </div>
   <div class="collapse navbar-collapse">
     <ul class="nav navbar-nav">
-      <li><a href="#" (click)="onClick($event, 'openchapter')">{{title}} ({{total}})</a></li>
+      <li><a href="#" (click)="onClick($event, 'openchapter')">{{nr + 1}}. {{title}} ({{total}})</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li *ngIf="total === 0">
         <button (click)="onClick(confirmchapter, 'removechapter')" class="btn btn-danger">
           <span class="fa fa-trash"></span>
         </button>
-      </li>
-      <li>
-        <a href="#" (click)="onClick($event, 'movechapter')">
-          <span class="fa fa-arrows"></span>
-        </a>
       </li>
     </ul>
   </div>
@@ -26,7 +24,7 @@
       <li *ngFor="let lesson of lessons">
         <div class="panel panel-default">
           <div class="panel-body">
-            {{lesson.nr}}. {{lesson.name}}  ({{lesson.exercises?.length}})
+            {{lesson.name}}  ({{lesson.exercises?.length}})
             <button class="btn btn-warning pull-right" (click)="onClick(lesson._id, 'editlesson')">
               <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
             </button>

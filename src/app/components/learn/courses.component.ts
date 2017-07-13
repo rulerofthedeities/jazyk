@@ -14,6 +14,9 @@ import 'rxjs/add/operator/takeWhile';
       padding: 0;
       margin-bottom: 1px;
     }
+    .nocourses {
+      margin-bottom: 12px;
+    }
   `]
 })
 

@@ -14,6 +14,7 @@ export class BuildChapterComponent {
   @Input() total: number;
   @Input() isOpen: boolean;
   @Input() text: Object;
+  @Input() nr: number;
   @Output() toggleOpen = new EventEmitter();
   @Output() remove = new EventEmitter();
   private isRemoving = false;

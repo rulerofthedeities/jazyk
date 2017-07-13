@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Chapter, Course, Lesson, Language, LanPair} from '../models/course.model';
+import {Course, Lesson, Language, LanPair} from '../models/course.model';
 import {Filter, Exercise} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';

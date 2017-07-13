@@ -11,10 +11,10 @@
   </div>
 </div>
 <ul class="list-group dropdown" *ngIf="showList">
-  <li *ngFor="let item of showItems"
+  <li *ngFor="let item of showItems; let i=index"
     class="list-group-item"
-    (click)="selectItem(item.nr - 1)">
-    <span class="nr">{{item.nr}}.</span> {{item.name}}
+    (click)="selectItem(i)">
+    {{item}}
   </li>
 </ul>
 

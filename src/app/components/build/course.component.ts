@@ -85,8 +85,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.setDefaultLanguage(course.languagePair.to);
-        this.getLessonsAndChapters(courseId);
+        if (course) {
+          this.setDefaultLanguage(course.languagePair.to);
+          this.getLessonsAndChapters(courseId);
+        }
       },
       error => this.errorService.handleError(error)
     );

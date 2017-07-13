@@ -92,7 +92,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
         to: this.currentLanguage._id
       },
       name: '',
-      image: config.language + '-' + this.currentLanguage._id + 'course1.jpg', // temporary
+      image: config.language.slice(0, 2) + '-' + this.currentLanguage._id.slice(0, 2) + '-course1.jpg', // temporary
       attendance: 0,
       difficulty: 0,
       isPublic: true,

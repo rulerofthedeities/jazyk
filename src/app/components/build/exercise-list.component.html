@@ -9,7 +9,7 @@
         class="list-group-item row"
         [class.editing]="editingId === exercise._id"
         dnd-sortable
-        [sortableIndex]="i" (onDropSuccess)="onResorted($event)">
+        [sortableIndex]="i">
         <div class="pull-right">
           <span 
             class="btn btn-danger fa fa-trash-o"

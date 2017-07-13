@@ -143,7 +143,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private processLesson(formValues: any) {
-    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
+    const chapterName = this.autocomplete.currentItem ? this.autocomplete.currentItem : '';
     this.lesson.chapterName = chapterName;
     this.lesson.name = formValues.name;
     this.lesson.exerciseTpes = {
