@@ -57,17 +57,18 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  addChapter(chapter: Chapter) {
+  addChapter(courseId: string, chapter: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
-    .post('/api/chapter', JSON.stringify(chapter), {headers})
+    .post('/api/chapter/' + courseId,  JSON.stringify({name: chapter}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  removeChapter(chapterId: string) {
+  removeChapter(courseId: string, chapter: string) {
+    const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
-    .delete('/api/chapter/' + chapterId)
+    .put('/api/chapter/' + courseId,  JSON.stringify({name: chapter}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

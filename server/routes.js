@@ -19,9 +19,9 @@ module.exports.initialize = function(app, router) {
   router.post('/course', courses.addCourse);
   router.put('/course/header', courses.updateCourseHeader);
 
-  router.post('/chapter', lessons.addChapter);
-  router.delete('/chapter/:id', lessons.removeChapter);
-  router.get('/chapters/:id', lessons.getChapters);
+  router.post('/chapter/:id', courses.addChapter);
+  router.put('/chapter/:id', courses.removeChapter);
+  router.get('/chapters/:id', courses.getChapters);
 
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:id', lessons.getLesson);

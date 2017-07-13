@@ -21,6 +21,7 @@ var courseSchema = new Schema({
     difficulty: Number,
     isPublished: Boolean,
     isPublic: Boolean,
+    chapters: [String],
     exerciseCount: { type: Number, default: 0 },
     exercisesDone: { type: Number, default: 0 },
     dtAdded: { type: Date, default: Date.now }

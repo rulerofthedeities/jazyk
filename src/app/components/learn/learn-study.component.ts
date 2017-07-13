@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise} from '../../models/exercise.model';
+import {Exercise, ExerciseData} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -11,12 +11,6 @@ interface LearnSettings {
   mute: boolean;
   color: boolean;
   delay: number; // # of seconds before local word appears
-}
-
-interface ExerciseData {
-  annotations: string[];
-  genus: string;
-  suffix: string;
 }
 
 @Component({
@@ -67,7 +61,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
     this.currentExercises = this.learnService.shuffle(this.exercises);
-    this.buildExerciseData();
+    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text);
     this.nextWord(1);
   }
 
@@ -127,68 +121,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   isWordDone(i: number): boolean {
     return this.isDone[i];
-  }
-/*
-  getSuffix(): string {
-    const foreign = this.currentExercise[this.lanForeign];
-    let suffix = '';
-    if (foreign && foreign.followingCase) {
-      suffix =  this.text['case' + foreign.followingCase];
-      if (suffix) {
-        suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
-      }
-    }
-    return suffix;
-  }
-
-  getGenus(): string {
-    const foreign = this.currentExercise[this.lanForeign];
-    let genus = '';
-    if (foreign && foreign.genus) {
-      genus = '(' + foreign.genus.toLowerCase() + ')';
-    }
-    return genus;
-  }
-*/
-  private buildExerciseData() {
-    this.exerciseData = [];
-    let annotations: string[] = [];
-    let suffix: string;
-    let genus: string;
-    this.currentExercises.forEach( (exercise, i) => {
-      annotations = [];
-      genus = '';
-      suffix = '';
-      // Annotations
-      if (exercise.wordTpe) {
-        annotations.push(this.text[exercise.wordTpe]);
-      }
-      if (exercise.aspect) {
-        annotations.push(this.text[exercise.aspect]);
-      }
-      if (exercise.foreign.annotations) {
-        const annotationArr = exercise.foreign.annotations.split('|');
-        annotationArr.forEach(annotation => {
-          annotations.push(annotation);
-        });
-      }
-      // genus
-      if (exercise.genus) {
-        genus = '(' + exercise.genus.toLowerCase() + ')';
-      }
-      // suffix
-      if (exercise.followingCase) {
-        suffix =  this.text['case' + exercise.followingCase];
-        if (suffix) {
-          suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
-        }
-      }
-      this.exerciseData[i] = {
-        annotations: annotations,
-        genus: genus,
-        suffix: suffix
-      };
-    });
   }
 
   private nextWord(delta: number) {

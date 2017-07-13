@@ -45,12 +45,7 @@ export interface Course {
   isPublished: boolean;
   exerciseCount: number;
   exercisesDone: number;
-}
-
-export interface Chapter {
-  _id?: string;
-  courseId: string;
-  name: string;
+  chapters: string[];
 }
 
 export interface Lesson {
@@ -58,8 +53,7 @@ export interface Lesson {
   courseId: string;
   languagePair: LanPair;
   name: string;
-  chapter: string;
-  chapterNr: number;
+  chapterName: string;
   exerciseTpes: ExerciseTpes;
   exercises: Exercise[];
   difficulty: number;

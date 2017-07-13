@@ -116,6 +116,12 @@ export interface ExerciseTpes {
   exam: ExerciseTpe;
 }
 
+export interface ExerciseData {
+  annotations: string[];
+  genus: string;
+  suffix: string;
+}
+
 /*
 export enum TestDirection {
   fromNl = -1,

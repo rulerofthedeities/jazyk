@@ -88,7 +88,8 @@ export class UtilsService {
       'numeral',
       'particle',
       'determiner',
-      'phrase'
+      'phrase',
+      'abbreviation'
     ];
   }
 

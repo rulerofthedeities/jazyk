@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Course, Lesson, Language} from '../../models/course.model';
+import {Course, Lesson, Language} from '../../models/course.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
@@ -32,7 +32,6 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   courseForm: FormGroup;
   lessons: Lesson[];
   currentLesson: Lesson;
-  chapters: Chapter[];
   isFormReady = false;
   isNewCourse = true;
   isSaving = false;
@@ -73,6 +72,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
 
   onToggle(tpe) {
     this.course[tpe] = !this.course[tpe];
+    this.courseForm.markAsDirty();
   }
 
   onLanguageSelected(newLanguage: Language) {
@@ -98,7 +98,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       isPublic: true,
       isPublished: false,
       exerciseCount: 0,
-      exercisesDone: 0
+      exercisesDone: 0,
+      chapters: []
     };
     this.buildForm();
   }
@@ -134,6 +135,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       updatedCourse => {
+        this.done.emit(this.course);
       },
       error => this.errorService.handleError(error)
     );

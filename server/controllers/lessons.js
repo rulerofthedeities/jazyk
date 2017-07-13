@@ -1,16 +1,16 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Lesson = require('../models/lesson'),
-      Chapter = require('../models/chapter');
+      Course = require('../models/course');
 
 module.exports = {
   getLessons: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     Lesson.find({courseId}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
-        Chapter.find({courseId, isDeleted: false}, {} , {sort:{nr:1}}, function(err, chapters) {
+        Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, chapters) {
           response.handleError(err, res, 500, 'Error fetching chapters', function(){
-            response.handleSuccess(res, {lessons,chapters}, 200, 'Fetched chapters and lessons');
+            response.handleSuccess(res, {lessons, chapters: chapters[0].chapters}, 200, 'Fetched chapters and lessons');
           });
         });
       });
@@ -57,38 +57,6 @@ module.exports = {
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating lesson', function(){
         response.handleSuccess(res, result, 200, 'Updated lesson');
-      });
-    });
-  },
-  addChapter: function(req, res) {
-    let chapter = new Chapter(req.body);
-    chapter._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
-
-    chapter.save(function(err, result) {
-      response.handleError(err, res, 500, 'Error adding chapter', function(){
-        response.handleSuccess(res, result, 200, 'Added chapter');
-      });
-    });
-  },
-  getChapters: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
-
-    Chapter.find({courseId, isDeleted: false}, {}, {sort: {nr: 1}}, function(err, result) {
-      response.handleError(err, res, 500, 'Error adding chapter', function(){
-        response.handleSuccess(res, result, 200, 'Added chapter');
-      });
-    });
-  },
-  removeChapter: function(req, res) {
-    const chapterId = new mongoose.Types.ObjectId(req.params.id);
-
-    console.log('removing chapter with id', chapterId);
-
-    Chapter.findOneAndUpdate(
-      {_id: chapterId},
-      {$set: {isDeleted: true}}, function(err, result) {
-      response.handleError(err, res, 500, 'Error removing chapter with id "' + chapterId+ '"', function(){
-        response.handleSuccess(res, result, 200, 'Removed chapter with id "' + chapterId+ '"');
       });
     });
   }

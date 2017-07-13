@@ -47,13 +47,55 @@ module.exports = {
     Course.findOneAndUpdate(
       {_id: courseId},
       {$set: {
-        name: course.name
+        name: course.name,
+        isPublic: course.isPublic,
+        isPublished: course.isPublished
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating course', function(){
         response.handleSuccess(res, result, 200, 'Updated course');
       });
     });
-  }/*,
+  },
+  addChapter: function(req, res) {
+    console.log('adding');
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const chapter = req.body;
+
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      {$addToSet: {
+        chapters: chapter.name
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error adding chapter', function(){
+        response.handleSuccess(res, result, 200, 'Added chapter');
+      });
+    });
+  },
+  getChapters: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+
+    Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, result) {
+      response.handleError(err, res, 500, 'Error fetching chapters', function(){
+        response.handleSuccess(res, result, 200, 'Fetched chapters');
+      });
+    });
+  },
+  removeChapter: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const chapter = req.body.name;
+
+    console.log('removing chapter', chapter);
+
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      { $pull: { chapters: chapter }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error removing chapter "' + chapter+ '"', function(){
+        response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter+ '"');
+      });
+    });
+  }
+
+  /*,
   setPublic: function(req, res) {
     const courseId = req.params.id;
     const status = req.params.status;

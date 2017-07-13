@@ -65,7 +65,7 @@
             type="button" 
             class="btn btn-success" 
             (click)="onSubmit(courseForm.value)"
-            [disabled]="!courseForm.valid">
+            [disabled]="!courseForm.valid || !courseForm.dirty">
             {{isNewCourse ? text['Addcourse'] : text['Update']}}
           </button>
           <button 

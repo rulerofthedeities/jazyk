@@ -2,7 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} fr
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Lesson, LanPair} from '../../models/course.model';
+import {Lesson, LanPair} from '../../models/course.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lesson: Lesson;
   @Input() lessons: Lesson[];
-  @Input() chapters: Chapter[];
+  @Input() chapters: string[];
   @Input() nr: number;
   @Input() text: Object;
   @Output() done = new EventEmitter<Lesson>();
@@ -116,9 +116,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       courseId: this.courseId,
       languagePair: this.languagePair,
       name: '',
-      nr: 1,
-      chapter: '',
-      chapterNr: 1,
+      chapterName: '',
       exerciseTpes: {
         learn: {active: true, bidirectional: false},
         practise: {active: true, bidirectional: true},
@@ -139,17 +137,14 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     }
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name],
-      nr: [this.lesson.nr],
       exerciseTpes: new FormArray(exerciseTpeControls)
     });
     this.isFormReady = true;
   }
 
   private processLesson(formValues: any) {
-    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '',
-          chapterNr = this.autocomplete.currentItem.nr ? this.autocomplete.currentItem.nr : 0;
-    this.lesson.chapter = chapterName;
-    this.lesson.chapterNr = chapterNr;
+    const chapterName = this.autocomplete.currentItem.name ? this.autocomplete.currentItem.name : '';
+    this.lesson.chapterName = chapterName;
     this.lesson.name = formValues.name;
     this.lesson.exerciseTpes = {
       learn: {active: formValues.exerciseTpes[0], bidirectional: this.bidirectional[0]},
@@ -160,7 +155,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private addLesson() {
-    this.lesson.nr = this.lessons.filter(lesson => lesson.chapter === this.lesson.chapter).length + 1;
     this.lesson.languagePair = this.languagePair;
     this.buildService
     .addLesson(this.lesson)
@@ -168,6 +162,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     .subscribe(
       savedLesson => {
         this.lesson = savedLesson;
+        console.log('done', savedLesson);
         this.done.emit(savedLesson);
       },
       error => this.errorService.handleError(error)

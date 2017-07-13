@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
+import {Exercise, ExerciseData} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -32,6 +33,48 @@ export class LearnService {
     .get('/api/lesson/first/' + courseId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  buildExerciseData(exercises: Exercise[], text: Object): ExerciseData[] {
+    const exerciseData: ExerciseData[] = [];
+    let annotations: string[] = [];
+    let suffix: string;
+    let genus: string;
+    exercises.forEach( (exercise, i) => {
+      annotations = [];
+      genus = '';
+      suffix = '';
+      // Annotations
+      if (exercise.wordTpe) {
+        annotations.push(text[exercise.wordTpe]);
+      }
+      if (exercise.aspect) {
+        annotations.push(text[exercise.aspect]);
+      }
+      if (exercise.foreign.annotations) {
+        const annotationArr = exercise.foreign.annotations.split('|');
+        annotationArr.forEach(annotation => {
+          annotations.push(annotation);
+        });
+      }
+      // genus
+      if (exercise.genus) {
+        genus = '(' + exercise.genus.toLowerCase() + ')';
+      }
+      // suffix
+      if (exercise.followingCase) {
+        suffix =  text['case' + exercise.followingCase];
+        if (suffix) {
+          suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
+        }
+      }
+      exerciseData[i] = {
+        annotations: annotations,
+        genus: genus,
+        suffix: suffix
+      };
+    });
+    return exerciseData;
   }
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html

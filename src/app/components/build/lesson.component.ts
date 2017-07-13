@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Chapter, Lesson, Translation} from '../../models/course.model';
+import {Course, Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,7 +18,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private lanLocal: string;
   private lanForeign: string;
   course: Course;
-  chapters: Chapter[];
+  chapters: string[];
   lesson: Lesson;
   isNewWord = false;
   isEditMode = false;
@@ -60,11 +60,14 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   onCloseHeader(updatedLesson: Lesson) {
+      console.log('header closed');
     if (updatedLesson) {
       this.lesson = updatedLesson;
+      console.log('updated lesson');
       // Check if new chapter was added
-      if (this.chapters.filter(chapter => chapter.name === updatedLesson.chapter).length < 1) {
-        this.addChapter(updatedLesson.chapter);
+      if (this.chapters.filter(chapter => chapter === updatedLesson.chapterName).length < 1) {
+        console.log('added chapter');
+        this.addChapter(updatedLesson.chapterName);
       }
     }
     this.isEditMode = false;
@@ -85,35 +88,33 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanForeign = lesson.languagePair.to.slice(0, 2);
         this.getTranslations();
         this.setBidirectional();
-        this.getChapters();
-        this.getCourse(); // for header
+        //this.getChapters();
+        this.getCourse(); // for header & chapters
       },
       error => this.errorService.handleError(error)
     );
   }
 
+/*
   private getChapters() {
     this.buildService
     .fetchChapters(this.lesson.courseId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       chapters => {
+        console.log('chapters', chapters);
         this.chapters = chapters;
       },
       error => this.errorService.handleError(error)
     );
   }
+*/
 
   private addChapter(chapterName: string) {
     if (chapterName) {
-      const newChapter = {
-        courseId: this.lesson.courseId,
-        name: chapterName,
-        nr: this.chapters.length + 1
-      };
-      this.chapters.push(newChapter);
+      this.chapters.push(chapterName);
       this.buildService
-      .addChapter(newChapter)
+      .addChapter(this.lesson.courseId, chapterName)
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedChapter => {},
@@ -129,6 +130,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
+        this.chapters = course.chapters
       },
       error => this.errorService.handleError(error)
     );

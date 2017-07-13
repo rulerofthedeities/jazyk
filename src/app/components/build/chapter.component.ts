@@ -24,6 +24,7 @@ export class BuildChapterComponent {
 
   onClick(e: any, action: string) {
     event.preventDefault();
+    console.log('removelesson');
     switch (action) {
       case 'openchapter':
         this.openChapter();

@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Chapter, Course, Lesson, Language, Translation} from '../../models/course.model';
+import {Course, Lesson, Language, Translation} from '../../models/course.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,7 +18,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   languages: Language[];
   currentLanguage: Language;
   lessons: Lesson[];
-  chapters: Chapter[];
+  chapters: string[];
   isEditMode = false;
   isNewLesson = false;
   text: Object = {};
@@ -72,8 +72,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     if (lessonAdded) {
       this.lessons.push(lessonAdded);
       // Check if new chapter was added
-      if (this.chapters.filter(chapter => chapter.name === lessonAdded.chapter).length < 1) {
-        this.addChapter(lessonAdded.chapter);
+      if (this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
+        this.addChapter(lessonAdded.chapterName);
       }
     }
   }
@@ -107,14 +107,9 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private addChapter(chapterName: string) {
     if (chapterName) {
-      const newChapter = {
-        courseId: this.course._id,
-        name: chapterName,
-        nr: this.chapters.length + 1
-      };
-      this.chapters.push(newChapter);
+      this.chapters.push(chapterName);
       this.buildService
-      .addChapter(newChapter)
+      .addChapter(this.course._id, chapterName)
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedChapter => {},

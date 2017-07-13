@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Chapter, Lesson} from '../../models/course.model';
+import {Lesson} from '../../models/course.model';
 
 @Component({
   selector: 'km-build-lessons',
@@ -14,7 +14,7 @@ import {Chapter, Lesson} from '../../models/course.model';
 export class BuildLessonsComponent implements OnDestroy {
   @Input() courseId: string;
   @Input() lessons: Lesson[];
-  @Input() chapters: Chapter[];
+  @Input() chapters: string[];
   @Input() text: Object;
   private componentActive = true;
   private currentChapter = '';
@@ -28,30 +28,30 @@ export class BuildLessonsComponent implements OnDestroy {
   ) {}
 
   getLessons(chapterName: string): Lesson[] {
-    return this.lessons.filter(lesson => lesson.chapter === chapterName);
+    return this.lessons.filter(lesson => lesson.chapterName === chapterName);
   }
 
-  onToggleChapter(chapterId: string) {
-    this.currentChapter = chapterId === this.currentChapter ? '' : chapterId;
+  onToggleChapter(chapter: string) {
+    this.currentChapter = chapter === this.currentChapter ? '' : chapter;
   }
 
-  onRemoveChapter(chapterId: string) {
-    console.log('removing chapter with id', chapterId);
+  onRemoveChapter(chapterName: string) {
+    console.log('removing chapter ', this.courseId, chapterName);
     this.buildService
-    .removeChapter(chapterId)
+    .removeChapter(this.courseId, chapterName)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (removed) => {
         if (removed) {
-          this.chapters = this.chapters.filter(chapter => chapter._id !== chapterId);
+          this.chapters = this.chapters.filter(chapter => chapter !== chapterName);
         }
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  isCurrent(chapter: Chapter) {
-    return chapter._id === this.currentChapter;
+  isCurrent(chapter: string) {
+    return chapter === this.currentChapter;
   }
 
   ngOnDestroy() {

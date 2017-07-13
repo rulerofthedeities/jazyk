@@ -261,7 +261,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private buildNewExercise(formValues: any) {
     const exercise: Exercise = {
-      nr: 1,
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord}
     };
