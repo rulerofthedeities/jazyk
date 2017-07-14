@@ -41,9 +41,17 @@ export class BuildService {
 
   updateCourseHeader(course: Course) {
     const headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http
     .put('/api/course/header', JSON.stringify(course), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateCourseProperty(courseId: string, property: string, isProperty: boolean) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const data = {[property]: isProperty};
+    return this.http
+    .patch('/api/course/property/' + courseId, JSON.stringify(data), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

@@ -11,6 +11,9 @@
 .indicators .fa {
   font-size: 24px;
   color: #ccc;
+  cursor: pointer;
+  width: 20px;
+  text-align: center;
 }
 .indicators .fa-user, .indicators .fa-check {
   color: green;
@@ -21,4 +24,7 @@ h2 .btn {
 }
 .header a {
   color: black;
+}
+.indicators .fa.disabled {
+  cursor: default;
 }

@@ -52,6 +52,19 @@ module.exports = {
       });
     });
   },
+  updateCourseProperty: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const property = req.body;
+    const key = Object.keys(property)[0];
+    if (key === 'isPublic' || key === 'isPublished') {
+      Course.findOneAndUpdate(
+        {_id: courseId}, property, function(err, result) {
+        response.handleError(err, res, 500, 'Error updating ' + key, function(){
+          response.handleSuccess(res, result, 200, 'Updated ' + key);
+        });
+      });
+    }
+  },
   addChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     const chapter = req.body;
