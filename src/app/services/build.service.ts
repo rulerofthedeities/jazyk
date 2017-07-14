@@ -73,6 +73,14 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  updateChapters(chapters: string[], courseId: string) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    return this.http
+    .put('/api/chapters/' + courseId, JSON.stringify(chapters), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** LESSONS ***/
 
   fetchLessonsAndChapters(courseId: string) {
@@ -91,7 +99,6 @@ export class BuildService {
 
   addLesson(lesson: Lesson) {
     const headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http
     .post('/api/lesson', JSON.stringify(lesson), {headers})
     .map(response => response.json().obj)
@@ -100,7 +107,6 @@ export class BuildService {
 
   updateLessonHeader(lesson: Lesson) {
     const headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http
     .put('/api/lesson/header', JSON.stringify(lesson), {headers})
     .map(response => response.json().obj)

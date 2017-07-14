@@ -1,7 +1,8 @@
 <div 
   class="navbar navbar-default" 
   dnd-sortable
-  [sortableIndex]="nr">
+  [sortableIndex]="nr"
+  (onDropSuccess)="onResorted()">
   <div class="navbar-header">
     <a href="#" (click)="onClick($event, 'open')" class="navbar-brand">
       <span class="fa" [ngClass]="{'fa-caret-down': isOpen, 'fa-caret-right': !isOpen}"></span>

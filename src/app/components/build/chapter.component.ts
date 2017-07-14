@@ -17,6 +17,7 @@ export class BuildChapterComponent {
   @Input() nr: number;
   @Output() toggleOpen = new EventEmitter();
   @Output() remove = new EventEmitter();
+  @Output() sorted = new EventEmitter();
   private isRemoving = false;
 
   constructor(
@@ -37,6 +38,11 @@ export class BuildChapterComponent {
         this.editLesson(e);
       break;
     }
+  }
+
+  onResorted() {
+    console.log('resorted');
+    this.sorted.emit();
   }
 
   getRemoveMessage(tpe): string {

@@ -1,5 +1,4 @@
 import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
@@ -22,7 +21,6 @@ export class BuildLessonsComponent implements OnDestroy {
   lessonswithnochapter: Lesson[] = [];
 
   constructor(
-    private formBuilder: FormBuilder,
     private buildService: BuildService,
     private errorService: ErrorService
   ) {}
@@ -50,8 +48,23 @@ export class BuildLessonsComponent implements OnDestroy {
     );
   }
 
+  onResorted() {
+    console.log('resorted', this.chapters);
+    this.saveResortedChapters();
+  }
+
   isCurrent(chapter: string) {
     return chapter === this.currentChapter;
+  }
+
+  private saveResortedChapters() {
+    this.buildService
+    .updateChapters(this.chapters, this.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      () => {console.log('updated chapters'); },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

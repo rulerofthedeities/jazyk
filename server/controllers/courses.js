@@ -13,7 +13,6 @@ module.exports = {
     });
   },
   getCourse: function(req, res) {
-    console.log(req.params.id);
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       const courseId = new mongoose.Types.ObjectId(req.params.id);
       
@@ -29,7 +28,6 @@ module.exports = {
   },
   addCourse: function(req, res) {
     const course = new Course(req.body);
-    console.log('course', course);
     course._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
 
     course.save(function(err, result) {
@@ -41,8 +39,6 @@ module.exports = {
   updateCourseHeader: function(req, res) {
     const course = new Course(req.body);
     const courseId = new mongoose.Types.ObjectId(course._id);
-    
-    console.log('updating course header', course);
 
     Course.findOneAndUpdate(
       {_id: courseId},
@@ -57,7 +53,6 @@ module.exports = {
     });
   },
   addChapter: function(req, res) {
-    console.log('adding');
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     const chapter = req.body;
 
@@ -84,13 +79,25 @@ module.exports = {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     const chapter = req.body.name;
 
-    console.log('removing chapter', chapter);
-
     Course.findOneAndUpdate(
       {_id: courseId},
       { $pull: { chapters: chapter }}, function(err, result) {
       response.handleError(err, res, 500, 'Error removing chapter "' + chapter+ '"', function(){
         response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter+ '"');
+      });
+    });
+  },
+  updateChapters: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const chapters = req.body;
+
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      {$set: {
+        chapters: chapters
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating chapters', function(){
+        response.handleSuccess(res, result, 200, 'Updated chapters');
       });
     });
   }
