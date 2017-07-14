@@ -9,7 +9,6 @@ import {ModalConfirmComponent} from '../modals/modal-confirm.component';
   styleUrls: ['chapter.component.css']
 })
 export class BuildChapterComponent {
-  @Input() lessons: Lesson[];
   @Input() title: string;
   @Input() total: number;
   @Input() isOpen: boolean;
@@ -26,7 +25,6 @@ export class BuildChapterComponent {
 
   onClick(e: any, action: string) {
     event.preventDefault();
-    console.log('removelesson');
     switch (action) {
       case 'openchapter':
         this.openChapter();
@@ -34,14 +32,10 @@ export class BuildChapterComponent {
       case 'removechapter':
         this.askRemoveChapter(e);
       break;
-      case 'editlesson':
-        this.editLesson(e);
-      break;
     }
   }
 
   onResorted() {
-    console.log('resorted');
     this.sorted.emit();
   }
 
@@ -54,7 +48,6 @@ export class BuildChapterComponent {
     return msg;
   }
 
-
   onRemoveConfirmed(removeOk: boolean) {
     if (removeOk) {
       this.isRemoving = true;
@@ -66,14 +59,9 @@ export class BuildChapterComponent {
     this.toggleOpen.emit();
   }
 
-
   private askRemoveChapter(confirm: ModalConfirmComponent) {
     if (!this.isRemoving) {
       confirm.showModal = true;
     }
-  }
-
-  private editLesson(lessonId: string) {
-    this.router.navigate(['/build/lesson/' + lessonId]);
   }
 }

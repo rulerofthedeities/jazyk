@@ -1,0 +1,27 @@
+<div class="lessons" *ngIf="isReady"
+  dnd-sortable-container
+  [sortableData]="lessonIds"
+  [dropZones]="['lesson-dropZone']">
+  <ul class="lesson list-unstyled">
+    <li *ngFor="let lessonId of lessonIds; let i=index">
+      <div class="panel panel-default"
+      dnd-sortable
+      [sortableIndex]="i"
+      (onDropSuccess)="onResorted()">
+        <div class="panel-body">
+          {{lessonDict[lessonId].name}} ({{lessonDict[lessonId].exercises?.length}}) {{i}} {{lessonId}} 
+          <button class="btn btn-warning pull-right" (click)="onClick(lessonId, 'editlesson')">
+            <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
+          </button>
+          <button
+            class="btn btn-danger pull-right"
+            (click)="onClick($event, 'removelesson')"
+            *ngIf="lessonDict[lessonId].exercises?.length === 0">
+            <span class="fa fa-trash"></span>
+          </button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+

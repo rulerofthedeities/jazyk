@@ -49,7 +49,6 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   onResorted() {
-    console.log('resorted', this.chapters);
     this.saveResortedChapters();
   }
 

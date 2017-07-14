@@ -1,7 +1,9 @@
-<div 
+<div
   class="navbar navbar-default" 
+  [class.isOpen]="isOpen"
   dnd-sortable
   [sortableIndex]="nr"
+  [dragEnabled]="!isOpen"
   (onDropSuccess)="onResorted()">
   <div class="navbar-header">
     <a href="#" (click)="onClick($event, 'open')" class="navbar-brand">
@@ -17,26 +19,6 @@
         <button (click)="onClick(confirmchapter, 'removechapter')" class="btn btn-danger">
           <span class="fa fa-trash"></span>
         </button>
-      </li>
-    </ul>
-  </div>
-  <div class="lessons" [ngStyle]="{display: isOpen ? 'block' : 'none'}">
-    <ul class="lesson list-unstyled">
-      <li *ngFor="let lesson of lessons">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            {{lesson.name}}  ({{lesson.exercises?.length}})
-            <button class="btn btn-warning pull-right" (click)="onClick(lesson._id, 'editlesson')">
-              <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
-            </button>
-            <button
-              class="btn btn-danger pull-right"
-              (click)="onClick($event, 'removelesson')"
-              *ngIf="lesson.exercises?.length === 0">
-              <span class="fa fa-trash"></span>
-            </button>
-          </div>
-        </div>
       </li>
     </ul>
   </div>

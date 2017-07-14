@@ -12,16 +12,18 @@ import {BuildComponent} from './components/build/build.component';
 import {BuildCourseComponent} from './components/build/course.component';
 import {BuildCourseHeaderComponent} from './components/build/course-header.component';
 import {BuildCourseHeaderBarComponent} from './components/build/course-header-bar.component';
+import {BuildChapterComponent} from './components/build/chapter.component';
+import {BuildChapterLessonsComponent} from './components/build/chapter-lessons.component';
 import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
-import {BuildChapterComponent} from './components/build/chapter.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
+
 
 @NgModule({
   imports: [
@@ -40,6 +42,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildCourseHeaderComponent,
     BuildCourseHeaderBarComponent,
     BuildChapterComponent,
+    BuildChapterLessonsComponent,
     BuildLessonsComponent,
     BuildLessonComponent,
     BuildLessonHeaderComponent,

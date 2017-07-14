@@ -1,8 +1,7 @@
-<div *ngFor="let chapter of chapters; let i = index"
-  dnd-sortable-container
-  [sortableData]="chapters">
+<div *ngFor="let chapter of chapters; let i = index">
   <km-chapter
-    [lessons]="getLessons(chapter)"
+    dnd-sortable-container
+    [sortableData]="chapters"
     [title]="chapter"
     [nr]="i"
     [total]="getLessons(chapter).length"
@@ -12,6 +11,12 @@
     (remove)="onRemoveChapter(chapter)"
     (sorted)="onResorted()">
   </km-chapter>
+  <km-chapter-lessons
+    *ngIf="isCurrent(chapter)"
+    [lessons]="getLessons(chapter)"
+    [text]="text"
+    >
+  </km-chapter-lessons>
 </div>
 
 <ul class="nochapters list-unstyled">
