@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Course, Lesson, Language, LanPair} from '../models/course.model';
+import {Course, Lesson, LessonId, Language, LanPair} from '../models/course.model';
 import {Filter, Exercise} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -81,7 +81,7 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  updateChapters(chapters: string[], courseId: string) {
+  updateChapters(courseId: string, chapters: string[]) {
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
     .put('/api/chapters/' + courseId, JSON.stringify(chapters), {headers})
@@ -91,7 +91,7 @@ export class BuildService {
 
   /*** LESSONS ***/
 
-  fetchLessonsAndChapters(courseId: string) {
+  fetchLessons(courseId: string) {
     return this.http
     .get('/api/lessons/' + courseId)
     .map(response => response.json().obj)
@@ -117,6 +117,14 @@ export class BuildService {
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
     .put('/api/lesson/header', JSON.stringify(lesson), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateLessonIds(courseId: string, lessonIds: LessonId[]) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    return this.http
+    .put('/api/lessonIds/' + courseId, JSON.stringify(lessonIds), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

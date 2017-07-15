@@ -8,11 +8,11 @@ module.exports = {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     Lesson.find({courseId}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
-        Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, chapters) {
-          response.handleError(err, res, 500, 'Error fetching chapters', function(){
-            response.handleSuccess(res, {lessons, chapters: chapters[0].chapters}, 200, 'Fetched chapters and lessons');
-          });
-        });
+        //Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, chapters) {
+          //response.handleError(err, res, 500, 'Error fetching chapters', function(){
+            response.handleSuccess(res, lessons, 200, 'Fetched lessons');
+          //});
+        //});
       });
     });
   },

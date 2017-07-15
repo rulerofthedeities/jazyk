@@ -34,6 +34,11 @@ export interface LanConfig  {
   regions?: string[];
 }
 
+export interface LessonId { // for sorting
+  chapter: string;
+  lessonIds: string[];
+}
+
 export interface Course {
   _id?: string;
   languagePair: LanPair;
@@ -46,6 +51,7 @@ export interface Course {
   exerciseCount: number;
   exercisesDone: number;
   chapters: string[];
+  lessons?: LessonId[];
 }
 
 export interface Lesson {

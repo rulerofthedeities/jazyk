@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Course, Lesson, Language, Translation} from '../../models/course.model';
+import {Course, Lesson, LessonId, Language, Translation} from '../../models/course.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,6 +18,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   languages: Language[];
   currentLanguage: Language;
   lessons: Lesson[];
+  lessonIds: LessonId[];
   chapters: string[];
   isEditMode = false;
   isNewLesson = false;
@@ -86,23 +87,22 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       course => {
         this.course = course;
         if (course) {
+          this.chapters = course.chapters;
+          this.lessonIds = course.lessons;
           this.setDefaultLanguage(course.languagePair.to);
-          this.getLessonsAndChapters(courseId);
+          this.getLessons(courseId);
         }
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private getLessonsAndChapters(courseId: string) {
+  private getLessons(courseId: string) {
     this.buildService
-    .fetchLessonsAndChapters(courseId)
+    .fetchLessons(courseId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
-        this.lessons = data.lessons;
-        this.chapters = data.chapters;
-      },
+      lessons => this.lessons = lessons,
       error => this.errorService.handleError(error)
     );
   }

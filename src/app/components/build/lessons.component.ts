@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson} from '../../models/course.model';
+import {Lesson, LessonId} from '../../models/course.model';
 
 @Component({
   selector: 'km-build-lessons',
@@ -13,6 +13,7 @@ import {Lesson} from '../../models/course.model';
 export class BuildLessonsComponent implements OnDestroy {
   @Input() courseId: string;
   @Input() lessons: Lesson[];
+  @Input() lessonIds: LessonId[];
   @Input() chapters: string[];
   @Input() text: Object;
   private componentActive = true;
@@ -27,6 +28,15 @@ export class BuildLessonsComponent implements OnDestroy {
 
   getLessons(chapterName: string): Lesson[] {
     return this.lessons.filter(lesson => lesson.chapterName === chapterName);
+  }
+
+  getLessonIds(chapterName: string): string[] {
+    let chapterLessons: string[] = [];
+    const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
+    if (lessonId && lessonId.lessonIds) {
+      chapterLessons = lessonId.lessonIds;
+    }
+    return chapterLessons;
   }
 
   onToggleChapter(chapter: string) {
@@ -48,8 +58,12 @@ export class BuildLessonsComponent implements OnDestroy {
     );
   }
 
-  onResorted() {
+  onResortedChapters() {
     this.saveResortedChapters();
+  }
+
+  onResortedLessons() {
+    this.saveResortedLessons();
   }
 
   isCurrent(chapter: string) {
@@ -58,7 +72,19 @@ export class BuildLessonsComponent implements OnDestroy {
 
   private saveResortedChapters() {
     this.buildService
-    .updateChapters(this.chapters, this.courseId)
+    .updateChapters(this.courseId, this.chapters)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      () => {console.log('updated chapters'); },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private saveResortedLessons() {
+    console.log('saving lesson Ids', this.lessonIds);
+
+    this.buildService
+    .updateLessonIds(this.courseId, this.lessonIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       () => {console.log('updated chapters'); },

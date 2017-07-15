@@ -9,13 +9,14 @@
     [text]="text"
     (toggleOpen)="onToggleChapter(chapter)"
     (remove)="onRemoveChapter(chapter)"
-    (sorted)="onResorted()">
+    (sorted)="onResortedChapters()">
   </km-chapter>
   <km-chapter-lessons
     *ngIf="isCurrent(chapter)"
     [lessons]="getLessons(chapter)"
+    [lessonIds]="getLessonIds(chapter)"
     [text]="text"
-    >
+    (sorted)="onResortedLessons()">
   </km-chapter-lessons>
 </div>
 

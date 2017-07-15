@@ -30,6 +30,7 @@ module.exports.initialize = function(app, router) {
   router.get('/lesson/first/:id', lessons.getFirstLesson);
   router.post('/lesson', lessons.addLesson);
   router.put('/lesson/header', lessons.updateLessonHeader);
+  router.put('/lessonIds/:id', courses.updateLessonIds);
 
   router.get('/wordpairs', words.getWordPairs);
   router.get('/wordpair/:id', words.getWordPairDetail);

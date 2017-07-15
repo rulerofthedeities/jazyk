@@ -12,6 +12,11 @@ var lanPairSchema = new Schema({
   to: String
 }, {_id: false});
 
+var lessonSchema = new Schema({
+  chapter: String,
+  lessonIds: [String]
+}, {_id: false});
+
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
     languagePair: {type: lanPairSchema, required: true},
@@ -22,6 +27,7 @@ var courseSchema = new Schema({
     isPublished: Boolean,
     isPublic: Boolean,
     chapters: [String],
+    lessons: [lessonSchema],
     exerciseCount: { type: Number, default: 0 },
     exercisesDone: { type: Number, default: 0 },
     dtAdded: { type: Date, default: Date.now }

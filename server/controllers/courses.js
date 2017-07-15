@@ -113,6 +113,21 @@ module.exports = {
         response.handleSuccess(res, result, 200, 'Updated chapters');
       });
     });
+  },
+  updateLessonIds: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonIds = req.body;
+    console.log('updating course', courseId, lessonIds);
+
+    Course.findOneAndUpdate(
+      {_id: courseId},
+      {$set: {
+        lessons: lessonIds
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating lesson Ids', function(){
+        response.handleSuccess(res, result, 200, 'Updated lesson Ids');
+      });
+    });
   }
 
   /*,
