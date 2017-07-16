@@ -6,7 +6,7 @@ const response = require('../response'),
 module.exports = {
   getLessons: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
-    Lesson.find({courseId}, {}, {sort: {nr: 1}}, function(err, lessons) {
+    Lesson.find({courseId, isDeleted: false}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
         //Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, chapters) {
           //response.handleError(err, res, 500, 'Error fetching chapters', function(){
@@ -40,6 +40,18 @@ module.exports = {
     lesson.save(function(err, result) {
       response.handleError(err, res, 500, 'Error adding lesson', function(){
         response.handleSuccess(res, result, 200, 'Added lesson');
+      });
+    });
+  },
+  removeLesson: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    Lesson.findOneAndUpdate(
+      {_id: lessonId},
+      {$set: {
+        isDeleted: true
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error removing lesson', function(){
+        response.handleSuccess(res, result, 200, 'Removed lesson');
       });
     });
   },

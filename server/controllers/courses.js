@@ -129,32 +129,4 @@ module.exports = {
       });
     });
   }
-
-  /*,
-  setPublic: function(req, res) {
-    const courseId = req.params.id;
-    const status = req.params.status;
-    Course.findOneAndUpdate(
-      {_id: courseId},
-      {$set: {
-        isPublic: status === '1' ? true : false
-      }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating public flag in course', function(){
-        response.handleSuccess(res, result, 200, 'Updated public flag in course');
-      });
-    });
-  },
-  setPublish: function(req, res) {
-    const courseId = req.params.id;
-    const status = req.params.status;
-    Course.findOneAndUpdate(
-      {_id: courseId},
-      {$set: {
-        isPublished: status === '1' ? true : false
-      }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating publish flag in course', function(){
-        response.handleSuccess(res, result, 200, 'Updated publish flag in course');
-      });
-    });
-  }*/
 }

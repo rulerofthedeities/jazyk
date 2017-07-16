@@ -39,6 +39,14 @@ export class BuildChapterComponent {
     this.sorted.emit();
   }
 
+  getLessonLabel(nr: number): string {
+    if (nr === 1) {
+      return this.text['lesson'];
+    } else {
+      return this.text['lessons'];
+    }
+  }
+
   getRemoveMessage(tpe): string {
     let msg = '';
     if (this.text['Remove' + tpe]) {

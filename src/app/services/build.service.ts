@@ -121,6 +121,14 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  removeLesson(lessonId: string) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    return this.http
+    .delete('/api/lesson/' + lessonId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   updateLessonIds(courseId: string, lessonIds: LessonId[]) {
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http

@@ -1,5 +1,7 @@
-import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges} from '@angular/core';
 import {Router} from '@angular/router';
+import {BuildService} from '../../services/build.service';
+import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 
@@ -12,22 +14,90 @@ interface Map<T> {
   templateUrl: 'chapter-lessons.component.html',
   styleUrls: ['chapter.component.css']
 })
-export class BuildChapterLessonsComponent implements OnInit {
+export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() private lessons: Lesson[];
   @Input() lessonIds: string[];
   @Input() text: Object;
-  @Output() remove = new EventEmitter();
+  @Output() remove = new EventEmitter<string>();
   @Output() sorted = new EventEmitter();
-  private isRemoving = false;
+  private componentActive = true;
+  private lessonToRemove: string;
   lessonDict: Map<Lesson> = {}; // For sorting
   isReady = false;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private buildService: BuildService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
-    console.log('lessons for chapter', this.lessonIds);
+    this.filterLessonIds();
+  }
+
+  ngOnChanges() {
+    if (this.lessonIds.length !== this.lessons.length) {
+      this.filterLessonIds();
+    }
+  }
+
+  onEditLesson(lessonId: string) {
+    event.preventDefault();
+    this.editLesson(lessonId);
+  }
+
+  onRemoveLesson(lessonId: string, confirm: ModalConfirmComponent) {
+    event.preventDefault();
+    this.askRemoveLesson(lessonId, confirm);
+  }
+
+  onRemoveConfirmed(removeOk: boolean) {
+    if (removeOk && this.lessonToRemove) {
+      this.remove.emit(this.lessonToRemove);
+      this.lessonToRemove = null;
+    }
+  }
+
+  onResorted() {
+    this.sorted.emit();
+  }
+
+  getRemoveMessage(): string {
+    let msg = '';
+    if (this.lessonToRemove) {
+      const name = this.lessonDict[this.lessonToRemove].name;
+      if (this.text['RemoveLesson']) {
+        msg = this.text['RemoveLesson'];
+        msg = msg.replace('%s', name);
+      }
+    }
+    return msg;
+  }
+
+  getExercisesLabel(lessonId: string): string {
+    const nr = this.lessonDict[lessonId].exercises.length;
+    let label = nr.toString();
+    if (nr === 1) {
+      label += ' ' + this.text['word'];
+    } else {
+      label += ' ' + this.text['words'];
+    }
+
+    return label;
+  }
+
+  private editLesson(lessonId: string) {
+    this.router.navigate(['/build/lesson/' + lessonId]);
+  }
+
+  private askRemoveLesson(lessonId: string, confirm: ModalConfirmComponent) {
+    if (!this.lessonToRemove) {
+      this.lessonToRemove = lessonId;
+      confirm.showModal = true;
+    }
+  }
+
+  private filterLessonIds() {
     let lessonId: string;
     let lesson: Lesson;
     let saveSortedIds = false;
@@ -56,20 +126,7 @@ export class BuildChapterLessonsComponent implements OnInit {
     }
   }
 
-  onClick(e: any, action: string) {
-    event.preventDefault();
-    switch (action) {
-      case 'editlesson':
-        this.editLesson(e);
-      break;
-    }
-  }
-
-  onResorted() {
-    this.sorted.emit();
-  }
-
-  private editLesson(lessonId: string) {
-    this.router.navigate(['/build/lesson/' + lessonId]);
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

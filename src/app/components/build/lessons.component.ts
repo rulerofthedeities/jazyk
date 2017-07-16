@@ -18,7 +18,6 @@ export class BuildLessonsComponent implements OnDestroy {
   @Input() text: Object;
   private componentActive = true;
   private currentChapter = '';
-
   lessonswithnochapter: Lesson[] = [];
 
   constructor(
@@ -44,18 +43,11 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   onRemoveChapter(chapterName: string) {
-    console.log('removing chapter ', this.courseId, chapterName);
-    this.buildService
-    .removeChapter(this.courseId, chapterName)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (removed) => {
-        if (removed) {
-          this.chapters = this.chapters.filter(chapter => chapter !== chapterName);
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
+    this.removeChapter(chapterName);
+  }
+
+  onRemoveLesson(lessonId: string) {
+    this.removeLesson(lessonId);
   }
 
   onResortedChapters() {
@@ -90,6 +82,43 @@ export class BuildLessonsComponent implements OnDestroy {
       () => {console.log('updated chapters'); },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private removeChapter(chapterName: string) {
+    console.log('removing chapter ', this.courseId, chapterName);
+    this.buildService
+    .removeChapter(this.courseId, chapterName)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (removed) => {
+        if (removed) {
+          this.chapters = this.chapters.filter(chapter => chapter !== chapterName);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private removeLesson(lessonId: string) {
+    if (lessonId) {
+      this.buildService
+      .removeLesson(lessonId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        (removed) => {
+          if (removed) {
+            console.log('lesson removed', lessonId);
+            console.log(this.lessons, this.lessonIds);
+            this.lessons = this.lessons.filter(lesson => lesson._id !== lessonId);
+            this.lessonIds.forEach(lesson => {
+              lesson.lessonIds = lesson.lessonIds.filter(id => id !== lessonId);
+            });
+            console.log(this.lessons, this.lessonIds);
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   ngOnDestroy() {

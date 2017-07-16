@@ -31,3 +31,7 @@ ul .btn {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
 }
+.lesson-cnt, .woorden {
+  font-size: 18px;
+  margin-left: 8px;
+}

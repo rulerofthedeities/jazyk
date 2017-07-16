@@ -9,13 +9,13 @@
       [sortableIndex]="i"
       (onDropSuccess)="onResorted()">
         <div class="panel-body">
-          {{lessonDict[lessonId].name}} ({{lessonDict[lessonId].exercises?.length}}) {{i}} {{lessonId}} 
-          <button class="btn btn-warning pull-right" (click)="onClick(lessonId, 'editlesson')">
+          {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
+          <button class="btn btn-warning pull-right" (click)="onEditLesson(lessonId)">
             <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
           </button>
           <button
             class="btn btn-danger pull-right"
-            (click)="onClick($event, 'removelesson')"
+            (click)="onRemoveLesson(lessonId, confirmlesson)"
             *ngIf="lessonDict[lessonId].exercises?.length === 0">
             <span class="fa fa-trash"></span>
           </button>
@@ -25,3 +25,10 @@
   </ul>
 </div>
 
+<km-modal-confirm #confirmlesson
+  [level]="'warning'"
+  [text]="text"
+  (confirmed)="onRemoveConfirmed($event)">
+  <div title>{{text.Warning}}</div>
+  <div message>{{getRemoveMessage()}}</div>
+</km-modal-confirm>
