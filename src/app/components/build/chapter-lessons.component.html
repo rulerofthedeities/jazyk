@@ -9,7 +9,9 @@
       [sortableIndex]="i"
       (onDropSuccess)="onResorted()">
         <div class="panel-body">
-          {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
+          <span class="name" (click)="onEditLesson(lessonId)">
+            {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
+          </span>
           <button class="btn btn-warning pull-right" (click)="onEditLesson(lessonId)">
             <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
           </button>

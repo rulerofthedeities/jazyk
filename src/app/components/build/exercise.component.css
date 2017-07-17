@@ -60,3 +60,8 @@
 .form-horizontal .control-label {
   padding-top: 0;
 }
+.fa-exchange {
+  transform: rotate(90deg);
+  color: green;
+  font-weight: bold;
+}

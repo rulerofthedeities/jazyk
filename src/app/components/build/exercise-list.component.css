@@ -39,3 +39,6 @@
 .list {
   margin-bottom: 0;
 }
+.annotations {
+  font-style: italic;
+}

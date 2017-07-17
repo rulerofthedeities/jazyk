@@ -178,7 +178,7 @@
         </span>
         <ul class="list-inline" *ngIf="currentExercise.foreign.alt">
           <li *ngFor="let alt of currentExercise.foreign.alt.split('|'); let i = index" class="list-group-item">
-            {{alt}} <span class="fa fa-times" (click)="onRemove('alt', 'foreign', i)"></span>
+            {{alt}} <span class="fa fa-exchange" (click)="onReplace('alt', 'foreign', i)"></span> <span class="fa fa-times" (click)="onRemove('alt', 'foreign', i)"></span>
           </li>
         </ul>
       </div>
@@ -369,7 +369,7 @@
         </span>
         <ul class="list-inline" *ngIf="currentExercise.local.alt">
           <li *ngFor="let alt of currentExercise.local.alt.split('|'); let i = index" class="list-group-item">
-            {{alt}} <span class="fa fa-times" (click)="onRemove('alt', 'local', i)"></span>
+            {{alt}} <span class="fa fa-exchange" (click)="onReplace('alt', 'local', i)"></span> <span class="fa fa-times" (click)="onRemove('alt', 'local', i)"></span>
           </li>
         </ul>
       </div>

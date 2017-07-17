@@ -35,3 +35,9 @@ ul .btn {
   font-size: 18px;
   margin-left: 8px;
 }
+.lesson div {
+  cursor: default;
+}
+.name {
+  cursor: pointer;
+}

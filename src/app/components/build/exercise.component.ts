@@ -158,6 +158,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.currentExercise[tpe][fld] = items.filter((item, itemi) => itemi !== i).join('|');
   }
 
+  onReplace(fld: string, tpe: string, i: number) {
+    const items: string[] = this.currentExercise[tpe][fld].split('|');
+    const newWord = items[i];
+    const formName = tpe + 'Word';
+    items[i] = this.exerciseForm.value[formName];
+    this.currentExercise[tpe][fld] = items.join('|');
+    this.exerciseForm.patchValue({[formName]: newWord});
+  }
+
   onActivateField(field: string) {
     this.addFields[field] = true;
   }
@@ -303,7 +312,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private buildExistingExercise(formValues: any) {
     const exercise: Exercise = this.currentExercise;
     exercise.local.word = this.exerciseForm.value['localWord'];
-    exercise.foreign.word = this.exerciseForm.value['localWord'];
+    exercise.foreign.word = this.exerciseForm.value['foreignWord'];
     exercise.foreign.hint = this.exerciseForm.value['foreignHint'];
     exercise.foreign.info = this.exerciseForm.value['info'];
     exercise.wordTpe = this.exerciseForm.value['wordTpe'];
