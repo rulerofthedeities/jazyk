@@ -28,13 +28,18 @@
     [exercises]="exercises"
     [lanPair]="course.languagePair"
     [text]="text"
+    [settings]="settings"
     (skipStep)="onSkipStep($event)"
     (stepCompleted)="onStepCompleted($event)"
+    (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-study>
   <km-learn-practise *ngSwitchCase="'practise'"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
+    [text]="text"
+    [settings]="settings"
+    (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
   <km-learn-test *ngSwitchCase="'test'"

@@ -1,0 +1,35 @@
+.settings {
+  font-size: 20px;
+  margin-top: 9px;
+  height: 26px;
+  color: #666;
+}
+.settings span {
+  width: 24px;
+  padding: 0 2px;
+  cursor: pointer;
+  text-align: center;
+}
+.settings .on {
+  color: #428bca;
+}
+.settings .inactive {
+  color: #ccc;
+  cursor: initial;
+}
+.slashed {
+  position: relative;
+  top: -24px;
+  left: 7px;
+  pointer-events: none;
+}
+.slashed span {
+  display: inline-block;
+  width: 24px;
+}
+.slashed .off:before {
+  content: "╱";   
+  display: block;
+  color: #333;
+  font-weight: bold;
+}

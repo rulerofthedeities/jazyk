@@ -4,7 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
-import {Exercise} from '../../models/exercise.model';
+import {Exercise, LearnSettings} from '../../models/exercise.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
@@ -17,6 +17,7 @@ export class LearnComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private lesson: Lesson;
+  private settings: LearnSettings;
   errorMsg: string;
   infoMsg: string;
   course: Course;
@@ -44,6 +45,12 @@ export class LearnComponent implements OnInit, OnDestroy {
         }
       }
     );
+
+    this.settings = {
+      mute: false,
+      color: true,
+      delay: 2
+    };
   }
 
   stepTo(step: string) {
@@ -57,6 +64,11 @@ export class LearnComponent implements OnInit, OnDestroy {
 
   onStepCompleted(step: string) {
     this.stepCompleted[0] = true;
+  }
+
+  onSettingsUpdated(settings: LearnSettings) {
+    console.log('settings updated 2', settings);
+    this.settings = settings;
   }
 
   private setText(translations: Translation[]) {

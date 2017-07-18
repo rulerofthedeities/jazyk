@@ -31,10 +31,12 @@ var exerciseSchema = new Schema({
 
 var ExerciseTpeSchema = new Schema({
   active: Boolean,
-  bidirectional: Boolean
+  bidirectional: Boolean,
+  ordered: Boolean
 }, {_id: false})
 
 var ExerciseTpesSchema = new Schema({
+  intro: ExerciseTpeSchema,
   learn: ExerciseTpeSchema,
   practise: ExerciseTpeSchema,
   test: ExerciseTpeSchema,

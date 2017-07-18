@@ -107,9 +107,11 @@ export interface Exercise {
 export interface ExerciseTpe {
   active: boolean;
   bidirectional: boolean;
+  ordered: boolean;
 }
 
 export interface ExerciseTpes {
+  intro: ExerciseTpe;
   learn: ExerciseTpe;
   practise: ExerciseTpe;
   test: ExerciseTpe;
@@ -122,19 +124,8 @@ export interface ExerciseData {
   suffix: string;
 }
 
-/*
-export enum TestDirection {
-  fromNl = -1,
-  same = 0,
-  toNl = 1
-};
-
-export interface TestType {
-  nr: number;
-  label: string;
-  direction: ExerciseDirection;
-  isDefault: boolean;
-  isOption?: boolean;
-  isSelected?: boolean;
-};
-*/
+export interface LearnSettings {
+  mute: boolean;
+  color: boolean;
+  delay: number; // # of seconds before local word appears
+}

@@ -1,81 +1,5 @@
-.panel {
-  background-color: inherit;
-}
-.centerpanel {
-  margin: 0 auto;
-  width: 100%;
-  min-width: 300px;
-}
-.center {
-  text-align: center;
-}
-.card {
-  border: 2px solid #999;
-  box-shadow: 2px 2px 2px #ccc;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
-  background-color: white;
-}
-h1 {
-  margin-top: 0;
-  font-size: 46px;
-}
-.bullets{
-  color: grey;
-  font-size: 20px;
-  margin-top: 8px;
-  height: 26px;
-}
-.bullets span {
-  margin: 0 2px
-}
-.settings {
-  font-size: 20px;
-  margin-top: 9px;
-  height: 26px;
-  color: #666;
-}
-.settings span {
-  width: 24px;
-  padding: 0 2px;
-  cursor: pointer;
-  text-align: center;
-}
-.settings .on {
-  color: #428bca;
-}
-.settings .inactive {
-  color: #ccc;
-  cursor: initial;
-}
-.slashed {
-  position: relative;
-  top: -24px;
-  left: 7px;
-  pointer-events: none;
-}
-.slashed span {
-  display: inline-block;
-  width: 24px;
-}
-.slashed .off:before {
-  content: "╱";   
-  display: block;
-  color: #333;
-  font-weight: bold;
-}
-.actions {
-  margin-top: 20px;
-}
 .green {
   color: green;
-}
-.wordinfo {
-  margin-left: 44px;
-}
-.wordinfo .label{
-  font-size: 100%;
 }
 .suffix {
   font-size: 20px;
@@ -101,10 +25,10 @@ h1 {
 .studiedLocal {
   color: #999;
 }
-.foreign {
+.answer {
   min-height: 100px;
 }
-.local > .word {
+.answer > .word {
   margin-top: 32px;
   height: 78px;
 }
@@ -114,18 +38,4 @@ h1 {
   color: #999;
   margin-top: 50px;
   height: 70px;
-}
-.label-annotation {
-  background-color: #f3f3f3;
-  border: 1px dotted black;
-  color: #333;
-  margin-right: 3px;
-  border-radius: 6px;
-}
-.audio {
-  margin-top: 4px;
-}
-.audio >>> .fa {
-  font-size: 40px;
-  color: #333;
 }

@@ -1,30 +1,26 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData} from '../../models/exercise.model';
+import {Exercise, ExerciseData, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import 'rxjs/add/operator/takeWhile';
 
-interface LearnSettings {
-  mute: boolean;
-  color: boolean;
-  delay: number; // # of seconds before local word appears
-}
-
 @Component({
   selector: 'km-learn-study',
   templateUrl: 'learn-study.component.html',
-  styleUrls: ['learn-study.component.css']
+  styleUrls: ['learn-item.component.css', 'learn-study.component.css']
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter<string>();
   @Output() stepCompleted = new EventEmitter<number>();
+  @Output() updatedSettings = new EventEmitter<LearnSettings>();
 
   private componentActive = true;
   private lanLocal: string;
@@ -36,7 +32,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private exerciseData: ExerciseData[];
   private isStudyDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
-  private settings: LearnSettings;
   isDone: boolean[] = [];
   currentExercise: Exercise;
   currentData: ExerciseData;
@@ -53,11 +48,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.settings = {
-      mute: false,
-      color: true,
-      delay: 2
-    };
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
     this.currentExercises = this.learnService.shuffle(this.exercises);
@@ -95,24 +85,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
-  onToggleAudio() {
-    this.settings.mute = !this.settings.mute;
-  }
-
-  onToggleColor() {
-    if (this.currentExercise[this.lanForeign].genus) {
-      this.settings.color = !this.settings.color;
-    }
-  }
-
-  onNextDelay() {
-    this.settings.delay = (this.settings.delay + 1) % 11;
-    if (this.settings.delay === 4) {
-      this.settings.delay = 5;
-    }
-    if (this.settings.delay > 5) {
-      this.settings.delay = 10;
-    }
+  onSettingsUpdated(settings: LearnSettings) {
+    console.log('settings updated', settings);
+    this.settings = settings;
+    this.updatedSettings.emit(settings);
   }
 
   isCurrent(i: number): boolean {

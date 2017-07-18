@@ -1,6 +1,4 @@
-<section kmPressed 
-[keyPressed]="'Enter'"
-(onKeyPressed)="onEnter()">
+<section kmPressed>
   <div class="col-xs-8">
     <div class="panel centerpanel">
       <div class="bullets">
@@ -13,7 +11,7 @@
             'green': isWordDone(i)}">
         </span>
       </div>
-      <div *ngIf="!isStudyDone" class="card">
+      <div *ngIf="!isPractiseDone" class="card">
         <div class="question">
           <h1>
             <span>
@@ -52,21 +50,14 @@
             </div>
           </div>
         </div>
-        <div class="answer">
-          <h1 class="word">
-            <span>
-              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-            </span>
-              <span *ngIf="showLocal else loading">
-                {{wordLocal}}  
-              </span>
-          </h1>
+        <div class="answers">
+
         </div>
       </div>
 
-      <!-- STUDY DONE -->
-      <div *ngIf="isStudyDone">
-        <h3>Words learned:</h3>
+      <!-- PRACTISE DONE -->
+      <div *ngIf="isPractiseDone">
+        <h3>Words practised:</h3>
         <div class="studiedList">
           <div *ngFor="let exercise of exercises; let i=index">
             {{exercise.foreign?.word}} <span class="studiedLocal">- {{exercise.local.word}}</span>
@@ -84,12 +75,31 @@
     </div>
   </div>
   <div class="col-xs-4">
-    <km-learn-settings
-      [step]="'study'"
-      [hasGenus]="!!this.currentExercise.genus"
-      [settings]="settings"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-settings>
+    <div class="settings">
+      <span class="fa "
+        [ngClass]="{
+          'fa-volume-up': !settings.mute,
+          'fa-volume-off': settings.mute,
+          'on': !settings.mute
+          }"
+        (click)="onToggleAudio()">
+      </span>
+      <span class="fa fa-tint"
+        (click)="onToggleColor()"
+        [class.on] = "settings.color"
+        [class.inactive]="!currentExercise.genus">
+      </span>
+      <span
+        (click)="onNextDelay()"
+        [class.on] = "settings.delay">
+        {{settings.delay}}s
+      </span>
+    </div>
+    <div class="slashed">
+      <span [class.off]="settings.mute"></span>
+      <span [class.off]="!settings.color"></span>
+      <span [class.off]="!settings.delay"></span>
+    </div>
     <div class="actions">
       <div class="btn btn-success" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>
@@ -102,8 +112,6 @@
     </div>
     SCORE : {{score}}
   </div>
-  <!-- <pre>{{currentExercise|json}}</pre>
-  <pre>{{lanPair|json}}</pre> -->
   <div class="clearfix"></div>
 </section>
 

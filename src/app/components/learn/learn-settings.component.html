@@ -1,0 +1,25 @@
+<div class="settings">
+  <span class="fa "
+    [ngClass]="{
+      'fa-volume-up': !settings.mute,
+      'fa-volume-off': settings.mute,
+      'on': !settings.mute
+      }"
+    (click)="onToggleAudio()">
+  </span>
+  <span class="fa fa-tint"
+    (click)="onToggleColor()"
+    [class.on] = "settings.color"
+    [class.inactive]="!hasGenus">
+  </span>
+  <span
+    (click)="onNextDelay()"
+    [class.on] = "settings.delay">
+    {{settings.delay}}s
+  </span>
+</div>
+<div class="slashed">
+  <span [class.off]="settings.mute"></span>
+  <span [class.off]="!settings.color"></span>
+  <span [class.off]="!settings.delay"></span>
+</div>
