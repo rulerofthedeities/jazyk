@@ -118,12 +118,24 @@ export interface ExerciseTpes {
   exam: ExerciseTpe;
 }
 
-export interface ExerciseData {
+export interface ExerciseForeignData {
   annotations?: string[];
   genus?: string;
   suffix?: string;
   hint?: string;
   info?: string;
+}
+
+export interface ExerciseData {
+  nrOfChoices?: number;
+  foreign?: ExerciseForeignData;
+  isDone?: boolean;
+  isCorrect?: boolean;
+}
+
+export interface ExerciseOptions {
+  nrOfChoices?: number;
+  isForeign?: ExerciseForeignData;
 }
 
 export interface LearnSettings {

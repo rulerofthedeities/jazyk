@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
-import {Exercise, ExerciseData} from '../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -42,45 +42,55 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  buildExerciseDataForeign(exercises: Exercise[], text: Object): ExerciseData[] {
+  buildExerciseData(exercises: Exercise[], text: Object, options: ExerciseOptions): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
     let annotations: string[] = [];
     let suffix: string;
     let genus: string;
     exercises.forEach( (exercise, i) => {
-      annotations = [];
-      genus = '';
-      suffix = '';
-      // Annotations
-      if (exercise.wordTpe) {
-        annotations.push(text[exercise.wordTpe]);
-      }
-      if (exercise.aspect) {
-        annotations.push(text[exercise.aspect]);
-      }
-      if (exercise.foreign.annotations) {
-        const annotationArr = exercise.foreign.annotations.split('|');
-        annotationArr.forEach(annotation => {
-          annotations.push(annotation);
-        });
-      }
-      // genus
-      if (exercise.genus) {
-        genus = '(' + exercise.genus.toLowerCase() + ')';
-      }
-      // suffix
-      if (exercise.followingCase) {
-        suffix =  text['case' + exercise.followingCase];
-        if (suffix) {
-          suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
-        }
-      }
       exerciseData[i] = {
-        annotations: annotations,
-        hint: exercise.foreign.hint,
-        genus: genus,
-        suffix: suffix
+        isDone: false,
+        isCorrect: false
       };
+      if (options.isForeign) {
+        annotations = [];
+        genus = '';
+        suffix = '';
+        // Annotations
+        if (exercise.wordTpe) {
+          annotations.push(text[exercise.wordTpe]);
+        }
+        if (exercise.aspect) {
+          annotations.push(text[exercise.aspect]);
+        }
+        if (exercise.foreign.annotations) {
+          const annotationArr = exercise.foreign.annotations.split('|');
+          annotationArr.forEach(annotation => {
+            annotations.push(annotation);
+          });
+        }
+        // genus
+        if (exercise.genus) {
+          genus = '(' + exercise.genus.toLowerCase() + ')';
+        }
+        // suffix
+        if (exercise.followingCase) {
+          suffix =  text['case' + exercise.followingCase];
+          if (suffix) {
+            suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
+          }
+        }
+        exerciseData[i].foreign = {
+          annotations: annotations,
+          hint: exercise.foreign.hint,
+          genus: genus,
+          suffix: suffix
+        };
+      }
+
+      if (options.nrOfChoices) {
+        exerciseData[i].nrOfChoices = options.nrOfChoices;
+      }
     });
     return exerciseData;
   }

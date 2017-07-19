@@ -30,6 +30,12 @@ h1 {
 .bullets span {
   margin: 0 2px
 }
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
 .actions {
   margin-top: 2px;
 }

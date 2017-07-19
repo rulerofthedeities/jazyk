@@ -88,7 +88,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanForeign = lesson.languagePair.to.slice(0, 2);
         this.getTranslations();
         this.setBidirectional();
-        //this.getChapters();
+        // this.getChapters();
         this.getCourse(); // for header & chapters
       },
       error => this.errorService.handleError(error)
@@ -130,7 +130,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.chapters = course.chapters
+        this.chapters = course.chapters;
       },
       error => this.errorService.handleError(error)
     );
@@ -154,7 +154,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       if (exerciseTpes.study.bidirectional ||
           exerciseTpes.practise.bidirectional ||
           exerciseTpes.test.bidirectional ||
-          exerciseTpes.review.bidirectional ||
           exerciseTpes.exam.bidirectional) {
         this.isBidirectional = true;
       }

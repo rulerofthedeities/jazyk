@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import 'rxjs/add/operator/takeWhile';
@@ -24,22 +24,21 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private lanLocal: string;
   private lanForeign: string;
   private currentExercises: Exercise[];
-  private exerciseDataForeign: ExerciseData[];
+  private exerciseData: ExerciseData[];
   private isPractiseDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
   private current = -1;
   private nrOfChoices = 6;
   private choices: string[];
   currentExercise: Exercise;
-  currentDataForeign: ExerciseData;
+  currentData: ExerciseData;
   currentChoices: string[] = [];
-  isDone: boolean[] = [];
   wordLocal: string;
   wordForeign: string;
   isSelected = false;
-  isCorrect = false;
   answered: number;
   answer: number;
+  score = 0;
 
   constructor(
     private learnService: LearnService,
@@ -54,9 +53,10 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     } else {
       this.currentExercises = this.exercises;
     }
-    if (this.options.bidirectional) {
-      this.exerciseDataForeign = this.learnService.buildExerciseDataForeign(this.currentExercises, this.text);
-    }
+    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text, {
+      nrOfChoices: this.nrOfChoices,
+      isForeign: this.options.bidirectional
+    });
     this.getChoices();
   }
 
@@ -72,12 +72,28 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
   }
 
+  onNextWord() {
+    this.showNextWord(1);
+  }
+
   isCurrent(i: number): boolean {
     return this.current === i;
   }
 
   isWordDone(i: number): boolean {
-    return this.isDone[i];
+    return this.exerciseData[i].isDone;
+  }
+
+  isWordCorrect(i: number): boolean {
+    let isCorrect: boolean;
+    let exercise: ExerciseData;
+    if (i >= 0) {
+      exercise = this.exerciseData[i];
+    } else {
+      exercise = this.exerciseData[this.current];
+    }
+    isCorrect = exercise.isCorrect;
+    return isCorrect;
   }
 
   private getChoices() {
@@ -86,7 +102,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
-        console.log('choices', choices);
         this.choices = choices;
         this.nextWord(1);
       },
@@ -103,8 +118,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   private showNextWord(delta: number) {
+    this.clearData();
     if (this.current > -1) {
-      this.isDone[this.current] = true;
+      this.exerciseData[this.current].isDone = true;
     }
     this.current += delta;
     if (delta > 0) {
@@ -120,13 +136,20 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
     if (!this.isPractiseDone) {
       this.currentExercise = this.currentExercises[this.current];
-      if (this.exerciseDataForeign) {
-        this.currentDataForeign = this.exerciseDataForeign[this.current];
+      if (this.exerciseData) {
+        this.currentData = this.exerciseData[this.current];
       }
+    console.log('data', this.exerciseData, this.currentData);
       this.wordLocal = this.currentExercise.local.word;
       this.wordForeign = this.currentExercise.foreign.word;
       this.setChoices(this.currentExercise.foreign.word);
     }
+  }
+
+  private clearData() {
+    this.isSelected = false;
+    this.answered = null;
+    this.answer = null;
   }
 
   private setChoices(word: string) {
@@ -134,11 +157,14 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     let choice: string;
     let rand: number;
     const choices: string[] = [];
+    const nrOfChoices = this.currentData.nrOfChoices;
+    const availableChoices = JSON.parse(JSON.stringify(this.choices));
+    console.log('choices', this.choices);
     choices.push(word);
-    while (choices.length < this.nrOfChoices && this.choices) {
-      rand = Math.floor(Math.random() * this.choices.length);
-      choice = this.choices[rand];
-      this.choices.splice(rand, 1);
+    while (choices.length < nrOfChoices && availableChoices) {
+      rand = Math.floor(Math.random() * availableChoices.length);
+      choice = availableChoices[rand];
+      availableChoices.splice(rand, 1);
       if (choice !== word) {
         choices.push(choice);
       }
@@ -152,9 +178,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.answered = i;
     this.answer = null;
     if (choice === this.wordForeign) {
-      this.isCorrect = true;
+      this.exerciseData[this.current].isCorrect = true;
     } else {
-      this.isCorrect = false;
+      this.exerciseData[this.current].isCorrect = false;
       this.currentChoices.forEach( (item, j) => {
         if (item === this.wordForeign) {
           this.answer = j;

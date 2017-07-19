@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseForeignData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -35,7 +35,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private isWordsDone =  false; // true once words are done once
   isDone: boolean[] = [];
   currentExercise: Exercise;
-  currentData: ExerciseData;
+  currentData: ExerciseForeignData;
   wordLocal: string;
   wordForeign: string;
   subscription: Subscription[] = [];
@@ -56,7 +56,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     } else {
       this.currentExercises = this.exercises;
     }
-    this.exerciseData = this.learnService.buildExerciseDataForeign(this.currentExercises, this.text);
+    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text, {isForeign: true});
     this.nextWord(1);
   }
 
@@ -136,7 +136,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     if (!this.isStudyDone) {
       this.currentExercise = this.currentExercises[this.current];
-      this.currentData = this.exerciseData[this.current];
+      this.currentData = this.exerciseData[this.current].foreign;
       this.showLocal = false;
       this.wordLocal = this.currentExercise.local.word;
       this.wordForeign = this.currentExercise.foreign.word;
