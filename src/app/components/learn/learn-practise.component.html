@@ -1,4 +1,4 @@
-<section kmPressed>
+<section>
   <div class="col-xs-8">
     <div class="panel centerpanel">
       <div class="bullets">
@@ -12,46 +12,34 @@
         </span>
       </div>
       <div *ngIf="!isPractiseDone" class="card">
-        <div class="question">
+        <div class="question" *ngIf="currentExercise">
           <h1>
             <span>
-              <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
+              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
             </span>
-
             <span 
-              class="word" 
-              kmWordColor 
-                [identifier]="currentExercise.genus" 
-                [tpe]="currentExercise.wordTpe"
-                [active]="settings.color">
-              {{wordForeign}}
-            </span>
-            <span class="suffix">{{currentData.suffix}}</span>
-            <span class="suffix">{{currentData.genus}}</span>
-            <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
-              <km-audio-file
-                [fileName]="currentExercise.audios[0]"
-                [active]="!settings.mute"
-                autoPlay="true">
-              </km-audio-file>
+              class="word">
+              {{wordLocal}}
             </span>
           </h1>
           <div class="wordinfo">
-            <div
-              class="label label-annotation"
-              *ngFor="let annotation of currentData.annotations">
-              {{annotation}}
-            </div>
-            <div class="hint" *ngIf="currentExercise.foreign?.hint">
-              {{text.hint}}: {{currentExercise.foreign?.hint}}
-            </div>
-            <div class="info" *ngIf="currentExercise.foreign?.info">
-              {{currentExercise.foreign?.info}}
+            <div class="hint" *ngIf="currentExercise.local?.hint">
+              {{text.hint}}: {{currentExercise.local?.hint}}
             </div>
           </div>
         </div>
-        <div class="answers">
-
+        <div class="choices">
+          <div 
+            *ngFor="let choice of currentChoices; let i=index" 
+            class="btn btn-default btn-lg choice"
+            [ngClass]="{
+              'done':isSelected, 
+              'ok':isCorrect && i===answered, 
+              'nok':!isCorrect && i===answered,
+              'correction':!isCorrect && i===answer}"
+            (click)="onSelected(choice, i)">
+            <span class="nr">{{i+1}}.</span> <span>{{choice}}</span>
+          </div>
         </div>
       </div>
 
@@ -75,31 +63,12 @@
     </div>
   </div>
   <div class="col-xs-4">
-    <div class="settings">
-      <span class="fa "
-        [ngClass]="{
-          'fa-volume-up': !settings.mute,
-          'fa-volume-off': settings.mute,
-          'on': !settings.mute
-          }"
-        (click)="onToggleAudio()">
-      </span>
-      <span class="fa fa-tint"
-        (click)="onToggleColor()"
-        [class.on] = "settings.color"
-        [class.inactive]="!currentExercise.genus">
-      </span>
-      <span
-        (click)="onNextDelay()"
-        [class.on] = "settings.delay">
-        {{settings.delay}}s
-      </span>
-    </div>
-    <div class="slashed">
-      <span [class.off]="settings.mute"></span>
-      <span [class.off]="!settings.color"></span>
-      <span [class.off]="!settings.delay"></span>
-    </div>
+    <km-learn-settings
+      [step]="'practise'"
+      [hasGenus]="!!this.currentExercise?.genus"
+      [settings]="settings"
+      (updatedSettings)="onSettingsUpdated($event)">
+    </km-learn-settings>
     <div class="actions">
       <div class="btn btn-success" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>

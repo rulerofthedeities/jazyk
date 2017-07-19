@@ -37,7 +37,7 @@ var ExerciseTpeSchema = new Schema({
 
 var ExerciseTpesSchema = new Schema({
   intro: ExerciseTpeSchema,
-  learn: ExerciseTpeSchema,
+  study: ExerciseTpeSchema,
   practise: ExerciseTpeSchema,
   test: ExerciseTpeSchema,
   exam: ExerciseTpeSchema

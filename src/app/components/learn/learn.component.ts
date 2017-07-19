@@ -23,8 +23,9 @@ export class LearnComponent implements OnInit, OnDestroy {
   course: Course;
   exercises: Exercise[];
   text: Object = {};
-  step = 'study';
-  stepCompleted = [false, false, false];
+  currentStep = 0;
+  stepCompleted: boolean[];
+  steps = ['intro', 'study', 'practise', 'test', 'review', 'exam'];
 
   constructor(
     private route: ActivatedRoute,
@@ -53,17 +54,18 @@ export class LearnComponent implements OnInit, OnDestroy {
     };
   }
 
-  stepTo(step: string) {
-    this.step = step;
+  stepTo(i: number) {
+    this.currentStep = i;
   }
 
-  onSkipStep(step: string) {
-    console.log('skipping to', step);
-    this.step = step;
+  onSkipStep() {
+    if (this.currentStep < this.steps.length) {
+      this.currentStep++;
+    }
   }
 
-  onStepCompleted(step: string) {
-    this.stepCompleted[0] = true;
+  onStepCompleted(i: number) {
+    this.stepCompleted[i] = true;
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -116,12 +118,26 @@ export class LearnComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       lesson => {
-        console.log(lesson);
         this.lesson = lesson;
+        this.setSteps();
         this.exercises = lesson.exercises.slice(0, 10);
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private setSteps() {
+    const steps = [];
+    const completed = [];
+    this.steps.forEach((step, i) => {
+      console.log(step);
+      if (step === 'review' || this.lesson.exerciseTpes[step].active) {
+        steps.push(step);
+        completed.push(false);
+      }
+    });
+    this.steps = steps;
+    this.stepCompleted = completed;
   }
 
   ngOnDestroy() {

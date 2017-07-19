@@ -104,21 +104,21 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.languagePair = this.lesson.languagePair;
     this.bidirectional = [
       this.lesson.exerciseTpes.intro.bidirectional,
-      this.lesson.exerciseTpes.learn.bidirectional,
+      this.lesson.exerciseTpes.study.bidirectional,
       this.lesson.exerciseTpes.practise.bidirectional,
       this.lesson.exerciseTpes.test.bidirectional,
       this.lesson.exerciseTpes.exam.bidirectional
     ];
     this.ordered = [
       this.lesson.exerciseTpes.intro.ordered,
-      this.lesson.exerciseTpes.learn.ordered,
+      this.lesson.exerciseTpes.study.ordered,
       this.lesson.exerciseTpes.practise.ordered,
       this.lesson.exerciseTpes.test.ordered,
       this.lesson.exerciseTpes.exam.ordered
     ];
     this.active = [
       this.lesson.exerciseTpes.intro.active,
-      this.lesson.exerciseTpes.learn.active,
+      this.lesson.exerciseTpes.study.active,
       this.lesson.exerciseTpes.practise.active,
       this.lesson.exerciseTpes.test.active,
       this.lesson.exerciseTpes.exam.active
@@ -136,7 +136,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       chapterName: '',
       exerciseTpes: {
         intro: {active: false, bidirectional: false, ordered: false},
-        learn: {active: true, bidirectional: false, ordered: false},
+        study: {active: true, bidirectional: false, ordered: false},
         practise: {active: true, bidirectional: true, ordered: false},
         test: {active: true, bidirectional: false, ordered: false},
         exam: {active: true, bidirectional: false, ordered: false}
@@ -166,7 +166,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lesson.name = formValues.name;
     this.lesson.exerciseTpes = {
       intro: {active: formValues.exerciseTpes[0], bidirectional: this.bidirectional[0], ordered: this.ordered[0]},
-      learn: {active: formValues.exerciseTpes[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
+      study: {active: formValues.exerciseTpes[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
       practise: {active: formValues.exerciseTpes[2], bidirectional: this.bidirectional[2], ordered: this.ordered[2]},
       test: {active: formValues.exerciseTpes[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]},
       exam: {active: formValues.exerciseTpes[4], bidirectional: this.bidirectional[4], ordered: this.ordered[4]}
@@ -189,6 +189,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateLesson() {
+    console.log('updating', this.lesson);
     this.buildService
     .updateLessonHeader(this.lesson)
     .takeWhile(() => this.componentActive)

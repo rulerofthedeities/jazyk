@@ -59,6 +59,8 @@ module.exports = {
     const lesson = new Lesson(req.body);
     const lessonId = new mongoose.Types.ObjectId(lesson._id);
 
+    console.log(lesson.exerciseTpes);
+
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$set: {

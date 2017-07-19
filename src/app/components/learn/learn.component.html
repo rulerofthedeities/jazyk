@@ -4,45 +4,51 @@
 </div>
 
 <div *ngIf="exercises">
-
+  {{steps}}
   <ul class="list-unstyled list-inline lead steps">
-    <li (click)="stepTo('study')" class="btn btn-success btn-lg" [class.inactive]="step!=='study'">
-      <span class="fa fa-check" *ngIf="stepCompleted[0]"></span>{{text.Study}}
-    </li>
-    <li class="arrow">
-      <span class="fa fa-arrow-right"></span>
-    </li>
-    <li (click)="stepTo('practise')" class="btn btn-yellow btn-lg" [class.inactive]="step!=='practise'">
-      {{text.Practise}}
-    </li>
-    <li class="arrow">
-      <span class="fa fa-arrow-right"></span>
-    </li>
-    <li (click)="stepTo('test')" class="btn btn-warning btn-lg" [class.inactive]="step!=='test'">
-      {{text.Test}}
-    </li>
+    <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
+      <li 
+        (click)="stepTo(i)" 
+        class="btn btn-lg"
+        [ngClass]="'clr-' + step"
+        [class.btn-success]="step==='intro'"
+        [class.btn-primary]="step==='review'"
+        [class.btn-danger]="step==='exam'"
+        [class.btn-info]="step!=='intro' && step!=='exam' &&  step!=='review'"
+        [class.inactive]="currentStep!==i">
+        <span class="fa fa-check" *ngIf="stepCompleted[i]"></span>
+        {{text[step.charAt(0).toUpperCase() + step.slice(1)]}}
+      </li>
+      <li class="arrow" *ngIf="i < steps.length - 1">
+        <span class="fa fa-arrow-right"></span>
+      </li>
+    </ng-template>
   </ul>
+</div>
 
-  <div [ngSwitch]="step" class="learn" [ngClass]="step">
-  <km-learn-study  *ngSwitchCase="'study'"
+<div [ngSwitch]="currentStep" class="learn" [ngClass]="steps[currentStep]">
+  <km-learn-study  *ngSwitchCase="1"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
     [text]="text"
+    [options]="lesson?.exerciseTpes.study"
     [settings]="settings"
-    (skipStep)="onSkipStep($event)"
-    (stepCompleted)="onStepCompleted($event)"
+    (skipStep)="onSkipStep()"
+    (stepCompleted)="onStepCompleted(1)"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-study>
-  <km-learn-practise *ngSwitchCase="'practise'"
+  <km-learn-practise *ngSwitchCase="2"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
+    [options]="lesson?.exerciseTpes.study"
+    [lessonId]="lesson?._id"
     [text]="text"
     [settings]="settings"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
-  <km-learn-test *ngSwitchCase="'test'"
+  <km-learn-test *ngSwitchCase="3"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
   >

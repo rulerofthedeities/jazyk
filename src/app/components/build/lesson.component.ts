@@ -151,10 +151,11 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private setBidirectional() {
     const exerciseTpes = this.lesson.exerciseTpes;
     if (exerciseTpes) {
-      if (exerciseTpes.exam.bidirectional ||
-          exerciseTpes.learn.bidirectional ||
+      if (exerciseTpes.study.bidirectional ||
           exerciseTpes.practise.bidirectional ||
-          exerciseTpes.test.bidirectional) {
+          exerciseTpes.test.bidirectional ||
+          exerciseTpes.review.bidirectional ||
+          exerciseTpes.exam.bidirectional) {
         this.isBidirectional = true;
       }
     }

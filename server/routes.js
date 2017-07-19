@@ -43,6 +43,8 @@ module.exports.initialize = function(app, router) {
   router.put('/exercises/:id', exercises.updateExercises);
   router.delete('/exercise/:lessonId/:exerciseId', exercises.removeExercise);
 
+  router.get('/choices/:id', exercises.getChoices);
+
   app.use('/api/', router);
 
   app.use(function (req, res) {

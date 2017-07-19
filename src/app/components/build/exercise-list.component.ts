@@ -103,7 +103,6 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getInfoHint(exercise: Exercise): string {
-    console.log('annotations', exercise.foreign.annotations);
     const annotations = exercise.foreign.annotations.split('|');
     let hint = '';
     annotations.forEach(annotation => {

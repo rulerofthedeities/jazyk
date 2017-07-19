@@ -129,5 +129,17 @@ module.exports = {
         });
       }
     );
-  }
+  },
+  getChoices: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const pipeline = [
+      {$match: {_id: lessonId}},
+      {$project: {_id:0, choices: "$exercises.foreign.word"}}
+    ];
+    Lesson.aggregate(pipeline, function(err, docs) {
+      response.handleError(err, res, 500, 'Error fetching choices', function(){
+        response.handleSuccess(res, docs[0].choices, 200, 'Fetched choices');
+      });
+    });
+  },
 }

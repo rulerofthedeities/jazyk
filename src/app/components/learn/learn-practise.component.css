@@ -1,0 +1,30 @@
+.choice {
+  width: 320px;
+  margin: 4px 8px;
+  font-size: 28px;
+  text-align: left;
+}
+.choices {
+  margin-top: 32px;
+  text-align: center;
+}
+.done {
+  background-color: #eee;
+  border-color: #eee;
+  cursor: default;
+}
+.done.ok {
+  background-color: green;
+  color: white;
+}
+.done.nok {
+  background-color: red;
+  color: white;
+}
+.done.correction {
+  border-color: green;
+  color: green;
+}
+.nr {
+  color: #ccc;
+}

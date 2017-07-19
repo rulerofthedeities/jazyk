@@ -112,16 +112,18 @@ export interface ExerciseTpe {
 
 export interface ExerciseTpes {
   intro: ExerciseTpe;
-  learn: ExerciseTpe;
+  study: ExerciseTpe;
   practise: ExerciseTpe;
   test: ExerciseTpe;
   exam: ExerciseTpe;
 }
 
 export interface ExerciseData {
-  annotations: string[];
-  genus: string;
-  suffix: string;
+  annotations?: string[];
+  genus?: string;
+  suffix?: string;
+  hint?: string;
+  info?: string;
 }
 
 export interface LearnSettings {

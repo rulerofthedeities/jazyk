@@ -30,14 +30,17 @@
   color: #666;
   margin:10px 12px 0 12px;
 }
-.study {
-  border: 4px solid #4cae4c;
+.intro {
+  border: 4px solid #5cb85c;
 }
-.practise {
-  border: 4px solid #fdd835;
+.study, .practise, .test {
+  border: 4px solid #5bc0de;
 }
-.test {
-  border: 4px solid #eea236;
+.review {
+  border: 4px solid #428bca;
+}
+.exam {
+  border: 4px solid #d9534f;
 }
 .learn {
   border-radius: 6px;

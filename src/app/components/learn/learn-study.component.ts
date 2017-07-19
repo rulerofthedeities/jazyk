@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -17,9 +17,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
-  @Output() skipStep = new EventEmitter<string>();
-  @Output() stepCompleted = new EventEmitter<number>();
+  @Output() skipStep = new EventEmitter();
+  @Output() stepCompleted = new EventEmitter();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
 
   private componentActive = true;
@@ -50,8 +51,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
-    this.currentExercises = this.learnService.shuffle(this.exercises);
-    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text);
+    if (!this.options.ordered) {
+      this.currentExercises = this.learnService.shuffle(this.exercises);
+    } else {
+      this.currentExercises = this.exercises;
+    }
+    this.exerciseData = this.learnService.buildExerciseDataForeign(this.currentExercises, this.text);
     this.nextWord(1);
   }
 
@@ -122,7 +127,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.currentExercises.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
-        this.stepCompleted.emit(0);
+        this.stepCompleted.emit();
       }
     } else {
       if (this.current <= -1) {
@@ -140,7 +145,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private skip() {
-    this.skipStep.emit('practise');
+    this.skipStep.emit();
   }
 
   private restart() {

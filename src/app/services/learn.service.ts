@@ -35,7 +35,14 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  buildExerciseData(exercises: Exercise[], text: Object): ExerciseData[] {
+  fetchChoices(lessonId: string) {
+    return this.http
+    .get('/api/choices/' + lessonId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  buildExerciseDataForeign(exercises: Exercise[], text: Object): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
     let annotations: string[] = [];
     let suffix: string;
@@ -70,6 +77,7 @@ export class LearnService {
       }
       exerciseData[i] = {
         annotations: annotations,
+        hint: exercise.foreign.hint,
         genus: genus,
         suffix: suffix
       };
@@ -99,4 +107,5 @@ export class LearnService {
   private getRandom(floor: number, ceiling: number) {
     return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
   }
+
 }
