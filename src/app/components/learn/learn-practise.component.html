@@ -20,7 +20,7 @@
             </span>
             <span 
               class="word">
-              {{wordLocal}}
+              {{currentData?.wordLocal}}
             </span>
           </h1>
           <div class="wordinfo">
@@ -47,11 +47,9 @@
       <!-- PRACTISE DONE -->
       <div *ngIf="isPractiseDone">
         <h3>Words practised:</h3>
-        <div class="studiedList">
-          <div *ngFor="let exercise of exercises; let i=index">
-            {{exercise.foreign?.word}} <span class="studiedLocal">- {{exercise.local.word}}</span>
-          </div>
-        </div>
+        <km-completed-list [data]="exerciseData">
+        </km-completed-list>
+
         <div class="btn btn-success" (click)="onNextWord(1)">
           <span class="fa fa-step-forward"></span>
           {{text.RestartStudy}}

@@ -24,17 +24,15 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private lanLocal: string;
   private lanForeign: string;
   private currentExercises: Exercise[];
-  private exerciseData: ExerciseData[];
   private isPractiseDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
   private current = -1;
   private nrOfChoices = 6;
   private choices: string[];
+  exerciseData: ExerciseData[];
   currentExercise: Exercise;
   currentData: ExerciseData;
   currentChoices: string[] = [];
-  wordLocal: string;
-  wordForeign: string;
   isSelected = false;
   answered: number;
   answer: number;
@@ -136,13 +134,10 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
     if (!this.isPractiseDone) {
       this.currentExercise = this.currentExercises[this.current];
-      if (this.exerciseData) {
-        this.currentData = this.exerciseData[this.current];
-      }
-    console.log('data', this.exerciseData, this.currentData);
-      this.wordLocal = this.currentExercise.local.word;
-      this.wordForeign = this.currentExercise.foreign.word;
-      this.setChoices(this.currentExercise.foreign.word);
+      this.exerciseData[this.current].wordForeign = this.currentExercise.foreign.word;
+      this.exerciseData[this.current].wordLocal = this.currentExercise.local.word;
+      this.currentData = this.exerciseData[this.current];
+      this.setChoices(this.currentData.wordForeign);
     }
   }
 
@@ -177,12 +172,12 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
-    if (choice === this.wordForeign) {
+    if (choice === this.currentData.wordForeign) {
       this.exerciseData[this.current].isCorrect = true;
     } else {
       this.exerciseData[this.current].isCorrect = false;
       this.currentChoices.forEach( (item, j) => {
-        if (item === this.wordForeign) {
+        if (item === this.currentData.wordForeign) {
           this.answer = j;
         }
       });

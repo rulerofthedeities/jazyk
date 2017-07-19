@@ -7,15 +7,6 @@
 .dblue {
   color: navy;
 }
-.studiedList {
-  margin-left: 12px;
-  margin-bottom: 24px;
-  font-size: 20px;
-  line-height: 32px;
-}
-.studiedLocal {
-  color: #999;
-}
 .answer {
   min-height: 100px;
 }

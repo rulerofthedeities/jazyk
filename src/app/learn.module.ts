@@ -14,10 +14,10 @@ import {LearnStudyComponent} from './components/learn/learn-study.component';
 import {LearnPractiseComponent} from './components/learn/learn-practise.component';
 import {LearnTestComponent} from './components/learn/learn-test.component';
 import {LearnSettingsComponent} from './components/learn/learn-settings.component';
+import {LearnCompletedListComponent} from './components/learn/learn-completed-list.component';
 
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {WordColorDirective} from './directives/word-color.directive';
-
 
 @NgModule({
   imports: [
@@ -36,6 +36,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnPractiseComponent,
     LearnTestComponent,
     LearnSettingsComponent,
+    LearnCompletedListComponent,
     GetKeyPressDirective,
     WordColorDirective
   ]

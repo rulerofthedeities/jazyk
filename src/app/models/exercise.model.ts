@@ -128,6 +128,8 @@ export interface ExerciseForeignData {
 
 export interface ExerciseData {
   nrOfChoices?: number;
+  wordForeign?: string;
+  wordLocal?: string;
   foreign?: ExerciseForeignData;
   isDone?: boolean;
   isCorrect?: boolean;
@@ -135,7 +137,7 @@ export interface ExerciseData {
 
 export interface ExerciseOptions {
   nrOfChoices?: number;
-  isForeign?: ExerciseForeignData;
+  isForeign?: boolean;
 }
 
 export interface LearnSettings {
