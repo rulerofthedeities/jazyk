@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseForeignData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -30,14 +30,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timerActive: boolean;
   private dotLength = 0;
   private currentExercises: Exercise[];
-  private exerciseData: ExerciseData[];
   private isStudyDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
-  isDone: boolean[] = [];
   currentExercise: Exercise;
-  currentData: ExerciseForeignData;
-  wordLocal: string;
-  wordForeign: string;
+  exerciseData: ExerciseData[];
+  currentData: ExerciseData;
   subscription: Subscription[] = [];
   showLocal = false;
   dotArr: number[] = [];
@@ -101,7 +98,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   isWordDone(i: number): boolean {
-    return this.isDone[i];
+    return this.exerciseData[i].isDone;
   }
 
   private nextWord(delta: number) {
@@ -118,7 +115,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private showNextWord(delta: number) {
     if (this.current > -1) {
-      this.isDone[this.current] = true;
+      this.exerciseData[this.current].isDone = true;
+      this.exerciseData[this.current].isCorrect = true;
     }
     this.dotLength = this.settings.delay * 1000 / 200;
     this.dotArr = Array(this.dotLength).fill(0);
@@ -136,10 +134,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     if (!this.isStudyDone) {
       this.currentExercise = this.currentExercises[this.current];
-      this.currentData = this.exerciseData[this.current].foreign;
       this.showLocal = false;
-      this.wordLocal = this.currentExercise.local.word;
-      this.wordForeign = this.currentExercise.foreign.word;
+      this.exerciseData[this.current].wordForeign = this.currentExercise.foreign.word;
+      this.exerciseData[this.current].wordLocal = this.currentExercise.local.word;
+      this.currentData = this.exerciseData[this.current];
       this.timeDelay();
     }
   }

@@ -3,7 +3,7 @@
 (onKeyPressed)="onEnter()">
   <div class="col-xs-8">
     <div class="panel centerpanel">
-      <div class="bullets">
+      <div class="bullets" *ngIf="!isStudyDone">
         <span 
           *ngFor="let exercise of exercises; let i=index"
           class="fa"
@@ -25,10 +25,10 @@
                 [identifier]="currentExercise.genus" 
                 [tpe]="currentExercise.wordTpe"
                 [active]="settings.color">
-              {{wordForeign}}
+              {{currentData.wordForeign}}
             </span>
-            <span class="suffix">{{currentData.suffix}}</span>
-            <span class="suffix">{{currentData.genus}}</span>
+            <span class="suffix">{{currentData.foreign.suffix}}</span>
+            <span class="suffix">{{currentData.foreign.genus}}</span>
             <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
               <km-audio-file
                 [fileName]="currentExercise.audios[0]"
@@ -57,7 +57,7 @@
               <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
             </span>
               <span *ngIf="showLocal else loading">
-                {{wordLocal}}  
+                {{currentData.wordLocal}}  
               </span>
           </h1>
         </div>
@@ -66,11 +66,8 @@
       <!-- STUDY DONE -->
       <div *ngIf="isStudyDone">
         <h3>Words learned:</h3>
-        <div class="studiedList">
-          <div *ngFor="let exercise of exercises; let i=index">
-            {{exercise.foreign?.word}} <span class="studiedLocal">- {{exercise.local.word}}</span>
-          </div>
-        </div>
+        <km-completed-list [data]="exerciseData">
+        </km-completed-list>
         <div class="btn btn-success" (click)="onNextWord(1)">
           <span class="fa fa-step-forward"></span>
           {{text.RestartStudy}}

@@ -1,7 +1,7 @@
 <section>
   <div class="col-xs-8">
     <div class="panel centerpanel">
-      <div class="bullets">
+      <div class="bullets" *ngIf="!isPractiseDone">
         <span 
           *ngFor="let exercise of exercises; let i=index"
           class="fa"
