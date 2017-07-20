@@ -50,7 +50,8 @@ export class LearnService {
     exercises.forEach( (exercise, i) => {
       exerciseData[i] = {
         isDone: false,
-        isCorrect: false
+        isCorrect: false,
+        answered: 0
       };
       if (options.isForeign) {
         annotations = [];

@@ -133,6 +133,7 @@ export interface ExerciseData {
   foreign?: ExerciseForeignData;
   isDone?: boolean;
   isCorrect?: boolean;
+  answered: number;
 }
 
 export interface ExerciseOptions {

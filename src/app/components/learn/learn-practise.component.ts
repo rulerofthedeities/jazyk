@@ -28,6 +28,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private isWordsDone =  false; // true once words are done once
   private current = -1;
   private nrOfChoices = 6;
+  private minNrOfChoices = 4;
   private choices: string[];
   exerciseData: ExerciseData[];
   currentExercise: Exercise;
@@ -176,12 +177,27 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.exerciseData[this.current].isCorrect = true;
     } else {
       this.exerciseData[this.current].isCorrect = false;
+      // Show correct answer
       this.currentChoices.forEach( (item, j) => {
         if (item === this.currentData.wordForeign) {
           this.answer = j;
         }
       });
+      this.addExercise();
     }
+  }
+
+  private addExercise() {
+    // Incorrect answer -> readd exercise to the back
+    console.log('incorrect', this.exercises, this.exerciseData);
+    this.exercises.push(this.exercises[this.current]);
+    const newExerciseData = JSON.parse(JSON.stringify(this.exerciseData[this.current]));
+    newExerciseData.isCorrect = false;
+    newExerciseData.isDone = false;
+    newExerciseData.nrOfChoices = Math.max(newExerciseData.nrOfChoices - 2, this.minNrOfChoices);
+    newExerciseData.answered = newExerciseData.answered + 1;
+    this.exerciseData.push(newExerciseData);
+    console.log('incorrect2', this.exercises, this.exerciseData);
   }
 
   ngOnDestroy() {
