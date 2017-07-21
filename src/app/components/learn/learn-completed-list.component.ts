@@ -1,17 +1,20 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData, Direction} from '../../models/exercise.model';
+
+interface Result {
+  exercise: ExerciseData;
+  isCorrect?: boolean;
+}
 
 @Component({
   selector: 'km-completed-list',
   template: `
   <div class="list">
-    <div *ngFor="let exercise of data; let i=index">
-      <div *ngIf="showWord(exercise)">
-        <span 
-          class="fa fa-circle" 
-          [ngClass]="{green: exercise.data.isCorrect, red: !exercise.data.isCorrect}">
-        </span> {{exercise.exercise.foreign.word}} <span class="local">- {{exercise.exercise.local.word}}</span>
-      </div>
+    <div *ngFor="let result of results; let i=index">
+      <span 
+        class="fa fa-circle" 
+        [ngClass]="{green: result.isCorrect, red: !result.isCorrect}">
+      </span> {{result.exercise.exercise.foreign.word}} <span class="local">- {{result.exercise.exercise.local.word}}</span>
     </div>
   </div>`,
   styles: [`
@@ -32,14 +35,30 @@ import {ExerciseData, Direction} from '../../models/exercise.model';
     }`]
 })
 
-export class LearnCompletedListComponent {
-  @Input() data: ExerciseData[];
+export class LearnCompletedListComponent implements OnInit {
+  @Input() private data: ExerciseData[];
+  results: Result[] = [];
 
-  showWord(exercise: ExerciseData): boolean {
-    let show = false;
-    if (exercise.data.answered < 1 && exercise.data.direction === Direction.ForeignToLocal) {
-      show = true;
-    }
-    return show;
+  ngOnInit() {
+    // filter only those answered < 1
+    // for each direction, store if correct
+    // Only show one direction
+    let result: Result;
+    this.data.forEach(exerciseData => {
+      if (exerciseData.data.answered < 1) {
+        // Check if this exercise is already in results
+        result = this.results.find(existingResult => existingResult.exercise.exercise.foreign.word === exerciseData.exercise.foreign.word);
+
+        if (!result) {
+          result = {
+            exercise: exerciseData,
+            isCorrect: exerciseData.data.isCorrect
+          };
+          this.results.push(result);
+        } else {
+          result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
+        }
+      }
+    });
   }
 }

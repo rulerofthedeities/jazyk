@@ -47,22 +47,20 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
-    console.log('options', this.options);
     this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
       nrOfChoices: this.nrOfChoices,
       isBidirectional: this.options.bidirectional,
       direction: Direction.LocalToForeign
     });
-    console.log('data', this.exerciseData);
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
+    // this.exerciseData = this.exerciseData.slice(0, 4);
     this.isQuestionReady = true;
     this.getChoices(this.options.bidirectional);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
-    console.log('settings updated', settings);
     this.settings = settings;
     this.updatedSettings.emit(settings);
   }
@@ -111,7 +109,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
-        console.log('choices', choices);
         this.choicesForeign = choices.foreign;
         if (isBidirectional) {
           this.choicesLocal = choices.local;
