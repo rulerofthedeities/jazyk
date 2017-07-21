@@ -132,9 +132,14 @@ module.exports = {
   },
   getChoices: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const isBidirectional = req.params.dir === '1' ? true : false;
+    let projection = {_id:0, choices: {foreign: "$exercises.foreign.word"}};
+    if (isBidirectional) {
+      projection = {_id:0, choices: {foreign: "$exercises.foreign.word", local: "$exercises.local.word"}};
+    }
     const pipeline = [
       {$match: {_id: lessonId}},
-      {$project: {_id:0, choices: "$exercises.foreign.word"}}
+      {$project: projection}
     ];
     Lesson.aggregate(pipeline, function(err, docs) {
       response.handleError(err, res, 500, 'Error fetching choices', function(){

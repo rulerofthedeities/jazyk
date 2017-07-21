@@ -27,7 +27,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private current = -1;
   private nrOfChoices = 6;
   private minNrOfChoices = 4;
-  private choices: string[];
+  private choicesForeign: string[];
+  private choicesLocal: string[];
   isPractiseDone = false; // toggles with every replay
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
@@ -57,7 +58,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
     this.isQuestionReady = true;
-    this.getChoices();
+    this.getChoices(this.options.bidirectional);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -104,13 +105,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     return tpe;
   }
 
-  private getChoices() {
+  private getChoices(isBidirectional: boolean) {
     this.learnService
-    .fetchChoices(this.lessonId)
+    .fetchChoices(this.lessonId, isBidirectional)
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
-        this.choices = choices;
+        console.log('choices', choices);
+        this.choicesForeign = choices.foreign;
+        if (isBidirectional) {
+          this.choicesLocal = choices.local;
+        }
         this.nextWord(1);
       },
       error => this.errorService.handleError(error)
@@ -141,8 +146,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
     if (!this.isPractiseDone) {
       this.currentData = this.exerciseData[this.current];
-      this.currentData = this.exerciseData[this.current];
-      this.setChoices(this.exerciseData[this.current].exercise.foreign.word);
+      this.setChoices();
     }
   }
 
@@ -152,13 +156,16 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.answer = null;
   }
 
-  private setChoices(word: string) {
+  private setChoices() {
     // Select random words from choices array
     let choice: string;
     let rand: number;
+    const exercise = this.currentData.exercise;
+    const direction = this.currentData.data.direction;
     const choices: string[] = [];
     const nrOfChoices = this.currentData.data.nrOfChoices;
-    const availableChoices = JSON.parse(JSON.stringify(this.choices));
+    const availableChoices = JSON.parse(JSON.stringify(direction === Direction.ForeignToLocal ? this.choicesLocal : this.choicesForeign));
+    const word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
     choices.push(word);
     while (choices.length < nrOfChoices && availableChoices) {
       rand = Math.floor(Math.random() * availableChoices.length);
@@ -175,15 +182,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
-    const wordForeign = this.currentData.exercise.foreign.word;
-    this.exerciseData[this.current].data.isDone = true;
-    if (choice === wordForeign) {
-      this.exerciseData[this.current].data.isCorrect = true;
+    const direction = this.currentData.data.direction;
+    const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
+
+    this.currentData.data.isDone = true;
+    if (choice === word) {
+      this.currentData.data.isCorrect = true;
     } else {
-      this.exerciseData[this.current].data.isCorrect = false;
+      this.currentData.data.isCorrect = false;
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
-        if (item === wordForeign) {
+        if (item === word) {
           this.answer = j;
         }
       });
@@ -193,7 +202,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private addExercise() {
     // Incorrect answer -> readd exercise to the back
-    console.log('incorrect', this.exerciseData);
     const newExerciseData: ExerciseData = {
       data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
       exercise: this.exerciseData[this.current].exercise
@@ -203,7 +211,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
     this.exerciseData.push(newExerciseData);
-    console.log('incorrect2', this.exerciseData);
   }
 
   ngOnDestroy() {

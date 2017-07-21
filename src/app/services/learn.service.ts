@@ -35,9 +35,9 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchChoices(lessonId: string) {
+  fetchChoices(lessonId: string, isBidirectional: boolean) {
     return this.http
-    .get('/api/choices/' + lessonId)
+    .get('/api/choices/' + lessonId + '/' + (isBidirectional ? '1' : '0'))
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -84,11 +84,9 @@ export class LearnService {
           genus: genus,
           suffix: suffix
         };
-        console.log(j, exerciseData[j]);
         j++;
         if (options.isBidirectional) {
           exerciseData[j] = this.buildData(options, exercise, Direction.LocalToForeign);
-          console.log(j, exerciseData[j]);
           j++;
         }
       }
