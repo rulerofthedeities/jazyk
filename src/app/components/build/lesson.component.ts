@@ -4,7 +4,8 @@ import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Translation} from '../../models/course.model';
-import {Filter, WordPairDetail, Exercise} from '../../models/exercise.model';
+import {Filter, WordPairDetail} from '../../models/word.model';
+import {Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({

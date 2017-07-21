@@ -6,11 +6,11 @@ import {ExerciseData} from '../../models/exercise.model';
   template: `
   <div class="list">
     <div *ngFor="let exercise of data; let i=index">
-      <div *ngIf="exercise.answered < 1">
+      <div *ngIf="exercise.data.answered < 1">
         <span 
           class="fa fa-circle" 
-          [ngClass]="{green: exercise.isCorrect, red: !exercise.isCorrect}">
-        </span> {{exercise.wordForeign}} <span class="local">- {{exercise.wordLocal}}</span>
+          [ngClass]="{green: exercise.data.isCorrect, red: !exercise.data.isCorrect}">
+        </span> {{exercise.exercise.foreign.word}} <span class="local">- {{exercise.exercise.local.word}}</span>
       </div>
     </div>
   </div>`,

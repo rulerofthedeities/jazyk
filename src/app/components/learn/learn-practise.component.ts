@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import 'rxjs/add/operator/takeWhile';
@@ -23,18 +23,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private lanLocal: string;
   private lanForeign: string;
-  private currentExercises: Exercise[];
-  private isPractiseDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
   private current = -1;
   private nrOfChoices = 6;
   private minNrOfChoices = 4;
   private choices: string[];
+  isPractiseDone = false; // toggles with every replay
   exerciseData: ExerciseData[];
-  currentExercise: Exercise;
   currentData: ExerciseData;
   currentChoices: string[] = [];
   isSelected = false;
+  isQuestionReady = false;
   answered: number;
   answer: number;
   score = 0;
@@ -47,15 +46,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
-    if (!this.options.ordered) {
-      this.currentExercises = this.learnService.shuffle(this.exercises);
-    } else {
-      this.currentExercises = this.exercises;
-    }
-    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text, {
+    console.log('options', this.options);
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
       nrOfChoices: this.nrOfChoices,
-      isForeign: this.options.bidirectional
+      isBidirectional: this.options.bidirectional,
+      direction: Direction.LocalToForeign
     });
+    console.log('data', this.exerciseData);
+    if (!this.options.ordered) {
+      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    }
+    this.isQuestionReady = true;
     this.getChoices();
   }
 
@@ -80,19 +81,27 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   isWordDone(i: number): boolean {
-    return this.exerciseData[i].isDone;
+    return this.exerciseData[i].data.isDone;
   }
 
   isWordCorrect(i: number): boolean {
     let isCorrect: boolean;
-    let exercise: ExerciseData;
+    let data: ExerciseData;
     if (i >= 0) {
-      exercise = this.exerciseData[i];
+      data = this.exerciseData[i];
     } else {
-      exercise = this.exerciseData[this.current];
+      data = this.exerciseData[this.current];
     }
-    isCorrect = exercise.isCorrect;
+    isCorrect = data.data.isCorrect;
     return isCorrect;
+  }
+
+  getQuestionType(): string {
+    let tpe = 'local';
+    if (this.currentData && this.currentData.data.direction === Direction.ForeignToLocal) {
+      tpe = 'foreign';
+    }
+    return tpe;
   }
 
   private getChoices() {
@@ -118,27 +127,22 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private showNextWord(delta: number) {
     this.clearData();
-    if (this.current > -1) {
-      this.exerciseData[this.current].isDone = true;
-    }
     this.current += delta;
     if (delta > 0) {
-      if (this.current >= this.currentExercises.length) {
+      if (this.current >= this.exerciseData.length) {
         this.isPractiseDone = true;
         this.isWordsDone = true;
         this.stepCompleted.emit();
       }
     } else {
       if (this.current <= -1) {
-        this.current = this.currentExercises.length - 1;
+        this.current = this.exerciseData.length - 1;
       }
     }
     if (!this.isPractiseDone) {
-      this.currentExercise = this.currentExercises[this.current];
-      this.exerciseData[this.current].wordForeign = this.currentExercise.foreign.word;
-      this.exerciseData[this.current].wordLocal = this.currentExercise.local.word;
       this.currentData = this.exerciseData[this.current];
-      this.setChoices(this.currentData.wordForeign);
+      this.currentData = this.exerciseData[this.current];
+      this.setChoices(this.exerciseData[this.current].exercise.foreign.word);
     }
   }
 
@@ -153,9 +157,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     let choice: string;
     let rand: number;
     const choices: string[] = [];
-    const nrOfChoices = this.currentData.nrOfChoices;
+    const nrOfChoices = this.currentData.data.nrOfChoices;
     const availableChoices = JSON.parse(JSON.stringify(this.choices));
-    console.log('choices', this.choices);
     choices.push(word);
     while (choices.length < nrOfChoices && availableChoices) {
       rand = Math.floor(Math.random() * availableChoices.length);
@@ -166,20 +169,21 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       }
     }
     this.currentChoices = this.learnService.shuffle(choices);
-    console.log('selected choices', this.currentChoices);
   }
 
   private checkAnswer(choice: string, i: number) {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
-    if (choice === this.currentData.wordForeign) {
-      this.exerciseData[this.current].isCorrect = true;
+    const wordForeign = this.currentData.exercise.foreign.word;
+    this.exerciseData[this.current].data.isDone = true;
+    if (choice === wordForeign) {
+      this.exerciseData[this.current].data.isCorrect = true;
     } else {
-      this.exerciseData[this.current].isCorrect = false;
+      this.exerciseData[this.current].data.isCorrect = false;
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
-        if (item === this.currentData.wordForeign) {
+        if (item === wordForeign) {
           this.answer = j;
         }
       });
@@ -189,15 +193,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private addExercise() {
     // Incorrect answer -> readd exercise to the back
-    console.log('incorrect', this.exercises, this.exerciseData);
-    this.exercises.push(this.exercises[this.current]);
-    const newExerciseData = JSON.parse(JSON.stringify(this.exerciseData[this.current]));
-    newExerciseData.isCorrect = false;
-    newExerciseData.isDone = false;
-    newExerciseData.nrOfChoices = Math.max(newExerciseData.nrOfChoices - 2, this.minNrOfChoices);
-    newExerciseData.answered = newExerciseData.answered + 1;
+    console.log('incorrect', this.exerciseData);
+    const newExerciseData: ExerciseData = {
+      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
+      exercise: this.exerciseData[this.current].exercise
+    };
+    newExerciseData.data.isCorrect = false;
+    newExerciseData.data.isDone = false;
+    newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
+    newExerciseData.data.answered = newExerciseData.data.answered + 1;
     this.exerciseData.push(newExerciseData);
-    console.log('incorrect2', this.exercises, this.exerciseData);
+    console.log('incorrect2', this.exerciseData);
   }
 
   ngOnDestroy() {

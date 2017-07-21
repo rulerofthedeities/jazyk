@@ -32,6 +32,6 @@
   [level]="'warning'"
   [text]="text"
   (confirmed)="onRemoveConfirmed($event)">
-  <div title>{{text.Warning}}</div>
+  <div title>{{text["Warning"]}}</div>
   <div message>{{getRemoveMessage('Chapter')}}</div>
 </km-modal-confirm>

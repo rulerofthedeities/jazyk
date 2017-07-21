@@ -16,8 +16,8 @@ import 'rxjs/add/operator/takeWhile';
 export class LearnComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
-  private lesson: Lesson;
   private settings: LearnSettings;
+  lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
   course: Course;
@@ -130,7 +130,6 @@ export class LearnComponent implements OnInit, OnDestroy {
     const steps = [];
     const completed = [];
     this.steps.forEach((step, i) => {
-      console.log(step);
       if (step === 'review' || this.lesson.exerciseTpes[step].active) {
         steps.push(step);
         completed.push(false);

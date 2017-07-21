@@ -5,7 +5,7 @@
     <div class="panel centerpanel">
       <div class="bullets" *ngIf="!isStudyDone">
         <span 
-          *ngFor="let exercise of exercises; let i=index"
+          *ngFor="let exercise of exerciseData; let i=index"
           class="fa"
           [ngClass]="{
             'fa-circle-o': !isCurrent(i), 
@@ -14,50 +14,20 @@
         </span>
       </div>
       <div *ngIf="!isStudyDone" class="card">
-        <div class="question">
-          <h1>
-            <span>
-              <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
-            </span>
-            <span 
-              class="word" 
-              kmWordColor 
-                [identifier]="currentExercise.genus" 
-                [tpe]="currentExercise.wordTpe"
-                [active]="settings.color">
-              {{currentData.wordForeign}}
-            </span>
-            <span class="suffix">{{currentData.foreign.suffix}}</span>
-            <span class="suffix">{{currentData.foreign.genus}}</span>
-            <span class="audio pull-right" *ngIf="currentExercise.audios && currentExercise.audios.length > 0">
-              <km-audio-file
-                [fileName]="currentExercise.audios[0]"
-                [active]="!settings.mute"
-                autoPlay="true">
-              </km-audio-file>
-            </span>
-          </h1>
-          <div class="wordinfo">
-            <div
-              class="label label-annotation"
-              *ngFor="let annotation of currentData.annotations">
-              {{annotation}}
-            </div>
-            <div class="hint" *ngIf="currentExercise.foreign?.hint">
-              {{text.hint}}: {{currentExercise.foreign?.hint}}
-            </div>
-            <div class="info" *ngIf="currentExercise.foreign?.info">
-              {{currentExercise.foreign?.info}}
-            </div>
-          </div>
-        </div>
+        <km-question
+          [currentData]="currentData"
+          [lanPair]="lanPair"
+          [text]="text"
+          [tpe]="'foreign'"
+          [settings]="settings"
+        ></km-question>
         <div class="answer">
           <h1 class="word">
             <span>
               <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
             </span>
               <span *ngIf="showLocal else loading">
-                {{currentData.wordLocal}}  
+                {{currentData.exercise?.local?.word}}
               </span>
           </h1>
         </div>
@@ -70,11 +40,11 @@
         </km-completed-list>
         <div class="btn btn-success" (click)="onNextWord(1)">
           <span class="fa fa-step-forward"></span>
-          {{text.RestartStudy}}
+          {{text["RestartStudy"]}}
         </div>
         <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
           <span class="fa fa-fast-forward"></span>
-          {{text.PractiseStudy}}
+          {{text["PractiseStudy"]}}
         </div>
       </div>
     </div>
@@ -82,24 +52,22 @@
   <div class="col-xs-4">
     <km-learn-settings
       [step]="'study'"
-      [hasGenus]="!!this.currentExercise.genus"
+      [hasGenus]="!!currentData?.exercise?.genus"
       [settings]="settings"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
     <div class="actions">
       <div class="btn btn-success" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>
-        {{isStudyDone ? text.Restart : text.Next}}
+        {{isStudyDone ? text["Restart"] : text["Next"]}}
       </div>
       <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
         <span class="fa fa-fast-forward"></span>
-        {{isStudyDone ? text.Practise : text.Skip}}
+        {{isStudyDone ? text["Practise"] : text["Skip"]}}
       </div>
     </div>
     SCORE : {{score}}
   </div>
-  <!-- <pre>{{currentExercise|json}}</pre>
-  <pre>{{lanPair|json}}</pre> -->
   <div class="clearfix"></div>
 </section>
 
@@ -116,6 +84,6 @@
   [level]="'warning'"
   [text]="text"
   (confirmed)="onSkipConfirmed($event)">
-  <div title>{{text.Warning}}</div>
+  <div title>{{text["Warning"]}}</div>
   <div message>Ben je zeker dat je de studie wil onderbreken?</div>
 </km-modal-confirm>

@@ -5,7 +5,8 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Filter, WordPair, WordPairDetail, WordDetail, Exercise, File} from '../../models/exercise.model';
+import {Exercise} from '../../models/exercise.model';
+import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface AddFields {

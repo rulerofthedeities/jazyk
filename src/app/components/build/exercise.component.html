@@ -382,19 +382,19 @@
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onSaveNewWord(exerciseForm.value)"
         *ngIf="!currentExercise && exerciseForm.valid">
-        {{text.Addword}}
+        {{text["Addword"]}}
       </div>
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onUpdateWord(exerciseForm.value)"
         *ngIf="currentExercise && exerciseForm.valid">
-        {{text.Editword}}
+        {{text["Editword"]}}
       </div>
       <div class="btn btn-warning btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onCancelEdit()"
         *ngIf="currentExercise">
-        {{text.cancel}}
+        {{text["cancel"]}}
       </div>
     </div>
   </div>

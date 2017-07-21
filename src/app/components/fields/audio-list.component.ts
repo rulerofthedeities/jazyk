@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {File} from '../../models/exercise.model';
+import {File} from '../../models/word.model';
 
 
 @Component({

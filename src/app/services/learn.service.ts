@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions} from '../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, Direction} from '../models/exercise.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -47,13 +47,10 @@ export class LearnService {
     let annotations: string[] = [];
     let suffix: string;
     let genus: string;
+    let j = 0;
     exercises.forEach( (exercise, i) => {
-      exerciseData[i] = {
-        isDone: false,
-        isCorrect: false,
-        answered: 0
-      };
-      if (options.isForeign) {
+      exerciseData[j] = this.buildData(options, exercise, Direction.ForeignToLocal);
+      if (options.direction === Direction.ForeignToLocal || options.isBidirectional) {
         annotations = [];
         genus = '';
         suffix = '';
@@ -81,19 +78,40 @@ export class LearnService {
             suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
           }
         }
-        exerciseData[i].foreign = {
+        exerciseData[j].data.foreign = {
           annotations: annotations,
           hint: exercise.foreign.hint,
           genus: genus,
           suffix: suffix
         };
+        console.log(j, exerciseData[j]);
+        j++;
+        if (options.isBidirectional) {
+          exerciseData[j] = this.buildData(options, exercise, Direction.LocalToForeign);
+          console.log(j, exerciseData[j]);
+          j++;
+        }
       }
 
-      if (options.nrOfChoices) {
-        exerciseData[i].nrOfChoices = options.nrOfChoices;
-      }
     });
     return exerciseData;
+  }
+
+  private buildData(options: ExerciseOptions, exercise: Exercise, direction: Direction): ExerciseData {
+    const newData: ExerciseData = {
+      data: {
+        isDone: false,
+        isCorrect: false,
+        answered: 0,
+        direction: direction
+      },
+      exercise: exercise
+    };
+    if (options.nrOfChoices) {
+      newData.data.nrOfChoices = options.nrOfChoices;
+    }
+
+    return newData;
   }
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html

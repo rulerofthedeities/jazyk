@@ -1,5 +1,5 @@
 <km-build-course-header-bar
-  *ngIf="!isEditMode && course"
+  *ngIf="!isEditMode && isCourseReady"
   [text]="text"
   [course]="course"
   [canEditCourse]="true"

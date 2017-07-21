@@ -22,6 +22,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   chapters: string[];
   isEditMode = false;
   isNewLesson = false;
+  isCourseReady = false;
   text: Object = {};
 
   constructor(
@@ -86,6 +87,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
+        this.isCourseReady = true;
         if (course) {
           this.chapters = course.chapters;
           this.lessonIds = course.lessons;

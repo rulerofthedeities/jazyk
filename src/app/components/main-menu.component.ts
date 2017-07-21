@@ -16,13 +16,13 @@ import 'rxjs/add/operator/takeWhile';
         <li routerLinkActive="active">
           <a routerLink="learn" class="item">
             <span class="fa fa-book"></span>
-            {{text.Learn}}
+            {{text["Learn"]}}
            </a>
         </li>
         <li routerLinkActive="active">
           <a routerLink="learn/courses" class="item">
             <span class="fa fa-th-list"></span>
-            {{text.Courses}}
+            {{text["Courses"]}}
           </a>
         </li>
       </ul>

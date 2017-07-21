@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -29,10 +29,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
-  private currentExercises: Exercise[];
-  private isStudyDone = false; // toggles with every replay
   private isWordsDone =  false; // true once words are done once
-  currentExercise: Exercise;
+  isStudyDone = false; // toggles with every replay
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
   subscription: Subscription[] = [];
@@ -48,12 +46,13 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.lanLocal = this.lanPair.from.slice(0, 2);
     this.lanForeign = this.lanPair.to.slice(0, 2);
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
+      isForeign: true,
+      direction: Direction.ForeignToLocal
+    });
     if (!this.options.ordered) {
-      this.currentExercises = this.learnService.shuffle(this.exercises);
-    } else {
-      this.currentExercises = this.exercises;
+      this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    this.exerciseData = this.learnService.buildExerciseData(this.currentExercises, this.text, {isForeign: true});
     this.nextWord(1);
   }
 
@@ -98,11 +97,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   isWordDone(i: number): boolean {
-    return this.exerciseData[i].isDone;
+    return this.exerciseData[i].data.isDone;
   }
 
   private nextWord(delta: number) {
-    if (!this.showLocal && this.currentExercise) {
+    console.log(this.exerciseData, this.current);
+    if (!this.showLocal && this.current > -1) {
       this.showLocal = true;
     } else {
       if (this.isStudyDone) {
@@ -115,28 +115,25 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private showNextWord(delta: number) {
     if (this.current > -1) {
-      this.exerciseData[this.current].isDone = true;
-      this.exerciseData[this.current].isCorrect = true;
+      this.exerciseData[this.current].data.isDone = true;
+      this.exerciseData[this.current].data.isCorrect = true;
     }
     this.dotLength = this.settings.delay * 1000 / 200;
     this.dotArr = Array(this.dotLength).fill(0);
     this.current += delta;
     if (delta > 0) {
-      if (this.current >= this.currentExercises.length) {
+      if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
         this.stepCompleted.emit();
       }
     } else {
       if (this.current <= -1) {
-        this.current = this.currentExercises.length - 1;
+        this.current = this.exerciseData.length - 1;
       }
     }
     if (!this.isStudyDone) {
-      this.currentExercise = this.currentExercises[this.current];
       this.showLocal = false;
-      this.exerciseData[this.current].wordForeign = this.currentExercise.foreign.word;
-      this.exerciseData[this.current].wordLocal = this.currentExercise.local.word;
       this.currentData = this.exerciseData[this.current];
       this.timeDelay();
     }
@@ -148,7 +145,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private restart() {
     this.current = -1;
-    this.currentExercises = this.learnService.shuffle(this.exercises);
+    this.exerciseData = this.learnService.shuffle(this.exerciseData);
     this.isStudyDone = false;
     this.nextWord(1);
   }

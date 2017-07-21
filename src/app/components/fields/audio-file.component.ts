@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {File} from '../../models/exercise.model';
+import {File} from '../../models/word.model';
 
 @Component({
   selector: 'km-audio-file',

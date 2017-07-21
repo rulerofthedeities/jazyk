@@ -13,11 +13,11 @@
       <button class="btn btn-success"
         [class.disabled]="!course.isPublished"
         (click)="onStartCourse(course._id)">
-        {{text.startcourse}}
+        {{text["startcourse"]}}
       </button>
       <button class="btn btn-warning"
         (click)="onEditCourse(course._id)">
-        {{text.updatecourse}}
+        {{text["updatecourse"]}}
       </button>
       <div class="info">
         <div>{{course.exerciseCount || 0}} words</div>

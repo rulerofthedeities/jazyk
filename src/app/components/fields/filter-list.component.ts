@@ -2,7 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angula
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
-import {Filter, WordPair, WordPairDetail} from '../../models/exercise.model';
+import {Filter, WordPair, WordPairDetail} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({

@@ -1,5 +1,5 @@
 <button class="btn btn-success" (click)="onNewCourse()">
-  {{text.newcourse}}
+  {{text["newcourse"]}}
 </button>
 
 <!-- LANGUAGE -->
@@ -29,9 +29,9 @@
 <!-- No courses found for selected language -->
 <div class="panel panel-default" *ngIf="courses?.length <1">
   <div class="panel-body">
-    <div class="nocourses">{{text.Nocourses}}</div>
+    <div class="nocourses">{{text["Nocourses"]}}</div>
     <button class="btn btn-primary" (click)="onNewCourse()">
-      {{text.Newcourselg}}
+      {{text["Newcourselg"]}}
     </button>
   </div>
 </div>

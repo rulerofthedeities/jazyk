@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Language, LanPair} from '../models/course.model';
-import {WordPairDetail} from '../models/exercise.model';
+import {WordPairDetail} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
 import {Translation} from '../models/course.model';
 import 'rxjs/add/operator/map';

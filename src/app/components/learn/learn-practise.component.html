@@ -3,7 +3,7 @@
     <div class="panel centerpanel">
       <div class="bullets" *ngIf="!isPractiseDone">
         <span 
-          *ngFor="let exercise of exercises; let i=index"
+          *ngFor="let exercise of exerciseData; let i=index"
           class="fa"
           [ngClass]="{
             'fa-circle-o': !isCurrent(i), 
@@ -12,23 +12,14 @@
             'red': !isWordCorrect(i) && isWordDone(i)}">
         </span>
       </div>
-      <div *ngIf="!isPractiseDone" class="card">
-        <div class="question" *ngIf="currentExercise">
-          <h1>
-            <span>
-              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-            </span>
-            <span 
-              class="word">
-              {{currentData?.wordLocal}}
-            </span>
-          </h1>
-          <div class="wordinfo">
-            <div class="hint" *ngIf="currentExercise.local?.hint">
-              {{text.hint}}: {{currentExercise.local?.hint}}
-            </div>
-          </div>
-        </div>
+      <div *ngIf="!isPractiseDone && isQuestionReady" class="card">
+        <km-question
+          [currentData]="currentData"
+          [lanPair]="lanPair"
+          [text]="text"
+          [tpe]="getQuestionType()"
+          [settings]="settings"
+        ></km-question>
         <div class="choices">
           <div 
             *ngFor="let choice of currentChoices; let i=index" 
@@ -52,11 +43,7 @@
 
         <div class="btn btn-success" (click)="onNextWord(1)">
           <span class="fa fa-step-forward"></span>
-          {{text.RestartStudy}}
-        </div>
-        <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
-          <span class="fa fa-fast-forward"></span>
-          {{text.PractiseStudy}}
+          {{text["RestartStudy"]}}
         </div>
       </div>
     </div>
@@ -64,18 +51,14 @@
   <div class="col-xs-4">
     <km-learn-settings
       [step]="'practise'"
-      [hasGenus]="!!this.currentExercise?.genus"
+      [hasGenus]="!!this.currentData?.exercise.genus"
       [settings]="settings"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
     <div class="actions">
-      <div class="btn btn-success" (click)="onNextWord(1)">
+      <div class="btn btn-success" (click)="onNextWord()">
         <span class="fa fa-step-forward"></span>
-        {{isStudyDone ? text.Restart : text.Next}}
-      </div>
-      <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
-        <span class="fa fa-fast-forward"></span>
-        {{isStudyDone ? text.Practise : text.Skip}}
+        {{isPractiseDone ? text["Restart"] : text["Next"]}}
       </div>
     </div>
     SCORE : {{score}}
@@ -91,11 +74,3 @@
     </span>
   </span>
 </ng-template>
-
-<km-modal-confirm #confirm
-  [level]="'warning'"
-  [text]="text"
-  (confirmed)="onSkipConfirmed($event)">
-  <div title>{{text.Warning}}</div>
-  <div message>Ben je zeker dat je de studie wil onderbreken?</div>
-</km-modal-confirm>
