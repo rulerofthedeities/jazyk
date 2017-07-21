@@ -3,16 +3,10 @@
 (onKeyPressed)="onEnter()">
   <div class="col-xs-8">
     <div class="panel centerpanel">
-      <div class="bullets" *ngIf="!isStudyDone">
-        <span 
-          *ngFor="let exercise of exerciseData; let i=index"
-          class="fa"
-          [ngClass]="{
-            'fa-circle-o': !isCurrent(i), 
-            'fa-circle': isCurrent(i), 
-            'green': isWordDone(i)}">
-        </span>
-      </div>
+      <km-bullets *ngIf="!isStudyDone"
+        [data]="exerciseData"
+        [current]="current">
+      </km-bullets>
       <div *ngIf="!isStudyDone" class="card">
         <km-question
           [currentData]="currentData"
@@ -57,11 +51,11 @@
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
     <div class="actions">
-      <div class="btn btn-success" (click)="onNextWord(1)">
+      <div class="btn btn-success btn-lg" (click)="onNextWord(1)">
         <span class="fa fa-step-forward"></span>
         {{isStudyDone ? text["Restart"] : text["Next"]}}
       </div>
-      <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+      <div class="btn btn-warning btn-lg" (click)="onSkipRequested(confirm)">
         <span class="fa fa-fast-forward"></span>
         {{isStudyDone ? text["Practise"] : text["Skip"]}}
       </div>

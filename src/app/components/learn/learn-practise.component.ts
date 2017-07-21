@@ -3,6 +3,8 @@ import {LanPair} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -24,15 +26,16 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private lanLocal: string;
   private lanForeign: string;
   private isWordsDone =  false; // true once words are done once
-  private current = -1;
   private nrOfChoices = 6;
   private minNrOfChoices = 4;
   private choicesForeign: string[];
   private choicesLocal: string[];
+  subscription: Subscription;
   isPractiseDone = false; // toggles with every replay
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
   currentChoices: string[] = [];
+  current = -1;
   isSelected = false;
   isQuestionReady = false;
   answered: number;
@@ -72,15 +75,15 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   onNextWord() {
-    this.showNextWord(1);
+    if (this.isSelected) {
+      this.showNextWord(1);
+    }
   }
 
-  isCurrent(i: number): boolean {
-    return this.current === i;
-  }
-
-  isWordDone(i: number): boolean {
-    return this.exerciseData[i].data.isDone;
+  onEnter() {
+    if (!this.isPractiseDone && this.isSelected) {
+      this.nextWord(1);
+    }
   }
 
   isWordCorrect(i: number): boolean {
@@ -151,6 +154,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.isSelected = false;
     this.answered = null;
     this.answer = null;
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   private setChoices() {
@@ -185,6 +191,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.currentData.data.isDone = true;
     if (choice === word) {
       this.currentData.data.isCorrect = true;
+      this.timeNext(1);
     } else {
       this.currentData.data.isCorrect = false;
       // Show correct answer
@@ -208,6 +215,14 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
     this.exerciseData.push(newExerciseData);
+  }
+
+  private timeNext(secs: number) {
+    // Timer to show the next word
+    const timer = TimerObservable.create(secs * 1000);
+    this.subscription = timer
+    .takeWhile(() => this.componentActive)
+    .subscribe(t => this.showNextWord(1));
   }
 
   ngOnDestroy() {

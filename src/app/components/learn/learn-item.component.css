@@ -10,7 +10,7 @@
   text-align: center;
 }
 .card {
-  border: 2px solid #999;
+  border: 1px solid #999;
   box-shadow: 2px 2px 2px #ccc;
   border-radius: 12px;
   padding: 20px;
@@ -19,12 +19,12 @@
 }
 .bullets{
   color: grey;
-  font-size: 20px;
+  font-size: 18px;
   margin-top: 8px;
   height: 26px;
 }
 .bullets span {
-  margin: 0 2px
+  margin: 0 1px
 }
 .green {
   color: green;
@@ -54,4 +54,7 @@
 }
 .wordinfo .label{
   font-size: 100%;
+}
+.next.btn-default {
+  color: #ccc;
 }

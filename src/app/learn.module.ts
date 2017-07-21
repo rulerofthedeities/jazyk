@@ -16,6 +16,7 @@ import {LearnTestComponent} from './components/learn/learn-test.component';
 import {LearnSettingsComponent} from './components/learn/learn-settings.component';
 import {LearnCompletedListComponent} from './components/learn/learn-completed-list.component';
 import {LearnQuestionComponent} from './components/learn/learn-question.component';
+import {LearnBulletsComponent} from './components/learn/learn-bullets-component';
 
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {WordColorDirective} from './directives/word-color.directive';
@@ -39,6 +40,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnSettingsComponent,
     LearnCompletedListComponent,
     LearnQuestionComponent,
+    LearnBulletsComponent,
     GetKeyPressDirective,
     WordColorDirective
   ]
