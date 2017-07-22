@@ -1,6 +1,5 @@
 <section kmPressed 
-  [keyPressed]="'Enter'"
-  (onKeyPressed)="onEnter()">
+  (onKeyPressed)="onKeyPressed($event)">
   <div class="col-xs-8">
     <div class="panel centerpanel">
       <km-bullets *ngIf="!isPractiseDone"
@@ -24,7 +23,7 @@
               'ok':isWordCorrect(-1) && i===answered, 
               'nok':!isWordCorrect(-1) && i===answered,
               'correction':!isWordCorrect(-1) && i===answer}"
-            (click)="onSelected(choice, i)">
+            (click)="onSelected(i)">
             <span class="nr">{{i+1}}.</span> <span>{{choice}}</span>
           </div>
         </div>

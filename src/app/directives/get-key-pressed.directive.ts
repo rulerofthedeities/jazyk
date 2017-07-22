@@ -4,12 +4,10 @@ import {Directive, HostListener, Input, Output, EventEmitter} from '@angular/cor
 
 export class GetKeyPressDirective {
   @Input() keyPressed: string;
-  @Output() onKeyPressed = new EventEmitter();
+  @Output() onKeyPressed = new EventEmitter<string>();
   @HostListener('document:keydown', ['$event'])
 
   keypress(e: KeyboardEvent) {
-    if (e.key.toString() === this.keyPressed) {
-      this.onKeyPressed.emit(true);
-    }
+    this.onKeyPressed.emit(e.key.toString());
   }
 }

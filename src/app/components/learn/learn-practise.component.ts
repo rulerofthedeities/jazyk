@@ -68,9 +68,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.updatedSettings.emit(settings);
   }
 
-  onSelected(choice: string, i: number) {
+  onSelected(i: number) {
     if (!this.isSelected) {
-      this.checkAnswer(choice, i);
+      this.checkAnswer(i);
     }
   }
 
@@ -80,9 +80,29 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEnter() {
-    if (!this.isPractiseDone && this.isSelected) {
-      this.nextWord(1);
+  onKeyPressed(key: string) {
+    if (!this.isPractiseDone) {
+      let selection: number;
+      switch (key) {
+        case 'Enter':
+          if (this.isSelected) {
+            this.nextWord(1);
+          }
+        break;
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+          selection = parseInt(key, 10);
+          if (selection > 0 && selection <= this.currentChoices.length) {
+            this.checkAnswerSelected(selection - 1);
+          }
+        break;
+      }
     }
   }
 
@@ -181,16 +201,23 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.currentChoices = this.learnService.shuffle(choices);
   }
 
-  private checkAnswer(choice: string, i: number) {
+  private checkAnswerSelected(i: number) {
+    if (!this.isSelected) {
+      this.checkAnswer(i);
+    }
+  }
+  private checkAnswer(i: number) {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
+    const choice = this.currentChoices[i];
     const direction = this.currentData.data.direction;
     const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
 
     this.currentData.data.isDone = true;
     if (choice === word) {
       this.currentData.data.isCorrect = true;
+      this.score = this.score + 2 + this.currentChoices.length * 3;
       this.timeNext(1);
     } else {
       this.currentData.data.isCorrect = false;

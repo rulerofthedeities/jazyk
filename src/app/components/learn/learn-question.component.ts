@@ -48,7 +48,7 @@ import {LanPair} from '../../models/course.model';
         <div class="wordinfo">
           <div
             class="label label-annotation"
-            *ngFor="let annotation of currentData.annotations">
+            *ngFor="let annotation of currentData.data.foreign?.annotations">
             {{annotation}}
           </div>
           <div class="hint" *ngIf="currentData.exercise.foreign?.hint">
@@ -64,6 +64,13 @@ import {LanPair} from '../../models/course.model';
     h1 {
       margin-top: 0;
       font-size: 46px;
+    }
+    .label-annotation {
+      background-color: #f3f3f3;
+      border: 1px dotted black;
+      color: #333;
+      margin-right: 3px;
+      border-radius: 6px;
     }
   `]
 })

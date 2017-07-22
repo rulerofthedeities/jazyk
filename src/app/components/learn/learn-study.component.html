@@ -1,6 +1,5 @@
 <section kmPressed 
-[keyPressed]="'Enter'"
-(onKeyPressed)="onEnter()">
+  (onKeyPressed)="onKeyPressed($event)">
   <div class="col-xs-8">
     <div class="panel centerpanel">
       <km-bullets *ngIf="!isStudyDone"

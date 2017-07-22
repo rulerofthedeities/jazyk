@@ -78,11 +78,13 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEnter() {
-    if (!this.isStudyDone) {
-      this.nextWord(1);
-    } else {
-      this.skip();
+  onKeyPressed(key: string) {
+    if (key === 'Enter') {
+      if (!this.isStudyDone) {
+        this.nextWord(1);
+      } else {
+        this.skip();
+      }
     }
   }
 
@@ -90,14 +92,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     console.log('settings updated', settings);
     this.settings = settings;
     this.updatedSettings.emit(settings);
-  }
-
-  isCurrent(i: number): boolean {
-    return this.current === i;
-  }
-
-  isWordDone(i: number): boolean {
-    return this.exerciseData[i].data.isDone;
   }
 
   private nextWord(delta: number) {
