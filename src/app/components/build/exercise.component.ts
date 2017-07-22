@@ -289,9 +289,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.aspect = this.selected[this.lanForeign].aspect;
       this.addAnnotations(foreignAnnotations, this.selected[this.lanForeign]);
       exercise.foreign.annotations = foreignAnnotations.join('|');
+      exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
       if (this.selected.wordPair[this.lanForeign].alt) {
         exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
       }
+      exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
       if (this.selected[this.lanForeign].audios) {
         exercise.audio = this.selected[this.lanForeign].audios[0].s3;
       }
@@ -303,6 +305,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       if (this.selected.wordPair[this.lanLocal].alt) {
         exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
       }
+      exercise.local.alt = this.checkIfValue(exercise.local.alt);
     }
 
     console.log('saving exercise ', exercise);
@@ -314,19 +317,32 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const exercise: Exercise = this.currentExercise;
     exercise.local.word = this.exerciseForm.value['localWord'];
     exercise.foreign.word = this.exerciseForm.value['foreignWord'];
-    exercise.foreign.hint = this.exerciseForm.value['foreignHint'];
-    exercise.foreign.info = this.exerciseForm.value['info'];
     exercise.wordTpe = this.exerciseForm.value['wordTpe'];
-    exercise.genus = this.exerciseForm.value['genus'];
-    exercise.article = this.exerciseForm.value['article'];
-    exercise.followingCase = this.exerciseForm.value['followingCase'];
-    exercise.aspect = this.exerciseForm.value['aspect'];
+    exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
+    exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
+    exercise.foreign.info = this.checkIfValue(this.exerciseForm.value['info']);
+    exercise.foreign.hint = this.checkIfValue(this.exerciseForm.value['foreignHint']);
+    exercise.local.alt = this.checkIfValue(exercise.local.alt);
+    exercise.local.hint = this.checkIfValue(exercise.local.hint);
+    exercise.genus = this.checkIfValue(this.exerciseForm.value['genus']);
+    exercise.article = this.checkIfValue(this.exerciseForm.value['article']);
+    exercise.followingCase = this.checkIfValue(this.exerciseForm.value['followingCase']);
+    exercise.aspect = this.checkIfValue(this.exerciseForm.value['aspect']);
 
     if (this.isBidirectional) {
-      exercise.local.hint = this.exerciseForm.value['localHint'];
+      exercise.local.hint = this.checkIfValue(this.exerciseForm.value['localHint']);
     }
-
+    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
+  }
+
+  private checkIfValue(field: string): string {
+    // Prevent saving empty values to db
+    let value = undefined;
+    if (field) {
+      value = field;
+    }
+    return value;
   }
 
   private addAnnotations(annotations: string[], foreignDetail: WordDetail) {

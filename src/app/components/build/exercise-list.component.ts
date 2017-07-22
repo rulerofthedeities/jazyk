@@ -103,7 +103,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getInfoHint(exercise: Exercise): string {
-    const annotations = exercise.foreign.annotations.split('|');
+    const annotations: string[] = exercise.foreign.annotations ? exercise.foreign.annotations.split('|') : [];
     let hint = '';
     annotations.forEach(annotation => {
       if (hint) {
@@ -128,7 +128,7 @@ export class BuildExerciseListComponent implements OnDestroy {
 
   getInfoAlt(exercise: Exercise): string {
     let alt = '';
-    const alts = exercise.foreign.alt.split('|');
+    const alts: string[] = exercise.foreign.alt ? exercise.foreign.alt.split('|') : [];
     alts.forEach( (altItem, i) => {
       if (i > 0) {
         alt = alt + '<br>';

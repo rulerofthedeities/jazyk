@@ -97,9 +97,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         case '6':
         case '7':
         case '8':
-          selection = parseInt(key, 10);
-          if (selection > 0 && selection <= this.currentChoices.length) {
-            this.checkAnswerSelected(selection - 1);
+          if (!this.isSelected) {
+            selection = parseInt(key, 10);
+            if (selection > 0 && selection <= this.currentChoices.length) {
+              this.checkAnswer(selection - 1);
+            }
           }
         break;
       }
@@ -201,11 +203,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.currentChoices = this.learnService.shuffle(choices);
   }
 
-  private checkAnswerSelected(i: number) {
-    if (!this.isSelected) {
-      this.checkAnswer(i);
-    }
-  }
   private checkAnswer(i: number) {
     this.isSelected = true;
     this.answered = i;
