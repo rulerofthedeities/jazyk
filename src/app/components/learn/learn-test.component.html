@@ -1,0 +1,36 @@
+<section>
+  <div class="col-xs-8">
+    <div class="panel centerpanel">
+      <km-bullets *ngIf="!isTestDone"
+        [data]="exerciseData"
+        [current]="current">
+      </km-bullets>
+      <div *ngIf="!isTestDone && isQuestionReady" class="card">
+        <km-question
+          [currentData]="currentData"
+          [lanPair]="lanPair"
+          [text]="text"
+          [tpe]="'local'"
+        ></km-question>
+        <div class="answer">
+          <h1 class="word">
+            <span>
+              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+            </span>
+            input
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-4">
+    <km-learn-settings
+      [step]="'test'"
+      [hasGenus]="!!currentData?.exercise?.genus"
+      [settings]="settings"
+      (updatedSettings)="onSettingsUpdated($event)">
+    </km-learn-settings>
+    SCORE : {{score}}
+  </div>
+  <div class="clearfix"></div>
+</section>

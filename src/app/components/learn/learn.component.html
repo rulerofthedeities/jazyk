@@ -4,7 +4,6 @@
 </div>
 
 <div *ngIf="exercises">
-  {{steps}}
   <ul class="list-unstyled list-inline lead steps">
     <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
       <li 
@@ -45,12 +44,18 @@
     [lessonId]="lesson?._id"
     [text]="text"
     [settings]="settings"
+    (stepCompleted)="onStepCompleted(2)"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
   <km-learn-test *ngSwitchCase="3"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
+    [options]="lesson?.exerciseTpes.test"
+    [text]="text"
+    [settings]="settings"
+    (stepCompleted)="onStepCompleted(3)"
+    (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-test>
 </div>

@@ -21,10 +21,15 @@ var wordSchema = new Schema({
     tags: [String],
     cs: wordLangSchema,
     de: wordLangSchema,
+    en: wordLangSchema,
+    es: wordLangSchema,
     fr: wordLangSchema,
-    gb: wordLangSchema,
+    hu: wordLangSchema,
+    it: wordLangSchema,
+    lt: wordLangSchema,
     nl: wordLangSchema,
-    us: wordLangSchema
+    pt: wordLangSchema,
+    ru: wordLangSchema
   }, {collection: 'wordpairs'}
 );
 

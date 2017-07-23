@@ -16,6 +16,11 @@ import {LanPair} from '../../models/course.model';
           </span>
         </h1>
         <div class="wordinfo">
+          <div
+            class="label label-annotation"
+            *ngFor="let annotation of currentData.data.annotations">
+            {{annotation}}
+          </div>
           <div class="hint" *ngIf="currentData.exercise.local.hint">
             {{text["hint"]}}: {{currentData.exercise.local.hint}}
           </div>
@@ -35,8 +40,8 @@ import {LanPair} from '../../models/course.model';
               [active]="settings.color">
             {{currentData.exercise?.foreign?.word}}
           </span>
-          <span class="suffix">{{currentData.data.foreign.suffix}}</span>
-          <span class="suffix">{{currentData.data.foreign.genus}}</span>
+          <span class="suffix">{{currentData.data.suffix}}</span>
+          <span class="suffix">{{currentData.data.genus}}</span>
           <span class="audio pull-right" *ngIf="currentData.exercise.audios && currentData.exercise.audios.length > 0">
             <km-audio-file
               [fileName]="currentData.exercise.audios[0]"
@@ -48,7 +53,7 @@ import {LanPair} from '../../models/course.model';
         <div class="wordinfo">
           <div
             class="label label-annotation"
-            *ngFor="let annotation of currentData.data.foreign?.annotations">
+            *ngFor="let annotation of currentData.data.annotations">
             {{annotation}}
           </div>
           <div class="hint" *ngIf="currentData.exercise.foreign?.hint">

@@ -23,15 +23,13 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Output() stepCompleted = new EventEmitter();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
-  private lanLocal: string;
-  private lanForeign: string;
   private isWordsDone =  false; // true once words are done once
   private nrOfChoices = 6;
   private minNrOfChoices = 4;
   private choicesForeign: string[];
   private choicesLocal: string[];
   subscription: Subscription;
-  isPractiseDone = false; // toggles with every replay
+  isPractiseDone = false;
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
   currentChoices: string[] = [];
@@ -48,8 +46,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.lanLocal = this.lanPair.from.slice(0, 2);
-    this.lanForeign = this.lanPair.to.slice(0, 2);
     this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
       nrOfChoices: this.nrOfChoices,
       isBidirectional: this.options.bidirectional,
@@ -76,7 +72,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   onNextWord() {
     if (this.isSelected) {
-      this.showNextWord(1);
+      this.showNextWord();
     }
   }
 
@@ -86,7 +82,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       switch (key) {
         case 'Enter':
           if (this.isSelected) {
-            this.nextWord(1);
+            this.nextWord();
           }
         break;
         case '1':
@@ -138,33 +134,27 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         if (isBidirectional) {
           this.choicesLocal = choices.local;
         }
-        this.nextWord(1);
+        this.nextWord();
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private nextWord(delta: number) {
+  private nextWord() {
     if (this.isPractiseDone) {
       // this.restart();
     } else {
-      this.showNextWord(delta);
+      this.showNextWord();
     }
   }
 
-  private showNextWord(delta: number) {
+  private showNextWord() {
     this.clearData();
-    this.current += delta;
-    if (delta > 0) {
-      if (this.current >= this.exerciseData.length) {
-        this.isPractiseDone = true;
-        this.isWordsDone = true;
-        this.stepCompleted.emit();
-      }
-    } else {
-      if (this.current <= -1) {
-        this.current = this.exerciseData.length - 1;
-      }
+    this.current += 1;
+    if (this.current >= this.exerciseData.length) {
+      this.isPractiseDone = true;
+      this.isWordsDone = true;
+      this.stepCompleted.emit();
     }
     if (!this.isPractiseDone) {
       this.currentData = this.exerciseData[this.current];
@@ -246,7 +236,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const timer = TimerObservable.create(secs * 1000);
     this.subscription = timer
     .takeWhile(() => this.componentActive)
-    .subscribe(t => this.showNextWord(1));
+    .subscribe(t => this.showNextWord());
   }
 
   ngOnDestroy() {

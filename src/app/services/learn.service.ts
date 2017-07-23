@@ -44,58 +44,22 @@ export class LearnService {
 
   buildExerciseData(exercises: Exercise[], text: Object, options: ExerciseOptions): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
-    let annotations: string[] = [];
-    let suffix: string;
-    let genus: string;
+    const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
     let j = 0;
     exercises.forEach( (exercise, i) => {
-      exerciseData[j] = this.buildData(options, exercise, Direction.ForeignToLocal);
-      if (options.direction === Direction.ForeignToLocal || options.isBidirectional) {
-        annotations = [];
-        genus = '';
-        suffix = '';
-        // Annotations
-        if (exercise.wordTpe) {
-          annotations.push(text[exercise.wordTpe]);
-        }
-        if (exercise.aspect) {
-          annotations.push(text[exercise.aspect]);
-        }
-        if (exercise.foreign.annotations) {
-          const annotationArr = exercise.foreign.annotations.split('|');
-          annotationArr.forEach(annotation => {
-            annotations.push(annotation);
-          });
-        }
-        // genus
-        if (exercise.genus) {
-          genus = '(' + exercise.genus.toLowerCase() + ')';
-        }
-        // suffix
-        if (exercise.followingCase) {
-          suffix =  text['case' + exercise.followingCase];
-          if (suffix) {
-            suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
-          }
-        }
-        exerciseData[j].data.foreign = {
-          annotations: annotations,
-          hint: exercise.foreign.hint,
-          genus: genus,
-          suffix: suffix
-        };
+      exerciseData[j] = this.buildData(options, text, exercise, options.direction);
+      j++;
+      if (options.isBidirectional) {
+        exerciseData[j] = this.buildData(options, text, exercise, inverseDirection);
         j++;
-        if (options.isBidirectional) {
-          exerciseData[j] = this.buildData(options, exercise, Direction.LocalToForeign);
-          j++;
-        }
       }
 
     });
+    console.log('exerciseData', exerciseData);
     return exerciseData;
   }
 
-  private buildData(options: ExerciseOptions, exercise: Exercise, direction: Direction): ExerciseData {
+  private buildData(options: ExerciseOptions, text: Object, exercise: Exercise, direction: Direction): ExerciseData {
     const newData: ExerciseData = {
       data: {
         isDone: false,
@@ -108,8 +72,66 @@ export class LearnService {
     if (options.nrOfChoices) {
       newData.data.nrOfChoices = options.nrOfChoices;
     }
+    if (options.direction === Direction.ForeignToLocal) {
+      // Add local data
+      this.buildForeignData(newData, text, exercise);
+    }
+    if (options.direction === Direction.LocalToForeign) {
+      // Add foreign data
+      this.buildLocalData(newData, text, exercise);
+    }
 
     return newData;
+  }
+
+  private buildForeignData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
+    const annotations: string[] = [];
+    let suffix: string;
+    let genus: string;
+    genus = '';
+    suffix = '';
+    // Annotations
+    if (exercise.wordTpe) {
+      annotations.push(text[exercise.wordTpe]);
+    }
+    if (exercise.aspect) {
+      annotations.push(text[exercise.aspect]);
+    }
+    if (exercise.foreign.annotations) {
+      const annotationArr = exercise.foreign.annotations.split('|');
+      annotationArr.forEach(annotation => {
+        annotations.push(annotation);      });
+    }
+    // genus
+    if (exercise.genus) {
+      genus = '(' + exercise.genus.toLowerCase() + ')';
+    }
+    // suffix
+    if (exercise.followingCase) {
+      suffix =  text['case' + exercise.followingCase];
+      if (suffix) {
+        suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
+      }
+    }
+    exerciseData.data.annotations = annotations;
+    exerciseData.data.hint = exercise.foreign.hint;
+    exerciseData.data.genus = genus;
+    exerciseData.data.suffix = suffix;
+  }
+
+  private buildLocalData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
+    const annotations: string[] = [];
+    // Annotations
+    if (exercise.aspect) {
+      annotations.push(text[exercise.aspect]);
+    }
+    if (exercise.local.annotations) {
+      const annotationArr = exercise.local.annotations.split('|');
+      annotationArr.forEach(annotation => {
+        annotations.push(annotation);      });
+    }
+    exerciseData.data.annotations = annotations;
+    exerciseData.data.hint = exercise.local.hint;
   }
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html

@@ -22,10 +22,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Output() skipStep = new EventEmitter();
   @Output() stepCompleted = new EventEmitter();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
-
   private componentActive = true;
-  private lanLocal: string;
-  private lanForeign: string;
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
@@ -38,16 +35,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   dotArr: number[] = [];
   score = 0;
 
-
   constructor(
     private learnService: LearnService
   ) {}
 
   ngOnInit() {
-    this.lanLocal = this.lanPair.from.slice(0, 2);
-    this.lanForeign = this.lanPair.to.slice(0, 2);
     this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
       isForeign: true,
+      isBidirectional: false,
       direction: Direction.ForeignToLocal
     });
     if (!this.options.ordered) {
@@ -89,13 +84,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onSettingsUpdated(settings: LearnSettings) {
-    console.log('settings updated', settings);
     this.settings = settings;
     this.updatedSettings.emit(settings);
   }
 
   private nextWord(delta: number) {
-    console.log(this.exerciseData, this.current);
     if (!this.showLocal && this.current > -1) {
       this.showLocal = true;
     } else {

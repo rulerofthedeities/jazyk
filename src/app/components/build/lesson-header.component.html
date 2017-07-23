@@ -49,7 +49,7 @@
             value="{{value-1}}"
             [formControl]="control">
             {{text[tpeLabels[i]]}}
-          <span *ngIf="i > 1"
+          <span *ngIf="i === 2 || i === 4"
             (click)="onToggleBidirectional($event, i)"
             [class.sel]="bidirectional[i] && control.value"
             class="fa fa-exchange toggle">

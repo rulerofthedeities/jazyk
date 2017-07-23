@@ -11,13 +11,6 @@ export interface LanPair {
   to: string;
 }
 
-interface Lans {
-  de: string;
-  en: string;
-  fr: string;
-  nl: string;
-}
-
 export interface Case {
   value: string;
   code: string;
@@ -30,7 +23,7 @@ export interface LanConfig  {
   genera?: string[];
   aspects?: string[];
   cases?: Case[];
-  name: Lans;
+  name: string;
   regions?: string[];
 }
 

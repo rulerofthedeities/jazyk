@@ -12,7 +12,7 @@
     [class.on] = "settings.color"
     [class.inactive]="!hasGenus">
   </span>
-  <span
+  <span *ngIf="step === 'study'"
     (click)="onNextDelay()"
     [class.on] = "settings.delay">
     {{settings.delay}}s

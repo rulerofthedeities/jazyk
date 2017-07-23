@@ -35,25 +35,21 @@ export interface ExerciseTpes {
   exam: ExerciseTpe;
 }
 
-interface ExerciseForeignData {
-  annotations?: string[];
-  genus?: string;
-  suffix?: string;
-  hint?: string;
-  info?: string;
-}
-
 export enum Direction {LocalToForeign, ForeignToLocal};
 
 interface ExerciseExtraData {
   nrOfChoices?: number;
   wordForeign?: string;
   wordLocal?: string;
-  foreign?: ExerciseForeignData;
   isDone?: boolean;
   isCorrect?: boolean;
   answered: number;
   direction: Direction;
+  annotations?: string[];
+  genus?: string;
+  suffix?: string;
+  hint?: string;
+  info?: string;
 }
 
 export interface ExerciseData {
