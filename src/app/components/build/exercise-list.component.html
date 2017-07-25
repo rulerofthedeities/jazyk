@@ -41,14 +41,14 @@
             <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
           </div>
         </div>
-        <div class="col-xs-2">
-          <span (dblclick)="onEditExercise(exercise._id, 'foreignWordTpe')">
-            {{text[exercise.wordTpe]}}
+        <div class="col-xs-2 annotations">
+          {{getInfo(exercise)}}
+          <span>
+            <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
           </span>
         </div>
         <div class="col-xs-2 annotations">
-          {{getInfo(exercise)}}
-          <div [innerHTML]="getInfoHint(exercise)"></div>
+          <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
         </div>
       </li>
       <km-build-exercise *ngIf="exercise._id===editingId" class="edit"

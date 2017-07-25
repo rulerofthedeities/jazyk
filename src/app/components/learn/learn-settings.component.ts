@@ -10,6 +10,7 @@ import {LearnSettings} from '../../models/exercise.model';
 export class LearnSettingsComponent {
   @Input() step: string;
   @Input() hasGenus = false;
+  @Input() isInput = false;
   @Input() settings: LearnSettings;
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
 
@@ -21,6 +22,13 @@ export class LearnSettingsComponent {
   onToggleColor() {
     if (this.hasGenus) {
       this.settings.color = !this.settings.color;
+      this.settingsUpdated();
+    }
+  }
+
+  onToggleKeyboard() {
+    if (this.isInput) {
+      this.settings.keyboard = !this.settings.keyboard;
       this.settingsUpdated();
     }
   }

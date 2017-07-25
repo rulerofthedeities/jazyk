@@ -102,8 +102,8 @@ export class BuildExerciseListComponent implements OnDestroy {
     return this.text[info];
   }
 
-  getInfoHint(exercise: Exercise): string {
-    const annotations: string[] = exercise.foreign.annotations ? exercise.foreign.annotations.split('|') : [];
+  getInfoHint(exercise: Exercise, tpe: string): string {
+    const annotations: string[] = exercise[tpe].annotations ? exercise[tpe].annotations.split('|') : [];
     let hint = '';
     annotations.forEach(annotation => {
       if (hint) {
@@ -111,17 +111,17 @@ export class BuildExerciseListComponent implements OnDestroy {
       }
       hint = hint + annotation;
     });
-    if (exercise.foreign.hint) {
+    if (exercise[tpe].hint) {
       if (hint) {
         hint = hint + '<br>';
       }
-      hint = hint + exercise.foreign.hint;
+      hint = hint + exercise[tpe].hint;
     }
-    if (exercise.foreign.info) {
+    if (exercise[tpe].info) {
       if (hint) {
         hint = hint + '<br>';
       }
-      hint = hint + exercise.foreign.info;
+      hint = hint + exercise[tpe].info;
     }
     return hint;
   }

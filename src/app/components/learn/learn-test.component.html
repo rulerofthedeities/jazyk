@@ -12,13 +12,13 @@
           [text]="text"
           [tpe]="'local'"
         ></km-question>
-        <div class="answer">
-          <h1 class="word">
-            <span>
-              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-            </span>
-            input
-          </h1>
+        <km-answer-test 
+          [lan]="lanPair.to"
+          [disabled]="isAnswered"
+          [isCorrect]="isCorrect">
+        </km-answer-test>
+        <div class="solution">
+          {{solution}}
         </div>
       </div>
     </div>
@@ -27,9 +27,20 @@
     <km-learn-settings
       [step]="'test'"
       [hasGenus]="!!currentData?.exercise?.genus"
+      [isInput]="true"
       [settings]="settings"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
+    <div class="actions">
+      <div 
+        class="btn btn-lg next" 
+        [class.disabled]="isAnswered && isCorrect"
+        [ngClass]="{'btn-default': isAnswered && isCorrect, 'btn-success': !isAnswered || !isCorrect}"
+        (click)="onCheckAnswer()">
+        <span class="fa fa-step-forward"></span>
+        {{isTestDone ? text["Restart"] : text["Next"]}}
+      </div>
+    </div>
     SCORE : {{score}}
   </div>
   <div class="clearfix"></div>

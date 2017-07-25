@@ -186,7 +186,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       rand = Math.floor(Math.random() * availableChoices.length);
       choice = availableChoices[rand];
       availableChoices.splice(rand, 1);
-      if (choice !== word) {
+      console.log('choice?', choices.find(choiceItem => choiceItem === choice));
+      if (!choices.find(choiceItem => choiceItem === choice)) {
         choices.push(choice);
       }
     }

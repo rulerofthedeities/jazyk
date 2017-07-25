@@ -17,6 +17,12 @@
     [class.on] = "settings.delay">
     {{settings.delay}}s
   </span>
+  <span class="fa fa-keyboard-o"
+    (click)="onToggleKeyboard()"
+    [class.on] = "settings.keyboard"
+    [class.inactive]="!isInput">
+  </span>
+  
 </div>
 <div class="slashed">
   <span [class.off]="settings.mute"></span>

@@ -52,6 +52,7 @@
     <div class="actions">
       <div 
         class="btn btn-lg next" 
+        [class.disabled]="!isSelected"
         [ngClass]="{'btn-default': !isSelected, 'btn-success': isSelected}"
         (click)="onNextWord()">
         <span class="fa fa-step-forward"></span>

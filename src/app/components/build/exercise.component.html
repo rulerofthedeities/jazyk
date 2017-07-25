@@ -374,6 +374,43 @@
         </ul>
       </div>
     </div>
+    <!-- Local Annotations -->
+    <div class="form-group">
+      <label 
+        class="control-label col-xs-1">
+      </label>
+      <label 
+        for="localAnnotations" 
+        class="control-label col-xs-1 txt">
+        {{text["Annot."]}}:
+      </label>
+      <div class="control-label col-xs-3" *ngIf="addFields['annotationsLocal']">
+        <div class="input-group">
+          <input 
+            type="text"
+            class="form-control" 
+            id="localAnnotations"
+            autocomplete="off"
+            #annotationsLocal>
+          <span class="input-group-btn">
+            <button
+              type="button"
+              class="btn btn-success"
+              (click)="onAdd('annotations', 'local', annotationsLocal.value); annotationsLocal.value = ''">
+              {{text["Add"]}}
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="col-xs-7">
+        <span (click)="onActivateField('annotationsLocal')" class="fa fa-plus txt add"  *ngIf="!addFields['annotationsLocal']"></span>
+        <ul class="list-inline" *ngIf="currentExercise.local.annotations">
+          <li *ngFor="let annotation of currentExercise.local.annotations.split('|'); let i = index" class="list-group-item">
+            {{annotation}} <span class="fa fa-times" (click)="onRemove('annotations', 'local', i)"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="form-group buttons">

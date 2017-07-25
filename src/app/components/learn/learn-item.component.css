@@ -51,3 +51,8 @@
 .next.btn-default {
   color: #ccc;
 }
+.solution {
+  font-size: 40px;
+  margin-left: 62px;
+  color: green;
+}

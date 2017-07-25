@@ -275,6 +275,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       foreign: {word: formValues.foreignWord}
     };
     const foreignAnnotations: string[] = [];
+    const localAnnotations: string[] = [];
 
     if (formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
@@ -287,7 +288,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.article = this.selected[this.lanForeign].article;
       exercise.followingCase = this.selected[this.lanForeign].followingCase;
       exercise.aspect = this.selected[this.lanForeign].aspect;
-      this.addAnnotations(foreignAnnotations, this.selected[this.lanForeign]);
+      this.addAnnotations(foreignAnnotations, this.selected, 'foreign');
       exercise.foreign.annotations = foreignAnnotations.join('|');
       exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
       if (this.selected.wordPair[this.lanForeign].alt) {
@@ -301,11 +302,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         exercise.image = this.selected[this.lanForeign].images[0].s3;
       }
       /* Local */
+      this.addAnnotations(localAnnotations, this.selected, 'local');
       exercise.local.hint = this.selected.wordPair[this.lanLocal].hint;
       if (this.selected.wordPair[this.lanLocal].alt) {
         exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
       }
       exercise.local.alt = this.checkIfValue(exercise.local.alt);
+      exercise.local.annotations = localAnnotations.join('|');
+      exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
     }
 
     console.log('saving exercise ', exercise);
@@ -322,16 +326,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
     exercise.foreign.info = this.checkIfValue(this.exerciseForm.value['info']);
     exercise.foreign.hint = this.checkIfValue(this.exerciseForm.value['foreignHint']);
+    exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
     exercise.local.alt = this.checkIfValue(exercise.local.alt);
-    exercise.local.hint = this.checkIfValue(exercise.local.hint);
+    exercise.local.hint = this.checkIfValue(this.exerciseForm.value['localHint']);
     exercise.genus = this.checkIfValue(this.exerciseForm.value['genus']);
     exercise.article = this.checkIfValue(this.exerciseForm.value['article']);
     exercise.followingCase = this.checkIfValue(this.exerciseForm.value['followingCase']);
     exercise.aspect = this.checkIfValue(this.exerciseForm.value['aspect']);
 
-    if (this.isBidirectional) {
-      exercise.local.hint = this.checkIfValue(this.exerciseForm.value['localHint']);
-    }
     console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
@@ -345,20 +347,49 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     return value;
   }
 
-  private addAnnotations(annotations: string[], foreignDetail: WordDetail) {
-    if (foreignDetail.isPlural) {
+  private addAnnotations(annotations: string[], word: WordPairDetail, tpe: string) {
+    let detail: WordDetail;
+    if (tpe === 'foreign') {
+      detail = word[this.lanForeign];
+    } else {
+      detail = word[this.lanLocal];
+    }
+
+    if (tpe === 'local') {
+      // add expected foreign wordtype to local annotations
+      if (word[this.lanForeign].wordTpe) {
+        annotations.push(this.text[word[this.lanForeign].wordTpe]);
+      }
+    }
+    if (tpe === 'foreign' && (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective')) {
+      annotations.push(this.text[detail.wordTpe]);
+    }
+
+    if (detail.wordTpe) {
+      // If verb has aspect, add to both local and foreign annotations
+      if (detail.wordTpe === 'verb') {
+        if (detail.aspect) {
+          annotations.push(this.text[detail.aspect]);
+        } else if (tpe === 'local') {
+          if (word[this.lanForeign].aspect) {
+            annotations.push(this.text[word[this.lanForeign].aspect]);
+          }
+        }
+      }
+    }
+    if (detail.isPlural) {
       annotations.push(this.text['plural']);
     }
-    if (foreignDetail.isDiminutive) {
+    if (detail.isDiminutive) {
       annotations.push(this.text['diminutive']);
     }
-    if (foreignDetail.isComparative) {
+    if (detail.isComparative) {
       annotations.push(this.text['comparative']);
     }
-    if (foreignDetail.isSuperlative) {
+    if (detail.isSuperlative) {
       annotations.push(this.text['superlative']);
     }
-    console.log('annotations:', annotations, foreignDetail);
+    console.log('annotations:', annotations, detail);
   }
 
   private saveNewExercise(exercise: Exercise) {

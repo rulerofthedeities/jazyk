@@ -46,16 +46,14 @@ export class LearnService {
     const exerciseData: ExerciseData[] = [];
     const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
     let j = 0;
-    exercises.forEach( (exercise, i) => {
+    exercises.forEach( (exercise) => {
       exerciseData[j] = this.buildData(options, text, exercise, options.direction);
       j++;
       if (options.isBidirectional) {
         exerciseData[j] = this.buildData(options, text, exercise, inverseDirection);
         j++;
       }
-
     });
-    console.log('exerciseData', exerciseData);
     return exerciseData;
   }
 
@@ -91,12 +89,6 @@ export class LearnService {
     genus = '';
     suffix = '';
     // Annotations
-    if (exercise.wordTpe) {
-      annotations.push(text[exercise.wordTpe]);
-    }
-    if (exercise.aspect) {
-      annotations.push(text[exercise.aspect]);
-    }
     if (exercise.foreign.annotations) {
       const annotationArr = exercise.foreign.annotations.split('|');
       annotationArr.forEach(annotation => {
@@ -122,9 +114,6 @@ export class LearnService {
   private buildLocalData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
     const annotations: string[] = [];
     // Annotations
-    if (exercise.aspect) {
-      annotations.push(text[exercise.aspect]);
-    }
     if (exercise.local.annotations) {
       const annotationArr = exercise.local.annotations.split('|');
       annotationArr.forEach(annotation => {

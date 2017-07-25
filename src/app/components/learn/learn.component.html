@@ -25,8 +25,8 @@
   </ul>
 </div>
 
-<div [ngSwitch]="currentStep" class="learn" [ngClass]="steps[currentStep]">
-  <km-learn-study  *ngSwitchCase="1"
+<div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]">
+  <km-learn-study  *ngSwitchCase="'study'"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
     [text]="text"
@@ -37,7 +37,7 @@
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-study>
-  <km-learn-practise *ngSwitchCase="2"
+  <km-learn-practise *ngSwitchCase="'practise'"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.practise"
@@ -48,7 +48,7 @@
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
-  <km-learn-test *ngSwitchCase="3"
+  <km-learn-test *ngSwitchCase="'test'"
     [exercises]="exercises"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.test"

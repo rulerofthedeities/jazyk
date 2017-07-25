@@ -50,7 +50,8 @@ export class LearnComponent implements OnInit, OnDestroy {
     this.settings = {
       mute: false,
       color: true,
-      delay: 2
+      delay: 2,
+      keyboard: false
     };
   }
 
