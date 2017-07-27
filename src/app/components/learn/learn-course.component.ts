@@ -9,11 +9,11 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'learn.component.html',
-  styleUrls : ['learn.component.css']
+  templateUrl: 'learn-course.component.html',
+  styleUrls : ['learn-course.component.css']
 })
 
-export class LearnComponent implements OnInit, OnDestroy {
+export class LearnCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;

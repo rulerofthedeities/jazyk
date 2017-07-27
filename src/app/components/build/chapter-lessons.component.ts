@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, ChangeDetectorRef, AfterViewChecked} from '@angular/core';
 import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
@@ -14,12 +14,12 @@ interface Map<T> {
   templateUrl: 'chapter-lessons.component.html',
   styleUrls: ['chapter.component.css']
 })
-export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestroy {
+export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
   @Input() private lessons: Lesson[];
   @Input() lessonIds: string[];
   @Input() text: Object;
   @Output() remove = new EventEmitter<string>();
-  @Output() sorted = new EventEmitter();
+  @Output() sorted = new EventEmitter<string[]>();
   private componentActive = true;
   private lessonToRemove: string;
   lessonDict: Map<Lesson> = {}; // For sorting
@@ -28,7 +28,8 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   constructor(
     private router: Router,
     private buildService: BuildService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -39,6 +40,10 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     if (this.lessonIds.length !== this.lessons.length) {
       this.filterLessonIds();
     }
+  }
+
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
   }
 
   onEditLesson(lessonId: string) {
@@ -108,6 +113,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       if (!lessonId) {
         console.log('id not found for ', lesson1._id);
         this.lessonIds.push(lesson1._id);
+        this.cdRef.detectChanges();
         saveSortedIds = true;
       }
     });
@@ -117,12 +123,13 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       if (!lesson) {
         console.log('lesson not found for', id);
         this.lessonIds.splice(i, 1);
+        this.cdRef.detectChanges();
         saveSortedIds = true;
       }
     });
     this.isReady = true;
     if (saveSortedIds) {
-      this.sorted.emit();
+      this.sorted.emit(this.lessonIds);
     }
   }
 

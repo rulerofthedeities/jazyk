@@ -1,14 +1,14 @@
 import {Routes} from '@angular/router';
-import {LearnComponent} from './components/learn/learn.component';
-import {CoursesComponent} from './components/learn/courses.component';
+import {LearnCourseComponent} from './components/learn/learn-course.component';
+import {LearnCoursesComponent} from './components/learn/learn-courses.component';
 
 export const routes: Routes = [
   {
     path: 'course/:id',
-    component: LearnComponent
+    component: LearnCourseComponent
   },
   {
     path: 'courses',
-    component: CoursesComponent
+    component: LearnCoursesComponent
   }
 ];

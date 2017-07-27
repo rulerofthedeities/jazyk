@@ -17,7 +17,7 @@
     [lessonIds]="getLessonIds(chapter)"
     [text]="text"
     (remove)="onRemoveLesson($event)"
-    (sorted)="onResortedLessons()">
+    (sorted)="onResortedLessons(chapter, $event)">
   </km-chapter-lessons>
 </div>
 

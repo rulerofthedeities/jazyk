@@ -19,6 +19,7 @@ module.exports.initialize = function(app, router) {
   router.post('/course', courses.addCourse);
   router.put('/course/header', courses.updateCourseHeader);
   router.patch('/course/property/:id', courses.updateCourseProperty);
+  router.patch('/course/lesson/:id', courses.updateCourseLesson);
 
   router.post('/chapter/:id', courses.addChapter);
   router.put('/chapter/:id', courses.removeChapter);

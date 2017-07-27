@@ -38,6 +38,19 @@ export class BuildLessonsComponent implements OnDestroy {
     return chapterLessons;
   }
 
+  setLessonIds(chapterName: string, lessonIdItems: string[]) {
+    console.log('updating lesson ids for chapter', chapterName);
+    const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
+    if (lessonId && lessonId.lessonIds) {
+      lessonId.lessonIds = lessonIdItems;
+    } else {
+      const newLessonId = {chapter: chapterName, lessonIds: lessonIdItems};
+      console.log('new chapter', newLessonId);
+      this.lessonIds.push(newLessonId);
+      console.log('ids', this.lessonIds);
+    }
+  }
+
   onToggleChapter(chapter: string) {
     this.currentChapter = chapter === this.currentChapter ? '' : chapter;
   }
@@ -54,7 +67,8 @@ export class BuildLessonsComponent implements OnDestroy {
     this.saveResortedChapters();
   }
 
-  onResortedLessons() {
+  onResortedLessons(chapter: string, lessonIds: string[]) {
+    this.setLessonIds(chapter, lessonIds);
     this.saveResortedLessons();
   }
 
@@ -67,7 +81,7 @@ export class BuildLessonsComponent implements OnDestroy {
     .updateChapters(this.courseId, this.chapters)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      () => {console.log('updated chapters'); },
+      () => {console.log('updated sorted chapters'); },
       error => this.errorService.handleError(error)
     );
   }
@@ -79,7 +93,7 @@ export class BuildLessonsComponent implements OnDestroy {
     .updateLessonIds(this.courseId, this.lessonIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      () => {console.log('updated chapters'); },
+      () => {console.log('updated sorted lesson ids'); },
       error => this.errorService.handleError(error)
     );
   }

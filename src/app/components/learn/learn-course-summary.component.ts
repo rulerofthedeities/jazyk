@@ -3,12 +3,12 @@ import {Router} from '@angular/router';
 import {Course} from '../../models/course.model';
 
 @Component({
-  selector: 'km-course-summary',
-  templateUrl: 'course-summary.component.html',
-  styleUrls: ['course-summary.component.css']
+  selector: 'km-learn-course-summary',
+  templateUrl: 'learn-course-summary.component.html',
+  styleUrls: ['learn-course-summary.component.css']
 })
 
-export class CourseSummaryComponent implements OnInit {
+export class LearnCourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() text: {};
   percDone = 0;

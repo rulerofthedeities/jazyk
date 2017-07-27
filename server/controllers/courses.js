@@ -65,6 +65,20 @@ module.exports = {
       });
     }
   },
+  updateCourseLesson: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const lesson = req.body;
+    const upd = {
+      $addToSet: { 'lessons.$.lessonIds': lesson.lessonId}
+    };
+
+    Course.findOneAndUpdate(
+      {_id: courseId, 'lessons.chapter': lesson.chapterName}, upd, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating course lesson', function(){
+        response.handleSuccess(res, result, 200, 'Updated course lesson');
+      });
+    });
+  },
   addChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     const chapter = req.body;
@@ -72,7 +86,8 @@ module.exports = {
     Course.findOneAndUpdate(
       {_id: courseId},
       {$addToSet: {
-        chapters: chapter.name
+        chapters: chapter.chapterName,
+        lessons: chapter.lesson
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error adding chapter', function(){
         response.handleSuccess(res, result, 200, 'Added chapter');

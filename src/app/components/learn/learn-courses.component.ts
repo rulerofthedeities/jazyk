@@ -8,7 +8,7 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'courses.component.html',
+  templateUrl: 'learn-courses.component.html',
   styles: [`
     .lanselector {
       padding: 0;
@@ -20,7 +20,7 @@ import 'rxjs/add/operator/takeWhile';
   `]
 })
 
-export class CoursesComponent implements OnInit, OnDestroy {
+export class LearnCoursesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];

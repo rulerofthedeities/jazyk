@@ -68,7 +68,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       // Check if new chapter was added
       if (this.chapters.filter(chapter => chapter === updatedLesson.chapterName).length < 1) {
         console.log('added chapter');
-        this.addChapter(updatedLesson.chapterName);
+        this.addChapter(updatedLesson.chapterName, this.lesson._id);
       }
     }
     this.isEditMode = false;
@@ -111,11 +111,11 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 */
 
-  private addChapter(chapterName: string) {
+  private addChapter(chapterName: string, lessonId: string) {
     if (chapterName) {
       this.chapters.push(chapterName);
       this.buildService
-      .addChapter(this.lesson.courseId, chapterName)
+      .addChapter(this.lesson.courseId, chapterName, lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedChapter => {},

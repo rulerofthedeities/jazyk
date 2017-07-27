@@ -57,6 +57,15 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  updateCourseLesson(courseId: string, chapterName: string, lessonId: string) {
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const data = {chapterName, lessonId};
+    return this.http
+    .patch('/api/course/lesson/' + courseId, JSON.stringify(data), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** CHAPTERS ***/
 
   fetchChapters(courseId: string) {
@@ -66,10 +75,11 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  addChapter(courseId: string, chapter: string) {
+  addChapter(courseId: string, chapterName: string, lessonId: string) {
     const headers = new Headers({'Content-Type': 'application/json'});
+    const lesson = {chapter: chapterName, lessonIds: [lessonId]};
     return this.http
-    .post('/api/chapter/' + courseId,  JSON.stringify({name: chapter}), {headers})
+    .post('/api/chapter/' + courseId,  JSON.stringify({chapterName, lesson}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

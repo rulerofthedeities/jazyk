@@ -99,7 +99,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       isPublished: false,
       exerciseCount: 0,
       exercisesDone: 0,
-      chapters: []
+      chapters: [],
+      lessons: []
     };
     this.buildForm();
   }

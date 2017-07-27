@@ -7,9 +7,9 @@ import {routes} from './learn.routes';
 import {LearnService} from './services/learn.service';
 import {TimeService} from './services/time.service';
 
-import {CoursesComponent} from './components/learn/courses.component';
-import {CourseSummaryComponent} from './components/learn/course-summary.component';
-import {LearnComponent} from './components/learn/learn.component';
+import {LearnCoursesComponent} from './components/learn/learn-courses.component';
+import {LearnCourseComponent} from './components/learn/learn-course.component';
+import {LearnCourseSummaryComponent} from './components/learn/learn-course-summary.component';
 import {LearnStudyComponent} from './components/learn/learn-study.component';
 import {LearnPractiseComponent} from './components/learn/learn-practise.component';
 import {LearnTestComponent} from './components/learn/learn-test.component';
@@ -32,9 +32,9 @@ import {WordColorDirective} from './directives/word-color.directive';
     TimeService
   ],
   declarations: [
-    CoursesComponent,
-    CourseSummaryComponent,
-    LearnComponent,
+    LearnCoursesComponent,
+    LearnCourseSummaryComponent,
+    LearnCourseComponent,
     LearnStudyComponent,
     LearnPractiseComponent,
     LearnTestComponent,
