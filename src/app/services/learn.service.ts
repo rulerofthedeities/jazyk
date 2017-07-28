@@ -14,6 +14,8 @@ export class LearnService {
     private http: Http
   ) {}
 
+  /*** Courses ***/
+
   fetchCourses(lan: Language) {
     return this.http
     .get('/api/courses/' + lan._id)
@@ -27,6 +29,8 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
+
+  /*** Lessons ***/
 
   fetchFirstLesson(courseId: string) {
     return this.http
@@ -146,4 +150,12 @@ export class LearnService {
     return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
   }
 
+  /*** Config ***/
+
+  fetchLanConfig(lanCode: string) {
+    return this.http
+    .get('/api/config/lan/' + lanCode)
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
+  }
 }

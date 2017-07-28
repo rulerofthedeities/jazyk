@@ -1,10 +1,11 @@
 import {Component, EventEmitter, OnInit, OnDestroy, Input, Output, ViewChild} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
-import {LanPair} from '../../models/course.model';
+import {ErrorService} from '../../services/error.service';
+import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
 import {LearnAnswerTestComponent} from './answer-test.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import {Subscription} from 'rxjs/Subscription';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-learn-test',
@@ -14,7 +15,7 @@ import {Subscription} from 'rxjs/Subscription';
 
 export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
-  @Input() lanPair: LanPair[];
+  @Input() lanPair: LanPair;
   @Input() options: ExerciseTpe;
   @Input() text: Object;
   @Input() settings: LearnSettings;
@@ -22,7 +23,6 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerTestComponent) answerComponent: LearnAnswerTestComponent;
   private componentActive = true;
-  subscription: Subscription;
   isTestDone = false;
   isAnswered = false;
   exerciseData: ExerciseData[];
@@ -32,12 +32,15 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   isCorrect = false;
   solution: string;
   score = 0;
+  keys: string[] = [];
 
   constructor(
-    private learnService: LearnService
+    private learnService: LearnService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
+    this.getConfig(this.lanPair.to.slice(0, 2)); // For keyboard keys
     this.getQuestions();
   }
 
@@ -146,9 +149,23 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   private timeNext(secs: number) {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
-    this.subscription = timer
+    timer
     .takeWhile(() => this.componentActive)
     .subscribe(t => this.nextWord());
+  }
+
+  private getConfig(lanCode: string) {
+    this.learnService
+    .fetchLanConfig(lanCode)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (config: LanConfig) => {
+        if (config) {
+          this.keys = config.keys;
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

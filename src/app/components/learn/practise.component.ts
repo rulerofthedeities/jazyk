@@ -103,7 +103,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   isWordCorrect(): boolean {
     let isCorrect = false;
     let data: ExerciseData;
-    console.log('checking correct', this.current);
     if (this.current >= 0) {
       data = this.exerciseData[this.current];
       isCorrect = data.data.isCorrect;

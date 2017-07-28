@@ -1,0 +1,24 @@
+<div class="form-group">
+  <label 
+    for="answer" 
+    class="control-label col-xs-1">
+    <img src="/assets/img/flags/{{lan}}.png" class="flag">
+  </label>
+  <div class="col-xs-11">
+    <input 
+      class="form-control input-lg" 
+      id="answer"
+      maxlength="100"
+      autofocus
+      autocomplete="off"
+      [attr.disabled]="disabled ? '': null"
+      [ngClass]="{correct: disabled && isCorrect, incorrect: disabled && !isCorrect}"
+      #answer>
+  </div>
+</div>
+<div class="clearfix"></div>
+<km-keyboard 
+  *ngIf="showKeyboard"
+  [keys]="keys"
+  (selectedKey)="onKeySelected($event)">
+</km-keyboard>

@@ -25,6 +25,7 @@ export interface LanConfig  {
   cases?: Case[];
   name: string;
   regions?: string[];
+  keys?: string[];
 }
 
 export interface LessonId { // for sorting

@@ -16,6 +16,8 @@
         <km-answer-test 
           [lan]="lanPair.to"
           [disabled]="isAnswered"
+          [showKeyboard]="settings.keyboard"
+          [keys]="keys"
           [isCorrect]="isCorrect">
         </km-answer-test>
         <div class="solution">

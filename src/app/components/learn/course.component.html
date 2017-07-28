@@ -15,7 +15,7 @@
         [class.btn-danger]="step==='exam'"
         [class.btn-info]="step!=='intro' && step!=='exam' &&  step!=='review'"
         [class.inactive]="currentStep!==i">
-        <span class="fa fa-check" *ngIf="stepCompleted[i]"></span>
+        <span class="fa fa-check" *ngIf="stepCompleted[step]"></span>
         {{text[step.charAt(0).toUpperCase() + step.slice(1)]}} ()
       </li>
       <li class="arrow" *ngIf="i < steps.length - 1">
@@ -33,7 +33,7 @@
     [options]="lesson?.exerciseTpes.study"
     [settings]="settings"
     (skipStep)="onSkipStep()"
-    (stepCompleted)="onStepCompleted(1)"
+    (stepCompleted)="onStepCompleted('study')"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-study>
@@ -44,7 +44,7 @@
     [lessonId]="lesson?._id"
     [text]="text"
     [settings]="settings"
-    (stepCompleted)="onStepCompleted(2)"
+    (stepCompleted)="onStepCompleted('practise')"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
@@ -54,7 +54,7 @@
     [options]="lesson?.exerciseTpes.test"
     [text]="text"
     [settings]="settings"
-    (stepCompleted)="onStepCompleted(3)"
+    (stepCompleted)="onStepCompleted('test')"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-test>

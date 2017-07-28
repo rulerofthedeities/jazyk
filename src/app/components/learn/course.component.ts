@@ -8,6 +8,10 @@ import {Exercise, LearnSettings} from '../../models/exercise.model';
 import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
+interface Map<T> {
+  [K: string]: T;
+}
+
 @Component({
   templateUrl: 'course.component.html',
   styleUrls : ['course.component.css']
@@ -24,7 +28,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   exercises: Exercise[];
   text: Object = {};
   currentStep = 0;
-  stepCompleted: boolean[];
+  stepCompleted: Map<boolean> = {};
   steps = ['intro', 'study', 'practise', 'test', 'review', 'exam'];
 
   constructor(
@@ -65,8 +69,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onStepCompleted(i: number) {
-    this.stepCompleted[i] = true;
+  onStepCompleted(step: string) {
+    this.stepCompleted[step] = true;
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -129,15 +133,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private setSteps() {
     const steps = [];
-    const completed = [];
     this.steps.forEach((step, i) => {
       if (step === 'review' || this.lesson.exerciseTpes[step].active) {
         steps.push(step);
-        completed.push(false);
+        this.stepCompleted[step] = false;
       }
     });
     this.steps = steps;
-    this.stepCompleted = completed;
   }
 
   ngOnDestroy() {
