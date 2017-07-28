@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {Exercise} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
@@ -18,6 +18,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() lessonId: string;
   @Input() text: Object;
   @Input() isBidirectional: boolean;
+  @Output() removedExercise = new EventEmitter<number>();
   private componentActive = true;
   private isRemoving = false;
   editingId: string = null;
@@ -151,8 +152,8 @@ export class BuildExerciseListComponent implements OnDestroy {
             toRemoveIndex = i;
           }
         });
-        if (toRemoveIndex) {
-          this.exercises.splice(toRemoveIndex, 1);
+        if (toRemoveIndex !== null) {
+          this.removedExercise.emit(toRemoveIndex);
         }
         this.removingId = null;
         this.isRemoving = false;

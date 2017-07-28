@@ -3,8 +3,8 @@ import {LearnSettings} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-learn-settings',
-  templateUrl: 'learn-settings.component.html',
-  styleUrls: ['learn-settings.component.css']
+  templateUrl: 'settings.component.html',
+  styleUrls: ['settings.component.css']
 })
 
 export class LearnSettingsComponent {

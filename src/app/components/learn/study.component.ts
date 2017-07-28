@@ -9,8 +9,8 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-learn-study',
-  templateUrl: 'learn-study.component.html',
-  styleUrls: ['learn-item.component.css', 'learn-study.component.css']
+  templateUrl: 'study.component.html',
+  styleUrls: ['item.component.css', 'study.component.css']
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {

@@ -9,8 +9,8 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'learn-course.component.html',
-  styleUrls : ['learn-course.component.css']
+  templateUrl: 'course.component.html',
+  styleUrls : ['course.component.css']
 })
 
 export class LearnCourseComponent implements OnInit, OnDestroy {

@@ -8,7 +8,7 @@ import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'learn-courses.component.html',
+  templateUrl: 'courses.component.html',
   styles: [`
     .lanselector {
       padding: 0;

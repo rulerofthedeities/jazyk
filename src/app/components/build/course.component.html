@@ -23,7 +23,8 @@
       [lessonIds]="lessonIds"
       [chapters]="chapters"
       [courseId]="course._id"
-      [text]="text">
+      [text]="text"
+      (sorted)="onSortedLessons($event)">
     </km-build-lessons>
   </div>
 </div>

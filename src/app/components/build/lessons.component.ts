@@ -16,6 +16,7 @@ export class BuildLessonsComponent implements OnDestroy {
   @Input() lessonIds: LessonId[];
   @Input() chapters: string[];
   @Input() text: Object;
+  @Output() sorted = new EventEmitter<LessonId[]>();
   private componentActive = true;
   private currentChapter = '';
   lessonswithnochapter: Lesson[] = [];
@@ -38,19 +39,6 @@ export class BuildLessonsComponent implements OnDestroy {
     return chapterLessons;
   }
 
-  setLessonIds(chapterName: string, lessonIdItems: string[]) {
-    console.log('updating lesson ids for chapter', chapterName);
-    const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
-    if (lessonId && lessonId.lessonIds) {
-      lessonId.lessonIds = lessonIdItems;
-    } else {
-      const newLessonId = {chapter: chapterName, lessonIds: lessonIdItems};
-      console.log('new chapter', newLessonId);
-      this.lessonIds.push(newLessonId);
-      console.log('ids', this.lessonIds);
-    }
-  }
-
   onToggleChapter(chapter: string) {
     this.currentChapter = chapter === this.currentChapter ? '' : chapter;
   }
@@ -68,8 +56,7 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   onResortedLessons(chapter: string, lessonIds: string[]) {
-    this.setLessonIds(chapter, lessonIds);
-    this.saveResortedLessons();
+    this.sorted.emit(this.lessonIds);
   }
 
   isCurrent(chapter: string) {
@@ -82,18 +69,6 @@ export class BuildLessonsComponent implements OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       () => {console.log('updated sorted chapters'); },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private saveResortedLessons() {
-    console.log('saving lesson Ids', this.lessonIds);
-
-    this.buildService
-    .updateLessonIds(this.courseId, this.lessonIds)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      () => {console.log('updated sorted lesson ids'); },
       error => this.errorService.handleError(error)
     );
   }

@@ -46,12 +46,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     );
   }
 
-  onExerciseAdded(exercise: Exercise) {
-    console.log('exercise added to lesson', exercise);
-    this.lesson.exercises.push(exercise);
-    this.isNewWord = false;
-  }
-
   onNewWord() {
     this.isNewWord = true;
   }
@@ -72,6 +66,16 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       }
     }
     this.isEditMode = false;
+  }
+
+  onExerciseAdded(exercise: Exercise) {
+    console.log('exercise added to lesson', exercise);
+    this.lesson.exercises.push(exercise);
+    this.isNewWord = false;
+  }
+
+  onExerciseRemoved(toRemove: number) {
+    this.lesson.exercises.splice(toRemove, 1);
   }
 
   private setText(translations: Translation[]) {

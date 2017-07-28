@@ -4,7 +4,7 @@ import {LanPair} from '../../models/course.model';
 
 @Component({
   selector: 'km-question',
-  templateUrl: 'learn-question.component.html',
+  templateUrl: 'question.component.html',
   styles: [`
     h1 {
       margin-top: 0;

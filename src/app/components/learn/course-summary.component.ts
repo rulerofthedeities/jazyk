@@ -4,8 +4,8 @@ import {Course} from '../../models/course.model';
 
 @Component({
   selector: 'km-learn-course-summary',
-  templateUrl: 'learn-course-summary.component.html',
-  styleUrls: ['learn-course-summary.component.css']
+  templateUrl: 'course-summary.component.html',
+  styleUrls: ['course-summary.component.css']
 })
 
 export class LearnCourseSummaryComponent implements OnInit {

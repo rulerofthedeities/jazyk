@@ -25,7 +25,8 @@
   [lessonId]="lesson?._id"
   [text]="text"
   [isBidirectional]="isBidirectional"
-  [exercises]="lesson.exercises">
+  [exercises]="lesson.exercises"
+  (removedExercise)="onExerciseRemoved($event)">
 </km-exercise-list>
 
 <div class="footer">

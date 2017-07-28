@@ -69,6 +69,11 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.isNewLesson = true;
   }
 
+  onSortedLessons(lessonId: LessonId) {
+    this.setLessonIds(lessonId);
+    this.saveResortedLessons();
+  }
+
   onLessonDone(lessonAdded: Lesson) {
     this.isNewLesson = false;
     console.log('added Lesson', lessonAdded);
@@ -132,6 +137,33 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       savedChapter => {},
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private setLessonIds(updatedLessonId: LessonId) {
+    const chapterName = updatedLessonId.chapter;
+    const lessonIdItems = updatedLessonId.lessonIds;
+    console.log('updating lesson ids for chapter', chapterName);
+    const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
+    if (lessonId && lessonId.lessonIds) {
+      lessonId.lessonIds = lessonIdItems;
+    } else {
+      const newLessonId = {chapter: chapterName, lessonIds: lessonIdItems};
+      console.log('new chapter', newLessonId);
+      this.lessonIds.push(newLessonId);
+      console.log('ids', this.lessonIds);
+    }
+  }
+
+  private saveResortedLessons() {
+    console.log('saving lesson Ids', this.lessonIds);
+
+    this.buildService
+    .updateLessonIds(this.course._id, this.lessonIds)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      () => {console.log('updated sorted lesson ids'); },
       error => this.errorService.handleError(error)
     );
   }

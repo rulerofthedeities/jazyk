@@ -2,14 +2,14 @@ import {Component, EventEmitter, OnInit, OnDestroy, Input, Output, ViewChild} fr
 import {LearnService} from '../../services/learn.service';
 import {LanPair} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
-import {LearnAnswerTestComponent} from './learn-answer-test.component';
+import {LearnAnswerTestComponent} from './answer-test.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'km-learn-test',
-  templateUrl: 'learn-test.component.html',
-  styleUrls: ['learn-item.component.css']
+  templateUrl: 'test.component.html',
+  styleUrls: ['item.component.css']
 })
 
 export class LearnTestComponent implements OnInit, OnDestroy {
