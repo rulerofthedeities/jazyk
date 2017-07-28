@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild, Renderer2, ElementRef, AfterViewChecked} from '@angular/core';
 
 @Component({
   selector: 'km-answer-test',
@@ -49,11 +49,19 @@ import {Component, Input, ViewChild} from '@angular/core';
     `]
 })
 
-export class LearnAnswerTestComponent {
+export class LearnAnswerTestComponent implements AfterViewChecked {
   @Input() lan: string;
   @Input() disabled: boolean;
   @Input() isCorrect: boolean;
-  @ViewChild('answer') answer;
+  @ViewChild('answer') answer: ElementRef;
+
+  constructor(
+    public renderer: Renderer2
+  ) {}
+
+  ngAfterViewChecked() {
+    this.answer.nativeElement.focus();
+  }
 
   getData(): string {
     return this.answer.nativeElement.value;

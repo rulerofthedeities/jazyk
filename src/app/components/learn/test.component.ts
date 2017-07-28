@@ -50,7 +50,24 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     this.nextWord();
   }
 
+  onKeyPressed(key: string) {
+    if (key === 'Enter') {
+      if (!this.isTestDone) {
+        this.checkIfAnswer();
+      }
+    }
+  }
+
   onCheckAnswer() {
+    this.checkIfAnswer();
+  }
+
+  onSettingsUpdated(settings: LearnSettings) {
+    this.settings = settings;
+    this.updatedSettings.emit(settings);
+  }
+
+  private checkIfAnswer() {
     if (!this.isAnswered) {
       if (this.answerComponent) {
         this.checkAnswer(this.answerComponent.getData());
@@ -58,11 +75,6 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     } else if (!this.isCorrect) {
       this.nextWord();
     }
-  }
-
-  onSettingsUpdated(settings: LearnSettings) {
-    this.settings = settings;
-    this.updatedSettings.emit(settings);
   }
 
   private nextWord() {
