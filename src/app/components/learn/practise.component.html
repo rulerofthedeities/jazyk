@@ -20,9 +20,9 @@
             class="btn btn-default btn-lg choice"
             [ngClass]="{
               'done':isSelected, 
-              'ok':isWordCorrect(-1) && i===answered, 
-              'nok':!isWordCorrect(-1) && i===answered,
-              'correction':!isWordCorrect(-1) && i===answer}"
+              'ok':isWordCorrect() && i===answered, 
+              'nok':!isWordCorrect() && i===answered,
+              'correction':!isWordCorrect() && i===answer}"
             (click)="onSelected(i)">
             <span class="nr">{{i+1}}.</span> <span>{{choice}}</span>
           </div>
@@ -35,9 +35,9 @@
         <km-completed-list [data]="exerciseData">
         </km-completed-list>
 
-        <div class="btn btn-success" (click)="onNextWord()">
+        <div class="btn btn-success" (click)="onRestart()">
           <span class="fa fa-step-forward"></span>
-          {{text["RestartStudy"]}}
+          {{text["Restart"]}}
         </div>
       </div>
     </div>
@@ -47,16 +47,23 @@
       [step]="'practise'"
       [hasGenus]="!!this.currentData?.exercise.genus"
       [settings]="settings"
+      [isActive]="!isPractiseDone"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
     <div class="actions">
-      <div 
+      <div *ngIf="!isPractiseDone"
         class="btn btn-lg next" 
         [class.disabled]="!isSelected"
         [ngClass]="{'btn-default': !isSelected, 'btn-success': isSelected}"
         (click)="onNextWord()">
         <span class="fa fa-step-forward"></span>
-        {{isPractiseDone ? text["Restart"] : text["Next"]}}
+        {{text["Next"]}}
+      </div>
+      <div *ngIf="isPractiseDone"
+        class="btn btn-lg btn-success next"
+        (click)="onRestart()">
+        <span class="fa fa-step-forward"></span>
+        {{text["Restart"]}}
       </div>
     </div>
     SCORE : {{score}}

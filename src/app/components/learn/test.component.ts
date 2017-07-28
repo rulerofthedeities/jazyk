@@ -38,16 +38,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
-      isForeign: true,
-      isBidirectional: false,
-      direction: Direction.LocalToForeign
-    });
-    if (!this.options.ordered) {
-      this.exerciseData = this.learnService.shuffle(this.exerciseData);
-    }
-    this.isQuestionReady = true;
-    this.nextWord();
+    this.getQuestions();
   }
 
   onKeyPressed(key: string) {
@@ -60,6 +51,10 @@ export class LearnTestComponent implements OnInit, OnDestroy {
 
   onCheckAnswer() {
     this.checkIfAnswer();
+  }
+
+  onRestart() {
+    this.restart();
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -92,6 +87,12 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     if (!this.isTestDone) {
       this.currentData = this.exerciseData[this.current];
     }
+  }
+
+  private restart() {
+    this.isTestDone = false;
+    this.current = -1;
+    this.getQuestions();
   }
 
   private filter(word: string): string {
@@ -127,6 +128,19 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         this.solution = solution;
       }
     }
+  }
+
+  private getQuestions() {
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
+      isForeign: true,
+      isBidirectional: false,
+      direction: Direction.LocalToForeign
+    });
+    if (!this.options.ordered) {
+      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    }
+    this.isQuestionReady = true;
+    this.nextWord();
   }
 
   private timeNext(secs: number) {

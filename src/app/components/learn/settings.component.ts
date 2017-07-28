@@ -12,6 +12,7 @@ export class LearnSettingsComponent {
   @Input() hasGenus = false;
   @Input() isInput = false;
   @Input() settings: LearnSettings;
+  @Input() isActive = true;
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
 
   onToggleAudio() {

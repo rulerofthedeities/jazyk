@@ -22,6 +22,17 @@
           {{solution}}
         </div>
       </div>
+      <!-- TEST DONE -->
+      <div *ngIf="isTestDone">
+        <h3>Words tested:</h3>
+        <km-completed-list [data]="exerciseData">
+        </km-completed-list>
+
+        <div class="btn btn-success" (click)="onRestart()">
+          <span class="fa fa-step-forward"></span>
+          {{text["Restart"]}}
+        </div>
+      </div>
     </div>
   </div>
   <div class="col-xs-4">
@@ -30,6 +41,7 @@
       [hasGenus]="!!currentData?.exercise?.genus"
       [isInput]="true"
       [settings]="settings"
+      [isActive]="!isTestDone"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-settings>
     <div class="actions">
@@ -37,7 +49,7 @@
         class="btn btn-lg next" 
         [class.disabled]="isAnswered && isCorrect"
         [ngClass]="{'btn-default': isAnswered && isCorrect, 'btn-success': !isAnswered || !isCorrect}"
-        (click)="onCheckAnswer()">
+        (click)="isTestDone ?  onRestart() : onCheckAnswer()">
         <span class="fa fa-step-forward"></span>
         {{isTestDone ? text["Restart"] : text["Next"]}}
       </div>
