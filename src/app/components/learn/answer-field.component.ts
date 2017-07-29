@@ -1,8 +1,8 @@
 import {Component, Input, ViewChild, Renderer2, ElementRef, AfterViewChecked} from '@angular/core';
 
 @Component({
-  selector: 'km-answer-test',
-  templateUrl: 'answer-test.component.html',
+  selector: 'km-answer-field',
+  templateUrl: 'answer-field.component.html',
   styles: [`
     :host {
       margin-top: 32px;
@@ -29,7 +29,7 @@ import {Component, Input, ViewChild, Renderer2, ElementRef, AfterViewChecked} fr
     `]
 })
 
-export class LearnAnswerTestComponent implements AfterViewChecked {
+export class LearnAnswerFieldComponent implements AfterViewChecked {
   @Input() lan: string;
   @Input() disabled: boolean;
   @Input() isCorrect: boolean;

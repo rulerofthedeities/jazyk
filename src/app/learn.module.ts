@@ -17,7 +17,8 @@ import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
 import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnBulletsComponent} from './components/learn/bullets.component';
-import {LearnAnswerTestComponent} from './components/learn/answer-test.component';
+import {LearnAnswerFieldComponent} from './components/learn/answer-field.component';
+import {LearnAnswerChoicesComponent} from './components/learn/answer-choices.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
@@ -43,7 +44,8 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnCompletedListComponent,
     LearnQuestionComponent,
     LearnBulletsComponent,
-    LearnAnswerTestComponent,
+    LearnAnswerFieldComponent,
+    LearnAnswerChoicesComponent,
     LearnKeyboardComponent,
     GetKeyPressDirective,
     WordColorDirective

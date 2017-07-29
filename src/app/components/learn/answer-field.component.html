@@ -11,6 +11,7 @@
       maxlength="100"
       autofocus
       autocomplete="off"
+      spellcheck="false"
       [attr.disabled]="disabled ? '': null"
       [ngClass]="{correct: disabled && isCorrect, incorrect: disabled && !isCorrect}"
       #answer>

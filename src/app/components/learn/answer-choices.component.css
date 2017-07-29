@@ -1,12 +1,13 @@
+:host {
+  display: block;
+  margin-top: 32px;
+  text-align: center;
+}
 .choice {
   width: 320px;
   margin: 4px 8px;
   font-size: 28px;
   text-align: left;
-}
-.choices {
-  margin-top: 32px;
-  text-align: center;
 }
 .done {
   background-color: #eee;

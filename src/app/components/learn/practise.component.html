@@ -14,19 +14,14 @@
           [tpe]="getQuestionType()"
           [settings]="settings"
         ></km-question>
-        <div class="choices">
-          <div 
-            *ngFor="let choice of currentChoices; let i=index" 
-            class="btn btn-default btn-lg choice"
-            [ngClass]="{
-              'done':isSelected, 
-              'ok':isWordCorrect() && i===answered, 
-              'nok':!isWordCorrect() && i===answered,
-              'correction':!isWordCorrect() && i===answer}"
-            (click)="onSelected(i)">
-            <span class="nr">{{i+1}}.</span> <span>{{choice}}</span>
-          </div>
-        </div>
+        <km-answer-choices
+          [choices]="currentChoices"
+          [correct]="currentData?.data?.isCorrect"
+          [answer]="answer"
+          [answered]="answered"
+          [isSelected]="isSelected"
+          (selected)="onSelected($event)">
+        </km-answer-choices>
       </div>
 
       <!-- PRACTISE DONE -->

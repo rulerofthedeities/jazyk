@@ -5,10 +5,9 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
   template: `
     <div *ngFor="let row of rows; let i=index">
       <span 
-        class="key unselectable"
-        [class.skip]="i!==0"
-        (click)="onToggleCase()"
-        [class.selected]="isUpperCase">
+        class="unselectable"
+        [ngClass]="{key:i===0, skip:i!==0, selected: isUpperCase && i===0}"
+        (click)="i===0 ? onToggleCase() : ''">
         <span 
           *ngIf="i===0"
           class="fa fa-long-arrow-up">
@@ -41,18 +40,17 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
       background-color: white;
       box-shadow: 3px 2px #ccc;
     }
+    .key:hover {
+      background-color: #eee;
+    }
     .selected {
       background-color: #666;
       color: white;
     }
     .skip {
-      background-color: inherit;
-      cursor: default;
-      border: none;
-      box-shadow: none;
-    }
-    .key:hover {
-      background-color: #eee;
+      display: inline-block;
+      width: 42px;
+      height: 28px;
     }
   `]
 })
@@ -68,7 +66,6 @@ export class LearnKeyboardComponent implements OnInit {
   }
 
   onClick(key: string) {
-    console.log(key);
     this.selectedKey.emit(key);
   }
 
@@ -79,7 +76,6 @@ export class LearnKeyboardComponent implements OnInit {
 
   private setKeys() {
     this.keys.forEach((keyList, i) => {
-      console.log('getting keys', keyList);
       if (this.isUpperCase) {
         keyList = keyList.toUpperCase();
       }

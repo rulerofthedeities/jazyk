@@ -3,7 +3,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
-import {LearnAnswerTestComponent} from './answer-test.component';
+import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
@@ -21,7 +21,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
-  @ViewChild(LearnAnswerTestComponent) answerComponent: LearnAnswerTestComponent;
+  @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
   isTestDone = false;
   isAnswered = false;
@@ -100,13 +100,8 @@ export class LearnTestComponent implements OnInit, OnDestroy {
 
   private filter(word: string): string {
     let filteredAnswer = word.trim().toLowerCase();
-
-    // replace all multiple spaces with one space
-    filteredAnswer = filteredAnswer.replace(/ +(?= )/g, '');
-    // remove .,?;:
-    filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, '');
-
-
+    filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
+    filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
     console.log('filtered answer', word, '->' , '>' + filteredAnswer + '<');
     return filteredAnswer;
   }

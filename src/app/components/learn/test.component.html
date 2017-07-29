@@ -13,13 +13,13 @@
           [text]="text"
           [tpe]="'local'"
         ></km-question>
-        <km-answer-test 
+        <km-answer-field 
           [lan]="lanPair.to"
           [disabled]="isAnswered"
           [showKeyboard]="settings.keyboard"
           [keys]="keys"
           [isCorrect]="isCorrect">
-        </km-answer-test>
+        </km-answer-field>
         <div class="solution">
           {{solution}}
         </div>
