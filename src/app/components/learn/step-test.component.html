@@ -31,7 +31,7 @@
         </km-completed-list>
 
         <div class="btn btn-success" (click)="onRestart()">
-          <span class="fa fa-step-forward"></span>
+          <span class="fa fa-refresh"></span>
           {{text["Restart"]}}
         </div>
       </div>
@@ -48,12 +48,20 @@
     </km-learn-settings>
     <div class="actions">
       <div 
-        class="btn btn-lg next" 
+        *ngIf="!isTestDone"
+        class="btn btn-lg next"
         [class.disabled]="isAnswered && isCorrect"
         [ngClass]="{'btn-default': isAnswered && isCorrect, 'btn-success': !isAnswered || !isCorrect}"
-        (click)="isTestDone ?  onRestart() : onCheckAnswer()">
+        (click)="onCheckAnswer()">
         <span class="fa fa-step-forward"></span>
-        {{isTestDone ? text["Restart"] : text["Next"]}}
+        {{text["Next"]}}
+      </div>
+      <div 
+        *ngIf="isTestDone"
+        class="btn btn-success btn-lg next" 
+        (click)="onRestart()">
+        <span class="fa fa-refresh"></span>
+        {{text["Restart"]}}
       </div>
     </div>
     SCORE : {{score}}

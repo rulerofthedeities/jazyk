@@ -9,8 +9,8 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-learn-test',
-  templateUrl: 'test.component.html',
-  styleUrls: ['item.component.css']
+  templateUrl: 'step-test.component.html',
+  styleUrls: ['step.component.css']
 })
 
 export class LearnTestComponent implements OnInit, OnDestroy {
@@ -108,7 +108,6 @@ export class LearnTestComponent implements OnInit, OnDestroy {
 
   private checkAnswer(answer: string) {
     const filteredAnswer = this.filter(answer);
-    console.log(this.currentData.exercise.foreign.word);
     if (filteredAnswer) {
       this.isAnswered = true;
       this.currentData.data.isDone = true;
@@ -124,8 +123,23 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         this.currentData.data.isCorrect = false;
         this.isCorrect = false;
         this.solution = solution;
+        if (this.currentData.data.answered < 1) {
+          this.addExercise();
+        }
       }
     }
+  }
+
+  private addExercise() {
+    // Incorrect answer -> readd exercise to the back
+    const newExerciseData: ExerciseData = {
+      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
+      exercise: this.exerciseData[this.current].exercise
+    };
+    newExerciseData.data.isCorrect = false;
+    newExerciseData.data.isDone = false;
+    newExerciseData.data.answered = newExerciseData.data.answered + 1;
+    this.exerciseData.push(newExerciseData);
   }
 
   private getQuestions() {

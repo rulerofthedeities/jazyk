@@ -32,7 +32,7 @@
         <km-completed-list [data]="exerciseData">
         </km-completed-list>
         <div class="btn btn-success" (click)="onNextWord(1)">
-          <span class="fa fa-step-forward"></span>
+          <span class="fa fa-refresh"></span>
           {{text["RestartStudy"]}}
         </div>
         <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
@@ -51,7 +51,7 @@
     </km-learn-settings>
     <div class="actions">
       <div class="btn btn-success btn-lg" (click)="onNextWord(1)">
-        <span class="fa fa-step-forward"></span>
+        <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
         {{isStudyDone ? text["Restart"] : text["Next"]}}
       </div>
       <div class="btn btn-warning btn-lg" (click)="onSkipRequested(confirm)">
