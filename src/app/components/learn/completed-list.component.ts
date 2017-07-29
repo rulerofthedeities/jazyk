@@ -4,16 +4,18 @@ import {ExerciseData, Direction} from '../../models/exercise.model';
 interface Result {
   exercise: ExerciseData;
   isCorrect?: boolean;
+  isAlt?: boolean;
 }
 
 @Component({
   selector: 'km-completed-list',
   template: `
+  {{results|json}}
   <div class="list">
     <div *ngFor="let result of results; let i=index">
       <span 
         class="fa fa-circle" 
-        [ngClass]="{green: result.isCorrect, red: !result.isCorrect}">
+        [ngClass]="{green: result.isCorrect && !result.isAlt, yellow: result.isCorrect && result.isAlt, red: !result.isCorrect}">
       </span> {{result.exercise.exercise.foreign.word}} <span class="local">- {{result.exercise.exercise.local.word}}</span>
     </div>
   </div>`,
@@ -26,12 +28,6 @@ interface Result {
     }
     .studiedLocal {
       color: #999;
-    }
-    .green {
-      color: green;
-    }
-    .red {
-      color: red;
     }`]
 })
 
@@ -52,7 +48,8 @@ export class LearnCompletedListComponent implements OnInit {
         if (!result) {
           result = {
             exercise: exerciseData,
-            isCorrect: exerciseData.data.isCorrect
+            isCorrect: exerciseData.data.isCorrect,
+            isAlt: exerciseData.data.isAlt
           };
           this.results.push(result);
         } else {
