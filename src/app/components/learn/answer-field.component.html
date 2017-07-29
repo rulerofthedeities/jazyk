@@ -13,13 +13,16 @@
       autocomplete="off"
       spellcheck="false"
       [attr.disabled]="disabled ? '': null"
-      [ngClass]="{correct: disabled && isCorrect, incorrect: disabled && !isCorrect}"
+      [ngClass]="{correct: disabled && data.isCorrect, incorrect: disabled && !data.isCorrect, isAlt: disabled && data.isCorrect && data.isAlt}"
       #answer>
   </div>
 </div>
 <div class="clearfix"></div>
+<div class="solution">
+  <span class="msg" *ngIf="data.isAlt">{{solution.msg}} </span><span class="answer">{{solution.solution}}</span>
+</div>
 <km-keyboard 
-  *ngIf="showKeyboard"
-  [keys]="keys"
+  *ngIf="keyboard.showKeyboard"
+  [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">
 </km-keyboard>

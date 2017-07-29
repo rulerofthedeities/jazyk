@@ -144,15 +144,12 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private setLessonIds(updatedLessonId: LessonId) {
     const chapterName = updatedLessonId.chapter;
     const lessonIdItems = updatedLessonId.lessonIds;
-    console.log('updating lesson ids for chapter', chapterName);
     const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
     if (lessonId && lessonId.lessonIds) {
       lessonId.lessonIds = lessonIdItems;
     } else {
       const newLessonId = {chapter: chapterName, lessonIds: lessonIdItems};
-      console.log('new chapter', newLessonId);
       this.lessonIds.push(newLessonId);
-      console.log('ids', this.lessonIds);
     }
   }
 

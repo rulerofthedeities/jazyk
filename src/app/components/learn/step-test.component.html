@@ -16,13 +16,10 @@
         <km-answer-field 
           [lan]="lanPair.to"
           [disabled]="isAnswered"
-          [showKeyboard]="settings.keyboard"
-          [keys]="keys"
-          [isCorrect]="isCorrect">
+          [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
+          [solution]="{solution: solution, msg: text['Expectedanswer']}"
+          [data]="currentData?.data">
         </km-answer-field>
-        <div class="solution">
-          {{solution}}
-        </div>
       </div>
       <!-- TEST DONE -->
       <div *ngIf="isTestDone">

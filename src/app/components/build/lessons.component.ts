@@ -16,7 +16,7 @@ export class BuildLessonsComponent implements OnDestroy {
   @Input() lessonIds: LessonId[];
   @Input() chapters: string[];
   @Input() text: Object;
-  @Output() sorted = new EventEmitter<LessonId[]>();
+  @Output() sorted = new EventEmitter<LessonId>();
   private componentActive = true;
   private currentChapter = '';
   lessonswithnochapter: Lesson[] = [];
@@ -55,8 +55,8 @@ export class BuildLessonsComponent implements OnDestroy {
     this.saveResortedChapters();
   }
 
-  onResortedLessons(chapter: string, lessonIds: string[]) {
-    this.sorted.emit(this.lessonIds);
+  onResortedLessons(chapter: string, lessonIdItems: string[]) {
+    this.sorted.emit({chapter, lessonIds: lessonIdItems});
   }
 
   isCurrent(chapter: string) {

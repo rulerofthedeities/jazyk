@@ -1,0 +1,33 @@
+:host {
+  margin-top: 32px;
+  display:block;
+}
+label {
+  width: 4.6%;
+  padding-left: 0;
+  margin-top: 18px;
+}
+.input-lg {
+  height: 56px;
+  font-size: 40px;
+}
+.correct {
+  background-color: green;
+  color: white;
+}
+.incorrect {
+  background-color: red;
+  color: white;
+  text-decoration: line-through;
+}
+.isAlt {
+  background-color: yellow;
+  color: black;
+}
+.solution {
+  font-size: 40px;
+  margin-left: 62px;
+}
+.solution .answer {
+  color: green;
+}

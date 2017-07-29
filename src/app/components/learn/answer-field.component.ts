@@ -1,40 +1,28 @@
 import {Component, Input, ViewChild, Renderer2, ElementRef, AfterViewChecked} from '@angular/core';
+import {ExerciseExtraData} from '../../models/exercise.model';
+
+interface Keyboard {
+  showKeyboard: boolean;
+  keys: string[];
+}
+
+interface Solution {
+  solution: string;
+  msg: string;
+}
 
 @Component({
   selector: 'km-answer-field',
   templateUrl: 'answer-field.component.html',
-  styles: [`
-    :host {
-      margin-top: 32px;
-      display:block;
-    }
-    label {
-      width: 4.6%;
-      padding-left: 0;
-      margin-top: 18px;
-    }
-    .input-lg {
-      height: 56px;
-      font-size: 40px;
-    }
-    .correct {
-      background-color: green;
-      color: white;
-    }
-    .incorrect {
-      background-color: red;
-      color: white;
-      text-decoration: line-through;
-    }
-    `]
+  styleUrls: ['answer-field.component.css']
 })
 
 export class LearnAnswerFieldComponent implements AfterViewChecked {
   @Input() lan: string;
   @Input() disabled: boolean;
-  @Input() isCorrect: boolean;
-  @Input() keys: string[];
-  @Input() showKeyboard = false;
+  @Input() data: ExerciseExtraData;
+  @Input() keyboard: Keyboard;
+  @Input() solution: Solution;
   @ViewChild('answer') answer: ElementRef;
 
   constructor(

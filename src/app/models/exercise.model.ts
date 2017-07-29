@@ -37,12 +37,13 @@ export interface ExerciseTpes {
 
 export enum Direction {LocalToForeign, ForeignToLocal};
 
-interface ExerciseExtraData {
+export interface ExerciseExtraData {
   nrOfChoices?: number;
   wordForeign?: string;
   wordLocal?: string;
   isDone?: boolean;
   isCorrect?: boolean;
+  isAlt?: boolean;
   answered: number;
   direction: Direction;
   annotations?: string[];

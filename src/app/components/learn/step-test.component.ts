@@ -118,7 +118,15 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         this.isCorrect = true;
         this.currentData.data.isCorrect = true;
         this.score = this.score + 100;
-        this.timeNext(1);
+        this.timeNext(0.8);
+      } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
+        console.log('alt answer');
+        this.isCorrect = true;
+        this.solution = solution;
+        this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlt = true;
+        this.score = this.score + 80;
+        this.timeNext(2);
       } else {
         this.currentData.data.isCorrect = false;
         this.isCorrect = false;
@@ -128,6 +136,20 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  private checkAltAnswers(exercise: Exercise, answer: string): boolean {
+    let isAltAnswer = false;
+    console.log('alt', exercise);
+    if (exercise.foreign.alt) {
+      const alts = exercise.foreign.alt.split('|');
+      const found = alts.filter(alt => this.filter(alt) === answer);
+      console.log('found', found.length);
+      if (found.length > 0) {
+        isAltAnswer = true;
+      }
+    }
+    return isAltAnswer;
   }
 
   private addExercise() {
