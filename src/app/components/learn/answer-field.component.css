@@ -24,6 +24,11 @@ label {
   background-color: yellow;
   color: black;
 }
+.isAlmostCorrect {
+  background-color: orange;
+  color: white;
+  text-decoration: line-through;
+}
 .solution {
   font-size: 40px;
   margin-left: 62px;

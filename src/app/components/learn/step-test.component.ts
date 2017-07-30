@@ -115,20 +115,39 @@ export class LearnTestComponent implements OnInit, OnDestroy {
       const filteredSolution = this.filter(solution);
       console.log('answer', filteredAnswer, filteredSolution);
       if (filteredAnswer === filteredSolution) {
+        // Correct answer
         this.isCorrect = true;
         this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
         this.score = this.score + 100;
         this.timeNext(0.8);
       } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
-        console.log('alt answer');
+        // Alternative answer (synonym)
         this.isCorrect = true;
         this.solution = solution;
         this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = true;
         this.score = this.score + 80;
-        this.timeNext(2);
-      } else {
+        // this.timeNext(2);
+      } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
+        // Almost correct answer
+        console.log('almost correct');
         this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = true;
+        this.currentData.data.isAlt = false;
+        this.isCorrect = false;
+        this.solution = solution;
+        this.score = this.score + 20;
+        if (this.currentData.data.answered < 1) {
+          this.addExercise();
+        }
+      } else {
+        // Incorrect answer
+        this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
         this.isCorrect = false;
         this.solution = solution;
         if (this.currentData.data.answered < 1) {

@@ -3,7 +3,7 @@
   <div class="col-xs-8">
     <div class="panel centerpanel">
       <km-bullets *ngIf="!isPractiseDone"
-        [data]="exerciseData"
+        [exercises]="exerciseData"
         [current]="current">
       </km-bullets>
       <div *ngIf="!isPractiseDone && isQuestionReady" class="card">

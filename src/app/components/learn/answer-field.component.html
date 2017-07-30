@@ -13,7 +13,11 @@
       autocomplete="off"
       spellcheck="false"
       [attr.disabled]="disabled ? '': null"
-      [ngClass]="{correct: disabled && data.isCorrect, incorrect: disabled && !data.isCorrect, isAlt: disabled && data.isCorrect && data.isAlt}"
+      [ngClass]="{
+        correct: disabled && data.isCorrect && !data.isAlt,
+        incorrect: disabled && !data.isCorrect && !data.isAlmostCorrect,
+        isAlt: disabled && data.isCorrect && data.isAlt,
+        isAlmostCorrect: disabled && !data.isCorrect && data.isAlmostCorrect }"
       #answer>
   </div>
 </div>

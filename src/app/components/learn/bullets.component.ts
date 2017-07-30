@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData} from '../../models/exercise.model';
 
 @Component({
@@ -6,13 +6,15 @@ import {ExerciseData} from '../../models/exercise.model';
   template: `
     <div class="bullets">
       <span 
-        *ngFor="let exercise of data; let i=index"
+        *ngFor="let exercise of exercises; let i=index"
         class="fa"
         [ngClass]="{
-          'fa-square-o': !isCurrent(i), 
-          'fa-square': isCurrent(i) || isWordDone(i), 
-          'green': isWordCorrect(i),
-          'red': !isWordCorrect(i) && isWordDone(i)}">
+          'fa-square-o': i!==current, 
+          'fa-square': i===current || exercise.data.isDone, 
+          'green': exercise.data.isDone && exercise.data.isCorrect && !exercise.data.isAlt,
+          'yellow': exercise.data.isDone && exercise.data.isCorrect && exercise.data.isAlt,
+          'orange': exercise.data.isDone && !exercise.data.isCorrect && exercise.data.isAlmostCorrect,
+          'red': exercise.data.isDone && !exercise.data.isCorrect && !exercise.data.isAlmostCorrect}">
       </span>
     </div>`,
   styles: [`
@@ -29,26 +31,6 @@ import {ExerciseData} from '../../models/exercise.model';
 })
 
 export class LearnBulletsComponent {
-  @Input() data: ExerciseData;
+  @Input() exercises: ExerciseData[];
   @Input() current: number;
-
-  isCurrent(i: number): boolean {
-    return this.current === i;
-  }
-
-  isWordDone(i: number): boolean {
-    return this.data[i].data.isDone;
-  }
-
-  isWordCorrect(i: number): boolean {
-    let isCorrect: boolean;
-    let data: ExerciseData;
-    if (i >= 0) {
-      data = this.data[i];
-    } else {
-      data = this.data[this.current];
-    }
-    isCorrect = data.data.isCorrect;
-    return isCorrect;
-  }
 }

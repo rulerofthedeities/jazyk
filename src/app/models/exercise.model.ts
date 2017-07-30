@@ -44,6 +44,7 @@ export interface ExerciseExtraData {
   isDone?: boolean;
   isCorrect?: boolean;
   isAlt?: boolean;
+  isAlmostCorrect?: boolean;
   answered: number;
   direction: Direction;
   annotations?: string[];
