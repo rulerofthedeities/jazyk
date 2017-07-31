@@ -5,6 +5,7 @@
     [title]="chapter"
     [nr]="i"
     [total]="getLessons(chapter).length"
+    [chapterTotal]="chapters.length"
     [isOpen]="isCurrent(chapter)"
     [text]="text"
     (toggleOpen)="onToggleChapter(chapter)"

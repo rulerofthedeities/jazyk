@@ -41,3 +41,6 @@ ul .btn {
 .name {
   cursor: pointer;
 }
+ul.lesson .btn {
+  margin-top: 0;
+}

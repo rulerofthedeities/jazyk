@@ -22,6 +22,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   @Output() sorted = new EventEmitter<string[]>();
   private componentActive = true;
   private lessonToRemove: string;
+  // sortedLessonIds: string[];
   lessonDict: Map<Lesson> = {}; // For sorting
   isReady = false;
 
@@ -33,12 +34,18 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   ) {}
 
   ngOnInit() {
+    /*
+    this.sortedLessonIds = JSON.parse(JSON.stringify(this.lessonIds));
+    console.log('sorted Ids', this.lessonIds, this.sortedLessonIds);
+    */
     this.filterLessonIds();
   }
 
   ngOnChanges() {
-    if (this.lessonIds.length !== this.lessons.length) {
-      this.filterLessonIds();
+    if (this.lessonIds) {
+      if (this.lessonIds.length !== this.lessons.length) {
+        this.filterLessonIds();
+      }
     }
   }
 
@@ -64,7 +71,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   }
 
   onResorted() {
-    this.sorted.emit();
+    this.sorted.emit(this.lessonIds);
   }
 
   getRemoveMessage(): string {
@@ -110,6 +117,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       this.lessonDict[lesson1._id] = lesson1;
       // If a lesson is not in sorting array, add id
       lessonId = this.lessonIds.find(id => id === lesson1._id);
+      console.log('lessonId', lessonId, this.lessonIds);
       if (!lessonId) {
         console.log('id not found for ', lesson1._id);
         this.lessonIds.push(lesson1._id);
@@ -129,6 +137,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     });
     this.isReady = true;
     if (saveSortedIds) {
+      console.log('emitting', this.lessonIds);
       this.sorted.emit(this.lessonIds);
     }
   }

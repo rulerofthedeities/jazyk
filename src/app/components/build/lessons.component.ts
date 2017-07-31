@@ -56,6 +56,7 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   onResortedLessons(chapter: string, lessonIdItems: string[]) {
+    console.log('check lessons - lessonIdItems', lessonIdItems);
     this.sorted.emit({chapter, lessonIds: lessonIdItems});
   }
 

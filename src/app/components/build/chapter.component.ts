@@ -11,6 +11,7 @@ import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 export class BuildChapterComponent {
   @Input() title: string;
   @Input() total: number;
+  @Input() chapterTotal: number;
   @Input() isOpen: boolean;
   @Input() text: Object;
   @Input() nr: number;

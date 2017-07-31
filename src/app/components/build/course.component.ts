@@ -145,7 +145,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     const chapterName = updatedLessonId.chapter;
     const lessonIdItems = updatedLessonId.lessonIds;
     const lessonId: LessonId = this.lessonIds.filter(lesson => lesson.chapter === chapterName)[0];
-    if (lessonId && lessonId.lessonIds) {
+    if (lessonId && lessonIdItems) {
       lessonId.lessonIds = lessonIdItems;
     } else {
       const newLessonId = {chapter: chapterName, lessonIds: lessonIdItems};

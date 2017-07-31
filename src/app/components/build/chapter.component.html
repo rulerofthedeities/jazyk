@@ -19,6 +19,12 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
+      <li class="move" *ngIf="!isOpen && chapterTotal > 1">
+          <button 
+            class="btn btn-primary pull-right">
+            <span class="fa fa-arrows-alt"></span> {{text["Move"]}}
+          </button>
+      </li>
       <li *ngIf="total === 0">
         <button (click)="onClick(confirmchapter, 'removechapter')" class="btn btn-danger">
           <span class="fa fa-trash"></span>

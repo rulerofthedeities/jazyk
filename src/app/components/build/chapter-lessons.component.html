@@ -12,6 +12,11 @@
           <span class="name" (click)="onEditLesson(lessonId)">
             {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
           </span>
+          <button 
+            *ngIf="lessonIds?.length > 1"
+            class="btn btn-default pull-right">
+            <span class="fa fa-arrows-alt"></span> {{text["Move"]}}
+          </button>
           <button class="btn btn-warning pull-right" (click)="onEditLesson(lessonId)">
             <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
           </button>
