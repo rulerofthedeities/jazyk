@@ -70,7 +70,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
       if (this.answerComponent) {
         this.checkAnswer(this.answerComponent.getData());
       }
-    } else if (!this.isCorrect) {
+    } else {
       this.nextWord();
     }
   }
@@ -121,7 +121,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.score = this.score + 100;
-        this.timeNext(0.8);
+        this.timeNext(0.6);
       } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
         // Alternative answer (synonym)
         this.isCorrect = true;
@@ -133,7 +133,6 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // this.timeNext(2);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
-        console.log('almost correct');
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = true;
         this.currentData.data.isAlt = false;

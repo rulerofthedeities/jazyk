@@ -212,7 +212,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (choice === word) {
       this.currentData.data.isCorrect = true;
       this.score = this.score + 2 + this.currentChoices.length * 3;
-      this.timeNext(0.8);
+      this.timeNext(0.6);
     } else {
       this.currentData.data.isCorrect = false;
       // Show correct answer

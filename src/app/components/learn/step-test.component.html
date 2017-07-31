@@ -46,9 +46,7 @@
     <div class="actions">
       <div 
         *ngIf="!isTestDone"
-        class="btn btn-lg next"
-        [class.disabled]="isAnswered && isCorrect"
-        [ngClass]="{'btn-default': isAnswered && isCorrect, 'btn-success': !isAnswered || !isCorrect}"
+        class="btn btn-success btn-lg next"
         (click)="onCheckAnswer()">
         <span class="fa fa-step-forward"></span>
         {{text["Next"]}}
