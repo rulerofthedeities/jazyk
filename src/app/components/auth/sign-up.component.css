@@ -1,0 +1,45 @@
+.panel-default {
+   background-color: rgba(255, 255, 255, .8);
+}
+div.signin {
+  float:right;
+  font-size: 85%;
+  position: relative; 
+  top:-10px;
+}
+div.signin a {
+  color:snow;
+}
+.field {
+  margin-bottom: 32px;
+}
+.field .fa {
+  font-size: 22px;
+  width: 26px;
+}
+.register {
+  margin-left: 50px;
+}
+.register span {
+  margin-right: 8px;
+}
+
+/* override bootstrap
+.panel-primary > .panel-heading {
+  background-color: rgb(243, 156, 17);
+  border-color: #ffa412;
+}
+.panel-primary {
+  border-color: #ffa412;
+}
+.bg-info {
+  background-color: #fff0d9;
+}
+ */
+.panel-primary {
+  margin-top: 16px;
+}
+.panel-body {
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}

@@ -1,0 +1,77 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="col-xs-6 col-xs-offset-3">
+      <div class="panel panel-primary">
+    <div class="panel-heading">
+      <div class="panel-title">{{text["Signup"]}}</div>
+      <div class="signin">
+        <a routerLink="/auth/signin">{{text["Login"]}}</a>
+      </div>
+    </div>  
+    <div class="panel-body bg-info">
+      <div class="field">
+        <label for="username">
+          {{text["Username"]}}
+        </label>
+        <div class="input-group">
+          <span class="input-group-addon">
+            <span class="fa fa-user"></span>
+          </span>
+          <input 
+            id="username" 
+            type="text" 
+            class="form-control input-lg"
+            placeholder="Enter your username"
+            minlength="5"
+            maxlength="25"
+            autofocus
+            autocomplete="off">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">
+          {{text["Email"]}}
+        </label>
+        <div class="input-group">
+          <span class="input-group-addon">
+            <span class="fa fa-pencil"></span>
+          </span>
+          <input 
+            id="email"
+            type="text" 
+            class="form-control input-lg"
+            placeholder="Enter your email address"
+            minlength="5"
+            maxlength="100"
+            autocomplete="off">
+        </div>
+      </div>
+
+
+      <div class="field">
+        <label for="password">
+          {{text["Password"]}}
+        </label>
+        <div class="input-group">
+          <span class="input-group-addon">
+            <span class="fa fa-key"></span>
+          </span>
+          <input 
+            id="password"
+            type="password" 
+            class="form-control input-lg"
+            placeholder="Enter your password"
+            minlength="5"
+            maxlength="100">
+        </div>
+      </div>
+                     
+      <button 
+        type="button" 
+        class="btn btn-success btn-lg register">
+        <span class="fa fa-hand-o-right"></span> {{text["SignupAction"]}}
+      </button>
+    </div>
+  </div>
+</div>

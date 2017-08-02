@@ -8,6 +8,7 @@ import {routes} from './app.routes';
 import {AppComponent} from './components/app.component';
 import {MainMenuComponent} from './components/main-menu.component';
 import {HomeComponent} from './components/home.component';
+import {SignUpComponent} from './components/auth/sign-up.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import {HomeComponent} from './components/home.component';
   declarations: [
     AppComponent,
     MainMenuComponent,
-    HomeComponent
+    HomeComponent,
+    SignUpComponent
   ],
   bootstrap: [AppComponent]
 })

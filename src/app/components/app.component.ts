@@ -6,7 +6,9 @@ import {Component, OnInit} from '@angular/core';
   <img src="/assets/img/backgrounds/{{this.month}}.jpg">
   <div class="container">
     <km-main-menu></km-main-menu>
-    <router-outlet></router-outlet>
+    <div class="main">
+      <router-outlet></router-outlet>
+    </div>
   </div>
   `,
   styleUrls: ['app.component.css']
