@@ -11,7 +11,6 @@ div.signin a {
   color:snow;
 }
 .field {
-  margin-bottom: 32px;
 }
 .field .fa {
   font-size: 22px;
@@ -23,23 +22,40 @@ div.signin a {
 .register span {
   margin-right: 8px;
 }
-
-/* override bootstrap
-.panel-primary > .panel-heading {
-  background-color: rgb(243, 156, 17);
-  border-color: #ffa412;
-}
-.panel-primary {
-  border-color: #ffa412;
-}
-.bg-info {
-  background-color: #fff0d9;
-}
- */
-.panel-primary {
-  margin-top: 16px;
-}
 .panel-body {
   border-bottom-right-radius: 6px;
   border-bottom-left-radius: 6px;
+}
+.green > span {
+  border: 1px solid green;
+  background-color: green;
+  color: white;
+}
+.red > span {
+  border: 1px solid red;
+  background-color: red;
+  color: white;
+}
+.green input{
+  border: 1px solid green;
+}
+.red input {
+  border: 1px solid red;
+}
+km-field-messages {
+  margin-left: 54px;
+}
+/* override bootstrap */
+.panel-primary > .panel-heading {
+  background-color: #60727e;
+  border-color: #505d66;
+}
+.panel-primary {
+  border-color: #505d66;
+}
+.bg-info {
+  background-color: white;
+}
+.panel-primary {
+  margin-top: 16px;
 }

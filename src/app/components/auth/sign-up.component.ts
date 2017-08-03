@@ -1,7 +1,12 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Http} from '@angular/http';
 import {UtilsService} from '../../services/utils.service';
+import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
+import {ValidationService} from '../../services/validation.service';
 import {config} from '../../app.config';
+import {User} from '../../models/user.model';
 
 @Component({
   templateUrl: 'sign-up.component.html',
@@ -10,18 +15,46 @@ import {config} from '../../app.config';
 
 export class SignUpComponent implements OnInit, OnDestroy {
   private componentActive = true;
+  userForm: FormGroup;
   text: Object = {};
+  user: User;
 
   constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
     private utilsService: UtilsService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private http: Http
   ) {}
 
   ngOnInit() {
     this.getTranslations();
+    this.buildForm();
   }
 
-  getTranslations() {
+  buildForm() {
+    this.userForm = this.formBuilder.group({
+      'userName': ['', [Validators.required, ValidationService.userNameValidator], ValidationService.checkUniqueUserName(this.http)],
+      'email': ['', [Validators.required, ValidationService.emailValidator], ValidationService.checkUniqueEmail(this.http)],
+      'password': ['', [Validators.required, ValidationService.passwordValidator]]
+    });
+  }
+
+  getIconClass(fieldName: string): string {
+    let className = '';
+
+    if (this.userForm.controls[fieldName].touched) {
+      if (this.userForm.controls[fieldName].valid) {
+        className = 'green';
+      } else {
+        className = 'red';
+      }
+    }
+
+    return className;
+  }
+
+  private getTranslations() {
     this.utilsService
     .fetchTranslations(config.language.slice(0, 2), 'AuthComponent')
     .takeWhile(() => this.componentActive)
@@ -33,6 +66,27 @@ export class SignUpComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  onSubmitForm(user: User) {
+    console.log('submitting form', user);
+    if (this.userForm.valid) {
+      this.authService
+      .signup(user)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        data => {
+          this.authService
+          .signin(user)
+          .takeWhile(() => this.componentActive)
+          .subscribe(
+            signInData => this.authService.signedIn(signInData),
+            error => this.errorService.handleError(error)
+          );
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   ngOnDestroy() {

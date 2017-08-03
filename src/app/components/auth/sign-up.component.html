@@ -9,69 +9,93 @@
       </div>
     </div>  
     <div class="panel-body bg-info">
-      <div class="field">
-        <label for="username">
-          {{text["Username"]}}
-        </label>
-        <div class="input-group">
-          <span class="input-group-addon">
-            <span class="fa fa-user"></span>
-          </span>
-          <input 
-            id="username" 
-            type="text" 
-            class="form-control input-lg"
-            placeholder="Enter your username"
-            minlength="5"
-            maxlength="25"
-            autofocus
-            autocomplete="off">
+      <form id="signupform"
+          [formGroup]="userForm"
+          class="form-horizontal"
+          role="form">
+        <div class="field">
+          <label for="username">
+            {{text["Username"]}}
+          </label>
+          <div class="input-group" [ngClass]="getIconClass('userName')">
+            <span class="input-group-addon">
+              <span class="fa fa-user"></span>
+            </span>
+            <input 
+              id="username" 
+              formControlName="userName" 
+              type="text" 
+              class="form-control input-lg"
+              placeholder="Enter your username"
+              minlength="5"
+              maxlength="25"
+              autofocus
+              spellcheck="false"
+              autocomplete="off">
+          </div>
+          <km-field-messages
+            [control]="userForm.controls.userName"
+            [label]="'De gebruikersnaam'">
+          </km-field-messages>
         </div>
-      </div>
 
-      <div class="field">
-        <label for="email">
-          {{text["Email"]}}
-        </label>
-        <div class="input-group">
-          <span class="input-group-addon">
-            <span class="fa fa-pencil"></span>
-          </span>
-          <input 
-            id="email"
-            type="text" 
-            class="form-control input-lg"
-            placeholder="Enter your email address"
-            minlength="5"
-            maxlength="100"
-            autocomplete="off">
+        <div class="field">
+          <label for="email">
+            {{text["Email"]}}
+          </label>
+          <div class="input-group" [ngClass]="getIconClass('email')">
+            <span class="input-group-addon">
+              <span class="fa fa-pencil"></span>
+            </span>
+            <input 
+              id="email"
+              formControlName="email"
+              type="text" 
+              class="form-control input-lg"
+              placeholder="Enter your email address"
+              minlength="5"
+              maxlength="100"
+              spellcheck="false"
+              autocomplete="off">
+          </div>
+          <km-field-messages 
+            [control]="userForm.controls.email"
+            [label]="'Email'">
+          </km-field-messages>
         </div>
-      </div>
 
 
-      <div class="field">
-        <label for="password">
-          {{text["Password"]}}
-        </label>
-        <div class="input-group">
-          <span class="input-group-addon">
-            <span class="fa fa-key"></span>
-          </span>
-          <input 
-            id="password"
-            type="password" 
-            class="form-control input-lg"
-            placeholder="Enter your password"
-            minlength="5"
-            maxlength="100">
+        <div class="field">
+          <label for="password">
+            {{text["Password"]}}
+          </label>
+          <div class="input-group" [ngClass]="getIconClass('password')">
+            <span class="input-group-addon">
+              <span class="fa fa-key"></span>
+            </span>
+            <input 
+              id="password"
+              formControlName="password"
+              type="password" 
+              class="form-control input-lg"
+              placeholder="Enter your password"
+              minlength="5"
+              maxlength="100">
+          </div>
+          <km-field-messages 
+            [control]="userForm.controls.password"
+            [label]="'Wachtwoord'">
+          </km-field-messages>
         </div>
-      </div>
-                     
-      <button 
-        type="button" 
-        class="btn btn-success btn-lg register">
-        <span class="fa fa-hand-o-right"></span> {{text["SignupAction"]}}
-      </button>
+                       
+        <button 
+          type="button" 
+          [disabled]="!userForm.valid"
+          (click)="onSubmitForm(userForm.value)"
+          class="btn btn-success btn-lg register">
+          <span class="fa fa-hand-o-right"></span> {{text["SignupAction"]}}
+        </button>
+      </form>
     </div>
   </div>
 </div>
