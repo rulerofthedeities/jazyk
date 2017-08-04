@@ -7,44 +7,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-main-menu',
-  template: `
-    <nav class="navbar navbar-earthy navbar-fixed-top">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a routerLink="" class="logo">
-              <img src="/assets/img/logobadge.png">
-            </a>
-        </div>
-        <!-- Collection of nav links and other content for toggling -->
-        <div id="navbarCollapse" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-              <li routerLinkActive="active">
-                <a routerLink="learn" class="item">
-                  <span class="fa fa-book"></span>
-                  {{text["Learn"]}}
-                 </a>
-              </li>
-              <li routerLinkActive="active">
-                <a routerLink="learn/courses" class="item">
-                  <span class="fa fa-th-list"></span>
-                  {{text["Courses"]}}
-                </a>
-              </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Login</a></li>
-            </ul>
-        </div>
-      </div>
-    </nav>
-  `,
+  templateUrl: 'main-menu.component.html',
   styles: [`
     .logo img {
       margin: 2px 10px;
@@ -63,7 +26,10 @@ import 'rxjs/add/operator/takeWhile';
     }
     nav {
       box-shadow: 0px 4px 6px rgba(20, 20, 20, 0.3);
-    };
+    }
+    .login {
+      margin-right: 15px;
+    }
   `]
 })
 

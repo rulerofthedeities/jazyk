@@ -1,13 +1,13 @@
 .panel-default {
    background-color: rgba(255, 255, 255, .8);
 }
-div.signin {
+div.altsign {
   float:right;
   font-size: 85%;
   position: relative; 
   top:-10px;
 }
-div.signin a {
+div.altsign a {
   color:snow;
 }
 .field {

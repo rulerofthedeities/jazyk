@@ -3,41 +3,16 @@
     <div class="col-xs-6 col-xs-offset-3">
       <div class="panel panel-primary">
     <div class="panel-heading">
-      <div class="panel-title">{{text["Signup"]}}</div>
+      <div class="panel-title">{{text["Login"]}}</div>
       <div class="altsign">
-        <a routerLink="/auth/signin">{{text["Login"]}}</a>
+        <a routerLink="/auth/signup">{{text["Signup"]}}</a>
       </div>
     </div>  
     <div class="panel-body bg-info">
-      <form id="signupform"
+      <form id="signinform"
           [formGroup]="userForm"
           class="form-horizontal"
           role="form">
-        <div class="field">
-          <label for="username">
-            {{text["Username"]}}
-          </label>
-          <div class="input-group" [ngClass]="getIconClass('userName')">
-            <span class="input-group-addon">
-              <span class="fa fa-user"></span>
-            </span>
-            <input 
-              id="username" 
-              formControlName="userName" 
-              type="text" 
-              class="form-control input-lg"
-              placeholder="Enter your username"
-              minlength="5"
-              maxlength="25"
-              autofocus
-              spellcheck="false"
-              autocomplete="off">
-          </div>
-          <km-field-messages
-            [control]="userForm.controls.userName"
-            [label]="text['TheUsername']">
-          </km-field-messages>
-        </div>
 
         <div class="field">
           <label for="email">
@@ -63,7 +38,6 @@
             [label]="text['Email']">
           </km-field-messages>
         </div>
-
 
         <div class="field">
           <label for="password">
@@ -93,11 +67,8 @@
           [disabled]="!userForm.valid"
           (click)="onSubmitForm(userForm.value)"
           class="btn btn-success btn-lg register">
-          <span class="fa fa-hand-o-right"></span> {{text["SignupAction"]}}
+          <span class="fa fa-hand-o-right"></span> {{text["Login"]}}
         </button>
-        
-        <km-error-user-msg></km-error-user-msg>
-
       </form>
     </div>
   </div>

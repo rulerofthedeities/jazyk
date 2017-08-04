@@ -51,6 +51,11 @@ export class AuthService {
     this.router.navigateByUrl('/learn');
   }
 
+  logout() {
+    this.clearStorage();
+    this.router.navigate(['/auth/signin']);
+  }
+
   isLoggedIn() {
     return !!tokenNotExpired('km-jazyk.token');
   }

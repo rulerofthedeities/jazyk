@@ -1,19 +1,19 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Http} from '@angular/http';
-import {UtilsService} from '../../services/utils.service';
-import {AuthService } from '../../services/auth.service';
+import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
+import {UtilsService} from '../../services/utils.service';
 import {ValidationService} from '../../services/validation.service';
-import {config} from '../../app.config';
 import {User} from '../../models/user.model';
+import {config} from '../../app.config';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'sign-up.component.html',
+  templateUrl: 'sign-in.component.html',
   styleUrls: ['auth.component.css']
 })
 
-export class SignUpComponent implements OnInit, OnDestroy {
+export class SignInComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private user: User;
   userForm: FormGroup;
@@ -23,8 +23,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private utilsService: UtilsService,
-    private errorService: ErrorService,
-    private http: Http
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -47,31 +46,19 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmitForm(user: User) {
-    console.log('submitting form', user);
-    if (this.userForm.valid) {
-      this.authService
-      .signup(user)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        data => {
-          this.authService
-          .signin(user)
-          .takeWhile(() => this.componentActive)
-          .subscribe(
-            signInData => this.authService.signedIn(signInData),
-            error => this.errorService.handleError(error)
-          );
-        },
-        error => this.errorService.handleError(error)
-      );
-    }
+    this.authService
+    .signin(user)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => this.authService.signedIn(data),
+      error => this.errorService.handleError(error)
+    );
   }
 
   private buildForm() {
     this.userForm = this.formBuilder.group({
-      'userName': ['', [Validators.required, ValidationService.userNameValidator], ValidationService.checkUniqueUserName(this.http)],
-      'email': ['', [Validators.required, ValidationService.emailValidator], ValidationService.checkUniqueEmail(this.http)],
-      'password': ['', [Validators.required, ValidationService.passwordValidator]]
+      'email': ['', [Validators.required, ValidationService.emailValidator]],
+      'password': ['', Validators.required]
     });
   }
 

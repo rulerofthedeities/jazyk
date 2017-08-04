@@ -9,6 +9,7 @@ import {AuthService} from './services/auth.service';
 import {ValidationService} from './services/validation.service';
 
 import {SignUpComponent} from './components/auth/sign-up.component';
+import {SignInComponent} from './components/auth/sign-in.component';
 import {FieldMessagesComponent} from './components/msg/field-messages.component';
 
 @NgModule({
@@ -24,6 +25,7 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
   ],
   declarations: [
     SignUpComponent,
+    SignInComponent,
     FieldMessagesComponent
   ]
 })
