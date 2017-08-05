@@ -4,16 +4,19 @@ import {Observable} from 'rxjs/Observable';
 
 export class ValidationService {
 
-  static getValidatorErrorMessage(label: string, validatorName: string, validatorValue?: any) {
-    const config = {
-      'required': label + ' is verplicht',
-      'invalidEmailAddress': 'Incorrect email adres. Het juiste formaat is jan@peeters.com.',
-      'minlength': `${label} moet minstens ${validatorValue.requiredLength} karakters lang zijn.`,
-      'invalidPassword': `Ongeldig wachtwoord. Het wachtwoord moet minstens ${validatorValue.requiredLength}`
-      + ` karakters lang zijn en een cijfer bevatten.`,
-      'invalidUserName': 'Incorrecte gebruikernaam. Enkel karakters en cijfers zijn toegestaan.',
-      'usernameTaken': `Deze gebruikersnaam is niet beschikbaar. Gelieve een andere gebruikersnaam te kiezen.`,
-      'emailTaken': `Dit email adres is niet beschikbaar. Gelieve een ander email te gebruiken.`
+  static getValidatorErrorMessage(text: Object, field: string, validatorName: string, validatorValue?: any) {
+    const length = validatorValue ? validatorValue.requiredLength : 0,
+          required = text['isrequired'] ? text['isrequired'].replace('%s', text[field]) : '',
+          minlength = text['minLength'] ? text['minLength'].replace('%s', text[field]).replace('%d', length) : '',
+          invalidPassword = text['invalidPassword'] ? text['invalidPassword'].replace('%d', length) : '',
+          config = {
+      'required': required,
+      'invalidEmailAddress': text['Invalidemail'],
+      'minlength': minlength,
+      'invalidPassword': invalidPassword,
+      'invalidUserName': text['invalidUserName'],
+      'usernameTaken': text['usernameTaken'],
+      'emailTaken': text['emailTaken']
       };
 
     return config[validatorName];
@@ -32,7 +35,7 @@ export class ValidationService {
 
 
   static userNameValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/^[0-9a-zA-Z\.-]+$/)) {
+    if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/)) {
       return null;
     } else {
       return {'invalidUserName': true};

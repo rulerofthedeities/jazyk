@@ -15,7 +15,7 @@ import 'rxjs/add/operator/takeWhile';
     .error {
       color: red;
       font-family: 'courier';
-      font-size: 18px;
+      font-size: 20px;
       margin: 20px 0;
     }
   `]

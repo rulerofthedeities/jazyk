@@ -35,7 +35,8 @@
           </div>
           <km-field-messages 
             [control]="userForm.controls.email"
-            [label]="text['Email']"
+            [label]="'TheEmail'"
+            [text]="text"
             [touchRequired]="!isSubmitted">
           </km-field-messages>
         </div>
@@ -59,7 +60,8 @@
           </div>
           <km-field-messages 
             [control]="userForm.controls.password"
-            [label]="text['Password']"
+            [label]="'ThePassword'"
+            [text]="text"
             [touchRequired]="!isSubmitted">
           </km-field-messages>
         </div>
@@ -67,8 +69,8 @@
         <button 
           type="button" 
           (click)="onSubmitForm(userForm.value)"
-          class="btn btn-success btn-lg register">
-          <span class="fa fa-hand-o-right"></span> {{text["Login"]}}
+          class="btn btn-success btn-lg center-block">
+          <span class="fa fa-hand-o-right register"></span> {{text["Login"]}}
         </button>
         
         <km-error-msg>
