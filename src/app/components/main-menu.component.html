@@ -30,9 +30,17 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li routerLinkActive="active" class="login">
-            <a routerLink="auth/signin">
+            <a 
+              routerLink="auth/signin"
+              *ngIf="!isLoggedIn() && url!=='/auth/signin'">
               <span class="fa fa-sign-in"></span>
               {{text["Login"]}}
+            </a>
+            <a href="#" 
+              *ngIf="isLoggedIn()"
+              (click)="logOut()">
+              <span class="fa fa-sign-out"></span>
+              {{text["Logout"]}}
             </a>
           </li>
         </ul>

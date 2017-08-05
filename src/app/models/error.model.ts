@@ -1,9 +1,6 @@
-export class Error {
-  constructor(
-    public title: string,
-    public message: string,
-    public details: string
-  ) {}
+export interface Error {
+  title: string;
+  msg: string;
 }
 
 export interface UserError {

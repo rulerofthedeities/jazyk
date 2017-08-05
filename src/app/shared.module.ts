@@ -5,7 +5,6 @@ import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
 
 import {ErrorMessageComponent} from './components/msg/error-message.component';
-import {ErrorMessageUserComponent} from './components/msg/error-message-user.component';
 import {InfoMessageComponent} from './components/msg/info-message.component';
 import {LanguageSelectorComponent} from './components/fields/language-selector.component';
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
@@ -20,7 +19,6 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
   declarations: [
     ErrorMessageComponent,
     InfoMessageComponent,
-    ErrorMessageUserComponent,
     LanguageSelectorComponent,
     ModalConfirmComponent,
     AudioFileComponent
@@ -32,7 +30,6 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
   exports: [
     ErrorMessageComponent,
     InfoMessageComponent,
-    ErrorMessageUserComponent,
     LanguageSelectorComponent,
     ModalConfirmComponent,
     AudioFileComponent,

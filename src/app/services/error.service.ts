@@ -13,22 +13,19 @@ export class ErrorService {
   ) {}
 
   handleError(error: any) {
-    console.log('error', error);
     let msg = 'unknown error message',
-        err = 'unknown error',
         title = 'error';
-    if (error._body) {
-      error = JSON.parse(error._body);
-    }
-    if (error.error) {
-      error = error.error;
-    }
     if (error) {
-      msg = error.message;
-      err = error.error;
-      title = error.title || 'Error';
+      title = error.title || title;
+      if (error.error) {
+        msg = error.error.error || msg;
+      }
     }
-    this.errorOccurred.emit(new Error(title, msg, err));
+    this.errorOccurred.emit({title, msg});
+  }
+
+  clearError() {
+    this.errorOccurred.emit({title: null, msg: null});
   }
 
   userError(error: UserError): string {
@@ -42,17 +39,17 @@ export class ErrorService {
   }
 
   private getErrorMessage(errorCode: string): string {
-    const lan = config.language;
+    const lan = config.language.slice(0, 2);
     const messages = {
       jazyk00 : {
-        'nl-nl': 'Fout: Ongekende foutcode (' + errorCode + ')',
-        'en-en': 'Error: Unknown error code (' + errorCode + ')',
-        'fr-fr': 'Erreur: Code d\'erreur inconnu (' + errorCode + ')'
+        'nl': 'Fout: Ongekende foutcode (' + errorCode + ')',
+        'en': 'Error: Unknown error code (' + errorCode + ')',
+        'fr': 'Erreur: Code d\'erreur inconnu (' + errorCode + ')'
       },
       learn01 : {
-        'nl-nl': 'Fout: De cursus met code "%s" kan niet gevonden worden',
-        'en-en': 'Error: The course with code "%s" cannot be found',
-        'fr-fr': 'Erreur: Le cours avec le code "%s" ne peut être trouvé'
+        'nl': 'Fout: De cursus met code "%s" kan niet gevonden worden',
+        'en': 'Error: The course with code "%s" cannot be found',
+        'fr': 'Erreur: Le cours avec le code "%s" ne peut être trouvé'
       }
     };
     let msg = 'unknown error';

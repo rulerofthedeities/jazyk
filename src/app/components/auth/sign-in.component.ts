@@ -48,6 +48,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   onSubmitForm(user: User) {
     this.isSubmitted = true;
+    this.errorService.clearError();
     if (this.userForm.valid) {
       this.authService
       .signin(user)

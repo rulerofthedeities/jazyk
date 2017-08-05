@@ -26,14 +26,14 @@ var findUser = function(body, expiresIn, callback) {
     email: body.email
   }, function (err, doc) {
     if (err) {
-      callback(err, doc, 500, 'Error finding user')
+      callback(err, doc, 401, 'Error finding user')
     }
     if (!doc) {
-      callback({error:'Gebruikersnaam niet gevonden'}, doc, 500, 'User could not be found')
+      callback({error: 'Usernamenotfound'}, doc, 401, 'User could not be found')
     } else {
       scrypt.verifyKdf(new Buffer(doc.password, 'base64'), body.password, function(err, result) {
         if (result !== true) {
-          callback({error:'Fout paswoord'}, doc, 401, 'Aanmelding mislukt');
+          callback({error:'Incorrectpw'}, doc, 401, 'Sign in failed');
         } else {
           doc.password = null;
           var token = jwt.sign({user: doc}, process.env.JWT_TOKEN_SECRET, {expiresIn: expiresIn});

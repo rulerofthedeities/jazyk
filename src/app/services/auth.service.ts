@@ -52,11 +52,12 @@ export class AuthService {
   }
 
   logout() {
+    event.preventDefault();
     this.clearStorage();
-    this.router.navigate(['/auth/signin']);
+    this.router.navigate(['/']);
   }
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return !!tokenNotExpired('km-jazyk.token');
   }
 
