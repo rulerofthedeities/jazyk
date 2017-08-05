@@ -1,4 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {AuthService} from '../services/auth.service';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-jazyk',
@@ -14,11 +17,17 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private componentActive = true;
   month: string;
+
+  constructor (
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.setBackgroundMonth();
+    this.setUpTokenRefresh();
   }
 
   private setBackgroundMonth() {
@@ -26,5 +35,20 @@ export class AppComponent implements OnInit {
     const y = dt.getFullYear();
     const m = ('0' + (dt.getMonth() + 1)).slice(-2);
     this.month = y + m;
+  }
+
+  private setUpTokenRefresh() {
+    const timer = TimerObservable.create(30000, 3600000); // Start after 30 secs, then check every hour
+    timer
+    .takeWhile(() => this.componentActive)
+    .subscribe(t => {
+      if (this.authService.isLoggedIn()) {
+        this.authService.keepTokenFresh();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

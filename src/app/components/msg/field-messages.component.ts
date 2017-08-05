@@ -18,10 +18,11 @@ import {ValidationService} from '../../services/validation.service';
 export class FieldMessagesComponent {
   @Input() control: FormControl;
   @Input() label = 'Field';
+  @Input() touchRequired = true;
 
   get errorMessage(): string {
     for (const propertyName in this.control.errors) {
-      if (this.control.errors.hasOwnProperty(propertyName) && this.control.touched) {
+      if (this.control.errors.hasOwnProperty(propertyName) && (this.control.touched || !this.touchRequired)) {
         return ValidationService.getValidatorErrorMessage(this.label, propertyName, this.control.errors[propertyName]);
       }
     }

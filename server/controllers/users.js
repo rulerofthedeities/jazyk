@@ -94,9 +94,11 @@ module.exports = {
   },
   refreshToken: function(req, res) {
     var payload = req.decoded;
-    delete payload.iat;
-    delete payload.exp;
-    var token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
-    response.handleSuccess(res, token, 200, 'Refreshed token');
+    if (payload) {
+      delete payload.iat;
+      delete payload.exp;
+      var token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
+      response.handleSuccess(res, token, 200, 'Refreshed token');
+    }
   }
 }

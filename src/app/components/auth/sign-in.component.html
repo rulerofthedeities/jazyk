@@ -27,7 +27,7 @@
               formControlName="email"
               type="text" 
               class="form-control input-lg"
-              placeholder="Enter your email address"
+              [placeholder]="text['Enteremail']"
               minlength="5"
               maxlength="100"
               spellcheck="false"
@@ -35,7 +35,8 @@
           </div>
           <km-field-messages 
             [control]="userForm.controls.email"
-            [label]="text['Email']">
+            [label]="text['Email']"
+            [touchRequired]="!isSubmitted">
           </km-field-messages>
         </div>
 
@@ -52,23 +53,27 @@
               formControlName="password"
               type="password" 
               class="form-control input-lg"
-              placeholder="Enter your password"
+              [placeholder]="text['Enterpw']"
               minlength="5"
               maxlength="100">
           </div>
           <km-field-messages 
             [control]="userForm.controls.password"
-            [label]="text['Password']">
+            [label]="text['Password']"
+            [touchRequired]="!isSubmitted">
           </km-field-messages>
         </div>
                        
         <button 
           type="button" 
-          [disabled]="!userForm.valid"
           (click)="onSubmitForm(userForm.value)"
           class="btn btn-success btn-lg register">
           <span class="fa fa-hand-o-right"></span> {{text["Login"]}}
         </button>
+        
+        <km-error-user-msg>
+        </km-error-user-msg>
+
       </form>
     </div>
   </div>

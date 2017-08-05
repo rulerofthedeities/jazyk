@@ -61,20 +61,22 @@ export class AuthService {
   }
 
   keepTokenFresh() {
-    const token = this.getToken(),
-          decoded = this.jwtHelper.decodeToken(token),
-          initialSecs = decoded.exp - decoded.iat,
-          currentSecs = decoded.exp - Math.floor(Date.now() / 1000);
+    const token = this.getToken();
+    if (token) {
+      const decoded = this.jwtHelper.decodeToken(token),
+            initialSecs = decoded.exp - decoded.iat,
+            currentSecs = decoded.exp - Math.floor(Date.now() / 1000);
 
-    console.log('Secs since token created', initialSecs - currentSecs);
-    if (initialSecs - currentSecs >= 3600) {
-      // renew token if it is older than an hour
-      this.refreshToken().subscribe(
-        newToken => {
-          console.log('received new token');
-          localStorage.setItem('km-cznl.token', newToken);
-        }
-      );
+      console.log('Secs since token created', initialSecs - currentSecs);
+      if (initialSecs - currentSecs >= 3600) {
+        // renew token if it is older than an hour
+        this.refreshToken().subscribe(
+          newToken => {
+            console.log('received new token');
+            localStorage.setItem('km-jazyk.token', newToken);
+          }
+        );
+      }
     }
   }
 
@@ -90,7 +92,7 @@ export class AuthService {
   }
 
   private getToken(): string {
-    return localStorage.getItem('km-cznl.token');
+    return localStorage.getItem('km-jazyk.token');
   }
 
   private storeUserData(data: UserStorage) {

@@ -16,6 +16,7 @@ import 'rxjs/add/operator/takeWhile';
 export class SignInComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private user: User;
+  private isSubmitted = false;
   userForm: FormGroup;
   text: Object = {};
 
@@ -34,7 +35,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   getIconClass(fieldName: string): string {
     let className = '';
 
-    if (this.userForm.controls[fieldName].touched) {
+    if (this.userForm.controls[fieldName].touched || this.isSubmitted) {
       if (this.userForm.controls[fieldName].valid) {
         className = 'green';
       } else {
@@ -46,13 +47,16 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onSubmitForm(user: User) {
-    this.authService
-    .signin(user)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      data => this.authService.signedIn(data),
-      error => this.errorService.handleError(error)
-    );
+    this.isSubmitted = true;
+    if (this.userForm.valid) {
+      this.authService
+      .signin(user)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        data => this.authService.signedIn(data),
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private buildForm() {

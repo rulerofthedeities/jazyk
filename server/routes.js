@@ -7,7 +7,8 @@ var path = require("path"),
     words = require("./controllers/words"),
     config = require("./controllers/config"),
     translations = require("./controllers/translations"),
-    exercises = require("./controllers/exercises");
+    exercises = require("./controllers/exercises"),
+    response = require("./response");
 
 module.exports.initialize = function(app, router) {
   router.use(['/user/refresh', '/user/signin'], (req, res, next) => {
@@ -20,21 +21,6 @@ module.exports.initialize = function(app, router) {
   router.get('/user/check', users.check);
   router.post('/user/signin', users.signin);
   router.post('/user/signup', users.signup);
-
-/*
-  router.use('/', function(req, res, next) {
-    jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
-      response.handleError(err, res, 401, 'Authentication failed', function(){
-        req.decoded = decoded;
-        next();
-      });
-    });
-  });
-*/
-
-  /*** authenticated ***/
-
-  router.patch('/user/refresh', users.refreshToken);
 
   router.get('/config/lan/:lan', config.getLanConfig);
 
@@ -72,6 +58,20 @@ module.exports.initialize = function(app, router) {
 
   router.get('/choices/:id/:dir', exercises.getChoices);
 
+
+  router.use('/', function(req, res, next) {
+    jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
+      response.handleError(err, res, 401, 'Authentication failed', function(){
+        req.decoded = decoded;
+        next();
+      });
+    });
+  });
+
+  /*** authenticated ***/
+
+  router.patch('/user/refresh', users.refreshToken);
+  
   app.use('/api/', router);
 
   app.use(function (req, res) {
