@@ -89,8 +89,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       lesson => {
         this.lesson = lesson;
-        this.lanLocal = lesson.languagePair.from.slice(0, 2);
-        this.lanForeign = lesson.languagePair.to.slice(0, 2);
+        this.lanLocal = lesson.languagePair.from;
+        this.lanForeign = lesson.languagePair.to;
         this.getTranslations();
         this.setBidirectional();
         // this.getChapters();

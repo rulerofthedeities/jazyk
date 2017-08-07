@@ -83,7 +83,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    const lan = config.language.slice(0, 2);
+    const lan = config.language;
     this.utilsService
     .fetchTranslations(lan, 'LearnComponent')
     .takeWhile(() => this.componentActive)

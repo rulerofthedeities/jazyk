@@ -77,7 +77,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language.slice(0, 2), 'AuthComponent')
+    .fetchTranslations(config.language, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

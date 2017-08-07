@@ -39,7 +39,7 @@ export class ErrorService {
   }
 
   private getErrorMessage(errorCode: string): string {
-    const lan = config.language.slice(0, 2);
+    const lan = config.language;
     const messages = {
       jazyk00 : {
         'nl': 'Fout: Ongekende foutcode (' + errorCode + ')',

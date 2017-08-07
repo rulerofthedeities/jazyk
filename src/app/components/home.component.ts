@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language.slice(0, 2), 'HomeComponent')
+    .fetchTranslations(config.language, 'HomeComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

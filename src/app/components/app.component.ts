@@ -28,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
+    this.getUserLan();
   }
 
   private setBackgroundMonth() {
@@ -46,6 +47,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.authService.keepTokenFresh();
       }
     });
+  }
+
+  private getUserLan() {
+    // If user is logged in, get from user settings
+    // if not logged in or not in user settings, get from url parm
+    // if not in url parm, get from navigator
+    // if not in navigator, get from config
+    const lan = navigator.language;
   }
 
   ngOnDestroy() {

@@ -52,7 +52,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   }
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language.slice(0, 2), 'ErrorComponent')
+    .fetchTranslations(config.language, 'ErrorComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

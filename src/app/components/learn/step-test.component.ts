@@ -40,7 +40,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getConfig(this.lanPair.to.slice(0, 2)); // For keyboard keys
+    this.getConfig(this.lanPair.to); // For keyboard keys
     this.getQuestions();
   }
 
@@ -199,7 +199,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
     timer
-    .takeWhile(() => this.componentActive)
+    .takeWhile(() => this.componentActive && this.isAnswered)
     .subscribe(t => this.nextWord());
   }
 

@@ -27,8 +27,8 @@ export class FilterListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.languagePair = {
-      from: this.languagePair.from.slice(0, 2),
-      to: this.languagePair.to.slice(0, 2)
+      from: this.languagePair.from,
+      to: this.languagePair.to
     };
   }
 

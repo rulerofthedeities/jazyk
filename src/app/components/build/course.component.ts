@@ -183,7 +183,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language.slice(0, 2), 'CourseComponent')
+    .fetchTranslations(config.language, 'CourseComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

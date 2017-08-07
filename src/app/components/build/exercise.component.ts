@@ -74,8 +74,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (this.exercise) {
       this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
     }
-    this.lanLocal = this.languagePair.from.slice(0, 2);
-    this.lanForeign = this.languagePair.to.slice(0, 2);
+    this.lanLocal = this.languagePair.from;
+    this.lanForeign = this.languagePair.to;
     this.addFields = {
       altForeign: false,
       annotationsForeign: false,
@@ -118,9 +118,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     });
     if (!this.currentExercise) {
       // Update word
-      this.exerciseForm.patchValue({
-        genus: wordpairDetail[this.lanLocal].genus
-      });
+      if (wordpairDetail[this.lanLocal]) {
+        this.exerciseForm.patchValue({
+          genus: wordpairDetail[this.lanLocal].genus
+        });
+      }
     }
     console.log('selected', wordpairDetail);
   }
