@@ -1,11 +1,10 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
+import {CoreModule} from './core.module';
 import {RouterModule} from '@angular/router';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {routes} from './app.routes';
-
-import {AuthService} from './services/auth.service';
 
 import {AppComponent} from './components/app.component';
 import {MainMenuComponent} from './components/main-menu.component';
@@ -15,11 +14,10 @@ import {HomeComponent} from './components/home.component';
   imports: [
     BrowserModule,
     SharedModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    CoreModule.forRoot()
   ],
-  providers: [
-    AuthService
-  ],
+  providers: [],
   declarations: [
     AppComponent,
     MainMenuComponent,

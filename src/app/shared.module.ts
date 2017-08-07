@@ -37,8 +37,9 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
     HttpModule
   ]
 })
-export class SharedModule {static forRoot(): ModuleWithProviders {
-  return {
+export class SharedModule {
+  static forRoot(): ModuleWithProviders {
+    return {
       ngModule: SharedModule,
       providers: [
         UtilsService,

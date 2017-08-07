@@ -1,6 +1,9 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AuthService} from '../services/auth.service';
+import {UserService} from '../services/user.service';
+import {UtilsService} from '../services/utils.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {config} from '../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -22,13 +25,15 @@ export class AppComponent implements OnInit, OnDestroy {
   month: string;
 
   constructor (
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService,
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
-    this.getUserLan();
+    this.setUserLan();
   }
 
   private setBackgroundMonth() {
@@ -49,12 +54,31 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getUserLan() {
+  private setUserLan() {
     // If user is logged in, get from user settings
     // if not logged in or not in user settings, get from url parm
     // if not in url parm, get from navigator
+    let lan = null;
+
+    // if not in url parm, get from navigator
+    if (!lan) {
+      lan = this.validateLan(navigator.language.slice(0, 2));
+    }
     // if not in navigator, get from config
-    const lan = navigator.language;
+    lan = lan || config.language;
+    this.userService.setInterfaceLan(lan);
+    console.log('interface lan', lan);
+  }
+
+  private validateLan(lan: string): string {
+    const interfaceLanguages = this.utilsService.getActiveLanguages();
+    const acceptedLanguage = interfaceLanguages.find(language => language._id === lan);
+    console.log('acceptedLanguage', lan, acceptedLanguage, interfaceLanguages);
+    if (acceptedLanguage) {
+      return lan;
+    } else {
+      return null;
+    }
   }
 
   ngOnDestroy() {

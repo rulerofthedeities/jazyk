@@ -5,7 +5,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {routes} from './auth.routes';
 
-import {AuthService} from './services/auth.service';
 import {ValidationService} from './services/validation.service';
 
 import {SignUpComponent} from './components/auth/sign-up.component';
@@ -20,7 +19,6 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
     ReactiveFormsModule
   ],
   providers: [
-    AuthService,
     ValidationService
   ],
   declarations: [
