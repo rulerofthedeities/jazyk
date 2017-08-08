@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Http} from '@angular/http';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
@@ -23,6 +24,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService,
     private http: Http
   ) {}
@@ -48,6 +50,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   onSubmitForm(user: User) {
     console.log('submitting form', user);
+    user.lan = this.userService.user.lan;
     if (this.userForm.valid) {
       this.authService
       .signup(user)
@@ -58,7 +61,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
           .signin(user)
           .takeWhile(() => this.componentActive)
           .subscribe(
-            signInData => this.authService.signedIn(signInData),
+            signInData => {
+              this.authService.signedIn(signInData);
+              this.userService.user = signInData.user;
+            },
             error => this.errorService.handleError(error)
           );
         },

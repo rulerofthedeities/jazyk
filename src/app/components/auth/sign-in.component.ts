@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {ValidationService} from '../../services/validation.service';
 import {User} from '../../models/user.model';
 import {config} from '../../app.config';
@@ -24,6 +25,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -54,7 +56,10 @@ export class SignInComponent implements OnInit, OnDestroy {
       .signin(user)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        data => this.authService.signedIn(data),
+        data => {
+          this.authService.signedIn(data);
+          this.userService.user = data.user;
+        },
         error => this.errorService.handleError(error)
       );
     }

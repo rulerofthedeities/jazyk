@@ -71,6 +71,7 @@ module.exports.initialize = function(app, router) {
   /*** authenticated ***/
 
   router.patch('/user/refresh', users.refreshToken);
+  router.get('/user', users.getUser);
   
   app.use('/api/', router);
 

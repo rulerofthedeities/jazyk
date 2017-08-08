@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ErrorService} from '../services/error.service';
 import {UtilsService} from '../services/utils.service';
-import {config} from '../app.config';
+import {UserService} from '../services/user.service';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -15,16 +15,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
   ngOnInit() {
+    console.log('current user:', this.userService.user);
     this.getTranslations();
   }
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language, 'HomeComponent')
+    .fetchTranslations(this.userService.user.lan, 'HomeComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

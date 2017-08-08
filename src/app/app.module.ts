@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {routes} from './app.routes';
+import {UserResolver} from './resolves/user.resolver';
 
 import {AppComponent} from './components/app.component';
 import {MainMenuComponent} from './components/main-menu.component';
@@ -17,7 +18,9 @@ import {HomeComponent} from './components/home.component';
     RouterModule.forRoot(routes),
     CoreModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    UserResolver
+  ],
   declarations: [
     AppComponent,
     MainMenuComponent,

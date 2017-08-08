@@ -22,9 +22,7 @@ var addUser = function(body, callback) {
 };
 
 var findUser = function(body, expiresIn, callback) {
-  User.findOne({
-    email: body.email
-  }, function (err, doc) {
+  User.findOne({email: body.email}, {userName: 1, email: 1, password: 1, lan: 1}, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding user')
     }
@@ -35,9 +33,9 @@ var findUser = function(body, expiresIn, callback) {
         if (result !== true) {
           callback({error:'Incorrectpw'}, doc, 401, 'Sign in failed');
         } else {
-          doc.password = null;
+          doc.password = undefined;
           var token = jwt.sign({user: doc}, process.env.JWT_TOKEN_SECRET, {expiresIn: expiresIn});
-          callback(null, {message: 'Success', token: token});
+          callback(null, {message: 'Success', token: token, user: doc});
         }
       });
     }
@@ -55,6 +53,12 @@ var isUniqueUser = function(options, callback) {
   console.log('checking unique username');
   User.findOne({userName:options.user}, function(err, doc) {
     callback(err, doc !== null);
+  });
+}
+
+var getUserData = function(userId, callback) {
+  User.findOne({_id: userId}, {userName: 1, lan: 1}, function(err, doc) {
+    callback(err, doc);
   });
 }
 
@@ -91,6 +95,14 @@ module.exports = {
         });
       })
     }
+  },
+  getUser: function(req, res) {
+    var userId = req.decoded.user._id;
+    getUserData(userId, function(err, doc) {
+      response.handleError(err, res, 500, 'Error getting user data for user with id"' + userId + '"', function(){
+        response.handleSuccess(res, doc, 200, 'Fetched user data');
+      });
+    })
   },
   refreshToken: function(req, res) {
     var payload = req.decoded;

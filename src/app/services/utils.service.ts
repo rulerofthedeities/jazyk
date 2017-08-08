@@ -10,19 +10,10 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class UtilsService {
-  private singleton = 1;
 
   constructor(
     private http: Http
   ) {}
-
-  getSingleton(): number {
-    return this.singleton;
-  }
-
-  addToSingleton(s: number) {
-    this.singleton += s;
-  }
 
   fetchTranslations(lan: string, component: string) {
     return this.http

@@ -2,14 +2,20 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {User} from '../models/user.model';
 import {tokenNotExpired} from 'angular2-jwt';
 import {JwtHelper} from 'angular2-jwt';
+import {User} from '../models/user.model';
 
 interface UserStorage {
   token: string;
   userId: string;
   userName: string;
+}
+
+interface SignedInData {
+  message: string;
+  token: string;
+  user: User;
 }
 
 @Injectable()
@@ -39,7 +45,7 @@ export class AuthService {
     .catch(error => Observable.throw(error.json()));
   }
 
-  signedIn(data: any) {
+  signedIn(data: SignedInData) {
     console.log('Signed in', data);
     const decoded = this.jwtHelper.decodeToken(data.token);
     const userStorage: UserStorage = {
@@ -81,6 +87,10 @@ export class AuthService {
     }
   }
 
+  getToken(): string {
+    return localStorage.getItem('km-jazyk.token');
+  }
+
   private refreshToken() {
     const token = this.getToken(),
           headers = new Headers();
@@ -90,10 +100,6 @@ export class AuthService {
     .patch('/api/user/refresh', {}, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
-  }
-
-  private getToken(): string {
-    return localStorage.getItem('km-jazyk.token');
   }
 
   private storeUserData(data: UserStorage) {
