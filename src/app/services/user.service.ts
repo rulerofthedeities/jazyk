@@ -3,11 +3,12 @@ import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
 import {User} from '../models/user.model';
-import {Language} from '../models/course.model';
+import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 
@@ -34,7 +35,14 @@ export class UserService {
         return this.http
         .get('/api/user', {headers})
         .map(response => response.json().obj)
-        .do(data => this._user = data)
+        .do(data => {
+          this._user = data;
+          console.log('new user data from server', this._user);
+          if (!data) {
+            // user not found, get default user data
+            return this.getDefaultUserData(null);
+          }
+        })
         .catch(error => Observable.throw(error));
       } else {
         return this.getDefaultUserData(null);
@@ -55,19 +63,40 @@ export class UserService {
     return Observable.of(user);
   }
 
+  subscribeToCourse(course: Course) {
+    // Check if there is a loggedin user
+    if (this.authService.isLoggedIn() && this._user && this._user.userName !== 'anonymous') {
+      console.log('subscribing to course', course);
+      // subscribe + set learn language
+      const token = this.authService.getToken(),
+            headers = new Headers(),
+            data = JSON.stringify({courseId: course._id, lan: course.languagePair.to});
+      headers.append('Content-Type', 'application/json');
+      headers.append('Authorization', 'Bearer ' + token);
+      this.http
+      .patch('/api/user/subscribe', data, {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error))
+      .toPromise(); // not lazy
+      // Add to cached user data
+      this._user.jazyk.learnLan = course.languagePair.to;
+      const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
+      if (courses.length < 1) {
+        this._user.jazyk.courses.push(course._id);
+      }
+      console.log('updated user', this._user);
+    }
+  }
+
   private getUserLan(queryLan: string): string {
     // User is not logged in, or no lan data -> get lan from url parm
     let lan = this.validateLan(queryLan);
-    console.log('1. querylan', lan);
     // if not in url parm, get from navigator
     if (!lan) {
       lan = this.validateLan(navigator.language.slice(0, 2));
     }
-    console.log('2. navlan', lan);
     // if not in navigator, get from config
     lan = lan || config.language;
-    console.log('3. configlan', lan);
-    console.log('interface lan', lan);
     return lan;
   }
 

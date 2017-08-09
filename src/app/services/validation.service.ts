@@ -35,7 +35,7 @@ export class ValidationService {
 
 
   static userNameValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/)) {
+    if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
       return null;
     } else {
       return {'invalidUserName': true};

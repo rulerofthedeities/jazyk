@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Course} from '../../models/course.model';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'km-learn-course-summary',
@@ -16,7 +17,8 @@ export class LearnCourseSummaryComponent implements OnInit {
   leds: number[];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -26,13 +28,14 @@ export class LearnCourseSummaryComponent implements OnInit {
     this.setDifficulty();
   }
 
-  onEditCourse(courseId: string) {
-    this.router.navigate(['/build/course/' + courseId]);
+  onEditCourse() {
+    this.router.navigate(['/build/course/' + this.course._id]);
   }
 
-  onStartCourse(courseId: string) {
-    this.subscribeToCourse(courseId);
-    this.router.navigate(['/learn/course/' + courseId]);
+  onStartCourse() {
+    console.log('starting course', this.course);
+    this.userService.subscribeToCourse(this.course);
+    this.router.navigate(['/learn/course/' + this.course._id]);
   }
 
   setDifficulty() {
@@ -42,9 +45,5 @@ export class LearnCourseSummaryComponent implements OnInit {
     }
     this.leds = this.allLeds.slice(0, difficulty);
     return difficulty;
-  }
-
-  private subscribeToCourse(courseId: string) {
-    // TODO: Subscribe to course if not anonymous
   }
 }

@@ -7,7 +7,8 @@ var profileSchema = new Schema({
 }, {_id : false});
 
 var appSchema = new Schema({
-
+  learnLan: {type: String, required: true},
+  courses: [String]
 }, {_id : false});
 
 var userSchema = new Schema({
@@ -15,9 +16,9 @@ var userSchema = new Schema({
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   lan: {type: String, required: true},
-  jazyk: {type: appSchema},
-  vocabulator: {type: appSchema},
-  grammator: {type: appSchema}
+  jazyk: appSchema,
+  vocabulator: appSchema,
+  grammator: appSchema
 });
 
 userSchema.plugin(mongooseUniqueValidator);

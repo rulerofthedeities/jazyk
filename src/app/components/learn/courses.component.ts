@@ -51,16 +51,17 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
 
   private getLanguages() {
     this.languages = this.utilsService.getActiveLanguages();
-    // Get language currently learning
-    /*
+    let learnLan: Language;
     if (this.userService.user.jazyk) {
-
+      // Get language currently learning
+      const userLan = this.userService.user.jazyk.learnLan;
+      learnLan = this.languages.find(lan => lan._id === userLan);
     }
-    console.log('lan', this.userService.user.lan, this.languages);
-    const language = this.languages.find(lan => lan._id === this.userService.user.lan);
-    console.log('language', language);
-    */
-    this.selectedLanguage = this.languages[0];
+    if (!learnLan) {
+      // Get default language
+      learnLan = this.languages[0];
+    }
+    this.selectedLanguage = learnLan;
   }
 
   private getTranslations() {

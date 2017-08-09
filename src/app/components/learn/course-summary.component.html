@@ -12,11 +12,11 @@
       </h3>
       <button class="btn btn-success"
         [class.disabled]="!course.isPublished"
-        (click)="onStartCourse(course._id)">
+        (click)="onStartCourse()">
         {{text["startcourse"]}}
       </button>
       <button class="btn btn-warning"
-        (click)="onEditCourse(course._id)">
+        (click)="onEditCourse()">
         {{text["updatecourse"]}}
       </button>
       <div class="info">

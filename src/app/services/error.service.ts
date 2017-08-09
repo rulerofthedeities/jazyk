@@ -12,12 +12,14 @@ export class ErrorService {
   ) {}
 
   handleError(error: any) {
+    console.log('error', error);
     let msg = 'unknown error message',
         title = 'error';
     if (error) {
       title = error.title || title;
+      msg = error.message;
       if (error.error) {
-        msg = error.error.error || msg;
+        msg = error.error.error || error.error.message || msg;
       }
     }
     this.errorOccurred.emit({title, msg});

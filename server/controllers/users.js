@@ -6,23 +6,26 @@ const response = require('../response'),
 
 var addUser = function(body, callback) {
   const key = body.password;
+  console.log('adding', body);
   scrypt.kdf(key, {N: 1, r:1, p:1}, function(err, hash) {
     const user = new User({
           userName: body.userName,
           password: hash.toString('base64'),
           email: body.email,
-          jazyk: {},
-          vocabulator: {},
-          grammator: {}
+          lan: body.lan,
+          jazyk: {learnLan: body.jazyk.learnLan},
+          vocabulator: {learnLan: body.vocabulator.learnLan},
+          grammator: {learnLan: body.grammator.learnLan}
         });
     user.save(function(err, result) {
+      console.log('saved', err, result);
       callback(err, result);
     });
   });
 };
 
 var findUser = function(body, expiresIn, callback) {
-  User.findOne({email: body.email}, {userName: 1, email: 1, password: 1, lan: 1}, function (err, doc) {
+  User.findOne({email: body.email}, {userName: 1, email: 1, password: 1, lan: 1, jazyk: 1}, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding user')
     }
@@ -31,7 +34,7 @@ var findUser = function(body, expiresIn, callback) {
     } else {
       scrypt.verifyKdf(new Buffer(doc.password, 'base64'), body.password, function(err, result) {
         if (result !== true) {
-          callback({error:'Incorrectpw'}, doc, 401, 'Sign in failed');
+          callback({error: 'Incorrectpw'}, doc, 401, 'Sign in failed');
         } else {
           doc.password = undefined;
           var token = jwt.sign({user: doc}, process.env.JWT_TOKEN_SECRET, {expiresIn: expiresIn});
@@ -44,20 +47,20 @@ var findUser = function(body, expiresIn, callback) {
 
 var isUniqueEmail = function(options, callback) {
   console.log('checking unique email');
-  User.findOne({email:options.mail}, function(err, doc) {
+  User.findOne({email: options.mail}, function(err, doc) {
     callback(err, doc !== null);
   });
 }
 
 var isUniqueUser = function(options, callback) {
   console.log('checking unique username');
-  User.findOne({userName:options.user}, function(err, doc) {
+  User.findOne({userName: options.user}, function(err, doc) {
     callback(err, doc !== null);
   });
 }
 
 var getUserData = function(userId, callback) {
-  User.findOne({_id: userId}, {userName: 1, lan: 1}, function(err, doc) {
+  User.findOne({_id: userId}, {userName: 1, lan: 1, jazyk: 1}, function(err, doc) {
     callback(err, doc);
   });
 }
@@ -68,7 +71,6 @@ module.exports = {
     addUser(req.body, function(err, doc) {
       response.handleError(err, res, 500, 'Error creating new user', function(){
         response.handleSuccess(res, doc, 200, 'Created new user');
-        settings.create(doc.insertedIds[0]);
       });
     });
   },
@@ -103,6 +105,30 @@ module.exports = {
         response.handleSuccess(res, doc, 200, 'Fetched user data');
       });
     })
+  },
+  subscribe: function(req, res) {
+    var userId = req.decoded.user._id;
+    var data = req.body;
+    console.log('subscribe', data);
+    var updateObj = {};
+
+    if (data) {
+      if (data.lan) {
+        updateObj['$set'] = {'jazyk.learnLan': data.lan}
+      }
+      if (data.courseId) {
+        updateObj['$addToSet'] = {'jazyk.courses': data.courseId}
+      }
+    }
+
+    console.log(updateObj);
+
+    User.findOneAndUpdate(
+      {_id: userId}, updateObj, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating user', function(){
+        response.handleSuccess(res, result, 200, 'Updated user');
+      });
+    });
   },
   refreshToken: function(req, res) {
     var payload = req.decoded;
