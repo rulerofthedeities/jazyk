@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('current user:', this.userService.user);
     this.getTranslations();
   }
 

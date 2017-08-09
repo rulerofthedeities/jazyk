@@ -8,6 +8,7 @@ import {routes} from './app.routes';
 import {UserResolver} from './resolves/user.resolver';
 
 import {AppComponent} from './components/app.component';
+import {BaseComponent} from './components/base.component';
 import {MainMenuComponent} from './components/main-menu.component';
 import {HomeComponent} from './components/home.component';
 
@@ -23,6 +24,7 @@ import {HomeComponent} from './components/home.component';
   ],
   declarations: [
     AppComponent,
+    BaseComponent,
     MainMenuComponent,
     HomeComponent
   ],

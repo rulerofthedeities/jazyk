@@ -15,9 +15,12 @@ export class UserResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> {
+    console.log('resolver');
     if (this.authService.isLoggedIn()) {
+      console.log('resolver logged in');
       return this.userService.getUserData();
     } else {
+      console.log('resolver not logged in');
       return this.userService.getDefaultUserData(state.root.queryParams['lan']);
     }
 

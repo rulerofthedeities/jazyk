@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {UtilsService} from '../services/utils.service';
+import {UserService} from '../services/user.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
 import {Translation} from '../models/course.model';
-import {config} from '../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -43,6 +43,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private utilsService: UtilsService,
+    private userService: UserService,
     private authService: AuthService,
     private errorService: ErrorService
   ) {}
@@ -60,10 +61,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  private setText(translations: Translation[]) {
-    this.text = this.utilsService.getTranslatedText(translations);
-  }
-
   private getUrl() {
     this.router.events
     .takeWhile(() => this.componentActive)
@@ -73,12 +70,11 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    const lan = config.language.slice(0, 2);
     this.utilsService
-    .fetchTranslations(lan, 'MainMenuComponent')
+    .fetchTranslations(this.userService.user.lan, 'MainMenuComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
-      translations => this.setText(translations),
+      translations => this.text = this.utilsService.getTranslatedText(translations),
       error => this.errorService.handleError(error)
     );
   }
