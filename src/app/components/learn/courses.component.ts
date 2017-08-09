@@ -3,8 +3,8 @@ import {Router} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {Course, Language, Translation} from '../../models/course.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -31,14 +31,13 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     private router: Router,
     private learnService: LearnService,
     private errorService: ErrorService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
     this.getTranslations();
-    this.languages = this.utilsService.getActiveLanguages();
-    // TODO: get language for user from settings
-    this.selectedLanguage = this.languages[0];
+    this.getLanguages();
   }
 
   onLanguageSelected(newLanguage: Language) {
@@ -50,19 +49,28 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/build/course/new', {lan: this.selectedLanguage._id}]);
   }
 
-  private setText(translations: Translation[]) {
-    this.text = this.utilsService.getTranslatedText(translations);
+  private getLanguages() {
+    this.languages = this.utilsService.getActiveLanguages();
+    // Get language currently learning
+    /*
+    if (this.userService.user.jazyk) {
+
+    }
+    console.log('lan', this.userService.user.lan, this.languages);
+    const language = this.languages.find(lan => lan._id === this.userService.user.lan);
+    console.log('language', language);
+    */
+    this.selectedLanguage = this.languages[0];
   }
 
   private getTranslations() {
-    const lan = config.language;
     this.utilsService
-    .fetchTranslations(lan, 'CoursesComponent')
+    .fetchTranslations(this.userService.user.lan, 'CoursesComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
         this.getCourses();
-        this.setText(translations);
+        this.text = this.utilsService.getTranslatedText(translations);
       },
       error => this.errorService.handleError(error)
     );

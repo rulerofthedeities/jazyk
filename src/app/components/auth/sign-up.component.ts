@@ -6,7 +6,6 @@ import {UserService} from '../../services/user.service';
 import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
-import {config} from '../../app.config';
 import {User} from '../../models/user.model';
 
 @Component({
@@ -83,7 +82,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language, 'AuthComponent')
+    .fetchTranslations(this.userService.user.lan, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

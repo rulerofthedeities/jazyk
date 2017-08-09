@@ -6,7 +6,6 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ValidationService} from '../../services/validation.service';
 import {User} from '../../models/user.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -74,7 +73,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language, 'AuthComponent')
+    .fetchTranslations(this.userService.user.lan, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

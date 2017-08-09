@@ -1,8 +1,8 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Error} from '../../models/error.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -28,7 +28,8 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
 
   constructor(
     private utilsService: UtilsService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private userService: UserService,
   ) {}
 
   ngOnInit() {
@@ -52,7 +53,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   }
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language, 'ErrorComponent')
+    .fetchTranslations(this.userService.user.lan, 'ErrorComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

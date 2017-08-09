@@ -3,8 +3,8 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {Course, Lesson, LessonId, Language, Translation} from '../../models/course.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -30,7 +30,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private buildService: BuildService,
     private errorService: ErrorService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -183,7 +184,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(config.language, 'CourseComponent')
+    .fetchTranslations(this.userService.user.lan, 'CourseComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

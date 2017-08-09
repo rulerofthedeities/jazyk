@@ -2,9 +2,9 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angula
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language} from '../../models/course.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -40,6 +40,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private buildService: BuildService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -85,14 +86,15 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   private createNewCourse() {
+    const userLan = this.userService.user.lan;
     this.course = {
       _id: '',
       languagePair: {
-        from: config.language,
+        from: userLan,
         to: this.currentLanguage._id
       },
       name: '',
-      image: config.language + '-' + this.currentLanguage._id + '-course1.jpg', // temporary
+      image: userLan + '-' + this.currentLanguage._id + '-course1.jpg', // temporary
       attendance: 0,
       difficulty: 0,
       isPublic: true,

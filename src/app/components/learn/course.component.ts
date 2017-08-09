@@ -2,10 +2,10 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
 import {Exercise, LearnSettings} from '../../models/exercise.model';
-import {config} from '../../app.config';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -36,6 +36,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     private router: Router,
     private learnService: LearnService,
     private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -83,9 +84,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    const lan = config.language;
     this.utilsService
-    .fetchTranslations(lan, 'LearnComponent')
+    .fetchTranslations(this.userService.user.lan, 'LearnComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

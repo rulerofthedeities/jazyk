@@ -2,7 +2,6 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Error, UserError} from '../models/error.model';
 import {Observable} from 'rxjs/Observable';
-import {config} from '../app.config';
 
 @Injectable()
 export class ErrorService {
@@ -39,7 +38,7 @@ export class ErrorService {
   }
 
   private getErrorMessage(errorCode: string): string {
-    const lan = config.language;
+    const lan = 'en';
     const messages = {
       jazyk00 : {
         'nl': 'Fout: Ongekende foutcode (' + errorCode + ')',
@@ -54,16 +53,16 @@ export class ErrorService {
     };
     let msg = 'unknown error';
     if (messages[errorCode]) {
-      msg = messages[errorCode][lan] || messages[errorCode]['en-en'];
+      msg = messages[errorCode][lan] || messages[errorCode]['en'];
     } else if (messages['jazyk00'][lan]) {
-      msg = messages['jazyk00'][lan] || messages['jazyk00']['en-en'];
+      msg = messages['jazyk00'][lan] || messages['jazyk00']['en'];
     }
     return msg;
   }
 
   private logError(err: UserError) {
     console.log('logging', err);
-    err.module = config.language;
+    err.module = 'en';
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
     .post('/api/error', JSON.stringify(err), {headers})
