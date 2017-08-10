@@ -50,6 +50,21 @@ export class UserService {
     }
   }
 
+  getUserLearnLanguage(languages: Language[]): Language {
+    let learnLan: Language;
+    if (this._user.jazyk) {
+      // Get language currently learning
+      const userLan = this._user.jazyk.learnLan;
+      learnLan = languages.find(lan => lan._id === userLan);
+    }
+    if (!learnLan) {
+      // Get default language
+      learnLan = languages[0];
+    }
+
+    return learnLan;
+  }
+
   getDefaultUserData(queryLan: string) {
     const interfaceLan = this.getUserLan(queryLan);
     const user: User = {
@@ -81,7 +96,7 @@ export class UserService {
       // Add to cached user data
       this._user.jazyk.learnLan = course.languagePair.to;
       const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
-      if (courses.length < 1) {
+      if (!courses) {
         this._user.jazyk.courses.push(course._id);
       }
       console.log('updated user', this._user);

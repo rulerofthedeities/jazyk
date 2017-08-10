@@ -4,14 +4,15 @@ import {Course} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 
 @Component({
-  selector: 'km-learn-course-summary',
-  templateUrl: 'course-summary.component.html',
+  selector: 'km-learn-course-user',
+  templateUrl: 'course-user.component.html',
   styleUrls: ['course-summary.component.css']
 })
 
-export class LearnCourseSummaryComponent implements OnInit {
+export class LearnCourseUserComponent implements OnInit {
   @Input() course: Course;
   @Input() text: {};
+  percDone = 0;
   leds: number[];
 
   constructor(
@@ -20,16 +21,14 @@ export class LearnCourseSummaryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.course.exercisesDone) {
+      this.percDone = Math.trunc(this.course.exercisesDone / this.course.exerciseCount);
+    }
     this.setDifficulty();
   }
 
-  onEditCourse() {
-    this.router.navigate(['/build/course/' + this.course._id]);
-  }
-
-  onStartCourse() {
-    console.log('starting course', this.course);
-    this.userService.subscribeToCourse(this.course);
+  onContinueCourse() {
+    console.log('continuing course', this.course);
     this.router.navigate(['/learn/course/' + this.course._id]);
   }
 

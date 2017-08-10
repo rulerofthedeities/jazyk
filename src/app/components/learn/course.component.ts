@@ -75,7 +75,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onSettingsUpdated(settings: LearnSettings) {
-    console.log('settings updated 2', settings);
     this.settings = settings;
   }
 

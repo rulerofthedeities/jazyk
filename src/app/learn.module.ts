@@ -8,8 +8,10 @@ import {LearnService} from './services/learn.service';
 import {TimeService} from './services/time.service';
 
 import {LearnCoursesComponent} from './components/learn/courses.component';
+import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
 import {LearnCourseComponent} from './components/learn/course.component';
 import {LearnCourseSummaryComponent} from './components/learn/course-summary.component';
+import {LearnCourseUserComponent} from './components/learn/course-user.component';
 import {LearnStudyComponent} from './components/learn/step-study.component';
 import {LearnPractiseComponent} from './components/learn/step-practise.component';
 import {LearnTestComponent} from './components/learn/step-test.component';
@@ -35,7 +37,9 @@ import {WordColorDirective} from './directives/word-color.directive';
   ],
   declarations: [
     LearnCoursesComponent,
+    LearnCoursesUserComponent,
     LearnCourseSummaryComponent,
+    LearnCourseUserComponent,
     LearnCourseComponent,
     LearnStudyComponent,
     LearnPractiseComponent,

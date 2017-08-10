@@ -4,20 +4,11 @@
       <img src="/assets/img/courses/{{course.image}}">
     </div>
     <div class="course">
-      <h3>{{course.name}}
-        <span class="icons">
-          <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
-          <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
-        </span>
-      </h3>
+      <h3>{{course.name}}</h3>
       <button class="btn btn-success"
         [class.disabled]="!course.isPublished"
-        (click)="onStartCourse()">
-        {{text["startcourse"]}}
-      </button>
-      <button class="btn btn-warning"
-        (click)="onEditCourse()">
-        {{text["updatecourse"]}}
+        (click)="onContinueCourse()">
+        {{text["continuecourse"]}}
       </button>
       <div class="info">
         <div>{{course.exerciseCount || 0}} {{course.exerciseCount === 1 ? text["word"] : text["words"]}}</div>
@@ -28,6 +19,19 @@
           </div>
         </div>
       </div>
+      <div class="progress">
+        <div 
+          class="progress-bar progress-bar-striped" 
+          role="progressbar" 
+          [attr.aria-valuenow]="course.exercisesDone"
+          aria-valuemin="0"
+          [attr.aria-valuemax]="course.exerciseCount" 
+          [style.width.%]="percDone">
+          <span>
+            {{course.exercisesDone}}/{{course.exerciseCount}} ({{percDone}}%)
+          </span>
+        </div>
+      </div> 
     </div>
   </div>
 </div>

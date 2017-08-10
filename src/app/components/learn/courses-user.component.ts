@@ -8,11 +8,11 @@ import {Course, Language, Translation} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  templateUrl: 'courses.component.html',
+  templateUrl: 'courses-user.component.html',
   styleUrls: ['courses.component.css']
 })
 
-export class LearnCoursesComponent implements OnInit, OnDestroy {
+export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];
@@ -30,20 +30,11 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getTranslations();
     this.getLanguages();
+    this.getCourses();
   }
 
   onLanguageSelected(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
-    this.getCourses();
-  }
-
-  onNewCourse() {
-    this.router.navigate(['/build/course/new', {lan: this.selectedLanguage._id}]);
-  }
-
-  private getLanguages() {
-    this.languages = this.utilsService.getActiveLanguages();
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
   }
 
   private getTranslations() {
@@ -57,6 +48,11 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private getLanguages() {
+    this.languages = this.utilsService.getActiveLanguages();
+    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
   }
 
   private getCourses() {
