@@ -28,6 +28,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private minNrOfChoices = 4;
   private choicesForeign: string[];
   private choicesLocal: string[];
+  private startDate: Date;
+  private endDate: Date;
   subscription: Subscription;
   isPractiseDone = false;
   exerciseData: ExerciseData[];
@@ -134,7 +136,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     );
   }
 
-
   private nextWord() {
     this.clearData();
     this.current += 1;
@@ -148,6 +149,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.setChoices();
     }
     this.isQuestionReady = true;
+    this.startDate = new Date();
   }
 
   private restart() {
@@ -208,13 +210,16 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const direction = this.currentData.data.direction;
     const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
 
+    this.endDate = new Date();
     this.currentData.data.isDone = true;
     if (choice === word) {
       this.currentData.data.isCorrect = true;
+      this.currentData.data.grade = this.calculateGrade();
       this.score = this.score + 2 + this.currentChoices.length * 3;
       this.timeNext(0.6);
     } else {
       this.currentData.data.isCorrect = false;
+      this.currentData.data.grade = 0;
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
         if (item === word) {
@@ -236,6 +241,22 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
     this.exerciseData.push(newExerciseData);
+  }
+
+  private calculateGrade(): number {
+    // 5 = correct and fast
+    // 4 = correct and not fast
+    // 3 = correct and slow
+    let grade = 3;
+    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    if (delta <= 30) {
+      grade = 5;
+    } else if (delta < 60) {
+      grade = 4;
+    }
+    console.log('time/grade', delta, grade);
+
+    return grade;
   }
 
   private timeNext(secs: number) {

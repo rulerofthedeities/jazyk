@@ -105,6 +105,7 @@ export class UserService {
   }
 
   private saveResults(data: string) {
+    // must be idempotent?
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -129,15 +130,15 @@ export class UserService {
   }
 
   private updateUserCache(course: Course) {
-      // Add subscription + learn language to cached user data
-      this._user.jazyk.learnLan = course.languagePair.to;
-      if (this.user.jazyk.courses) {
-        const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
-        if (!courses) {
-          this._user.jazyk.courses.push(course._id);
-        }
-        console.log('updated user', this._user);
+    // Add subscription + learn language to cached user data
+    this._user.jazyk.learnLan = course.languagePair.to;
+    if (this.user.jazyk.courses) {
+      const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
+      if (!courses) {
+        this._user.jazyk.courses.push(course._id);
       }
+      console.log('updated user', this._user);
+    }
   }
 
   private getUserLan(queryLan: string): string {

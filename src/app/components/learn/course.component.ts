@@ -145,13 +145,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     console.log('course', this.course._id);
-    // check if user is logged in
-    // save course id + exercise id + user id
-    // must be idempotent?
-    // for study, set flag studyDone
-    // string with 0's or 1's for practise / test??
-    // check algorithm to see what other data is required
-    // http://www.blueraja.com/blog/477/a-better-spaced-repetition-learning-algorithm-sm2
 
     const result = {
       courseId: this.course._id,

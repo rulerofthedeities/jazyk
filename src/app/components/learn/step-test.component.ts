@@ -23,6 +23,8 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
+  private startDate: Date;
+  private endDate: Date;
   isTestDone = false;
   isAnswered = false;
   exerciseData: ExerciseData[];
@@ -89,6 +91,8 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     }
     if (!this.isTestDone) {
       this.currentData = this.exerciseData[this.current];
+      this.isQuestionReady = true;
+      this.startDate = new Date();
     }
   }
 
@@ -110,6 +114,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     const filteredAnswer = this.filter(answer);
     if (filteredAnswer) {
       this.isAnswered = true;
+      this.endDate = new Date();
       this.currentData.data.isDone = true;
       const solution = this.currentData.exercise.foreign.word;
       const filteredSolution = this.filter(solution);
@@ -117,6 +122,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
       if (filteredAnswer === filteredSolution) {
         // Correct answer
         this.isCorrect = true;
+        this.currentData.data.grade = this.calculateGrade(0, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
@@ -126,6 +132,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // Alternative answer (synonym)
         this.isCorrect = true;
         this.solution = solution;
+        this.currentData.data.grade = this.calculateGrade(1, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = true;
@@ -133,6 +140,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // this.timeNext(2);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
+        this.currentData.data.grade = 1;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = true;
         this.currentData.data.isAlt = false;
@@ -144,6 +152,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         }
       } else {
         // Incorrect answer
+        this.currentData.data.grade = 0;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
@@ -191,8 +200,24 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    this.isQuestionReady = true;
     this.nextWord();
+  }
+
+  private calculateGrade(deduction: number, solution: string): number {
+    // 5 = correct and fast
+    // 4 = correct and not fast
+    // 3 = correct and slow
+    let grade = 3;
+    const wordLength = solution.length;
+    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    if (delta <= wordLength * 18) {
+      grade = 5;
+    } else if (delta < wordLength * 36) {
+      grade = 4;
+    }
+    console.log('time/grade', delta, wordLength * 18, wordLength * 36, grade);
+
+    return grade;
   }
 
   private timeNext(secs: number) {

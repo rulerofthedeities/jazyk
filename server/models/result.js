@@ -5,7 +5,8 @@ var resultSchema = new Schema({
   courseId: Schema.Types.ObjectId,
   userId: Schema.Types.ObjectId,
   exerciseId: Schema.Types.ObjectId,
-  study: Boolean
+  study: Boolean,
+  dtCreated: Date
 });
 
 resultSchema.index({userId: 1, courseId: 1, exerciseId: 1}); 

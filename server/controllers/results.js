@@ -18,11 +18,16 @@ module.exports = {
             courseId,
             exerciseId,
           },
-          update: {$set:{
-            userId,
-            courseId,
-            exerciseId,
-            study: result.result}
+          update: {
+            $set: {
+              userId,
+              courseId,
+              exerciseId,
+              study: result.result
+            },
+            $setOnInsert: {
+              dtCreated: new Date()
+            }
           },
           upsert: true
         }
