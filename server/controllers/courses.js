@@ -1,14 +1,33 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Course = require('../models/course');
+      Course = require('../models/course'),
+      User = require('../models/user');
 
 
 module.exports = {
-  getAllCourses: function(req, res) {
+  getLanCourses: function(req, res) {
     const languageId = req.params.lan;
     Course.find({'languagePair.to': languageId}, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched courses');
+      });
+    });
+  },
+  getUserCourses: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.params.id);
+    // Find all courseIds for this user
+    User.findOne({_id: userId}, {_id: 0, 'jazyk.courses': 1}, function(err, doc) {
+      response.handleError(err, res, 500, 'Error fetching user courses for user "' + req.params.id + '"', function(){
+        let courseIds = null;
+        if (doc && doc.jazyk) {
+          courseIds = doc.jazyk.courses;
+        }
+        //Get all courses for the courseIds
+        Course.find({_id: {$in: courseIds}}, {}, function(err, courses) {
+          response.handleError(err, res, 500, 'Error fetching user courses', function(){
+            response.handleSuccess(res, courses, 200, 'Fetched user courses');
+          });
+        });
       });
     });
   },

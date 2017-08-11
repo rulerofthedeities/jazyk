@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
-import {Exercise, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, LearnSettings} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -70,8 +70,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onStepCompleted(step: string) {
+  onStepCompleted(step: string, data: ExerciseData[]) {
     this.stepCompleted[step] = true;
+    this.saveAnswers(step, data);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -139,6 +140,44 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.steps = steps;
+  }
+
+  private saveAnswers(step: string, data: ExerciseData[]) {
+    console.log('saving answers', step, data);
+    console.log('course', this.course._id);
+    // check if user is logged in
+    // save course id + exercise id + user id
+    // must be idempotent?
+    // for study, set flag studyDone
+    // string with 0's or 1's for practise / test??
+    // check algorithm to see what other data is required
+    // http://www.blueraja.com/blog/477/a-better-spaced-repetition-learning-algorithm-sm2
+
+    const result = {
+      courseId: this.course._id,
+      userId: this.userService.user._id,
+      step,
+      data: []
+    };
+    data.forEach(item => {
+      result.data.push({
+        exerciseId: item.exercise._id,
+        result: item.data.isDone
+      });
+    });
+    console.log('result:', result);
+    this.userService
+    .saveUserResults(JSON.stringify(result))
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      userResult => {
+        console.log('saved result', userResult);
+        if (userResult) {
+
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

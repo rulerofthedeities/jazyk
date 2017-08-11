@@ -33,7 +33,7 @@
     [options]="lesson?.exerciseTpes.study"
     [settings]="settings"
     (skipStep)="onSkipStep()"
-    (stepCompleted)="onStepCompleted('study')"
+    (stepCompleted)="onStepCompleted('study', $event)"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-study>
@@ -44,7 +44,7 @@
     [lessonId]="lesson?._id"
     [text]="text"
     [settings]="settings"
-    (stepCompleted)="onStepCompleted('practise')"
+    (stepCompleted)="onStepCompleted('practise', $event)"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
@@ -54,7 +54,7 @@
     [options]="lesson?.exerciseTpes.test"
     [text]="text"
     [settings]="settings"
-    (stepCompleted)="onStepCompleted('test')"
+    (stepCompleted)="onStepCompleted('test', $event)"
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-test>

@@ -40,31 +40,26 @@ export class LearnCompletedListComponent implements OnInit {
   results: Result[] = [];
 
   ngOnInit() {
-    // filter only those answered < 1
-    // for each direction, store if correct
-    // Only show one direction
+    // show only 1 result per word
     let result: Result;
-    console.log('result0', this.data);
     this.data.forEach(exerciseData => {
-      // if (exerciseData.data.answered < 1) {
-        // Check if this exercise is already in results
-        result = this.results.find(existingResult => existingResult.exercise.exercise.foreign.word === exerciseData.exercise.foreign.word);
-        console.log('result1', result);
-        if (!result) {
-          result = {
-            exercise: exerciseData,
-            isCorrect: exerciseData.data.isCorrect,
-            isAlt: exerciseData.data.isAlt,
-            isAlmostCorrect: exerciseData.data.isAlmostCorrect
-          };
-          this.results.push(result);
-        } else {
-          result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
-          result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
-          result.isAlmostCorrect = exerciseData.data.isCorrect ? (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
-          console.log('result', exerciseData, result);
-        }
-      // }
+      // Check if this exercise is already in results
+      result = this.results.find(existingResult => existingResult.exercise.exercise.foreign.word === exerciseData.exercise.foreign.word);
+      if (!result) {
+        result = {
+          exercise: exerciseData,
+          isCorrect: exerciseData.data.isCorrect,
+          isAlt: exerciseData.data.isAlt,
+          isAlmostCorrect: exerciseData.data.isAlmostCorrect
+        };
+        this.results.push(result);
+      } else {
+        result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
+        result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
+        result.isAlmostCorrect = exerciseData.data.isCorrect ?
+          (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
+        console.log('result', exerciseData, result);
+      }
     });
   }
 }

@@ -20,7 +20,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() options: ExerciseTpe;
   @Input() lessonId: string;
   @Input() settings: LearnSettings;
-  @Output() stepCompleted = new EventEmitter();
+  @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
   private isWordsDone =  false; // true once words are done once
@@ -141,7 +141,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (this.current >= this.exerciseData.length) {
       this.isPractiseDone = true;
       this.isWordsDone = true;
-      this.stepCompleted.emit();
+      this.stepCompleted.emit(this.exerciseData);
     }
     if (!this.isPractiseDone) {
       this.currentData = this.exerciseData[this.current];

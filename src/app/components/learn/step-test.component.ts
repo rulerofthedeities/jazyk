@@ -19,7 +19,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() options: ExerciseTpe;
   @Input() text: Object;
   @Input() settings: LearnSettings;
-  @Output() stepCompleted = new EventEmitter();
+  @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
@@ -85,7 +85,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     this.current += 1;
     if (this.current >= this.exerciseData.length) {
       this.isTestDone = true;
-      this.stepCompleted.emit();
+      this.stepCompleted.emit(this.exerciseData);
     }
     if (!this.isTestDone) {
       this.currentData = this.exerciseData[this.current];

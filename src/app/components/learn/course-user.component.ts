@@ -28,7 +28,7 @@ export class LearnCourseUserComponent implements OnInit {
   }
 
   onContinueCourse() {
-    console.log('continuing course', this.course);
+    this.userService.continueCourse(this.course);
     this.router.navigate(['/learn/course/' + this.course._id]);
   }
 

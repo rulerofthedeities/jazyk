@@ -25,7 +25,7 @@ var addUser = function(body, callback) {
 };
 
 var findUser = function(body, expiresIn, callback) {
-  User.findOne({email: body.email}, {userName: 1, email: 1, password: 1, lan: 1, jazyk: 1}, function (err, doc) {
+  User.findOne({email: body.email}, {_id: 1, userName: 1, email: 1, password: 1, lan: 1, 'jazyk.learnLan': 1}, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding user')
     }
@@ -60,7 +60,7 @@ var isUniqueUser = function(options, callback) {
 }
 
 var getUserData = function(userId, callback) {
-  User.findOne({_id: userId}, {userName: 1, lan: 1, jazyk: 1}, function(err, doc) {
+  User.findOne({_id: userId}, {_id: 1, userName: 1, lan: 1, 'jazyk.learnLan': 1}, function(err, doc) {
     callback(err, doc);
   });
 }
@@ -109,7 +109,6 @@ module.exports = {
   subscribe: function(req, res) {
     var userId = req.decoded.user._id;
     var data = req.body;
-    console.log('subscribe', data);
     var updateObj = {};
 
     if (data) {
@@ -121,7 +120,7 @@ module.exports = {
       }
     }
 
-    console.log(updateObj);
+    // console.log(updateObj);
 
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {

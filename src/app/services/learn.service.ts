@@ -3,6 +3,7 @@ import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, Direction} from '../models/exercise.model';
+import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -11,7 +12,8 @@ import 'rxjs/add/observable/throw';
 export class LearnService {
 
   constructor(
-    private http: Http
+    private http: Http,
+    private authService: AuthService
   ) {}
 
   /*** Courses ***/
@@ -19,6 +21,17 @@ export class LearnService {
   fetchCourses(lan: Language) {
     return this.http
     .get('/api/courses/' + lan._id)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchUserCourses(userId: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/courses/user/' + userId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

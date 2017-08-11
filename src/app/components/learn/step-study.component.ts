@@ -20,7 +20,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
-  @Output() stepCompleted = new EventEmitter();
+  @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
   private current = -1;
@@ -112,7 +112,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
-        this.stepCompleted.emit();
+        this.stepCompleted.emit(this.exerciseData);
       }
     } else {
       if (this.current <= -1) {

@@ -8,6 +8,7 @@ var path = require("path"),
     config = require("./controllers/config"),
     translations = require("./controllers/translations"),
     exercises = require("./controllers/exercises"),
+    results = require("./controllers/results"),
     response = require("./response");
 
 module.exports.initialize = function(app, router) {
@@ -26,7 +27,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/translations/:lan/:component', translations.getTranslations);
 
-  router.get('/courses/:lan', courses.getAllCourses);
+  router.get('/courses/:lan', courses.getLanCourses);
   router.get('/course/:id', courses.getCourse);
   router.post('/course', courses.addCourse);
   router.put('/course/header', courses.updateCourseHeader);
@@ -72,6 +73,12 @@ module.exports.initialize = function(app, router) {
 
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/subscribe', users.subscribe);
+  router.get('/user', users.getUser);
+  router.post('/results/add', results.saveResults);
+  
+  router.get('/courses/user/:id', courses.getUserCourses);
+
+
   router.get('/user', users.getUser);
   
   app.use('/api/', router);

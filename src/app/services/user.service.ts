@@ -78,29 +78,66 @@ export class UserService {
     return Observable.of(user);
   }
 
-  subscribeToCourse(course: Course) {
-    // Check if there is a loggedin user
-    if (this.authService.isLoggedIn() && this._user && this._user.userName !== 'anonymous') {
-      console.log('subscribing to course', course);
-      // subscribe + set learn language
-      const token = this.authService.getToken(),
-            headers = new Headers(),
-            data = JSON.stringify({courseId: course._id, lan: course.languagePair.to});
-      headers.append('Content-Type', 'application/json');
-      headers.append('Authorization', 'Bearer ' + token);
-      this.http
-      .patch('/api/user/subscribe', data, {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error))
-      .toPromise(); // not lazy
-      // Add to cached user data
+  continueCourse(course: Course) {
+    // Check if it is a loggedin user
+    if (this.authService.isLoggedIn() && this._user) {
+      const data = JSON.stringify({lan: course.languagePair.to});
+      this.updateUserDb(data);
       this._user.jazyk.learnLan = course.languagePair.to;
-      const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
-      if (!courses) {
-        this._user.jazyk.courses.push(course._id);
-      }
-      console.log('updated user', this._user);
     }
+  }
+
+  subscribeToCourse(course: Course) {
+    // Only subscribe if it is a loggedin user
+    if (this.authService.isLoggedIn() && this._user) {
+      const data = JSON.stringify({courseId: course._id, lan: course.languagePair.to});
+      this.updateUserDb(data);
+      this.updateUserCache(course);
+    }
+  }
+
+  saveUserResults(data: string) {
+    if (this.authService.isLoggedIn()) {
+      return this.saveResults(data);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  private saveResults(data: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .post('/api/results/add', data, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  private updateUserDb(data: string) {
+    // subscribe + set learn language
+    const token = this.authService.getToken(),
+            headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    this.http
+    .patch('/api/user/subscribe', data, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error))
+    .toPromise(); // not lazy
+  }
+
+  private updateUserCache(course: Course) {
+      // Add subscription + learn language to cached user data
+      this._user.jazyk.learnLan = course.languagePair.to;
+      if (this.user.jazyk.courses) {
+        const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
+        if (!courses) {
+          this._user.jazyk.courses.push(course._id);
+        }
+        console.log('updated user', this._user);
+      }
   }
 
   private getUserLan(queryLan: string): string {

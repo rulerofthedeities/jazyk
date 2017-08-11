@@ -7,6 +7,10 @@ import {UserService} from '../../services/user.service';
 import {Course, Language, Translation} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
+interface Map<T> {
+  [K: string]: T;
+}
+
 @Component({
   templateUrl: 'courses-user.component.html',
   styleUrls: ['courses.component.css']
@@ -16,6 +20,8 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];
+  private allCourses: Course[];
+  private lanCourses: Map<Course[]> = {};
   courses: Course[];
   text: Object = {};
 
@@ -29,12 +35,11 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTranslations();
-    this.getLanguages();
-    this.getCourses();
   }
 
   onLanguageSelected(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
+    this.filterCourses();
   }
 
   private getTranslations() {
@@ -50,21 +55,48 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getLanguages() {
-    this.languages = this.utilsService.getActiveLanguages();
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+  private getCourses() {
+    if (this.userService.user) {
+      this.learnService
+      .fetchUserCourses(this.userService.user._id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        courses => {
+          this.allCourses = courses;
+          this.getLanguages();
+        },
+        error => this.errorService.handleError(error)
+      );
+    } else {
+      this.allCourses = [];
+    }
   }
 
-  private getCourses() {
-    this.learnService
-    .fetchCourses(this.selectedLanguage)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      courses => {
-        this.courses = courses;
-      },
-      error => this.errorService.handleError(error)
-    );
+  private getLanguages() {
+    const AllLanguages = this.utilsService.getActiveLanguages();
+    const languages: Language[] = [];
+    let courseLan;
+    if (this.allCourses && this.allCourses.length > 0) {
+      AllLanguages.filter( language => {
+        courseLan = this.allCourses.filter( course => course.languagePair.to === language._id);
+        if (courseLan.length > 0) {
+          languages.push(language);
+          this.lanCourses[language._id] = courseLan;
+        }
+      });
+    }
+    this.languages = languages;
+    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+    this.filterCourses();
+  }
+
+  private filterCourses() {
+    const lan = this.selectedLanguage._id;
+    if (this.lanCourses[lan]) {
+      this.courses = this.lanCourses[lan];
+    } else {
+      this.courses = null;
+    }
   }
 
   ngOnDestroy() {

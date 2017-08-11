@@ -28,9 +28,10 @@ export class LearnCourseSummaryComponent implements OnInit {
   }
 
   onStartCourse() {
-    console.log('starting course', this.course);
-    this.userService.subscribeToCourse(this.course);
-    this.router.navigate(['/learn/course/' + this.course._id]);
+    if (this.course.isPublished) {
+      this.userService.subscribeToCourse(this.course);
+      this.router.navigate(['/learn/course/' + this.course._id]);
+    }
   }
 
   setDifficulty() {
