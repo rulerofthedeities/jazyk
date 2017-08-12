@@ -53,6 +53,7 @@ export interface ExerciseExtraData {
   hint?: string;
   info?: string;
   grade?: number;
+  delta?: number;
 }
 
 export interface ExerciseData {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, Direction} from '../models/exercise.model';
@@ -58,6 +58,25 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
+
+  /*** Results ***/
+
+  getPreviousResults(userId: string, courseId: string, exerciseIds: string[]) {
+    const token = this.authService.getToken(),
+          headers = new Headers(),
+          params = new URLSearchParams();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    exerciseIds.forEach((id, i) => {
+      params.set('id' + i.toString(), id);
+    });
+    return this.http
+    .get('/api/results/' + userId + '/' + courseId, {headers, search: params})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
+  /*** Exercises ***/
 
   buildExerciseData(exercises: Exercise[], text: Object, options: ExerciseOptions): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];

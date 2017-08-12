@@ -113,16 +113,18 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   private checkAnswer(answer: string) {
     const filteredAnswer = this.filter(answer);
     if (filteredAnswer) {
-      this.isAnswered = true;
       this.endDate = new Date();
+      const solution = this.currentData.exercise.foreign.word,
+            filteredSolution = this.filter(solution),
+            delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+      this.isAnswered = true;
       this.currentData.data.isDone = true;
-      const solution = this.currentData.exercise.foreign.word;
-      const filteredSolution = this.filter(solution);
+      this.currentData.data.delta = delta;
       console.log('answer', filteredAnswer, filteredSolution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
         this.isCorrect = true;
-        this.currentData.data.grade = this.calculateGrade(0, filteredSolution);
+        this.currentData.data.grade = this.calculateGrade(delta, 0, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
@@ -132,7 +134,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // Alternative answer (synonym)
         this.isCorrect = true;
         this.solution = solution;
-        this.currentData.data.grade = this.calculateGrade(1, filteredSolution);
+        this.currentData.data.grade = this.calculateGrade(delta, 1, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = true;
@@ -203,13 +205,12 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     this.nextWord();
   }
 
-  private calculateGrade(deduction: number, solution: string): number {
+  private calculateGrade(delta: number, deduction: number, solution: string): number {
     // 5 = correct and fast
     // 4 = correct and not fast
     // 3 = correct and slow
     let grade = 3;
     const wordLength = solution.length;
-    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
     if (delta <= wordLength * 18) {
       grade = 5;
     } else if (delta < wordLength * 36) {

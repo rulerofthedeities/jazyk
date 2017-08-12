@@ -21,6 +21,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;
+  private nrOfQuestions = 5; // Get from user settings
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
@@ -125,7 +126,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       lesson => {
         this.lesson = lesson;
         this.setSteps();
-        this.exercises = lesson.exercises.slice(0, 10);
+        this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
+        this.fetchPreviousResults(this.exercises);
       },
       error => this.errorService.handleError(error)
     );
@@ -140,6 +142,23 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.steps = steps;
+  }
+
+  private fetchPreviousResults(exercises: Exercise[]) {
+    const exerciseIds = exercises.map(exercise => exercise._id);
+
+    this.learnService
+    .getPreviousResults(this.userService.user._id, this.course._id, exerciseIds)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        console.log('previous results', results);
+        if (results) {
+          console.log(results.length);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {

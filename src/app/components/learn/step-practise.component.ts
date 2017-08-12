@@ -209,12 +209,15 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const choice = this.currentChoices[i];
     const direction = this.currentData.data.direction;
     const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
+    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
 
     this.endDate = new Date();
     this.currentData.data.isDone = true;
+    this.currentData.data.delta = delta;
+
     if (choice === word) {
       this.currentData.data.isCorrect = true;
-      this.currentData.data.grade = this.calculateGrade();
+      this.currentData.data.grade = this.calculateGrade(delta);
       this.score = this.score + 2 + this.currentChoices.length * 3;
       this.timeNext(0.6);
     } else {
@@ -243,12 +246,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.exerciseData.push(newExerciseData);
   }
 
-  private calculateGrade(): number {
+  private calculateGrade(delta: number): number {
     // 5 = correct and fast
     // 4 = correct and not fast
     // 3 = correct and slow
     let grade = 3;
-    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
     if (delta <= 30) {
       grade = 5;
     } else if (delta < 60) {
