@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, Course} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, Direction} from '../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseResult} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -61,6 +61,26 @@ export class LearnService {
 
   /*** Results ***/
 
+  saveUserResults(data: string) {
+    if (this.authService.isLoggedIn()) {
+      return this.saveResults(data);
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  private saveResults(data: string) {
+    // must be idempotent?
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .post('/api/results/add', data, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   getPreviousResults(userId: string, courseId: string, exerciseIds: string[]) {
     const token = this.authService.getToken(),
           headers = new Headers(),
@@ -78,22 +98,37 @@ export class LearnService {
 
   /*** Exercises ***/
 
-  buildExerciseData(exercises: Exercise[], text: Object, options: ExerciseOptions): ExerciseData[] {
+  buildExerciseData(
+    exercises: Exercise[],
+    results: ExerciseResult[],
+    text: Object,
+    options: ExerciseOptions
+    ): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
     const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
-    let j = 0;
+    let j = 0, filteredResult: ExerciseResult;
     exercises.forEach( (exercise) => {
-      exerciseData[j] = this.buildData(options, text, exercise, options.direction);
+      filteredResult = null;
+      if (results) {
+        filteredResult = results.filter(result => result.exerciseId === exercise._id)[0];
+      }
+      exerciseData[j] = this.buildData(options, filteredResult, text, exercise, options.direction);
       j++;
       if (options.isBidirectional) {
-        exerciseData[j] = this.buildData(options, text, exercise, inverseDirection);
+        exerciseData[j] = this.buildData(options, filteredResult, text, exercise, inverseDirection);
         j++;
       }
     });
     return exerciseData;
   }
 
-  private buildData(options: ExerciseOptions, text: Object, exercise: Exercise, direction: Direction): ExerciseData {
+  private buildData(
+    options: ExerciseOptions,
+    result: ExerciseResult,
+    text: Object,
+    exercise: Exercise,
+    direction: Direction
+    ): ExerciseData {
     const newData: ExerciseData = {
       data: {
         isDone: false,
@@ -101,7 +136,8 @@ export class LearnService {
         answered: 0,
         direction: direction
       },
-      exercise: exercise
+      exercise,
+      result
     };
     if (options.nrOfChoices) {
       newData.data.nrOfChoices = options.nrOfChoices;

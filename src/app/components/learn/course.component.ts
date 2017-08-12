@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
-import {Exercise, ExerciseData, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseResult, LearnSettings} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -27,10 +27,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   infoMsg: string;
   course: Course;
   exercises: Exercise[];
+  results: ExerciseResult[];
   text: Object = {};
   currentStep = 0;
   stepCompleted: Map<boolean> = {};
   steps = ['intro', 'study', 'practise', 'test', 'review', 'exam'];
+  isReady = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -155,7 +157,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         console.log('previous results', results);
         if (results) {
           console.log(results.length);
+          this.results = results;
         }
+        this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );
@@ -178,15 +182,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
     });
     console.log('result:', result);
-    this.userService
+    this.learnService
     .saveUserResults(JSON.stringify(result))
     .takeWhile(() => this.componentActive)
     .subscribe(
       userResult => {
         console.log('saved result', userResult);
-        if (userResult) {
-
-        }
       },
       error => this.errorService.handleError(error)
     );

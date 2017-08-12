@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -15,6 +15,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
+  @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() options: ExerciseTpe;
@@ -168,7 +169,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   private getQuestions() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
       nrOfChoices: this.nrOfChoices,
       isBidirectional: this.options.bidirectional,
       direction: Direction.LocalToForeign
@@ -206,12 +207,12 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
+    this.endDate = new Date();
     const choice = this.currentChoices[i];
     const direction = this.currentData.data.direction;
     const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
     const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
 
-    this.endDate = new Date();
     this.currentData.data.isDone = true;
     this.currentData.data.delta = delta;
 

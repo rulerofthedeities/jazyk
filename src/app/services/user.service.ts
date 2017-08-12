@@ -96,26 +96,6 @@ export class UserService {
     }
   }
 
-  saveUserResults(data: string) {
-    if (this.authService.isLoggedIn()) {
-      return this.saveResults(data);
-    } else {
-      return Observable.of(null);
-    }
-  }
-
-  private saveResults(data: string) {
-    // must be idempotent?
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
-    return this.http
-    .post('/api/results/add', data, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-
   private updateUserDb(data: string) {
     // subscribe + set learn language
     const token = this.authService.getToken(),

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -15,6 +15,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
+  @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() options: ExerciseTpe;
@@ -40,7 +41,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
@@ -48,6 +49,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
+    console.log('exercisedata', this.exerciseData);
     this.nextWord(1);
   }
 

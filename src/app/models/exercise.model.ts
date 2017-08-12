@@ -35,6 +35,14 @@ export interface ExerciseTpes {
   exam: ExerciseTpe;
 }
 
+export interface ExerciseResult {
+  userId?: string;
+  courseId?: string;
+  exerciseId: string;
+  study?: boolean;
+  dtCreated?: Date;
+}
+
 export enum Direction {LocalToForeign, ForeignToLocal};
 
 export interface ExerciseExtraData {
@@ -59,6 +67,7 @@ export interface ExerciseExtraData {
 export interface ExerciseData {
   exercise: Exercise;
   data: ExerciseExtraData;
+  result?: ExerciseResult;
 }
 
 export interface ExerciseOptions {

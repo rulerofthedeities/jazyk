@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, OnDestroy, Input, Output, ViewChild} fr
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, Direction, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
 import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
@@ -15,6 +15,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
+  @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() options: ExerciseTpe;
   @Input() text: Object;
@@ -194,7 +195,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   }
 
   private getQuestions() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.text, {
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.LocalToForeign
