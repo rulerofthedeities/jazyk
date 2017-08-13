@@ -3,26 +3,23 @@ const response = require('../response'),
       Result = require('../models/result');
 
 saveStudy = function(res, results, userId, courseId) {
-  let exerciseId;
+  let exerciseId, filterObj;
   const docs = results.data.map(doc => 
   { 
     exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
+    filterObj = {
+      userId,
+      courseId,
+      exerciseId,
+      step: 'study'
+    };
     return {
       updateOne: {
-        filter: {
-          userId,
-          courseId,
-          exerciseId,
-          step: 'study'
-        },
+        filter: filterObj,
         update: {
-          $set: {
-            userId,
-            courseId,
-            exerciseId,
-            step: 'study'
-          },
+          $set: filterObj,
           $setOnInsert: {
+            points: doc.points,
             dt: new Date()
           }
         },
@@ -49,6 +46,7 @@ saveStep = function(res, results, userId, courseId) {
       courseId,
       exerciseId,
       step: results.step,
+      points: doc.points,
       dt: new Date()
     };
     return result;
@@ -76,6 +74,7 @@ module.exports = {
   getResults: function(req, res) {
     const parms = req.query,
           exerciseIds = [],
+          step = req.params.step,
           userId = new mongoose.Types.ObjectId(req.params.userId),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let limit, exerciseId;
@@ -87,9 +86,9 @@ module.exports = {
     }
     limit = exerciseIds.length;
     console.log('ids', exerciseIds);
-    const query = {userId, courseId, exerciseId: {$in:exerciseIds}};
+    const query = {userId, courseId, step, exerciseId: {$in: exerciseIds}};
 
-    Result.find(query, {_id:0, exerciseId:1, study: 1}, {limit}, function(err, results) {
+    Result.find(query, {_id: 0, exerciseId: 1, points: 1}, {limit, sort: {dt: -1}}, function(err, results) {
       console.log('result', results);
       response.handleError(err, res, 500, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');

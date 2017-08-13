@@ -4,6 +4,7 @@ import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult, LearnSet
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
+import {Subject} from 'rxjs/Subject';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import 'rxjs/add/operator/takeWhile';
 
@@ -35,6 +36,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   showLocal = false;
   dotArr: number[] = [];
   score = 0;
+  pointsEarned: Subject<any> = new Subject();
 
   constructor(
     private learnService: LearnService
@@ -54,9 +56,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onNextWord(delta: number) {
-    if (!this.isWordsDone) {
-      this.score = this.score + 2;
-    }
     this.nextWord(delta);
   }
 
@@ -92,6 +91,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private nextWord(delta: number) {
     if (!this.showLocal && this.current > -1) {
+      this.pointsEarned.next(0); // clear earned points
       this.showLocal = true;
     } else {
       if (this.isStudyDone) {
@@ -104,8 +104,15 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private showNextWord(delta: number) {
     if (this.current > -1) {
+      const points = 2;
       this.exerciseData[this.current].data.isDone = true;
       this.exerciseData[this.current].data.isCorrect = true;
+      this.exerciseData[this.current].data.points = 0;
+      if (!this.exerciseData[this.current].result) {
+        this.score = this.score + points;
+        this.exerciseData[this.current].data.points = points;
+        this.pointsEarned.next(points);
+      }
     }
     this.dotLength = this.settings.delay * 1000 / 200;
     this.dotArr = Array(this.dotLength).fill(0);

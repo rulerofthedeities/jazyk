@@ -39,8 +39,8 @@ export interface ExerciseResult {
   userId?: string;
   courseId?: string;
   exerciseId: string;
-  study?: boolean;
-  dtCreated?: Date;
+  points?: number;
+  dt?: Date;
 }
 
 export enum Direction {LocalToForeign, ForeignToLocal};
@@ -62,6 +62,7 @@ export interface ExerciseExtraData {
   info?: string;
   grade?: number;
   delta?: number;
+  points?: number;
 }
 
 export interface ExerciseData {

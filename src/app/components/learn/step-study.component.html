@@ -31,6 +31,9 @@
         <h3>Words learned:</h3>
         <km-completed-list [data]="exerciseData">
         </km-completed-list>
+        <h3>Points earned:</h3>
+        <km-points-completed [data]="exerciseData">
+        </km-points-completed>
         <div class="btn btn-success" (click)="onNextWord(1)">
           <span class="fa fa-refresh"></span>
           {{text["RestartStudy"]}}
@@ -59,7 +62,8 @@
         {{isStudyDone ? text["Practise"] : text["Skip"]}}
       </div>
     </div>
-    SCORE : {{score}}
+    <km-points-earned [pointsEarned]="pointsEarned">
+    </km-points-earned>
   </div>
   <div class="clearfix"></div>
 </section>

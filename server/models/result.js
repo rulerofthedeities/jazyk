@@ -6,6 +6,7 @@ var resultSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
   exerciseId: {type: Schema.Types.ObjectId, required: true},
   step: {type: String, required: true},
+  points: Number,
   dt: {type: Date, required: true}
 });
 

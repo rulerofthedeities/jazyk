@@ -150,7 +150,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const exerciseIds = exercises.map(exercise => exercise._id);
 
     this.learnService
-    .getPreviousResults(this.userService.user._id, this.course._id, exerciseIds)
+    .getPreviousResults(this.userService.user._id, this.course._id, 'study', exerciseIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
@@ -178,7 +178,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     data.forEach(item => {
       result.data.push({
         exerciseId: item.exercise._id,
-        result: item.data.isDone
+        done: item.data.isDone,
+        points: item.data.points || 0
       });
     });
     console.log('result:', result);
@@ -188,6 +189,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       userResult => {
         console.log('saved result', userResult);
+        if (userResult) {
+          // add results to data object
+          result.data.forEach((resultItem, i) => {
+            data[i].result = resultItem;
+          });
+        }
       },
       error => this.errorService.handleError(error)
     );

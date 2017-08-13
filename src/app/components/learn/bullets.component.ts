@@ -11,11 +11,11 @@ import {ExerciseData} from '../../models/exercise.model';
         [ngClass]="{
           'fa-square-o': i!==current, 
           'fa-square': i===current || exercise.data.isDone, 
-          'green': exercise.data.isDone && exercise.data.isCorrect && !exercise.data.isAlt,
+          'green': exercise.result || (exercise.data.isDone && exercise.data.isCorrect && !exercise.data.isAlt),
           'yellow': exercise.data.isDone && exercise.data.isCorrect && exercise.data.isAlt,
           'orange': exercise.data.isDone && !exercise.data.isCorrect && exercise.data.isAlmostCorrect,
           'red': exercise.data.isDone && !exercise.data.isCorrect && !exercise.data.isAlmostCorrect}">
-      </span>
+     </span>
     </div>`,
   styles: [`
     .bullets{

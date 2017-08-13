@@ -17,6 +17,8 @@ import {LearnPractiseComponent} from './components/learn/step-practise.component
 import {LearnTestComponent} from './components/learn/step-test.component';
 import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
+import {LearnPointsCompletedComponent} from './components/learn/points-completed.component';
+import {LearnPointsEarnedComponent} from './components/learn/points-earned.component';
 import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnAnswerFieldComponent} from './components/learn/answer-field.component';
@@ -46,6 +48,8 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnTestComponent,
     LearnSettingsComponent,
     LearnCompletedListComponent,
+    LearnPointsCompletedComponent,
+    LearnPointsEarnedComponent,
     LearnQuestionComponent,
     LearnBulletsComponent,
     LearnAnswerFieldComponent,
