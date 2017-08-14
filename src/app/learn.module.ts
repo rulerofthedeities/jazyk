@@ -24,6 +24,7 @@ import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnAnswerFieldComponent} from './components/learn/answer-field.component';
 import {LearnAnswerChoicesComponent} from './components/learn/answer-choices.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
+import {LearnCountdownComponent} from './components/learn/countdown.component';
 
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {WordColorDirective} from './directives/word-color.directive';
@@ -55,6 +56,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnAnswerFieldComponent,
     LearnAnswerChoicesComponent,
     LearnKeyboardComponent,
+    LearnCountdownComponent,
     GetKeyPressDirective,
     WordColorDirective
   ]

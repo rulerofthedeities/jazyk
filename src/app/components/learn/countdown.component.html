@@ -1,0 +1,44 @@
+<div class="countdown" #countdown (window:resize)="onResize($event)">
+  <svg width="100%" [attr.height]="boxHeight">
+    <circle
+      [attr.cx] = "cx"
+      [attr.cy] = "cy"
+      [attr.r] = "radius + 2"
+      [attr.fill]="backgroundColor"
+      stroke="white"
+      stroke-width="4" />
+    <circle
+      [attr.cx] = "cx"
+      [attr.cy] = "cy"
+      [attr.r] = "radius - 12"
+      [attr.fill]="backgroundColor"
+      stroke="white"
+      stroke-width="4" />
+    <path
+      [attr.d] = "circleM + circleL + circleA + '0 ' + arcSweep + circleEnd + 'Z'"
+      [attr.fill]="pathColor" />
+    <line 
+      x1="0"
+      [attr.x2]="boxWidth"
+      [attr.y1]="cy"
+      [attr.y2]="cy"
+      stroke="black"
+     />
+    <line 
+      [attr.x1]="cx"
+      [attr.x2]="cx"
+      y1="0"
+      [attr.y2]="boxHeight"
+      stroke="black"
+     />
+    <text
+      x="50%"
+      y="80%"
+      text-anchor="middle"
+      font-size="360"
+      font-family="Arial"
+      [attr.fill]="textColor">
+      {{counter}}
+    </text>
+  </svg>
+</div>

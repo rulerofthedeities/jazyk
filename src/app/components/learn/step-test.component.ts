@@ -36,6 +36,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   solution: string;
   score = 0;
   keys: string[] = [];
+  isCountDown = true;
 
   constructor(
     private learnService: LearnService,
@@ -53,6 +54,10 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         this.checkIfAnswer();
       }
     }
+  }
+
+  onCountDownFinished() {
+    this.isCountDown = false;
   }
 
   onCheckAnswer() {

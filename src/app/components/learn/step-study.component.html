@@ -1,72 +1,78 @@
-<section kmPressed 
-  (onKeyPressed)="onKeyPressed($event)">
-  <div class="col-xs-8">
-    <div class="panel centerpanel">
-      <km-bullets *ngIf="!isStudyDone"
-        [exercises]="exerciseData"
-        [current]="current">
-      </km-bullets>
-      <div *ngIf="!isStudyDone" class="card">
-        <km-question
-          [currentData]="currentData"
-          [lanPair]="lanPair"
-          [text]="text"
-          [tpe]="'foreign'"
-          [settings]="settings"
-        ></km-question>
-        <div class="answer">
-          <h1 class="word">
-            <span>
-              <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-            </span>
-              <span *ngIf="showLocal else loading">
-                {{currentData.exercise?.local?.word}}
+<km-countdown 
+  *ngIf="isCountDown; else study"
+  (countedDown)="onCountDownFinished()">
+</km-countdown>
+<ng-template #study>
+  <section kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    <div class="col-xs-8">
+      <div class="panel centerpanel">
+        <km-bullets *ngIf="!isStudyDone"
+          [exercises]="exerciseData"
+          [current]="current">
+        </km-bullets>
+        <div *ngIf="!isStudyDone" class="card">
+          <km-question
+            [currentData]="currentData"
+            [lanPair]="lanPair"
+            [text]="text"
+            [tpe]="'foreign'"
+            [settings]="settings"
+          ></km-question>
+          <div class="answer">
+            <h1 class="word">
+              <span>
+                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
               </span>
-          </h1>
+                <span *ngIf="showLocal else loading">
+                  {{currentData.exercise?.local?.word}}
+                </span>
+            </h1>
+          </div>
         </div>
-      </div>
 
-      <!-- STUDY DONE -->
-      <div *ngIf="isStudyDone">
-        <h3>Words learned:</h3>
-        <km-completed-list [data]="exerciseData">
-        </km-completed-list>
-        <h3>Points earned:</h3>
-        <km-points-completed [data]="exerciseData">
-        </km-points-completed>
-        <div class="btn btn-success" (click)="onNextWord(1)">
-          <span class="fa fa-refresh"></span>
-          {{text["RestartStudy"]}}
+        <!-- STUDY DONE -->
+        <div *ngIf="isStudyDone">
+          <h3>Words learned:</h3>
+          <km-completed-list [data]="exerciseData">
+          </km-completed-list>
+          <h3>Points earned:</h3>
+          <km-points-completed [data]="exerciseData">
+          </km-points-completed>
+          <div class="btn btn-success" (click)="onNextWord(1)">
+            <span class="fa fa-refresh"></span>
+            {{text["RestartStudy"]}}
+          </div>
+          <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+            <span class="fa fa-fast-forward"></span>
+            {{text["PractiseStudy"]}}
+          </div>
         </div>
-        <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <km-learn-settings
+        [step]="'study'"
+        [hasGenus]="!!currentData?.exercise?.genus"
+        [settings]="settings"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-settings>
+      <div class="actions">
+        <div class="btn btn-success btn-lg" (click)="onNextWord(1)">
+          <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
+          {{isStudyDone ? text["Restart"] : text["Next"]}}
+        </div>
+        <div class="btn btn-warning btn-lg" (click)="onSkipRequested(confirm)">
           <span class="fa fa-fast-forward"></span>
-          {{text["PractiseStudy"]}}
+          {{isStudyDone ? text["Practise"] : text["Skip"]}}
         </div>
       </div>
+      <km-points-earned [pointsEarned]="pointsEarned">
+      </km-points-earned>
     </div>
-  </div>
-  <div class="col-xs-4">
-    <km-learn-settings
-      [step]="'study'"
-      [hasGenus]="!!currentData?.exercise?.genus"
-      [settings]="settings"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-settings>
-    <div class="actions">
-      <div class="btn btn-success btn-lg" (click)="onNextWord(1)">
-        <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
-        {{isStudyDone ? text["Restart"] : text["Next"]}}
-      </div>
-      <div class="btn btn-warning btn-lg" (click)="onSkipRequested(confirm)">
-        <span class="fa fa-fast-forward"></span>
-        {{isStudyDone ? text["Practise"] : text["Skip"]}}
-      </div>
-    </div>
-    <km-points-earned [pointsEarned]="pointsEarned">
-    </km-points-earned>
-  </div>
-  <div class="clearfix"></div>
-</section>
+    <div class="clearfix"></div>
+  </section>
+</ng-template>
 
 <ng-template #loading>
   <span class="loading">

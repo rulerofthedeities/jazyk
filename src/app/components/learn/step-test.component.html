@@ -1,65 +1,71 @@
-<section kmPressed 
-  (onKeyPressed)="onKeyPressed($event)">
-  <div class="col-xs-8">
-    <div class="panel centerpanel">
-      <km-bullets *ngIf="!isTestDone"
-        [exercises]="exerciseData"
-        [current]="current">
-      </km-bullets>
-      <div *ngIf="!isTestDone && isQuestionReady" class="card">
-        <km-question
-          [currentData]="currentData"
-          [lanPair]="lanPair"
-          [text]="text"
-          [tpe]="'local'"
-        ></km-question>
-        <km-answer-field 
-          [lan]="lanPair.to"
-          [disabled]="isAnswered"
-          [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
-          [solution]="{solution: solution, msg: text['Expectedanswer']}"
-          [data]="currentData?.data">
-        </km-answer-field>
-      </div>
-      <!-- TEST DONE -->
-      <div *ngIf="isTestDone">
-        <h3>Words tested:</h3>
-        <km-completed-list [data]="exerciseData">
-        </km-completed-list>
+<km-countdown 
+  *ngIf="isCountDown; else test"
+  (countedDown)="onCountDownFinished()">
+</km-countdown>
+<ng-template #test>
+  <section kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    <div class="col-xs-8">
+      <div class="panel centerpanel">
+        <km-bullets *ngIf="!isTestDone"
+          [exercises]="exerciseData"
+          [current]="current">
+        </km-bullets>
+        <div *ngIf="!isTestDone && isQuestionReady" class="card">
+          <km-question
+            [currentData]="currentData"
+            [lanPair]="lanPair"
+            [text]="text"
+            [tpe]="'local'"
+          ></km-question>
+          <km-answer-field 
+            [lan]="lanPair.to"
+            [disabled]="isAnswered"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
+            [solution]="{solution: solution, msg: text['Expectedanswer']}"
+            [data]="currentData?.data">
+          </km-answer-field>
+        </div>
+        <!-- TEST DONE -->
+        <div *ngIf="isTestDone">
+          <h3>Words tested:</h3>
+          <km-completed-list [data]="exerciseData">
+          </km-completed-list>
 
-        <div class="btn btn-success" (click)="onRestart()">
+          <div class="btn btn-success" (click)="onRestart()">
+            <span class="fa fa-refresh"></span>
+            {{text["Restart"]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <km-learn-settings
+        [step]="'test'"
+        [hasGenus]="!!currentData?.exercise?.genus"
+        [isInput]="true"
+        [settings]="settings"
+        [isActive]="!isTestDone"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-settings>
+      <div class="actions">
+        <div 
+          *ngIf="!isTestDone"
+          class="btn btn-success btn-lg next"
+          (click)="onCheckAnswer()">
+          <span class="fa fa-step-forward"></span>
+          {{text["Next"]}}
+        </div>
+        <div 
+          *ngIf="isTestDone"
+          class="btn btn-success btn-lg next" 
+          (click)="onRestart()">
           <span class="fa fa-refresh"></span>
           {{text["Restart"]}}
         </div>
       </div>
+      SCORE : {{score}}
     </div>
-  </div>
-  <div class="col-xs-4">
-    <km-learn-settings
-      [step]="'test'"
-      [hasGenus]="!!currentData?.exercise?.genus"
-      [isInput]="true"
-      [settings]="settings"
-      [isActive]="!isTestDone"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-settings>
-    <div class="actions">
-      <div 
-        *ngIf="!isTestDone"
-        class="btn btn-success btn-lg next"
-        (click)="onCheckAnswer()">
-        <span class="fa fa-step-forward"></span>
-        {{text["Next"]}}
-      </div>
-      <div 
-        *ngIf="isTestDone"
-        class="btn btn-success btn-lg next" 
-        (click)="onRestart()">
-        <span class="fa fa-refresh"></span>
-        {{text["Restart"]}}
-      </div>
-    </div>
-    SCORE : {{score}}
-  </div>
-  <div class="clearfix"></div>
-</section>
+    <div class="clearfix"></div>
+  </section>
+</ng-template>

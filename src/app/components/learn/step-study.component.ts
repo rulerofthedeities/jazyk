@@ -37,6 +37,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   dotArr: number[] = [];
   score = 0;
   pointsEarned: Subject<any> = new Subject();
+  isCountDown = true;
 
   constructor(
     private learnService: LearnService
@@ -53,6 +54,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     console.log('exercisedata', this.exerciseData);
     this.nextWord(1);
+  }
+
+  onCountDownFinished() {
+    this.isCountDown = false;
   }
 
   onNextWord(delta: number) {

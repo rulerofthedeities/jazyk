@@ -42,6 +42,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   answered: number;
   answer: number;
   score = 0;
+  isCountDown = true;
 
   constructor(
     private learnService: LearnService,
@@ -50,6 +51,10 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getQuestions();
+  }
+
+  onCountDownFinished() {
+    this.isCountDown = false;
   }
 
   onSettingsUpdated(settings: LearnSettings) {

@@ -1,70 +1,76 @@
-<section kmPressed 
-  (onKeyPressed)="onKeyPressed($event)">
-  <div class="col-xs-8">
-    <div class="panel centerpanel">
-      <km-bullets *ngIf="!isPractiseDone"
-        [exercises]="exerciseData"
-        [current]="current">
-      </km-bullets>
-      <div *ngIf="!isPractiseDone && isQuestionReady" class="card">
-        <km-question
-          [currentData]="currentData"
-          [lanPair]="lanPair"
-          [text]="text"
-          [tpe]="getQuestionType()"
-          [settings]="settings"
-        ></km-question>
-        <km-answer-choices
-          [choices]="currentChoices"
-          [correct]="currentData?.data?.isCorrect"
-          [answer]="answer"
-          [answered]="answered"
-          [isSelected]="isSelected"
-          (selected)="onSelected($event)">
-        </km-answer-choices>
-      </div>
+<km-countdown 
+  *ngIf="isCountDown; else practise"
+  (countedDown)="onCountDownFinished()">
+</km-countdown>
+<ng-template #practise>
+  <section kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    <div class="col-xs-8">
+      <div class="panel centerpanel">
+        <km-bullets *ngIf="!isPractiseDone"
+          [exercises]="exerciseData"
+          [current]="current">
+        </km-bullets>
+        <div *ngIf="!isPractiseDone && isQuestionReady" class="card">
+          <km-question
+            [currentData]="currentData"
+            [lanPair]="lanPair"
+            [text]="text"
+            [tpe]="getQuestionType()"
+            [settings]="settings"
+          ></km-question>
+          <km-answer-choices
+            [choices]="currentChoices"
+            [correct]="currentData?.data?.isCorrect"
+            [answer]="answer"
+            [answered]="answered"
+            [isSelected]="isSelected"
+            (selected)="onSelected($event)">
+          </km-answer-choices>
+        </div>
 
-      <!-- PRACTISE DONE -->
-      <div *ngIf="isPractiseDone">
-        <h3>Words practised:</h3>
-        <km-completed-list [data]="exerciseData">
-        </km-completed-list>
+        <!-- PRACTISE DONE -->
+        <div *ngIf="isPractiseDone">
+          <h3>Words practised:</h3>
+          <km-completed-list [data]="exerciseData">
+          </km-completed-list>
 
-        <div class="btn btn-success" (click)="onRestart()">
-          <span class="fa fa-step-forward"></span>
-          {{text["Restart"]}}
+          <div class="btn btn-success" (click)="onRestart()">
+            <span class="fa fa-step-forward"></span>
+            {{text["Restart"]}}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-xs-4">
-    <km-learn-settings
-      [step]="'practise'"
-      [hasGenus]="!!this.currentData?.exercise.genus"
-      [settings]="settings"
-      [isActive]="!isPractiseDone"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-settings>
-    <div class="actions">
-      <div *ngIf="!isPractiseDone"
-        class="btn btn-lg next" 
-        [class.disabled]="!isSelected"
-        [ngClass]="{'btn-default': !isSelected, 'btn-success': isSelected}"
-        (click)="onNextWord()">
-        <span class="fa fa-step-forward"></span>
-        {{text["Next"]}}
+    <div class="col-xs-4">
+      <km-learn-settings
+        [step]="'practise'"
+        [hasGenus]="!!this.currentData?.exercise.genus"
+        [settings]="settings"
+        [isActive]="!isPractiseDone"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-settings>
+      <div class="actions">
+        <div *ngIf="!isPractiseDone"
+          class="btn btn-lg next" 
+          [class.disabled]="!isSelected"
+          [ngClass]="{'btn-default': !isSelected, 'btn-success': isSelected}"
+          (click)="onNextWord()">
+          <span class="fa fa-step-forward"></span>
+          {{text["Next"]}}
+        </div>
+        <div *ngIf="isPractiseDone"
+          class="btn btn-lg btn-success next"
+          (click)="onRestart()">
+          <span class="fa fa-refresh"></span>
+          {{text["Restart"]}}
+        </div>
       </div>
-      <div *ngIf="isPractiseDone"
-        class="btn btn-lg btn-success next"
-        (click)="onRestart()">
-        <span class="fa fa-refresh"></span>
-        {{text["Restart"]}}
-      </div>
+      SCORE : {{score}}
     </div>
-    SCORE : {{score}}
-  </div>
-  <div class="clearfix"></div>
-</section>
+    <div class="clearfix"></div>
+  </section>
+</ng-template>
 
 <ng-template #loading>
   <span class="loading">
