@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {ExerciseData, LearnSettings} from '../../models/exercise.model';
+import {ExerciseData} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 import {LanPair} from '../../models/course.model';
 
 @Component({

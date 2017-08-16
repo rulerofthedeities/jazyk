@@ -8,7 +8,21 @@ var profileSchema = new Schema({
 
 var appSchema = new Schema({
   learnLan: {type: String, required: true},
-  courses: [String]
+}, {_id : false});
+
+var jazykLearnSchema = new Schema({
+  lan: {type: String, required: true},
+  nrOfWords: Number,
+  countdown: Boolean,
+  mute: Boolean,
+  color: Boolean,
+  delay: Number,
+  keyboard: Boolean
+}, {_id : false});
+
+var jazykSchema = new Schema({
+  courses: [String],
+  learn: {type: jazykLearnSchema, required: true}
 }, {_id : false});
 
 var userSchema = new Schema({
@@ -16,7 +30,7 @@ var userSchema = new Schema({
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   lan: {type: String, required: true},
-  jazyk: appSchema,
+  jazyk: jazykSchema,
   vocabulator: appSchema,
   grammator: appSchema
 });

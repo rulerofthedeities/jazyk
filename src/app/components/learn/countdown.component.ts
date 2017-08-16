@@ -61,7 +61,6 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
     // Audio
     this.beep1 = this.loadAudio('/assets/audio/countdown.ogg');
     this.beep2 = this.loadAudio('/assets/audio/bleep.ogg');
-    console.log(typeof this.beep1);
     // Drawing
     this.angle = 0;
     this.radian = this.angleToRad(this.angle);
@@ -148,6 +147,7 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
     const audio = new Audio();
     audio.src = file;
     audio.load();
+    audio.volume = 0.1;
     return audio;
   }
 

@@ -2,7 +2,8 @@ import {Component, EventEmitter, OnInit, OnDestroy, Input, Output, ViewChild} fr
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
@@ -36,7 +37,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   solution: string;
   score = 0;
   keys: string[] = [];
-  isCountDown = true;
+  isCountDown: boolean;
 
   constructor(
     private learnService: LearnService,
@@ -44,6 +45,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isCountDown = this.settings.countdown;
     this.getConfig(this.lanPair.to); // For keyboard keys
     this.getQuestions();
   }

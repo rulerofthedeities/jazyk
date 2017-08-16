@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {LearnSettings} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 
 @Component({
   selector: 'km-learn-settings',

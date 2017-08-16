@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -37,7 +38,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   dotArr: number[] = [];
   score = 0;
   pointsEarned: Subject<any> = new Subject();
-  isCountDown = true;
+  isCountDown: boolean;
 
   constructor(
     private learnService: LearnService
@@ -53,6 +54,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
     console.log('exercisedata', this.exerciseData);
+    this.isCountDown = this.settings.countdown;
     this.nextWord(1);
   }
 

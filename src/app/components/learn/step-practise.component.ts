@@ -1,6 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -42,7 +43,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   answered: number;
   answer: number;
   score = 0;
-  isCountDown = true;
+  isCountDown: boolean;
 
   constructor(
     private learnService: LearnService,
@@ -50,6 +51,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isCountDown = this.settings.countdown;
     this.getQuestions();
   }
 

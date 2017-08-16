@@ -5,7 +5,8 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult, LearnSettings} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseResult} from '../../models/exercise.model';
+import {LearnSettings} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -55,12 +56,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.settings = {
-      mute: false,
-      color: true,
-      delay: 2,
-      keyboard: false
-    };
+    this.settings = this.userService.user.jazyk.learn;
+    this.nrOfQuestions = this.settings.nrOfWords || this.nrOfQuestions;
   }
 
   stepTo(i: number) {

@@ -77,10 +77,3 @@ export interface ExerciseOptions {
   isBidirectional?: boolean;
   direction: Direction;
 }
-
-export interface LearnSettings {
-  mute: boolean;
-  color: boolean;
-  delay: number; // # of seconds before local word appears
-  keyboard: boolean;
-}

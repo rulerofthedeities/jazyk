@@ -54,7 +54,7 @@ export class UserService {
     let learnLan: Language;
     if (this._user.jazyk) {
       // Get language currently learning
-      const userLan = this._user.jazyk.learnLan;
+      const userLan = this._user.jazyk.learn.lan;
       learnLan = languages.find(lan => lan._id === userLan);
     }
     if (!learnLan) {
@@ -83,7 +83,7 @@ export class UserService {
     if (this.authService.isLoggedIn() && this._user) {
       const data = JSON.stringify({lan: course.languagePair.to});
       this.updateUserDb(data);
-      this._user.jazyk.learnLan = course.languagePair.to;
+      this._user.jazyk.learn.lan = course.languagePair.to;
     }
   }
 
@@ -111,7 +111,7 @@ export class UserService {
 
   private updateUserCache(course: Course) {
     // Add subscription + learn language to cached user data
-    this._user.jazyk.learnLan = course.languagePair.to;
+    this._user.jazyk.learn.lan = course.languagePair.to;
     if (this.user.jazyk.courses) {
       const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
       if (!courses) {
