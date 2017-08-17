@@ -38,6 +38,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   score = 0;
   keys: string[] = [];
   isCountDown: boolean;
+  isMute: boolean;
 
   constructor(
     private learnService: LearnService,
@@ -46,6 +47,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isCountDown = this.settings.countdown;
+    this.isMute = this.settings.mute;
     this.getConfig(this.lanPair.to); // For keyboard keys
     this.getQuestions();
   }

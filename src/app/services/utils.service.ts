@@ -39,6 +39,15 @@ export class UtilsService {
     return text;
   }
 
+  getDefaultLanguage(): string {
+    const languages = this.getActiveLanguages();
+    let lan = '';
+    if (languages.length > 0) {
+      lan = languages[0]._id;
+    }
+    return lan;
+  }
+
   getActiveLanguages() {
     const languages = this.getLanguages();
     return languages.filter(language => language.active);

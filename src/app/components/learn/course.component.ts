@@ -22,7 +22,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;
-  private nrOfQuestions = 5; // Get from user settings
+  private nrOfQuestions = 5;
+  private settingsUpdated = false;
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
@@ -73,9 +74,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   onStepCompleted(step: string, data: ExerciseData[]) {
     this.stepCompleted[step] = true;
     this.saveAnswers(step, data);
+    if (this.settingsUpdated) {
+      this.saveSettings();
+    }
   }
 
   onSettingsUpdated(settings: LearnSettings) {
+    this.settingsUpdated = true;
     this.settings = settings;
   }
 
@@ -192,6 +197,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             data[i].result = resultItem;
           });
         }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private saveSettings() {
+    console.log('saving settings');
+    this.userService
+    .saveLearnSettings(this.settings)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      saved => {
+        this.settingsUpdated = false;
+        console.log('settings saved', saved);
       },
       error => this.errorService.handleError(error)
     );

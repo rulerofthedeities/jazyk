@@ -20,7 +20,7 @@ export interface Jazyk {
 export interface User {
   _id?: string;
   email: string;
-  password: string;
+  password?: string;
   userName: string;
   lan: string;
   jazyk?: Jazyk;

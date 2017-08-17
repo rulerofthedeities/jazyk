@@ -20,6 +20,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnCountdownComponent implements OnInit, OnDestroy {
   @Input() counter = 3;
+  @Input() private mute = false;
   @Input() textColor = 'black';
   @Output() countedDown = new EventEmitter();
   @ViewChild('countdown') countdown: ElementRef;
@@ -59,8 +60,10 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
 
   private Initialize() {
     // Audio
-    this.beep1 = this.loadAudio('/assets/audio/countdown.ogg');
-    this.beep2 = this.loadAudio('/assets/audio/bleep.ogg');
+    if (!this.mute) {
+      this.beep1 = this.loadAudio('/assets/audio/countdown.ogg');
+      this.beep2 = this.loadAudio('/assets/audio/bleep.ogg');
+    }
     // Drawing
     this.angle = 0;
     this.radian = this.angleToRad(this.angle);
@@ -152,10 +155,12 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
   }
 
   private playSound(last: boolean) {
-    if (last) {
-      this.beep2.play();
-    } else {
-      this.beep1.play();
+    if (!this.mute) {
+      if (last) {
+        this.beep2.play();
+      } else {
+        this.beep1.play();
+      }
     }
   }
 

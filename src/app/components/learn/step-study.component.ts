@@ -39,6 +39,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   score = 0;
   pointsEarned: Subject<any> = new Subject();
   isCountDown: boolean;
+  isMute: boolean;
 
   constructor(
     private learnService: LearnService
@@ -55,6 +56,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     console.log('exercisedata', this.exerciseData);
     this.isCountDown = this.settings.countdown;
+    this.isMute = this.settings.mute;
     this.nextWord(1);
   }
 

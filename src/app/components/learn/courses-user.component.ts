@@ -91,7 +91,12 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   }
 
   private filterCourses() {
-    const lan = this.selectedLanguage._id;
+    let lan;
+    if (this.selectedLanguage) {
+      lan = this.selectedLanguage._id;
+    } else {
+      lan = this.utilsService.getDefaultLanguage();
+    }
     if (this.lanCourses[lan]) {
       this.courses = this.lanCourses[lan];
     } else {

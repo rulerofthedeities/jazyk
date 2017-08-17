@@ -13,7 +13,7 @@ var addUser = function(body, callback) {
           password: hash.toString('base64'),
           email: body.email,
           lan: body.lan,
-          jazyk: {learnLan: body.jazyk.learnLan},
+          jazyk: {learn: body.jazyk.learn},
           vocabulator: {learnLan: body.vocabulator.learnLan},
           grammator: {learnLan: body.grammator.learnLan}
         });
@@ -106,6 +106,18 @@ module.exports = {
       });
     })
   },
+  saveLearnSettings: function(req, res) {
+    var userId = req.decoded.user._id;
+    var settings = req.body;
+    var updateObj = {$set: {'jazyk.learn': settings}};
+    console.log('updating learn settings', settings);
+    User.findOneAndUpdate(
+      {_id: userId}, updateObj, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating user settings', function(){
+        response.handleSuccess(res, result, 200, 'Updated user settings');
+      });
+    });
+  },
   subscribe: function(req, res) {
     var userId = req.decoded.user._id;
     var data = req.body;
@@ -113,7 +125,7 @@ module.exports = {
 
     if (data) {
       if (data.lan) {
-        updateObj['$set'] = {'jazyk.learnLan': data.lan}
+        updateObj['$set'] = {'jazyk.learn.lan': data.lan}
       }
       if (data.courseId) {
         updateObj['$addToSet'] = {'jazyk.courses': data.courseId}

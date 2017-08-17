@@ -18,6 +18,7 @@ export class LanguageSelectorComponent implements OnInit {
   selectedDropdown: string; // For color indicator of hovered language in dropdown
 
   ngOnInit() {
+    console.log(this.languages, this.currentLanguage);
     this.setSelectedLanguage(this.currentLanguage);
     this.dataReady = true;
   }

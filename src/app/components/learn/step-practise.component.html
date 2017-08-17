@@ -1,5 +1,6 @@
 <km-countdown 
   *ngIf="isCountDown; else practise"
+  [mute]="isMute"
   (countedDown)="onCountDownFinished()">
 </km-countdown>
 <ng-template #practise>

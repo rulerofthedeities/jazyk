@@ -71,6 +71,7 @@ module.exports.initialize = function(app, router) {
 
   /*** authenticated ***/
 
+  router.put('/user/settings', users.saveLearnSettings);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);

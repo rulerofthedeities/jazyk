@@ -59,6 +59,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   logOut() {
     this.authService.logout();
+    this.userService.clearUser();
   }
 
   private getUrl() {

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User} from '../models/user.model';
+import {User, LearnSettings} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
@@ -67,15 +67,36 @@ export class UserService {
 
   getDefaultUserData(queryLan: string) {
     const interfaceLan = this.getUserLan(queryLan);
-    const user: User = {
-      email: '',
-      password: '',
-      userName: 'anonymous',
-      lan: interfaceLan
-    };
+    const user: User = this.getAnonymousUser(interfaceLan, '');
     console.log('getting default user data', user, queryLan);
     this._user = user;
     return Observable.of(user);
+  }
+
+  clearUser() {
+    const userLan = this.user.lan,
+          learnLan = this.user.jazyk.learn.lan;
+    this._user = this.getAnonymousUser(userLan, learnLan);
+  }
+
+  getAnonymousUser(userLan: string, learnLan: string): User {
+    const user: User = {
+      email: '',
+      userName: 'anonymous',
+      lan: userLan,
+      jazyk: {
+        learn: {
+          lan: learnLan,
+          countdown: true,
+          nrOfWords: 5,
+          mute: false,
+          delay: 2,
+          color: true,
+          keyboard: false
+        }
+      }
+    };
+    return user;
   }
 
   continueCourse(course: Course) {
@@ -85,6 +106,17 @@ export class UserService {
       this.updateUserDb(data);
       this._user.jazyk.learn.lan = course.languagePair.to;
     }
+  }
+
+  saveLearnSettings(settings: LearnSettings) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .put('/api/user/settings', JSON.stringify(settings), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
   }
 
   subscribeToCourse(course: Course) {
