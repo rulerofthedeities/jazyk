@@ -26,7 +26,7 @@ var exerciseSchema = new Schema({
   aspect: String,
   image: String,
   audio: String,
-  score: { type: Number, default: 0 }
+  difficulty: { type: Number, default: 0 }
 })
 
 var ExerciseTpeSchema = new Schema({

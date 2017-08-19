@@ -18,7 +18,7 @@ export interface Exercise {
   aspect?: string;
   image?: string;
   audio?: string;
-  score?: number;
+  difficulty?: number;
 }
 
 export interface ExerciseTpe {

@@ -108,7 +108,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onWordSelected(wordpairDetail: WordPairDetail) {
-    console.log('word selected');
+    console.log('word selected', wordpairDetail);
     this.lanList = null;
     this.isSelected = true;
     this.selected = wordpairDetail;
@@ -279,7 +279,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];
 
-    if (formValues.localWord === this.selected[this.lanLocal].word &&
+    if (this.selected &&
+        this.selected[this.lanLocal] &&
+        this.selected[this.lanForeign] &&
+        formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
       /* Foreign */
@@ -395,6 +398,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private saveNewExercise(exercise: Exercise) {
+    this.setInitialDifficulty(exercise);
     console.log('saving exercise ', exercise);
     this.buildService
     .addExercise(exercise, this.lessonId)
@@ -411,6 +415,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private saveUpdatedExercise(exercise: Exercise) {
+    this.setInitialDifficulty(exercise);
     console.log('updating exercise ', exercise);
     this.buildService
     .updateExercise(exercise, this.lessonId)
@@ -425,6 +430,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private setInitialDifficulty(exercise: Exercise) {
+    // Combination of character length & word length
+    // Only initial difficulty: later to be replaced with user data
+    const word = exercise.foreign.word.trim(),
+          lengthScore = Math.min(70, word.length),
+          wordScore =  Math.min(10, word.split(' ').length) * 3,
+          difficulty = lengthScore + wordScore;
+    console.log('difficulty for', word, difficulty);
   }
 
   private buildForm(exercise: Exercise) {
