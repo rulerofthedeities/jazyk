@@ -40,6 +40,9 @@ export interface ExerciseResult {
   courseId?: string;
   exerciseId: string;
   points?: number;
+  learnLevel?: number;
+  isLearned?: boolean;
+  sequence?: number; // To find the last saved doc for docs with same save time
   dt?: Date;
 }
 
@@ -61,8 +64,9 @@ export interface ExerciseExtraData {
   hint?: string;
   info?: string;
   grade?: number;
-  delta?: number;
   points?: number;
+  timeDelta?: number;
+  learnLevel?: number;
 }
 
 export interface ExerciseData {

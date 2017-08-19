@@ -104,6 +104,7 @@ export class LearnService {
     text: Object,
     options: ExerciseOptions
     ): ExerciseData[] {
+    console.log('RESULTS', results);
     const exerciseData: ExerciseData[] = [];
     const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
     let j = 0, filteredResult: ExerciseResult;
@@ -139,9 +140,11 @@ export class LearnService {
       exercise,
       result
     };
-    if (options.nrOfChoices) {
-      newData.data.nrOfChoices = options.nrOfChoices;
+    /*
+    if (result) {
+      newData.data.nrOfChoices = this.getNrOfChoices(result.learnLevel) || options.nrOfChoices;
     }
+    */
     if (options.direction === Direction.ForeignToLocal) {
       // Add local data
       this.buildForeignData(newData, text, exercise);

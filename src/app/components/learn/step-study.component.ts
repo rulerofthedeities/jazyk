@@ -4,6 +4,7 @@ import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult} from '..
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
+import {ErrorService} from '../../services/error.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Subject} from 'rxjs/Subject';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
@@ -20,6 +21,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Input() userId: string;
+  @Input() courseId: string;
   @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
@@ -40,24 +43,17 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   pointsEarned: Subject<any> = new Subject();
   isCountDown: boolean;
   isMute: boolean;
+  isReady = false;
 
   constructor(
-    private learnService: LearnService
+    private learnService: LearnService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
-      isForeign: true,
-      isBidirectional: false,
-      direction: Direction.ForeignToLocal
-    });
-    if (!this.options.ordered) {
-      this.exerciseData = this.learnService.shuffle(this.exerciseData);
-    }
-    console.log('exercisedata', this.exerciseData);
+    this.fetchPreviousResults();
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
-    this.nextWord(1);
   }
 
   onCountDownFinished() {
@@ -142,6 +138,38 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.currentData = this.exerciseData[this.current];
       this.timeDelay();
     }
+  }
+
+  private getQuestions() {
+    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
+      isForeign: true,
+      isBidirectional: false,
+      direction: Direction.ForeignToLocal
+    });
+    if (!this.options.ordered) {
+      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    }
+    this.nextWord(1);
+    this.isReady = true;
+    console.log('exercisedata', this.exerciseData);
+  }
+
+  private fetchPreviousResults() {
+    const exerciseIds = this.exercises.map(exercise => exercise._id);
+
+    this.learnService
+    .getPreviousResults(this.userId, this.courseId, 'study', exerciseIds)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        console.log('previous results', results);
+        if (results) {
+          this.results = results;
+        }
+        this.getQuestions();
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private skip() {

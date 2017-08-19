@@ -126,15 +126,15 @@ export class LearnTestComponent implements OnInit, OnDestroy {
       this.endDate = new Date();
       const solution = this.currentData.exercise.foreign.word,
             filteredSolution = this.filter(solution),
-            delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+            timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
       this.isAnswered = true;
       this.currentData.data.isDone = true;
-      this.currentData.data.delta = delta;
+      this.currentData.data.timeDelta = timeDelta;
       console.log('answer', filteredAnswer, filteredSolution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
         this.isCorrect = true;
-        this.currentData.data.grade = this.calculateGrade(delta, 0, filteredSolution);
+        this.currentData.data.grade = this.calculateGrade(timeDelta, 0, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
@@ -144,7 +144,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // Alternative answer (synonym)
         this.isCorrect = true;
         this.solution = solution;
-        this.currentData.data.grade = this.calculateGrade(delta, 1, filteredSolution);
+        this.currentData.data.grade = this.calculateGrade(timeDelta, 1, filteredSolution);
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = true;

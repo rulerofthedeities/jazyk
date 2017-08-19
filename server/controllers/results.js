@@ -47,7 +47,9 @@ saveStep = function(res, results, userId, courseId) {
       exerciseId,
       step: results.step,
       points: doc.points,
-      dt: new Date()
+      learnLevel: doc.learnLevel,
+      dt: new Date(),
+      sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
     return result;
   });
@@ -88,7 +90,7 @@ module.exports = {
     console.log('ids', exerciseIds);
     const query = {userId, courseId, step, exerciseId: {$in: exerciseIds}};
 
-    Result.find(query, {_id: 0, exerciseId: 1, points: 1}, {limit, sort: {dt: -1}}, function(err, results) {
+    Result.find(query, {_id: 0, exerciseId: 1, points: 1, learnLevel: 1}, {limit, sort: {dt: -1, sequence: -1}}, function(err, results) {
       console.log('result', results);
       response.handleError(err, res, 500, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');

@@ -131,7 +131,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.lesson = lesson;
         this.setSteps();
         this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
-        this.fetchPreviousResults(this.exercises);
+        this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );
@@ -148,40 +148,22 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.steps = steps;
   }
 
-  private fetchPreviousResults(exercises: Exercise[]) {
-    const exerciseIds = exercises.map(exercise => exercise._id);
-
-    this.learnService
-    .getPreviousResults(this.userService.user._id, this.course._id, 'study', exerciseIds)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      results => {
-        console.log('previous results', results);
-        if (results) {
-          console.log(results.length);
-          this.results = results;
-        }
-        this.isReady = true;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     console.log('course', this.course._id);
-
     const result = {
       courseId: this.course._id,
       userId: this.userService.user._id,
       step,
       data: []
     };
-    data.forEach(item => {
+    data.forEach( (item, i) => {
       result.data.push({
         exerciseId: item.exercise._id,
         done: item.data.isDone,
-        points: item.data.points || 0
+        points: item.data.points || 0,
+        learnLevel: item.data.learnLevel || 0,
+        sequence: i // To find the last saved doc for docs with same save time
       });
     });
     console.log('result:', result);

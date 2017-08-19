@@ -7,7 +7,9 @@ var resultSchema = new Schema({
   exerciseId: {type: Schema.Types.ObjectId, required: true},
   step: {type: String, required: true},
   points: Number,
-  dt: {type: Date, required: true}
+  learnLevel: Number,
+  dt: {type: Date, required: true},
+  sequence: Number // To find the last saved doc for docs with same save time
 });
 
 resultSchema.index({userId: 1, courseId: 1, exerciseId: 1}); 

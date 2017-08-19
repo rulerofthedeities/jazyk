@@ -8,6 +8,15 @@ import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/takeWhile';
 
+interface Map<T> {
+  [K: string]: T;
+}
+
+interface Score {
+  points: number;
+  learnLevel: number;
+}
+
 @Component({
   selector: 'km-learn-practise',
   templateUrl: 'step-practise.component.html',
@@ -19,6 +28,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Input() userId: string;
+  @Input() courseId: string;
   @Input() options: ExerciseTpe;
   @Input() lessonId: string;
   @Input() settings: LearnSettings;
@@ -32,6 +43,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private choicesLocal: string[];
   private startDate: Date;
   private endDate: Date;
+  private scores: Map<Score> = {}; // Keeps track of point & level per exercise, not per result
   subscription: Subscription;
   isPractiseDone = false;
   exerciseData: ExerciseData[];
@@ -54,7 +66,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
-    this.getQuestions();
+    this.fetchPreviousResults();
   }
 
   onCountDownFinished() {
@@ -179,7 +191,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private getQuestions() {
     this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
-      nrOfChoices: this.nrOfChoices,
       isBidirectional: this.options.bidirectional,
       direction: Direction.LocalToForeign
     });
@@ -194,10 +205,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     // Select random words from choices array
     let choice: string,
         rand: number;
-    const exercise = this.currentData.exercise,
+    const learnLevel = this.getCurrentLearnLevel(this.currentData),
+          exercise = this.currentData.exercise,
           direction = this.currentData.data.direction,
           choices: string[] = [],
-          nrOfChoices = this.currentData.data.nrOfChoices,
+          nrOfChoices = this.getNrOfChoices(learnLevel),
           availableChoices = JSON.parse(JSON.stringify(direction === Direction.ForeignToLocal ? this.choicesLocal : this.choicesForeign)),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
     choices.push(word);
@@ -220,30 +232,40 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const choice = this.currentChoices[i];
     const direction = this.currentData.data.direction;
     const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
-    const delta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    const timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    let learnLevel = this.getCurrentLearnLevel(this.currentData);
 
     this.currentData.data.isDone = true;
-    this.currentData.data.delta = delta;
+    this.currentData.data.timeDelta = timeDelta;
 
+    console.log('CURRENTDATA', this.currentData, this.scores);
     if (choice === word) {
       this.currentData.data.isCorrect = true;
-      this.currentData.data.grade = this.calculateGrade(delta);
-      this.score = this.score + 2 + this.currentChoices.length * 3;
+      this.currentData.data.grade = this.calculateGrade(timeDelta);
+      learnLevel += this.calculateLearnDelta(learnLevel, true);
+      this.currentData.data.learnLevel = learnLevel;
+      const points = 2 + this.currentChoices.length * 3;
+      this.scores[this.currentData.exercise._id] = {points, learnLevel};
+      this.score = this.score + points;
       this.timeNext(0.6);
     } else {
       this.currentData.data.isCorrect = false;
       this.currentData.data.grade = 0;
+      learnLevel += this.calculateLearnDelta(learnLevel, false);
+      console.log('new learnlevel', learnLevel);
+      this.currentData.data.learnLevel = learnLevel;
+      this.scores[this.currentData.exercise._id] = {points: 0, learnLevel};
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
         if (item === word) {
           this.answer = j;
         }
       });
-      this.addExercise();
+      this.addExercise(learnLevel);
     }
   }
 
-  private addExercise() {
+  private addExercise(level: number) {
     // Incorrect answer -> readd exercise to the back
     const newExerciseData: ExerciseData = {
       data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
@@ -267,8 +289,46 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       grade = 4;
     }
     console.log('time/grade', delta, grade);
-
     return grade;
+  }
+
+  private calculateLearnDelta(level: number, correct: boolean): number {
+    let delta = 0;
+    if (correct) {
+      if (level < 5) {
+        delta = 1;
+      }
+    } else {
+      if (level > 0) {
+        delta = -1;
+      }
+    }
+    return delta;
+  }
+
+  private getCurrentLearnLevel(data: ExerciseData): number {
+    let learnLevel = data.result ? data.result.learnLevel || 0 : 1; // saved data
+    // CHECK if this exerciseid has been answered before; if so; use this level
+    const lastScore = this.scores[data.exercise._id];
+    if (lastScore) {
+      // Use level from this score
+      learnLevel = lastScore.learnLevel;
+    }
+    return learnLevel;
+  }
+
+  private getNrOfChoices(learnLevel: number): number {
+    let nrOfChoices: number;
+    console.log('CHOICES LEVEL', learnLevel);
+    if (learnLevel <= 0) {
+      nrOfChoices = 4;
+    } else {
+      nrOfChoices = 6;
+    }
+    if (learnLevel >= 3) {
+      nrOfChoices = 8;
+    }
+    return nrOfChoices;
   }
 
   private timeNext(secs: number) {
@@ -277,6 +337,24 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.subscription = timer
     .takeWhile(() => this.componentActive)
     .subscribe(t => this.nextWord());
+  }
+
+  private fetchPreviousResults() {
+    const exerciseIds = this.exercises.map(exercise => exercise._id);
+
+    this.learnService
+    .getPreviousResults(this.userId, this.courseId, 'practise', exerciseIds)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        console.log('previous results', results);
+        if (results) {
+          this.results = results;
+        }
+        this.getQuestions();
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {
