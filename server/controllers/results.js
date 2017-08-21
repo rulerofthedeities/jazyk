@@ -76,21 +76,36 @@ module.exports = {
   getResults: function(req, res) {
     const parms = req.query,
           exerciseIds = [],
-          step = req.params.step,
+          step = req.params.step, // ignored
           userId = new mongoose.Types.ObjectId(req.params.userId),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    let limit, exerciseId;
+    let exerciseId;
     for (var key in parms) {
       if (parms[key]) {
         exerciseId = new mongoose.Types.ObjectId(parms[key]);
         exerciseIds.push(exerciseId);
       }
     }
-    limit = exerciseIds.length;
     console.log('ids', exerciseIds);
-    const query = {userId, courseId, step, exerciseId: {$in: exerciseIds}};
+    const query = {userId, courseId, exerciseId: {$in: exerciseIds}};
 
-    Result.find(query, {_id: 0, exerciseId: 1, points: 1, learnLevel: 1}, {limit, sort: {dt: -1, sequence: -1}}, function(err, results) {
+    const pipeline = [
+      {$match: query},
+      {$sort: {dt: -1, sequence: -1}},
+      {$group: {
+        _id: '$exerciseId',
+        firstLevel: {'$first': '$learnLevel'},
+        totalPoints: {'$sum': '$points'}
+      }},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id',
+        learnLevel: '$firstLevel',
+        points: '$totalPoints'
+      }}
+    ];
+
+    Result.aggregate(pipeline, function(err, results) {
       console.log('result', results);
       response.handleError(err, res, 500, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');

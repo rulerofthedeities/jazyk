@@ -140,11 +140,6 @@ export class LearnService {
       exercise,
       result
     };
-    /*
-    if (result) {
-      newData.data.nrOfChoices = this.getNrOfChoices(result.learnLevel) || options.nrOfChoices;
-    }
-    */
     if (options.direction === Direction.ForeignToLocal) {
       // Add local data
       this.buildForeignData(newData, text, exercise);

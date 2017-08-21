@@ -59,6 +59,8 @@
     [results]="results"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.test"
+    [userId]="userService.user._id"
+    [courseId]="this.course._id"
     [text]="text"
     [settings]="settings"
     (stepCompleted)="onStepCompleted('test', $event)"

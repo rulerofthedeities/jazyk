@@ -197,7 +197,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    // this.exerciseData = this.exerciseData.slice(0, 4);
     this.getChoices(this.options.bidirectional);
   }
 
@@ -229,11 +228,12 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.answered = i;
     this.answer = null;
     this.endDate = new Date();
-    const choice = this.currentChoices[i];
-    const direction = this.currentData.data.direction;
-    const word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
-    const timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
-    let learnLevel = this.getCurrentLearnLevel(this.currentData);
+    const choice = this.currentChoices[i],
+          direction = this.currentData.data.direction,
+          word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word,
+          timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    let learnLevel = this.getCurrentLearnLevel(this.currentData),
+        points = 0;
 
     this.currentData.data.isDone = true;
     this.currentData.data.timeDelta = timeDelta;
@@ -242,17 +242,16 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (choice === word) {
       this.currentData.data.isCorrect = true;
       this.currentData.data.grade = this.calculateGrade(timeDelta);
-      learnLevel += this.calculateLearnDelta(learnLevel, true);
+      learnLevel = this.calculateLearnLevel(learnLevel, true);
       this.currentData.data.learnLevel = learnLevel;
-      const points = 2 + this.currentChoices.length * 3;
+      points = 2 + this.currentChoices.length * 3;
       this.scores[this.currentData.exercise._id] = {points, learnLevel};
       this.score = this.score + points;
       this.timeNext(0.6);
     } else {
       this.currentData.data.isCorrect = false;
       this.currentData.data.grade = 0;
-      learnLevel += this.calculateLearnDelta(learnLevel, false);
-      console.log('new learnlevel', learnLevel);
+      learnLevel = this.calculateLearnLevel(learnLevel, false);
       this.currentData.data.learnLevel = learnLevel;
       this.scores[this.currentData.exercise._id] = {points: 0, learnLevel};
       // Show correct answer
@@ -261,11 +260,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
           this.answer = j;
         }
       });
-      this.addExercise(learnLevel);
+      this.addExercise();
     }
   }
 
-  private addExercise(level: number) {
+  private addExercise() {
     // Incorrect answer -> readd exercise to the back
     const newExerciseData: ExerciseData = {
       data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
@@ -292,18 +291,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     return grade;
   }
 
-  private calculateLearnDelta(level: number, correct: boolean): number {
-    let delta = 0;
+  private calculateLearnLevel(level: number, correct: boolean): number {
     if (correct) {
       if (level < 5) {
-        delta = 1;
+        level += 1;
       }
     } else {
       if (level > 0) {
-        delta = -1;
+        level -= 1;
       }
     }
-    return delta;
+    return level;
   }
 
   private getCurrentLearnLevel(data: ExerciseData): number {

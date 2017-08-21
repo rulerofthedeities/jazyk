@@ -8,6 +8,15 @@ import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
+interface Map<T> {
+  [K: string]: T;
+}
+
+interface Score {
+  points: number;
+  learnLevel: number;
+}
+
 @Component({
   selector: 'km-learn-test',
   templateUrl: 'step-test.component.html',
@@ -20,6 +29,8 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() options: ExerciseTpe;
   @Input() text: Object;
+  @Input() userId: string;
+  @Input() courseId: string;
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
@@ -27,6 +38,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private startDate: Date;
   private endDate: Date;
+  private scores: Map<Score> = {}; // Keeps track of point & level per exercise, not per result
   isTestDone = false;
   isAnswered = false;
   exerciseData: ExerciseData[];
@@ -49,7 +61,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.getConfig(this.lanPair.to); // For keyboard keys
-    this.getQuestions();
+    this.fetchPreviousResults();
   }
 
   onKeyPressed(key: string) {
@@ -127,6 +139,8 @@ export class LearnTestComponent implements OnInit, OnDestroy {
       const solution = this.currentData.exercise.foreign.word,
             filteredSolution = this.filter(solution),
             timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+      let learnLevel = this.getCurrentLearnLevel(this.currentData),
+          points = 0;
       this.isAnswered = true;
       this.currentData.data.isDone = true;
       this.currentData.data.timeDelta = timeDelta;
@@ -135,51 +149,66 @@ export class LearnTestComponent implements OnInit, OnDestroy {
         // Correct answer
         this.isCorrect = true;
         this.currentData.data.grade = this.calculateGrade(timeDelta, 0, filteredSolution);
+        learnLevel = this.calculateLearnLevel(learnLevel, true, false, false);
+        this.currentData.data.learnLevel = learnLevel;
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
-        this.score = this.score + 100;
+        points = 100;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
         this.timeNext(0.6);
       } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
         // Alternative answer (synonym)
         this.isCorrect = true;
         this.solution = solution;
         this.currentData.data.grade = this.calculateGrade(timeDelta, 1, filteredSolution);
+        learnLevel = this.calculateLearnLevel(learnLevel, false, true, false);
+        this.currentData.data.learnLevel = learnLevel;
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = true;
-        this.score = this.score + 80;
+        points = 80;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
         // this.timeNext(2);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
         this.currentData.data.grade = 1;
+        learnLevel = this.calculateLearnLevel(learnLevel, false, false, true);
+        this.currentData.data.learnLevel = learnLevel;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = true;
         this.currentData.data.isAlt = false;
         this.isCorrect = false;
         this.solution = solution;
-        this.score = this.score + 20;
+        points = 20;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
         if (this.currentData.data.answered < 1) {
           this.addExercise();
         }
       } else {
         // Incorrect answer
         this.currentData.data.grade = 0;
+        learnLevel = this.calculateLearnLevel(learnLevel, false, false, false);
+        this.currentData.data.learnLevel = learnLevel;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.isCorrect = false;
+        this.scores[this.currentData.exercise._id] = {points: 0, learnLevel};
         this.solution = solution;
         if (this.currentData.data.answered < 1) {
           this.addExercise();
         }
       }
+      console.log('LEARN LEVEL', learnLevel);
     }
   }
 
   private checkAltAnswers(exercise: Exercise, answer: string): boolean {
     let isAltAnswer = false;
-    console.log('alt', exercise);
     if (exercise.foreign.alt) {
       const alts = exercise.foreign.alt.split('|');
       const found = alts.filter(alt => this.filter(alt) === answer);
@@ -231,12 +260,59 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     return grade;
   }
 
+  private calculateLearnLevel(level: number, correct: boolean, alt: boolean, almostCorrect: boolean): number {
+    if (correct) {
+      if (level < 10) {
+        level += 2;
+      }
+    } else {
+      if (level > 0) {
+        if (almostCorrect) {
+          level -= 2;
+        } else if (!alt) {
+          level -= 3;
+        }
+      }
+    }
+    level = Math.max(level, 0);
+    return level;
+  }
+
+  private getCurrentLearnLevel(data: ExerciseData): number {
+    let learnLevel = data.result ? data.result.learnLevel || 0 : 1; // saved data
+    // CHECK if this exerciseid has been answered before; if so; use this level
+    const lastScore = this.scores[data.exercise._id];
+    if (lastScore) {
+      // Use level from this score
+      learnLevel = lastScore.learnLevel;
+    }
+    return learnLevel;
+  }
+
   private timeNext(secs: number) {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
     timer
     .takeWhile(() => this.componentActive && this.isAnswered)
     .subscribe(t => this.nextWord());
+  }
+
+  private fetchPreviousResults() {
+    const exerciseIds = this.exercises.map(exercise => exercise._id);
+
+    this.learnService
+    .getPreviousResults(this.userId, this.courseId, 'test', exerciseIds)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        console.log('previous results', results);
+        if (results) {
+          this.results = results;
+        }
+        this.getQuestions();
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getConfig(lanCode: string) {
