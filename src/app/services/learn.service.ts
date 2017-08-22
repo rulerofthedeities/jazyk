@@ -81,7 +81,7 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  getPreviousResults(userId: string, courseId: string, step: string, exerciseIds: string[]) {
+  getPreviousResults(courseId: string, step: string, exerciseIds: string[]) {
     const token = this.authService.getToken(),
           headers = new Headers(),
           params = new URLSearchParams();
@@ -91,7 +91,18 @@ export class LearnService {
       params.set('id' + i.toString(), id);
     });
     return this.http
-    .get('/api/results/' + userId + '/' + courseId + '/' + step, {headers, search: params})
+    .get('/api/results/' + courseId + '/' + step, {headers, search: params})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
+  getResultsCount(courseId: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/resultscount/' + courseId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }

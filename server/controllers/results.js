@@ -77,7 +77,7 @@ module.exports = {
     const parms = req.query,
           exerciseIds = [],
           step = req.params.step, // ignored
-          userId = new mongoose.Types.ObjectId(req.params.userId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let exerciseId;
     for (var key in parms) {
@@ -109,6 +109,33 @@ module.exports = {
       console.log('result', results);
       response.handleError(err, res, 500, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');
+      });
+    });
+  },
+  getResultsDone: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId);
+    const pipeline = [
+      {$match: {userId, courseId}},
+      {$group: {
+        _id: {exerciseId:'$exerciseId', step: '$step'},
+        firstStep: {'$first': '$step'},
+      }},
+      {$group: {
+        _id:'$firstStep',
+        nrDone:{'$sum':1}
+      }},
+      {$project: {
+        _id:0,
+        step: '$_id',
+        nrDone: 1
+      }}
+    ];
+
+    Result.aggregate(pipeline, function(err, results) {
+      console.log('step count', results);
+      response.handleError(err, res, 500, 'Error fetching done results', function(){
+        response.handleSuccess(res, results, 200, 'Fetched done results');
       });
     });
   }

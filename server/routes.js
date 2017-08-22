@@ -76,7 +76,8 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
   
-  router.get('/results/:userId/:courseId/:step', results.getResults);
+  router.get('/results/:courseId/:step', results.getResults);
+  router.get('/resultscount/:courseId', results.getResultsDone);
   router.post('/results/add', results.saveResults);
   
   router.get('/courses/user/:id', courses.getUserCourses);

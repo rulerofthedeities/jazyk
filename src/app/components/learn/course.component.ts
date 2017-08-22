@@ -35,6 +35,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   stepCompleted: Map<boolean> = {};
   steps = ['intro', 'study', 'practise', 'test', 'review', 'exam'];
   isReady = false;
+  isStepsReady = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -129,9 +130,28 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       lesson => {
         this.lesson = lesson;
-        this.setSteps();
+        this.getStepData();
         this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
         this.isReady = true;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getStepData() {
+    this.learnService
+    .getResultsCount(this.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        console.log('step count', results);
+        if (results) {
+          const courseTotal = this.course.exerciseCount;
+          results.map(result => result.nrRemaining = Math.max(0, courseTotal - result.nrDone));
+          this.results = results;
+          console.log('step count2', results);
+        }
+        this.setSteps();
       },
       error => this.errorService.handleError(error)
     );
@@ -146,6 +166,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.steps = steps;
+    this.isStepsReady = true;
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {

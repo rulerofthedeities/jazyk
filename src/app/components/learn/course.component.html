@@ -3,7 +3,7 @@
   <h3>{{lesson.chapterName}} - {{lesson.name}}</h3>
 </div>
 
-<div *ngIf="exercises">
+<div *ngIf="isStepsReady">
   <ul class="list-unstyled list-inline lead steps">
     <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
       <li 

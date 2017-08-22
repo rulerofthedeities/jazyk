@@ -341,7 +341,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const exerciseIds = this.exercises.map(exercise => exercise._id);
 
     this.learnService
-    .getPreviousResults(this.userId, this.courseId, 'practise', exerciseIds)
+    .getPreviousResults(this.courseId, 'practise', exerciseIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
