@@ -8,14 +8,19 @@ module.exports = {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     Lesson.find({courseId, isDeleted: false}, {}, {sort: {nr: 1}}, function(err, lessons) {
       response.handleError(err, res, 500, 'Error fetching lessons', function(){
-        //Course.find({_id: courseId}, {_id: 0, chapters: 1}, function(err, chapters) {
-          //response.handleError(err, res, 500, 'Error fetching chapters', function(){
-            response.handleSuccess(res, lessons, 200, 'Fetched lessons');
-          //});
-        //});
+        response.handleSuccess(res, lessons, 200, 'Fetched lessons');
       });
     });
   },
+  getLessonHeaders: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
+    Lesson.find({courseId, isDeleted: false}, {name: 1, chapterName: 1}, function(err, lessons) {
+      response.handleError(err, res, 500, 'Error fetching lesson headers', function(){
+        response.handleSuccess(res, lessons, 200, 'Fetched lesson headers');
+      });
+    });
+  },
+  /*
   getFirstLesson: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id);
     Lesson.find({courseId}, {}, {sort: {chapterNr: 1, nr: 1}}, function(err, lessons) {
@@ -24,8 +29,9 @@ module.exports = {
       });
     });
   },
+  */
   getLesson: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     
     Lesson.findOne({_id: lessonId}, {}, function(err, lesson) {
       response.handleError(err, res, 500, 'Error fetching lesson', function(){

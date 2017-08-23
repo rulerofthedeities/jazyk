@@ -12,6 +12,7 @@ import {LearnCoursesUserComponent} from './components/learn/courses-user.compone
 import {LearnCourseComponent} from './components/learn/course.component';
 import {LearnCourseSummaryComponent} from './components/learn/course-summary.component';
 import {LearnCourseUserComponent} from './components/learn/course-user.component';
+import {LearnLessonSelectorComponent} from './components/learn/lesson-selector.component';
 import {LearnStudyComponent} from './components/learn/step-study.component';
 import {LearnPractiseComponent} from './components/learn/step-practise.component';
 import {LearnTestComponent} from './components/learn/step-test.component';
@@ -44,6 +45,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnCourseSummaryComponent,
     LearnCourseUserComponent,
     LearnCourseComponent,
+    LearnLessonSelectorComponent,
     LearnStudyComponent,
     LearnPractiseComponent,
     LearnTestComponent,

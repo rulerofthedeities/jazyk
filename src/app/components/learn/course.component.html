@@ -3,6 +3,12 @@
   <h3>{{lesson.chapterName}} - {{lesson.name}}</h3>
 </div>
 
+<km-lesson-selector
+  *ngIf="course"
+  [course]="course"
+  [text]="text">
+</km-lesson-selector>
+
 <div *ngIf="isStepsReady">
   <ul class="list-unstyled list-inline lead steps">
     <ng-template ngFor [ngForOf]="steps" let-step let-i="index">

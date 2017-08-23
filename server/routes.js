@@ -40,8 +40,8 @@ module.exports.initialize = function(app, router) {
   router.put('/chapters/:id', courses.updateChapters);
 
   router.get('/lessons/:id', lessons.getLessons);
-  router.get('/lesson/:id', lessons.getLesson);
-  router.get('/lesson/first/:id', lessons.getFirstLesson);
+  router.get('/lesson/:lessonId', lessons.getLesson);
+  router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
   router.post('/lesson', lessons.addLesson);
   router.delete('/lesson/:id', lessons.removeLesson);
   router.put('/lesson/header', lessons.updateLessonHeader);

@@ -1,0 +1,42 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form
+      class="form-horizontal" *ngIf="isReady">
+
+      <div class="form-group form-group-lg">
+        <label for="language" class="control-label col-xs-2">{{text["Chapter"]}}:</label>
+        <div class="col-xs-10">
+          <select 
+            class="form-control"
+            name="chapter"
+            (change)="getChapterLessons(chapter.value)"
+            #chapter>
+            <option 
+              *ngFor="let chapter of course.chapters"
+              [value]="chapter">
+              {{chapter}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group form-group-lg">
+        <label for="language" class="control-label col-xs-2">{{text["Lesson"]}}:</label>
+        <div class="col-xs-10">
+          <select 
+            class="form-control"
+            name="lesson"
+            (change)="getLesson(lesson.value)"
+            #lesson>
+            <option 
+              *ngFor="let lesson of currentChapterLessons"
+              [value]="lesson._id">
+              {{lesson.name}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

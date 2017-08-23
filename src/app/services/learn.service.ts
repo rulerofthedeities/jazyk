@@ -45,9 +45,16 @@ export class LearnService {
 
   /*** Lessons ***/
 
-  fetchFirstLesson(courseId: string) {
+  fetchLesson(lessonId: string) {
     return this.http
-    .get('/api/lesson/first/' + courseId)
+    .get('/api/lesson/' + lessonId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchLessonHeaders(courseId: string) {
+    return this.http
+    .get('/api/lessons/header/' + courseId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

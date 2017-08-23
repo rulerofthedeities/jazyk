@@ -111,7 +111,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            this.getCurrentLesson(courseId);
+            // this.getCurrentLesson(courseId);
+            this.getStepData();
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
@@ -122,7 +123,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-
+/*
+  // Now from lesson selector
   private getCurrentLesson(courseId: string) {
     this.learnService
     .fetchFirstLesson(courseId)
@@ -137,7 +139,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-
+*/
   private getStepData() {
     this.learnService
     .getResultsCount(this.courseId)
@@ -151,7 +153,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.results = results;
           console.log('step count2', results);
         }
-        this.setSteps();
+        // this.setSteps();
       },
       error => this.errorService.handleError(error)
     );
