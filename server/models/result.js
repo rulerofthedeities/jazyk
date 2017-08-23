@@ -14,4 +14,4 @@ var resultSchema = new Schema({
 
 resultSchema.index({userId: 1, courseId: 1, exerciseId: 1}); 
 
-module.exports = mongoose.model('Result', resultSchema);
+module.exports = mongoose.model('UserResult', resultSchema);

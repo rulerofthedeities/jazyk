@@ -14,10 +14,10 @@ module.exports = {
     });
   },
   getUserCourses: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.params.id);
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     // Find all courseIds for this user
     User.findOne({_id: userId}, {_id: 0, 'jazyk.courses': 1}, function(err, doc) {
-      response.handleError(err, res, 500, 'Error fetching user courses for user "' + req.params.id + '"', function(){
+      response.handleError(err, res, 500, 'Error fetching user courses for user "' + req.decoded.user._id + '"', function(){
         let courseIds = null;
         if (doc && doc.jazyk) {
           courseIds = doc.jazyk.courses;

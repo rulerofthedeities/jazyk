@@ -58,7 +58,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private getCourses() {
     if (this.userService.user) {
       this.learnService
-      .fetchUserCourses(this.userService.user._id)
+      .fetchUserCourses()
       .takeWhile(() => this.componentActive)
       .subscribe(
         courses => {

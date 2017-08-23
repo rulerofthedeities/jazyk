@@ -66,18 +66,18 @@ module.exports = {
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
-          userId = new mongoose.Types.ObjectId(results.userId);
+          userId = req.decoded.user._id;
     if (results.step === 'study') {
       saveStudy(res, results, userId, courseId);
     } else {
       saveStep(res, results, userId, courseId);
     }
   },
-  getResults: function(req, res) {
+  getLastResults: function(req, res) {
     const parms = req.query,
           exerciseIds = [],
           step = req.params.step, // ignored
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let exerciseId;
     for (var key in parms) {
@@ -113,7 +113,7 @@ module.exports = {
     });
   },
   getResultsDone: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+    const userId = req.decoded.user._id,
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const pipeline = [
       {$match: {userId, courseId}},

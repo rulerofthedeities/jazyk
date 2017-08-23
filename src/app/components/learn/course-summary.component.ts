@@ -29,6 +29,7 @@ export class LearnCourseSummaryComponent implements OnInit {
 
   onStartCourse() {
     if (this.course.isPublished) {
+      console.log('subscribing to course', this.course);
       this.userService.subscribeToCourse(this.course);
       this.router.navigate(['/learn/course/' + this.course._id]);
     }

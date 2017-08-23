@@ -100,10 +100,9 @@ export class UserService {
   }
 
   continueCourse(course: Course) {
-    // Check if it is a loggedin user
+    // Check if it is a logged in user
     if (this.authService.isLoggedIn() && this._user) {
-      const data = JSON.stringify({lan: course.languagePair.to});
-      this.updateUserDb(data);
+      this.updateUserDb(course.languagePair.to, null);
       this._user.jazyk.learn.lan = course.languagePair.to;
     }
   }
@@ -122,28 +121,40 @@ export class UserService {
   subscribeToCourse(course: Course) {
     // Only subscribe if it is a loggedin user
     if (this.authService.isLoggedIn() && this._user) {
-      const data = JSON.stringify({courseId: course._id, lan: course.languagePair.to});
-      this.updateUserDb(data);
-      this.updateUserCache(course);
+      const lan = course.languagePair.to;
+      this.updateUserDb(lan, course._id);
+      this.updateUserCache(lan);
     }
   }
 
-  private updateUserDb(data: string) {
+  private updateUserDb(lan: string, courseId: string) {
     // subscribe + set learn language
     const token = this.authService.getToken(),
             headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
-    this.http
-    .patch('/api/user/subscribe', data, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error))
-    .toPromise(); // not lazy
+    // Update learning lan
+    if (lan && this._user.jazyk.learn.lan !== lan) {
+      this.http
+      .patch('/api/user/lan', JSON.stringify({lan}), {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error))
+      .toPromise(); // not lazy
+    }
+    // Upsert subscription
+    if (courseId) {
+      this.http
+      .post('/api/user/subscribe', JSON.stringify({courseId}), {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error))
+      .toPromise(); // not lazy
+    }
   }
 
-  private updateUserCache(course: Course) {
+  private updateUserCache(lan: string) {
     // Add subscription + learn language to cached user data
-    this._user.jazyk.learn.lan = course.languagePair.to;
+    this._user.jazyk.learn.lan = lan;
+    /*
     if (this.user.jazyk.courses) {
       const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
       if (!courses) {
@@ -151,6 +162,7 @@ export class UserService {
       }
       console.log('updated user', this._user);
     }
+    */
   }
 
   private getUserLan(queryLan: string): string {

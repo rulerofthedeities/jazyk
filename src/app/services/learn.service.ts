@@ -25,13 +25,13 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchUserCourses(userId: string) {
+  fetchUserCourses() {
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/courses/user/' + userId, {headers})
+    .get('/api/user/courses/', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -76,7 +76,7 @@ export class LearnService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .post('/api/results/add', data, {headers})
+    .post('/api/user/results/add', data, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -91,7 +91,7 @@ export class LearnService {
       params.set('id' + i.toString(), id);
     });
     return this.http
-    .get('/api/results/' + courseId + '/' + step, {headers, search: params})
+    .get('/api/user/results/last/' + courseId + '/' + step, {headers, search: params})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
@@ -102,7 +102,7 @@ export class LearnService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/resultscount/' + courseId, {headers})
+    .get('/api/user/results/count/' + courseId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }

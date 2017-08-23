@@ -21,7 +21,6 @@ var jazykLearnSchema = new Schema({
 }, {_id : false});
 
 var jazykSchema = new Schema({
-  courses: [String],
   learn: {type: jazykLearnSchema, required: true}
 }, {_id : false});
 

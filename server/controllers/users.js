@@ -2,7 +2,8 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       jwt = require('jsonwebtoken'),
       scrypt = require('scrypt'),
-      User = require('../models/user')
+      User = require('../models/user'),
+      UserCourse = require('../models/usercourse')
 
 var addUser = function(body, callback) {
   const key = body.password;
@@ -118,28 +119,38 @@ module.exports = {
       });
     });
   },
-  subscribe: function(req, res) {
+  updateLan: function(req, res) {
     var userId = req.decoded.user._id;
     var data = req.body;
-    var updateObj = {};
-
-    if (data) {
-      if (data.lan) {
-        updateObj['$set'] = {'jazyk.learn.lan': data.lan}
-      }
-      if (data.courseId) {
-        updateObj['$addToSet'] = {'jazyk.courses': data.courseId}
-      }
+    var lanObj = {};
+    if (data && data.lan) {
+        lanObj['$set'] = {'jazyk.learn.lan': data.lan}
+        console.log('updating language', lanObj);
     }
-
-    // console.log(updateObj);
-
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating user', function(){
         response.handleSuccess(res, result, 200, 'Updated user');
       });
     });
+  },
+  subscribe: function(req, res) {
+    var userId = req.decoded.user._id;
+    var data = req.body;
+
+    if (data && data.courseId) {
+      console.log('subscribing to course', data.courseId);
+      const query = {userId, courseId: data.courseId};
+      const update = {$set: {subscribed: true}, $setOnInsert: {userId, courseId: data.courseId}};
+      UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
+        response.handleError(err, res, 500, 'Error updating user', function(){
+          response.handleSuccess(res, result, 200, 'Updated user');
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200, 'No course data to update');
+    }
+
   },
   refreshToken: function(req, res) {
     var payload = req.decoded;

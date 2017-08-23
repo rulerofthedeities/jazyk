@@ -72,15 +72,16 @@ module.exports.initialize = function(app, router) {
   /*** authenticated ***/
 
   router.put('/user/settings', users.saveLearnSettings);
+  router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
-  router.patch('/user/subscribe', users.subscribe);
+  router.post('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
   
-  router.get('/results/:courseId/:step', results.getResults);
-  router.get('/resultscount/:courseId', results.getResultsDone);
-  router.post('/results/add', results.saveResults);
+  router.get('/user/results/last/:courseId/:step', results.getLastResults);
+  router.get('/user/results/count/:courseId', results.getResultsDone);
+  router.post('/user/results/add', results.saveResults);
   
-  router.get('/courses/user/:id', courses.getUserCourses);
+  router.get('/user/courses', courses.getUserCourses);
 
 
   router.get('/user', users.getUser);
