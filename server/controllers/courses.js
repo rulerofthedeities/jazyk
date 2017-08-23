@@ -1,8 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Course = require('../models/course'),
-      User = require('../models/user');
-
+      UserCourse = require('../models/usercourse');
 
 module.exports = {
   getLanCourses: function(req, res) {
@@ -14,16 +13,15 @@ module.exports = {
     });
   },
   getUserCourses: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+    const userId = req.decoded.user._id;
     // Find all courseIds for this user
-    User.findOne({_id: userId}, {_id: 0, 'jazyk.courses': 1}, function(err, doc) {
-      response.handleError(err, res, 500, 'Error fetching user courses for user "' + req.decoded.user._id + '"', function(){
-        let courseIds = null;
-        if (doc && doc.jazyk) {
-          courseIds = doc.jazyk.courses;
-        }
-        //Get all courses for the courseIds
-        Course.find({_id: {$in: courseIds}}, {}, function(err, courses) {
+    UserCourse.find({userId, subscribed: true}, {_id: 0, 'courseId': 1}, function(err, courseIds) {
+      response.handleError(err, res, 500, 'Error fetching user courses', function(){
+        const courseIdArr = [];
+        courseIds.forEach(courseId => courseIdArr.push(courseId.courseId));
+        const query = {_id: {$in: courseIdArr}};
+        // Find courses with the courseIds
+        Course.find(query, {},  function(err, courses) {
           response.handleError(err, res, 500, 'Error fetching user courses', function(){
             response.handleSuccess(res, courses, 200, 'Fetched user courses');
           });
