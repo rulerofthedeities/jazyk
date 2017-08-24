@@ -29,8 +29,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() options: ExerciseTpe;
   @Input() text: Object;
-  @Input() userId: string;
-  @Input() courseId: string;
+  @Input() lessonId: string;
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
@@ -301,7 +300,7 @@ export class LearnTestComponent implements OnInit, OnDestroy {
     const exerciseIds = this.exercises.map(exercise => exercise._id);
 
     this.learnService
-    .getPreviousResults(this.courseId, 'test', exerciseIds)
+    .getPreviousResults(this.lessonId, exerciseIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {

@@ -119,7 +119,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            this.fetchLastExercise();
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
@@ -160,10 +159,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     });
     this.steps = steps;
     this.isStepsReady = true;
-  }
-
-  private fetchLastExercise() {
-    // Check where this course was left off
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {

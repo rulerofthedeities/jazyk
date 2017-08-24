@@ -32,6 +32,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   @ViewChild('chapter') chapter: ElementRef;
   @ViewChild('lesson') lesson: ElementRef;
   private componentActive = true;
+  private currentLessonId: string;
   currentChapter: string;
   currentLessonName: string;
   lessons: LessonHeader[] = [];
@@ -45,9 +46,6 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.course.chapters) {
-      this.currentChapter = this.course.chapters[0];
-    }
     this.getLessons();
   }
 
@@ -142,11 +140,34 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     .subscribe(
       lessons => {
         this.lessons = lessons;
-        this.getFirstChapterLessons();
+        this.fetchCurrentLesson();
       },
       error => this.errorService.handleError(error)
     );
     this.isReady = true;
+  }
+
+  private fetchCurrentLesson() {
+    // Check where this course was left off
+    this.learnService
+    .fetchCurrentLesson(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      userResult => {
+        if (userResult) {
+          // set chapter & lesson to the latest result
+          console.log('LESSON to load', userResult.lessonId);
+          this.getLesson(userResult.lessonId);
+        } else {
+          // start from beginning of the course
+          if (this.course.chapters) {
+            this.currentChapter = this.course.chapters[0];
+          }
+          this.getFirstChapterLessons();
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getFirstChapterLessons() {
@@ -159,16 +180,21 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
 
   private getLesson(lessonId: string) {
     // Get all data for this particular lesson
-    this.learnService
-    .fetchLesson(lessonId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      lesson => {
-        this.currentLessonName = lesson.name;
-        this.currentLesson.emit(lesson);
-      },
-      error => this.errorService.handleError(error)
-    );
+    if (lessonId !== this.currentLessonId) {
+      this.learnService
+      .fetchLesson(lessonId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        (lesson: Lesson) => {
+          this.currentLessonName = lesson.name;
+          this.currentLessonId = lesson._id;
+          this.currentChapter = lesson.chapterName;
+          this.getChapterLessons(lesson.chapterName);
+          this.currentLesson.emit(lesson);
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   ngOnDestroy() {

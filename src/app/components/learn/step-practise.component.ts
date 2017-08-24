@@ -28,10 +28,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
-  @Input() userId: string;
-  @Input() courseId: string;
-  @Input() options: ExerciseTpe;
   @Input() lessonId: string;
+  @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
@@ -341,7 +339,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     const exerciseIds = this.exercises.map(exercise => exercise._id);
 
     this.learnService
-    .getPreviousResults(this.courseId, 'practise', exerciseIds)
+    .getPreviousResults(this.lessonId, exerciseIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {

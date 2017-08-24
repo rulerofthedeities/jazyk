@@ -69,7 +69,7 @@ module.exports = {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
           lessonId = new mongoose.Types.ObjectId(results.lessonId),
-          userId = req.decoded.user._id;
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     if (results.step === 'study') {
       saveStudy(res, results, userId, courseId, lessonId);
     } else {
@@ -77,11 +77,11 @@ module.exports = {
     }
   },
   getLastResults: function(req, res) {
+    // Get the learn level of the most recent exercises for this lesson
     const parms = req.query,
           exerciseIds = [],
-          step = req.params.step, // ignored
-          userId = req.decoded.user._id,
-          courseId = new mongoose.Types.ObjectId(req.params.courseId);
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     let exerciseId;
     for (var key in parms) {
       if (parms[key]) {
@@ -89,8 +89,8 @@ module.exports = {
         exerciseIds.push(exerciseId);
       }
     }
-    console.log('ids', exerciseIds);
-    const query = {userId, courseId, exerciseId: {$in: exerciseIds}};
+    console.log('ids', userId, lessonId, exerciseIds);
+    const query = {userId, lessonId, step: {$ne:'study'}, exerciseId: {$in: exerciseIds}};
 
     const pipeline = [
       {$match: query},
@@ -109,17 +109,27 @@ module.exports = {
     ];
 
     Result.aggregate(pipeline, function(err, results) {
-      console.log('result', results);
+      console.log('resultLast', results);
       response.handleError(err, res, 500, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');
       });
     });
   },
-  getResultsDone: function(req, res) {
-    const userId = req.decoded.user._id,
+  getCurrentLesson: function(req, res) {
+    // Get the lesson from the most recent result for a course
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
+    Result.findOne({courseId}, {_id: 0, lessonId: 1}, {sort: {dt: -1, sequence: -1}}, function(err, result) {
+      response.handleError(err, res, 500, 'Error fetching most recent result', function(){
+        response.handleSuccess(res, result, 200, 'Fetched most recent result');
+      });
+    })
+  },
+  getResultsDone: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     const pipeline = [
-      {$match: {userId, courseId}},
+      {$match: {userId, lessonId}},
       {$group: {
         _id: {exerciseId:'$exerciseId', step: '$step'},
         firstStep: {'$first': '$step'},
@@ -136,7 +146,7 @@ module.exports = {
     ];
 
     Result.aggregate(pipeline, function(err, results) {
-      console.log('step count', results);
+      console.log('resultDone', results);
       response.handleError(err, res, 500, 'Error fetching done results', function(){
         response.handleSuccess(res, results, 200, 'Fetched done results');
       });

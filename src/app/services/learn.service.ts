@@ -88,7 +88,8 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  getPreviousResults(courseId: string, step: string, exerciseIds: string[]) {
+  getPreviousResults(lessonId: string, exerciseIds: string[]) {
+    // Get the learn level of the most recent exercises for this lesson
     const token = this.authService.getToken(),
           headers = new Headers(),
           params = new URLSearchParams();
@@ -98,18 +99,30 @@ export class LearnService {
       params.set('id' + i.toString(), id);
     });
     return this.http
-    .get('/api/user/results/last/' + courseId + '/' + step, {headers, search: params})
+    .get('/api/user/results/lastperexercise/' + lessonId, {headers, search: params})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
 
-  getResultsCount(courseId: string) {
+  fetchCurrentLesson(courseId: string) {
+    // Get the most recent lesson saved for this course
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/results/count/' + courseId, {headers})
+    .get('/api/user/results/currentlesson/' + courseId, {headers})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
+  getResultsCount(lessonId: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/user/results/countperexercise/' + lessonId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }

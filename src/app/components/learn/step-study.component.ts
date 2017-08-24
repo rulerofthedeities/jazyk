@@ -21,8 +21,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
-  @Input() userId: string;
-  @Input() courseId: string;
+  @Input() lessonId: string;
   @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
@@ -158,7 +157,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     const exerciseIds = this.exercises.map(exercise => exercise._id);
 
     this.learnService
-    .getPreviousResults(this.courseId, 'study', exerciseIds)
+    .getPreviousResults(this.lessonId, exerciseIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
