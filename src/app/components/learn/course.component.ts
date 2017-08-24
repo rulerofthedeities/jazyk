@@ -85,6 +85,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.settings = settings;
   }
 
+  onLessonSelected(lesson: Lesson) {
+    console.log('new lesson selected', lesson);
+    this.lesson = lesson;
+    this.getStepData();
+    this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
+    this.isReady = true;
+  }
+
   private setText(translations: Translation[]) {
     this.text = this.utilsService.getTranslatedText(translations);
   }
@@ -111,8 +119,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            // this.getCurrentLesson(courseId);
-            this.getStepData();
+            this.fetchLastExercise();
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
@@ -123,23 +130,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-/*
-  // Now from lesson selector
-  private getCurrentLesson(courseId: string) {
-    this.learnService
-    .fetchFirstLesson(courseId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      lesson => {
-        this.lesson = lesson;
-        this.getStepData();
-        this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
-        this.isReady = true;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-*/
+
   private getStepData() {
     this.learnService
     .getResultsCount(this.courseId)
@@ -153,7 +144,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.results = results;
           console.log('step count2', results);
         }
-        // this.setSteps();
+        this.setSteps();
       },
       error => this.errorService.handleError(error)
     );
@@ -162,7 +153,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private setSteps() {
     const steps = [];
     this.steps.forEach((step, i) => {
-      if (step === 'review' || this.lesson.exerciseTpes[step].active) {
+      if (step === 'review' || (this.lesson.exerciseTpes[step] && this.lesson.exerciseTpes[step].active)) {
         steps.push(step);
         this.stepCompleted[step] = false;
       }
@@ -171,12 +162,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.isStepsReady = true;
   }
 
+  private fetchLastExercise() {
+    // Check where this course was left off
+  }
+
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     console.log('course', this.course._id);
     const result = {
       courseId: this.course._id,
-      userId: this.userService.user._id,
+      lessonId: this.lesson._id,
       step,
       data: []
     };

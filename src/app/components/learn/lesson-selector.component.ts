@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Course, Lesson} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
@@ -11,18 +11,33 @@ interface LessonHeader {
 
 @Component({
   selector: 'km-lesson-selector',
-  templateUrl: 'lesson-selector.component.html'
+  templateUrl: 'lesson-selector.component.html',
+  styles: [`
+    .panel {
+      background-color: rgba(239, 239, 239, .9);
+    }
+    .title {
+      margin-bottom: 4px;
+    }
+    .title h2 {
+      margin: 0;
+    }
+  `]
 })
 
 export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   @Input() course: Course;
   @Input() text: Object;
+  @Output() currentLesson = new EventEmitter<Lesson>();
+  @ViewChild('chapter') chapter: ElementRef;
+  @ViewChild('lesson') lesson: ElementRef;
   private componentActive = true;
   currentChapter: string;
-  currentLesson: Lesson;
+  currentLessonName: string;
   lessons: LessonHeader[] = [];
   currentChapterLessons: LessonHeader[] = [];
   isReady = false;
+  showSelector = false;
 
   constructor(
     private learnService: LearnService,
@@ -36,7 +51,70 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     this.getLessons();
   }
 
-  getChapterLessons(chapterName: string) {
+  onPreviousChapter(chapterName: string) {
+    this.changeChapter(chapterName, -1);
+  }
+
+  onNextChapter(chapterName: string) {
+    this.changeChapter(chapterName, 1);
+  }
+
+  onPreviousLesson(lessonId: string) {
+    this.changeLesson(lessonId, -1);
+  }
+
+  onNextLesson(lessonId: string) {
+    this.changeLesson(lessonId, 1);
+  }
+
+  onGetChapterLessons(chapterName: string) {
+    this.getChapterLessons(chapterName);
+  }
+
+  onToggleEdit() {
+    this.showSelector = !this.showSelector;
+  }
+
+  private changeChapter(chapterName: string, direction: number) {
+    const len = this.course.chapters.length;
+    if (this.course.chapters && len > 1) {
+      let i = this.course.chapters.indexOf(chapterName);
+      if (i >= 0) {
+        i += direction;
+        if (i < 0) {
+          i = len - 1;
+        } else {
+          i = i % len;
+        }
+        const newChapter = this.course.chapters[i];
+        this.currentChapter = newChapter;
+        this.chapter.nativeElement.value = newChapter;
+        this.getChapterLessons(newChapter);
+      }
+    }
+  }
+
+  private changeLesson(lessonId: string, direction: number) {
+    console.log('lessons', this.currentChapterLessons);
+    console.log('change lesson', lessonId, direction);
+    const len = this.currentChapterLessons.length;
+    if (this.currentChapterLessons && len > 1) {
+      let i = this.currentChapterLessons.findIndex(lesson => lesson._id === lessonId);
+      if (i >= 0) {
+        i += direction;
+        if (i < 0) {
+          i = len - 1;
+        } else {
+          i = i % len;
+        }
+        const newLesson = this.currentChapterLessons[i];
+        this.currentLessonName = newLesson.name;
+        this.lesson.nativeElement.value = newLesson._id;
+      }
+    }
+  }
+
+  private getChapterLessons(chapterName: string) {
     // First get ids from course to get correct order
     // Next find corresponding lesson names in this.lessons
     this.currentChapterLessons = [];
@@ -81,14 +159,13 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
 
   private getLesson(lessonId: string) {
     // Get all data for this particular lesson
-    console.log('getting data for lesson', lessonId);
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       lesson => {
-        console.log('current lesson', lesson);
-        this.currentLesson = lesson;
+        this.currentLessonName = lesson.name;
+        this.currentLesson.emit(lesson);
       },
       error => this.errorService.handleError(error)
     );

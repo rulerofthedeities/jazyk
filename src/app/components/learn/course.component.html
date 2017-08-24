@@ -1,12 +1,8 @@
-<div *ngIf="lesson">
-  <h2>{{course.name}}</h2>
-  <h3>{{lesson.chapterName}} - {{lesson.name}}</h3>
-</div>
-
 <km-lesson-selector
   *ngIf="course"
   [course]="course"
-  [text]="text">
+  [text]="text"
+  (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
 
 <div *ngIf="isStepsReady">

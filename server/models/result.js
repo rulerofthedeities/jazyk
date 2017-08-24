@@ -3,6 +3,7 @@ var mongoose = require('mongoose'),
 
 var resultSchema = new Schema({
   courseId: {type: Schema.Types.ObjectId, required: true},
+  lessonId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   exerciseId: {type: Schema.Types.ObjectId, required: true},
   step: {type: String, required: true},
@@ -12,6 +13,6 @@ var resultSchema = new Schema({
   sequence: Number // To find the last saved doc for docs with same save time
 });
 
-resultSchema.index({userId: 1, courseId: 1, exerciseId: 1}); 
+resultSchema.index({userId: 1, courseId: 1, lessonId: 1, exerciseId: 1}); 
 
 module.exports = mongoose.model('UserResult', resultSchema);

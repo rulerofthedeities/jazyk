@@ -2,7 +2,7 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       Result = require('../models/result');
 
-saveStudy = function(res, results, userId, courseId) {
+saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
   const docs = results.data.map(doc => 
   { 
@@ -10,6 +10,7 @@ saveStudy = function(res, results, userId, courseId) {
     filterObj = {
       userId,
       courseId,
+      lessonId,
       exerciseId,
       step: 'study'
     };
@@ -35,7 +36,7 @@ saveStudy = function(res, results, userId, courseId) {
   })
 }
 
-saveStep = function(res, results, userId, courseId) {
+saveStep = function(res, results, userId, courseId, lessonId) {
   let exerciseId, result;
   console.log('results', results);
   const docs = results.data.map(doc => 
@@ -44,6 +45,7 @@ saveStep = function(res, results, userId, courseId) {
     result = {
       userId,
       courseId,
+      lessonId,
       exerciseId,
       step: results.step,
       points: doc.points,
@@ -66,11 +68,12 @@ module.exports = {
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
+          lessonId = new mongoose.Types.ObjectId(results.lessonId),
           userId = req.decoded.user._id;
     if (results.step === 'study') {
-      saveStudy(res, results, userId, courseId);
+      saveStudy(res, results, userId, courseId, lessonId);
     } else {
-      saveStep(res, results, userId, courseId);
+      saveStep(res, results, userId, courseId, lessonId);
     }
   },
   getLastResults: function(req, res) {
