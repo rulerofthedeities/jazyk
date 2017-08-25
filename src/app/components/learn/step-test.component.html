@@ -44,8 +44,8 @@
       <km-learn-settings
         [step]="'test'"
         [hasGenus]="!!currentData?.exercise?.genus"
-        [isInput]="true"
         [settings]="settings"
+        [isInput]="true"
         [isActive]="!isTestDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>

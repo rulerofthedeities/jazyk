@@ -1,9 +1,10 @@
-import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
-import {LanPair} from '../../models/course.model';
+import {Component, Input, Output, OnInit, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/takeWhile';
@@ -33,6 +34,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
+  @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
   private isWordsDone =  false; // true once words are done once
   private nrOfChoices = 6;
@@ -48,13 +50,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   currentData: ExerciseData;
   currentChoices: string[] = [];
   current = -1;
-  isSelected = false;
+  isSelected = false; // choices
+  isAnswered = false;  // word
+  isCorrect = false; // word
   isQuestionReady = false;
-  answered: number;
-  answer: number;
+  solution: string; // word
+  answered: number; // choices
+  answer: number; // choices
   score = 0;
   isCountDown: boolean;
   isMute: boolean;
+  keys: string[] = [];
 
   constructor(
     private learnService: LearnService,
@@ -64,6 +70,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
+    this.getConfig(this.lanPair.to); // For keyboard keys
     this.fetchPreviousResults();
   }
 
@@ -78,13 +85,17 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   onSelected(i: number) {
     if (!this.isSelected) {
-      this.checkAnswer(i);
+      this.checkChoicesAnswer(i);
     }
   }
 
   onNextWord() {
-    if (this.isSelected) {
-      this.nextWord();
+    if (this.currentData.data.choices) {
+      if (this.isSelected) {
+        this.nextWord();
+      }
+    } else {
+      this.checkIfWordAnswer();
     }
   }
 
@@ -95,29 +106,35 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   onKeyPressed(key: string) {
-    if (!this.isPractiseDone) {
-      let selection: number;
-      switch (key) {
-        case 'Enter':
-          if (this.isSelected) {
-            this.nextWord();
-          }
-        break;
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-          if (!this.isSelected) {
-            selection = parseInt(key, 10);
-            if (selection > 0 && selection <= this.currentChoices.length) {
-              this.checkAnswer(selection - 1);
+    if (!this.isPractiseDone && this.currentData) {
+      if (this.currentData.data.choices) {
+        let selection: number;
+        switch (key) {
+          case 'Enter':
+            if (this.isSelected) {
+              this.nextWord();
             }
-          }
-        break;
+          break;
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+            if (!this.isSelected) {
+              selection = parseInt(key, 10);
+              if (selection > 0 && selection <= this.currentChoices.length) {
+                this.checkChoicesAnswer(selection - 1);
+              }
+            }
+          break;
+        }
+      } else {
+        if (key === 'Enter') {
+          this.checkIfWordAnswer();
+        }
       }
     }
   }
@@ -134,7 +151,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   getQuestionType(): string {
     let tpe = 'local';
-    if (this.currentData && this.currentData.data.direction === Direction.ForeignToLocal) {
+    if (this.currentData && this.currentData.data.choices && this.currentData.data.direction === Direction.ForeignToLocal) {
       tpe = 'foreign';
     }
     return tpe;
@@ -166,7 +183,15 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
     if (!this.isPractiseDone) {
       this.currentData = this.exerciseData[this.current];
-      this.setChoices();
+      if (this.currentData.result && this.currentData.result.learnLevel > 2) {
+        this.currentData.data.choices = false;
+        console.log('NO CHOICES', this.currentData);
+        this.setChoices();
+      } else {
+        this.currentData.data.choices = true;
+        console.log('CHOICES', this.currentData);
+        this.setChoices();
+      }
     }
     this.isQuestionReady = true;
     this.startDate = new Date();
@@ -179,9 +204,15 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   private clearData() {
+    this.solution = '';
+    this.isAnswered = false;
     this.isSelected = false;
+    this.isCorrect = false;
     this.answered = null;
     this.answer = null;
+    if (this.answerComponent) {
+      this.answerComponent.clearData();
+    }
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -221,7 +252,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.currentChoices = this.learnService.shuffle(choices);
   }
 
-  private checkAnswer(i: number) {
+  private checkChoicesAnswer(i: number) {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
@@ -239,8 +270,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     console.log('CURRENTDATA', this.currentData, this.scores);
     if (choice === word) {
       this.currentData.data.isCorrect = true;
-      this.currentData.data.grade = this.calculateGrade(timeDelta);
-      learnLevel = this.calculateLearnLevel(learnLevel, true);
+      this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, true);
       this.currentData.data.learnLevel = learnLevel;
       points = 2 + this.currentChoices.length * 3;
       this.scores[this.currentData.exercise._id] = {points, learnLevel};
@@ -249,7 +280,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     } else {
       this.currentData.data.isCorrect = false;
       this.currentData.data.grade = 0;
-      learnLevel = this.calculateLearnLevel(learnLevel, false);
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, false);
       this.currentData.data.learnLevel = learnLevel;
       this.scores[this.currentData.exercise._id] = {points: 0, learnLevel};
       // Show correct answer
@@ -262,6 +293,112 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
   }
 
+  private checkIfWordAnswer() {
+    if (!this.isAnswered) {
+      if (this.answerComponent) {
+        this.checkWordAnswer(this.answerComponent.getData());
+      }
+    } else {
+      this.nextWord();
+    }
+  }
+
+  private checkWordAnswer(answer: string) {
+    const filteredAnswer = this.filter(answer);
+    if (filteredAnswer) {
+      this.endDate = new Date();
+      const solution = this.currentData.exercise.foreign.word,
+            filteredSolution = this.filter(solution),
+            timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+      let learnLevel = this.getCurrentLearnLevel(this.currentData),
+          points = 0;
+      this.isAnswered = true;
+      this.currentData.data.isDone = true;
+      this.currentData.data.timeDelta = timeDelta;
+      console.log('answer', filteredAnswer, filteredSolution);
+      if (filteredAnswer === filteredSolution) {
+        // Correct answer
+        this.isCorrect = true;
+        this.currentData.data.grade = this.calculateWordGrade(timeDelta, 0, filteredSolution);
+        learnLevel = this.calculateWordLearnLevel(learnLevel, true, false, false);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
+        points = 100;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
+        this.timeNext(0.6);
+      } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
+        // Alternative answer (synonym)
+        this.isCorrect = true;
+        this.solution = solution;
+        this.currentData.data.grade = this.calculateWordGrade(timeDelta, 1, filteredSolution);
+        learnLevel = this.calculateWordLearnLevel(learnLevel, false, true, false);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = true;
+        points = 80;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
+        // this.timeNext(2);
+      } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
+        // Almost correct answer
+        this.currentData.data.grade = 1;
+        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, true);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = true;
+        this.currentData.data.isAlt = false;
+        this.isCorrect = false;
+        this.solution = solution;
+        points = 20;
+        this.scores[this.currentData.exercise._id] = {points, learnLevel};
+        this.score = this.score + points;
+        if (this.currentData.data.answered < 1) {
+          this.addExercise();
+        }
+      } else {
+        // Incorrect answer
+        this.currentData.data.grade = 0;
+        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, false);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
+        this.isCorrect = false;
+        this.scores[this.currentData.exercise._id] = {points: 0, learnLevel};
+        this.solution = solution;
+        if (this.currentData.data.answered < 1) {
+          this.addExercise();
+        }
+      }
+      console.log('LEARN LEVEL', learnLevel);
+    }
+  }
+
+  private checkAltAnswers(exercise: Exercise, answer: string): boolean {
+    let isAltAnswer = false;
+    if (exercise.foreign.alt) {
+      const alts = exercise.foreign.alt.split('|');
+      const found = alts.filter(alt => this.filter(alt) === answer);
+      console.log('found', found.length);
+      if (found.length > 0) {
+        isAltAnswer = true;
+      }
+    }
+    return isAltAnswer;
+  }
+
+  private filter(word: string): string {
+    let filteredAnswer = word.trim().toLowerCase();
+    filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
+    filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
+    console.log('filtered answer', word, '->' , '>' + filteredAnswer + '<');
+    return filteredAnswer;
+  }
+
   private addExercise() {
     // Incorrect answer -> readd exercise to the back
     const newExerciseData: ExerciseData = {
@@ -270,12 +407,12 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     };
     newExerciseData.data.isCorrect = false;
     newExerciseData.data.isDone = false;
-    newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
+    // newExerciseData.data.nrOfChoices = Math.max(newExerciseData.data.nrOfChoices - 2, this.minNrOfChoices);
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
     this.exerciseData.push(newExerciseData);
   }
 
-  private calculateGrade(delta: number): number {
+  private calculateChoicesGrade(delta: number): number {
     // 5 = correct and fast
     // 4 = correct and not fast
     // 3 = correct and slow
@@ -289,7 +426,23 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     return grade;
   }
 
-  private calculateLearnLevel(level: number, correct: boolean): number {
+  private calculateWordGrade(delta: number, deduction: number, solution: string): number {
+    // 5 = correct and fast
+    // 4 = correct and not fast
+    // 3 = correct and slow
+    let grade = 3;
+    const wordLength = solution.length;
+    if (delta <= wordLength * 18) {
+      grade = 5;
+    } else if (delta < wordLength * 36) {
+      grade = 4;
+    }
+    console.log('time/grade', delta, wordLength * 18, wordLength * 36, grade);
+
+    return grade;
+  }
+
+  private calculateChoicesLearnLevel(level: number, correct: boolean): number {
     if (correct) {
       if (level < 5) {
         level += 1;
@@ -299,6 +452,24 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         level -= 1;
       }
     }
+    return level;
+  }
+
+  private calculateWordLearnLevel(level: number, correct: boolean, alt: boolean, almostCorrect: boolean): number {
+    if (correct) {
+      if (level < 10) {
+        level += 2;
+      }
+    } else {
+      if (level > 0) {
+        if (almostCorrect) {
+          level -= 2;
+        } else if (!alt) {
+          level -= 3;
+        }
+      }
+    }
+    level = Math.max(level, 0);
     return level;
   }
 
@@ -348,6 +519,20 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
           this.results = results;
         }
         this.getQuestions();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getConfig(lanCode: string) {
+    this.learnService
+    .fetchLanConfig(lanCode)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (config: LanConfig) => {
+        if (config) {
+          this.keys = config.keys;
+        }
       },
       error => this.errorService.handleError(error)
     );

@@ -20,7 +20,7 @@
             [tpe]="getQuestionType()"
             [settings]="settings"
           ></km-question>
-          <km-answer-choices
+          <km-answer-choices *ngIf="currentData.data.choices"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"
             [answer]="answer"
@@ -28,6 +28,13 @@
             [isSelected]="isSelected"
             (selected)="onSelected($event)">
           </km-answer-choices>
+          <km-answer-field *ngIf="!currentData.data.choices"
+            [lan]="lanPair.to"
+            [disabled]="isAnswered"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
+            [solution]="{solution: solution, msg: text['Expectedanswer']}"
+            [data]="currentData?.data">
+          </km-answer-field>
         </div>
 
         <!-- PRACTISE DONE -->
@@ -48,14 +55,13 @@
         [step]="'practise'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
+        [isInput]="!this.currentData?.data.choices"
         [isActive]="!isPractiseDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions">
         <div *ngIf="!isPractiseDone"
-          class="btn btn-lg next" 
-          [class.disabled]="!isSelected"
-          [ngClass]="{'btn-default': !isSelected, 'btn-success': isSelected}"
+          class="btn btn-lg btn-success next" 
           (click)="onNextWord()">
           <span class="fa fa-step-forward"></span>
           {{text["Next"]}}

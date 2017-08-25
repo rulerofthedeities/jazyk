@@ -53,18 +53,6 @@
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
-  <km-learn-test *ngSwitchCase="'test'"
-    [exercises]="exercises"
-    [results]="results"
-    [lanPair]="course.languagePair"
-    [options]="lesson?.exerciseTpes.test"
-    [lessonId]="this.lesson._id"
-    [text]="text"
-    [settings]="settings"
-    (stepCompleted)="onStepCompleted('test', $event)"
-    (updatedSettings)="onSettingsUpdated($event)"
-  >
-  </km-learn-test>
 </div>
 
 <km-info-msg
