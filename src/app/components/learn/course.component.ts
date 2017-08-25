@@ -33,7 +33,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   text: Object = {};
   currentStep = 0;
   stepCompleted: Map<boolean> = {};
-  steps = ['intro', 'study', 'practise', 'test', 'review', 'exam'];
+  steps = ['intro', 'study', 'practise', 'test', 'review', 'exam', 'overview'];
   isReady = false;
   isStepsReady = false;
 

@@ -117,9 +117,11 @@ module.exports = {
   },
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
+    console.log('getting current lesson');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     Result.findOne({courseId}, {_id: 0, lessonId: 1}, {sort: {dt: -1, sequence: -1}}, function(err, result) {
+    console.log('current lesson', result);
       response.handleError(err, res, 500, 'Error fetching most recent result', function(){
         response.handleSuccess(res, result, 200, 'Fetched most recent result');
       });

@@ -22,6 +22,10 @@ interface LessonHeader {
     .title h2 {
       margin: 0;
     }
+    .flag {
+      margin-right: 10px;
+      margin-top: 6px;
+    }
   `]
 })
 
@@ -50,30 +54,35 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   }
 
   onPreviousChapter(chapterName: string) {
-    this.changeChapter(chapterName, -1);
+    this.navigateChapter(chapterName, -1);
   }
 
   onNextChapter(chapterName: string) {
-    this.changeChapter(chapterName, 1);
+    this.navigateChapter(chapterName, 1);
   }
 
   onPreviousLesson(lessonId: string) {
-    this.changeLesson(lessonId, -1);
+    this.navigateLesson(lessonId, -1);
   }
 
   onNextLesson(lessonId: string) {
-    this.changeLesson(lessonId, 1);
+    this.navigateLesson(lessonId, 1);
   }
 
-  onGetChapterLessons(chapterName: string) {
+  onChangeChapter(chapterName: string) {
     this.getChapterLessons(chapterName);
+  }
+
+  onChangeLesson(lessonId: string) {
+    console.log('manually changing to lesson', lessonId);
+    this.getLesson(lessonId);
   }
 
   onToggleEdit() {
     this.showSelector = !this.showSelector;
   }
 
-  private changeChapter(chapterName: string, direction: number) {
+  private navigateChapter(chapterName: string, direction: number) {
     const len = this.course.chapters.length;
     if (this.course.chapters && len > 1) {
       let i = this.course.chapters.indexOf(chapterName);
@@ -92,7 +101,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private changeLesson(lessonId: string, direction: number) {
+  private navigateLesson(lessonId: string, direction: number) {
     console.log('lessons', this.currentChapterLessons);
     console.log('change lesson', lessonId, direction);
     const len = this.currentChapterLessons.length;
@@ -124,9 +133,6 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         lessonHeader = this.lessons.find(lesson => lesson._id === lessonId);
         if (lessonHeader) {
           this.currentChapterLessons.push(lessonHeader);
-          if (i === 0) {
-            this.getLesson(lessonId);
-          }
         }
       });
     }
@@ -160,6 +166,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
+          console.log('NO LESSON to load; start from beginning');
           if (this.course.chapters) {
             this.currentChapter = this.course.chapters[0];
           }
@@ -186,10 +193,10 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         (lesson: Lesson) => {
+          this.getChapterLessons(lesson.chapterName);
           this.currentLessonName = lesson.name;
           this.currentLessonId = lesson._id;
           this.currentChapter = lesson.chapterName;
-          this.getChapterLessons(lesson.chapterName);
           this.currentLesson.emit(lesson);
         },
         error => this.errorService.handleError(error)

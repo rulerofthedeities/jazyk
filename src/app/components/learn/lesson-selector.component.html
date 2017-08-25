@@ -3,6 +3,7 @@
     <div class="btn btn-warning pull-right" *ngIf="!showSelector" (click)="onToggleEdit()">
       {{text['Edit']}}
     </div>
+    <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag pull-left">
     <h2>
       {{course?.name}} - <span *ngIf="currentChapter">{{currentChapter}} -</span> {{currentLessonName}}
     </h2>
@@ -23,7 +24,7 @@
             <select 
               class="form-control"
               name="chapter"
-              (change)="onGetChapterLessons(chapter.value)"
+              (change)="onChangeChapter(chapter.value)"
               #chapter>
               <option 
                 *ngFor="let chapter of course.chapters"
@@ -48,7 +49,7 @@
             <select 
               class="form-control"
               name="lesson"
-              (change)="getLesson(lesson.value)"
+              (change)="onChangeLesson(lesson.value)"
               #lesson>
               <option 
                 *ngFor="let lesson of currentChapterLessons"
