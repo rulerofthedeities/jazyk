@@ -6,9 +6,20 @@
     <div class="course">
       <h3>{{course.name}}</h3>
       <button class="btn btn-success"
-        [class.disabled]="!course.isPublished"
         (click)="onContinueCourse()">
         {{text["continuecourse"]}}
+      </button>
+       <button class="btn btn-info"
+        (click)="onLearnNewWords()">
+        {{text["learnnewwords"]}}
+      </button>
+       <button class="btn btn-primary"
+        (click)="onReview()">
+        {{text["reviewwords"]}}
+      </button>
+       <button class="btn btn-danger"
+        (click)="onExam()">
+        {{text["takeexam"]}}
       </button>
       <div class="info">
         <div>{{course.exerciseCount || 0}} {{course.exerciseCount === 1 ? text["word"] : text["words"]}}</div>

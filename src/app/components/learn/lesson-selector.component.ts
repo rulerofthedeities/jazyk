@@ -156,7 +156,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   private fetchCurrentLesson() {
     // Check where this course was left off
     this.learnService
-    .fetchCurrentLesson(this.course._id)
+    .fetchMostRecentLesson(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       userResult => {

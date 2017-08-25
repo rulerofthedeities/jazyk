@@ -130,6 +130,7 @@ module.exports = {
   getResultsDone: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+    console.log('getting results done', userId, lessonId);
     const pipeline = [
       {$match: {userId, lessonId}},
       {$group: {

@@ -99,30 +99,30 @@ export class LearnService {
       params.set('id' + i.toString(), id);
     });
     return this.http
-    .get('/api/user/results/lastperexercise/' + lessonId, {headers, search: params})
+    .get('/api/user/results/lesson/lastperexercise/' + lessonId, {headers, search: params})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
 
-  fetchCurrentLesson(courseId: string) {
+  getResultsCountByStep(lessonId: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/user/results/lesson/countbystep/' + lessonId, {headers})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchMostRecentLesson(courseId: string) {
     // Get the most recent lesson saved for this course
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/results/currentlesson/' + courseId, {headers})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
-  }
-
-  getResultsCount(lessonId: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
-    return this.http
-    .get('/api/user/results/countperexercise/' + lessonId, {headers})
+    .get('/api/user/results/course/currentlesson/' + courseId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }

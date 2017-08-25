@@ -28,7 +28,8 @@
               #chapter>
               <option 
                 *ngFor="let chapter of course.chapters"
-                [value]="chapter">
+                [value]="chapter"
+                [selected]="chapter === currentChapter">
                 {{chapter}}
               </option>
             </select>
@@ -53,7 +54,8 @@
               #lesson>
               <option 
                 *ngFor="let lesson of currentChapterLessons"
-                [value]="lesson._id">
+                [value]="lesson._id"
+                [selected]="lesson._id === currentLessonId">
                 {{lesson.name}}
               </option>
             </select>

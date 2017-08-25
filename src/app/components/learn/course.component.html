@@ -18,7 +18,7 @@
         [class.btn-info]="step!=='intro' && step!=='exam' &&  step!=='review'"
         [class.inactive]="currentStep!==i">
         <span class="fa fa-check" *ngIf="stepCompleted[step]"></span>
-        {{text[step.charAt(0).toUpperCase() + step.slice(1)]}} ()
+        {{text[step.charAt(0).toUpperCase() + step.slice(1)]}} <span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
       </li>
       <li class="arrow" *ngIf="i < steps.length - 1">
         <span class="fa fa-arrow-right"></span>
@@ -27,7 +27,7 @@
   </ul>
 </div>
 
-<div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isReady">
+<div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isStepsReady">
   <km-learn-study  *ngSwitchCase="'study'"
     [exercises]="exercises"
     [results]="results"

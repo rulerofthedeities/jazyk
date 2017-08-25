@@ -13,6 +13,11 @@ interface Map<T> {
   [K: string]: T;
 }
 
+interface StepCount {
+  nrDone: number;
+  nrRemaining: number;
+}
+
 @Component({
   templateUrl: 'course.component.html',
   styleUrls : ['course.component.css']
@@ -24,16 +29,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private settings: LearnSettings;
   private nrOfQuestions = 5;
   private settingsUpdated = false;
+  private possibleSteps = ['intro', 'study', 'practise', 'test', 'review', 'exam', 'overview'];
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
   course: Course;
   exercises: Exercise[];
-  results: ExerciseResult[];
+  countPerStep: Map<StepCount> = {};
   text: Object = {};
   currentStep = 0;
   stepCompleted: Map<boolean> = {};
-  steps = ['intro', 'study', 'practise', 'test', 'review', 'exam', 'overview'];
+  steps: string[];
   isReady = false;
   isStepsReady = false;
 
@@ -132,16 +138,26 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getStepData() {
     this.learnService
-    .getResultsCount(this.courseId)
+    .getResultsCountByStep(this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
         console.log('step count', results);
         if (results) {
-          const courseTotal = this.course.exerciseCount;
-          results.map(result => result.nrRemaining = Math.max(0, courseTotal - result.nrDone));
-          this.results = results;
-          console.log('step count2', results);
+          this.countPerStep = {};
+          const lessonTotal = this.lesson.exercises.length;
+          console.log('total exercises in lesson', lessonTotal);
+          results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
+          results.forEach(result => {
+            this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
+          });
+          // Fill in step count for the steps without a result
+          this.possibleSteps.forEach(step => {
+            if (!this.countPerStep[step]) {
+              this.countPerStep[step] = {nrDone: 0, nrRemaining: lessonTotal};
+            }
+          });
+          console.log('step count2', this.countPerStep);
         }
         this.setSteps();
       },
@@ -151,7 +167,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private setSteps() {
     const steps = [];
-    this.steps.forEach((step, i) => {
+    this.possibleSteps.forEach((step, i) => {
       if (step === 'review' || (this.lesson.exerciseTpes[step] && this.lesson.exerciseTpes[step].active)) {
         steps.push(step);
         this.stepCompleted[step] = false;
