@@ -6,6 +6,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   template: `
+  <div class="corner-ribbon top-right sticky red shadow">alpha version</div>
   <img src="/assets/img/backgrounds/{{this.month}}.jpg">
   <div class="container">
     <km-main-menu></km-main-menu>
