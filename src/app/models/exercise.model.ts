@@ -36,9 +36,10 @@ export interface ExerciseTpes {
 }
 
 export interface ExerciseResult {
+  _id?: string;
   userId?: string;
   courseId?: string;
-  exerciseId: string;
+  exerciseId?: string;
   points?: number;
   learnLevel?: number;
   isLearned?: boolean;
@@ -49,20 +50,19 @@ export interface ExerciseResult {
 export enum Direction {LocalToForeign, ForeignToLocal};
 
 export interface ExerciseExtraData {
-  nrOfChoices?: number;
   wordForeign?: string;
   wordLocal?: string;
+  annotations?: string[];
+  genus?: string;
+  suffix?: string;
+  hint?: string;
+  info?: string;
   isDone?: boolean;
   isCorrect?: boolean;
   isAlt?: boolean;
   isAlmostCorrect?: boolean;
   answered: number;
   direction: Direction;
-  annotations?: string[];
-  genus?: string;
-  suffix?: string;
-  hint?: string;
-  info?: string;
   grade?: number;
   points?: number;
   timeDelta?: number;
