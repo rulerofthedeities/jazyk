@@ -9,28 +9,32 @@
   <ul class="list-unstyled list-inline lead steps">
     <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
       <li 
+        *ngIf="i === steps.length - 1"
+        (click)="stepTo(i)" 
+        class="btn btn-lg btn-info pull-right"
+        [class.inactive]="currentStep!==i + 1">
+        {{text['Overview']}}
+      </li>
+      <li 
+        *ngIf="i < steps.length - 1"
         (click)="stepTo(i)" 
         class="btn btn-lg"
-        [ngClass]="'clr-' + step"
         [class.btn-success]="step==='intro'"
         [class.btn-primary]="step==='review'"
         [class.btn-danger]="step==='exam'"
-        [class.btn-info]="step!=='intro' && step!=='exam' &&  step!=='review'"
+        [class.btn-info]="step!=='intro'"
         [class.inactive]="currentStep!==i">
-        <span class="fa fa-check" *ngIf="stepCompleted[step]"></span>
         {{text[step.charAt(0).toUpperCase() + step.slice(1)]}} <span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
       </li>
-      <li class="arrow" *ngIf="i < steps.length - 1">
+      <li class="arrow" *ngIf="i < steps.length - 2">
         <span class="fa fa-arrow-right"></span>
       </li>
     </ng-template>
   </ul>
 </div>
-
 <div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isStepsReady">
   <km-learn-study  *ngSwitchCase="'study'"
     [exercises]="exercises"
-    [results]="results"
     [lanPair]="course.languagePair"
     [lessonId]="this.lesson._id"
     [text]="text"
@@ -43,7 +47,6 @@
   </km-learn-study>
   <km-learn-practise *ngSwitchCase="'practise'"
     [exercises]="exercises"
-    [results]="results"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.practise"
     [lessonId]="this.lesson._id"
@@ -53,6 +56,11 @@
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
+  <km-learn-overview *ngSwitchCase="'overview'"
+    [lessonId]="lesson._id"
+    [exercises]="lesson.exercises"
+  >
+  </km-learn-overview>
 </div>
 
 <km-info-msg

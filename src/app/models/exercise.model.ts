@@ -61,8 +61,8 @@ export interface ExerciseExtraData {
   isCorrect?: boolean;
   isAlt?: boolean;
   isAlmostCorrect?: boolean;
-  answered: number;
-  direction: Direction;
+  answered?: number;
+  direction?: Direction;
   grade?: number;
   points?: number;
   timeDelta?: number;

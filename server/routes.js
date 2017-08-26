@@ -78,6 +78,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user', users.getUser);
   
   router.get('/user/results/lesson/lastperexercise/:lessonId', results.getLastResults);
+  router.get('/user/results/lesson/all/:lessonId', results.getAllResults);
   router.get('/user/results/lesson/countbystep/:lessonId', results.getResultsDone);
   router.get('/user/results/course/currentlesson/:courseId', results.getCurrentLesson);
   router.post('/user/results/add', results.saveResults);

@@ -18,7 +18,6 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
-  @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -28,6 +27,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
+  private results: ExerciseResult[];
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;

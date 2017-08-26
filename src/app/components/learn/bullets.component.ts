@@ -5,26 +5,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-bullets',
-  template: `
-    <div class="bullets">
-      <span 
-        *ngFor="let exercise of exercises; let i=index"
-        class="fa"
-        [ngClass]="{
-          'fa-square-o': !exercise.data.isDone, 
-          'fa-square': exercise.data.isDone, 
-          'green': exercise.result || (exercise.data.isDone && exercise.data.isCorrect && !exercise.data.isAlt),
-          'yellow': exercise.data.isDone && exercise.data.isCorrect && exercise.data.isAlt,
-          'orange': exercise.data.isDone && !exercise.data.isCorrect && exercise.data.isAlmostCorrect,
-          'red': i===current && !exercise.data.isDone || 
-                 exercise.data.isDone && !exercise.data.isCorrect && !exercise.data.isAlmostCorrect}">
-     </span>
-     <span
-       *ngFor="let bullet of emptyBullets; let i=index"
-       class="fa fa-square-o green"
-       [class.fix]="i===0">
-     </span>
-    </div>`,
+  template: 'bullets.component.html',
   styles: [`
     .bullets{
       color: grey;
@@ -51,11 +32,13 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setEmptyBullets();
-    this.onExerciseAdded
-    .takeWhile(() => this.componentActive)
-    .subscribe(event => {
-      this.setEmptyBullets();
-    });
+    if (this.onExerciseAdded) {
+      this.onExerciseAdded
+      .takeWhile(() => this.componentActive)
+      .subscribe(event => {
+        this.setEmptyBullets();
+      });
+    }
   }
 
   private setEmptyBullets() {

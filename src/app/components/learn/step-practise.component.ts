@@ -22,7 +22,6 @@ interface Map<T> {
 
 export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() exercises: Exercise[];
-  @Input() results: ExerciseResult[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -32,6 +31,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
+  private results: ExerciseResult[];
   private isWordsDone =  false; // true once words are done once
   private nrOfChoices = 6;
   private minNrOfChoices = 4;

@@ -104,6 +104,18 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+  getLessonResults(lessonId: string) {
+    // Get the learn level of all exercises in this lesson
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/user/results/lesson/all/' + lessonId, {headers})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
   getResultsCountByStep(lessonId: string) {
     const token = this.authService.getToken(),
           headers = new Headers();

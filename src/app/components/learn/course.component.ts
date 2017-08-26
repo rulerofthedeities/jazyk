@@ -29,7 +29,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private settings: LearnSettings;
   private nrOfQuestions = 5;
   private settingsUpdated = false;
-  private possibleSteps = ['intro', 'study', 'practise', 'test', 'review', 'exam', 'overview'];
+  private possibleSteps = ['intro', 'study', 'practise', 'overview'];
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
@@ -168,7 +168,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private setSteps() {
     const steps = [];
     this.possibleSteps.forEach((step, i) => {
-      if (step === 'review' || (this.lesson.exerciseTpes[step] && this.lesson.exerciseTpes[step].active)) {
+      if (step === 'overview' || (this.lesson.exerciseTpes[step] && this.lesson.exerciseTpes[step].active)) {
         steps.push(step);
         this.stepCompleted[step] = false;
       }

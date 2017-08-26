@@ -115,6 +115,33 @@ module.exports = {
       });
     });
   },
+  getAllResults: function(req, res) {
+    // Get the learn level of all the exercises for this lesson
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {userId, lessonId, step: {$ne:'study'}};
+    const pipeline = [
+      {$match: query},
+      {$sort: {dt: -1, sequence: -1}},
+      {$group: {
+        _id: '$exerciseId',
+        firstLevel: {'$first': '$learnLevel'},
+        totalPoints: {'$sum': '$points'}
+      }},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id',
+        learnLevel: '$firstLevel',
+        points: '$totalPoints'
+      }}
+    ];
+    Result.aggregate(pipeline, function(err, results) {
+      console.log('resultAll', results);
+      response.handleError(err, res, 500, 'Error fetching all results', function(){
+        response.handleSuccess(res, results, 200, 'Fetched all results');
+      });
+    });
+  },
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
     console.log('getting current lesson');
