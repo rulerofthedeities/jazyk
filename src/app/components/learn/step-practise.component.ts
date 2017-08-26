@@ -67,6 +67,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.exercises = this.exercises.slice(0, 2);
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.minNrOfQuestions = this.exercises.length * 2;
@@ -265,6 +266,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.endDate = new Date();
     const choice = this.currentChoices[i],
           direction = this.currentData.data.direction,
+          nrOfQuestions = this.exerciseData.length,
           word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word,
           timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
     let learnLevel = this.getCurrentLearnLevel(this.currentData),
@@ -284,7 +286,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.levels[this.currentData.exercise._id] = learnLevel;
       this.score = this.score + points;
       this.timeNext(0.6);
-      if (learnLevel < 3) {
+      if (nrOfQuestions < this.minNrOfQuestions || learnLevel < 3) {
         this.addExercise();
       }
     } else {
@@ -294,6 +296,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.currentData.data.learnLevel = learnLevel;
       this.currentData.data.points = 0;
       this.levels[this.currentData.exercise._id] = learnLevel;
+      this.addWrongCount(this.currentData.exercise._id);
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
         if (item === word) {
@@ -320,6 +323,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.endDate = new Date();
       const solution = this.currentData.exercise.foreign.word,
             filteredSolution = this.filter(solution),
+            nrOfQuestions = this.exerciseData.length,
             timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
       let learnLevel = this.getCurrentLearnLevel(this.currentData),
           points = 0;
@@ -341,6 +345,10 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         this.levels[this.currentData.exercise._id] = learnLevel;
         this.score = this.score + points;
         this.timeNext(0.6);
+        console.log('CHECK ADDING', nrOfQuestions, this.minNrOfQuestions);
+        if (nrOfQuestions < this.minNrOfQuestions) {
+          this.addExercise();
+        }
       } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
         // Alternative answer (synonym)
         this.isCorrect = true;
@@ -354,7 +362,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         points = 80;
         this.currentData.data.points = points;
         this.levels[this.currentData.exercise._id] = learnLevel;
+        this.addWrongCount(this.currentData.exercise._id);
         this.score = this.score + points;
+        this.addExercise();
         // this.timeNext(2);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
@@ -369,10 +379,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         points = 20;
         this.currentData.data.points = points;
         this.levels[this.currentData.exercise._id] = learnLevel;
+        this.addWrongCount(this.currentData.exercise._id);
         this.score = this.score + points;
-        if (this.currentData.data.answered < 1) {
-          this.addExercise();
-        }
+        this.addExercise();
       } else {
         // Incorrect answer
         this.currentData.data.grade = 0;
@@ -384,10 +393,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         this.isCorrect = false;
         this.currentData.data.points = 0;
         this.levels[this.currentData.exercise._id] = learnLevel;
+        this.addWrongCount(this.currentData.exercise._id);
         this.solution = solution;
-        if (this.currentData.data.answered < 1) {
-          this.addExercise();
-        }
+        this.addExercise();
       }
       console.log('LEARN LEVEL', learnLevel);
     }
@@ -417,7 +425,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private addExercise() {
     // Incorrect answer -> readd exercise to the back if answered incorrectly < 3 times
     const countWrong = this.countWrong[this.currentData.exercise._id] ? this.countWrong[this.currentData.exercise._id] : 0;
-    console.log('ADDING EXERCISE - count ', countWrong);
+    console.log('COUNT WRONG', countWrong);
     if (countWrong < 3) {
       this.countWrong[this.currentData.exercise._id]++;
       const newExerciseData: ExerciseData = {
@@ -439,7 +447,25 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       };
       this.exerciseData.push(newExerciseData);
       this.exerciseAdded.next(true);
+      this.shuffleRemainingExercises();
       console.log('ADDING EXERCISE - exercises ', this.exerciseData);
+    }
+  }
+
+  private shuffleRemainingExercises() {
+    console.log('SHUFFLE EXERCISES', this.exerciseData);
+    const original = this.exercises.length;
+    const total = this.exerciseData.length;
+    const nrDone = this.current + 1; // skip next
+    const done = this.exerciseData.slice(0, nrDone);
+      console.log('SHUFFLED nrDone', nrDone);
+    if (nrDone > original && total - nrDone > 2) {
+      const todo = this.exerciseData.slice(nrDone, total);
+      const shuffled = this.learnService.shuffle(todo);
+      this.exerciseData = done.concat(shuffled);
+      console.log('SHUFFLED NEW DATA', this.exerciseData);
+    } else {
+      console.log('NO SHUFFLE');
     }
   }
 
@@ -527,6 +553,10 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       nrOfChoices = 8;
     }
     return nrOfChoices;
+  }
+
+  private addWrongCount(exerciseId: string) {
+    this.countWrong[exerciseId] = this.countWrong[exerciseId] ? this.countWrong[exerciseId]++ : 1;
   }
 
   private timeNext(secs: number) {
