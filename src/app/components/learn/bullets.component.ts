@@ -43,7 +43,7 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
 
   private setEmptyBullets() {
     // Add empty bullets if min nr of exercises > actual # of exercises
-    if (this.min > this.exercises.length) {
+    if (this.exercises && this.min > this.exercises.length) {
       this.emptyBullets = Array(this.min - this.exercises.length).fill(0);
     } else {
       this.emptyBullets = [];

@@ -115,11 +115,12 @@ module.exports = {
       });
     });
   },
-  getAllResults: function(req, res) {
-    // Get the learn level of all the exercises for this lesson
+  getPractiseResults: function(req, res) {
+    // Get the learn level of all the practise exercises for this lesson
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {userId, lessonId, step: {$ne:'study'}};
+          step = req.params.step,
+          query = {userId, lessonId, step};
     const pipeline = [
       {$match: query},
       {$sort: {dt: -1, sequence: -1}},

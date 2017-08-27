@@ -17,7 +17,8 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
-  @Input() exercises: Exercise[];
+  @Input() private exercises: Exercise[];
+  @Input() nrOfQuestions: number;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -27,7 +28,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
-  private results: ExerciseResult[];
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
@@ -50,7 +50,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.fetchPreviousResults();
+    this.fetchLessonResults();
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
   }
@@ -139,8 +139,27 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getQuestions() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
+  private getNewQuestions(results: ExerciseResult[]) {
+    let nrOfExercises = 0,
+        exerciseResult: ExerciseResult;
+    const newExercises: Exercise[] = [];
+
+    // Select exercises with no result
+    this.exercises.forEach(exercise => {
+      if (nrOfExercises < this.nrOfQuestions) {
+        exerciseResult = results.find(result => result.exerciseId === exercise._id);
+        if (!exerciseResult) {
+          // study not done yet, add to list of new questions
+          newExercises.push(exercise);
+          nrOfExercises = newExercises.length;
+        }
+      }
+    });
+    this.buildExerciseData(newExercises);
+  }
+
+  private buildExerciseData(newExercises: Exercise[]) {
+    this.exerciseData = this.learnService.buildExerciseData(newExercises, null, this.text, {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
@@ -153,19 +172,16 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     console.log('exercisedata', this.exerciseData);
   }
 
-  private fetchPreviousResults() {
-    const exerciseIds = this.exercises.map(exercise => exercise._id);
-
+  private fetchLessonResults() {
+    // fetch results for all exercises in this lesson
     this.learnService
-    .getPreviousResults(this.lessonId, exerciseIds)
+    .getLessonResults(this.lessonId, 'study')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('previous results', results);
-        if (results) {
-          this.results = results;
+        if  (results) {
+          this.getNewQuestions(results);
         }
-        this.getQuestions();
       },
       error => this.errorService.handleError(error)
     );

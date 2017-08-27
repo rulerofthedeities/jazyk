@@ -24,28 +24,24 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnLevelBarComponent implements OnInit, OnDestroy {
-  @Input() levelUpdated: BehaviorSubject<number>;
-  @Input() maxLevel: number;
+  @Input() private levelUpdated: BehaviorSubject<number>;
+  @Input() private maxLevel: number;
   private componentActive = true;
   percentage: string;
   level: string;
 
   ngOnInit() {
-    console.log('subscribing to level');
     this.levelUpdated
     .takeWhile(() => this.componentActive)
     .subscribe(event => {
-      console.log('level updated', event);
       this.updateLevel(event);
     });
   }
 
   private updateLevel(newLevel: number) {
     const level = Math.max(0, Math.min(newLevel, this.maxLevel));
-    console.log('level', level);
     this.level = level.toString();
     this.percentage = Math.round(level / this.maxLevel * 100).toString();
-    console.log('percentage', this.percentage);
   }
 
   ngOnDestroy() {

@@ -104,14 +104,14 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  getLessonResults(lessonId: string) {
+  getLessonResults(lessonId: string, step: string) {
     // Get the learn level of all exercises in this lesson
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/results/lesson/all/' + lessonId, {headers})
+    .get('/api/user/results/lesson/' + step + '/' + lessonId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
@@ -147,7 +147,6 @@ export class LearnService {
     text: Object,
     options: ExerciseOptions
     ): ExerciseData[] {
-    console.log('RESULTS', results);
     const exerciseData: ExerciseData[] = [];
     // const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
     let j = 0, filteredResult: ExerciseResult, direction;

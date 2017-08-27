@@ -95,7 +95,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     console.log('new lesson selected', lesson);
     this.lesson = lesson;
     this.getStepData();
-    this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
+    // this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
     this.isReady = true;
   }
 
