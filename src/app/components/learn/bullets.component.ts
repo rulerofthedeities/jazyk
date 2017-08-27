@@ -5,7 +5,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-bullets',
-  template: 'bullets.component.html',
+  templateUrl: 'bullets.component.html',
   styles: [`
     .bullets{
       color: grey;

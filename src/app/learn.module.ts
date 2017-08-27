@@ -22,6 +22,7 @@ import {LearnPointsCompletedComponent} from './components/learn/points-completed
 import {LearnPointsEarnedComponent} from './components/learn/points-earned.component';
 import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnBulletsComponent} from './components/learn/bullets.component';
+import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.component';
 import {LearnAnswerFieldComponent} from './components/learn/answer-field.component';
 import {LearnAnswerChoicesComponent} from './components/learn/answer-choices.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
@@ -55,6 +56,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnPointsEarnedComponent,
     LearnQuestionComponent,
     LearnBulletsComponent,
+    LearnLevelBarComponent,
     LearnAnswerFieldComponent,
     LearnAnswerChoicesComponent,
     LearnKeyboardComponent,

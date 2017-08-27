@@ -75,6 +75,10 @@
           {{text["Restart"]}}
         </div>
       </div>
+      <km-learnlevel-bar
+        [levelUpdated]="levelUpdated"
+        [maxLevel]="learnedLevel">
+      </km-learnlevel-bar>
       SCORE : {{score}}
     </div>
     <div class="clearfix"></div>

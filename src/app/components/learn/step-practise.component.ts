@@ -8,6 +8,7 @@ import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subscription} from 'rxjs/Subscription';
 import {Subject} from 'rxjs/Subject';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -43,6 +44,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
   subscription: Subscription;
   exerciseAdded: Subject<boolean> = new Subject;
+  levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   isPractiseDone = false;
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
@@ -60,6 +62,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   isCountDown: boolean;
   isMute: boolean;
   keys: string[] = [];
+  learnedLevel = 12;
 
   constructor(
     private learnService: LearnService,
@@ -185,7 +188,8 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (!this.isPractiseDone) {
       this.currentData = this.exerciseData[this.current];
       let giveChoices = true;
-      const learnLevel = this.currentData.result.learnLevel;
+      const learnLevel = this.getCurrentLearnLevel(this.currentData);
+      this.levelUpdated.next(learnLevel);
       // Determine if multiple choice or word
       if (this.currentData.result) {
         // 3 -> 5: random
@@ -247,6 +251,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
           nrOfChoices = this.getNrOfChoices(learnLevel),
           availableChoices = JSON.parse(JSON.stringify(direction === Direction.ForeignToLocal ? this.choicesLocal : this.choicesForeign)),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
+
     choices.push(word);
     while (choices.length < nrOfChoices && availableChoices) {
       rand = Math.floor(Math.random() * availableChoices.length);
@@ -274,8 +279,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
     this.currentData.data.isDone = true;
     this.currentData.data.timeDelta = timeDelta;
-
-    console.log('CURRENTDATA', this.currentData, this.levels);
     if (choice === word) {
       this.currentData.data.isCorrect = true;
       this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
@@ -285,7 +288,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.currentData.data.points = points;
       this.levels[this.currentData.exercise._id] = learnLevel;
       this.score = this.score + points;
-      this.timeNext(0.6);
+      // this.timeNext(0.6);
       if (nrOfQuestions < this.minNrOfQuestions || learnLevel < 3) {
         this.addExercise();
       }
@@ -305,6 +308,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       });
       this.addExercise();
     }
+    this.levelUpdated.next(learnLevel);
   }
 
   private checkIfWordAnswer() {
@@ -330,7 +334,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.isAnswered = true;
       this.currentData.data.isDone = true;
       this.currentData.data.timeDelta = timeDelta;
-      console.log('answer', filteredAnswer, filteredSolution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
         this.isCorrect = true;
@@ -344,8 +347,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         this.currentData.data.points = points;
         this.levels[this.currentData.exercise._id] = learnLevel;
         this.score = this.score + points;
-        this.timeNext(0.6);
-        console.log('CHECK ADDING', nrOfQuestions, this.minNrOfQuestions);
+        // this.timeNext(0.6);
         if (nrOfQuestions < this.minNrOfQuestions) {
           this.addExercise();
         }
@@ -397,7 +399,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         this.solution = solution;
         this.addExercise();
       }
-      console.log('LEARN LEVEL', learnLevel);
+      this.levelUpdated.next(learnLevel);
     }
   }
 
@@ -406,7 +408,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (exercise.foreign.alt) {
       const alts = exercise.foreign.alt.split('|');
       const found = alts.filter(alt => this.filter(alt) === answer);
-      console.log('found', found.length);
       if (found.length > 0) {
         isAltAnswer = true;
       }
@@ -418,7 +419,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     let filteredAnswer = word.trim().toLowerCase();
     filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
     filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
-    console.log('filtered answer', word, '->' , '>' + filteredAnswer + '<');
     return filteredAnswer;
   }
 
@@ -447,25 +447,21 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       };
       this.exerciseData.push(newExerciseData);
       this.exerciseAdded.next(true);
-      this.shuffleRemainingExercises();
-      console.log('ADDING EXERCISE - exercises ', this.exerciseData);
+      if (!this.options.ordered) {
+        this.shuffleRemainingExercises();
+      }
     }
   }
 
   private shuffleRemainingExercises() {
-    console.log('SHUFFLE EXERCISES', this.exerciseData);
-    const original = this.exercises.length;
-    const total = this.exerciseData.length;
-    const nrDone = this.current + 1; // skip next
-    const done = this.exerciseData.slice(0, nrDone);
-      console.log('SHUFFLED nrDone', nrDone);
+    const original = this.exercises.length,
+          total = this.exerciseData.length,
+          nrDone = this.current + 1, // skip next
+          done = this.exerciseData.slice(0, nrDone);
     if (nrDone > original && total - nrDone > 2) {
-      const todo = this.exerciseData.slice(nrDone, total);
-      const shuffled = this.learnService.shuffle(todo);
+      const todo = this.exerciseData.slice(nrDone, total),
+            shuffled = this.learnService.shuffle(todo);
       this.exerciseData = done.concat(shuffled);
-      console.log('SHUFFLED NEW DATA', this.exerciseData);
-    } else {
-      console.log('NO SHUFFLE');
     }
   }
 
@@ -531,7 +527,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   private getCurrentLearnLevel(data: ExerciseData): number {
-    let learnLevel = data.result ? data.result.learnLevel || 0 : 1; // saved data
+    let learnLevel = data && data.result ? data.result.learnLevel || 0 : 1; // saved data
     // CHECK if this exerciseid has been answered before; if so; use this level
     const lastLevel = this.levels[data.exercise._id];
     if (lastLevel !== undefined) {
