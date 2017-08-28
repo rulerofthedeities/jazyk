@@ -3,6 +3,7 @@ import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
+import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
 import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -63,9 +64,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   isMute: boolean;
   keys: string[] = [];
   learnedLevel = 12;
+  beep: any;
 
   constructor(
     private learnService: LearnService,
+    private audioService: AudioService,
     private errorService: ErrorService
   ) {}
 
@@ -74,6 +77,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.minNrOfQuestions = this.exercises.length * 2;
+    this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.getConfig(this.lanPair.to); // For keyboard keys
     this.fetchPreviousResults();
   }
@@ -510,9 +514,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private calculateWordLearnLevel(level: number, correct: boolean, alt: boolean, almostCorrect: boolean): number {
     if (correct) {
-      if (level < 10) {
-        level += 2;
-      }
+      level += 2;
     } else {
       if (level > 0) {
         if (almostCorrect) {

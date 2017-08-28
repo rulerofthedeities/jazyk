@@ -50,6 +50,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       step: results.step,
       points: doc.points,
       learnLevel: doc.learnLevel,
+      isLearned: doc.isLearned,
       dt: new Date(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
@@ -127,12 +128,14 @@ module.exports = {
       {$group: {
         _id: '$exerciseId',
         firstLevel: {'$first': '$learnLevel'},
+        isLearned: {'$first': '$isLearned'},
         totalPoints: {'$sum': '$points'}
       }},
       {$project: {
         _id: 0,
         exerciseId: '$_id',
         learnLevel: '$firstLevel',
+        isLearned: '$isLearned',
         points: '$totalPoints'
       }}
     ];

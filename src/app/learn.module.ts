@@ -6,6 +6,7 @@ import {routes} from './learn.routes';
 
 import {LearnService} from './services/learn.service';
 import {TimeService} from './services/time.service';
+import {AudioService} from './services/audio.service';
 
 import {LearnCoursesComponent} from './components/learn/courses.component';
 import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
@@ -38,7 +39,8 @@ import {WordColorDirective} from './directives/word-color.directive';
   ],
   providers: [
     LearnService,
-    TimeService
+    TimeService,
+    AudioService
   ],
   declarations: [
     LearnCoursesComponent,

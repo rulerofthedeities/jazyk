@@ -67,6 +67,7 @@ export interface ExerciseExtraData {
   points?: number;
   timeDelta?: number;
   learnLevel?: number;
+  isLearned?: boolean;
   choices?: boolean; // true => multiple choice; false => enter word
 }
 

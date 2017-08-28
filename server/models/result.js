@@ -9,6 +9,7 @@ var resultSchema = new Schema({
   step: {type: String, required: true},
   points: Number,
   learnLevel: Number,
+  isLearned: Boolean,
   dt: {type: Date, required: true},
   sequence: Number // To find the last saved doc for docs with same save time
 });

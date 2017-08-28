@@ -18,6 +18,15 @@ interface StepCount {
   nrRemaining: number;
 }
 
+interface ResultData {
+  exerciseId: string;
+  done: boolean;
+  points: number;
+  learnLevel: number;
+  sequence: number; // To find the last saved doc for docs with same save time
+  isLearned?: boolean;
+}
+
 @Component({
   templateUrl: 'course.component.html',
   styleUrls : ['course.component.css']
@@ -30,6 +39,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private nrOfQuestions = 5;
   private settingsUpdated = false;
   private possibleSteps = ['intro', 'study', 'practise', 'overview'];
+  private isLearnedLevel = 12; // minimum level before it is considered learned
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
@@ -95,7 +105,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     console.log('new lesson selected', lesson);
     this.lesson = lesson;
     this.getStepData();
-    // this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
+    this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
     this.isReady = true;
   }
 
@@ -187,13 +197,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data: []
     };
     data.forEach( (item, i) => {
-      result.data.push({
+      const newResult: ResultData = {
         exerciseId: item.exercise._id,
-        done: item.data.isDone,
+        done: item.data.isDone || false,
         points: item.data.points || 0,
         learnLevel: item.data.learnLevel || 0,
-        sequence: i // To find the last saved doc for docs with same save time
-      });
+        sequence: i
+      };
+      if ((item.data.learnLevel || 0) >= this.isLearnedLevel) {
+        newResult.isLearned = true;
+      }
+      result.data.push(newResult);
     });
     console.log('result:', result);
     this.learnService
