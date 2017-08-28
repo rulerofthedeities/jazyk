@@ -48,6 +48,7 @@
   </km-learn-study>
   <km-learn-practise *ngSwitchCase="'practise'"
     [exercises]="lesson.exercises"
+    [nrOfQuestions]="nrOfQuestions"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.practise"
     [lessonId]="this.lesson._id"

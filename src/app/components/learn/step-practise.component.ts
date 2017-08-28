@@ -23,17 +23,18 @@ interface Map<T> {
 })
 
 export class LearnPractiseComponent implements OnInit, OnDestroy {
-  @Input() exercises: Exercise[];
+  @Input() private exercises: Exercise[];
+  @Input() nrOfQuestions: number;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
   @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
+  @Input() minNrOfQuestions: number;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   private componentActive = true;
-  private results: ExerciseResult[];
   private isWordsDone =  false; // true once words are done once
   private nrOfChoices = 6;
   private minNrOfChoices = 4;
@@ -55,7 +56,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   isAnswered = false;  // word
   isCorrect = false; // word
   isQuestionReady = false;
-  minNrOfQuestions: number;
   solution: string; // word
   answered: number; // choices
   answer: number; // choices
@@ -73,13 +73,11 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.exercises = this.exercises.slice(0, 2);
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
-    this.minNrOfQuestions = this.exercises.length * 2;
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.getConfig(this.lanPair.to); // For keyboard keys
-    this.fetchPreviousResults();
+    this.fetchLessonResults();
   }
 
   onCountDownFinished() {
@@ -215,7 +213,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private restart() {
     this.isPractiseDone = false;
     this.current = -1;
-    this.getQuestions();
+    this.fetchLessonResults();
   }
 
   private clearData() {
@@ -233,14 +231,39 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getQuestions() {
-    this.exerciseData = this.learnService.buildExerciseData(this.exercises, this.results, this.text, {
+  private getNewQuestions(results: ExerciseResult[]) {
+    let nrOfExercises = 0,
+        exerciseResult: ExerciseResult;
+    const newExercises: Exercise[] = [],
+          newResults: ExerciseResult[] = [];
+
+    // Select exercises that have not been learned yet
+    this.exercises.forEach(exercise => {
+      if (nrOfExercises < this.settings.nrOfWords) {
+        exerciseResult = results.find(result => result.exerciseId === exercise._id);
+        if (!exerciseResult || !exerciseResult.isLearned) {
+          // word is not learned yet; add to list of new questions
+          newExercises.push(exercise);
+          newResults.push(exerciseResult);
+          nrOfExercises = newExercises.length;
+        }
+      }
+    });
+    console.log('RESULTS', newResults);
+    console.log('NEW EXERCISES', newExercises);
+    this.buildExerciseData(newExercises, newResults);
+
+  }
+
+  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
       isBidirectional: this.options.bidirectional,
       direction: Direction.LocalToForeign
     });
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
+    console.log('NEW EXERCISEDATA', this.exerciseData);
     this.getChoices(this.options.bidirectional);
   }
 
@@ -565,19 +588,16 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     .subscribe(t => this.nextWord());
   }
 
-  private fetchPreviousResults() {
-    const exerciseIds = this.exercises.map(exercise => exercise._id);
-
+  private fetchLessonResults() {
+    // fetch results for all exercises in this lesson
     this.learnService
-    .getPreviousResults(this.lessonId, exerciseIds)
+    .getLessonResults(this.lessonId, 'practise')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('previous results', results);
-        if (results) {
-          this.results = results;
+        if  (results) {
+          this.getNewQuestions(results);
         }
-        this.getQuestions();
       },
       error => this.errorService.handleError(error)
     );

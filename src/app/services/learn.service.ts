@@ -153,7 +153,7 @@ export class LearnService {
     exercises.forEach( (exercise) => {
       filteredResult = null;
       if (results) {
-        filteredResult = results.filter(result => result.exerciseId === exercise._id)[0];
+        filteredResult = results.filter(result => result && result.exerciseId === exercise._id)[0];
       }
       if (options.isBidirectional) {
         direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;

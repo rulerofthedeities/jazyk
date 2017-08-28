@@ -36,7 +36,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;
-  private nrOfQuestions = 5;
+  private defaultNrOfQuestions = 5;
   private settingsUpdated = false;
   private possibleSteps = ['intro', 'study', 'practise', 'overview'];
   private isLearnedLevel = 12; // minimum level before it is considered learned
@@ -44,7 +44,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   errorMsg: string;
   infoMsg: string;
   course: Course;
-  exercises: Exercise[];
   countPerStep: Map<StepCount> = {};
   text: Object = {};
   currentStep = 0;
@@ -75,7 +74,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     );
 
     this.settings = this.userService.user.jazyk.learn;
-    this.nrOfQuestions = this.settings.nrOfWords || this.nrOfQuestions;
+    this.settings.nrOfWords = this.settings.nrOfWords || this.defaultNrOfQuestions;
   }
 
   stepTo(i: number) {
@@ -105,7 +104,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     console.log('new lesson selected', lesson);
     this.lesson = lesson;
     this.getStepData();
-    this.exercises = lesson.exercises.slice(0, this.nrOfQuestions);
     this.isReady = true;
   }
 

@@ -11,7 +11,7 @@
         <km-bullets *ngIf="!isPractiseDone"
           [exercises]="exerciseData"
           [current]="current"
-          [min]="minNrOfQuestions"
+          [min]="exerciseData.length * 2"
           [onExerciseAdded]="exerciseAdded">
         </km-bullets>
         <div *ngIf="!isPractiseDone && isQuestionReady" class="card">
