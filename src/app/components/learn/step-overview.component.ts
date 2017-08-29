@@ -33,7 +33,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
-    .getLessonResults(this.lessonId, 'practise')
+    .getLessonResults(this.lessonId, 'all')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {

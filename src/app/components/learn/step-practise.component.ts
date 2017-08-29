@@ -24,7 +24,6 @@ interface Map<T> {
 
 export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
-  @Input() nrOfQuestions: number;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;

@@ -35,7 +35,6 @@
 <div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isStepsReady">
   <km-learn-study  *ngSwitchCase="'study'"
     [exercises]="lesson.exercises"
-    [nrOfQuestions]="nrOfQuestions"
     [lanPair]="course.languagePair"
     [lessonId]="this.lesson._id"
     [text]="text"
@@ -48,7 +47,6 @@
   </km-learn-study>
   <km-learn-practise *ngSwitchCase="'practise'"
     [exercises]="lesson.exercises"
-    [nrOfQuestions]="nrOfQuestions"
     [lanPair]="course.languagePair"
     [options]="lesson?.exerciseTpes.practise"
     [lessonId]="this.lesson._id"

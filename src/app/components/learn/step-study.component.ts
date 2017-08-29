@@ -18,7 +18,6 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
-  @Input() nrOfQuestions: number;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -139,6 +138,21 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
+  private fetchLessonResults() {
+    // fetch results for all exercises in this lesson
+    this.learnService
+    .getLessonResults(this.lessonId, 'study')
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        if  (results) {
+          this.getNewQuestions(results);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
   private getNewQuestions(results: ExerciseResult[]) {
     let nrOfExercises = 0,
         exerciseResult: ExerciseResult;
@@ -146,7 +160,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
     // Select exercises with no result
     this.exercises.forEach(exercise => {
-      if (nrOfExercises < this.nrOfQuestions) {
+      if (nrOfExercises < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if (!exerciseResult) {
           // study not done yet, add to list of new questions
@@ -170,21 +184,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.nextWord(1);
     this.isReady = true;
     console.log('exercisedata', this.exerciseData);
-  }
-
-  private fetchLessonResults() {
-    // fetch results for all exercises in this lesson
-    this.learnService
-    .getLessonResults(this.lessonId, 'study')
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      results => {
-        if  (results) {
-          this.getNewQuestions(results);
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
   }
 
   private skip() {

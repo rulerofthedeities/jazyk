@@ -4,36 +4,40 @@ const response = require('../response'),
 
 saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
-  const docs = results.data.map(doc => 
-  { 
-    exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
-    filterObj = {
-      userId,
-      courseId,
-      lessonId,
-      exerciseId,
-      step: 'study'
-    };
-    return {
-      updateOne: {
-        filter: filterObj,
-        update: {
-          $set: filterObj,
-          $setOnInsert: {
-            points: doc.points,
-            dt: new Date()
-          }
-        },
-        upsert: true
+  if (results.data.length > 0) {
+    const docs = results.data.map(doc => 
+    { 
+      exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
+      filterObj = {
+        userId,
+        courseId,
+        lessonId,
+        exerciseId,
+        step: 'study'
+      };
+      return {
+        updateOne: {
+          filter: filterObj,
+          update: {
+            $set: filterObj,
+            $setOnInsert: {
+              points: doc.points,
+              dt: new Date()
+            }
+          },
+          upsert: true
+        }
       }
-    }
-  })
-  console.log('results', results, docs);
-  Result.collection.bulkWrite(docs, function(err, bulkResult) {
-    response.handleError(err, res, 500, 'Error saving user results for study', function(){
-      response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
-    });
-  })
+    })
+    console.log('results', results, docs);
+    Result.collection.bulkWrite(docs, function(err, bulkResult) {
+      response.handleError(err, res, 500, 'Error saving user results for study', function(){
+        response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
+      });
+    })
+  } else {
+    response.handleSuccess(res, null, 200, 'No results to save');
+  }
 }
 
 saveStep = function(res, results, userId, courseId, lessonId) {
@@ -116,12 +120,15 @@ module.exports = {
       });
     });
   },
-  getPractiseResults: function(req, res) {
-    // Get the learn level of all the practise exercises for this lesson
+  getLessonResults: function(req, res) {
+    // Get the results for all the exercises for this lesson
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           step = req.params.step,
-          query = {userId, lessonId, step};
+          query = {userId, lessonId};
+    if (step !== 'all') {
+      query.step = step
+    }
     const pipeline = [
       {$match: query},
       {$sort: {dt: -1, sequence: -1}},
@@ -160,10 +167,11 @@ module.exports = {
   },
   getResultsDone: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    console.log('getting results done', userId, lessonId);
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]};
+    console.log('getting results done', userId, lessonId, query);
     const pipeline = [
-      {$match: {userId, lessonId}},
+      {$match: query},
       {$group: {
         _id: {exerciseId:'$exerciseId', step: '$step'},
         firstStep: {'$first': '$step'},
