@@ -56,6 +56,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   onCountDownFinished() {
     this.isCountDown = false;
+    this.nextWord(1);
   }
 
   onNextWord(delta: number) {
@@ -94,7 +95,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private nextWord(delta: number) {
     if (!this.showLocal && this.current > -1) {
-      this.pointsEarned.next(0); // clear earned points
       this.showLocal = true;
     } else {
       if (this.isStudyDone) {
@@ -181,7 +181,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    this.nextWord(1);
+    if (!this.isCountDown) {
+      this.nextWord(1);
+    }
     this.isReady = true;
     console.log('exercisedata', this.exerciseData);
   }

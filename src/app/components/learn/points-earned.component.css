@@ -1,5 +1,6 @@
 .points {
   font-size: 24px;
+  text-align: center;
 }
 .added {
   animation: bump 0.5s ease-out forwards;
