@@ -79,7 +79,8 @@
         [levelUpdated]="levelUpdated"
         [maxLevel]="learnedLevel">
       </km-learnlevel-bar>
-      SCORE : {{score}}
+      <km-points-earned [pointsEarned]="pointsEarned">
+      </km-points-earned>
     </div>
     <div class="clearfix"></div>
   </section>

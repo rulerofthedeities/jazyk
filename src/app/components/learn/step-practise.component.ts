@@ -46,6 +46,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   exerciseAdded: Subject<boolean> = new Subject;
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  pointsEarned: Subject<any> = new Subject();
   isPractiseDone = false;
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
@@ -216,6 +217,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   }
 
   private clearData() {
+    this.pointsEarned.next(0);
     this.solution = '';
     this.isAnswered = false;
     this.isSelected = false;
@@ -335,6 +337,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
       this.addExercise();
     }
     this.levelUpdated.next(learnLevel);
+    this.pointsEarned.next(points);
   }
 
   private checkIfWordAnswer() {
@@ -426,6 +429,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         this.addExercise();
       }
       this.levelUpdated.next(learnLevel);
+      this.pointsEarned.next(points);
     }
   }
 

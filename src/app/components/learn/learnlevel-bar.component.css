@@ -6,7 +6,7 @@
 /* https://jsfiddle.net/elijahmurray/7tgh988z/ */
 .progress-bar-vertical {
   width: 20px;
-  min-height: 100px;
+  min-height: 90px;
   margin-right: 20px;
   float: left;
   display: -webkit-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */

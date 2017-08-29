@@ -95,7 +95,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private nextWord(delta: number) {
     if (!this.showLocal && this.current > -1) {
-      this.showLocal = true;
+      this.wordDone();
     } else {
       if (this.isStudyDone) {
         this.restart();
@@ -106,17 +106,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private showNextWord(delta: number) {
-    if (this.current > -1) {
-      const points = 2;
-      this.exerciseData[this.current].data.isDone = true;
-      this.exerciseData[this.current].data.isCorrect = true;
-      this.exerciseData[this.current].data.points = 0;
-      if (!this.exerciseData[this.current].result) {
-        this.score = this.score + points;
-        this.exerciseData[this.current].data.points = points;
-        this.pointsEarned.next(points);
-      }
-    }
+    this.pointsEarned.next(0);
     this.dotLength = this.settings.delay * 1000 / 200;
     this.dotArr = Array(this.dotLength).fill(0);
     this.current += delta;
@@ -135,6 +125,22 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.showLocal = false;
       this.currentData = this.exerciseData[this.current];
       this.timeDelay();
+    }
+  }
+
+  private wordDone() {
+    if (!this.showLocal && this.current > -1) {
+      this.showLocal = true;
+      const points = 2,
+            currentExercise = this.exerciseData[this.current];
+      currentExercise.data.isDone = true;
+      currentExercise.data.isCorrect = true;
+      currentExercise.data.points = 0;
+      if (!currentExercise.result) {
+        this.score = this.score + points;
+        currentExercise.data.points = points;
+        this.pointsEarned.next(points);
+      }
     }
   }
 
@@ -207,8 +213,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       // Timer for the local word display
       const wordTimer = TimerObservable.create(this.settings.delay * 1000);
       this.subscription[0] = wordTimer
-      .takeWhile(() => this.componentActive)
-      .subscribe(t => this.showLocal = true);
+      .takeWhile(() => this.componentActive && !this.showLocal)
+      .subscribe(t => this.wordDone());
 
       // Timer for the dots countdown
       const dotTimer = TimerObservable.create(0, 200);
@@ -221,7 +227,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         }
       );
     } else {
-      this.showLocal = true;
+      this.wordDone();
     }
   }
 

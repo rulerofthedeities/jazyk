@@ -18,7 +18,6 @@ import 'rxjs/add/operator/takeWhile';
         </span>
       </div>
     </div>
-    level: {{level}}/{{maxLevel}} ({{percentage}}%)
   `,
   styleUrls: ['learnlevel-bar.component.css']
 })

@@ -63,10 +63,6 @@
           <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
           {{isStudyDone ? text["Restart"] : text["Next"]}}
         </div>
-        <div class="btn btn-warning btn-lg" (click)="onSkipRequested(confirm)">
-          <span class="fa fa-fast-forward"></span>
-          {{isStudyDone ? text["Practise"] : text["Skip"]}}
-        </div>
       </div>
       <km-points-earned [pointsEarned]="pointsEarned">
       </km-points-earned>
