@@ -126,8 +126,11 @@ module.exports = {
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           step = req.params.step,
           query = {userId, lessonId};
-    if (step !== 'all') {
-      query.step = step
+
+    if (step === 'practise') {
+      query['$or'] = [{step:'study'}, {step:'practise'}];
+    } else if (step !== 'all') {
+      query.step = step;
     }
     const pipeline = [
       {$match: query},
@@ -147,7 +150,8 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      console.log('resultAll', results);
+      console.log('resultALL', query);
+      console.log('resultALL', results);
       response.handleError(err, res, 500, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');
       });

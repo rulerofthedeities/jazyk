@@ -165,6 +165,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep[step] = {nrDone: 0, nrRemaining: lessonTotal};
             }
           });
+          // Practise step must have study finished
+          const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
+          this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
           console.log('step count2', this.countPerStep);
         }
         this.setSteps();

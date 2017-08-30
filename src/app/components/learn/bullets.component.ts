@@ -1,6 +1,5 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ExerciseData} from '../../models/exercise.model';
-import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -22,35 +21,7 @@ import 'rxjs/add/operator/takeWhile';
   `]
 })
 
-export class LearnBulletsComponent implements OnInit, OnDestroy {
-  @Input() private onExerciseAdded: Subject<boolean>;
+export class LearnBulletsComponent {
   @Input() exercises: ExerciseData[];
   @Input() current: number;
-  @Input() min = 0;
-  private componentActive = true;
-  emptyBullets: number[] = [];
-
-  ngOnInit() {
-    this.setEmptyBullets();
-    if (this.onExerciseAdded) {
-      this.onExerciseAdded
-      .takeWhile(() => this.componentActive)
-      .subscribe(event => {
-        this.setEmptyBullets();
-      });
-    }
-  }
-
-  private setEmptyBullets() {
-    // Add empty bullets if min nr of exercises > actual # of exercises
-    if (this.exercises && this.min > this.exercises.length) {
-      this.emptyBullets = Array(this.min - this.exercises.length).fill(0);
-    } else {
-      this.emptyBullets = [];
-    }
-  }
-
-  ngOnDestroy() {
-    this.componentActive = false;
-  }
 }

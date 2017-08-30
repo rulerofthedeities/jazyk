@@ -44,7 +44,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private levels: Map<number> = {}; // Keeps track of level per exercise, not per result
   private countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
   subscription: Subscription;
-  exerciseAdded: Subject<boolean> = new Subject;
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   pointsEarned: Subject<any> = new Subject();
   isPractiseDone = false;
@@ -230,42 +229,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  private getNewQuestions(results: ExerciseResult[]) {
-    let nrOfExercises = 0,
-        exerciseResult: ExerciseResult;
-    const newExercises: Exercise[] = [],
-          newResults: ExerciseResult[] = [];
-
-    // Select exercises that have not been learned yet
-    this.exercises.forEach(exercise => {
-      if (nrOfExercises < this.settings.nrOfWords) {
-        exerciseResult = results.find(result => result.exerciseId === exercise._id);
-        if (!exerciseResult || !exerciseResult.isLearned) {
-          // word is not learned yet; add to list of new questions
-          newExercises.push(exercise);
-          newResults.push(exerciseResult);
-          nrOfExercises = newExercises.length;
-        }
-      }
-    });
-    console.log('RESULTS', newResults);
-    console.log('NEW EXERCISES', newExercises);
-    this.buildExerciseData(newExercises, newResults);
-
-  }
-
-  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
-    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
-      isBidirectional: this.options.bidirectional,
-      direction: Direction.LocalToForeign
-    });
-    if (!this.options.ordered) {
-      this.exerciseData = this.learnService.shuffle(this.exerciseData);
-    }
-    console.log('NEW EXERCISEDATA', this.exerciseData);
-    this.getChoices(this.options.bidirectional);
   }
 
   private setChoices() {
@@ -476,7 +439,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         points: 0
       };
       this.exerciseData.push(newExerciseData);
-      this.exerciseAdded.next(true);
       if (!this.options.ordered) {
         this.shuffleRemainingExercises();
       }
@@ -591,6 +553,20 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     .subscribe(t => this.nextWord());
   }
 
+  private getConfig(lanCode: string) {
+    this.learnService
+    .fetchLanConfig(lanCode)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (config: LanConfig) => {
+        if (config) {
+          this.keys = config.keys;
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
@@ -606,18 +582,43 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getConfig(lanCode: string) {
-    this.learnService
-    .fetchLanConfig(lanCode)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (config: LanConfig) => {
-        if (config) {
-          this.keys = config.keys;
+  private getNewQuestions(results: ExerciseResult[]) {
+    let nrOfExercises = 0,
+        exerciseResult: ExerciseResult;
+    const newExercises: Exercise[] = [],
+          newResults: ExerciseResult[] = [];
+
+    // Select exercises that have not been learned yet (but have been studied)
+    this.exercises.forEach(exercise => {
+      if (nrOfExercises < this.settings.nrOfWords) {
+        exerciseResult = results.find(result => result.exerciseId === exercise._id);
+        if (exerciseResult && !exerciseResult.isLearned) {
+          // word is not learned yet; add to list of new questions
+        console.log('ADD? yes', exerciseResult);
+          newExercises.push(exercise);
+          newResults.push(exerciseResult);
+          nrOfExercises = newExercises.length;
+        } else {
+
+        console.log('ADD? no', exerciseResult);
         }
-      },
-      error => this.errorService.handleError(error)
-    );
+      }
+    });
+    console.log('RESULTS', newResults);
+    console.log('NEW EXERCISES', newExercises);
+    this.buildExerciseData(newExercises, newResults);
+  }
+
+  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
+      isBidirectional: this.options.bidirectional,
+      direction: Direction.LocalToForeign
+    });
+    if (!this.options.ordered) {
+      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    }
+    console.log('NEW EXERCISEDATA', this.exerciseData);
+    this.getChoices(this.options.bidirectional);
   }
 
   ngOnDestroy() {

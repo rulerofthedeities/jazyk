@@ -10,9 +10,7 @@
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isPractiseDone"
           [exercises]="exerciseData"
-          [current]="current"
-          [min]="exerciseData.length * 2"
-          [onExerciseAdded]="exerciseAdded">
+          [current]="current">
         </km-bullets>
         <div *ngIf="!isPractiseDone && isQuestionReady" class="card">
           <km-question
