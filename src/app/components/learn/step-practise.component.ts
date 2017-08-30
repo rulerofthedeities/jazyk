@@ -44,6 +44,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   private levels: Map<number> = {}; // Keeps track of level per exercise, not per result
   private countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
   subscription: Subscription;
+  nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   pointsEarned: Subject<any> = new Subject();
   isPractiseDone = false;
@@ -180,29 +181,18 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private nextWord() {
     this.clearData();
-    this.current += 1;
+    this.current++;
     if (this.current >= this.exerciseData.length) {
       this.isPractiseDone = true;
       this.isWordsDone = true;
       this.stepCompleted.emit(this.exerciseData);
     }
     if (!this.isPractiseDone) {
+      this.nextExercise.next(this.current);
       this.currentData = this.exerciseData[this.current];
-      let giveChoices = true;
       const learnLevel = this.getCurrentLearnLevel(this.currentData);
       this.levelUpdated.next(learnLevel);
-      // Determine if multiple choice or word
-      if (this.currentData.result) {
-        // 3 -> 5: random
-        if (learnLevel > 2 && learnLevel < 6) {
-          giveChoices =  Math.random() >= 0.5 ? true : false;
-        }
-        // 6+ : always word
-        if (learnLevel > 5) {
-          giveChoices = false;
-        }
-      }
-      this.currentData.data.choices = giveChoices;
+      this.currentData.data.choices = this.determineExerciseType(this.currentData.result, learnLevel);
       this.setChoices();
     }
     this.isQuestionReady = true;
@@ -457,6 +447,22 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     }
   }
 
+  private determineExerciseType(result: ExerciseResult, learnLevel: number): boolean {
+    // Determine if multiple choice or word
+    let giveChoices = true;
+    if (result) {
+      // 3 -> 5: random
+      if (learnLevel > 2 && learnLevel < 6) {
+        giveChoices =  Math.random() >= 0.5 ? true : false;
+      }
+      // 6+ : always word
+      if (learnLevel > 5) {
+        giveChoices = false;
+      }
+    }
+    return giveChoices;
+  }
+
   private calculateChoicesGrade(delta: number): number {
     // 5 = correct and fast
     // 4 = correct and not fast
@@ -467,7 +473,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     } else if (delta < 60) {
       grade = 4;
     }
-    console.log('time/grade', delta, grade);
+
     return grade;
   }
 
@@ -482,7 +488,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     } else if (delta < wordLength * 36) {
       grade = 4;
     }
-    console.log('time/grade', delta, wordLength * 18, wordLength * 36, grade);
 
     return grade;
   }
@@ -529,7 +534,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
 
   private getNrOfChoices(learnLevel: number): number {
     let nrOfChoices: number;
-    console.log('CHOICES LEVEL', learnLevel);
     if (learnLevel <= 0) {
       nrOfChoices = 4;
     } else {
@@ -594,18 +598,12 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if (exerciseResult && !exerciseResult.isLearned) {
           // word is not learned yet; add to list of new questions
-        console.log('ADD? yes', exerciseResult);
           newExercises.push(exercise);
           newResults.push(exerciseResult);
           nrOfExercises = newExercises.length;
-        } else {
-
-        console.log('ADD? no', exerciseResult);
         }
       }
     });
-    console.log('RESULTS', newResults);
-    console.log('NEW EXERCISES', newExercises);
     this.buildExerciseData(newExercises, newResults);
   }
 
@@ -617,7 +615,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    console.log('NEW EXERCISEDATA', this.exerciseData);
     this.getChoices(this.options.bidirectional);
   }
 

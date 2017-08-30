@@ -19,7 +19,7 @@ interface LessonHeader {
     .title {
       margin-bottom: 4px;
     }
-    .title h2 {
+    .title h2, .title h3 {
       margin: 0;
     }
     .flag {
@@ -117,6 +117,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         const newLesson = this.currentChapterLessons[i];
         this.currentLessonName = newLesson.name;
         this.lesson.nativeElement.value = newLesson._id;
+        this.getLesson(newLesson._id);
       }
     }
   }
@@ -135,6 +136,9 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
           this.currentChapterLessons.push(lessonHeader);
         }
       });
+      if (chapterLessonIds.length > 0) {
+        this.getLesson(chapterLessonIds[0]);
+      }
     }
   }
 

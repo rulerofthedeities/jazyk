@@ -1,12 +1,19 @@
 <div class="panel panel-default title">
   <div class="panel-body">
+    <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag pull-left">
+    <h2>
+      {{course?.name}}
+    </h2>
+  </div>
+</div>
+<div class="panel panel-default title" *ngIf="!showSelector">
+  <div class="panel-body">
     <div class="btn btn-warning pull-right" *ngIf="!showSelector" (click)="onToggleEdit()">
       {{text['Edit']}}
     </div>
-    <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag pull-left">
-    <h2>
-      {{course?.name}} - <span *ngIf="currentChapter">{{currentChapter}} -</span> {{currentLessonName}}
-    </h2>
+    <h3>
+      <span *ngIf="currentChapter">{{currentChapter}} -</span> {{currentLessonName}}
+    </h3>
   </div>
 </div>
 <div class="panel panel-default" *ngIf="showSelector">
@@ -64,6 +71,9 @@
             </span>
           </div>
         </div>
+      </div>
+      <div class="btn btn-warning pull-right" (click)="onToggleEdit()">
+        {{text['Close']}}
       </div>
 
     </form>
