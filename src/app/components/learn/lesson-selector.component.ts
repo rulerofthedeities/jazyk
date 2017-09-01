@@ -32,6 +32,7 @@ interface LessonHeader {
 export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   @Input() course: Course;
   @Input() text: Object;
+  @Input() level: string;
   @Output() currentLesson = new EventEmitter<Lesson>();
   @ViewChild('chapter') chapter: ElementRef;
   @ViewChild('lesson') lesson: ElementRef;
@@ -50,7 +51,12 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getLessons();
+    if (this.level === 'lesson') {
+      this.getLessons();
+    } else {
+      // This is a course level review or exam
+      this.currentLesson.emit(null);
+    }
   }
 
   onPreviousChapter(chapterName: string) {
@@ -74,7 +80,6 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   }
 
   onChangeLesson(lessonId: string) {
-    console.log('manually changing to lesson', lessonId);
     this.getLesson(lessonId);
   }
 
@@ -102,8 +107,6 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   }
 
   private navigateLesson(lessonId: string, direction: number) {
-    console.log('lessons', this.currentChapterLessons);
-    console.log('change lesson', lessonId, direction);
     const len = this.currentChapterLessons.length;
     if (this.currentChapterLessons && len > 1) {
       let i = this.currentChapterLessons.findIndex(lesson => lesson._id === lessonId);

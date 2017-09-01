@@ -27,6 +27,7 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
+  @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
   @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -62,7 +63,6 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
   isMute: boolean;
   keys: string[] = [];
   maxRepeatWord = 4;
-  learnedLevel = 12;
   beep: any;
 
   constructor(

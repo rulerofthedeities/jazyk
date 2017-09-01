@@ -1,6 +1,7 @@
 <km-lesson-selector
   *ngIf="course"
   [course]="course"
+  [level]="courseLevel"
   [text]="text"
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
@@ -11,9 +12,11 @@
       <li 
         *ngIf="i === steps.length - 1"
         (click)="stepTo(i)" 
-        class="btn btn-lg btn-info pull-right"
+        class="btn btn-lg pull-right"
+        [class.btn-info]="step==='overview'"
+        [class.btn-danger]="step==='exam'"
         [class.inactive]="currentStep!==i">
-        {{text['Overview']}}
+        {{text[capitalize(step)]}} ({{countPerStep[step]?.nrRemaining}})
       </li>
       <li 
         *ngIf="i < steps.length - 1"
@@ -21,12 +24,12 @@
         class="btn btn-lg"
         [class.btn-success]="step==='intro'"
         [class.btn-primary]="step==='review'"
-        [class.btn-danger]="step==='exam'"
-        [class.btn-info]="step!=='intro'"
+        [class.btn-warning]="step==='difficult'"
+        [class.btn-info]="step==='study' || step==='practise'"
         [class.inactive]="currentStep!==i">
-        {{text[step.charAt(0).toUpperCase() + step.slice(1)]}} <span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
+        {{text[capitalize(step)]}}<span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
       </li>
-      <li class="arrow" *ngIf="i < steps.length - 2">
+      <li class="arrow" *ngIf="i < steps.length - 2 && courseLevel==='lesson'">
         <span class="fa fa-arrow-right"></span>
       </li>
     </ng-template>
@@ -51,6 +54,7 @@
     [options]="lesson?.exerciseTpes.practise"
     [lessonId]="this.lesson._id"
     [text]="text"
+    [learnedLevel]="isLearnedLevel"
     [settings]="settings"
     (stepCompleted)="onStepCompleted('practise', $event)"
     (updatedSettings)="onSettingsUpdated($event)"

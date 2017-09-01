@@ -9,16 +9,16 @@
         (click)="onContinueCourse()">
         {{text["continuecourse"]}}
       </button>
-       <button class="btn btn-info"
-        (click)="onLearnNewWords()">
-        {{text["learnnewwords"]}}
-      </button>
        <button class="btn btn-primary"
-        (click)="onReview()">
+        (click)="onContinueCourse('review')">
         {{text["reviewwords"]}}
       </button>
+       <button class="btn btn-warning"
+        (click)="onContinueCourse('difficult')">
+        {{text["difficultwords"]}}
+      </button>
        <button class="btn btn-danger"
-        (click)="onExam()">
+        (click)="onContinueCourse('exam')">
         {{text["takeexam"]}}
       </button>
       <div class="info">

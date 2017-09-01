@@ -43,6 +43,19 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+/*
+  fetchCourseStepData(courseId: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .get('/api/user/results/course/countbystep/' + courseId, {headers})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+*/
+
   /*** Lessons ***/
 
   fetchLesson(lessonId: string) {
@@ -116,7 +129,7 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  getResultsCountByStep(lessonId: string) {
+  fetchLessonStepData(lessonId: string) {
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');

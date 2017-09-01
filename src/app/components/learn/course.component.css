@@ -42,6 +42,9 @@
 .exam {
   border: 1px solid #d9534f;
 }
+.difficult {
+  border: 1px solid #f0ad4e;
+}
 .learn {
   border-radius: 6px;
   padding: 4px;

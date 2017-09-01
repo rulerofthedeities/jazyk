@@ -22,19 +22,20 @@ export class LearnCourseUserComponent implements OnInit {
 
   ngOnInit() {
     if (this.course.exercisesDone) {
-      this.percDone = Math.trunc(this.course.exercisesDone / this.course.exerciseCount);
+      this.percDone = Math.floor(this.course.exercisesDone / this.course.exerciseCount);
     }
     this.setDifficulty();
   }
 
-  onContinueCourse() {
+  onContinueCourse(step: string) {
+    const steproute = step ? '/' + step : '';
     this.userService.continueCourse(this.course);
-    this.router.navigate(['/learn/course/' + this.course._id]);
+    this.router.navigate(['/learn/course/' + this.course._id + steproute]);
   }
 
   setDifficulty() {
     let difficulty = 0;
-    const allLeds = Array(10).fill(0);
+    const allLeds = Array<number>(10).fill(0);
     if (this.course.difficulty) {
       difficulty = Math.round((1000 - this.course.difficulty) / 100);
     }

@@ -58,7 +58,6 @@ export class LearnCompletedListComponent implements OnInit {
         result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
         result.isAlmostCorrect = exerciseData.data.isCorrect ?
           (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
-        console.log('result', exerciseData, result);
       }
     });
   }

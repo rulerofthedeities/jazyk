@@ -10,7 +10,7 @@ import {Exercise, ExerciseResult, ExerciseData} from '../../models/exercise.mode
   exercises
   <div *ngFor="let exercise of exerciseData">
     {{exercise.exercise.foreign.word}} / 
-    {{exercise.result|json}}
+    <pre>{{exercise.result|json}}</pre>
   </div>
   `
 })
