@@ -10,7 +10,8 @@ var resultSchema = new Schema({
   points: Number,
   learnLevel: Number,
   isLearned: Boolean,
-  dt: {type: Date, required: true},
+  dt: {type: Date, default: Date.now()},
+  dtToReview: Date,
   daysBetweenReviews: Number,
   percentOverdue: Number,
   sequence: Number // To find the last saved doc for docs with same save time

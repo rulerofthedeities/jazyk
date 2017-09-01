@@ -54,6 +54,7 @@ module.exports.initialize = function(app, router) {
   router.get('/exercises/:id', exercises.getExercises);
   router.post('/exercise/:id', exercises.addExercise);
   router.put('/exercise/:id', exercises.updateExercise);
+  router.get('/exercises/course/:courseId', exercises.getExercises);
   router.put('/exercises/:id', exercises.updateExercises);
   router.delete('/exercise/:lessonId/:exerciseId', exercises.removeExercise);
 
@@ -81,6 +82,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/lesson/countbystep/:lessonId', results.getResultsDone);
   router.get('/user/results/lesson/:step/:lessonId', results.getLessonResults);
   router.get('/user/results/course/currentlesson/:courseId', results.getCurrentLesson);
+  router.get('/user/results/course/toreview/:courseId', results.getToReview);
   router.post('/user/results/add', results.saveResults);
   
   router.get('/user/courses', courses.getUserCourses);

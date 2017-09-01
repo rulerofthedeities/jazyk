@@ -17,6 +17,7 @@ import {LearnLessonSelectorComponent} from './components/learn/lesson-selector.c
 import {LearnStudyComponent} from './components/learn/step-study.component';
 import {LearnPractiseComponent} from './components/learn/step-practise.component';
 import {LearnOverviewComponent} from './components/learn/step-overview.component';
+import {LearnReviewComponent} from './components/learn/step-review.component';
 import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
 import {LearnPointsCompletedComponent} from './components/learn/points-completed.component';
@@ -52,6 +53,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnStudyComponent,
     LearnPractiseComponent,
     LearnOverviewComponent,
+    LearnReviewComponent,
     LearnSettingsComponent,
     LearnCompletedListComponent,
     LearnPointsCompletedComponent,

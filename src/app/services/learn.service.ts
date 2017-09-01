@@ -152,7 +152,32 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchToReview(courseId: string, max: number) {
+    const token = this.authService.getToken(),
+          headers = new Headers(),
+          params = new URLSearchParams();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    params.set('max', max.toString());
+    return this.http
+    .get('/api/user/results/course/toreview/' + courseId, {headers, search: params})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Exercises ***/
+
+  fetchExercises(courseId: string, exerciseIds: string[]) {
+    const token = this.authService.getToken(),
+          params = new URLSearchParams();
+    exerciseIds.forEach((id, i) => {
+      params.set('id' + i.toString(), id);
+    });
+    return this.http
+    .get('/api/exercises/course/' + courseId, {search: params})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
 
   buildExerciseData(
     exercises: Exercise[],

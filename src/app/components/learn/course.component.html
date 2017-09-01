@@ -27,7 +27,7 @@
         [class.btn-warning]="step==='difficult'"
         [class.btn-info]="step==='study' || step==='practise'"
         [class.inactive]="currentStep!==i">
-        {{text[capitalize(step)]}}<span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
+        {{text[capitalize(step)]}} <span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
       </li>
       <li class="arrow" *ngIf="i < steps.length - 2 && courseLevel==='lesson'">
         <span class="fa fa-arrow-right"></span>
@@ -65,6 +65,10 @@
     [exercises]="lesson.exercises"
   >
   </km-learn-overview>
+  <km-learn-review *ngSwitchCase="'review'"
+    [courseId]="courseId"
+  >
+  </km-learn-review>
 </div>
 
 <km-info-msg

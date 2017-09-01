@@ -41,7 +41,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
 }
 
 saveStep = function(res, results, userId, courseId, lessonId) {
-  let exerciseId, result;
+  let exerciseId, result, dtToReview;
   console.log('saving results', results);
   const docs = results.data.map(doc => 
   { 
@@ -57,9 +57,14 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       isLearned: doc.isLearned,
       daysBetweenReviews: doc.daysBetweenReviews,
       percentOverdue: doc.percentOverdue,
-      dt: new Date(),
+      dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
+    if (doc.daysBetweenReviews) {
+      dtToReview = Date.now();
+      dtToReview += 1000 * 60 * 60 * 24 * parseFloat(doc.daysBetweenReviews);
+      result.dtToReview = dtToReview;
+    }
     return result;
   });
   console.log('results', docs);
@@ -201,6 +206,40 @@ module.exports = {
       console.log('resultDone', results);
       response.handleError(err, res, 500, 'Error fetching done results', function(){
         response.handleSuccess(res, results, 200, 'Fetched done results');
+      });
+    });
+  },
+  getToReview: function(req, res) {
+    const parms = req.query,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          limit = parms.max ? parseInt(parms.max) : 10,
+          query = {userId, courseId, isLearned: true};
+
+    const pipeline = [
+      {$match: query},
+      {$sort: {dtToReview: -1}},
+      {$limit: limit},
+      {$group: {
+        _id: '$exerciseId',
+        dtToReview: {'$first': '$dtToReview'},
+        dt: {'$first': '$dt'},
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
+      }},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id',
+        dtToReview: '$dtToReview',
+        dt: '$dt',
+        daysBetweenReviews: '$daysBetweenReviews'
+      }}
+    ];
+    console.log('getting data for review for course', courseId, 'limit:', limit);
+
+    Result.aggregate(pipeline, function(err, results) {
+      console.log('resultsToReview', results);
+      response.handleError(err, res, 500, 'Error fetching to review results', function(){
+        response.handleSuccess(res, results, 200, 'Fetched to review results');
       });
     });
   }

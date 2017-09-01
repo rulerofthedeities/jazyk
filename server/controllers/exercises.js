@@ -44,24 +44,32 @@ getCourseWordCount = function(id) {
 }
 module.exports = {
   getExercises: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
-    /*
-    Exercise.find({lessonId}, {}, {sort:{nr:1}}, function(err, exercises) {
+    const parms = req.query,
+          exerciseIds = [],
+          courseId = new mongoose.Types.ObjectId(req.params.courseId);
+    let exerciseId;
+    for (var key in parms) {
+      if (parms[key]) {
+        exerciseId = new mongoose.Types.ObjectId(parms[key]);
+        exerciseIds.push(exerciseId);
+      }
+    }
+    const query = {'exercises._id': {$in: exerciseIds}};
+
+    const pipeline = [
+      {$match: {courseId}},
+      {$unwind: '$exercises'},
+      {$match: query},
+      {$project: {_id: 0, exercise: '$exercises'}}
+    ];
+
+    console.log('fetching exercises', pipeline);
+    Lesson.aggregate(pipeline, function(err, exercises) {
+      console.log('exercises', exercises);
       response.handleError(err, res, 500, 'Error fetching exercises', function(){
         response.handleSuccess(res, exercises, 200, 'Fetched exercises');
       });
     });
-    */
-  },
-  getExercise: function(req, res) {
-    const exerciseId = new mongoose.Types.ObjectId(req.params.id);
-    /*
-    Exercise.findOne({_id: exerciseId}, {}, function(err, exercise) {
-      response.handleError(err, res, 500, 'Error fetching exercise', function(){
-        response.handleSuccess(res, exercise, 200, 'Fetched exercise');
-      });
-    });
-    */
   },
   addExercise: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.id);

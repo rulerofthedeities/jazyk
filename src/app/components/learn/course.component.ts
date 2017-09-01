@@ -142,6 +142,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
+            console.log('course', course);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
