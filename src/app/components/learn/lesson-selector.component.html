@@ -1,5 +1,15 @@
 <div class="panel panel-default title">
   <div class="panel-body">
+    <div class="pull-right">
+      <span 
+        class="fa fa-chevron-down toggleLevel"
+        (click)="onChangeLevel('lesson')"
+        *ngIf="level==='course'"></span>
+      <span 
+        class="fa fa-chevron-up toggleLevel"
+        (click)="onChangeLevel('course')"
+        *ngIf="level==='lesson'"></span>
+    </div>
     <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag pull-left">
     <h2>
       {{course?.name}}

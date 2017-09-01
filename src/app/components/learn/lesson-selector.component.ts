@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Router} from '@angular/router';
 import {Course, Lesson} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
@@ -12,21 +13,7 @@ interface LessonHeader {
 @Component({
   selector: 'km-lesson-selector',
   templateUrl: 'lesson-selector.component.html',
-  styles: [`
-    .panel {
-      background-color: rgba(239, 239, 239, .9);
-    }
-    .title {
-      margin-bottom: 4px;
-    }
-    .title h2, .title h3 {
-      margin: 0;
-    }
-    .flag {
-      margin-right: 10px;
-      margin-top: 6px;
-    }
-  `]
+  styleUrls: ['lesson-selector.component.css']
 })
 
 export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
@@ -46,6 +33,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   showSelector = false;
 
   constructor(
+    private router: Router,
     private learnService: LearnService,
     private errorService: ErrorService
   ) {}
@@ -85,6 +73,14 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
 
   onToggleEdit() {
     this.showSelector = !this.showSelector;
+  }
+
+  onChangeLevel(newLevel: string) {
+    let step = '';
+    if (newLevel === 'course') {
+      step = '/review';
+    }
+    this.router.navigate(['/learn/course/' + this.course._id + step]);
   }
 
   private navigateChapter(chapterName: string, direction: number) {

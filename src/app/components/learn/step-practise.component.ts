@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import {Step} from './step-base.component';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
@@ -22,7 +23,7 @@ interface Map<T> {
   styleUrls: ['step.component.css']
 })
 
-export class LearnPractiseComponent implements OnInit, OnDestroy {
+export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
@@ -69,7 +70,9 @@ export class LearnPractiseComponent implements OnInit, OnDestroy {
     private learnService: LearnService,
     private audioService: AudioService,
     private errorService: ErrorService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.settings.nrOfWords = 2; // TEMP

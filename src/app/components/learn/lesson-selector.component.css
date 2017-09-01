@@ -1,0 +1,17 @@
+.panel {
+  background-color: rgba(239, 239, 239, .9);
+}
+.title {
+  margin-bottom: 4px;
+}
+.title h2, .title h3 {
+  margin: 0;
+}
+.flag {
+  margin-right: 10px;
+  margin-top: 6px;
+}
+.toggleLevel{
+  font-size: 32px;
+  cursor: pointer;
+}
