@@ -74,12 +74,14 @@
           {{text["Restart"]}}
         </div>
       </div>
-      <km-learnlevel-bar
-        [levelUpdated]="levelUpdated"
-        [maxLevel]="learnedLevel">
-      </km-learnlevel-bar>
-      <km-points-earned [pointsEarned]="pointsEarned">
-      </km-points-earned>
+      <div class="score" *ngIf="!isPractiseDone">
+        <km-learnlevel-bar
+          [levelUpdated]="levelUpdated"
+          [maxLevel]="learnedLevel">
+        </km-learnlevel-bar>
+        <km-points-earned [pointsEarned]="pointsEarned">
+        </km-points-earned>
+      </div>
     </div>
     <div class="clearfix"></div>
   </section>

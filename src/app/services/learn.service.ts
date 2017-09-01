@@ -77,7 +77,7 @@ export class LearnService {
   }
 
   private saveResults(data: string) {
-    // must be idempotent?
+    // must be idempotent
     const token = this.authService.getToken(),
           headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -263,6 +263,17 @@ export class LearnService {
 
   private getRandom(floor: number, ceiling: number) {
     return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
+  }
+
+  getDaysBetweenDates(firstDate: Date, secondDate: Date): number {
+    const oneDay = 24 * 60 * 60 * 1000, // ms in a day
+          diffDays = Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay));
+
+    return diffDays;
+  }
+
+  clamp(val: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, val));
   }
 
   isAlmostCorrect(answer: string, solution: string): boolean {

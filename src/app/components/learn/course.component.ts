@@ -25,6 +25,8 @@ interface ResultData {
   learnLevel: number;
   sequence: number; // To find the last saved doc for docs with same save time
   isLearned?: boolean;
+  daysBetweenReviews?: number;
+  percentOverdue?: number;
 }
 
 @Component({
@@ -101,7 +103,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onLessonSelected(lesson: Lesson) {
-    console.log('new lesson selected', lesson);
     this.lesson = lesson;
     this.getStepData();
     this.isReady = true;
@@ -150,11 +151,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('step count', results);
         if (results) {
           this.countPerStep = {};
           const lessonTotal = this.lesson.exercises.length;
-          console.log('total exercises in lesson', lessonTotal);
           results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
           results.forEach(result => {
             this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
@@ -168,7 +167,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           // Practise step must have study finished
           const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
           this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
-          console.log('step count2', this.countPerStep);
         }
         this.setSteps();
       },
@@ -190,7 +188,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
-    console.log('course', this.course._id);
+    const lastResult: Map<ResultData> = {}; // Get most recent result per exercise (for isLearned && reviewTime)
+    const allCorrect: Map<boolean> = {}; // Exercise is only correct if all answers for an exercise are correct
     const result = {
       courseId: this.course._id,
       lessonId: this.lesson._id,
@@ -205,12 +204,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         learnLevel: item.data.learnLevel || 0,
         sequence: i
       };
-      if ((item.data.learnLevel || 0) >= this.isLearnedLevel) {
-        newResult.isLearned = true;
-      }
+      lastResult[item.exercise._id] = newResult;
+      allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
       result.data.push(newResult);
     });
-    console.log('result:', result);
+    this.checkLastResult(lastResult, allCorrect, data);
+    console.log('Saving result', result);
     this.learnService
     .saveUserResults(JSON.stringify(result))
     .takeWhile(() => this.componentActive)
@@ -229,17 +228,81 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private saveSettings() {
-    console.log('saving settings');
     this.userService
     .saveLearnSettings(this.settings)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
         this.settingsUpdated = false;
-        console.log('settings saved', saved);
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private checkLastResult(lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[]) {
+    // Only use the most recent result per exerciseid to determine isLearned / review time
+    console.log('checking last results');
+    for (const key in lastResult) {
+      if (lastResult.hasOwnProperty(key)) {
+        console.log(key + ' -> ' + lastResult[key]);
+        // Check if word is learned
+        if ((lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
+          lastResult[key].isLearned = true;
+          // Calculate review time
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
+          this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+        }
+      }
+    }
+  }
+
+  private calculateReviewTime(result: ResultData, isCorrect: boolean, exercise: ExerciseData) {
+    console.log('algo - calculating review time for', exercise);
+    if (exercise) {
+      const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
+            dateLastReviewed = exercise.result.dt,
+            daysBetweenReviews = exercise.result.daysBetweenReviews || 3,
+            performanceRating = exercise.data.grade / 5 || 0.6;
+      let difficultyPerc = difficulty / 100 || 0.3,
+          percentOverdue = 1,
+          newDaysBetweenReviews = 1;
+      console.log('algo - CALCULATE REVIEW TIME', exercise.exercise.foreign.word);
+      console.log('algo - difficulty', difficulty);
+      console.log('algo - dateLastReviewed', dateLastReviewed);
+      console.log('algo - daysBetweenReviews', daysBetweenReviews);
+      console.log('algo - performanceRating', performanceRating);
+
+      if (isCorrect) {
+        const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(dateLastReviewed), new Date());
+        percentOverdue = Math.min(2, daysSinceLastReview / daysBetweenReviews);
+      }
+      const performanceDelta = this.learnService.clamp((8 - 9 * performanceRating) / 17, -1, 1);
+      console.log('algo - performanceDelta', performanceDelta);
+      difficultyPerc += percentOverdue * performanceDelta;
+      const difficultyWeight = 3 - 1.7 * difficultyPerc;
+      console.log('algo - difficultyWeight', difficultyWeight);
+      if (isCorrect) {
+        newDaysBetweenReviews = daysBetweenReviews * (1 + (difficultyWeight - 1) * percentOverdue);
+      } else {
+        newDaysBetweenReviews = daysBetweenReviews * Math.max(0.25, 1 / (Math.pow(difficultyWeight, 2)));
+      }
+      console.log('algo - correct', isCorrect);
+      console.log('algo - newDaysBetweenReviews', newDaysBetweenReviews);
+      console.log('algo - percentOverdue', percentOverdue);
+      result.daysBetweenReviews = newDaysBetweenReviews;
+      result.percentOverdue = percentOverdue;
+    }
+  }
+
+  private getInitialDifficulty(exercise: Exercise): number {
+    // Combination of character length & word length
+    // Only if no difficulty has been set
+    const word = exercise.foreign.word.trim(),
+          lengthScore = Math.min(70, word.length * 3),
+          wordScore =  Math.min(10, word.split(' ').length) * 5,
+          difficulty = lengthScore + wordScore;
+    console.log('difficulty for', word, difficulty);
+    return difficulty;
   }
 
   ngOnDestroy() {

@@ -12,7 +12,7 @@
         *ngIf="i === steps.length - 1"
         (click)="stepTo(i)" 
         class="btn btn-lg btn-info pull-right"
-        [class.inactive]="currentStep!==i + 1">
+        [class.inactive]="currentStep!==i">
         {{text['Overview']}}
       </li>
       <li 

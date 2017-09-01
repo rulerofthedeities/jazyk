@@ -42,7 +42,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
 
 saveStep = function(res, results, userId, courseId, lessonId) {
   let exerciseId, result;
-  console.log('results', results);
+  console.log('saving results', results);
   const docs = results.data.map(doc => 
   { 
     exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
@@ -55,6 +55,8 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       points: doc.points,
       learnLevel: doc.learnLevel,
       isLearned: doc.isLearned,
+      daysBetweenReviews: doc.daysBetweenReviews,
+      percentOverdue: doc.percentOverdue,
       dt: new Date(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
@@ -139,6 +141,8 @@ module.exports = {
         _id: '$exerciseId',
         firstLevel: {'$first': '$learnLevel'},
         isLearned: {'$first': '$isLearned'},
+        dt: {'$first': '$dt'},
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
         totalPoints: {'$sum': '$points'}
       }},
       {$project: {
@@ -146,6 +150,8 @@ module.exports = {
         exerciseId: '$_id',
         learnLevel: '$firstLevel',
         isLearned: '$isLearned',
+        dt: '$dt',
+        daysBetweenReviews: '$daysBetweenReviews',
         points: '$totalPoints'
       }}
     ];

@@ -18,7 +18,7 @@ export interface Exercise {
   aspect?: string;
   image?: string;
   audio?: string;
-  difficulty?: number;
+  difficulty?: number; // 0-100
 }
 
 export interface ExerciseTpe {
@@ -45,6 +45,8 @@ export interface ExerciseResult {
   isLearned?: boolean;
   sequence?: number; // To find the last saved doc for docs with same save time
   dt?: Date;
+  daysBetweenReviews?: number;
+  percentOverdue?: number;
 }
 
 export enum Direction {LocalToForeign, ForeignToLocal};
