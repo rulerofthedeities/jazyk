@@ -138,21 +138,40 @@ module.exports = {
       }
     );
   },
-  getChoices: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
-    const isBidirectional = req.params.dir === '1' ? true : false;
-    let projection = {_id:0, choices: {foreign: "$exercises.foreign.word"}};
-    if (isBidirectional) {
-      projection = {_id:0, choices: {foreign: "$exercises.foreign.word", local: "$exercises.local.word"}};
-    }
+  getLessonChoices: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
+          
     const pipeline = [
       {$match: {_id: lessonId}},
+      {$unwind: '$exercises'},
       {$project: projection}
     ];
+
     Lesson.aggregate(pipeline, function(err, docs) {
+      console.log('Lesson choices:', docs);
       response.handleError(err, res, 500, 'Error fetching choices', function(){
-        response.handleSuccess(res, docs[0].choices, 200, 'Fetched choices');
+        response.handleSuccess(res, docs, 200, 'Fetched choices');
       });
     });
   },
+  getCourseChoices: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          max = 200,
+          projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
+
+    const pipeline = [
+      {$match: {courseId}},
+      {$unwind: '$exercises'},
+      {$sample: {size: max}},
+      {$project: projection}
+    ];
+
+    Lesson.aggregate(pipeline, function(err, docs) {
+      console.log('Course choices:', docs);
+      response.handleError(err, res, 500, 'Error fetching choices', function(){
+        response.handleSuccess(res, docs, 200, 'Fetched choices');
+      });
+    });
+  }
 }

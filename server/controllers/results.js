@@ -161,7 +161,6 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      console.log('resultALL', query);
       console.log('resultALL', results);
       response.handleError(err, res, 500, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');

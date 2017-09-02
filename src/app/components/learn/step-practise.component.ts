@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
 import {Step} from './step-base.component';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult, Choice} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {AudioService} from '../../services/audio.service';
@@ -26,18 +26,18 @@ interface Map<T> {
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
   @Input() lanPair: LanPair;
-  @Input() text: Object;
+  // @Input() text: Object;
   @Input() lessonId: string;
   @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
-  @Input() settings: LearnSettings;
+  // @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
-  private componentActive = true;
+  // private componentActive = true;
   private isWordsDone =  false; // true once words are done once
-  private choicesForeign: string[];
-  private choicesLocal: string[];
+  // private choicesForeign: string[];
+  // private choicesLocal: string[];
   private startDate: Date;
   private endDate: Date;
   private levels: Map<number> = {}; // Keeps track of level per exercise, not per result
@@ -48,7 +48,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   pointsEarned: Subject<any> = new Subject();
   isPractiseDone = false;
-  exerciseData: ExerciseData[];
+  // exerciseData: ExerciseData[];
   currentData: ExerciseData;
   currentChoices: string[] = [];
   current = -1;
@@ -67,11 +67,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   beep: any;
 
   constructor(
-    private learnService: LearnService,
+    learnService: LearnService,
     private audioService: AudioService,
-    private errorService: ErrorService
+    errorService: ErrorService
   ) {
-    super();
+    super(learnService, errorService);
   }
 
   ngOnInit() {
@@ -166,23 +166,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return tpe;
   }
 
-  private getChoices(isBidirectional: boolean) {
-    this.learnService
-    .fetchChoices(this.lessonId, isBidirectional)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      choices => {
-        this.choicesForeign = choices.foreign;
-        if (isBidirectional) {
-          this.choicesLocal = choices.local;
-        }
-        this.nextWord();
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private nextWord() {
+  protected nextWord() {
     this.clearData();
     this.current++;
     if (this.current >= this.exerciseData.length) {
@@ -233,13 +217,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           direction = this.currentData.data.direction,
           choices: string[] = [],
           nrOfChoices = this.getNrOfChoices(learnLevel),
-          availableChoices = JSON.parse(JSON.stringify(direction === Direction.ForeignToLocal ? this.choicesLocal : this.choicesForeign)),
+          availableChoices: Choice[] = JSON.parse(JSON.stringify(this.choices)),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
 
     choices.push(word);
     while (choices.length < nrOfChoices && availableChoices) {
       rand = Math.floor(Math.random() * availableChoices.length);
-      choice = availableChoices[rand];
+      choice = availableChoices[rand][direction === Direction.ForeignToLocal ? 'local' : 'foreign'];
       availableChoices.splice(rand, 1);
       if (!choices.find(choiceItem => choiceItem === choice)) {
         choices.push(choice);
@@ -608,6 +592,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
+    console.log('PRACTISERESULTS', results);
     // Select exercises that have not been learned yet (but have been studied)
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {
@@ -631,7 +616,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
-    this.getChoices(this.options.bidirectional);
+    this.getChoices('lesson', this.lessonId, this.options.bidirectional);
   }
 
   ngOnDestroy() {

@@ -45,6 +45,7 @@ export interface ExerciseResult {
   isLearned?: boolean;
   sequence?: number; // To find the last saved doc for docs with same save time
   dt?: Date;
+  dtToReview?: Date;
   daysBetweenReviews?: number;
   percentOverdue?: number;
 }
@@ -85,3 +86,9 @@ export interface ExerciseOptions {
   isBidirectional?: boolean;
   direction: Direction;
 }
+
+export interface Choice {
+  local: string;
+  foreign: string;
+}
+

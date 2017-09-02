@@ -72,9 +72,26 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchChoices(lessonId: string, isBidirectional: boolean) {
+  /*** Choices ***/
+
+  fetchChoices(tpe: string, id: string, isBidirectional: boolean) {
+    if (tpe === 'course') {
+      return this.fetchCourseChoices(id, isBidirectional);
+    } else {
+      return this.fetchLessonChoices(id, isBidirectional);
+    }
+  }
+
+  private fetchLessonChoices(lessonId: string, isBidirectional: boolean) {
     return this.http
-    .get('/api/choices/' + lessonId + '/' + (isBidirectional ? '1' : '0'))
+    .get('/api/choices/lesson/' + lessonId)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  private fetchCourseChoices(courseId: string, isBidirectional: boolean) {
+    return this.http
+    .get('/api/choices/course/' + courseId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

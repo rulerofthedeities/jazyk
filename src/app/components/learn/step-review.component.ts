@@ -2,14 +2,8 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {Exercise, ExerciseResult, Direction} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface ToReviewResult {
-  exerciseId: string;
-  dtToReview: Date;
-  dt: Date;
-  daysBetweenReviews: number;
-}
 
 @Component({
   selector: 'km-learn-review',
@@ -18,14 +12,13 @@ interface ToReviewResult {
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   @Input() courseId: string;
-  private componentActive = true;
   private maxToReview = 5;
 
   constructor(
-    private learnService: LearnService,
-    private errorService: ErrorService
+    learnService: LearnService,
+    errorService: ErrorService
   ) {
-    super();
+    super(learnService, errorService);
   }
 
   ngOnInit() {
@@ -46,20 +39,30 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     );
   }
 
-  private loadExercises(results: ToReviewResult[]) {
+  private loadExercises(results: ExerciseResult[]) {
     if (results.length > 0) {
       const ids = results.map(result => result.exerciseId);
       this.learnService
       .fetchExercises(this.courseId, ids)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        exercises => {
+        exercisesResult => {
+          const exercises = exercisesResult.map(ex => ex.exercise);
           console.log('exercises to review', exercises);
+          this.buildExerciseData(exercises, results);
         },
         error => this.errorService.handleError(error)
       );
-
     }
+  }
+
+  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
+      isBidirectional: true,
+      direction: Direction.LocalToForeign
+    });
+    this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    this.getChoices('course', this.courseId);
   }
 
   ngOnDestroy() {
