@@ -1,16 +1,11 @@
-import {Component, Input, Output, OnInit, EventEmitter, OnDestroy, ViewChild} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult, Choice} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
-import {LearnAnswerFieldComponent} from './answer-field.component';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import {Subscription} from 'rxjs/Subscription';
-import {Subject} from 'rxjs/Subject';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -25,66 +20,30 @@ interface Map<T> {
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
-  @Input() lanPair: LanPair;
-  // @Input() text: Object;
   @Input() lessonId: string;
   @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
-  // @Input() settings: LearnSettings;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
-  @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
-  // private componentActive = true;
-  private isWordsDone =  false; // true once words are done once
-  // private choicesForeign: string[];
-  // private choicesLocal: string[];
-  private startDate: Date;
-  private endDate: Date;
-  private levels: Map<number> = {}; // Keeps track of level per exercise, not per result
   private countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
   private countRight: Map<number> = {}; // Keeps track of how many times an exercise has been answered correctly
-  subscription: Subscription;
-  nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  pointsEarned: Subject<any> = new Subject();
-  isPractiseDone = false;
-  // exerciseData: ExerciseData[];
-  currentData: ExerciseData;
-  currentChoices: string[] = [];
-  current = -1;
-  isSelected = false; // choices
-  isAnswered = false;  // word
-  isCorrect = false; // word
-  isQuestionReady = false;
-  solution: string; // word
-  answered: number; // choices
-  answer: number; // choices
   score = 0;
-  isCountDown: boolean;
-  isMute: boolean;
-  keys: string[] = [];
   maxRepeatWord = 4;
   beep: any;
 
   constructor(
     learnService: LearnService,
-    private audioService: AudioService,
-    errorService: ErrorService
+    errorService: ErrorService,
+    private audioService: AudioService
   ) {
     super(learnService, errorService);
   }
 
   ngOnInit() {
     this.settings.nrOfWords = 2; // TEMP
-    this.isCountDown = this.settings.countdown;
-    this.isMute = this.settings.mute;
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
-    this.getConfig(this.lanPair.to); // For keyboard keys
     this.fetchLessonResults();
-  }
-
-  onCountDownFinished() {
-    this.isCountDown = false;
+    super.init();
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -109,42 +68,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   onRestart() {
-    if (this.isPractiseDone) {
+    if (this.isExercisesDone) {
       this.restart();
-    }
-  }
-
-  onKeyPressed(key: string) {
-    if (!this.isPractiseDone && this.currentData) {
-      if (this.currentData.data.choices) {
-        let selection: number;
-        switch (key) {
-          case 'Enter':
-            if (this.isSelected) {
-              this.nextWord();
-            }
-          break;
-          case '1':
-          case '2':
-          case '3':
-          case '4':
-          case '5':
-          case '6':
-          case '7':
-          case '8':
-            if (!this.isSelected) {
-              selection = parseInt(key, 10);
-              if (selection > 0 && selection <= this.currentChoices.length) {
-                this.checkChoicesAnswer(selection - 1);
-              }
-            }
-          break;
-        }
-      } else {
-        if (key === 'Enter') {
-          this.checkIfWordAnswer();
-        }
-      }
     }
   }
 
@@ -167,72 +92,17 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   protected nextWord() {
-    this.clearData();
-    this.current++;
-    if (this.current >= this.exerciseData.length) {
-      this.isPractiseDone = true;
-      this.isWordsDone = true;
-      this.stepCompleted.emit(this.exerciseData);
-    }
-    if (!this.isPractiseDone) {
-      this.nextExercise.next(this.current);
-      this.currentData = this.exerciseData[this.current];
-      const learnLevel = this.getCurrentLearnLevel(this.currentData);
-      this.levelUpdated.next(learnLevel);
-      this.currentData.data.choices = this.determineExerciseType(this.currentData.result, learnLevel);
-      this.setChoices();
-    }
-    this.isQuestionReady = true;
-    this.startDate = new Date();
+    super.nextWord();
   }
 
   private restart() {
-    this.isPractiseDone = false;
+    this.isExercisesDone = false;
     this.current = -1;
     this.fetchLessonResults();
   }
 
-  private clearData() {
-    this.pointsEarned.next(0);
-    this.solution = '';
-    this.isAnswered = false;
-    this.isSelected = false;
-    this.isCorrect = false;
-    this.answered = null;
-    this.answer = null;
-    if (this.answerComponent) {
-      this.answerComponent.clearData();
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
 
-  private setChoices() {
-    // Select random words from choices array
-    let choice: string,
-        rand: number;
-    const learnLevel = this.getCurrentLearnLevel(this.currentData),
-          exercise = this.currentData.exercise,
-          direction = this.currentData.data.direction,
-          choices: string[] = [],
-          nrOfChoices = this.getNrOfChoices(learnLevel),
-          availableChoices: Choice[] = JSON.parse(JSON.stringify(this.choices)),
-          word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
-
-    choices.push(word);
-    while (choices.length < nrOfChoices && availableChoices) {
-      rand = Math.floor(Math.random() * availableChoices.length);
-      choice = availableChoices[rand][direction === Direction.ForeignToLocal ? 'local' : 'foreign'];
-      availableChoices.splice(rand, 1);
-      if (!choices.find(choiceItem => choiceItem === choice)) {
-        choices.push(choice);
-      }
-    }
-    this.currentChoices = this.learnService.shuffle(choices);
-  }
-
-  private checkChoicesAnswer(i: number) {
+  protected checkChoicesAnswer(i: number) {
     this.isSelected = true;
     this.answered = i;
     this.answer = null;
@@ -282,7 +152,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.pointsEarned.next(points);
   }
 
-  private checkIfWordAnswer() {
+  protected checkIfWordAnswer() {
     if (!this.isAnswered) {
       if (this.answerComponent) {
         this.checkWordAnswer(this.answerComponent.getData());
@@ -437,7 +307,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
-  private determineExerciseType(result: ExerciseResult, learnLevel: number): boolean {
+  protected determineExerciseType(result: ExerciseResult, learnLevel: number): boolean {
     // Determine if multiple choice or word
     let giveChoices = true;
     if (result) {
@@ -511,18 +381,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return level;
   }
 
-  private getCurrentLearnLevel(data: ExerciseData): number {
-    let learnLevel = data && data.result ? data.result.learnLevel || 0 : 1; // saved data
-    // CHECK if this exerciseid has been answered before; if so; use this level
-    const lastLevel = this.levels[data.exercise._id];
-    if (lastLevel !== undefined) {
-      // Use level from this score
-      learnLevel = lastLevel;
-    }
-    return learnLevel;
-  }
-
-  private getNrOfChoices(learnLevel: number): number {
+  protected getNrOfChoices(learnLevel: number): number {
     let nrOfChoices: number;
     if (learnLevel <= 0) {
       nrOfChoices = 4;
@@ -546,7 +405,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private timeNext(secs: number) {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
-    this.subscription = timer
+    this.nextWordTimer = timer
     .takeWhile(() => this.componentActive)
     .subscribe(t => this.nextWord());
   }
@@ -555,20 +414,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (learnLevel > this.learnedLevel) {
       this.audioService.playSound(this.isMute, this.beep);
     }
-  }
-
-  private getConfig(lanCode: string) {
-    this.learnService
-    .fetchLanConfig(lanCode)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (config: LanConfig) => {
-        if (config) {
-          this.keys = config.keys;
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
   }
 
   private fetchLessonResults() {

@@ -7,7 +7,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-learn-review',
-  template: `REVIEW`
+  templateUrl: 'step-review.component.html'
 })
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
@@ -24,6 +24,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('courseid', this.courseId);
     this.getToReview();
+    super.init();
   }
 
   private getToReview() {

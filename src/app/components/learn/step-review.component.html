@@ -1,0 +1,12 @@
+<km-countdown 
+  *ngIf="isCountDown; else exercise"
+  [mute]="isMute"
+  (countedDown)="onCountDownFinished()">
+</km-countdown>
+
+<ng-template #exercise>
+  <section kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    REVIEW
+  </section>
+</ng-template>
