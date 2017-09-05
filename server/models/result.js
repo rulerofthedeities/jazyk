@@ -14,6 +14,7 @@ var resultSchema = new Schema({
   dtToReview: Date,
   daysBetweenReviews: Number,
   percentOverdue: Number,
+  streak: String,
   sequence: Number // To find the last saved doc for docs with same save time
 });
 

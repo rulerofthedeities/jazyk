@@ -27,6 +27,7 @@ interface ResultData {
   isLearned?: boolean;
   daysBetweenReviews?: number;
   percentOverdue?: number;
+  streak: string;
 }
 
 @Component({
@@ -54,6 +55,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   courseLevel: string; // Course or lesson
   isReady = false;
   isStepsReady = false;
+  maxStreak = 20;
 
   constructor(
     private route: ActivatedRoute,
@@ -204,6 +206,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     const lastResult: Map<ResultData> = {}; // Get most recent result per exercise (for isLearned && reviewTime)
+    const streak: Map<string> = {}; // Get streaks for exercise
     const allCorrect: Map<boolean> = {}; // Exercise is only correct if all answers for an exercise are correct
     const result = {
       courseId: this.course._id,
@@ -212,11 +215,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data: []
     };
     data.forEach( (item, i) => {
+      console.log('result', item);
+      streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result.streak, item.data.isCorrect);
       const newResult: ResultData = {
         exerciseId: item.exercise._id,
         done: item.data.isDone || false,
         points: item.data.points || 0,
         learnLevel: item.data.learnLevel || 0,
+        streak: streak[item.exercise._id],
         sequence: i
       };
       lastResult[item.exercise._id] = newResult;
@@ -225,6 +231,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     });
     this.checkLastResult(lastResult, allCorrect, data);
     console.log('Saving result', result);
+    /*
     this.learnService
     .saveUserResults(JSON.stringify(result))
     .takeWhile(() => this.componentActive)
@@ -240,6 +247,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+    */
+  }
+
+  private buildStreak(streak: string, resultStreak: string, isCorrect: boolean): string {
+    let newStreak = streak || resultStreak || '';
+    if (isCorrect) {
+      newStreak = newStreak + '1';
+    } else {
+      newStreak = newStreak + '0';
+    }
+    return newStreak.slice(0, this.maxStreak);
   }
 
   private saveSettings() {

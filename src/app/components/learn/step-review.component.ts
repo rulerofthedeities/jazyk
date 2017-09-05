@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Exercise, ExerciseResult, Direction} from '../../models/exercise.model';
+import {Exercise, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -26,6 +26,23 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     console.log('courseid', this.courseId);
     this.getToReview();
     super.init();
+  }
+
+  protected determineQuestionType(result: ExerciseResult, learnLevel: number): QuestionType {
+    console.log('Determine q type', result, learnLevel);
+    // Determine if multiple choice or word
+    let qTpe = QuestionType.Choices;
+    if (result) {
+      // 3 -> 5: random
+      if (learnLevel > 2 && learnLevel < 6) {
+        qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+      }
+      // 6+ : always word
+      if (learnLevel > 5) {
+        qTpe = QuestionType.Word;
+      }
+    }
+    return qTpe;
   }
 
   private getToReview() {

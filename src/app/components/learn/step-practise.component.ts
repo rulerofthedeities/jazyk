@@ -107,7 +107,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       }
       newExerciseData.result = {
         learnLevel: newExerciseData.data.learnLevel,
-        points: 0
+        points: 0,
+        streak: this.exerciseData[this.current].result.streak
       };
       this.exerciseData.push(newExerciseData);
       if (!this.options.ordered) {

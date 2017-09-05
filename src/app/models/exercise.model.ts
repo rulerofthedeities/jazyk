@@ -48,6 +48,7 @@ export interface ExerciseResult {
   dtToReview?: Date;
   daysBetweenReviews?: number;
   percentOverdue?: number;
+  streak: string;
 }
 
 export enum Direction {LocalToForeign, ForeignToLocal};

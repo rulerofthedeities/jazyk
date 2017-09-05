@@ -57,6 +57,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       isLearned: doc.isLearned,
       daysBetweenReviews: doc.daysBetweenReviews,
       percentOverdue: doc.percentOverdue,
+      streak: doc.streak,
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
@@ -146,6 +147,7 @@ module.exports = {
         _id: '$exerciseId',
         firstLevel: {'$first': '$learnLevel'},
         isLearned: {'$first': '$isLearned'},
+        streak: {'$first': '$streak'},
         dt: {'$first': '$dt'},
         daysBetweenReviews: {'$first': '$daysBetweenReviews'},
         totalPoints: {'$sum': '$points'}
@@ -157,7 +159,8 @@ module.exports = {
         isLearned: '$isLearned',
         dt: '$dt',
         daysBetweenReviews: '$daysBetweenReviews',
-        points: '$totalPoints'
+        points: '$totalPoints',
+        streak: '$streak'
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
