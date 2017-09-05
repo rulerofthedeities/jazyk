@@ -51,6 +51,7 @@ export interface ExerciseResult {
 }
 
 export enum Direction {LocalToForeign, ForeignToLocal};
+export enum QuestionType {Choices, Word};
 
 export interface ExerciseExtraData {
   wordForeign?: string;
@@ -71,7 +72,7 @@ export interface ExerciseExtraData {
   timeDelta?: number;
   learnLevel?: number;
   isLearned?: boolean;
-  choices?: boolean; // true => multiple choice; false => enter word
+  questionType?: QuestionType;
 }
 
 export interface ExerciseData {
@@ -91,4 +92,3 @@ export interface Choice {
   local: string;
   foreign: string;
 }
-

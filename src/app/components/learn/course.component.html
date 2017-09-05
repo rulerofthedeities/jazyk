@@ -60,18 +60,20 @@
     (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-practise>
-  <km-learn-overview *ngSwitchCase="'overview'"
-    [lessonId]="lesson._id"
-    [exercises]="lesson.exercises"
-  >
-  </km-learn-overview>
   <km-learn-review *ngSwitchCase="'review'"
     [courseId]="courseId"
     [lanPair]="course.languagePair"
     [text]="text"
     [settings]="settings"
+    (stepCompleted)="onStepCompleted('review', $event)"
+    (updatedSettings)="onSettingsUpdated($event)"
   >
   </km-learn-review>
+  <km-learn-overview *ngSwitchCase="'overview'"
+    [lessonId]="lesson._id"
+    [exercises]="lesson.exercises"
+  >
+  </km-learn-overview>
 </div>
 
 <km-info-msg

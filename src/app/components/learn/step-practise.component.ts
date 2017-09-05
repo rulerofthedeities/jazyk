@@ -1,6 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction, ExerciseResult, Choice} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction,
+        ExerciseResult, Choice, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {AudioService} from '../../services/audio.service';
@@ -24,11 +25,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
-  @Output() updatedSettings = new EventEmitter<LearnSettings>();
-  private countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
-  private countRight: Map<number> = {}; // Keeps track of how many times an exercise has been answered correctly
-  score = 0;
-  maxRepeatWord = 4;
   beep: any;
 
   constructor(
@@ -44,27 +40,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.fetchLessonResults();
     super.init();
-  }
-
-  onSettingsUpdated(settings: LearnSettings) {
-    this.settings = settings;
-    this.updatedSettings.emit(settings);
-  }
-
-  onSelected(i: number) {
-    if (!this.isSelected) {
-      this.checkChoicesAnswer(i);
-    }
-  }
-
-  onNextWord() {
-    if (this.currentData.data.choices) {
-      if (this.isSelected) {
-        this.nextWord();
-      }
-    } else {
-      this.checkIfWordAnswer();
-    }
   }
 
   onRestart() {
@@ -83,14 +58,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return isCorrect;
   }
 
-  getQuestionType(): string {
-    let tpe = 'local';
-    if (this.currentData && this.currentData.data.choices && this.currentData.data.direction === Direction.ForeignToLocal) {
-      tpe = 'foreign';
-    }
-    return tpe;
-  }
-
   protected nextWord() {
     super.nextWord();
   }
@@ -101,175 +68,29 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.fetchLessonResults();
   }
 
-
-  protected checkChoicesAnswer(i: number) {
-    this.isSelected = true;
-    this.answered = i;
-    this.answer = null;
-    this.endDate = new Date();
-    const choice = this.currentChoices[i],
-          direction = this.currentData.data.direction,
-          nrOfQuestions = this.exerciseData.length,
-          word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word,
-          timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
-    let learnLevel = this.getCurrentLearnLevel(this.currentData),
-        points = 0;
-
-    this.currentData.data.isDone = true;
-    this.currentData.data.timeDelta = timeDelta;
-    if (choice === word) {
-      this.currentData.data.isCorrect = true;
-      this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
-      learnLevel = this.calculateChoicesLearnLevel(learnLevel, true);
-      this.soundLearnedLevel(learnLevel);
-      this.currentData.data.learnLevel = learnLevel;
-      points = 2 + this.currentChoices.length * 3;
-      this.currentData.data.points = points;
-      this.levels[this.currentData.exercise._id] = learnLevel;
-      this.addRightCount(this.currentData.exercise._id);
-      this.score = this.score + points;
-      // this.timeNext(0.6);
-      if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
-        this.addExercise(true);
-      }
-    } else {
-      this.currentData.data.isCorrect = false;
-      this.currentData.data.grade = 0;
-      learnLevel = this.calculateChoicesLearnLevel(learnLevel, false);
-      this.currentData.data.learnLevel = learnLevel;
-      this.currentData.data.points = 0;
-      this.levels[this.currentData.exercise._id] = learnLevel;
-      this.addWrongCount(this.currentData.exercise._id);
-      // Show correct answer
-      this.currentChoices.forEach( (item, j) => {
-        if (item === word) {
-          this.answer = j;
-        }
-      });
-      this.addExercise(false);
-    }
-    this.levelUpdated.next(learnLevel);
-    this.pointsEarned.next(points);
-  }
-
-  protected checkIfWordAnswer() {
-    if (!this.isAnswered) {
-      if (this.answerComponent) {
-        this.checkWordAnswer(this.answerComponent.getData());
-      }
-    } else {
-      this.nextWord();
-    }
-  }
-
-  private checkWordAnswer(answer: string) {
-    const filteredAnswer = this.filter(answer);
-    if (filteredAnswer) {
-      this.endDate = new Date();
-      const solution = this.currentData.exercise.foreign.word,
-            filteredSolution = this.filter(solution),
-            nrOfQuestions = this.exerciseData.length,
-            timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
-      let learnLevel = this.getCurrentLearnLevel(this.currentData),
-          points = 0;
-      this.isAnswered = true;
-      this.currentData.data.isDone = true;
-      this.currentData.data.timeDelta = timeDelta;
-      if (filteredAnswer === filteredSolution) {
-        // Correct answer
-        this.isCorrect = true;
-        this.currentData.data.grade = this.calculateWordGrade(timeDelta, 0, filteredSolution);
-        learnLevel = this.calculateWordLearnLevel(learnLevel, true, false, false);
-        this.soundLearnedLevel(learnLevel);
-        this.currentData.data.learnLevel = learnLevel;
-        this.currentData.data.isCorrect = true;
-        this.currentData.data.isAlmostCorrect = false;
-        this.currentData.data.isAlt = false;
-        points = 100;
-        this.currentData.data.points = points;
-        this.levels[this.currentData.exercise._id] = learnLevel;
-        this.addRightCount(this.currentData.exercise._id);
-        this.score = this.score + points;
-        // this.timeNext(0.6);
+  protected doAddExercise(qType: QuestionType, learnLevel: number): boolean {
+    const nrOfQuestions = this.exerciseData.length;
+    let add = false;
+    switch (qType) {
+      case QuestionType.Choices:
         if (nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord && learnLevel < this.learnedLevel) {
+          add = true;
+        }
+      break;
+      case QuestionType.Word:
+         if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
           this.addExercise(true);
         }
-      } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
-        // Alternative answer (synonym)
-        this.isCorrect = true;
-        this.solution = solution;
-        this.currentData.data.grade = this.calculateWordGrade(timeDelta, 1, filteredSolution);
-        learnLevel = this.calculateWordLearnLevel(learnLevel, false, true, false);
-        this.currentData.data.learnLevel = learnLevel;
-        this.currentData.data.isCorrect = true;
-        this.currentData.data.isAlmostCorrect = false;
-        this.currentData.data.isAlt = true;
-        points = 80;
-        this.currentData.data.points = points;
-        this.levels[this.currentData.exercise._id] = learnLevel;
-        this.addWrongCount(this.currentData.exercise._id);
-        this.score = this.score + points;
-        this.addExercise(true);
-        // this.timeNext(2);
-      } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
-        // Almost correct answer
-        this.currentData.data.grade = 1;
-        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, true);
-        this.currentData.data.learnLevel = learnLevel;
-        this.currentData.data.isCorrect = false;
-        this.currentData.data.isAlmostCorrect = true;
-        this.currentData.data.isAlt = false;
-        this.isCorrect = false;
-        this.solution = solution;
-        points = 20;
-        this.currentData.data.points = points;
-        this.levels[this.currentData.exercise._id] = learnLevel;
-        this.addWrongCount(this.currentData.exercise._id);
-        this.score = this.score + points;
-        this.addExercise(false);
-      } else {
-        // Incorrect answer
-        this.currentData.data.grade = 0;
-        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, false);
-        this.currentData.data.learnLevel = learnLevel;
-        this.currentData.data.isCorrect = false;
-        this.currentData.data.isAlmostCorrect = false;
-        this.currentData.data.isAlt = false;
-        this.isCorrect = false;
-        this.currentData.data.points = 0;
-        this.levels[this.currentData.exercise._id] = learnLevel;
-        this.addWrongCount(this.currentData.exercise._id);
-        this.solution = solution;
-        this.addExercise(false);
-      }
-      this.levelUpdated.next(learnLevel);
-      this.pointsEarned.next(points);
+      break;
     }
+    return add;
   }
 
-  private checkAltAnswers(exercise: Exercise, answer: string): boolean {
-    let isAltAnswer = false;
-    if (exercise.foreign.alt) {
-      const alts = exercise.foreign.alt.split('|');
-      const found = alts.filter(alt => this.filter(alt) === answer);
-      if (found.length > 0) {
-        isAltAnswer = true;
-      }
-    }
-    return isAltAnswer;
-  }
-
-  private filter(word: string): string {
-    let filteredAnswer = word.trim().toLowerCase();
-    filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
-    filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
-    return filteredAnswer;
-  }
-
-  private addExercise(isCorrect: boolean) {
-    // Readd exercise to the back if question asked < 3 times
-    const countWrong = this.countWrong[this.currentData.exercise._id] ? this.countWrong[this.currentData.exercise._id] : 0;
-    const countRight = this.countRight[this.currentData.exercise._id] ? this.countRight[this.currentData.exercise._id] : 0;
+  protected addExercise(isCorrect: boolean) {
+    // Readd exercise to the back if question asked < x times
+    const exercise = this.dataByExercise[this.currentData.exercise._id],
+          countWrong = exercise.countWrong ? exercise.countWrong : 0,
+          countRight = exercise.countRight ? exercise.countRight : 0;
     if (isCorrect && countRight <= 2 || !isCorrect && countWrong <= 3) {
       const newExerciseData: ExerciseData = {
         data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
@@ -307,79 +128,22 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
-  protected determineExerciseType(result: ExerciseResult, learnLevel: number): boolean {
+  protected determineQuestionType(result: ExerciseResult, learnLevel: number): QuestionType {
     // Determine if multiple choice or word
-    let giveChoices = true;
+    let qTpe = QuestionType.Choices;
     if (result) {
       // 3 -> 5: random
       if (learnLevel > 2 && learnLevel < 6) {
-        giveChoices =  Math.random() >= 0.5 ? true : false;
+        qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
       }
       // 6+ : always word
       if (learnLevel > 5) {
-        giveChoices = false;
+        qTpe = QuestionType.Word;
       }
     }
-    return giveChoices;
+    return qTpe;
   }
 
-  private calculateChoicesGrade(delta: number): number {
-    // 5 = correct and fast
-    // 4 = correct and not fast
-    // 3 = correct and slow
-    let grade = 3;
-    if (delta <= 30) {
-      grade = 5;
-    } else if (delta < 60) {
-      grade = 4;
-    }
-
-    return grade;
-  }
-
-  private calculateWordGrade(delta: number, deduction: number, solution: string): number {
-    // 5 = correct and fast
-    // 4 = correct and not fast
-    // 3 = correct and slow
-    let grade = 3;
-    const wordLength = solution.length;
-    if (delta <= wordLength * 18) {
-      grade = 5;
-    } else if (delta < wordLength * 36) {
-      grade = 4;
-    }
-
-    return grade;
-  }
-
-  private calculateChoicesLearnLevel(level: number, correct: boolean): number {
-    if (correct) {
-      if (level < 5) {
-        level += 1;
-      }
-    } else {
-      if (level > 0) {
-        level -= 1;
-      }
-    }
-    return level;
-  }
-
-  private calculateWordLearnLevel(level: number, correct: boolean, alt: boolean, almostCorrect: boolean): number {
-    if (correct) {
-      level += 2;
-    } else {
-      if (level > 0) {
-        if (almostCorrect) {
-          level -= 2;
-        } else if (!alt) {
-          level -= 3;
-        }
-      }
-    }
-    level = Math.max(level, 0);
-    return level;
-  }
 
   protected getNrOfChoices(learnLevel: number): number {
     let nrOfChoices: number;
@@ -394,26 +158,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return nrOfChoices;
   }
 
-  private addWrongCount(exerciseId: string) {
-    this.countWrong[exerciseId] = this.countWrong[exerciseId] ? ++this.countWrong[exerciseId] : 1;
-  }
-
-  private addRightCount(exerciseId: string) {
-    this.countRight[exerciseId] = this.countRight[exerciseId] ? ++this.countRight[exerciseId] : 1;
-  }
-
   private timeNext(secs: number) {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
     this.nextWordTimer = timer
     .takeWhile(() => this.componentActive)
     .subscribe(t => this.nextWord());
-  }
-
-  private soundLearnedLevel(learnLevel: number) {
-    if (learnLevel > this.learnedLevel) {
-      this.audioService.playSound(this.isMute, this.beep);
-    }
   }
 
   private fetchLessonResults() {
@@ -461,6 +211,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (!this.options.ordered) {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
+    this.setExerciseDataById();
     this.getChoices('lesson', this.lessonId, this.options.bidirectional);
   }
 

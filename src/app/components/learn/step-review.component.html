@@ -7,6 +7,78 @@
 <ng-template #exercise>
   <section kmPressed 
     (onKeyPressed)="onKeyPressed($event)">
-    REVIEW
+    <div class="col-xs-8">
+      <div class="panel centerpanel">
+        <km-bullets *ngIf="!isExercisesDone"
+          [exercises]="exerciseData"
+          [current]="current"
+          [onNextExercise]="nextExercise">
+        </km-bullets>
+        <!-- EXERCISE -->
+        <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
+          <km-question
+            [currentData]="currentData"
+            [lanPair]="lanPair"
+            [text]="text"
+            [tpe]="getQuestionType()"
+            [settings]="settings"
+          ></km-question>
+          <km-answer-choices *ngIf="currentData.data.choices"
+            [choices]="currentChoices"
+            [correct]="currentData?.data?.isCorrect"
+            [answer]="answer"
+            [answered]="answered"
+            [isSelected]="isSelected"
+            (selected)="onSelected($event)">
+          </km-answer-choices>
+          <km-answer-field *ngIf="!currentData.data.choices"
+            [lan]="lanPair.to"
+            [disabled]="isAnswered"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
+            [solution]="{solution: solution, msg: text['Expectedanswer']}"
+            [data]="currentData?.data">
+          </km-answer-field>
+        </div>
+        <!-- EXERCISE DONE -->
+        <div *ngIf="isExercisesDone">
+          <h3>Words reviewed:</h3>
+          <km-completed-list [data]="exerciseData">
+          </km-completed-list>
+          <div class="btn btn-success" (click)="onRestart()">
+            <span class="fa fa-step-forward"></span>
+            {{text["Restart"]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <km-learn-settings
+        [step]="'practise'"
+        [hasGenus]="!!this.currentData?.exercise.genus"
+        [settings]="settings"
+        [isInput]="!this.currentData?.data.choices"
+        [isActive]="!isExercisesDone"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-settings>
+      <div class="actions">
+        <div *ngIf="!isExercisesDone"
+          class="btn btn-lg btn-success next" 
+          (click)="onNextWord()">
+          <span class="fa fa-step-forward"></span>
+          {{text["Next"]}}
+        </div>
+        <div *ngIf="isExercisesDone"
+          class="btn btn-lg btn-success next"
+          (click)="onRestart()">
+          <span class="fa fa-refresh"></span>
+          {{text["Restart"]}}
+        </div>
+      </div>
+      <div class="score" *ngIf="!isExercisesDone">
+        <km-points-earned [pointsEarned]="pointsEarned">
+        </km-points-earned>
+      </div>
+    </div>
+    <div class="clearfix"></div>
   </section>
 </ng-template>
