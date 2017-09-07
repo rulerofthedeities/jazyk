@@ -166,7 +166,6 @@ module.exports = {
         isLearned: '$isLearned',
         dt: '$dt',
         daysBetweenReviews: '$daysBetweenReviews',
-        points: '$totalPoints',
         streak: '$streak'
       }}
     ];
@@ -206,7 +205,6 @@ module.exports = {
         daysBetweenReviews: '$daysBetweenReviews',
         points: '$totalPoints',
         streak: '$streak',
-        totalPoints: '$totalPoints',
         timesDone: '$timesDone',
         timesCorrect: '$timesCorrect'
       }}

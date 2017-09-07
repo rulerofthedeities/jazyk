@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  padding: 15px;
+  font-size: 20px;
+}
+.word {
+}
+.local {
+  padding-left: 15px;
+  font-size: 16px;
+  font-style: italic;
+  color: #999;
+}
+.item {
+  border: 1px dotted #999;
+  border-top: none;
+  padding: 8px 0;
+}
+.item:hover {
+  background-color: white;
+}
+.header:hover {
+  background-color: inherit;
+}
+.header {
+  font-weight: bold;
+  border-left:none;
+  border-right:none;
+}
+.icon {
+  width: 32px;
+}
+.fa-check {
+  color: green;
+}
+.fa-flag {
+  color: DarkOrange;
+}

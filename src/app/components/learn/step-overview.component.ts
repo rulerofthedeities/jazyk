@@ -5,19 +5,14 @@ import {Exercise, ExerciseResult, ExerciseData} from '../../models/exercise.mode
 
 @Component({
   selector: 'km-learn-overview',
-  template: `OVERVIEW
-
-  exercises
-  <div *ngFor="let exercise of exerciseData">
-    {{exercise.exercise.foreign.word}} / 
-    <pre>{{exercise.result|json}}</pre>
-  </div>
-  `
+  templateUrl: 'step-overview.component.html',
+  styleUrls: ['step-overview.component.css']
 })
 
 export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() private lessonId: string;
   @Input() private exercises: Exercise[];
+  @Input() text: Object;
   private componentActive = true;
   exerciseData: ExerciseData[] = [];
 

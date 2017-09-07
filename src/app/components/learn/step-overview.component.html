@@ -1,0 +1,49 @@
+<div class="row header item">
+  <div class="col-xs-1">
+  </div>
+  <div class="col-xs-5">
+    {{text['word']}}
+  </div>
+  <div class="col-xs-4">
+    {{text['Last10']}}
+  </div>
+  <div class="col-xs-1 text-center">
+    {{text['Correct']}}
+  </div>
+  <div class="col-xs-1 text-center">
+    {{text['Points']}}
+  </div>
+</div>
+
+<div *ngFor="let exercise of exerciseData" class="row item">
+  <div class="col-xs-1">
+    <span class="icon">
+      <span class="fa fa-check" *ngIf="!exercise.result?.isLearned"></span>
+    </span>
+    <span class="icon">
+      <span class="fa fa-flag" *ngIf="!exercise.result?.isDifficult"></span>
+    </span>
+  </div>
+  <div class="col-xs-5">
+    <span class="word">{{exercise.exercise.foreign.word}}</span>
+    <span class="word local">{{exercise.exercise.local.word}}</span>
+  </div>
+  <div class="col-xs-4">
+    <span *ngFor="let item of exercise.result?.streak?.slice(-10).split('')">
+      <span class="fa fa-square" [ngClass]="{green: item === '1', red: item !== '1'}"></span>
+    </span>
+  </div>
+  <div class="col-xs-1 text-center">
+    <div *ngIf="exercise.result?.timesDone">
+      {{exercise.result?.timesCorrect}} / {{exercise.result?.timesDone}}
+    </div>
+  </div>
+  <div class="col-xs-1 text-right">
+    {{exercise.result?.points}}
+  </div>
+</div>
+
+<div *ngFor="let exercise of exerciseData">
+  {{exercise.exercise.foreign.word}} / 
+  <pre>{{exercise.result|json}}</pre>
+</div>
