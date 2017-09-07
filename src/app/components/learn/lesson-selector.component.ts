@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {Course, Lesson} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import 'rxjs/add/operator/takeWhile';
 
 interface LessonHeader {
   _id: string;
@@ -121,7 +122,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getChapterLessons(chapterName: string) {
+  private getChapterLessons(chapterName: string, getLesson: boolean = true) {
     // First get ids from course to get correct order
     // Next find corresponding lesson names in this.lessons
     this.currentChapterLessons = [];
@@ -135,7 +136,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
           this.currentChapterLessons.push(lessonHeader);
         }
       });
-      if (chapterLessonIds.length > 0) {
+      if (getLesson && chapterLessonIds.length > 0) {
         this.getLesson(chapterLessonIds[0]);
       }
     }
@@ -163,7 +164,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       userResult => {
-        if (userResult) {
+        if (userResult && userResult.lessonId) {
           // set chapter & lesson to the latest result
           console.log('LESSON to load', userResult.lessonId);
           this.getLesson(userResult.lessonId);
@@ -196,7 +197,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         (lesson: Lesson) => {
-          this.getChapterLessons(lesson.chapterName);
+          this.getChapterLessons(lesson.chapterName, false);
           this.currentLessonName = lesson.name;
           this.currentLessonId = lesson._id;
           this.currentChapter = lesson.chapterName;

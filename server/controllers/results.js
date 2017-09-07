@@ -49,7 +49,6 @@ saveStep = function(res, results, userId, courseId, lessonId) {
     result = {
       userId,
       courseId,
-      lessonId,
       exerciseId,
       step: results.step,
       points: doc.points,
@@ -58,6 +57,8 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       daysBetweenReviews: doc.daysBetweenReviews,
       percentOverdue: doc.percentOverdue,
       streak: doc.streak,
+      isLast: doc.isLast,
+      isDifficult: doc.isDifficult,
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
@@ -65,6 +66,11 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       dtToReview = Date.now();
       dtToReview += 1000 * 60 * 60 * 24 * parseFloat(doc.daysBetweenReviews);
       result.dtToReview = dtToReview;
+    }
+    if (results.step === 'practise') {
+      result.lessonId = lessonId;
+    } else {
+      result.isLearned = true;
     }
     return result;
   });
@@ -216,16 +222,17 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
-          query = {userId, courseId, isLearned: true};
+          query = {userId, courseId, isLast: true, isLearned: true};
 
     const pipeline = [
       {$match: query},
-      {$sort: {dtToReview: -1}},
+      {$sort: {dtToReview: 1}},
       {$limit: limit},
       {$group: {
         _id: '$exerciseId',
         dtToReview: {'$first': '$dtToReview'},
         dt: {'$first': '$dt'},
+        streak: {'$first': '$streak'},
         daysBetweenReviews: {'$first': '$daysBetweenReviews'}
       }},
       {$project: {
@@ -233,6 +240,7 @@ module.exports = {
         exerciseId: '$_id',
         dtToReview: '$dtToReview',
         dt: '$dt',
+        streak: '$streak',
         daysBetweenReviews: '$daysBetweenReviews'
       }}
     ];

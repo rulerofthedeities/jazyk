@@ -28,6 +28,8 @@ interface ResultData {
   daysBetweenReviews?: number;
   percentOverdue?: number;
   streak: string;
+  isLast: boolean;
+  isDifficult: boolean;
 }
 
 @Component({
@@ -210,28 +212,30 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const allCorrect: Map<boolean> = {}; // Exercise is only correct if all answers for an exercise are correct
     const result = {
       courseId: this.course._id,
-      lessonId: this.lesson._id,
+      lessonId: this.lesson ? this.lesson._id : undefined,
       step,
       data: []
     };
     data.forEach( (item, i) => {
       console.log('result', item);
-      streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result.streak, item.data.isCorrect);
+      streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data.isCorrect);
       const newResult: ResultData = {
         exerciseId: item.exercise._id,
         done: item.data.isDone || false,
         points: item.data.points || 0,
         learnLevel: item.data.learnLevel || 0,
         streak: streak[item.exercise._id],
-        sequence: i
+        sequence: i,
+        isLast: false,
+        isDifficult: false
       };
       lastResult[item.exercise._id] = newResult;
       allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
       result.data.push(newResult);
     });
-    this.checkLastResult(lastResult, allCorrect, data);
+    console.log('Checking last result', result);
+    this.checkLastResult(step, lastResult, allCorrect, data);
     console.log('Saving result', result);
-    /*
     this.learnService
     .saveUserResults(JSON.stringify(result))
     .takeWhile(() => this.componentActive)
@@ -247,17 +251,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-    */
   }
 
-  private buildStreak(streak: string, resultStreak: string, isCorrect: boolean): string {
-    let newStreak = streak || resultStreak || '';
-    if (isCorrect) {
-      newStreak = newStreak + '1';
-    } else {
-      newStreak = newStreak + '0';
+  private buildStreak(streak: string, result: ExerciseResult, isCorrect: boolean): string {
+    let newStreak = '';
+    if (result) {
+      newStreak = streak || result.streak || '';
+      if (isCorrect) {
+        newStreak = newStreak + '1';
+      } else {
+        newStreak = newStreak + '0';
+      }
+      newStreak = newStreak.slice(0, this.maxStreak);
     }
-    return newStreak.slice(0, this.maxStreak);
+    return newStreak;
   }
 
   private saveSettings() {
@@ -272,19 +279,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private checkLastResult(lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[]) {
+  private checkLastResult(step: string, lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[]) {
     // Only use the most recent result per exerciseid to determine isLearned / review time
-    console.log('checking last results');
     for (const key in lastResult) {
       if (lastResult.hasOwnProperty(key)) {
-        console.log(key + ' -> ' + lastResult[key]);
+        console.log(key, lastResult[key]);
+        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key]);
         // Check if word is learned
-        if ((lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
+        if (step === 'review' || step === 'difficult' || (lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
           lastResult[key].isLearned = true;
           // Calculate review time
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
           this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
         }
+        lastResult[key].isLast = true;
       }
     }
   }
@@ -325,6 +333,27 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       result.daysBetweenReviews = newDaysBetweenReviews;
       result.percentOverdue = percentOverdue;
     }
+  }
+
+  private checkIfDifficult(step: string, result: ResultData): boolean {
+    // Checks if the word has to be put in the difficult step
+    let isDifficult = false;
+    if ((step === 'difficult' || step === 'review') && result.streak) {
+      // Check how many incorrect in last 5 results
+      let streak = result.streak.slice(-5);
+      let inCorrectCount = (streak.match(/0/g) || []).length;
+      if (inCorrectCount >= 2) {
+        isDifficult = true;
+      } else {
+        // Check how many incorrect in last 10 results
+        streak = result.streak.slice(-10);
+        inCorrectCount = (streak.match(/0/g) || []).length;
+        if (inCorrectCount >= 3) {
+          isDifficult = true;
+        }
+      }
+    }
+    return isDifficult;
   }
 
   private getInitialDifficulty(exercise: Exercise): number {

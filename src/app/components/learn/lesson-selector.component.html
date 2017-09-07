@@ -74,7 +74,7 @@
                   *ngFor="let lesson of currentChapterLessons"
                   [value]="lesson._id"
                   [selected]="lesson._id === currentLessonId">
-                  {{lesson.name}}
+                  {{lesson.name}} {{lesson._id}}
                 </option>
               </select>
               <span class="input-group-addon" (click)="onNextLesson(lesson.value)">

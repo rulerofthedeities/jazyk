@@ -42,7 +42,7 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
   }
 
   private sliceExercises(i: number) {
-    if (this.exercises.length > 0) {
+    if (this.exercises && this.exercises.length > 0) {
       this.exerciseBullets = this.exercises.slice(0, i + 1);
     }
   }

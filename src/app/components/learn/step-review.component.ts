@@ -13,7 +13,6 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   @Input() courseId: string;
-  private maxToReview = 5;
 
   constructor(
     learnService: LearnService,
@@ -47,7 +46,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
 
   private getToReview() {
     this.learnService
-    .fetchToReview(this.courseId, this.maxToReview)
+    .fetchToReview(this.courseId, this.settings.nrOfWords)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
