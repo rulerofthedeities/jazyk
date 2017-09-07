@@ -22,6 +22,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
             $set: filterObj,
             $setOnInsert: {
               points: doc.points,
+              isLast: true,
               dt: new Date()
             }
           },
@@ -58,6 +59,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       percentOverdue: doc.percentOverdue,
       streak: doc.streak,
       isLast: doc.isLast,
+      isCorrect: doc.isCorrect,
       isDifficult: doc.isDifficult,
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
@@ -139,11 +141,11 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           step = req.params.step,
-          query = {userId, lessonId};
+          query = {userId, lessonId, isLast: true};
 
     if (step === 'practise') {
       query['$or'] = [{step:'study'}, {step:'practise'}];
-    } else if (step !== 'all') {
+    } else {
       query.step = step;
     }
     const pipeline = [
@@ -155,8 +157,7 @@ module.exports = {
         isLearned: {'$first': '$isLearned'},
         streak: {'$first': '$streak'},
         dt: {'$first': '$dt'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
-        totalPoints: {'$sum': '$points'}
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
       }},
       {$project: {
         _id: 0,
@@ -170,9 +171,50 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      console.log('resultALL', results);
+      console.log('result LESSON', results);
       response.handleError(err, res, 500, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');
+      });
+    });
+  },
+  getLessonOverviewResults: function(req, res) {
+    // Get lesson results for overview page
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {userId, lessonId};
+
+    const pipeline = [
+      {$match: query},
+      {$sort: {dt: -1, sequence: -1}},
+      {$group: {
+        _id: '$exerciseId',
+        isLearned: {'$first': '$isLearned'},
+        isDifficult: {'$first': '$isDifficult'},
+        streak: {'$first': '$streak'},
+        dt: {'$first': '$dt'},
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+        totalPoints: {'$sum': '$points'},
+        timesDone: {'$sum': {$cond: [{$eq: [ "$step", "study"]} , 0, 1]}},
+        timesCorrect: {'$sum': {$cond: ["$isCorrect", 1, 0 ]}}
+      }},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id',
+        isLearned: '$isLearned',
+        isDifficult: '$isDifficult',
+        dt: '$dt',
+        daysBetweenReviews: '$daysBetweenReviews',
+        points: '$totalPoints',
+        streak: '$streak',
+        totalPoints: '$totalPoints',
+        timesDone: '$timesDone',
+        timesCorrect: '$timesCorrect'
+      }}
+    ];
+    Result.aggregate(pipeline, function(err, results) {
+      console.log('result OVERVIEW', results);
+      response.handleError(err, res, 500, 'Error fetching overview results', function(){
+        response.handleSuccess(res, results, 200, 'Fetched overview results');
       });
     });
   },

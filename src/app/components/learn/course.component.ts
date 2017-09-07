@@ -30,6 +30,7 @@ interface ResultData {
   streak: string;
   isLast: boolean;
   isDifficult: boolean;
+  isCorrect: boolean;
 }
 
 @Component({
@@ -227,16 +228,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         streak: streak[item.exercise._id],
         sequence: i,
         isLast: false,
-        isDifficult: false
+        isDifficult: false,
+        isCorrect: item.data.isCorrect
       };
       lastResult[item.exercise._id] = newResult;
       allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
       result.data.push(newResult);
     });
-    const nrOfResults = Object.keys(lastResult).length;
-    console.log('Checking last result', result, nrOfResults);
+    console.log('Checking last result', result);
     this.checkLastResult(step, lastResult, allCorrect, data);
-    this.updateStepCount(step, nrOfResults);
+    this.updateStepCount(step, lastResult);
     console.log('Saving result', result);
     this.learnService
     .saveUserResults(JSON.stringify(result))
@@ -343,7 +344,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if ((step === 'difficult' || step === 'review') && result.streak) {
       // Check how many incorrect in last 5 results
       let streak = result.streak.slice(-5);
+      console.log('07 check is difficult 5', streak);
       let inCorrectCount = (streak.match(/0/g) || []).length;
+      console.log('07 difficult 5', inCorrectCount);
       if (inCorrectCount >= 2) {
         isDifficult = true;
       } else {
@@ -369,9 +372,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return difficulty;
   }
 
-  private updateStepCount(step: string, nrOfResults: number) {
+  private updateStepCount(step: string, lastResult: Map<ResultData>) {
     let done: number,
         remaining: number;
+    const nrOfResults = Object.keys(lastResult).length;
     switch (step) {
       case 'study':
         // Decrease to study count
@@ -385,6 +389,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         remaining = this.countPerStep['practise'].nrRemaining + nrOfResults;
         this.countPerStep['practise'].nrRemaining = remaining;
         break;
+      case 'practise':
+        // Check which results have isLearned flag
+        for (const key in lastResult) {
+          if (lastResult.hasOwnProperty(key)) {
+            console.log('07 isLearned?', key, lastResult[key].isLearned);
+          }
+        }
+      break;
     }
   }
 

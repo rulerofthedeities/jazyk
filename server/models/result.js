@@ -17,7 +17,8 @@ var resultSchema = new Schema({
   streak: String,
   sequence: Number, // To find the last saved doc for docs with same save time
   isLast: Boolean, // True if it is the last doc of a learn session
-  isDifficult: Boolean // These are selected for the difficult step
+  isDifficult: Boolean, // These are selected for the difficult step
+  isCorrect: Boolean 
 });
 
 resultSchema.index({userId: 1, courseId: 1, lessonId: 1, exerciseId: 1}); 
