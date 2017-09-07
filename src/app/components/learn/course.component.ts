@@ -233,8 +233,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
       result.data.push(newResult);
     });
-    console.log('Checking last result', result);
+    const nrOfResults = Object.keys(lastResult).length;
+    console.log('Checking last result', result, nrOfResults);
     this.checkLastResult(step, lastResult, allCorrect, data);
+    this.updateStepCount(step, nrOfResults);
     console.log('Saving result', result);
     this.learnService
     .saveUserResults(JSON.stringify(result))
@@ -365,6 +367,25 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           difficulty = lengthScore + wordScore;
     console.log('difficulty for', word, difficulty);
     return difficulty;
+  }
+
+  private updateStepCount(step: string, nrOfResults: number) {
+    let done: number,
+        remaining: number;
+    switch (step) {
+      case 'study':
+        // Decrease to study count
+        done = this.countPerStep[step].nrDone + nrOfResults;
+        remaining = this.countPerStep[step].nrRemaining - nrOfResults;
+        if (remaining < 0) {
+          remaining = 0;
+        }
+        this.countPerStep[step] = {nrDone: done, nrRemaining: remaining};
+        // Increase to practise count
+        remaining = this.countPerStep['practise'].nrRemaining + nrOfResults;
+        this.countPerStep['practise'].nrRemaining = remaining;
+        break;
+    }
   }
 
   private setCourseType(courseStep: string) {
