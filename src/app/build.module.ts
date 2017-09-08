@@ -2,7 +2,8 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {DndModule} from 'ng2-dnd';
+import {DndModule} from 'ng2-dnd'; // Sorting
+import {MarkdownModule} from 'angular2-markdown';
 
 import {routes} from './build.routes';
 
@@ -16,6 +17,7 @@ import {BuildChapterComponent} from './components/build/chapter.component';
 import {BuildChapterLessonsComponent} from './components/build/chapter-lessons.component';
 import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
+import {BuildLessonTabsComponent} from './components/build/lesson-tabs.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
@@ -31,7 +33,8 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
-    DndModule.forRoot()
+    DndModule.forRoot(),
+    MarkdownModule.forRoot()
   ],
   providers: [
     BuildService
@@ -46,6 +49,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildLessonsComponent,
     BuildLessonComponent,
     BuildLessonHeaderComponent,
+    BuildLessonTabsComponent,
     BuildExerciseComponent,
     BuildExerciseListComponent,
     AutocompleteComponent,

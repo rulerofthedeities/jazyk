@@ -25,6 +25,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   isEditMode = false;
   isBidirectional = false;
   text: Object = {};
+  tab = 'words';
 
   constructor(
     private route: ActivatedRoute,
@@ -76,6 +77,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   onExerciseRemoved(toRemove: number) {
     this.lesson.exercises.splice(toRemove, 1);
+  }
+
+  onTabSelected(tab: string) {
+    this.tab = tab;
   }
 
   private setText(translations: Translation[]) {

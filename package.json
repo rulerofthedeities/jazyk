@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
     "angular2-jwt": "^0.2.3",
+    "angular2-markdown": "^1.6.0",
     "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
     "compression": "^1.6.2",

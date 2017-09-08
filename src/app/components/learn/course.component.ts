@@ -305,7 +305,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (exercise) {
       const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
             dateLastReviewed = exercise.result.dt,
-            daysBetweenReviews = exercise.result.daysBetweenReviews || 3,
+            daysBetweenReviews = exercise.result.daysBetweenReviews || 0.25,
             performanceRating = exercise.data.grade / 5 || 0.6;
       let difficultyPerc = difficulty / 100 || 0.3,
           percentOverdue = 1,

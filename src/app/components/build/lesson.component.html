@@ -19,6 +19,13 @@
   (done)="onCloseHeader($event)">
 </km-build-lesson-header>
 
+<km-build-lesson-tabs
+  [text]="text"
+  [tab]="tab"
+  [isIntro]="lesson?.exerciseTpes?.intro?.active"
+  (selected)="onTabSelected($event)">
+</km-build-lesson-tabs>
+
 <km-exercise-list 
   *ngIf="lesson"
   [languagePair]="lesson?.languagePair"
@@ -45,3 +52,14 @@
     (addedExercise)="onExerciseAdded($event)">
   </km-build-exercise>
 </ng-template>
+
+<div style="background-color: white;">
+<markdown>
+## Markdown h2 content
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+</markdown>
+</div>

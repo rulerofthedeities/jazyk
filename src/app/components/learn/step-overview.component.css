@@ -14,7 +14,7 @@
 .item {
   border: 1px dotted #999;
   border-top: none;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 .item:hover {
   background-color: white;
@@ -33,6 +33,6 @@
 .fa-check {
   color: green;
 }
-.fa-fire {
+.fa-flag {
   color: DarkOrange;
 }
