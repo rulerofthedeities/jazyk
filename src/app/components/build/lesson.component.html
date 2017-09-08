@@ -26,40 +26,34 @@
   (selected)="onTabSelected($event)">
 </km-build-lesson-tabs>
 
-<km-exercise-list 
-  *ngIf="lesson"
-  [languagePair]="lesson?.languagePair"
-  [lessonId]="lesson?._id"
-  [text]="text"
-  [isBidirectional]="isBidirectional"
-  [exercises]="lesson.exercises"
-  (removedExercise)="onExerciseRemoved($event)">
-</km-exercise-list>
-
-<div class="footer">
-  <div *ngIf="!isNewWord; else addWord">
-    <div class="btn btn-success btn-lg"(click)="onNewWord()">
-      <span class="fa fa-file"></span> {{text["Newword"]}}
-    </div>
-  </div>
-</div>
-
-<ng-template #addWord>
-  <km-build-exercise
+<div *ngIf="tab==='words'">
+  <km-exercise-list 
+    *ngIf="lesson"
     [languagePair]="lesson?.languagePair"
     [lessonId]="lesson?._id"
     [text]="text"
-    (addedExercise)="onExerciseAdded($event)">
-  </km-build-exercise>
-</ng-template>
+    [isBidirectional]="isBidirectional"
+    [exercises]="lesson.exercises"
+    (removedExercise)="onExerciseRemoved($event)">
+  </km-exercise-list>
 
-<div style="background-color: white;">
-<markdown>
-## Markdown h2 content
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
-</markdown>
+  <div class="footer">
+    <div *ngIf="!isNewWord; else addWord">
+      <div class="btn btn-success btn-lg"(click)="onNewWord()">
+        <span class="fa fa-file"></span> {{text["Newword"]}}
+      </div>
+    </div>
+  </div>
+
+  <ng-template #addWord>
+    <km-build-exercise
+      [languagePair]="lesson?.languagePair"
+      [lessonId]="lesson?._id"
+      [text]="text"
+      (addedExercise)="onExerciseAdded($event)">
+    </km-build-exercise>
+  </ng-template>
 </div>
+
+<km-build-lesson-intro *ngIf="tab==='intro'">
+</km-build-lesson-intro>

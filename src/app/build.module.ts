@@ -18,6 +18,7 @@ import {BuildChapterLessonsComponent} from './components/build/chapter-lessons.c
 import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
 import {BuildLessonTabsComponent} from './components/build/lesson-tabs.component';
+import {BuildLessonIntroComponent} from './components/build/lesson-intro.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
@@ -50,6 +51,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildLessonComponent,
     BuildLessonHeaderComponent,
     BuildLessonTabsComponent,
+    BuildLessonIntroComponent,
     BuildExerciseComponent,
     BuildExerciseListComponent,
     AutocompleteComponent,

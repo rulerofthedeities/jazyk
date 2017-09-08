@@ -1,0 +1,37 @@
+.panel {
+  margin: 0 -15px;
+}
+h1 {
+  border-bottom: 4px double #06ae97;
+}
+h2 {
+  border-bottom: 1px solid #06ae97;
+}
+table.mdtable {
+  width: 100%;
+  font-size: 14px;
+  color: #212121;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: 1px solid #06ae97;
+}
+table.mdtable thead th {
+  background-color: #06ae97;
+  color: white;
+  padding: 2px 6px;
+  font-size: 20px;
+  height: 40px;
+  border-right: 1px dotted #333;
+}
+table.mdtable tbody tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+table.mdtable td {
+  padding: 0 3px;
+  height: 40px;
+  border-top: 1px dotted #666;
+  border-right: 1px dotted #666;
+}
+table.mdtable td:last-of-type {
+  border-right: 0;
+}
