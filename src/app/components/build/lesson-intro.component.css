@@ -1,6 +1,9 @@
 .panel {
   margin: 0 -15px;
 }
+textarea {
+  font-family: monospace;
+}
 h1 {
   border-bottom: 4px double #06ae97;
 }
@@ -17,21 +20,23 @@ table.mdtable {
 }
 table.mdtable thead th {
   background-color: #06ae97;
+  padding: 0 5px;
   color: white;
-  padding: 2px 6px;
   font-size: 20px;
   height: 40px;
   border-right: 1px dotted #333;
 }
-table.mdtable tbody tr:nth-child(odd) {
-  background-color: #f6f6f6;
-}
 table.mdtable td {
-  padding: 0 3px;
+  background-color: #fff;
+  padding: 0 4px;
   height: 40px;
   border-top: 1px dotted #666;
   border-right: 1px dotted #666;
 }
+table.mdtable tbody tr:nth-child(odd) td {
+  background-color: #f6f6f6;
+}
+table.mdtable th:last-of-type,
 table.mdtable td:last-of-type {
   border-right: 0;
 }

@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import {AuthService} from './auth.service';
 import {Course, Lesson, LessonId, Language, LanPair} from '../models/course.model';
 import {Exercise} from '../models/exercise.model';
 import {Filter} from '../models/word.model';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -12,7 +13,8 @@ import 'rxjs/add/observable/throw';
 export class BuildService {
 
   constructor(
-    private http: Http
+    private http: Http,
+    private authService: AuthService
   ) {}
 
   /*** COURSES ***/
@@ -144,6 +146,17 @@ export class BuildService {
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http
     .put('/api/lessonIds/' + courseId, JSON.stringify(lessonIds), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateIntro(lessonId: string, intro: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return this.http
+    .put('/api/user/lesson/intro/' + lessonId, {intro}, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

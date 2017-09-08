@@ -51,6 +51,7 @@ var lessonSchema = new Schema({
   chapterName: String,
   exerciseTpes: ExerciseTpesSchema,
   exercises: [exerciseSchema],
+  intro: String,
   difficulty: Number,
   isPublished: Boolean,
   isDeleted: { type: Boolean, default: false }

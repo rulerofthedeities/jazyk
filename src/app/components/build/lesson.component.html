@@ -55,5 +55,7 @@
   </ng-template>
 </div>
 
-<km-build-lesson-intro *ngIf="tab==='intro'">
+<km-build-lesson-intro *ngIf="tab==='intro'"
+  [lessonId]="lesson?._id"
+  [text]="text">
 </km-build-lesson-intro>

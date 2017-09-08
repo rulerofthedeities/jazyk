@@ -72,6 +72,7 @@ module.exports.initialize = function(app, router) {
   });
 
   /*** authenticated ***/
+  /* learn */
 
   router.put('/user/settings', users.saveLearnSettings);
   router.patch('/user/lan', users.updateLan);
@@ -90,6 +91,8 @@ module.exports.initialize = function(app, router) {
   
   router.get('/user/courses', courses.getUserCourses);
 
+  /* build */
+  router.put('/user/lesson/intro/:lessonId', lessons.updateIntro)
 
   router.get('/user', users.getUser);
   

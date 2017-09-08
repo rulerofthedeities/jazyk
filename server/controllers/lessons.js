@@ -65,8 +65,6 @@ module.exports = {
     const lesson = new Lesson(req.body);
     const lessonId = new mongoose.Types.ObjectId(lesson._id);
 
-    console.log(lesson.exerciseTpes);
-
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$set: {
@@ -74,8 +72,25 @@ module.exports = {
         exerciseTpes: lesson.exerciseTpes,
         chapterName : lesson.chapterName
       }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating lesson', function(){
-        response.handleSuccess(res, result, 200, 'Updated lesson');
+      response.handleError(err, res, 500, 'Error updating lesson header', function(){
+        response.handleSuccess(res, result, 200, 'Updated lesson header');
+      });
+    });
+  },
+  updateIntro: function(req, res) {
+    const intro = req.body.intro,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+
+    console.log('intro', userId, lessonId);
+    
+    Lesson.findOneAndUpdate(
+      {_id: lessonId}, // userId
+      {$set: {
+        intro: intro
+      }}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating lesson intro', function(){
+        response.handleSuccess(res, result, 200, 'Updated lesson intro');
       });
     });
   }
