@@ -398,7 +398,7 @@ export abstract class Step {
 
   private calculateWordLearnLevel(level: number, correct: boolean, alt: boolean, almostCorrect: boolean): number {
     if (correct) {
-      level += 2;
+      level += 5;
     } else {
       if (level > 0) {
         if (almostCorrect) {
@@ -414,9 +414,7 @@ export abstract class Step {
 
   private calculateChoicesLearnLevel(level: number, correct: boolean): number {
     if (correct) {
-      if (level < 5) {
-        level += 1;
-      }
+      level += 3;
     } else {
       if (level > 0) {
         level -= 1;

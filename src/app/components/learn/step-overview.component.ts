@@ -13,6 +13,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() private lessonId: string;
   @Input() private exercises: Exercise[];
   @Input() text: Object;
+  @Input() isLearnedLevel: number;
   private componentActive = true;
   exerciseData: ExerciseData[] = [];
 

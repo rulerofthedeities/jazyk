@@ -344,9 +344,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if ((step === 'difficult' || step === 'review') && result.streak) {
       // Check how many incorrect in last 5 results
       let streak = result.streak.slice(-5);
-      console.log('07 check is difficult 5', streak);
       let inCorrectCount = (streak.match(/0/g) || []).length;
-      console.log('07 difficult 5', inCorrectCount);
       if (inCorrectCount >= 2) {
         isDifficult = true;
       } else {
@@ -378,14 +376,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const nrOfResults = Object.keys(lastResult).length;
     switch (step) {
       case 'study':
-        // Decrease to study count
+        // Studied - Decrease study count
         done = this.countPerStep[step].nrDone + nrOfResults;
-        remaining = this.countPerStep[step].nrRemaining - nrOfResults;
-        if (remaining < 0) {
-          remaining = 0;
-        }
+        remaining = Math.max(0, this.countPerStep[step].nrRemaining - nrOfResults);
         this.countPerStep[step] = {nrDone: done, nrRemaining: remaining};
-        // Increase to practise count
+        // Studied - Increase practise count
         remaining = this.countPerStep['practise'].nrRemaining + nrOfResults;
         this.countPerStep['practise'].nrRemaining = remaining;
         break;
@@ -393,7 +388,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         // Check which results have isLearned flag
         for (const key in lastResult) {
           if (lastResult.hasOwnProperty(key)) {
-            console.log('07 isLearned?', key, lastResult[key].isLearned);
+            if (lastResult[key].isLearned === true) {
+              // Leanned - Decrease practise count
+              remaining = this.countPerStep['practise'].nrRemaining - 1;
+              this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
+            }
           }
         }
       break;

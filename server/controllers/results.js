@@ -187,6 +187,7 @@ module.exports = {
       {$sort: {dt: -1, sequence: -1}},
       {$group: {
         _id: '$exerciseId',
+        firstLevel: {'$first': '$learnLevel'},
         isLearned: {'$first': '$isLearned'},
         isDifficult: {'$first': '$isDifficult'},
         streak: {'$first': '$streak'},
@@ -200,6 +201,7 @@ module.exports = {
         _id: 0,
         exerciseId: '$_id',
         isLearned: '$isLearned',
+        learnLevel: '$firstLevel',
         isDifficult: '$isDifficult',
         dt: '$dt',
         daysBetweenReviews: '$daysBetweenReviews',
