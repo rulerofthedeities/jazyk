@@ -32,15 +32,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   @Input() lessonId: string;
   @Input() text: Object;
   private componentActive = true;
-  intro = `
-  # title
-
-  | Tables   |      Are      |  Cool |
-  |----------|:-------------:|------:|
-  | col 1 is |  left-aligned | $1600 |
-  | col 2 is |    centered   |   $12 |
-  | col 3 is | right-aligned |    $1 |
-  `;
+  intro = '';
 
   constructor(
     private buildService: BuildService,
@@ -49,6 +41,36 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.customizeMarkdown();
+    this.loadIntro();
+  }
+
+  onSaveIntro() {
+    this.buildService
+    .updateIntro(this.lessonId, this.intro)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      intro => {},
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private loadIntro() {
+    console.log('loading intro');
+    this.buildService
+    .fetchIntro(this.lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      intro => {
+        if (intro) {
+          this.intro = intro.intro;
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private customizeMarkdown() {
     this.markdown.renderer.table = (header: string, body: string) => {
       return `
         <table class="mdtable">
@@ -61,19 +83,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         </table>
       `;
     };
-  }
-
-  onSaveIntro() {
-    console.log('saving intro', this.intro);
-    this.buildService
-    .updateIntro(this.lessonId, this.intro)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (intro) => {
-        console.log('saved intro', intro);
-      },
-      error => this.errorService.handleError(error)
-    );
   }
 
   ngOnDestroy() {

@@ -93,5 +93,15 @@ module.exports = {
         response.handleSuccess(res, result, 200, 'Updated lesson intro');
       });
     });
-  }
+  },
+  getIntro: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+    
+    Lesson.findOne({_id: lessonId}, {_id: 0, intro: 1}, function(err, intro) {
+      console.log('intro', intro);
+      response.handleError(err, res, 500, 'Error fetching intro', function(){
+        response.handleSuccess(res, intro, 200, 'Fetched intro from lesson');
+      });
+    });
+  },
 }
