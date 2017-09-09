@@ -1,0 +1,72 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row buttons">
+      <div class="col-xs-12">
+        <button type="button" class="btn"
+          (click)="onSaveIntro()"
+          [ngClass]="{'btn-success':modified, 'btn-default':!modified}"
+          [disabled]="!modified">
+          {{text["Update"]}}
+        </button>
+        <div class="btn btn-primary" (click)="onInsertTemplate(introField, 'table')">
+          {{text["Table"]}}
+        </div>
+        <div class="btn-group">
+          <div 
+            class="btn btn-primary dropdown-toggle"
+            (click)="onToggleButton('list')">
+            {{text["List"]}} <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu" [style.display]="dropdowns['list'] ? 'block': 'none'">
+              <li (click)="onInsertTemplate(introField, 'olist', 'list')">
+                <a>{{text["Ordered List"]}}</a>
+              </li>
+              <li (click)="onInsertTemplate(introField, 'ulist', 'list')">
+                <a>{{text["Unordered List"]}}</a>
+              </li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <div 
+            class="btn btn-primary dropdown-toggle"
+            (click)="onToggleButton('header')">
+            {{text["Header"]}} <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu" [style.display]="dropdowns['header'] ? 'block': 'none'">
+              <li (click)="onInsertTemplate(introField, 'header1', 'header')"><a>{{text["Large"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'header2', 'header')"><a>{{text["Medium"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'header3', 'header')"><a>{{text["Small"]}}</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <div 
+            class="btn btn-primary dropdown-toggle"
+            (click)="onToggleButton('other')">
+            {{text["Miscellaneous"]}} <span class="caret"></span>
+          </div>
+          <ul class="dropdown-menu" [style.display]="dropdowns['other'] ? 'block': 'none'">
+              <li (click)="onInsertTemplate(introField, 'space', 'other')"><a>{{text["Space"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'quote', 'other')"><a>{{text["Quote"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'bold', 'other')"><a>{{text["Bold"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'rule', 'other')"><a>{{text["Rule"]}}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <textarea
+          class="form-control"
+          [(ngModel)]="intro"
+          (ngModelChange)="onChangedIntro()"
+          rows="50"
+          #introField>
+        </textarea>
+      </div>
+      <div class="col-xs-6 markdown">
+        <markdown [data]="intro">
+        </markdown>
+      </div>
+    </div>
+  </div>
+</div>

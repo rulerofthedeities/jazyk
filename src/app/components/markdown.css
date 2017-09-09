@@ -1,0 +1,62 @@
+
+/deep/ markdown textarea {
+  font-family: monospace;
+}
+/deep/ markdown h1 {
+  border-bottom: 4px double #06ae97;
+}
+/deep/ markdown h2 {
+  border-bottom: 1px solid #06ae97;
+}
+/deep/ table.mdtable {
+  width: 100%;
+  font-size: 14px;
+  color: #212121;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: 1px solid #06ae97;
+}
+/deep/ table.mdtable thead th {
+  background-color: #06ae97;
+  padding: 0 5px;
+  color: white;
+  font-size: 20px;
+  height: 40px;
+  border-right: 1px dotted #333;
+}
+/deep/ table.mdtable td {
+  background-color: #fff;
+  padding: 0 4px;
+  height: 40px;
+  border-top: 1px dotted #666;
+  border-right: 1px dotted #666;
+}
+/deep/ table.mdtable tbody tr:nth-child(odd) td {
+  background-color: #f6f6f6;
+}
+/deep/ table.mdtable th:last-of-type,
+/deep/ table.mdtable td:last-of-type {
+  border-right: 0;
+}
+/* based on https://codepen.io/maxds/pen/DcveB */
+/deep/ .mdquote {
+  display: block;
+  background-color: #faebbc;
+  padding: 15px;
+  margin: 0 0 20px;
+  position: relative;
+  
+  font-size: 16px;
+  line-height: 1.2;
+  color: #333;
+  
+  border-left: 15px solid #c76c0c;
+  border-right: 2px solid #c76c0c;
+  
+  -moz-box-shadow: 2px 2px 15px #ccc;
+  -webkit-box-shadow: 2px 2px 15px #ccc;
+  box-shadow: 2px 2px 15px #ccc;
+}
+/deep/ .markdown {
+  margin-top: -24px;
+}

@@ -1,6 +1,7 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {HttpModule} from '@angular/http';
 import {CommonModule} from '@angular/common';
+import {MarkdownModule} from 'angular2-markdown';
 import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
 
@@ -14,7 +15,8 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
 @NgModule({
   imports: [
     CommonModule,
-    HttpModule
+    HttpModule,
+    MarkdownModule.forRoot()
   ],
   declarations: [
     ErrorMessageComponent,
@@ -34,7 +36,8 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
     ModalConfirmComponent,
     AudioFileComponent,
     CommonModule,
-    HttpModule
+    HttpModule,
+    MarkdownModule
   ]
 })
 export class SharedModule {

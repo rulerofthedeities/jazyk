@@ -3,7 +3,6 @@ import {SharedModule} from './shared.module';
 import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DndModule} from 'ng2-dnd'; // Sorting
-import {MarkdownModule} from 'angular2-markdown';
 
 import {routes} from './build.routes';
 
@@ -34,8 +33,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
-    DndModule.forRoot(),
-    MarkdownModule.forRoot()
+    DndModule.forRoot()
   ],
   providers: [
     BuildService

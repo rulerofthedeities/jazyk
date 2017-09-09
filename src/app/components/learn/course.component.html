@@ -36,6 +36,9 @@
   </ul>
 </div>
 <div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isStepsReady && course">
+  <km-learn-intro *ngSwitchCase="'intro'"
+    [lessonId]="this.lesson._id">
+  </km-learn-intro>
   <km-learn-study  *ngSwitchCase="'study'"
     [exercises]="lesson.exercises"
     [lanPair]="course.languagePair"
