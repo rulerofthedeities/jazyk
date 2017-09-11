@@ -32,6 +32,26 @@ import 'rxjs/add/operator/takeWhile';
     .login {
       margin-right: 15px;
     }
+    li.active .bar, li > a:hover .bar {
+      display: block;
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      top: 12px;
+      position: relative;
+      background-color: white;
+    }
+    li.active span.bar {
+      background-color: #ddd;
+    }
+    /* override bootstrap */
+    .nav > li > a:hover, .nav > li > a:focus {
+      text-decoration: none;
+      background-color: inherit;
+    }
+    .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
+      color: #ddd;
+    }
   `]
 })
 
