@@ -11,6 +11,7 @@ import {BuildService} from './services/build.service';
 import {BuildComponent} from './components/build/build.component';
 import {BuildCoursesComponent} from './components/build/courses.component';
 import {BuildCourseComponent} from './components/build/course.component';
+import {BuildCourseSummaryComponent} from './components/build/course-summary.component';
 import {BuildCourseHeaderComponent} from './components/build/course-header.component';
 import {BuildCourseHeaderBarComponent} from './components/build/course-header-bar.component';
 import {BuildChapterComponent} from './components/build/chapter.component';
@@ -43,6 +44,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildComponent,
     BuildCoursesComponent,
     BuildCourseComponent,
+    BuildCourseSummaryComponent,
     BuildCourseHeaderComponent,
     BuildCourseHeaderBarComponent,
     BuildChapterComponent,

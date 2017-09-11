@@ -12,10 +12,18 @@ import 'rxjs/add/operator/takeWhile';
   <button class="btn btn-success" (click)="onNewCourse()">
     {{text["newcourse"]}}
   </button>
-  <km-info-msg [msg]="infoMsg">
-  </km-info-msg>
 
-BUILD COURSES`
+  <!-- COURSE LIST -->
+  <ul class="list-unstyled" *ngIf="courses">
+    <li *ngFor="let course of courses">
+      <km-build-course-summary
+        [course]="course"
+        [text]="text">
+      </km-build-course-summary>
+    </li>
+  </ul>
+  <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
+  </km-info-msg>`
 })
 
 export class BuildCoursesComponent implements OnInit, OnDestroy {
@@ -37,8 +45,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   }
 
   onNewCourse() {
-    console.log('creating new course');
-    // this.router.navigate(['/build/course/new', {lan: this.selectedLanguage._id}]);
+    this.router.navigate(['/build/course/new']);
   }
 
   private getTranslations() {
