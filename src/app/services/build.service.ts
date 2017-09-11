@@ -27,17 +27,24 @@ export class BuildService {
   }
 
   fetchCourse(id: string) {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/build/course/' + id)
+    .get('/api/build/course/' + id, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   addCourse(course: Course) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
 
     return this.http
-    .post('/api/course', JSON.stringify(course), {headers})
+    .post('/api/build/course', JSON.stringify(course), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

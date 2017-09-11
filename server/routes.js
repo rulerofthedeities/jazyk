@@ -29,7 +29,6 @@ module.exports.initialize = function(app, router) {
 
   router.get('/courses/:lan', courses.getLanCourses);
   router.get('/learn/course/:id', courses.getCourse);
-  router.post('/course', courses.addCourse);
   router.put('/course/header', courses.updateCourseHeader);
   router.patch('/course/property/:id', courses.updateCourseProperty);
   router.patch('/course/lesson/:id', courses.updateCourseLesson);
@@ -98,6 +97,7 @@ module.exports.initialize = function(app, router) {
   router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
   router.get('/build/courses', courses.getUserCreatedCourses);
   router.get('/build/course/:id', courses.getAuthorCourse);
+  router.post('/build/course', courses.addCourse);
 
   
   app.use('/api/', router);

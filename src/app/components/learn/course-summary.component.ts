@@ -34,6 +34,17 @@ export class LearnCourseSummaryComponent implements OnInit {
     }
   }
 
+  isAuthor(authorIds: string[]): boolean {
+    let isAuthor = false;
+    if (authorIds && authorIds.length > 0) {
+      const userId = this.userService.user._id;
+      if (authorIds.find(authId => authId === userId)) {
+        isAuthor = true;
+      }
+    }
+    return isAuthor;
+  }
+
   setDifficulty() {
     let difficulty = 0;
     const allLeds = Array(10).fill(0);

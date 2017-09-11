@@ -19,6 +19,8 @@ var lessonSchema = new Schema({
 
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
+    creatorId: {type: Schema.Types.ObjectId, required: true},
+    authorId: {type: [Schema.Types.ObjectId]},
     languagePair: {type: lanPairSchema, required: true},
     name: String,
     image: String,

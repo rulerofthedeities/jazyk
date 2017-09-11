@@ -15,7 +15,7 @@
         (click)="onStartCourse()">
         {{text["startcourse"]}}
       </button>
-      <button class="btn btn-warning"
+      <button class="btn btn-warning" *ngIf="isAuthor(course.authorId)"
         (click)="onEditCourse()">
         {{text["updatecourse"]}}
       </button>

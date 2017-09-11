@@ -24,6 +24,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   isNewLesson = false;
   isCourseReady = false;
   text: Object = {};
+  infoMsg: string;
 
   constructor(
     private router: Router,
@@ -97,12 +98,14 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.isCourseReady = true;
         if (course) {
           this.chapters = course.chapters;
           this.lessonIds = course.lessons;
           this.setDefaultLanguage(course.languagePair.to);
           this.getLessons(courseId);
+          this.isCourseReady = true;
+        } else {
+          this.infoMsg = this.text['NotAuthorizedEditCourse'];
         }
       },
       error => this.errorService.handleError(error)

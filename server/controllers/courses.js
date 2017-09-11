@@ -67,12 +67,15 @@ module.exports = {
     getCourse(req, res, true);
   },
   addCourse: function(req, res) {
-    const course = new Course(req.body);
+    const course = new Course(req.body),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     course._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
+    course.creatorId = userId;
+    course.authorId = [userId];
 
     course.save(function(err, result) {
-      response.handleError(err, res, 500, 'Error adding course', function(){
-        response.handleSuccess(res, result, 200, 'Added course');
+      response.handleError(err, res, 500, 'Error adding new course', function(){
+        response.handleSuccess(res, result, 200, 'Added new course');
       });
     });
   },
