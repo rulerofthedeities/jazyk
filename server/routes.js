@@ -28,7 +28,7 @@ module.exports.initialize = function(app, router) {
   router.get('/translations/:lan/:component', translations.getTranslations);
 
   router.get('/courses/:lan', courses.getLanCourses);
-  router.get('/course/:id', courses.getCourse);
+  router.get('/learn/course/:id', courses.getCourse);
   router.post('/course', courses.addCourse);
   router.put('/course/header', courses.updateCourseHeader);
   router.patch('/course/property/:id', courses.updateCourseProperty);
@@ -91,12 +91,14 @@ module.exports.initialize = function(app, router) {
   
   router.get('/user/courses/learn', courses.getUserCourses);
 
-  /* build */
-  router.get('/user/lesson/intro/:lessonId', lessons.getIntro);
-  router.put('/user/lesson/intro/:lessonId', lessons.updateIntro);
-  router.get('/user/courses/build', courses.getUserCreatedCourses);
-
   router.get('/user', users.getUser);
+
+  /* build */
+  router.get('/build/lesson/intro/:lessonId', lessons.getIntro);
+  router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
+  router.get('/build/courses', courses.getUserCreatedCourses);
+  router.get('/build/course/:id', courses.getAuthorCourse);
+
   
   app.use('/api/', router);
 

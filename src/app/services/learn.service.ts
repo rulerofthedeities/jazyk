@@ -38,7 +38,7 @@ export class LearnService {
 
   fetchCourse(id: string) {
     return this.http
-    .get('/api/course/' + id)
+    .get('/api/learn/course/' + id)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

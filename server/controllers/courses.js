@@ -3,6 +3,25 @@ const response = require('../response'),
       Course = require('../models/course'),
       UserCourse = require('../models/usercourse');
 
+let getCourse = function(req, res, authorOnly) {
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    let query = {_id: courseId, isPublished: true, isPublic: true};
+    if (authorOnly) {
+      const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+      query = {_id: courseId, authorId: userId};
+    }
+    Course.findOne(query, {}, function(err, course) {
+      response.handleError(err, res, 500, 'Error fetching course', function(){
+        response.handleSuccess(res, course, 200, 'Fetched course');
+      });
+    });
+  } else {
+    //invalid id
+    response.handleSuccess(res, null, 200, 'Invalid course id');
+  }
+}
+
 module.exports = {
   getLanCourses: function(req, res) {
     const languageId = req.params.lan;
@@ -40,18 +59,12 @@ module.exports = {
     })
   },
   getCourse: function(req, res) {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-      const courseId = new mongoose.Types.ObjectId(req.params.id);
-      
-      Course.findOne({_id: courseId}, {}, function(err, course) {
-        response.handleError(err, res, 500, 'Error fetching course', function(){
-          response.handleSuccess(res, course, 200, 'Fetched course');
-        });
-      });
-    } else {
-      //invalid id
-      response.handleSuccess(res, null, 200, 'Invalid course id');
-    }
+    // Get course in learn mode
+    getCourse(req, res, false);
+  },
+  getAuthorCourse: function(req, res) {
+    // get course in author mode
+    getCourse(req, res, true);
   },
   addCourse: function(req, res) {
     const course = new Course(req.body);

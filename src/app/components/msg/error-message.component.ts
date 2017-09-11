@@ -8,17 +8,11 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-error-msg',
   template: `
-    <div class="error" *ngIf="msg">
-      <span class="fa fa-exclamation-circle"></span> {{msg}}
+    <div class="msg error" *ngIf="msg">
+      <span class="fa fa-exclamation-circle"></span>
+      <span class="text">{{msg}}</span>
     </div>`,
-  styles: [`
-    .error {
-      color: red;
-      font-family: 'courier';
-      font-size: 20px;
-      margin: 20px 0;
-    }
-  `]
+  styleUrls: ['msg.css']
 })
 
 export class ErrorMessageComponent implements OnInit, OnDestroy {
@@ -43,9 +37,10 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (errorData: Error) => {
+        console.log('ERROR', errorData);
         if (errorData.msg) {
           const translatedMsg = this.text[errorData.msg] ? this.text[errorData.msg] : errorData.msg;
-          this.msg = this.text['error'] + ': ' + translatedMsg;
+          this.msg = translatedMsg;
         } else {
           this.msg = '';
         }

@@ -17,9 +17,14 @@ export class ErrorService {
         title = 'error';
     if (error) {
       title = error.title || title;
-      msg = error.message;
-      if (error.error) {
-        msg = error.error.error || error.error.message || msg;
+      if (error._body) {
+        const body = JSON.parse(error._body);
+        msg = body.title; 
+      } else {
+        msg = error.message 
+        if (error.error) {
+          msg = error.error.error || error.error.message || msg;
+        }
       }
     }
     this.errorOccurred.emit({title, msg});

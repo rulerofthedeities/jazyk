@@ -23,6 +23,10 @@ export class LearnCourseSummaryComponent implements OnInit {
     this.setDifficulty();
   }
 
+  onEditCourse() {
+    this.router.navigate(['/build/course/' + this.course._id]);
+  }
+
   onStartCourse() {
     if (this.course.isPublished) {
       this.userService.subscribeToCourse(this.course);

@@ -28,7 +28,7 @@ export class BuildService {
 
   fetchCourse(id: string) {
     return this.http
-    .get('/api/course/' + id)
+    .get('/api/build/course/' + id)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -74,7 +74,7 @@ export class BuildService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/courses/build', {headers})
+    .get('/api/build/courses', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -167,7 +167,7 @@ export class BuildService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .put('/api/user/lesson/intro/' + lessonId, {intro}, {headers})
+    .put('/api/build/lesson/intro/' + lessonId, {intro}, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -178,7 +178,7 @@ export class BuildService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/lesson/intro/' + lessonId, {headers})
+    .get('/build/lesson/intro/' + lessonId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
