@@ -53,9 +53,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   onInsertTemplate(introField: any, tpe: string, dropdown: string = 'none') {
     const toInsert = '\n' + this.templates[tpe] + '\n';
     const pos: number = introField.selectionStart;
+    let right = '';
     if (pos !== undefined) {
        const left = this.intro.slice(0, pos);
-       const right = this.intro.slice(pos - this.intro.length);
+       if (pos < this.intro.length) {
+         right = this.intro.slice(pos - this.intro.length);
+       }
        this.intro = left + toInsert + right;
     } else {
       this.intro += toInsert;

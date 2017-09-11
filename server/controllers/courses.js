@@ -13,7 +13,8 @@ module.exports = {
     });
   },
   getUserCourses: function(req, res) {
-    const userId = req.decoded.user._id;
+    // Get all courses that this user is currently learning
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     // Find all courseIds for this user
     UserCourse.find({userId, subscribed: true}, {_id: 0, 'courseId': 1}, function(err, courseIds) {
       response.handleError(err, res, 500, 'Error fetching user courses', function(){
@@ -28,6 +29,15 @@ module.exports = {
         });
       });
     });
+  },
+  getUserCreatedCourses: function(req, res) {
+    // Get all courses that this user has created
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+    Course.find({authorId: userId}, {}, function(err, courses) {
+        response.handleError(err, res, 500, 'Error fetching user created courses', function(){
+          response.handleSuccess(res, courses, 200, 'Fetched user created courses');
+        });
+    })
   },
   getCourse: function(req, res) {
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {

@@ -9,6 +9,7 @@ import {routes} from './build.routes';
 import {BuildService} from './services/build.service';
 
 import {BuildComponent} from './components/build/build.component';
+import {BuildCoursesComponent} from './components/build/courses.component';
 import {BuildCourseComponent} from './components/build/course.component';
 import {BuildCourseHeaderComponent} from './components/build/course-header.component';
 import {BuildCourseHeaderBarComponent} from './components/build/course-header-bar.component';
@@ -40,6 +41,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
   ],
   declarations: [
     BuildComponent,
+    BuildCoursesComponent,
     BuildCourseComponent,
     BuildCourseHeaderComponent,
     BuildCourseHeaderBarComponent,

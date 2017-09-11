@@ -57,6 +57,3 @@
   -webkit-box-shadow: 2px 2px 15px #ccc;
   box-shadow: 2px 2px 15px #ccc;
 }
-/deep/ .markdown {
-  margin-top: -24px;
-}

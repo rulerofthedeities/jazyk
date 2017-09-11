@@ -31,7 +31,7 @@ export class LearnService {
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/courses/', {headers})
+    .get('/api/user/courses/learn', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

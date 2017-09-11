@@ -89,11 +89,12 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/course/toreview/:courseId', results.getToReview);
   router.post('/user/results/add', results.saveResults);
   
-  router.get('/user/courses', courses.getUserCourses);
+  router.get('/user/courses/learn', courses.getUserCourses);
 
   /* build */
   router.get('/user/lesson/intro/:lessonId', lessons.getIntro);
   router.put('/user/lesson/intro/:lessonId', lessons.updateIntro);
+  router.get('/user/courses/build', courses.getUserCreatedCourses);
 
   router.get('/user', users.getUser);
   

@@ -7,3 +7,6 @@
 .dropdown-menu li {
   cursor: pointer;
 }
+.markdown {
+  margin-top: -4px;
+}
