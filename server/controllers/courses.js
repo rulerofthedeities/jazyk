@@ -82,11 +82,12 @@ module.exports = {
     });
   },
   updateCourseHeader: function(req, res) {
-    const course = new Course(req.body);
-    const courseId = new mongoose.Types.ObjectId(course._id);
+    const course = new Course(req.body),
+          courseId = new mongoose.Types.ObjectId(course._id),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id);
 
     Course.findOneAndUpdate(
-      {_id: courseId},
+      {_id: courseId, authorId: userId},
       {$set: {
         name: course.name,
         isPublic: course.isPublic,
@@ -98,12 +99,14 @@ module.exports = {
     });
   },
   updateCourseProperty: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const property = req.body;
-    const key = Object.keys(property)[0];
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          property = req.body,
+          key = Object.keys(property)[0];
+          
     if (key === 'isPublic' || key === 'isPublished') {
       Course.findOneAndUpdate(
-        {_id: courseId}, property, function(err, result) {
+        {_id: courseId, authorId: userId}, property, function(err, result) {
         response.handleError(err, res, 500, 'Error updating ' + key, function(){
           response.handleSuccess(res, result, 200, 'Updated ' + key);
         });
@@ -111,25 +114,27 @@ module.exports = {
     }
   },
   updateCourseLesson: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const lesson = req.body;
-    const upd = {
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lesson = req.body,
+          upd = {
       $addToSet: { 'lessons.$.lessonIds': lesson.lessonId}
     };
 
     Course.findOneAndUpdate(
-      {_id: courseId, 'lessons.chapter': lesson.chapterName}, upd, function(err, result) {
+      {_id: courseId, authorId: userId, 'lessons.chapter': lesson.chapterName}, upd, function(err, result) {
       response.handleError(err, res, 500, 'Error updating course lesson', function(){
         response.handleSuccess(res, result, 200, 'Updated course lesson');
       });
     });
   },
   addChapter: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const chapter = req.body;
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          chapter = req.body;
 
     Course.findOneAndUpdate(
-      {_id: courseId},
+      {_id: courseId, authorId: userId},
       {$addToSet: {
         chapters: chapter.chapterName,
         lessons: chapter.lesson
@@ -149,23 +154,25 @@ module.exports = {
     });
   },
   removeChapter: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const chapter = req.body.name;
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          chapter = req.body.name;
 
     Course.findOneAndUpdate(
-      {_id: courseId},
+      {_id: courseId, authorId: userId},
       { $pull: { chapters: chapter }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error removing chapter "' + chapter+ '"', function(){
-        response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter+ '"');
+      response.handleError(err, res, 500, 'Error removing chapter "' + chapter + '"', function(){
+        response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter + '"');
       });
     });
   },
   updateChapters: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const chapters = req.body;
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          chapters = req.body;
 
     Course.findOneAndUpdate(
-      {_id: courseId},
+      {_id: courseId, authorId: userId},
       {$set: {
         chapters: chapters
       }}, function(err, result) {
@@ -175,12 +182,12 @@ module.exports = {
     });
   },
   updateLessonIds: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    const lessonIds = req.body;
-    console.log('updating course', courseId, lessonIds);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonIds = req.body;
 
     Course.findOneAndUpdate(
-      {_id: courseId},
+      {_id: courseId, authorId: userId},
       {$set: {
         lessons: lessonIds
       }}, function(err, result) {
