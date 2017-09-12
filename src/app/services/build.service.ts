@@ -26,23 +26,16 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchCourse(id: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+  fetchCourse(courseId: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/build/course/' + id, {headers})
+    .get('/api/build/course/' + courseId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   addCourse(course: Course) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
-
+    const headers = this.getTokenHeaders();
     return this.http
     .post('/api/build/course', JSON.stringify(course), {headers})
     .map(response => response.json().obj)
@@ -50,36 +43,33 @@ export class BuildService {
   }
 
   updateCourseHeader(course: Course) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/course/header', JSON.stringify(course), {headers})
+    .put('/api/build/course/header', JSON.stringify(course), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateCourseProperty(courseId: string, property: string, isProperty: boolean) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     const data = {[property]: isProperty};
     return this.http
-    .patch('/api/course/property/' + courseId, JSON.stringify(data), {headers})
+    .patch('/api/build/course/property/' + courseId, JSON.stringify(data), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateCourseLesson(courseId: string, chapterName: string, lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     const data = {chapterName, lessonId};
     return this.http
-    .patch('/api/course/lesson/' + courseId, JSON.stringify(data), {headers})
+    .patch('/api/build/course/lesson/' + courseId, JSON.stringify(data), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  fetchUserCourses() {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+  fetchAuthorCourses() {
+    const headers = this.getTokenHeaders();
     return this.http
     .get('/api/build/courses', {headers})
     .map(response => response.json().obj)
@@ -96,26 +86,26 @@ export class BuildService {
   }
 
   addChapter(courseId: string, chapterName: string, lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     const lesson = {chapter: chapterName, lessonIds: [lessonId]};
     return this.http
-    .post('/api/chapter/' + courseId,  JSON.stringify({chapterName, lesson}), {headers})
+    .post('/api/build/chapter/' + courseId,  JSON.stringify({chapterName, lesson}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   removeChapter(courseId: string, chapter: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/chapter/' + courseId,  JSON.stringify({name: chapter}), {headers})
+    .put('/api/build/chapter/' + courseId,  JSON.stringify({name: chapter}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateChapters(courseId: string, chapters: string[]) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/chapters/' + courseId, JSON.stringify(chapters), {headers})
+    .put('/api/build/chapters/' + courseId, JSON.stringify(chapters), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -137,42 +127,39 @@ export class BuildService {
   }
 
   addLesson(lesson: Lesson) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .post('/api/lesson', JSON.stringify(lesson), {headers})
+    .post('/api/build/lesson', JSON.stringify(lesson), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateLessonHeader(lesson: Lesson) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/lesson/header', JSON.stringify(lesson), {headers})
+    .put('/api/build/lesson/header', JSON.stringify(lesson), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   removeLesson(lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .delete('/api/lesson/' + lessonId)
+    .delete('/api/build/lesson/' + lessonId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateLessonIds(courseId: string, lessonIds: LessonId[]) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/lessonIds/' + courseId, JSON.stringify(lessonIds), {headers})
+    .put('/api/build/lessonIds/' + courseId, JSON.stringify(lessonIds), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateIntro(lessonId: string, intro: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .put('/api/build/lesson/intro/' + lessonId, {intro}, {headers})
     .map(response => response.json().obj)
@@ -180,12 +167,9 @@ export class BuildService {
   }
 
   fetchIntro(lessonId: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
-    .get('/build/lesson/intro/' + lessonId, {headers})
+    .get('/api/build/lesson/intro/' + lessonId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -193,6 +177,7 @@ export class BuildService {
   /*** WORDS ***/
 
   fetchFilterWordPairs(filter: Filter, lanpair: LanPair) {
+    const headers = this.getTokenHeaders();
     const params = new URLSearchParams();
     params.set('word', filter.word);
     params.set('languagePair', lanpair.from.slice(0, 2) + ';' + lanpair.to.slice(0, 2));
@@ -202,21 +187,23 @@ export class BuildService {
     params.set('isExact', filter.isExact.toString());
     params.set('getTotal', filter.getTotal.toString());
     return this.http
-    .get('/api/wordpairs/', {search: params})
+    .get('/api/build/wordpairs/', {search: params, headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   fetchWordPairDetail(wordpairId: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/wordpair/' + wordpairId)
+    .get('/api/build/wordpair/' + wordpairId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   fetchMedia(wordPairId: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/wordpair/media/' + wordPairId)
+    .get('/api/build/wordpair/media/' + wordPairId, {headers})
     .map(conn => conn.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -224,33 +211,33 @@ export class BuildService {
   /*** EXERCISES ***/
 
   addExercise(exercise: Exercise, lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
-
+    const headers = this.getTokenHeaders();
     return this.http
-    .post('/api/exercise/' + lessonId, JSON.stringify(exercise), {headers})
+    .post('/api/build/exercise/' + lessonId, JSON.stringify(exercise), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateExercise(exercise: Exercise, lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/exercise/' + lessonId, JSON.stringify(exercise), {headers})
+    .put('/api/build/exercise/' + lessonId, JSON.stringify(exercise), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   updateExercises(exercises: Exercise[], lessonId: string) {
-    const headers = new Headers({'Content-Type': 'application/json'});
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/exercises/' + lessonId, JSON.stringify(exercises), {headers})
+    .put('/api/build/exercises/' + lessonId, JSON.stringify(exercises), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   removeExercise(exerciseId: string, lessonId: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .delete('/api/exercise/' + lessonId + '/' + exerciseId)
+    .delete('/api/build/exercise/' + lessonId + '/' + exerciseId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -262,5 +249,15 @@ export class BuildService {
     .get('/api/config/lan/' + lanCode)
     .map(conn => conn.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  /*** Common ***/
+
+  private getTokenHeaders(): Headers {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return headers;
   }
 }

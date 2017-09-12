@@ -39,7 +39,7 @@ module.exports = {
     });
   },
   removeLesson: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$set: {

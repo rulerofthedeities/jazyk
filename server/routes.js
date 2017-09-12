@@ -28,35 +28,18 @@ module.exports.initialize = function(app, router) {
   router.get('/translations/:lan/:component', translations.getTranslations);
 
   router.get('/courses/:lan', courses.getLanCourses);
-  router.get('/learn/course/:id', courses.getCourse);
-  router.put('/course/header', courses.updateCourseHeader);
-  router.patch('/course/property/:id', courses.updateCourseProperty);
-  router.patch('/course/lesson/:id', courses.updateCourseLesson);
+  router.get('/learn/course/:courseId', courses.getCourse);
 
-  router.post('/chapter/:id', courses.addChapter);
-  router.put('/chapter/:id', courses.removeChapter);
   router.get('/chapters/:id', courses.getChapters);
-  router.put('/chapters/:id', courses.updateChapters);
 
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:lessonId', lessons.getLesson);
   router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
-  router.post('/lesson', lessons.addLesson);
-  router.delete('/lesson/:id', lessons.removeLesson);
-  router.put('/lesson/header', lessons.updateLessonHeader);
-  router.put('/lessonIds/:id', courses.updateLessonIds);
   router.get('/lesson/intro/:lessonId', lessons.getIntro);
 
-  router.get('/wordpairs', words.getWordPairs);
-  router.get('/wordpair/:id', words.getWordPairDetail);
-  router.get('/wordpair/media/:id', words.getWordDetailMedia);
 
   router.get('/exercises/:id', exercises.getExercises);
-  router.post('/exercise/:id', exercises.addExercise);
-  router.put('/exercise/:id', exercises.updateExercise);
   router.get('/exercises/course/:courseId', exercises.getExercises);
-  router.put('/exercises/:id', exercises.updateExercises);
-  router.delete('/exercise/:lessonId/:exerciseId', exercises.removeExercise);
 
   router.get('/choices/lesson/:lessonId', exercises.getLessonChoices);
   router.get('/choices/course/:courseId', exercises.getCourseChoices);
@@ -94,12 +77,32 @@ module.exports.initialize = function(app, router) {
   router.get('/user', users.getUser);
 
   /* build */
-  router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
   router.get('/build/courses', courses.getUserCreatedCourses);
-  router.get('/build/course/:id', courses.getAuthorCourse);
+  router.get('/build/course/:courseId', courses.getAuthorCourse);
   router.post('/build/course', courses.addCourse);
+  router.put('/build/course/header', courses.updateCourseHeader);
+  router.patch('/build/course/property/:courseId', courses.updateCourseProperty);
+  router.patch('/build/course/lesson/:courseId', courses.updateCourseLesson);
+  router.put('/build/lessonIds/:courseId', courses.updateLessonIds);
 
+  router.post('/build/chapter/:courseId', courses.addChapter);
+  router.put('/build/chapter/:courseId', courses.removeChapter);
+  router.put('/build/chapters/:courseId', courses.updateChapters);
+
+  router.post('build/lesson', lessons.addLesson);
+  router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
+  router.put('/build/lesson/header', lessons.updateLessonHeader);
+  router.delete('/build/lesson/:lessonId', lessons.removeLesson);
   
+  router.get('/build/wordpairs', words.getWordPairs);
+  router.get('/build/wordpair/:wordpairId', words.getWordPairDetail);
+  router.get('/build/wordpair/media/:wordpairId', words.getWordDetailMedia);
+
+  router.post('/build/exercise/:lessonId', exercises.addExercise);
+  router.put('/build/exercise/:lessonId', exercises.updateExercise);
+  router.put('/build/exercises/:lessonId', exercises.updateExercises);
+  router.delete('/build/exercise/:lessonId/:exerciseId', exercises.removeExercise);
+
   app.use('/api/', router);
 
   app.use(function (req, res) {

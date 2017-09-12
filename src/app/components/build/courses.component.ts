@@ -62,7 +62,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
 
   private getCourses() {
     this.buildService
-    .fetchUserCourses()
+    .fetchAuthorCourses()
     .takeWhile(() => this.componentActive)
     .subscribe(
       courses => {

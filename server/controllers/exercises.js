@@ -72,7 +72,7 @@ module.exports = {
     });
   },
   addExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     const exercise = req.body;
     exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
     
@@ -89,7 +89,7 @@ module.exports = {
     });
   },
   updateExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     const exercise = req.body;
     const exerciseId = new mongoose.Types.ObjectId(exercise._id);
 
@@ -106,7 +106,7 @@ module.exports = {
     );
   },
   updateExercises: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
     const exercises = req.body;
 
     console.log('updating all exercises for lesson ' + lessonId);

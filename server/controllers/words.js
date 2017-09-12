@@ -41,9 +41,8 @@ module.exports = {
     });
   },
   getWordPairDetail: function(req, res) {
-    const wordpairId = new mongoose.Types.ObjectId(req.params.id);
+    const wordpairId = new mongoose.Types.ObjectId(req.params.wordpairId);
     WordPair.findOne({_id: wordpairId}, {}, function(err, wordpair) {
-      console.log('wordpair', wordpair);
       //get detail docs
       languages = wordpair.lanPair;
       getDetail(wordpair[languages[0]], function(err, detail0) {
@@ -57,7 +56,7 @@ module.exports = {
     });
   },
   getWordDetailMedia: function(req, res) {
-    const wordDetailId = new mongoose.Types.ObjectId(req.params.id);
+    const wordDetailId = new mongoose.Types.ObjectId(req.params.wordpairId);
     WordDetail.findOne({_id: wordDetailId}, {audios:1, images:1}, function(err, media) {
       response.handleError(err, res, 500, 'Error fetching detail media', function(){
         response.handleSuccess(res, media, 200, 'Fetched detail media');

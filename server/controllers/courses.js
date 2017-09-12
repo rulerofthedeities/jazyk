@@ -4,8 +4,8 @@ const response = require('../response'),
       UserCourse = require('../models/usercourse');
 
 let getCourse = function(req, res, authorOnly) {
-  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+  if (mongoose.Types.ObjectId.isValid(req.params.courseId)) {
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let query = {_id: courseId, isPublished: true, isPublic: true};
     if (authorOnly) {
       const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
@@ -98,7 +98,7 @@ module.exports = {
     });
   },
   updateCourseProperty: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const property = req.body;
     const key = Object.keys(property)[0];
     if (key === 'isPublic' || key === 'isPublished') {
@@ -111,7 +111,7 @@ module.exports = {
     }
   },
   updateCourseLesson: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const lesson = req.body;
     const upd = {
       $addToSet: { 'lessons.$.lessonIds': lesson.lessonId}
@@ -125,7 +125,7 @@ module.exports = {
     });
   },
   addChapter: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const chapter = req.body;
 
     Course.findOneAndUpdate(
@@ -149,7 +149,7 @@ module.exports = {
     });
   },
   removeChapter: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const chapter = req.body.name;
 
     Course.findOneAndUpdate(
@@ -161,7 +161,7 @@ module.exports = {
     });
   },
   updateChapters: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const chapters = req.body;
 
     Course.findOneAndUpdate(
@@ -175,7 +175,7 @@ module.exports = {
     });
   },
   updateLessonIds: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     const lessonIds = req.body;
     console.log('updating course', courseId, lessonIds);
 
