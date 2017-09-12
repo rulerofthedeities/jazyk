@@ -45,6 +45,7 @@ module.exports.initialize = function(app, router) {
   router.delete('/lesson/:id', lessons.removeLesson);
   router.put('/lesson/header', lessons.updateLessonHeader);
   router.put('/lessonIds/:id', courses.updateLessonIds);
+  router.get('/lesson/intro/:lessonId', lessons.getIntro);
 
   router.get('/wordpairs', words.getWordPairs);
   router.get('/wordpair/:id', words.getWordPairDetail);
@@ -93,7 +94,6 @@ module.exports.initialize = function(app, router) {
   router.get('/user', users.getUser);
 
   /* build */
-  router.get('/build/lesson/intro/:lessonId', lessons.getIntro);
   router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
   router.get('/build/courses', courses.getUserCreatedCourses);
   router.get('/build/course/:id', courses.getAuthorCourse);

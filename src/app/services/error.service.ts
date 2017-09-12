@@ -19,9 +19,9 @@ export class ErrorService {
       title = error.title || title;
       if (error._body) {
         const body = JSON.parse(error._body);
-        msg = body.title; 
+        msg = body.title;
       } else {
-        msg = error.message 
+        msg = error.message;
         if (error.error) {
           msg = error.error.error || error.error.message || msg;
         }
@@ -53,9 +53,9 @@ export class ErrorService {
         'fr': 'Erreur: Code d\'erreur inconnu (' + errorCode + ')'
       },
       learn01 : {
-        'nl': 'Fout: De cursus met code "%s" kan niet gevonden worden',
-        'en': 'Error: The course with code "%s" cannot be found',
-        'fr': 'Erreur: Le cours avec le code "%s" ne peut être trouvé'
+        'nl': 'Fout: De cursus met id "%s" kan niet gevonden worden',
+        'en': 'Error: The course with id "%s" cannot be found',
+        'fr': 'Erreur: Le cours avec le id "%s" ne peut être trouvé'
       }
     };
     let msg = 'unknown error';

@@ -1,61 +1,67 @@
-<km-build-course-header-bar
-  *ngIf="course"
-  [text]="text"
-  [course]="course"
-  [showLink]="true">
-</km-build-course-header-bar>
+<div *ngIf="isCourseAccess">
 
-<h2 *ngIf="!isEditMode" class="header">
-  {{lesson?.name}}
-  <div class="btn btn-warning" (click)="onEditLesson()">
-    <span class="fa fa-cog"></span> {{text["Settings"]}}
-  </div>
-</h2>
-
-<km-build-lesson-header *ngIf="isEditMode" class="header"
-  [lesson]="lesson"
-  [text]="text"
-  [chapters]="chapters"
-  (done)="onCloseHeader($event)">
-</km-build-lesson-header>
-
-<km-build-lesson-tabs
-  [text]="text"
-  [tab]="tab"
-  [isIntro]="lesson?.exerciseTpes?.intro?.active"
-  (selected)="onTabSelected($event)">
-</km-build-lesson-tabs>
-
-<div *ngIf="tab==='words'">
-  <km-exercise-list 
-    *ngIf="lesson"
-    [languagePair]="lesson?.languagePair"
-    [lessonId]="lesson?._id"
+  <km-build-course-header-bar
+    *ngIf="course"
     [text]="text"
-    [isBidirectional]="isBidirectional"
-    [exercises]="lesson.exercises"
-    (removedExercise)="onExerciseRemoved($event)">
-  </km-exercise-list>
+    [course]="course"
+    [showLink]="true">
+  </km-build-course-header-bar>
 
-  <div class="footer">
-    <div *ngIf="!isNewWord; else addWord">
-      <div class="btn btn-success btn-lg"(click)="onNewWord()">
-        <span class="fa fa-file"></span> {{text["Newword"]}}
-      </div>
+  <h2 *ngIf="!isEditMode" class="header">
+    {{lesson?.name}}
+    <div class="btn btn-warning" (click)="onEditLesson()">
+      <span class="fa fa-cog"></span> {{text["Settings"]}}
     </div>
-  </div>
+  </h2>
 
-  <ng-template #addWord>
-    <km-build-exercise
+  <km-build-lesson-header *ngIf="isEditMode" class="header"
+    [lesson]="lesson"
+    [text]="text"
+    [chapters]="chapters"
+    (done)="onCloseHeader($event)">
+  </km-build-lesson-header>
+
+  <km-build-lesson-tabs
+    [text]="text"
+    [tab]="tab"
+    [isIntro]="lesson?.exerciseTpes?.intro?.active"
+    (selected)="onTabSelected($event)">
+  </km-build-lesson-tabs>
+
+  <div *ngIf="tab==='words'">
+    <km-exercise-list 
+      *ngIf="lesson"
       [languagePair]="lesson?.languagePair"
       [lessonId]="lesson?._id"
       [text]="text"
-      (addedExercise)="onExerciseAdded($event)">
-    </km-build-exercise>
-  </ng-template>
+      [isBidirectional]="isBidirectional"
+      [exercises]="lesson.exercises"
+      (removedExercise)="onExerciseRemoved($event)">
+    </km-exercise-list>
+
+    <div class="footer">
+      <div *ngIf="!isNewWord; else addWord">
+        <div class="btn btn-success btn-lg"(click)="onNewWord()">
+          <span class="fa fa-file"></span> {{text["Newword"]}}
+        </div>
+      </div>
+    </div>
+
+    <ng-template #addWord>
+      <km-build-exercise
+        [languagePair]="lesson?.languagePair"
+        [lessonId]="lesson?._id"
+        [text]="text"
+        (addedExercise)="onExerciseAdded($event)">
+      </km-build-exercise>
+    </ng-template>
+  </div>
+
+  <km-build-lesson-intro *ngIf="tab==='intro'"
+    [lessonId]="lesson?._id"
+    [text]="text">
+  </km-build-lesson-intro>
 </div>
 
-<km-build-lesson-intro *ngIf="tab==='intro'"
-  [lessonId]="lesson?._id"
-  [text]="text">
-</km-build-lesson-intro>
+<km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
+</km-info-msg>

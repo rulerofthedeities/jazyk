@@ -66,7 +66,6 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       courses => {
-        console.log('user built courses', courses);
         this.courses = courses;
         if (courses && courses.length < 1) {
           this.infoMsg = this.text['NoBuiltCourses'];

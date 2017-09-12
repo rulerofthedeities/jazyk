@@ -26,6 +26,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   isBidirectional = false;
   text: Object = {};
   tab = 'words';
+  isCourseAccess = false;
+  infoMsg = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -98,27 +100,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.lanForeign = lesson.languagePair.to;
         this.getTranslations();
         this.setBidirectional();
-        // this.getChapters();
-        this.getCourse(); // for header & chapters
       },
       error => this.errorService.handleError(error)
     );
   }
-
-/*
-  private getChapters() {
-    this.buildService
-    .fetchChapters(this.lesson.courseId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      chapters => {
-        console.log('chapters', chapters);
-        this.chapters = chapters;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-*/
 
   private addChapter(chapterName: string, lessonId: string) {
     if (chapterName) {
@@ -140,7 +125,12 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         this.course = course;
-        this.chapters = course.chapters;
+        if (course) {
+          this.chapters = course.chapters;
+          this.isCourseAccess = true;
+        } else {
+          this.infoMsg = this.text['NotAuthorizedEditCourse'];
+        }
       },
       error => this.errorService.handleError(error)
     );
@@ -153,6 +143,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .subscribe(
       translations => {
         this.setText(translations);
+        this.getCourse(); // for header & chapters
       },
       error => this.errorService.handleError(error)
     );

@@ -60,12 +60,8 @@ export class LearnService {
   }
 
   fetchIntro(lessonId: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
     return this.http
-    .get('/api/user/lesson/intro/' + lessonId, {headers})
+    .get('/api/lesson/intro/' + lessonId)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
