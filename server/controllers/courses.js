@@ -24,14 +24,25 @@ let getCourse = function(req, res, authorOnly) {
   }
 }
 
+let getCourses = function(req, res, publishedOnly) {
+  const languageId = req.params.lan;
+  let query = {'languagePair.to': languageId};
+  if (publishedOnly) {
+    query = {'languagePair.to': languageId, isPublished: true, isPublic: true}
+  }
+  Course.find(query, {}, function(err, courses) {
+    response.handleError(err, res, 500, 'Error fetching courses', function(){
+      response.handleSuccess(res, courses, 200, 'Fetched courses');
+    });
+  });
+}
+
 module.exports = {
   getLanCourses: function(req, res) {
-    const languageId = req.params.lan;
-    Course.find({'languagePair.to': languageId}, {}, function(err, courses) {
-      response.handleError(err, res, 500, 'Error fetching courses', function(){
-        response.handleSuccess(res, courses, 200, 'Fetched courses');
-      });
-    });
+    getCourses(req, res, false);
+  },
+  getPublicLanCourses: function(req, res) {
+    getCourses(req, res, true);
   },
   getUserCourses: function(req, res) {
     // Get all courses that this user is currently learning
@@ -103,7 +114,7 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           property = req.body,
           key = Object.keys(property)[0];
-          
+
     if (key === 'isPublic' || key === 'isPublished') {
       Course.findOneAndUpdate(
         {_id: courseId, authorId: userId}, property, function(err, result) {

@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
+import {UserService} from '../../services/user.service';
 import {Course, Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail} from '../../models/word.model';
 import {Exercise} from '../../models/exercise.model';
@@ -33,6 +34,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private buildService: BuildService,
     private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -43,7 +45,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       params => {
         if (params['id']) {
           const lessonId = params['id'];
-          this.getLesson(lessonId);
+          this.getTranslations(lessonId);
         }
       }
     );
@@ -95,11 +97,17 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       lesson => {
+        console.log('lesson', lesson);
         this.lesson = lesson;
-        this.lanLocal = lesson.languagePair.from;
-        this.lanForeign = lesson.languagePair.to;
-        this.getTranslations();
-        this.setBidirectional();
+        if (lesson) {
+          this.lanLocal = lesson.languagePair.from;
+          this.lanForeign = lesson.languagePair.to;
+          this.getCourse(); // for header & chapters
+          this.setBidirectional();
+        } else {
+          console.log(this.text);
+          this.infoMsg = this.text['LessonIdInvalid'];
+        }
       },
       error => this.errorService.handleError(error)
     );
@@ -136,14 +144,15 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getTranslations() {
+  private getTranslations(lessonId: string) {
     this.utilsService
-    .fetchTranslations(this.lanLocal, 'LessonComponent')
+    .fetchTranslations(this.userService.user.lan, 'LessonComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
+        console.log(translations);
         this.setText(translations);
-        this.getCourse(); // for header & chapters
+        this.getLesson(lessonId);
       },
       error => this.errorService.handleError(error)
     );

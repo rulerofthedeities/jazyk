@@ -55,7 +55,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
 
   private getCourses() {
     this.learnService
-    .fetchCourses(this.selectedLanguage)
+    .fetchPublicCourses(this.selectedLanguage)
     .takeWhile(() => this.componentActive)
     .subscribe(
       courses => {

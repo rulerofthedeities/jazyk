@@ -21,12 +21,17 @@ module.exports = {
     });
   },
   getLesson: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    Lesson.findOne({_id: lessonId}, {}, function(err, lesson) {
-      response.handleError(err, res, 500, 'Error fetching lesson', function(){
-        response.handleSuccess(res, lesson, 200, 'Fetched lesson');
+    if (mongoose.Types.ObjectId.isValid(req.params.lessonId)) {
+      const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+      Lesson.findOne({_id: lessonId}, {}, function(err, lesson) {
+        response.handleError(err, res, 500, 'Error fetching lesson', function(){
+          response.handleSuccess(res, lesson, 200, 'Fetched lesson');
+        });
       });
-    });
+    } else {
+      //invalid id
+      response.handleSuccess(res, null, 200, 'Invalid lesson id');
+    }
   },
   addLesson: function(req, res) {
     const lesson = new Lesson(req.body);

@@ -18,9 +18,9 @@ export class LearnService {
 
   /*** Courses ***/
 
-  fetchCourses(lan: Language) {
+  fetchPublicCourses(lan: Language) {
     return this.http
-    .get('/api/courses/' + lan._id)
+    .get('/api/courses/public/' + lan._id)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

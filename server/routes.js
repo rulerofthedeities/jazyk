@@ -27,6 +27,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/translations/:lan/:component', translations.getTranslations);
 
+  router.get('/courses/public/:lan', courses.getPublicLanCourses);
   router.get('/courses/:lan', courses.getLanCourses);
   router.get('/learn/course/:courseId', courses.getCourse);
 
