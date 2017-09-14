@@ -10,49 +10,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-main-menu',
   templateUrl: 'main-menu.component.html',
-  styles: [`
-    .logo img {
-      margin: 2px 10px;
-    }
-    .navbar-earthy {
-      background: #41474b;
-      background: linear-gradient(0deg, #2c3033, #41474b, #41474b);
-      color: #ddd;
-      font-size: 24px;
-    }
-    .navbar-earthy a {
-      color: #ddd;
-    }
-    .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
-      color: black;
-    }
-    nav {
-      box-shadow: 0px 4px 6px rgba(20, 20, 20, 0.3);
-    }
-    .login {
-      margin-right: 15px;
-    }
-    li.active .bar, li > a:hover .bar {
-      display: block;
-      width: 100%;
-      height: 3px;
-      border-radius: 2px;
-      top: 12px;
-      position: relative;
-      background-color: white;
-    }
-    li.active span.bar {
-      background-color: #ddd;
-    }
-    /* override bootstrap */
-    .nav > li > a:hover, .nav > li > a:focus {
-      text-decoration: none;
-      background-color: inherit;
-    }
-    .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
-      color: #ddd;
-    }
-  `]
+  styleUrls: ['main-menu.component.css']
 })
 
 export class MainMenuComponent implements OnInit, OnDestroy {

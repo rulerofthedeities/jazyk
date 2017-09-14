@@ -11,6 +11,11 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-build-course-header',
   templateUrl: 'course-header.component.html',
   styles: [`
+    :host {
+      display: block;
+      margin-left: -15px;
+      margin-right: -15px;
+    }
     .panel {
       background-color: rgba(239, 239, 239, .9);
       border-radius: 6px;
