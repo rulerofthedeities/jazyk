@@ -206,7 +206,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
           this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
         }
-        this.setLessonSteps();
+        if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
+          this.setLessonSteps();
+        } else {
+          // This lesson is finished, go to next lesson
+          this.nextLesson.next(this.lesson._id);
+        }
       },
       error => this.errorService.handleError(error)
     );
