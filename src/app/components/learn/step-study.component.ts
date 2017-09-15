@@ -51,7 +51,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchLessonResults();
-    this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
   }
 
@@ -77,6 +76,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (skipOk) {
       this.skip();
     }
+  }
+
+  onToPractise() {
+    this.skip();
   }
 
   onKeyPressed(key: string) {
@@ -156,7 +159,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        if  (results) {
+        console.log('results', results);
+        if (results) {
           this.getNewQuestions(results);
         }
       },
@@ -165,21 +169,22 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private getNewQuestions(results: ExerciseResult[]) {
-    let nrOfExercises = 0,
-        exerciseResult: ExerciseResult;
+    let exerciseResult: ExerciseResult;
     const newExercises: Exercise[] = [];
 
     // Select exercises with no result
     this.exercises.forEach(exercise => {
-      if (nrOfExercises < this.settings.nrOfWords) {
+      if (newExercises.length < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if (!exerciseResult) {
           // study not done yet, add to list of new questions
           newExercises.push(exercise);
-          nrOfExercises = newExercises.length;
         }
       }
     });
+    if (newExercises.length > 0) {
+      this.isCountDown = this.settings.countdown;
+    }
     this.buildExerciseData(newExercises);
   }
 

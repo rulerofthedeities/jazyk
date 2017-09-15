@@ -31,9 +31,20 @@
             </h1>
           </div>
         </div>
-
+        <!-- NOTHING MORE TO STUDY -->
+        <div *ngIf="exerciseData?.length < 1">
+          <div class="msg-info">
+            <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
+          </div>
+          <button 
+            type="button"
+            class="btn btn-success"
+            (click)="onToPractise()">
+            {{text["PractiseStudy"]}}
+          </button>
+        </div>
         <!-- STUDY DONE -->
-        <div *ngIf="isStudyDone">
+        <div *ngIf="isStudyDone && exerciseData?.length > 0">
           <h3>Words learned:</h3>
           <km-completed-list [data]="exerciseData">
           </km-completed-list>
@@ -52,14 +63,14 @@
       </div>
     </div>
     <div class="col-xs-4">
-      <km-learn-settings
+      <km-learn-settings *ngIf="!isStudyDone"
         [step]="'study'"
         [hasGenus]="!!currentData?.exercise?.genus"
         [settings]="settings"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions">
-        <div class="btn btn-success btn-lg" (click)="onNextWord(1)">
+        <div class="btn btn-success btn-lg" (click)="onNextWord(1)" *ngIf="exerciseData?.length > 0">
           <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
           {{isStudyDone ? text["Restart"] : text["Next"]}}
         </div>

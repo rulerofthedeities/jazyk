@@ -202,7 +202,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
-    console.log('PRACTISERESULTS', results);
     // Select exercises that have not been learned yet (but have been studied)
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {

@@ -22,6 +22,15 @@
   -ms-user-select: none;
   user-select: none;
 }
+.msg-info {
+  font-size: 20px;
+  padding: 15px;
+}
+.msg-info .fa {
+  font-size: 36px;
+  margin-right: 12px;
+  color: green;
+}
 
 /* ng2-dnd */
 
