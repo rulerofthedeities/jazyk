@@ -42,6 +42,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   isCountDown: boolean;
   isMute: boolean;
   isReady = false;
+  isRestart = false;
 
   constructor(
     private learnService: LearnService,
@@ -114,7 +115,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
-        this.stepCompleted.emit(this.exerciseData);
+        if (this.isRestart) {
+          this.stepCompleted.emit(null); // don't update step counter
+        } else {
+          this.stepCompleted.emit(this.exerciseData);
+        }
       }
     } else {
       if (this.current <= -1) {
@@ -199,6 +204,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private restart() {
+    this.isRestart = true;
     this.current = -1;
     this.exerciseData = this.learnService.shuffle(this.exerciseData);
     this.isStudyDone = false;

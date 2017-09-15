@@ -25,6 +25,9 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
+  @Output() stepBack = new EventEmitter();
+  noMoreExercises = false;
+  noMoreToStudy = false;
   beep: any;
 
   constructor(
@@ -39,13 +42,16 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.settings.nrOfWords = 2; // TEMP
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.fetchLessonResults();
-    super.init();
   }
 
   onRestart() {
     if (this.isExercisesDone) {
       this.restart();
     }
+  }
+
+  onToStudy() {
+    this.stepBack.emit();
   }
 
   isWordCorrect(): boolean {
@@ -169,21 +175,29 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
+    let leftToStudy: number;
     this.learnService
     .getLessonResults(this.lessonId, 'practise')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
         if  (results) {
-          this.getNewQuestions(results);
+          leftToStudy = this.getNewQuestions(results);
+        }
+        if (this.exerciseData.length > 0) {
+          super.init();
+        } else {
+          this.noMoreExercises = true;
+          this.noMoreToStudy = leftToStudy < 1;
         }
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private getNewQuestions(results: ExerciseResult[]) {
+  private getNewQuestions(results: ExerciseResult[]): number {
     let nrOfExercises = 0,
+        leftToStudy = 0,
         exerciseResult: ExerciseResult;
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
@@ -193,15 +207,21 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
-        if (exerciseResult && !exerciseResult.isLearned) {
-          // word is not learned yet; add to list of new questions
-          newExercises.push(exercise);
-          newResults.push(exerciseResult);
-          nrOfExercises = newExercises.length;
+        if (exerciseResult) {
+          if (!exerciseResult.isLearned) {
+            // word is not learned yet; add to list of new questions
+            newExercises.push(exercise);
+            newResults.push(exerciseResult);
+            nrOfExercises = newExercises.length;
+          }
+        } else {
+          // word is not studied yet
+          leftToStudy++;
         }
       }
     });
     this.buildExerciseData(newExercises, newResults);
+    return leftToStudy;
   }
 
   private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
@@ -214,6 +234,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
     this.setExerciseDataById();
     this.getChoices('lesson', this.lessonId, this.options.bidirectional);
+  }
+
+  protected soundLearnedLevel(learnLevel: number) {
+    if (learnLevel > this.learnedLevel) {
+      this.audioService.playSound(this.isMute, this.beep);
+    }
   }
 
   ngOnDestroy() {

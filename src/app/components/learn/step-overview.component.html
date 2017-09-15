@@ -21,6 +21,9 @@
 <div *ngFor="let exercise of exerciseData" class="row item">
   <div class="col-xs-1">
     <span class="icon">
+      <span class="fa fa-bookmark" *ngIf="exercise.result"></span>
+    </span>
+    <span class="icon">
       <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
     </span>
     <span class="icon">

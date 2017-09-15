@@ -30,7 +30,7 @@
 .icon {
   width: 32px;
 }
-.fa-check {
+.fa-check, .fa-bookmark {
   color: green;
 }
 .fa-flag {

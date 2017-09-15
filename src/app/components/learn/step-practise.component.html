@@ -38,16 +38,27 @@
             [data]="currentData?.data">
           </km-answer-field>
         </div>
+        <!-- NO MORE EXERCISES -->
+        <div *ngIf="noMoreExercises">
+          There are no more exercises to practise.
+          <button 
+            *ngIf="!noMoreToStudy"
+            type="button"
+            class="btn btn-success"
+            (click)="onToStudy()">
+            Learn New Words
+          </button>
+        </div>
         <!-- EXERCISE DONE -->
-        <div *ngIf="isExercisesDone">
+        <div *ngIf="isExercisesDone && !noMoreExercises">
           <h3>Words practised:</h3>
           <km-completed-list [data]="exerciseData">
           </km-completed-list>
 
-          <div class="btn btn-success" (click)="onRestart()">
+          <button type="button" class="btn btn-success" (click)="onRestart()">
             <span class="fa fa-step-forward"></span>
-            {{text["Restart"]}}
-          </div>
+            {{text["ContinuePractise"]}}
+          </button>
         </div>
       </div>
     </div>
@@ -67,11 +78,11 @@
           <span class="fa fa-step-forward"></span>
           {{text["Next"]}}
         </div>
-        <div *ngIf="isExercisesDone"
+        <div *ngIf="isExercisesDone && !noMoreExercises"
           class="btn btn-lg btn-success next"
           (click)="onRestart()">
           <span class="fa fa-refresh"></span>
-          {{text["Restart"]}}
+          {{text["ContinuePractise"]}}
         </div>
       </div>
       <div class="score" *ngIf="!isExercisesDone">

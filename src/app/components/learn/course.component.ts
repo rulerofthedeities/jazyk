@@ -92,15 +92,21 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onSkipStep() {
-    if (this.currentStep < this.steps.length) {
-      this.currentStep++;
-    }
+    this.nextStep();
+  }
+
+  onStepBack() {
+    this.previousStep();
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
-    this.saveAnswers(step, data);
-    if (this.settingsUpdated) {
-      this.saveSettings();
+    if (step === 'intro') {
+      this.nextStep();
+    } else {
+      this.saveAnswers(step, data);
+      if (this.settingsUpdated) {
+        this.saveSettings();
+      }
     }
   }
 
@@ -119,6 +125,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   capitalize(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  private nextStep() {
+    if (this.currentStep < this.steps.length) {
+      this.currentStep++;
+    }
+  }
+
+  private previousStep() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
   }
 
   private setText(translations: Translation[]) {
@@ -217,43 +235,45 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       step,
       data: []
     };
-    data.forEach( (item, i) => {
-      console.log('result', item);
-      streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data.isCorrect);
-      const newResult: ResultData = {
-        exerciseId: item.exercise._id,
-        done: item.data.isDone || false,
-        points: item.data.points || 0,
-        learnLevel: item.data.learnLevel || 0,
-        streak: streak[item.exercise._id],
-        sequence: i,
-        isLast: false,
-        isDifficult: false,
-        isCorrect: item.data.isCorrect
-      };
-      lastResult[item.exercise._id] = newResult;
-      allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
-      result.data.push(newResult);
-    });
-    console.log('Checking last result', result);
-    this.checkLastResult(step, lastResult, allCorrect, data);
-    this.updateStepCount(step, lastResult);
-    console.log('Saving result', result);
-    this.learnService
-    .saveUserResults(JSON.stringify(result))
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      userResult => {
-        console.log('saved result', userResult);
-        if (userResult) {
-          // add results to data object
-          result.data.forEach((resultItem, i) => {
-            data[i].result = resultItem;
-          });
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
+    if (data && data.length > 0) { // No data for study repeats
+      data.forEach( (item, i) => {
+        console.log('result', item);
+        streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data.isCorrect);
+        const newResult: ResultData = {
+          exerciseId: item.exercise._id,
+          done: item.data.isDone || false,
+          points: item.data.points || 0,
+          learnLevel: item.data.learnLevel || 0,
+          streak: streak[item.exercise._id],
+          sequence: i,
+          isLast: false,
+          isDifficult: false,
+          isCorrect: item.data.isCorrect
+        };
+        lastResult[item.exercise._id] = newResult;
+        allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
+        result.data.push(newResult);
+      });
+      console.log('Checking last result', result);
+      this.checkLastResult(step, lastResult, allCorrect, data);
+      this.updateStepCount(step, lastResult);
+      console.log('Saving result', result);
+      this.learnService
+      .saveUserResults(JSON.stringify(result))
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        userResult => {
+          console.log('saved result', userResult);
+          if (userResult) {
+            // add results to data object
+            result.data.forEach((resultItem, i) => {
+              data[i].result = resultItem;
+            });
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private buildStreak(streak: string, result: ExerciseResult, isCorrect: boolean): string {

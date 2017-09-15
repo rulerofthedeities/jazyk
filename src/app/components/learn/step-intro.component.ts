@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import {MarkdownService} from 'angular2-markdown';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
@@ -8,12 +8,18 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-learn-intro',
   template: `
     <markdown [data]="intro">
-    </markdown>`,
+    </markdown>
+
+    <button type="button" class="btn btn-success" (click)="onStartStudy();">
+      {{text["StartStudy"]}}
+    </button>`,
   styleUrls: ['../markdown.css']
 })
 
 export class LearnIntroComponent implements OnInit, OnDestroy {
   @Input() lessonId: string;
+  @Input() text: Object;
+  @Output() stepCompleted = new EventEmitter();
   private componentActive = true;
   intro = '';
 
@@ -26,6 +32,10 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadIntro();
     this.customizeMarkdown();
+  }
+
+  onStartStudy() {
+    this.stepCompleted.emit();
   }
 
   private loadIntro() {

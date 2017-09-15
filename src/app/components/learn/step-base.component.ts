@@ -31,9 +31,6 @@ export abstract class Step {
   protected nextWordTimer: Subscription;
   protected startDate: Date;
   protected endDate: Date;
-  // protected levels: Map<number> = {}; // Keeps track of level per exercise, not per result
-  // protected countWrong: Map<number> = {}; // Keeps track of how many times an exercise has been answered incorrectly
-  // protected countRight: Map<number> = {}; // Keeps track of how many times an exercise has been answered correctly
   protected dataByExercise: Map<ById> = {}; // Keeps track of data per exercise, not per result
   exerciseData: ExerciseData[]; // main container of exercise data + results
   currentData: ExerciseData; // container for current exercise data + results
@@ -71,7 +68,6 @@ export abstract class Step {
   }
 
   onKeyPressed(key: string) {
-    console.log('metadata:', this.currentData.data, QuestionType.Choices);
     if (!this.isExercisesDone && this.currentData) {
       switch (this.currentData.data.questionType) {
         case QuestionType.Choices:
@@ -154,7 +150,6 @@ export abstract class Step {
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
-        console.log('CHOICES', choices);
         this.choices = choices;
         this.nextWord();
       },
