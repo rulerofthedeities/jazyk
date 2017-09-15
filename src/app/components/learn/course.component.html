@@ -3,6 +3,7 @@
   [course]="course"
   [level]="courseLevel"
   [text]="text"
+  [nextLesson]="nextLesson"
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
 
@@ -61,6 +62,7 @@
     [text]="text"
     [learnedLevel]="isLearnedLevel"
     [settings]="settings"
+    (lessonCompleted)="onLessonCompleted()"
     (stepCompleted)="onStepCompleted('practise', $event)"
     (stepBack)="onStepBack()"
     (updatedSettings)="onSettingsUpdated($event)"

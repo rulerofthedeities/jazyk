@@ -25,6 +25,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() learnedLevel: number;
   @Input() options: ExerciseTpe;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
+  @Output() lessonCompleted = new EventEmitter();
   @Output() stepBack = new EventEmitter();
   noMoreExercises = false;
   noMoreToStudy = false;
@@ -52,6 +53,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   onToStudy() {
     this.stepBack.emit();
+  }
+
+  onToNextLesson() {
+    this.lessonCompleted.emit();
   }
 
   isWordCorrect(): boolean {

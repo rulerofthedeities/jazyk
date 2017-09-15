@@ -7,6 +7,7 @@ import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -59,6 +60,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   isReady = false;
   isStepsReady = false;
   maxStreak = 20;
+  nextLesson: Subject<string> = new Subject();
 
   constructor(
     private route: ActivatedRoute,
@@ -108,6 +110,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.saveSettings();
       }
     }
+  }
+
+  onLessonCompleted() {
+    this.nextLesson.next(this.lesson._id);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -213,6 +219,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         steps.push(step);
       }
     });
+    this.currentStep = 0;
     this.steps = steps;
     this.isStepsReady = true;
   }

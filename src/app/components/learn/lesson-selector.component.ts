@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {Course, Lesson} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 interface LessonHeader {
@@ -21,6 +22,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   @Input() course: Course;
   @Input() text: Object;
   @Input() level: string;
+  @Input() private nextLesson: Subject<string>;
   @Output() currentLesson = new EventEmitter<Lesson>();
   @ViewChild('chapter') chapter: ElementRef;
   @ViewChild('lesson') lesson: ElementRef;
@@ -40,6 +42,12 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.nextLesson
+    .takeWhile(() => this.componentActive)
+    .subscribe(lessonId => {
+      console.log('next lesson', lessonId);
+      this.navigateLesson(lessonId, 1);
+    });
     if (this.level === 'lesson') {
       this.getLessons();
     } else {
@@ -116,7 +124,9 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         }
         const newLesson = this.currentChapterLessons[i];
         this.currentLessonName = newLesson.name;
-        this.lesson.nativeElement.value = newLesson._id;
+        if (this.lesson) {
+          this.lesson.nativeElement.value = newLesson._id;
+        }
         this.getLesson(newLesson._id);
       }
     }

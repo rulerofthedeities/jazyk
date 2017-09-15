@@ -50,6 +50,13 @@
             (click)="onToStudy()">
             {{text["LearnNewWords"]}}
           </button>
+          <button 
+            *ngIf="noMoreToStudy"
+            type="button"
+            class="btn btn-success"
+            (click)="onToNextLesson()">
+            {{text["ToNextLesson"]}}
+          </button>
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone && !noMoreExercises">
