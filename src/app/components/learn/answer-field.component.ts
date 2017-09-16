@@ -19,6 +19,7 @@ interface Solution {
 
 export class LearnAnswerFieldComponent implements AfterViewChecked {
   @Input() lan: string;
+  @Input() prefix: string;
   @Input() disabled: boolean;
   @Input() data: ExerciseExtraData;
   @Input() keyboard: Keyboard;

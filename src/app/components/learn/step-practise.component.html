@@ -32,6 +32,7 @@
           </km-answer-choices>
           <km-answer-field *ngIf="isQuestionType(1)"
             [lan]="lanPair.to"
+            [prefix]="prefix"
             [disabled]="isAnswered"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
             [solution]="{solution: solution, msg: text['Expectedanswer']}"

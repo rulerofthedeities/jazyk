@@ -43,6 +43,7 @@ export abstract class Step {
   answered: number; // choices
   answer: number; // choices
   solution: string; // word
+  prefix: string; // word
   isSelected = false; // choices
   isAnswered = false;  // word
   isCorrect = false; // word
@@ -183,10 +184,15 @@ export abstract class Step {
       if (this.currentData.data.questionType === QuestionType.Choices) {
         this.setChoices();
       }
+      if (this.currentData.data.questionType === QuestionType.Word) {
+        // Get prefix from word, pass on to answer field
+        const word = this.currentData.exercise.foreign.word;
+        this.prefix = this.getPrefix(word);
+        console.log('PREFIX', this.prefix);
+      }
     this.isQuestionReady = true;
     this.startDate = new Date();
     }
-    console.log('BASE next word');
   }
 
   protected clearData() {
@@ -344,10 +350,24 @@ export abstract class Step {
   }
 
   private filter(word: string): string {
-    let filteredAnswer = word.trim().toLowerCase();
+    let filteredAnswer = word.toLowerCase();
+    const matches = filteredAnswer.match(/\[(.*?)\]/);
+    if (matches && matches.length > 0) {
+      filteredAnswer = filteredAnswer.replace(matches[0], '');
+    }
+    filteredAnswer = filteredAnswer.trim();
     filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
     filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
     return filteredAnswer;
+  }
+
+  private getPrefix(word: string): string {
+    let filter = '';
+    const matches = word.match(/\[(.*?)\]/);
+    if (matches && matches.length > 1) {
+      filter = matches[1];
+    }
+    return filter;
   }
 
   private checkAltAnswers(exercise: Exercise, answer: string): boolean {
