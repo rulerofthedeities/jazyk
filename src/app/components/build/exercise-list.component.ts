@@ -31,6 +31,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   ) {}
 
   onEditExercise(id: string, focus = null) {
+    console.log('editing id', id);
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
       this.focusField = focus;
@@ -104,38 +105,42 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getInfoHint(exercise: Exercise, tpe: string): string {
-    const annotations: string[] = exercise[tpe].annotations ? exercise[tpe].annotations.split('|') : [];
-    let hint = '';
-    annotations.forEach(annotation => {
-      if (hint) {
-        hint = hint + '<br>';
+    if (exercise[tpe]) {
+      const annotations: string[] = exercise[tpe].annotations ? exercise[tpe].annotations.split('|') : [];
+      let hint = '';
+      annotations.forEach(annotation => {
+        if (hint) {
+          hint = hint + '<br>';
+        }
+        hint = hint + annotation;
+      });
+      if (exercise[tpe].hint) {
+        if (hint) {
+          hint = hint + '<br>';
+        }
+        hint = hint + '(' + exercise[tpe].hint + ')';
       }
-      hint = hint + annotation;
-    });
-    if (exercise[tpe].hint) {
-      if (hint) {
-        hint = hint + '<br>';
+      if (exercise[tpe].info) {
+        if (hint) {
+          hint = hint + '<br>';
+        }
+        hint = hint + exercise[tpe].info;
       }
-      hint = hint + exercise[tpe].hint;
+      return hint;
     }
-    if (exercise[tpe].info) {
-      if (hint) {
-        hint = hint + '<br>';
-      }
-      hint = hint + exercise[tpe].info;
-    }
-    return hint;
   }
 
   getInfoAlt(exercise: Exercise): string {
     let alt = '';
-    const alts: string[] = exercise.foreign.alt ? exercise.foreign.alt.split('|') : [];
-    alts.forEach( (altItem, i) => {
-      if (i > 0) {
-        alt = alt + '<br>';
-      }
-      alt = alt + altItem;
-    });
+    if (exercise.foreign) {
+      const alts: string[] = exercise.foreign.alt ? exercise.foreign.alt.split('|') : [];
+      alts.forEach( (altItem, i) => {
+        if (i > 0) {
+          alt = alt + '<br>';
+        }
+        alt = alt + altItem;
+      });
+    }
     return alt;
   }
 

@@ -25,6 +25,12 @@ interface FormData {
   wordTpes: WordTpe[];
 }
 
+interface NewExerciseOptions {
+  hasConjugation: boolean;
+  conjugationNr?: number;
+  lastDoc?: boolean;
+}
+
 @Component({
   selector: 'km-build-exercise',
   templateUrl: 'exercise.component.html',
@@ -38,12 +44,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   @Input() text: Object;
   @Input() focus: string;
   @Input() isBidirectional: boolean;
-  @Output() addedExercise = new EventEmitter<Exercise>();
+  @Output() addedExercises = new EventEmitter<Exercise[]>();
   @Output() updatedExercise = new EventEmitter<Exercise>();
   @Output() cancelEdit = new EventEmitter<boolean>();
   private componentActive = true;
   private isSelected = false;
   private selected: WordPairDetail;
+  private saveExercises: Exercise[] = []; // For batches
   currentExercise: Exercise;
   wordpairs: WordPair[];
   exerciseForm: FormGroup;
@@ -59,6 +66,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   config: LanConfig;
   images: File[];
   audios: File[];
+  hasConjugations = false;
 
   constructor(
     private utilsService: UtilsService,
@@ -101,6 +109,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onFilterChanged(word: string, lan: string) {
+    this.hasConjugations = false;
     // Only show list after user puts focus in field
     if (!this.isSelected) {
       this.changeFilter(word, lan);
@@ -108,7 +117,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onWordSelected(wordpairDetail: WordPairDetail) {
-    console.log('word selected', wordpairDetail);
     this.lanList = null;
     this.isSelected = true;
     this.selected = wordpairDetail;
@@ -124,12 +132,24 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         });
       }
     }
-    console.log('selected', wordpairDetail);
+    this.hasConjugations = this.checkConjugations(wordpairDetail);
   }
 
-  onSaveNewWord(formValues: any) {
+  onAddNewWord(formValues: any) {
     this.isSaving = true;
-    this.buildNewExercise(formValues);
+    this.buildNewExercise(formValues, {hasConjugation: false, lastDoc: true});
+  }
+
+  onAddNewConjugations(formValues: any) {
+    const options: NewExerciseOptions = {
+      hasConjugation: true
+    };
+    this.isSaving = true;
+    for (let i = 0; i < 6; i++) {
+      options.conjugationNr = i;
+      options.lastDoc = i === 5;
+      this.buildNewExercise(formValues, options);
+    }
   }
 
   onUpdateWord(formValues: any) {
@@ -271,7 +291,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     });
   }
 
-  private buildNewExercise(formValues: any) {
+  private buildNewExercise(formValues: any, options: NewExerciseOptions) {
     const exercise: Exercise = {
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord}
@@ -315,11 +335,39 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.local.alt = this.checkIfValue(exercise.local.alt);
       exercise.local.annotations = localAnnotations.join('|');
       exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
+
+      if (options.hasConjugation) {
+        const nr = options.conjugationNr;
+        const foreignPronouns = this.config.subjectPronouns;
+        // Split conjugation if there are multiple
+        const localWords = this.selected[this.lanLocal].conjugation[nr].split(';');
+        const foreignWords = this.selected[this.lanForeign].conjugation[nr].split(';');
+        // Add first word in list as the main word
+        const localPronoun = '[' + this.text['subjectpronoun' + nr.toString()] + '] ';
+        const foreignPronoun = '[' + foreignPronouns[nr] + '] ';
+        exercise.local.word = localPronoun + localWords[0];
+        exercise.foreign.word = foreignPronoun + foreignWords[0];
+        // Add other words as synonyms
+        localWords.shift();
+        if (localWords.length > 0) {
+          if (exercise.local.alt) {
+            exercise.local.alt += '|' + localPronoun + localWords.join('|');
+          } else {
+            exercise.local.alt = localPronoun + localWords.join('|');
+          }
+        }
+        foreignWords.shift();
+        if (foreignWords.length > 0) {
+          if (exercise.foreign.alt) {
+            exercise.foreign.alt += '|' + foreignPronoun + foreignWords.join('|');
+          } else {
+            exercise.foreign.alt = foreignPronoun + foreignWords.join('|');
+          }
+        }
+      }
     }
 
-    console.log('saving exercise ', exercise);
-
-    this.saveNewExercise(exercise);
+    this.saveNewExercise(exercise, options.lastDoc);
   }
 
   private buildExistingExercise(formValues: any) {
@@ -394,25 +442,28 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (detail.isSuperlative) {
       annotations.push(this.text['superlative']);
     }
-    console.log('annotations:', annotations, detail);
   }
 
-  private saveNewExercise(exercise: Exercise) {
+  private saveNewExercise(exercise: Exercise, lastInBatch: boolean) {
     // Difficulty later to be replaced with user data
     exercise.difficulty = 0;
-    console.log('saving exercise ', exercise);
-    this.buildService
-    .addExercise(exercise, this.lessonId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      savedExercise => {
-        console.log('saved exercise ', savedExercise);
-        this.addedExercise.emit(savedExercise);
-        this.exerciseForm.reset();
-        this.isSaving = false;
-      },
-      error => this.errorService.handleError(error)
-    );
+    this.saveExercises.push(exercise);
+    if (lastInBatch) {
+      console.log('saving exercises', this.saveExercises);
+      this.buildService
+      .addExercises(this.saveExercises, this.lessonId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        savedExercises => {
+          console.log('saved exercises', savedExercises);
+          this.addedExercises.emit(savedExercises);
+          this.exerciseForm.reset();
+          this.isSaving = false;
+          this.saveExercises = [];
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private saveUpdatedExercise(exercise: Exercise) {
@@ -468,6 +519,28 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     } else {
       this.lanList = null; // collapse dropdown list
     }
+  }
+
+  private checkConjugations(wordpairDetail: WordPairDetail): boolean {
+    // Check if both local and foreign details have entries for all conjugations
+    let hasConjugations = false;
+    if (wordpairDetail[this.lanForeign].wordTpe === 'verb') {
+      const hasForeign = this.checkLanConjugations(wordpairDetail[this.lanForeign].conjugation);
+      const hasLocal = this.checkLanConjugations(wordpairDetail[this.lanLocal].conjugation);
+      hasConjugations = hasForeign && hasLocal;
+    }
+    return hasConjugations;
+  }
+
+  private checkLanConjugations(conjugations: string[]): boolean {
+    // Check if this worddetail has entries for all conjugations
+    let hasConjugations = false;
+    if (conjugations) {
+      if (conjugations.length === 6) {
+        hasConjugations = true;
+      }
+    }
+    return hasConjugations;
   }
 
   private changeFilter(word: string, lan: string) {

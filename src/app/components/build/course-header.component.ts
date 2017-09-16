@@ -82,9 +82,10 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   onLanguageSelected(newLanguage: Language) {
+    const userLan = this.userService.user.lan;
     this.currentLanguage = newLanguage;
     this.course.languagePair = {
-      from: 'nl-nl',
+      from: userLan,
       to: newLanguage._id
     };
     this.courseForm.patchValue({'languagePair.to': newLanguage._id});

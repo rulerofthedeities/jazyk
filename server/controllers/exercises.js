@@ -71,20 +71,23 @@ module.exports = {
       });
     });
   },
-  addExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    const exercise = req.body;
-    exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
-    
+  addExercises: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          exercises = req.body;
+    console.log('adding exercises', exercises);
+    exercises.forEach(exercise => {
+      exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
+    })
+
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$addToSet: {
-        exercises: exercise
+        exercises: {$each: exercises}
       }},
     function(err, result) {
-      response.handleError(err, res, 500, 'Error adding exercise', function(){
+      response.handleError(err, res, 500, 'Error adding exercise(s)', function(){
         getCourseWordCount(result.courseId);
-        response.handleSuccess(res, exercise, 200, 'Added exercise');
+        response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
       });
     });
   },

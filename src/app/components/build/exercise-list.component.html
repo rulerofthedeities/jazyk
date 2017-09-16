@@ -1,4 +1,11 @@
-<div class="exercises">
+<!-- No Exercises -->
+<div class="panel panel-default" *ngIf="exercises?.length < 1">
+  <div class="panel-body msg-info">
+    <span class="fa fa-info-circle"></span>{{text['NoWordsInLesson']}}
+  </div>
+</div>
+<!-- Exercise list -->
+<div class="exercises" *ngIf="exercises?.length > 0">
   <div class="list-group">
     <ul 
       *ngFor="let exercise of exercises; let i = index;"

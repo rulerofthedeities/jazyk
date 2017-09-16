@@ -19,11 +19,12 @@ export interface Case {
 export interface LanConfig  {
   tpe: string;
   code: string;
+  name: string;
   articles?: string[];
   genera?: string[];
   aspects?: string[];
   cases?: Case[];
-  name: string;
+  subjectPronouns?: string[];
   regions?: string[];
   keys?: string[];
 }

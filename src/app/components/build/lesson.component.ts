@@ -73,9 +73,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.isEditMode = false;
   }
 
-  onExerciseAdded(exercise: Exercise) {
-    console.log('exercise added to lesson', exercise);
-    this.lesson.exercises.push(exercise);
+  onExercisesAdded(exercises: Exercise[]) {
+    this.lesson.exercises = this.lesson.exercises.concat(exercises);
     this.isNewWord = false;
   }
 

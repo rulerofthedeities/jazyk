@@ -210,10 +210,10 @@ export class BuildService {
 
   /*** EXERCISES ***/
 
-  addExercise(exercise: Exercise, lessonId: string) {
+  addExercises(exercises: Exercise[], lessonId: string) {
     const headers = this.getTokenHeaders();
     return this.http
-    .post('/api/build/exercise/' + lessonId, JSON.stringify(exercise), {headers})
+    .post('/api/build/exercise/' + lessonId, JSON.stringify(exercises), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

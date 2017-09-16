@@ -90,7 +90,7 @@ module.exports.initialize = function(app, router) {
   router.put('/build/chapter/:courseId', courses.removeChapter);
   router.put('/build/chapters/:courseId', courses.updateChapters);
 
-  router.post('build/lesson', lessons.addLesson);
+  router.post('/build/lesson', lessons.addLesson);
   router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
   router.put('/build/lesson/header', lessons.updateLessonHeader);
   router.delete('/build/lesson/:lessonId', lessons.removeLesson);
@@ -99,7 +99,7 @@ module.exports.initialize = function(app, router) {
   router.get('/build/wordpair/:wordpairId', words.getWordPairDetail);
   router.get('/build/wordpair/media/:wordpairId', words.getWordDetailMedia);
 
-  router.post('/build/exercise/:lessonId', exercises.addExercise);
+  router.post('/build/exercise/:lessonId', exercises.addExercises);
   router.put('/build/exercise/:lessonId', exercises.updateExercise);
   router.put('/build/exercises/:lessonId', exercises.updateExercises);
   router.delete('/build/exercise/:lessonId/:exerciseId', exercises.removeExercise);

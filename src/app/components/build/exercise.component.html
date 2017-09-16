@@ -417,9 +417,15 @@
     <div class="col-xs-12">
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
-        (click)="onSaveNewWord(exerciseForm.value)"
+        (click)="onAddNewWord(exerciseForm.value)"
         *ngIf="!currentExercise && exerciseForm.valid">
         {{text["Addword"]}}
+      </div>
+      <div class="btn btn-success btn-lg"
+        [attr.disabled] = "isSaving ? '' : null"
+        (click)="onAddNewConjugations(exerciseForm.value)"
+        *ngIf="!currentExercise && exerciseForm.valid && hasConjugations">
+        {{text["AddConjugations"]}}
       </div>
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
