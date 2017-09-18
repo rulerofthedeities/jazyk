@@ -384,6 +384,22 @@ export class LearnService {
     return score[sourceLength + 1][targetLength + 1];
   }
 
+  /* Filter prefix from word */
+  filterPrefix(word: string): string {
+    // Remove prefix from word
+    let filteredWord = word;
+    if (filteredWord) {
+      const matches = filteredWord.match(/\[(.*?)\]/);
+      if (matches && matches.length > 0) {
+        filteredWord = filteredWord.replace(matches[0], '');
+      }
+      if (filteredWord) {
+        filteredWord = filteredWord.trim();
+      }
+    }
+    return filteredWord;
+  }
+
   /*** Config ***/
 
   fetchLanConfig(lanCode: string) {

@@ -188,7 +188,6 @@ export abstract class Step {
         // Get prefix from word, pass on to answer field
         const word = this.currentData.exercise.foreign.word;
         this.prefix = this.getPrefix(word);
-        console.log('PREFIX', this.prefix);
       }
     this.isQuestionReady = true;
     this.startDate = new Date();
@@ -351,11 +350,7 @@ export abstract class Step {
 
   private filter(word: string): string {
     let filteredAnswer = word.toLowerCase();
-    const matches = filteredAnswer.match(/\[(.*?)\]/);
-    if (matches && matches.length > 0) {
-      filteredAnswer = filteredAnswer.replace(matches[0], '');
-    }
-    filteredAnswer = filteredAnswer.trim();
+    filteredAnswer = this.learnService.filterPrefix(filteredAnswer);
     filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
     filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:
     return filteredAnswer;
