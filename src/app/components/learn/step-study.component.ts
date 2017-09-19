@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseTpe, Direction, ExerciseResult} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseStep, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
@@ -21,7 +21,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
-  @Input() options: ExerciseTpe;
+  @Input() options: ExerciseStep;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();

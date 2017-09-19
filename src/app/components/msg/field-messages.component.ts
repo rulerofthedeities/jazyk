@@ -7,13 +7,7 @@ import {ValidationService} from '../../services/validation.service';
   template: `
     <div class="text-danger" *ngIf="errorMessage !== null">
       {{errorMessage}}
-    </div>`,
-  styles: [`
-    :host {
-      display:block;
-      min-height: 42px;
-    }
-  `]
+    </div>`
 })
 export class FieldMessagesComponent {
   @Input() control: FormControl;

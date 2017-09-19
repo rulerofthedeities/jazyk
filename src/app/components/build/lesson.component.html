@@ -24,7 +24,7 @@
   <km-build-lesson-tabs
     [text]="text"
     [tab]="tab"
-    [isIntro]="lesson?.exerciseTpes?.intro?.active"
+    [isIntro]="lesson?.exerciseSteps?.intro?.active"
     (selected)="onTabSelected($event)">
   </km-build-lesson-tabs>
 
@@ -40,20 +40,30 @@
     </km-exercise-list>
 
     <div class="footer">
-      <div *ngIf="!isNewWord; else addWord">
-        <div class="btn btn-success btn-lg"(click)="onNewWord()">
+      <div *ngIf="!isNewExercise; else addExercise">
+        <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
           <span class="fa fa-file"></span> {{text["Newword"]}}
+        </div>
+        <div class="btn btn-success btn-lg" (click)="onNewSentence()">
+          <span class="fa fa-file-text-o"></span> {{text["NewSentence"]}}
         </div>
       </div>
     </div>
 
-    <ng-template #addWord>
+    <ng-template #addExercise>
       <km-build-exercise
+        *ngIf="tpe===0"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
-        (addedExercises)="onExercisesAdded($event)">
+        (addedExercises)="onExercisesAdded($event)"
+        (cancelNew)="onCancelNew()">
       </km-build-exercise>
+      <km-build-sentence *ngIf="tpe===1"
+        [text]="text"
+        [languagePair]="lesson?.languagePair"
+        (cancelNew)="onCancelNew()">
+      </km-build-sentence>
     </ng-template>
   </div>
 

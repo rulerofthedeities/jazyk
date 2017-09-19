@@ -29,18 +29,18 @@ var exerciseSchema = new Schema({
   difficulty: { type: Number, default: 0 }
 })
 
-var ExerciseTpeSchema = new Schema({
+var ExerciseStepSchema = new Schema({
   active: Boolean,
   bidirectional: Boolean,
   ordered: Boolean
 }, {_id: false})
 
-var ExerciseTpesSchema = new Schema({
-  intro: ExerciseTpeSchema,
-  study: ExerciseTpeSchema,
-  practise: ExerciseTpeSchema,
-  test: ExerciseTpeSchema,
-  exam: ExerciseTpeSchema
+var ExerciseStepsSchema = new Schema({
+  intro: ExerciseStepSchema,
+  study: ExerciseStepSchema,
+  practise: ExerciseStepSchema,
+  test: ExerciseStepSchema,
+  exam: ExerciseStepSchema
 }, {_id: false})
 
 var lessonSchema = new Schema({
@@ -49,7 +49,7 @@ var lessonSchema = new Schema({
   languagePair: { type: lanPairSchema, required: true },
   name: String,
   chapterName: String,
-  exerciseTpes: ExerciseTpesSchema,
+  exerciseSteps: ExerciseStepsSchema,
   exercises: [exerciseSchema],
   intro: String,
   difficulty: Number,

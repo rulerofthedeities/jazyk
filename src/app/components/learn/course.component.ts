@@ -220,8 +220,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private setLessonSteps() {
     const steps = [];
     this.possibleSteps.forEach((step, i) => {
-      if (step === 'overview' || (this.lesson.exerciseTpes[step] && this.lesson.exerciseTpes[step].active)) {
-        steps.push(step);
+      if (this.lesson.exerciseSteps) {
+        if (step === 'overview' || (this.lesson.exerciseSteps[step] && this.lesson.exerciseSteps[step].active)) {
+          steps.push(step);
+        }
       }
     });
     this.currentStep = 0;

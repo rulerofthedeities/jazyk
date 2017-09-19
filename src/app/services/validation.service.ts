@@ -1,4 +1,4 @@
-import {FormControl, FormGroup, AbstractControl} from '@angular/forms';
+import {FormControl, FormGroup, FormArray, AbstractControl} from '@angular/forms';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
@@ -16,24 +16,13 @@ export class ValidationService {
       'invalidPassword': invalidPassword,
       'invalidUserName': text['invalidUserName'],
       'usernameTaken': text['usernameTaken'],
-      'emailTaken': text['emailTaken']
+      'emailTaken': text['emailTaken'],
+      'noSentenceOptions': text['noSentenceOptions']
       };
 
     return config[validatorName];
   }
-
-/*
-  static equalPasswordsValidator(group: FormGroup): {[key: string]: any} {
-    if (group.controls['password'].value === group.controls['confirmPassword'].value) {
-      return null;
-    } else {
-      return {'mismatchingPasswords': true};
-    }
-  }
-
-*/
-
-
+  
   static userNameValidator(control: FormControl): {[key: string]: any} {
     if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
       return null;
@@ -87,6 +76,23 @@ export class ValidationService {
       })
       .catch(error => Observable.throw(error.json()));
     };
+  }
+
+  static checkSentenceOptions(group: FormGroup): {[key: string]: any} {
+    const options = <FormArray>group.controls['options'];
+    if (options.controls.length > 0) {
+      let value = '';
+      options.controls.forEach(option => {
+        value += option.value.trim();
+      });
+      if (value) {
+        return null;
+      } else {
+        return {'noSentenceOptions': true};
+      }
+    } else {
+      return {'noSentenceOptions': true};
+    }
   }
 }
 

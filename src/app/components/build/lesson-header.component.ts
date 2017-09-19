@@ -103,25 +103,25 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.courseId = this.lesson.courseId;
     this.languagePair = this.lesson.languagePair;
     this.bidirectional = [
-      this.lesson.exerciseTpes.intro.bidirectional,
-      this.lesson.exerciseTpes.study.bidirectional,
-      this.lesson.exerciseTpes.practise.bidirectional,
-      this.lesson.exerciseTpes.test.bidirectional,
-      this.lesson.exerciseTpes.exam.bidirectional
+      this.lesson.exerciseSteps.intro.bidirectional,
+      this.lesson.exerciseSteps.study.bidirectional,
+      this.lesson.exerciseSteps.practise.bidirectional,
+      this.lesson.exerciseSteps.test.bidirectional,
+      this.lesson.exerciseSteps.exam.bidirectional
     ];
     this.ordered = [
-      this.lesson.exerciseTpes.intro.ordered,
-      this.lesson.exerciseTpes.study.ordered,
-      this.lesson.exerciseTpes.practise.ordered,
-      this.lesson.exerciseTpes.test.ordered,
-      this.lesson.exerciseTpes.exam.ordered
+      this.lesson.exerciseSteps.intro.ordered,
+      this.lesson.exerciseSteps.study.ordered,
+      this.lesson.exerciseSteps.practise.ordered,
+      this.lesson.exerciseSteps.test.ordered,
+      this.lesson.exerciseSteps.exam.ordered
     ];
     this.active = [
-      this.lesson.exerciseTpes.intro.active,
-      this.lesson.exerciseTpes.study.active,
-      this.lesson.exerciseTpes.practise.active,
-      this.lesson.exerciseTpes.test.active,
-      this.lesson.exerciseTpes.exam.active
+      this.lesson.exerciseSteps.intro.active,
+      this.lesson.exerciseSteps.study.active,
+      this.lesson.exerciseSteps.practise.active,
+      this.lesson.exerciseSteps.test.active,
+      this.lesson.exerciseSteps.exam.active
       ];
     this.buildForm();
   }
@@ -134,7 +134,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       languagePair: this.languagePair,
       name: '',
       chapterName: '',
-      exerciseTpes: {
+      exerciseSteps: {
         intro: {active: false, bidirectional: false, ordered: false},
         study: {active: true, bidirectional: false, ordered: false},
         practise: {active: true, bidirectional: true, ordered: false},
@@ -149,13 +149,13 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
-    const exerciseTpeControls: FormControl[] = [];
+    const exerciseStepControls: FormControl[] = [];
     for (let i = 0; i < 5; i++) {
-      exerciseTpeControls.push(new FormControl(this.active[i]));
+      exerciseStepControls.push(new FormControl(this.active[i]));
     }
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name],
-      exerciseTpes: new FormArray(exerciseTpeControls)
+      exerciseSteps: new FormArray(exerciseStepControls)
     });
     this.isFormReady = true;
   }
@@ -164,12 +164,12 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     const chapterName = this.autocomplete.currentItem ? this.autocomplete.currentItem : '';
     this.lesson.chapterName = chapterName;
     this.lesson.name = formValues.name;
-    this.lesson.exerciseTpes = {
-      intro: {active: formValues.exerciseTpes[0], bidirectional: this.bidirectional[0], ordered: this.ordered[0]},
-      study: {active: formValues.exerciseTpes[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
-      practise: {active: formValues.exerciseTpes[2], bidirectional: this.bidirectional[2], ordered: this.ordered[2]},
-      test: {active: formValues.exerciseTpes[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]},
-      exam: {active: formValues.exerciseTpes[4], bidirectional: this.bidirectional[4], ordered: this.ordered[4]}
+    this.lesson.exerciseSteps = {
+      intro: {active: formValues.exerciseSteps[0], bidirectional: this.bidirectional[0], ordered: this.ordered[0]},
+      study: {active: formValues.exerciseSteps[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
+      practise: {active: formValues.exerciseSteps[2], bidirectional: this.bidirectional[2], ordered: this.ordered[2]},
+      test: {active: formValues.exerciseSteps[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]},
+      exam: {active: formValues.exerciseSteps[4], bidirectional: this.bidirectional[4], ordered: this.ordered[4]}
     };
   }
 

@@ -47,6 +47,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   @Output() addedExercises = new EventEmitter<Exercise[]>();
   @Output() updatedExercise = new EventEmitter<Exercise>();
   @Output() cancelEdit = new EventEmitter<boolean>();
+  @Output() cancelNew = new EventEmitter<boolean>();
   private componentActive = true;
   private isSelected = false;
   private selected: WordPairDetail;
@@ -159,6 +160,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   onCancelEdit() {
     this.cancelEdit.emit(true);
+  }
+
+  onCancelNewWord() {
+    this.cancelNew.emit(true);
   }
 
   onCloseDropdown() {
@@ -485,11 +490,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private buildForm(exercise: Exercise) {
     if (!exercise) {
+      // New exercise
       this.exerciseForm = this.formBuilder.group({
         localWord: ['', [Validators.required]],
         foreignWord: ['', [Validators.required]]
       });
     } else {
+      // Edit exercise
       this.exerciseForm = this.formBuilder.group({
         localWord: [exercise.local.word, [Validators.required]],
         foreignWord: [exercise.foreign.word, [Validators.required]],

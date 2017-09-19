@@ -9,6 +9,8 @@ import {Filter, WordPairDetail} from '../../models/word.model';
 import {Exercise} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
+export enum ExerciseType {Word, Sentence};
+
 @Component({
   selector: 'km-build-lesson',
   templateUrl: 'lesson.component.html',
@@ -22,13 +24,14 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   course: Course;
   chapters: string[];
   lesson: Lesson;
-  isNewWord = false;
+  isNewExercise = false;
   isEditMode = false;
   isBidirectional = false;
   text: Object = {};
   tab = 'words';
   isCourseAccess = false;
   infoMsg = '';
+  tpe: ExerciseType;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,7 +55,17 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   onNewWord() {
-    this.isNewWord = true;
+    this.isNewExercise = true;
+    this.tpe = ExerciseType.Word;
+  }
+
+  onCancelNew() {
+    this.isNewExercise = false;
+  }
+
+  onNewSentence() {
+    this.isNewExercise = true;
+    this.tpe = ExerciseType.Sentence;
   }
 
   onEditLesson() {
@@ -75,7 +88,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   onExercisesAdded(exercises: Exercise[]) {
     this.lesson.exercises = this.lesson.exercises.concat(exercises);
-    this.isNewWord = false;
+    this.isNewExercise = false;
   }
 
   onExerciseRemoved(toRemove: number) {
@@ -158,12 +171,12 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   private setBidirectional() {
-    const exerciseTpes = this.lesson.exerciseTpes;
-    if (exerciseTpes) {
-      if (exerciseTpes.study.bidirectional ||
-          exerciseTpes.practise.bidirectional ||
-          exerciseTpes.test.bidirectional ||
-          exerciseTpes.exam.bidirectional) {
+    const exerciseSteps = this.lesson.exerciseSteps;
+    if (exerciseSteps) {
+      if (exerciseSteps.study.bidirectional ||
+          exerciseSteps.practise.bidirectional ||
+          exerciseSteps.test.bidirectional ||
+          exerciseSteps.exam.bidirectional) {
         this.isBidirectional = true;
       }
     }

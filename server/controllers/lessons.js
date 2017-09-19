@@ -62,7 +62,7 @@ module.exports = {
       {_id: lessonId},
       {$set: {
         name: lesson.name,
-        exerciseTpes: lesson.exerciseTpes,
+        exerciseSteps: lesson.exerciseSteps,
         chapterName : lesson.chapterName
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating lesson header', function(){

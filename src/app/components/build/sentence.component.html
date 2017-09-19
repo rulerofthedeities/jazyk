@@ -1,0 +1,80 @@
+<form *ngIf="isFormReady"
+  [formGroup]="sentenceForm"
+  class="form-horizontal">
+
+  <!-- SENTENCE -->
+  <div class="form-group">
+    <label 
+      for="sentence" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="sentence"
+        autocomplete="off"
+        placeholder="{{text['EnterSentence']}}"
+        required
+        formControlName="sentence">
+
+      <km-field-messages 
+        [control]="sentenceForm.controls.sentence"
+        [label]="'TheSentence'"
+        [text]="text"
+        [touchRequired]="true">
+      </km-field-messages>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div *ngFor="let control of sentenceForm.controls['options'].controls; let i = index">
+    <div class="input-group">
+      <div class="col-xs-1 col-xs-offset-1">
+        <label for="option0">{{text['Options']}}:</label>
+      </div>
+      <div class="col-xs-10">
+        <input 
+          class="form-control input-lg" 
+          id="option{{i}}"
+          autocomplete="off"
+          placeholder="{{text['Option']}} #{{i + 1}}"
+          [attr.focus]="i===2"
+          [formControl]="control"
+          (keyup.enter)="onAddOption()">
+      </div>
+      <span class="input-group-addon">
+        <span class="fa fa-times" (click)="onRemoveOption(i)"></span>
+      </span>
+    </div>
+  </div>
+  <div class="col-xs-11 col-xs-offset-2">
+    <km-field-messages 
+      [control]="sentenceForm"
+      [text]="text"
+      [touchRequired]="true">
+    </km-field-messages>
+    <button type="button" class="btn btn-success btn-option"
+      (click)="onAddOption()">
+      <span class="fa fa-plus"></span> 
+      {{text["AddOption"]}}
+    </button>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="form-group buttons">
+    <div class="col-xs-12">
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled]="!sentenceForm.valid"
+        (click)="onAddNewSentence(sentenceForm)"
+        *ngIf="!currentExercise">
+        {{text["AddSentence"]}}
+      </button>
+      <button type="button" class="btn btn-warning btn-lg"
+        (click)="onCancelNewSentence()"
+        *ngIf="!currentExercise">
+        {{text["cancel"]}}
+      </button>
+    </div>
+  </div>
+</form>

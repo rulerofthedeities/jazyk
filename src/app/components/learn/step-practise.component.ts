@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseTpe, Direction,
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseStep, Direction,
         ExerciseResult, Choice, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
@@ -23,7 +23,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
   @Input() lessonId: string;
   @Input() learnedLevel: number;
-  @Input() options: ExerciseTpe;
+  @Input() options: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() lessonCompleted = new EventEmitter();
   @Output() stepBack = new EventEmitter();

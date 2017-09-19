@@ -23,10 +23,12 @@ import {BuildLessonIntroComponent} from './components/build/lesson-intro.compone
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
+import {BuildSentenceComponent} from './components/build/sentence.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
+import {FieldMessagesComponent} from './components/msg/field-messages.component';
 
 
 @NgModule({
@@ -56,10 +58,12 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildLessonIntroComponent,
     BuildExerciseComponent,
     BuildExerciseListComponent,
+    BuildSentenceComponent,
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,
-    AudioListComponent
+    AudioListComponent,
+    FieldMessagesComponent
   ]
 })
 export class BuildModule {}

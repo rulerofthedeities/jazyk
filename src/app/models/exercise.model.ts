@@ -21,18 +21,18 @@ export interface Exercise {
   difficulty?: number; // 0-100
 }
 
-export interface ExerciseTpe {
+export interface ExerciseStep {
   active: boolean;
   bidirectional: boolean;
   ordered: boolean;
 }
 
-export interface ExerciseTpes {
-  intro: ExerciseTpe;
-  study: ExerciseTpe;
-  practise: ExerciseTpe;
-  test: ExerciseTpe;
-  exam: ExerciseTpe;
+export interface ExerciseSteps {
+  intro: ExerciseStep;
+  study: ExerciseStep;
+  practise: ExerciseStep;
+  test: ExerciseStep;
+  exam: ExerciseStep;
 }
 
 export interface ExerciseResult {
@@ -52,7 +52,7 @@ export interface ExerciseResult {
 }
 
 export enum Direction {LocalToForeign, ForeignToLocal};
-export enum QuestionType {Choices, Word};
+export enum QuestionType {Choices, Word, Sentence};
 
 export interface ExerciseExtraData {
   wordForeign?: string;
