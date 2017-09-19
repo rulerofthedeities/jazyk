@@ -1,3 +1,7 @@
+export enum Direction {LocalToForeign, ForeignToLocal};
+export enum ExerciseType {Word, Sentence};
+export enum QuestionType {Choices, Word, Sentence};
+
 interface ExerciseWord {
   word: string;
   annotations?: string;
@@ -18,6 +22,8 @@ export interface Exercise {
   aspect?: string;
   image?: string;
   audio?: string;
+  options?: string[];
+  tpe?: ExerciseType;
   difficulty?: number; // 0-100
 }
 
@@ -50,9 +56,6 @@ export interface ExerciseResult {
   percentOverdue?: number;
   streak: string;
 }
-
-export enum Direction {LocalToForeign, ForeignToLocal};
-export enum QuestionType {Choices, Word, Sentence};
 
 export interface ExerciseExtraData {
   wordForeign?: string;

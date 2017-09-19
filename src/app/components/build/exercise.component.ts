@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise} from '../../models/exercise.model';
+import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -299,7 +299,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private buildNewExercise(formValues: any, options: NewExerciseOptions) {
     const exercise: Exercise = {
       local: {word: formValues.localWord},
-      foreign: {word: formValues.foreignWord}
+      foreign: {word: formValues.foreignWord},
+      tpe: ExerciseType.Word
     };
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];

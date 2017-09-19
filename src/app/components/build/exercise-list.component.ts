@@ -144,6 +144,19 @@ export class BuildExerciseListComponent implements OnDestroy {
     return alt;
   }
 
+  getSentenceOptions(exercise: Exercise): string {
+    let options = '';
+    if (exercise.options) {
+      exercise.options.forEach( (option, i) => {
+        if (i > 0) {
+          options += '<br>';
+        }
+        options += option;
+      });
+    }
+    return options;
+  }
+
   private removeCurrentExercise() {
     this.isRemoving = true;
     this.buildService

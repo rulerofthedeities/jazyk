@@ -17,12 +17,13 @@ export class ValidationService {
       'invalidUserName': text['invalidUserName'],
       'usernameTaken': text['usernameTaken'],
       'emailTaken': text['emailTaken'],
-      'noSentenceOptions': text['noSentenceOptions']
+      'noSentenceOptions': text['noSentenceOptions'],
+      'invalidSentence': text['invalidSentence']
       };
 
     return config[validatorName];
   }
-  
+
   static userNameValidator(control: FormControl): {[key: string]: any} {
     if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
       return null;
@@ -78,12 +79,22 @@ export class ValidationService {
     };
   }
 
+  static checkSentence(control: FormControl): {[key: string]: any} {
+    if (control.value && control.value.match(/\[(.{1,}?)\]/)) {
+      return null;
+    } else {
+      return {'invalidSentence': true};
+    }
+  }
+
   static checkSentenceOptions(group: FormGroup): {[key: string]: any} {
     const options = <FormArray>group.controls['options'];
     if (options.controls.length > 0) {
       let value = '';
       options.controls.forEach(option => {
-        value += option.value.trim();
+        if (option.value) {
+          value += option.value.trim();
+        }
       });
       if (value) {
         return null;

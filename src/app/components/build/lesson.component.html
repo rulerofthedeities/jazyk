@@ -60,8 +60,9 @@
         (cancelNew)="onCancelNew()">
       </km-build-exercise>
       <km-build-sentence *ngIf="tpe===1"
-        [text]="text"
         [languagePair]="lesson?.languagePair"
+        [lessonId]="lesson?._id"
+        [text]="text"
         (cancelNew)="onCancelNew()">
       </km-build-sentence>
     </ng-template>

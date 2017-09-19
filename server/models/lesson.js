@@ -26,6 +26,8 @@ var exerciseSchema = new Schema({
   aspect: String,
   image: String,
   audio: String,
+  options: [String],
+  tpe: Number,
   difficulty: { type: Number, default: 0 }
 })
 

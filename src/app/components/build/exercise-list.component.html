@@ -30,6 +30,11 @@
         </div>
         <div class="items">
           {{i + 1}}. 
+          <span class="item active" [ngSwitch]="exercise.tpe">
+            <span class="fa fa-font" *ngSwitchDefault></span>
+            <span class="fa fa-file-text-o" *ngSwitchCase="1"></span>
+            <span class="fa fa-comments" *ngSwitchCase="2"></span>
+          </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
           </span>
@@ -37,25 +42,44 @@
             <span class="fa fa-camera"></span>
           </span>
         </div>
-        <div class="col-xs-4">
-          <div class="words">
-            <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-              <strong>{{exercise.foreign?.word}}</strong>
-            </span> / 
-            <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-              {{exercise.local?.word}}
+        <!-- WORD -->
+        <div *ngIf="exercise.tpe < 1">
+          <div class="col-xs-4">
+            <div class="words">
+              <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                <strong>{{exercise.foreign?.word}}</strong>
+              </span> / 
+              <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                {{exercise.local?.word}}
+              </span>
+              <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 annotations">
+            {{getInfo(exercise)}}
+            <span>
+              <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
             </span>
-            <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
+          </div>
+          <div class="col-xs-2 annotations">
+            <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
           </div>
         </div>
-        <div class="col-xs-2 annotations">
-          {{getInfo(exercise)}}
-          <span>
-            <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
-          </span>
-        </div>
-        <div class="col-xs-2 annotations">
-          <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
+        <!-- WORD -->
+        <div *ngIf="exercise.tpe === 1">
+          <div class="col-xs-6">
+            <div class="words">
+              <span (dblclick)="onEditSentence(exercise._id, 'foreignWord')">
+                <strong>{{exercise.foreign?.word}}</strong>
+              </span> / 
+              <span (dblclick)="onEditSentence(exercise._id, 'localWord')">
+                {{exercise.local?.word}}
+              </span>
+            </div>
+          </div>
+          <div class="col-xs-2 annotations">
+            <div [innerHTML]="getSentenceOptions(exercise)"></div>
+          </div>
         </div>
       </li>
       <km-build-exercise *ngIf="exercise._id===editingId" class="edit"

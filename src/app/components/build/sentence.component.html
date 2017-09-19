@@ -2,7 +2,7 @@
   [formGroup]="sentenceForm"
   class="form-horizontal">
 
-  <!-- SENTENCE -->
+  <!-- FOREIGN SENTENCE-->
   <div class="form-group">
     <label 
       for="sentence" 
@@ -14,6 +14,7 @@
         class="form-control input-lg" 
         id="sentence"
         autocomplete="off"
+        spellcheck="false"
         placeholder="{{text['EnterSentence']}}"
         required
         formControlName="sentence">
@@ -31,13 +32,14 @@
   <div *ngFor="let control of sentenceForm.controls['options'].controls; let i = index">
     <div class="input-group">
       <div class="col-xs-1 col-xs-offset-1">
-        <label for="option0">{{text['Options']}}:</label>
+        <label for="option0" *ngIf="i===0">{{text['Options']}}:</label>
       </div>
       <div class="col-xs-10">
         <input 
           class="form-control input-lg" 
           id="option{{i}}"
           autocomplete="off"
+          spellcheck="false"
           placeholder="{{text['Option']}} #{{i + 1}}"
           [attr.focus]="i===2"
           [formControl]="control"
@@ -59,6 +61,24 @@
       <span class="fa fa-plus"></span> 
       {{text["AddOption"]}}
     </button>
+  </div>
+
+  <!-- LOCAL SENTENCE-->
+  <div class="form-group">
+    <label 
+      for="sentenceLocal" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{languagePair.from}}.png" class="flag">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="sentenceLocal"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="{{text['EnterSentenceLocal']}}"
+        formControlName="sentenceLocal">
+    </div>
   </div>
 
   <!-- BUTTONS -->
