@@ -15,7 +15,7 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <km-question
+          <km-question *ngIf="!isQuestionType(2)"
             [currentData]="currentData"
             [lanPair]="lanPair"
             [text]="text"
@@ -38,6 +38,11 @@
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
             [data]="currentData?.data">
           </km-answer-field>
+          <km-sentence *ngIf="isQuestionType(2)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [msg]="text['Expectedanswer']">
+          </km-sentence>
         </div>
         <!-- NO MORE EXERCISES -->
         <div *ngIf="noMoreExercises">

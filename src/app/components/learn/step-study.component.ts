@@ -225,7 +225,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timeDelay() {
     if (this.settings.delay > 0 && !this.showLocal) {
       if (this.subscription.length > 0) {
-        this.subscription.forEach( sub => sub.unsubscribe());
+        this.subscription.forEach(sub => sub.unsubscribe());
       }
       // Timer for the local word display
       const wordTimer = TimerObservable.create(this.settings.delay * 1000);

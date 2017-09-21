@@ -140,18 +140,23 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
-  protected determineQuestionType(result: ExerciseResult, learnLevel: number): QuestionType {
+  protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
     // Determine if multiple choice or word
     let qTpe = QuestionType.Choices;
-    if (result) {
-      // 3 -> 5: random
-      if (learnLevel > 2 && learnLevel < 6) {
-        qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+    const tpe = exercise.exercise.tpe || 0;
+    if (tpe === ExerciseType.Word) {
+      if (exercise.result) {
+        // 3 -> 5: random
+        if (learnLevel > 2 && learnLevel < 6) {
+          qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+        }
+        // 6+ : always word
+        if (learnLevel > 5) {
+          qTpe = QuestionType.Word;
+        }
       }
-      // 6+ : always word
-      if (learnLevel > 5) {
-        qTpe = QuestionType.Word;
-      }
+    } else {
+      qTpe = QuestionType.Sentence;
     }
     return qTpe;
   }

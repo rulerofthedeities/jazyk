@@ -180,7 +180,7 @@ export abstract class Step {
       this.currentData = this.exerciseData[this.current];
       const learnLevel = this.getCurrentLearnLevel(this.currentData);
       this.levelUpdated.next(learnLevel);
-      this.currentData.data.questionType = this.determineQuestionType(this.currentData.result, learnLevel);
+      this.currentData.data.questionType = this.determineQuestionType(this.currentData, learnLevel);
       if (this.currentData.data.questionType === QuestionType.Choices) {
         this.setChoices();
       }
@@ -478,7 +478,7 @@ export abstract class Step {
 
   }
 
-  protected determineQuestionType(result: ExerciseResult, learnLevel: number): QuestionType {
+  protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
     return 0;
   }
 
