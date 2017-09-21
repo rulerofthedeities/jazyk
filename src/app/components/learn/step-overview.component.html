@@ -21,6 +21,12 @@
 <div *ngFor="let exercise of exerciseData" class="row item">
   <div class="col-xs-1">
     <span class="icon">
+      <span class="fa" [ngClass]="{
+        'fa-font': exercise.exercise.tpe === 0,
+        'fa-file-text-o': exercise.exercise.tpe === 1}">
+      </span>
+    </span>
+    <span class="icon">
       <span class="fa fa-bookmark" *ngIf="exercise.result"></span>
     </span>
     <span class="icon">

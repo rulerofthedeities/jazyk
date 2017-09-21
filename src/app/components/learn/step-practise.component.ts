@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseStep, Direction,
-        ExerciseResult, Choice, QuestionType} from '../../models/exercise.model';
+        ExerciseResult, ExerciseType, Choice, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {AudioService} from '../../services/audio.service';
@@ -207,17 +207,15 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
-    // Select exercises that have not been learned yet (but have been studied)
+    // Select exercises that have not been learned yet (but have been studied if word)
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
-        if (exerciseResult) {
-          if (!exerciseResult.isLearned) {
-            // word is not learned yet; add to list of new questions
-            newExercises.push(exercise);
-            newResults.push(exerciseResult);
-            nrOfExercises = newExercises.length;
-          }
+        if ((exerciseResult && !exerciseResult.isLearned) || exercise.tpe !== ExerciseType.Word) {
+          // word is not learned yet; add to list of new questions
+          newExercises.push(exercise);
+          newResults.push(exerciseResult);
+          nrOfExercises = newExercises.length;
         } else {
           // word is not studied yet
           leftToStudy++;

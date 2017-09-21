@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseStep, Direction, ExerciseResult} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
@@ -50,6 +50,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.filterExercises();
     this.fetchLessonResults();
     this.isMute = this.settings.mute;
   }
@@ -150,6 +151,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         this.pointsEarned.next(points);
       }
     }
+  }
+
+  private filterExercises() {
+    // Only the exercises of type word are shown in study
+    this.exercises = this.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
   }
 
   private fetchLessonResults() {

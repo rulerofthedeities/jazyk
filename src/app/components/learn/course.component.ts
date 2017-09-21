@@ -189,23 +189,36 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
+        this.countPerStep = {};
+        const lessonTotal = this.lesson.exercises.length;
+        // get study completed count
         if (results) {
-          this.countPerStep = {};
-          const lessonTotal = this.lesson.exercises.length;
           results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
           results.forEach(result => {
             this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
           });
-          // Fill in step count for the steps without a result
-          this.possibleSteps.forEach(step => {
-            if (!this.countPerStep[step]) {
-              this.countPerStep[step] = {nrDone: 0, nrRemaining: lessonTotal};
-            }
-          });
-          // Practise step must have study finished
-          const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-          this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
         }
+
+        console.log('RESULTS', results);
+        console.log('EXERCISES', this.lesson.exercises);
+
+        // Fill in step count for the steps without a result
+        this.possibleSteps.forEach(step => {
+          if (!this.countPerStep[step]) {
+            this.countPerStep[step] = {nrDone: 0, nrRemaining: lessonTotal};
+          }
+        });
+        // Remove lessoncount for studies if tpe === sentence
+        const sentences = this.lesson.exercises.filter(exercise => exercise.tpe > 0);
+        sentences.forEach(sentence => {
+          // If no result for this sentence, remove from study
+          if (!results.find(result => result.exerciseId === sentence._id)) {
+            this.countPerStep['study'].nrRemaining--;
+          }
+        });
+        // Practise step must have study finished or tpe != word
+        const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
+        this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
         if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
           this.setLessonSteps();
         } else {
