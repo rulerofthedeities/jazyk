@@ -6,15 +6,14 @@
 </div>
 <!-- Exercise list -->
 <div class="exercises" *ngIf="exercises?.length > 0">
-  <div class="list-group">
-    <ul 
-      *ngFor="let exercise of exercises; let i = index;"
-      class="list-unstyled list"
-      dnd-sortable-container
-      [sortableData]="exercises">
-      <li
-        class="list-group-item row"
+  <ul 
+    class="list-unstyled list list-group"
+    dnd-sortable-container
+    [sortableData]="exercises">
+    <li *ngFor="let exercise of exercises; let i = index;">
+      <div 
         [class.editing]="editingId === exercise._id"
+        class="list-group-item row"
         dnd-sortable
         [sortableIndex]="i"
         (onDropSuccess)="onResorted($event)">
@@ -65,14 +64,14 @@
             <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
           </div>
         </div>
-        <!-- WORD -->
+        <!-- SENTENCE -->
         <div *ngIf="exercise.tpe === 1">
           <div class="col-xs-6">
             <div class="words">
-              <span (dblclick)="onEditSentence(exercise._id, 'foreignWord')">
+              <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
                 <strong>{{exercise.foreign?.word}}</strong>
               </span> / 
-              <span (dblclick)="onEditSentence(exercise._id, 'localWord')">
+              <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                 {{exercise.local?.word}}
               </span>
             </div>
@@ -81,8 +80,8 @@
             <div [innerHTML]="getSentenceOptions(exercise)"></div>
           </div>
         </div>
-      </li>
-      <km-build-exercise *ngIf="exercise._id===editingId" class="edit"
+      </div>
+      <km-build-exercise *ngIf="exercise._id===editingId && exercise.tpe < 1" class="edit"
         [languagePair]="languagePair"
         [lessonId]="lessonId"
         [exercise]="exercise"
@@ -92,8 +91,16 @@
         (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
       </km-build-exercise>
-    </ul>
-  </div>
+      <km-build-sentence *ngIf="exercise._id===editingId && exercise.tpe === 1" class="edit"
+        [languagePair]="languagePair"
+        [lessonId]="lessonId"
+        [exercise]="exercise"
+        [text]="text"
+        (updatedExercise)="onUpdatedExercise($event)"
+        (cancelEdit)="onCancelEdit()">
+      </km-build-sentence>
+    </li>
+  </ul>
 </div>
 
 <km-modal-confirm #confirm

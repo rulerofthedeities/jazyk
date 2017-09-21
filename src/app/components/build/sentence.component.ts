@@ -10,7 +10,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-build-sentence',
   templateUrl: 'sentence.component.html',
-  styleUrls: ['sentence.component.css']
+  styleUrls: ['sentence.component.css', 'exercise-wrapper.css']
 })
 
 export class BuildSentenceComponent implements OnInit, OnDestroy {
@@ -18,7 +18,10 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
   @Input() private exercise: Exercise;
   @Input() text: Object;
   @Input() lessonId: string;
+  @Output() addedExercises = new EventEmitter<Exercise[]>();
+  @Output() updatedExercise = new EventEmitter<Exercise>();
   @Output() cancelNew = new EventEmitter<boolean>();
+  @Output() cancelEdit = new EventEmitter<boolean>();
   private componentActive = true;
   sentenceForm: FormGroup;
   currentExercise: Exercise;
@@ -38,11 +41,19 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
   }
 
   onAddNewSentence(form: any) {
-    console.log('formValues', form.value);
-    console.log('formValid', form.valid);
     if (form.valid) {
       this.buildNewExercise(form.value);
     }
+  }
+
+  onUpdateSentence(form: any) {
+    if (form.valid) {
+      this.buildExistingExercise(form.value);
+    }
+  }
+
+  onCancelEdit() {
+    this.cancelEdit.emit(true);
   }
 
   onCancelNewSentence() {
@@ -72,7 +83,6 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
       // New sentence
       const optionControls: FormControl[] = [];
       optionControls.push(new FormControl(''));
-
       this.sentenceForm = this.formBuilder.group({
         sentence: ['', [Validators.required, ValidationService.checkSentence]],
         sentenceLocal: [''],
@@ -83,8 +93,19 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
       });
     } else {
       // Edit sentence
+      const optionControls: FormControl[] = [];
+      exercise.options.forEach(option =>
+        optionControls.push(new FormControl(option))
+      );
+      this.sentenceForm = this.formBuilder.group({
+        sentence: [exercise.foreign.word, [Validators.required, ValidationService.checkSentence]],
+        sentenceLocal: [exercise.local.word],
+        options: new FormArray(optionControls)
+      },
+      {
+        validator: ValidationService.checkSentenceOptions
+      });
     }
-
     this.isFormReady = true;
   }
 
@@ -101,6 +122,16 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
     this.saveNewExercise(exercise);
   }
 
+  private buildExistingExercise(formValues: any) {
+    const options = formValues.options.filter(option => option);
+    const exercise: Exercise = this.currentExercise;
+    exercise.foreign.word = this.sentenceForm.value['sentence'];
+    exercise.local.word = this.sentenceForm.value['sentenceLocal'];
+    exercise.options = options;
+    console.log('updating', exercise);
+    this.saveUpdatedExercise(exercise);
+  }
+
   private saveNewExercise(exercise: Exercise) {
     const saveExercises: Exercise[] = [];
     saveExercises.push(exercise);
@@ -110,8 +141,24 @@ export class BuildSentenceComponent implements OnInit, OnDestroy {
     .subscribe(
       savedExercises => {
         console.log('saved exercises', savedExercises);
-        // this.addedExercises.emit(savedExercises);
+        this.addedExercises.emit(savedExercises);
         this.sentenceForm.reset();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private saveUpdatedExercise(exercise: Exercise) {
+    console.log('updating exercise ', exercise);
+    this.buildService
+    .updateExercise(exercise, this.lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      saved => {
+        console.log('updated exercise ', exercise);
+        this.updatedExercise.emit(exercise);
+        this.currentExercise = exercise;
+        this.exercise = exercise;
       },
       error => this.errorService.handleError(error)
     );

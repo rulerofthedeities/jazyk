@@ -97,16 +97,19 @@ module.exports = {
     const exerciseId = new mongoose.Types.ObjectId(exercise._id);
 
     console.log('updating exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
-
-    Lesson.findOneAndUpdate(
-      {_id: lessonId, 'exercises._id': exerciseId},
-      { $set: { 'exercises.$': exercise}},
-      function(err, result) {
-        response.handleError(err, res, 500, 'Error updating exercise', function(){
-          response.handleSuccess(res, null, 200, 'Updated exercise');
-        });
-      }
-    );
+    if (exercise) {
+      Lesson.findOneAndUpdate(
+        {_id: lessonId, 'exercises._id': exerciseId},
+        { $set: { 'exercises.$': exercise}},
+        function(err, result) {
+          response.handleError(err, res, 500, 'Error updating exercise', function(){
+            response.handleSuccess(res, null, 200, 'Updated exercise');
+          });
+        }
+      );
+    } else {
+      response.handleSuccess(res, null, 304, 'No exercise to update');
+    }
   },
   updateExercises: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);

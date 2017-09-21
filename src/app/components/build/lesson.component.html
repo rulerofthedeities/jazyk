@@ -42,7 +42,7 @@
     <div class="footer">
       <div *ngIf="!isNewExercise; else addExercise">
         <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
-          <span class="fa fa-file"></span> {{text["Newword"]}}
+          <span class="fa fa-font"></span> {{text["Newword"]}}
         </div>
         <div class="btn btn-success btn-lg" (click)="onNewSentence()">
           <span class="fa fa-file-text-o"></span> {{text["NewSentence"]}}
@@ -63,6 +63,7 @@
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
+        (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-sentence>
     </ng-template>

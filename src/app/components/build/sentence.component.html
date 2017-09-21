@@ -90,9 +90,20 @@
         *ngIf="!currentExercise">
         {{text["AddSentence"]}}
       </button>
+      <div class="btn btn-success btn-lg"
+        [attr.disabled] = "isSaving || !sentenceForm.valid ? '' : null"
+        (click)="onUpdateSentence(sentenceForm)"
+        *ngIf="currentExercise">
+        {{text["EditSentence"]}}
+      </div>
       <button type="button" class="btn btn-warning btn-lg"
         (click)="onCancelNewSentence()"
         *ngIf="!currentExercise">
+        {{text["cancel"]}}
+      </button>
+      <button type="button" class="btn btn-warning btn-lg"
+        (click)="onCancelEdit()"
+        *ngIf="currentExercise">
         {{text["cancel"]}}
       </button>
     </div>

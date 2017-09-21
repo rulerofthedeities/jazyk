@@ -34,7 +34,7 @@ interface NewExerciseOptions {
 @Component({
   selector: 'km-build-exercise',
   templateUrl: 'exercise.component.html',
-  styleUrls: ['exercise.component.css']
+  styleUrls: ['exercise.component.css', 'exercise-wrapper.css']
 })
 
 export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -136,26 +136,32 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.hasConjugations = this.checkConjugations(wordpairDetail);
   }
 
-  onAddNewWord(formValues: any) {
-    this.isSaving = true;
-    this.buildNewExercise(formValues, {hasConjugation: false, lastDoc: true});
-  }
-
-  onAddNewConjugations(formValues: any) {
-    const options: NewExerciseOptions = {
-      hasConjugation: true
-    };
-    this.isSaving = true;
-    for (let i = 0; i < 6; i++) {
-      options.conjugationNr = i;
-      options.lastDoc = i === 5;
-      this.buildNewExercise(formValues, options);
+  onAddNewWord(form: any) {
+    if (form.valid) {
+      this.isSaving = true;
+      this.buildNewExercise(form.value, {hasConjugation: false, lastDoc: true});
     }
   }
 
-  onUpdateWord(formValues: any) {
-    this.isSaving = true;
-    this.buildExistingExercise(formValues);
+  onAddNewConjugations(form: any) {
+    if (form.valid) {
+      const options: NewExerciseOptions = {
+        hasConjugation: true
+      };
+      this.isSaving = true;
+      for (let i = 0; i < 6; i++) {
+        options.conjugationNr = i;
+        options.lastDoc = i === 5;
+        this.buildNewExercise(form.value, options);
+      }
+    }
+  }
+
+  onUpdateWord(form: any) {
+    if (form.valid) {
+      this.isSaving = true;
+      this.buildExistingExercise(form.value);
+    }
   }
 
   onCancelEdit() {

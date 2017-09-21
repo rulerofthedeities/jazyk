@@ -48,7 +48,6 @@ export class BuildExerciseListComponent implements OnDestroy {
         this.exercises[i] = updatedExercise;
       }
     });
-
     this.editingId = null;
   }
 
@@ -181,13 +180,17 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   private saveResortedExercises() {
-    this.buildService
-    .updateExercises(this.exercises, this.lessonId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      () => {console.log('updated exercises'); },
-      error => this.errorService.handleError(error)
-    );
+    // Check if none is empty
+    const empty = this.exercises.filter(exercise => exercise === null);
+    if (empty.length === 0) {
+      this.buildService
+      .updateExercises(this.exercises, this.lessonId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        () => {console.log('updated exercises'); },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   ngOnDestroy() {

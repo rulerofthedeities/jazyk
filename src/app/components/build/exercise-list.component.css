@@ -30,6 +30,12 @@
   border-color: #428bca;
   margin-top: 6px;
 }
+li:first-child .row {
+  margin-top: 0;
+}
+li:last-child {
+  margin-bottom: 6px;
+}
 .sublines {
   font-size: 13px;
   line-height: 15px;
