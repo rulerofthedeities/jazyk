@@ -13,6 +13,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
         courseId,
         lessonId,
         exerciseId,
+        tpe: doc.tpe,
         step: 'study'
       };
       return {
@@ -52,6 +53,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       courseId,
       exerciseId,
       step: results.step,
+      tpe: doc.tpe,
       points: doc.points,
       learnLevel: doc.learnLevel,
       isLearned: doc.isLearned,

@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseResult, ExerciseType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
@@ -21,6 +21,7 @@ interface StepCount {
 
 interface ResultData {
   exerciseId: string;
+  tpe: number;
   done: boolean;
   points: number;
   learnLevel: number;
@@ -265,9 +266,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (data && data.length > 0) { // No data for study repeats
       data.forEach( (item, i) => {
         console.log('result', item);
-        streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data.isCorrect);
+        streak[item.exercise._id] = this.buildStreak(item.exercise.tpe, streak[item.exercise._id], item.result, item.data.isCorrect);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
+          tpe: item.exercise.tpe,
           done: item.data.isDone || false,
           points: item.data.points || 0,
           learnLevel: item.data.learnLevel || 0,
@@ -303,17 +305,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildStreak(streak: string, result: ExerciseResult, isCorrect: boolean): string {
+  private buildStreak(tpe: number, streak: string, result: ExerciseResult, isCorrect: boolean): string {
     let newStreak = '';
+
     if (result) {
       newStreak = streak || result.streak || '';
-      if (isCorrect) {
-        newStreak = newStreak + '1';
-      } else {
-        newStreak = newStreak + '0';
-      }
-      newStreak = newStreak.slice(0, this.maxStreak);
     }
+    if (isCorrect) {
+      newStreak = newStreak + '1';
+    } else {
+      newStreak = newStreak + '0';
+    }
+
+    newStreak = newStreak.slice(0, this.maxStreak);
     return newStreak;
   }
 

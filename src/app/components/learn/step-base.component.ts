@@ -3,7 +3,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult, Choice, QuestionType, Direction} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseResult, ExerciseType, Choice, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnAnswerFieldComponent} from './answer-field.component';
 import {LearnSentenceComponent} from './sentence.component';
 import {Subscription} from 'rxjs/Subscription';
@@ -480,7 +480,11 @@ export abstract class Step {
 
   private calculateChoicesLearnLevel(level: number, correct: boolean): number {
     if (correct) {
-      level += 3;
+      if (this.currentData.exercise.tpe === ExerciseType.Sentence) {
+        level += 6;
+      } else {
+        level += 3;
+      }
     } else {
       if (level > 0) {
         level -= 1;

@@ -7,6 +7,7 @@ var resultSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
   exerciseId: {type: Schema.Types.ObjectId, required: true},
   step: {type: String, required: true},
+  tpe: Number,
   points: Number,
   learnLevel: Number,
   isLearned: Boolean,
