@@ -41,7 +41,8 @@
           <km-sentence *ngIf="isQuestionType(2)"
             [lanPair]="lanPair"
             [data]="currentData"
-            [msg]="text['Expectedanswer']">
+            [msg]="text['Expectedanswer']"
+            (answered)="onAnsweredSentence($event)">
           </km-sentence>
         </div>
         <!-- NO MORE EXERCISES -->

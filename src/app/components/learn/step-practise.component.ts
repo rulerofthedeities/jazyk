@@ -89,9 +89,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         }
       break;
       case QuestionType.Word:
-         if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
-          this.addExercise(true);
+        if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
+          add = true;
         }
+      break;
+      case QuestionType.Word:
+        add = false;
       break;
     }
     return add;
@@ -212,11 +215,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
+    console.log('getting words for practise');
     // Select exercises that have not been learned yet (but have been studied if word)
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
-        if ((exerciseResult && !exerciseResult.isLearned) || exercise.tpe !== ExerciseType.Word) {
+        if ((exerciseResult && !exerciseResult.isLearned) || (!exerciseResult && exercise.tpe === ExerciseType.Sentence)) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);
           newResults.push(exerciseResult);

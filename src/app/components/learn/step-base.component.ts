@@ -5,6 +5,7 @@ import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, Choice, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnAnswerFieldComponent} from './answer-field.component';
+import {LearnSentenceComponent} from './sentence.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
@@ -26,6 +27,7 @@ export abstract class Step {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
+  @ViewChild(LearnSentenceComponent) sentenceComponent: LearnSentenceComponent;
   protected componentActive = true;
   protected choices: Choice[];
   protected nextWordTimer: Subscription;
@@ -111,13 +113,26 @@ export abstract class Step {
     }
   }
 
+  onAnsweredSentence(isCorrect: boolean) {
+    if (!this.isSelected) {
+      this.checkSentenceAnswer(isCorrect);
+    }
+  }
+
   onNextWord() {
-    if (this.currentData.data.questionType === QuestionType.Choices) {
-      if (this.isSelected) {
+    console.log('pressed next', this.currentData.data.questionType);
+    switch (this.currentData.data.questionType) {
+      case QuestionType.Choices:
+        if (this.isSelected) {
+          this.nextWord();
+        }
+      break;
+      case QuestionType.Word:
+        this.checkIfWordAnswer();
+      break;
+      case QuestionType.Sentence:
         this.nextWord();
-      }
-    } else {
-      this.checkIfWordAnswer();
+      break;
     }
   }
 
@@ -205,59 +220,12 @@ export abstract class Step {
     if (this.answerComponent) {
       this.answerComponent.clearData();
     }
+    if (this.sentenceComponent) {
+      this.sentenceComponent.clearData();
+    }
     if (this.nextWordTimer) {
       this.nextWordTimer.unsubscribe();
     }
-  }
-
-  protected checkChoicesAnswer(i: number) {
-    this.isSelected = true;
-    this.answered = i;
-    this.answer = null;
-    this.endDate = new Date();
-    const choice = this.currentChoices[i],
-          direction = this.currentData.data.direction,
-          nrOfQuestions = this.exerciseData.length,
-          word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word,
-          timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
-    let learnLevel = this.getCurrentLearnLevel(this.currentData),
-        points = 0;
-
-    this.currentData.data.isDone = true;
-    this.currentData.data.timeDelta = timeDelta;
-    if (choice === word) {
-      this.currentData.data.isCorrect = true;
-      this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
-      learnLevel = this.calculateChoicesLearnLevel(learnLevel, true);
-      this.soundLearnedLevel(learnLevel);
-      this.currentData.data.learnLevel = learnLevel;
-      points = 2 + this.currentChoices.length * 3;
-      this.currentData.data.points = points;
-      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
-      this.addRightCount(this.currentData.exercise._id);
-      this.score = this.score + points;
-      // this.timeNext(0.6);
-      if (this.doAddExercise(QuestionType.Choices, learnLevel)) {
-        this.addExercise(true);
-      }
-    } else {
-      this.currentData.data.isCorrect = false;
-      this.currentData.data.grade = 0;
-      learnLevel = this.calculateChoicesLearnLevel(learnLevel, false);
-      this.currentData.data.learnLevel = learnLevel;
-      this.currentData.data.points = 0;
-      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
-      this.addWrongCount(this.currentData.exercise._id);
-      // Show correct answer
-      this.currentChoices.forEach( (item, j) => {
-        if (item === word) {
-          this.answer = j;
-        }
-      });
-      this.addExercise(false);
-    }
-    this.levelUpdated.next(learnLevel);
-    this.pointsEarned.next(points);
   }
 
   protected checkWordAnswer(answer: string) {
@@ -342,6 +310,94 @@ export abstract class Step {
       this.levelUpdated.next(learnLevel);
       this.pointsEarned.next(points);
     }
+  }
+
+  protected checkChoicesAnswer(i: number) {
+    this.isSelected = true;
+    this.answered = i;
+    this.answer = null;
+    this.endDate = new Date();
+    const choice = this.currentChoices[i],
+          direction = this.currentData.data.direction,
+          nrOfQuestions = this.exerciseData.length,
+          word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word,
+          timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    let learnLevel = this.getCurrentLearnLevel(this.currentData),
+        points = 0;
+
+    this.currentData.data.isDone = true;
+    this.currentData.data.timeDelta = timeDelta;
+    if (choice === word) {
+      this.currentData.data.isCorrect = true;
+      this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, true);
+      this.soundLearnedLevel(learnLevel);
+      this.currentData.data.learnLevel = learnLevel;
+      points = 2 + this.currentChoices.length * 3;
+      this.currentData.data.points = points;
+      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+      this.addRightCount(this.currentData.exercise._id);
+      this.score = this.score + points;
+      // this.timeNext(0.6);
+      if (this.doAddExercise(QuestionType.Choices, learnLevel)) {
+        this.addExercise(true);
+      }
+    } else {
+      this.currentData.data.isCorrect = false;
+      this.currentData.data.grade = 0;
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, false);
+      this.currentData.data.learnLevel = learnLevel;
+      this.currentData.data.points = 0;
+      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+      this.addWrongCount(this.currentData.exercise._id);
+      // Show correct answer
+      this.currentChoices.forEach( (item, j) => {
+        if (item === word) {
+          this.answer = j;
+        }
+      });
+      this.addExercise(false);
+    }
+    this.levelUpdated.next(learnLevel);
+    this.pointsEarned.next(points);
+  }
+
+  protected checkSentenceAnswer(isCorrect: boolean) {
+    this.isSelected = true;
+    this.endDate = new Date();
+    const timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    let learnLevel = this.getCurrentLearnLevel(this.currentData),
+        points = 0;
+    this.currentData.data.isDone = true;
+    this.currentData.data.timeDelta = timeDelta;
+    if (isCorrect) {
+      this.currentData.data.isCorrect = true;
+      this.currentData.data.grade = this.calculateChoicesGrade(timeDelta);
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, true);
+      this.soundLearnedLevel(learnLevel);
+      this.currentData.data.learnLevel = learnLevel;
+      points = 2 + Math.min(20, this.currentData.exercise.options.length * 4);
+      this.currentData.data.points = points;
+      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+      this.addRightCount(this.currentData.exercise._id);
+      this.score = this.score + points;
+      console.log('sentence correct', points);
+      // this.timeNext(0.6);
+      if (this.doAddExercise(QuestionType.Sentence, learnLevel)) {
+        this.addExercise(true);
+      }
+    } else {
+      this.currentData.data.isCorrect = false;
+      this.currentData.data.grade = 0;
+      learnLevel = this.calculateChoicesLearnLevel(learnLevel, false);
+      this.currentData.data.learnLevel = learnLevel;
+      this.currentData.data.points = 0;
+      this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+      this.addWrongCount(this.currentData.exercise._id);
+      this.addExercise(false);
+    }
+    this.levelUpdated.next(learnLevel);
+    this.pointsEarned.next(points);
   }
 
   protected doAddExercise(q: QuestionType, learnLevel: number): boolean {

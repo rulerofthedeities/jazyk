@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {ExerciseData, Exercise} from '../../models/exercise.model';
 import {LearnService} from '../../services/learn.service';
 
@@ -12,6 +12,7 @@ export class LearnSentenceComponent implements OnInit {
   @Input() lanPair: string;
   @Input() msg: string;
   @Input() data: ExerciseData;
+  @Output() answered = new EventEmitter<boolean>();
   sentence: string[];
   translation: string;
   correctOption: string;
@@ -38,11 +39,18 @@ export class LearnSentenceComponent implements OnInit {
     } else {
       this.isCorrect = false;
     }
+    this.answered.emit(this.isCorrect);
+  }
+
+  clearData() {
+    this.isAnswered = false;
+    this.answer = null;
+    this.isCorrect = null;
   }
 
   private getSentenceData(exercise: Exercise) {
     // get options
-    this.options = exercise.options;
+    this.options = JSON.parse(JSON.stringify(exercise.options));
     this.correctOption = this.getCorrectOption(exercise.foreign.word);
     this.options.push(this.correctOption);
     this.options = this.learnService.shuffle(this.options);
@@ -56,12 +64,10 @@ export class LearnSentenceComponent implements OnInit {
 
   private getCorrectOption(sentence: string): string {
     let correctOption = 'invalid option';
-
     const matches = sentence.match(/\[(.*?)\]/);
     if (matches && matches.length > 1) {
       correctOption = matches[1];
     }
-
     return correctOption;
   }
 }
