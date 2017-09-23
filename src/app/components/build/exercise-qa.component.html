@@ -1,5 +1,5 @@
 <form *ngIf="isFormReady"
-  [formGroup]="qaForm"
+  [formGroup]="exerciseForm"
   class="form-horizontal">
 
   <!-- QUESTION-->
@@ -41,8 +41,8 @@
     <div class="col-xs-12">
       <div *ngIf="!currentExercise">
         <button type="button" class="btn btn-success btn-lg"
-          [disabled]="!qaForm.valid"
-          (click)="onAddNewExercise(qaForm)">
+          [disabled]="!exerciseForm.valid"
+          (click)="onAddNewExercise(exerciseForm)">
           {{text["AddQA"]}}
         </button>
         <button type="button" class="btn btn-warning btn-lg"
@@ -53,8 +53,8 @@
       </div>
       <div *ngIf="currentExercise">
         <button type="button" class="btn btn-success btn-lg"
-          [disabled] = "isSaving || !qaForm.valid"
-          (click)="onUpdateExercise(qaForm)">
+          [disabled] = "isSaving || !exerciseForm.valid"
+          (click)="onUpdateExercise(exerciseForm)">
           {{text["UpdateQA"]}}
         </button>
         <button type="button" class="btn btn-warning btn-lg"

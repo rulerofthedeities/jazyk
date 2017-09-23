@@ -1,38 +1,32 @@
-import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Input, Output, EventEmitter} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
-@Component({
-  selector: 'km-build-qa',
-  templateUrl: 'qa.component.html',
-  styleUrls: ['exercise-wrapper.css']
-})
-
-export class BuildQAComponent implements OnInit, OnDestroy {
+export abstract class ExerciseBase {
   @Input() languagePair: LanPair;
-  @Input() private exercise: Exercise;
+  @Input() protected exercise: Exercise;
   @Input() text: Object;
   @Input() lessonId: string;
   @Output() addedExercises = new EventEmitter<Exercise[]>();
   @Output() updatedExercise = new EventEmitter<Exercise>();
   @Output() cancelNew = new EventEmitter<boolean>();
   @Output() cancelEdit = new EventEmitter<boolean>();
-  private componentActive = true;
-  qaForm: FormGroup;
+  protected componentActive = true;
+  exerciseForm: FormGroup;
   currentExercise: Exercise;
   isFormReady = false;
 
   constructor(
-    private buildService: BuildService,
-    private errorService: ErrorService,
-    private formBuilder: FormBuilder
+    protected buildService: BuildService,
+    protected errorService: ErrorService,
+    protected formBuilder: FormBuilder
   ) {}
 
-  ngOnInit() {
+  init() {
     if (this.exercise) {
       this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
     }
@@ -59,45 +53,13 @@ export class BuildQAComponent implements OnInit, OnDestroy {
     this.cancelEdit.emit(true);
   }
 
-  private buildForm(exercise: Exercise) {
-    if (!exercise) {
-      // New QA
-      this.qaForm = this.formBuilder.group({
-        question: ['', [Validators.required]],
-        answer: ['']
-      });
-    } else {
-      // Edit QA
-      this.qaForm = this.formBuilder.group({
-        question: [exercise.foreign.hint, [Validators.required]],
-        answer: [exercise.foreign.word]
-      });
-    }
-    this.isFormReady = true;
-  }
+  protected buildForm(exercise: Exercise) {}
 
-  private buildNewExercise(formValues: any) {
-    const exercise: Exercise = {
-      foreign: {
-        hint: formValues.question,
-        word: formValues.answer},
-      local: {word: ''},
-      tpe: ExerciseType.QA,
-      difficulty: 0
-    };
-    console.log('exercise', exercise);
-    this.saveNewExercise(exercise);
-  }
+  protected buildNewExercise(formValues: any) {}
 
-  private buildExistingExercise(formValues: any) {
-    const exercise: Exercise = this.currentExercise;
-    exercise.foreign.hint = this.qaForm.value['question'];
-    exercise.foreign.word = this.qaForm.value['answer'];
-    console.log('updating', exercise);
-    this.saveUpdatedExercise(exercise);
-  }
+  protected buildExistingExercise(formValues: any) {}
 
-  private saveNewExercise(exercise: Exercise) {
+  protected saveNewExercise(exercise: Exercise) {
     const saveExercises: Exercise[] = [];
     saveExercises.push(exercise);
     this.buildService
@@ -107,13 +69,13 @@ export class BuildQAComponent implements OnInit, OnDestroy {
       savedExercises => {
         console.log('saved exercises', savedExercises);
         this.addedExercises.emit(savedExercises);
-        this.qaForm.reset();
+        this.exerciseForm.reset();
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private saveUpdatedExercise(exercise: Exercise) {
+  protected saveUpdatedExercise(exercise: Exercise) {
     console.log('updating exercise ', exercise);
     this.buildService
     .updateExercise(exercise, this.lessonId)
@@ -127,9 +89,5 @@ export class BuildQAComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-  }
-
-  ngOnDestroy() {
-    this.componentActive = false;
   }
 }

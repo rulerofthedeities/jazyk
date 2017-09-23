@@ -1,4 +1,4 @@
-import {Component, Input, Output, ViewChild, EventEmitter} from '@angular/core';
+import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {LearnSettings} from '../../models/user.model';
