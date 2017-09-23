@@ -47,6 +47,9 @@
         <div class="btn btn-success btn-lg" (click)="onNewSentence()">
           <span class="fa fa-file-text-o"></span> {{text["NewSentence"]}}
         </div>
+        <div class="btn btn-success btn-lg" (click)="onNewQA()">
+          <span class="fa fa-comments"></span> {{text["NewQA"]}}
+        </div>
       </div>
     </div>
 
@@ -66,6 +69,13 @@
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-sentence>
+      <km-build-qa *ngIf="tpe===2"
+        [languagePair]="lesson?.languagePair"
+        [lessonId]="lesson?._id"
+        [text]="text"
+        (addedExercises)="onExercisesAdded($event)"
+        (cancelNew)="onCancelNew()">
+      </km-build-qa>
     </ng-template>
   </div>
 

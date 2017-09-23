@@ -6,10 +6,8 @@ import {ErrorService} from '../../services/error.service';
 import {UserService} from '../../services/user.service';
 import {Course, Lesson, Translation} from '../../models/course.model';
 import {Filter, WordPairDetail} from '../../models/word.model';
-import {Exercise} from '../../models/exercise.model';
+import {Exercise, ExerciseType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
-
-export enum ExerciseType {Word, Sentence};
 
 @Component({
   selector: 'km-build-lesson',
@@ -68,12 +66,16 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.tpe = ExerciseType.Sentence;
   }
 
+  onNewQA() {
+    this.isNewExercise = true;
+    this.tpe = ExerciseType.QA;
+  }
+
   onEditLesson() {
     this.isEditMode = true;
   }
 
   onCloseHeader(updatedLesson: Lesson) {
-      console.log('header closed');
     if (updatedLesson) {
       this.lesson = updatedLesson;
       console.log('updated lesson');
@@ -109,7 +111,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       lesson => {
-        console.log('lesson', lesson);
         this.lesson = lesson;
         if (lesson) {
           this.lanLocal = lesson.languagePair.from;

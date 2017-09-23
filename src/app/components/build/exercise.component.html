@@ -415,12 +415,11 @@
 
   <div class="form-group buttons">
     <div class="col-xs-12">
-      <div class="btn btn-success btn-lg"
-        [attr.disabled] = "isSaving ? '' : null"
-        (click)="onAddNewWord(exerciseForm)"
-        *ngIf="!currentExercise && exerciseForm.valid">
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled]="!exerciseForm.valid"
+        (click)="onAddNewWord(exerciseForm)">
         {{text["Addword"]}}
-      </div>
+      </button>
       <div class="btn btn-success btn-lg"
         [attr.disabled] = "isSaving ? '' : null"
         (click)="onAddNewConjugations(exerciseForm)"

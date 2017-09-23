@@ -1,0 +1,67 @@
+<form *ngIf="isFormReady"
+  [formGroup]="qaForm"
+  class="form-horizontal">
+
+  <!-- QUESTION-->
+  <div class="form-group">
+    <label class="control-label col-xs-1">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="question"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="{{text['EnterQuestion']}}"
+        required
+        formControlName="question">
+    </div>
+  </div>
+
+  <!-- ANSWER -->
+  <div class="form-group">
+    <label 
+      for="answer" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="answer"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="{{text['EnterAnswer']}}"
+        formControlName="answer">
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="form-group buttons">
+    <div class="col-xs-12">
+      <div *ngIf="!currentExercise">
+        <button type="button" class="btn btn-success btn-lg"
+          [disabled]="!qaForm.valid"
+          (click)="onAddNewExercise(qaForm)">
+          {{text["AddQA"]}}
+        </button>
+        <button type="button" class="btn btn-warning btn-lg"
+          (click)="onCancelNew()"
+          *ngIf="!currentExercise">
+          {{text["cancel"]}}
+        </button>
+      </div>
+      <div *ngIf="currentExercise">
+        <button type="button" class="btn btn-success btn-lg"
+          [disabled] = "isSaving || !qaForm.valid"
+          (click)="onUpdateExercise(qaForm)">
+          {{text["UpdateQA"]}}
+        </button>
+        <button type="button" class="btn btn-warning btn-lg"
+          (click)="onCancelEdit()">
+          {{text["cancel"]}}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

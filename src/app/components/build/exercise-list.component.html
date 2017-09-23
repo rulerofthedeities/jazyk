@@ -42,7 +42,7 @@
           </span>
         </div>
         <!-- WORD -->
-        <div *ngIf="exercise.tpe < 1">
+        <div *ngIf="exercise.tpe === 0">
           <div class="col-xs-4">
             <div class="words">
               <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
@@ -80,6 +80,20 @@
             <div [innerHTML]="getSentenceOptions(exercise)"></div>
           </div>
         </div>
+        <!-- QA -->
+        <div *ngIf="exercise.tpe === 2">
+          <div class="col-xs-8">
+            <div class="words">
+              <span 
+                (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                <strong>{{exercise.foreign?.word}}</strong>
+              </span> <span *ngIf="exercise.foreign?.word">/</span>
+              <span (dblclick)="onEditExercise(exercise._id)">
+                {{exercise.foreign?.hint}}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
       <km-build-exercise *ngIf="exercise._id===editingId && exercise.tpe < 1" class="edit"
         [languagePair]="languagePair"
@@ -99,6 +113,14 @@
         (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
       </km-build-sentence>
+      <km-build-qa *ngIf="exercise._id===editingId && exercise.tpe === 2" class="edit"
+        [languagePair]="languagePair"
+        [lessonId]="lessonId"
+        [exercise]="exercise"
+        [text]="text"
+        (updatedExercise)="onUpdatedExercise($event)"
+        (cancelEdit)="onCancelEdit()">
+      </km-build-qa>
     </li>
   </ul>
 </div>
