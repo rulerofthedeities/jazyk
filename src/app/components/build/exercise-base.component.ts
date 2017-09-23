@@ -19,6 +19,7 @@ export abstract class ExerciseBase {
   exerciseForm: FormGroup;
   currentExercise: Exercise;
   isFormReady = false;
+  isSaving = false;
 
   constructor(
     protected buildService: BuildService,
@@ -35,12 +36,14 @@ export abstract class ExerciseBase {
 
   onAddNewExercise(form: any) {
     if (form.valid) {
+      this.isSaving = true;
       this.buildNewExercise(form.value);
     }
   }
 
   onUpdateExercise(form: any) {
     if (form.valid) {
+      this.isSaving = true;
       this.buildExistingExercise(form.value);
     }
   }
@@ -67,6 +70,7 @@ export abstract class ExerciseBase {
     .takeWhile(() => this.componentActive)
     .subscribe(
       savedExercises => {
+        this.isSaving = false;
         console.log('saved exercises', savedExercises);
         this.addedExercises.emit(savedExercises);
         this.exerciseForm.reset();
@@ -82,6 +86,7 @@ export abstract class ExerciseBase {
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
+        this.isSaving = false;
         console.log('updated exercise ', exercise);
         this.updatedExercise.emit(exercise);
         this.currentExercise = exercise;

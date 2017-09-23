@@ -18,7 +18,8 @@ export class ValidationService {
       'usernameTaken': text['usernameTaken'],
       'emailTaken': text['emailTaken'],
       'noSentenceOptions': text['noSentenceOptions'],
-      'invalidSentence': text['invalidSentence']
+      'invalidSentence': text['invalidSentence'],
+      'invalidQAnswer': text['invalidQAnswer']
       };
 
     return config[validatorName];
@@ -103,6 +104,14 @@ export class ValidationService {
       }
     } else {
       return {'noSentenceOptions': true};
+    }
+  }
+
+  static checkQAnswer(control: FormControl): {[key: string]: any} {
+    if (control.value && control.value.match(/\[(.{1,}?)\]/)) {
+      return null;
+    } else {
+      return {'invalidQAnswer': true};
     }
   }
 }

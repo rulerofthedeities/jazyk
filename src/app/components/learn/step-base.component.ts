@@ -133,6 +133,9 @@ export abstract class Step {
       case QuestionType.Sentence:
         this.nextWord();
       break;
+      case QuestionType.QA:
+        this.nextWord();
+      break;
     }
   }
 

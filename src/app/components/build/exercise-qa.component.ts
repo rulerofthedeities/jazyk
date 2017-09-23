@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {ExerciseBase} from './exercise-base.component';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
+import {ValidationService} from '../../services/validation.service';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 
 @Component({
@@ -30,13 +31,13 @@ export class BuildQAComponent extends ExerciseBase implements OnInit, OnDestroy 
       // New QA
       this.exerciseForm = this.formBuilder.group({
         question: ['', [Validators.required]],
-        answer: ['']
+        answer: ['', ValidationService.checkQAnswer]
       });
     } else {
       // Edit QA
       this.exerciseForm = this.formBuilder.group({
         question: [exercise.foreign.hint, [Validators.required]],
-        answer: [exercise.foreign.word]
+        answer: [exercise.foreign.word, ValidationService.checkQAnswer]
       });
     }
     this.isFormReady = true;

@@ -33,6 +33,11 @@
         spellcheck="false"
         placeholder="{{text['EnterAnswer']}}"
         formControlName="answer">
+      <km-field-messages 
+        [control]="exerciseForm.controls.answer"
+        [text]="text"
+        [touchRequired]="true">
+      </km-field-messages>
     </div>
   </div>
 

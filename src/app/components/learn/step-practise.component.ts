@@ -147,19 +147,25 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // Determine if multiple choice or word
     let qTpe = QuestionType.Choices;
     const tpe = exercise.exercise.tpe || 0;
-    if (tpe === ExerciseType.Word) {
-      if (exercise.result) {
-        // 3 -> 5: random
-        if (learnLevel > 2 && learnLevel < 6) {
-          qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+    switch (tpe) {
+      case ExerciseType.Word:
+        if (exercise.result) {
+          // 3 -> 5: random
+          if (learnLevel > 2 && learnLevel < 6) {
+            qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+          }
+          // 6+ : always word
+          if (learnLevel > 5) {
+            qTpe = QuestionType.Word;
+          }
         }
-        // 6+ : always word
-        if (learnLevel > 5) {
-          qTpe = QuestionType.Word;
-        }
-      }
-    } else {
-      qTpe = QuestionType.Sentence;
+      break;
+      case ExerciseType.Sentence:
+        qTpe = QuestionType.Sentence;
+        break;
+      case ExerciseType.QA:
+        qTpe = QuestionType.QA;
+      break;
     }
     return qTpe;
   }
@@ -220,7 +226,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWords) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
-        if ((exerciseResult && !exerciseResult.isLearned) || (!exerciseResult && exercise.tpe === ExerciseType.Sentence)) {
+        if ((exerciseResult && !exerciseResult.isLearned)
+          || (!exerciseResult && exercise.tpe === ExerciseType.Sentence)
+          || (!exerciseResult && exercise.tpe === ExerciseType.QA)
+        ) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);
           newResults.push(exerciseResult);
