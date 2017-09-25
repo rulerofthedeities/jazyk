@@ -14,7 +14,7 @@ interface Solution {
 @Component({
   selector: 'km-answer-field',
   templateUrl: 'answer-field.component.html',
-  styleUrls: ['answer-field.component.css']
+  styleUrls: ['answer-field.component.css', 'answer-field.css']
 })
 
 export class LearnAnswerFieldComponent implements AfterViewChecked {

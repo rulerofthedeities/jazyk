@@ -6,6 +6,7 @@ import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseType, Choice, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnAnswerFieldComponent} from './answer-field.component';
 import {LearnSentenceComponent} from './sentence.component';
+import {LearnQAComponent} from './qa.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
@@ -28,6 +29,7 @@ export abstract class Step {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnAnswerFieldComponent) answerComponent: LearnAnswerFieldComponent;
   @ViewChild(LearnSentenceComponent) sentenceComponent: LearnSentenceComponent;
+  @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
   protected componentActive = true;
   protected choices: Choice[];
   protected nextWordTimer: Subscription;
@@ -134,7 +136,7 @@ export abstract class Step {
         this.nextWord();
       break;
       case QuestionType.QA:
-        this.nextWord();
+        this.checkIfQAAnswer();
       break;
     }
   }
@@ -186,6 +188,16 @@ export abstract class Step {
     }
   }
 
+  private checkIfQAAnswer() {
+    if (!this.isAnswered) {
+      if (this.qaComponent) {
+        this.checkQAAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect());
+      }
+    } else {
+      this.nextWord();
+    }
+  }
+
   protected nextWord() {
     this.clearData();
     this.current++;
@@ -225,6 +237,9 @@ export abstract class Step {
     }
     if (this.sentenceComponent) {
       this.sentenceComponent.clearData();
+    }
+    if (this.qaComponent) {
+      this.qaComponent.clearData();
     }
     if (this.nextWordTimer) {
       this.nextWordTimer.unsubscribe();
@@ -401,6 +416,75 @@ export abstract class Step {
     }
     this.levelUpdated.next(learnLevel);
     this.pointsEarned.next(points);
+  }
+
+  protected checkQAAnswer(answer: string, solution: string) {
+    console.log('answer', answer);
+    console.log('solution', solution);
+    const filteredAnswer = this.filter(answer);
+    if (filteredAnswer) {
+      this.endDate = new Date();
+      const filteredSolution = this.filter(solution),
+            timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+      let learnLevel = this.getCurrentLearnLevel(this.currentData),
+          points = 0;
+      this.isAnswered = true;
+      this.currentData.data.isDone = true;
+      this.currentData.data.timeDelta = timeDelta;
+
+      console.log('filtered answer', filteredAnswer);
+      console.log('filtered solution', filteredSolution);
+      if (filteredAnswer === filteredSolution) {
+        // Correct answer
+        this.isCorrect = true;
+        this.currentData.data.grade = this.calculateWordGrade(timeDelta, 0, filteredSolution);
+        learnLevel = this.calculateWordLearnLevel(learnLevel, true, false, false);
+        this.soundLearnedLevel(learnLevel);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = true;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
+        points = 100;
+        this.currentData.data.points = points;
+        this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+        this.addRightCount(this.currentData.exercise._id);
+        this.score = this.score + points;
+        // this.timeNext(0.6);
+        if (this.doAddExercise(QuestionType.QA, learnLevel)) {
+          this.addExercise(true);
+        }
+      } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
+        // Almost correct answer
+        this.currentData.data.grade = 1;
+        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, true);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = true;
+        this.currentData.data.isAlt = false;
+        this.isCorrect = false;
+        points = 20;
+        this.currentData.data.points = points;
+        this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+        this.addWrongCount(this.currentData.exercise._id);
+        this.score = this.score + points;
+        this.addExercise(false);
+      } else {
+        // Incorrect answer
+        this.currentData.data.grade = 0;
+        learnLevel = this.calculateWordLearnLevel(learnLevel, false, false, false);
+        this.currentData.data.learnLevel = learnLevel;
+        this.currentData.data.isCorrect = false;
+        this.currentData.data.isAlmostCorrect = false;
+        this.currentData.data.isAlt = false;
+        this.isCorrect = false;
+        this.currentData.data.points = 0;
+        this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
+        this.addWrongCount(this.currentData.exercise._id);
+        this.addExercise(false);
+      }
+      this.levelUpdated.next(learnLevel);
+      this.pointsEarned.next(points);
+    }
   }
 
   protected doAddExercise(q: QuestionType, learnLevel: number): boolean {

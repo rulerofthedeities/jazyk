@@ -15,7 +15,7 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <km-question *ngIf="!isQuestionType(2)"
+          <km-question *ngIf="!isQuestionType(2) && !isQuestionType(3)"
             [currentData]="currentData"
             [lanPair]="lanPair"
             [text]="text"
@@ -44,6 +44,12 @@
             [msg]="text['Expectedanswer']"
             (answered)="onAnsweredSentence($event)">
           </km-sentence>
+          <km-qa *ngIf="isQuestionType(3)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [msg]="text['Expectedanswer']"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+          </km-qa>
         </div>
         <!-- NO MORE EXERCISES -->
         <div *ngIf="noMoreExercises">
@@ -83,7 +89,7 @@
         [step]="'practise'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
-        [isInput]="isQuestionType(1)"
+        [isInput]="isQuestionType(1) || isQuestionType(3)"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>

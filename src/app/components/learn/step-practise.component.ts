@@ -119,10 +119,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       if (this.options.bidirectional) {
         newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
       }
+      const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
       newExerciseData.result = {
         learnLevel: newExerciseData.data.learnLevel,
         points: 0,
-        streak: this.exerciseData[this.current].result.streak
+        streak
       };
       this.exerciseData.push(newExerciseData);
       if (!this.options.ordered) {

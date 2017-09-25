@@ -1,0 +1,48 @@
+
+<div class="form-group translation">
+  <div class="col-xs-12">
+    <div class="input-group input-lg question">
+      {{question}}
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+<div class="form-group">
+  <label 
+    class="control-label col-xs-1">
+    <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
+  </label>
+  <div class="col-xs-11">
+    <div class="input-group answer">
+      <span class="input-group-addon">
+        <span class="sentence">{{sentence[0]}}</span>
+      </span>
+      <input 
+        type="text"
+        class="form-control input-lg" 
+        id="answer"
+        maxlength="100"
+        autofocus
+        autocomplete="off"
+        spellcheck="false"
+        [attr.disabled]="isAnswered ? '' : null"
+        [ngClass]="{
+          correct: isAnswered && data.data.isCorrect,
+          incorrect: isAnswered && !data.data.isCorrect,
+          isAlmostCorrect: isAnswered && !data.data.isCorrect && data.data.isAlmostCorrect}"
+        #answer>
+      <span class="input-group-addon">
+        <span class="sentence">{{sentence[1]}}</span>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="solution" *ngIf="isAnswered && !data.data.isCorrect">
+  <span class="msg">{{msg}} </span><span>{{correctAnswer}}</span>
+</div>
+<km-keyboard 
+  *ngIf="keyboard.showKeyboard"
+  [keys]="keyboard.keys"
+  (selectedKey)="onKeySelected($event)">
+</km-keyboard>
+<div class="clearfix"></div>

@@ -29,6 +29,7 @@ import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.componen
 import {LearnAnswerFieldComponent} from './components/learn/answer-field.component';
 import {LearnAnswerChoicesComponent} from './components/learn/answer-choices.component';
 import {LearnSentenceComponent} from './components/learn/sentence.component';
+import {LearnQAComponent} from './components/learn/qa.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
 
@@ -67,6 +68,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnAnswerFieldComponent,
     LearnAnswerChoicesComponent,
     LearnSentenceComponent,
+    LearnQAComponent,
     LearnKeyboardComponent,
     LearnCountdownComponent,
     GetKeyPressDirective,
