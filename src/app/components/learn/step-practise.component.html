@@ -15,14 +15,14 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <km-question *ngIf="!isQuestionType(2) && !isQuestionType(3)"
+          <km-question *ngIf="!isQuestionType(qType.Sentence) && !isQuestionType(qType.QA)"
             [currentData]="currentData"
             [lanPair]="lanPair"
             [text]="text"
             [tpe]="getQuestionType()"
             [settings]="settings"
           ></km-question>
-          <km-answer-choices *ngIf="isQuestionType(0)"
+          <km-answer-choices *ngIf="isQuestionType(qType.Choices)"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"
             [answer]="answer"
@@ -30,7 +30,7 @@
             [isSelected]="isSelected"
             (selected)="onSelected($event)">
           </km-answer-choices>
-          <km-answer-field *ngIf="isQuestionType(1)"
+          <km-answer-field *ngIf="isQuestionType(qType.Word)"
             [lan]="lanPair.to"
             [prefix]="prefix"
             [disabled]="isAnswered"
@@ -38,13 +38,13 @@
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
             [data]="currentData?.data">
           </km-answer-field>
-          <km-sentence *ngIf="isQuestionType(2)"
+          <km-sentence *ngIf="isQuestionType(qType.Sentence)"
             [lanPair]="lanPair"
             [data]="currentData"
             [msg]="text['Expectedanswer']"
             (answered)="onAnsweredSentence($event)">
           </km-sentence>
-          <km-qa *ngIf="isQuestionType(3)"
+          <km-qa *ngIf="isQuestionType(qType.QA)"
             [lanPair]="lanPair"
             [data]="currentData"
             [msg]="text['Expectedanswer']"
@@ -89,7 +89,7 @@
         [step]="'practise'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
-        [isInput]="isQuestionType(1) || isQuestionType(3)"
+        [isInput]="isQuestionType(qType.Word) || isQuestionType(qType.QA)"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>

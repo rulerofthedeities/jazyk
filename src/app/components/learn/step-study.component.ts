@@ -156,6 +156,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private filterExercises() {
     // Only the exercises of type word are shown in study
     this.exercises = this.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
+    console.log('exercises', this.exercises);
   }
 
   private fetchLessonResults() {

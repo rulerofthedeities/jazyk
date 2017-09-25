@@ -23,7 +23,7 @@
             [tpe]="getQuestionType()"
             [settings]="settings"
           ></km-question>
-          <km-answer-choices *ngIf="isQuestionType(0)"
+          <km-answer-choices *ngIf="isQuestionType(qType.Choices)"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"
             [answer]="answer"
@@ -31,7 +31,7 @@
             [isSelected]="isSelected"
             (selected)="onSelected($event)">
           </km-answer-choices>
-          <km-answer-field *ngIf="isQuestionType(1)"
+          <km-answer-field *ngIf="isQuestionType(qType.Word)"
             [lan]="lanPair.to"
             [disabled]="isAnswered"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
@@ -56,7 +56,7 @@
         [step]="'practise'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
-        [isInput]="isQuestionType(1)"
+        [isInput]="isQuestionType(qType.Word)"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>

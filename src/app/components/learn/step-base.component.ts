@@ -57,6 +57,8 @@ export abstract class Step {
   isMute: boolean;
   score = 0;
   maxRepeatWord = 4;
+  qType = QuestionType;
+  exType = ExerciseType;
 
   constructor(
     protected learnService: LearnService,

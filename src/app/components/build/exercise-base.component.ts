@@ -20,6 +20,7 @@ export abstract class ExerciseBase {
   currentExercise: Exercise;
   isFormReady = false;
   isSaving = false;
+  exType = ExerciseType;
 
   constructor(
     protected buildService: BuildService,

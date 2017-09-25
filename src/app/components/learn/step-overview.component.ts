@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Exercise, ExerciseResult, ExerciseData} from '../../models/exercise.model';
+import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-learn-overview',
@@ -16,6 +16,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() isLearnedLevel: number;
   private componentActive = true;
   exerciseData: ExerciseData[] = [];
+  exType = ExerciseType;
 
   constructor(
     private learnService: LearnService,

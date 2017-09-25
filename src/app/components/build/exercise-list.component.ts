@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {Exercise} from '../../models/exercise.model';
+import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
@@ -24,6 +24,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   editingId: string = null;
   removingId: string = null;
   focusField: string = null;
+  exType = ExerciseType;
 
   constructor(
     private buildService: BuildService,

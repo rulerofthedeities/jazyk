@@ -147,7 +147,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
     // Determine if multiple choice or word
     let qTpe = QuestionType.Choices;
-    const tpe = exercise.exercise.tpe || 0;
+    const tpe = exercise.exercise.tpe || ExerciseType.Word;
     switch (tpe) {
       case ExerciseType.Word:
         if (exercise.result) {

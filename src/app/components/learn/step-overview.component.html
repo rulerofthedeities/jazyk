@@ -22,8 +22,9 @@
   <div class="col-xs-1">
     <span class="icon">
       <span class="fa" [ngClass]="{
-        'fa-font': exercise.exercise.tpe === 0,
-        'fa-file-text-o': exercise.exercise.tpe === 1}">
+        'fa-font': exercise.exercise.tpe === exType.Word,
+        'fa-file-text-o': exercise.exercise.tpe === exType.Sentence,
+        'fa-comments': exercise.exercise.tpe === exType.QA}">
       </span>
     </span>
     <span class="icon">
