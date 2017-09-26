@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 
 @Component({
-  selector: 'km-answer-choices',
+  selector: 'km-word-choices',
   template: `
     <div 
       *ngFor="let choice of choices; let i=index" 
@@ -15,10 +15,10 @@ import {LearnService} from '../../services/learn.service';
       (click)="onSelected(i)">
       <span class="nr">{{i+1}}.</span> <span>{{filter(choice)}}</span>
     </div>`,
-    styleUrls: ['answer-choices.component.css']
+    styleUrls: ['word-choices.component.css']
 })
 
-export class LearnAnswerChoicesComponent {
+export class LearnWordChoicesComponent {
   @Input() choices: string[];
   @Input() correct: boolean;
   @Input() answer: number;

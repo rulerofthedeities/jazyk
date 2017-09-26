@@ -37,12 +37,12 @@
     </div>
   </div>
 </div>
-<div class="solution" *ngIf="isAnswered && !data.data.isCorrect">
+<div class="clearfix"></div>
+<div class="solution" *ngIf="isAnswered && (!data.data.isCorrect || data.data.isAlt)">
   <span class="msg">{{msg}} </span><span>{{correctAnswer}}</span>
 </div>
 <km-keyboard 
-  *ngIf="keyboard.showKeyboard"
+  *ngIf="keyboard.showKeyboard && !isAnswered"
   [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">
 </km-keyboard>
-<div class="clearfix"></div>

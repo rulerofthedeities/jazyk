@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseStep, Direction,
-        ExerciseResult, ExerciseType, Choice, QuestionType} from '../../models/exercise.model';
+        ExerciseResult, ExerciseType, Choice, AnswerType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {AudioService} from '../../services/audio.service';
@@ -79,56 +79,63 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.fetchLessonResults();
   }
 
-  protected doAddExercise(qType: QuestionType, learnLevel: number): boolean {
+  protected doAddExercise(aType: AnswerType, qType: QuestionType, learnLevel: number): boolean {
     const nrOfQuestions = this.exerciseData.length;
     let add = false;
-    switch (qType) {
-      case QuestionType.Choices:
-        if (nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord && learnLevel < this.learnedLevel) {
-          add = true;
-        }
-      break;
-      case QuestionType.Word:
-        if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
-          add = true;
-        }
-      break;
-      case QuestionType.Word:
-        add = false;
-      break;
+    if (aType === AnswerType.Correct || aType === AnswerType.Alt) {
+      switch (qType) {
+        case QuestionType.Choices:
+          if (nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord && learnLevel < this.learnedLevel) {
+            add = true;
+          }
+        break;
+        case QuestionType.Word:
+          if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
+            add = true;
+          }
+        break;
+        case QuestionType.Sentence:
+        case QuestionType.QA:
+          add = false;
+        break;
+      }
+    } else {
+      add = true;
+    }
+    // Only readd exercise to the back if question asked < x times
+    const exercise = this.dataByExercise[this.currentData.exercise._id],
+          countWrong = exercise.countWrong ? exercise.countWrong : 0,
+          correct = aType === AnswerType.Correct  || aType === AnswerType.Alt,
+          countRight = exercise.countRight ? exercise.countRight : 0;
+    if (!(correct && countRight <= 2 || !correct && countWrong <= 3)) {
+      add = false;
     }
     return add;
   }
 
   protected addExercise(isCorrect: boolean) {
-    // Readd exercise to the back if question asked < x times
-    const exercise = this.dataByExercise[this.currentData.exercise._id],
-          countWrong = exercise.countWrong ? exercise.countWrong : 0,
-          countRight = exercise.countRight ? exercise.countRight : 0;
-    if (isCorrect && countRight <= 2 || !isCorrect && countWrong <= 3) {
-      const newExerciseData: ExerciseData = {
-        data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
-        exercise: this.exerciseData[this.current].exercise
-      };
-      newExerciseData.data.isCorrect = false;
-      newExerciseData.data.isDone = false;
-      newExerciseData.data.isAlt = false;
-      newExerciseData.data.isAlmostCorrect = false;
-      newExerciseData.data.grade = 0;
-      newExerciseData.data.answered = newExerciseData.data.answered + 1;
-      if (this.options.bidirectional) {
-        newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
-      }
-      const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
-      newExerciseData.result = {
-        learnLevel: newExerciseData.data.learnLevel,
-        points: 0,
-        streak
-      };
-      this.exerciseData.push(newExerciseData);
-      if (!this.options.ordered) {
-        this.shuffleRemainingExercises();
-      }
+    const newExerciseData: ExerciseData = {
+      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
+      exercise: this.exerciseData[this.current].exercise
+    };
+    newExerciseData.data.isCorrect = false;
+    newExerciseData.data.isDone = false;
+    newExerciseData.data.isAlt = false;
+    newExerciseData.data.isAlmostCorrect = false;
+    newExerciseData.data.grade = 0;
+    newExerciseData.data.answered = newExerciseData.data.answered + 1;
+    if (this.options.bidirectional) {
+      newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
+    }
+    const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
+    newExerciseData.result = {
+      learnLevel: newExerciseData.data.learnLevel,
+      points: 0,
+      streak
+    };
+    this.exerciseData.push(newExerciseData);
+    if (!this.options.ordered) {
+      this.shuffleRemainingExercises();
     }
   }
 
@@ -170,7 +177,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
     return qTpe;
   }
-
 
   protected getNrOfChoices(learnLevel: number): number {
     let nrOfChoices: number;

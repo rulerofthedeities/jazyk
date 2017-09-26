@@ -12,12 +12,12 @@ interface Solution {
 }
 
 @Component({
-  selector: 'km-answer-field',
-  templateUrl: 'answer-field.component.html',
-  styleUrls: ['answer-field.component.css', 'answer-field.css']
+  selector: 'km-word-field',
+  templateUrl: 'word-field.component.html',
+  styleUrls: ['word-field.component.css', 'field.css']
 })
 
-export class LearnAnswerFieldComponent implements AfterViewChecked {
+export class LearnWordFieldComponent implements AfterViewChecked {
   @Input() lan: string;
   @Input() prefix: string;
   @Input() disabled: boolean;

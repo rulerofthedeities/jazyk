@@ -10,7 +10,7 @@ interface Keyboard {
 @Component({
   selector: 'km-qa',
   templateUrl: 'qa.component.html',
-  styleUrls: ['qa.component.css', 'answer-field.css']
+  styleUrls: ['qa.component.css', 'field.css']
 })
 
 export class LearnQAComponent implements OnInit, AfterViewChecked {

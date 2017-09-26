@@ -22,22 +22,22 @@
             [tpe]="getQuestionType()"
             [settings]="settings"
           ></km-question>
-          <km-answer-choices *ngIf="isQuestionType(qType.Choices)"
+          <km-word-choices *ngIf="isQuestionType(qType.Choices)"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"
             [answer]="answer"
             [answered]="answered"
-            [isSelected]="isSelected"
+            [isSelected]="isAnswered"
             (selected)="onSelected($event)">
-          </km-answer-choices>
-          <km-answer-field *ngIf="isQuestionType(qType.Word)"
+          </km-word-choices>
+          <km-word-field *ngIf="isQuestionType(qType.Word)"
             [lan]="lanPair.to"
             [prefix]="prefix"
             [disabled]="isAnswered"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
             [data]="currentData?.data">
-          </km-answer-field>
+          </km-word-field>
           <km-sentence *ngIf="isQuestionType(qType.Sentence)"
             [lanPair]="lanPair"
             [data]="currentData"

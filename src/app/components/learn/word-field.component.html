@@ -27,11 +27,11 @@
   </div>
 </div>
 <div class="clearfix"></div>
-<div class="solution">
-  <span class="msg" *ngIf="data.isAlt">{{solution.msg}} </span><span class="answer">{{solution.solution}}</span>
+<div class="solution" *ngIf="disabled && (!data.isCorrect || data.isAlt)">
+  <span class="msg">{{solution.msg}} </span><span class="answer">{{solution.solution}}</span>
 </div>
 <km-keyboard 
-  *ngIf="keyboard.showKeyboard"
+  *ngIf="keyboard.showKeyboard && !disabled"
   [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">
 </km-keyboard>
