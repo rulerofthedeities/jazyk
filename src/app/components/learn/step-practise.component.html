@@ -15,13 +15,19 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <km-question *ngIf="!isQuestionType(qType.Sentence) && !isQuestionType(qType.QA)"
-            [currentData]="currentData"
-            [lanPair]="lanPair"
-            [text]="text"
-            [dir]="getQuestionDir()"
-            [settings]="settings"
-          ></km-question>
+          <div class="clearfix" *ngIf="!isQuestionType(qType.Sentence) && !isQuestionType(qType.QA)">
+            <!-- IMAGE -->
+            <div class="image" *ngIf="currentData.exercise.image">
+              <img src="{{currentData.exercise.image}}">
+            </div>
+            <km-question
+              [currentData]="currentData"
+              [lanPair]="lanPair"
+              [text]="text"
+              [dir]="getQuestionDir()"
+              [settings]="settings"
+            ></km-question>
+          </div>
           <km-word-choices *ngIf="isQuestionType(qType.Choices)"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"

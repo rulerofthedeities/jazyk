@@ -88,8 +88,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.sharedService.countDownFinishedEvent.subscribe(
-      () => this.exercisesStarted = true
+    this.sharedService.exerciseModeChanged.subscribe(
+      (started) => this.exercisesStarted = started
     );
     this.settings = this.userService.user.jazyk.learn;
     this.settings.nrOfWords = this.settings.nrOfWords || this.defaultNrOfQuestions;
@@ -116,6 +116,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.saveSettings();
       }
     }
+  }
+
+  onCloseExercises() {
+    this.exercisesStarted = false;
+    this.sharedService.changeExerciseMode(false);
   }
 
   onLessonCompleted() {

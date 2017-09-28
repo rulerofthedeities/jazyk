@@ -58,7 +58,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onCountDownFinished() {
-    this.sharedService.countDownFinished();
+    this.sharedService.changeExerciseMode(true);
     this.isCountDown = false;
     this.nextWord(1);
   }

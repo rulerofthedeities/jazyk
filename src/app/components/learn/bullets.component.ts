@@ -30,7 +30,6 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
   exerciseBullets: ExerciseData[];
 
   ngOnInit() {
-    console.log('bullet exercises', this.exercises);
     if (this.onNextExercise) {
       this.onNextExercise
       .takeWhile(() => this.componentActive)
@@ -40,7 +39,6 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
     } else {
       this.exerciseBullets = this.exercises;
     }
-    console.log('bullet exercises', this.exerciseBullets);
   }
 
   private sliceExercises(i: number) {

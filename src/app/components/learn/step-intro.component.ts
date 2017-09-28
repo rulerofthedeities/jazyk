@@ -45,7 +45,9 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
     .subscribe(
       intro => {
         if (intro) {
-          this.intro = intro.intro;
+          this.intro = intro.intro || 'Default intro';
+        } else {
+          this.intro = 'Default intro';
         }
       },
       error => this.errorService.handleError(error)

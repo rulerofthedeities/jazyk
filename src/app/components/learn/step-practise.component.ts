@@ -4,6 +4,7 @@ import {Exercise, ExerciseData, ExerciseOptions, Direction,
         ExerciseResult, ExerciseType, Choice, AnswerType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
+import {SharedService} from '../../services/shared.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -31,10 +32,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   constructor(
     learnService: LearnService,
+    sharedService: SharedService,
     errorService: ErrorService,
     private audioService: AudioService
   ) {
-    super(learnService, errorService);
+    super(learnService, errorService, sharedService);
   }
 
   ngOnInit() {

@@ -2,6 +2,7 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {SharedService} from '../../services/shared.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -16,9 +17,10 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
 
   constructor(
     learnService: LearnService,
-    errorService: ErrorService
+    errorService: ErrorService,
+    sharedService: SharedService
   ) {
-    super(learnService, errorService);
+    super(learnService, errorService, sharedService);
   }
 
   ngOnInit() {

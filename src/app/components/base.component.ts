@@ -33,8 +33,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
-    this.sharedService.countDownFinishedEvent.subscribe(
-      () => {console.log('finished'); this.exercisesStarted = true; }
+    this.sharedService.exerciseModeChanged.subscribe(
+      (started) => this.exercisesStarted = started
     );
   }
 

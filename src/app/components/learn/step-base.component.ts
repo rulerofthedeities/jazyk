@@ -73,11 +73,11 @@ export abstract class Step {
   constructor(
     protected learnService: LearnService,
     protected errorService: ErrorService,
-    private sharedService: SharedService
+    protected sharedService: SharedService
   ) {}
 
   onCountDownFinished() {
-    this.sharedService.countDownFinished();
+    this.sharedService.changeExerciseMode(true);
     this.isCountDown = false;
   }
 
