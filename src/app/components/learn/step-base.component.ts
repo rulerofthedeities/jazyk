@@ -1,9 +1,10 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult, Choice,
+import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnswerType, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './word-field.component';
 import {LearnSentenceComponent} from './sentence.component';
@@ -30,9 +31,11 @@ interface LearnLevelData {
 }
 
 export abstract class Step {
+  @Input() protected exercises: Exercise[];
   @Input() settings: LearnSettings;
   @Input() text: Object;
   @Input() lanPair: LanPair;
+  @Input() options: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
@@ -69,10 +72,12 @@ export abstract class Step {
 
   constructor(
     protected learnService: LearnService,
-    protected errorService: ErrorService
+    protected errorService: ErrorService,
+    private sharedService: SharedService
   ) {}
 
   onCountDownFinished() {
+    this.sharedService.countDownFinished();
     this.isCountDown = false;
   }
 
@@ -150,7 +155,7 @@ export abstract class Step {
     }
   }
 
-  getQuestionType(): string {
+  getQuestionDir(): string {
     let tpe = 'local';
     if (this.currentData
       && this.currentData.data.questionType === QuestionType.Choices
@@ -172,6 +177,9 @@ export abstract class Step {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.getConfig(this.lanPair.to); // For keyboard keys
+    if (!this.isCountDown) {
+      this.onCountDownFinished();
+    }
   }
 
   protected getChoices(tpe: string, id: string, isBidirectional: boolean = true) {
@@ -384,6 +392,44 @@ export abstract class Step {
     return false;
   }
 
+  protected addExercise(isCorrect: boolean) {
+    const newExerciseData: ExerciseData = {
+      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
+      exercise: this.exerciseData[this.current].exercise
+    };
+    newExerciseData.data.isCorrect = false;
+    newExerciseData.data.isDone = false;
+    newExerciseData.data.isAlt = false;
+    newExerciseData.data.isAlmostCorrect = false;
+    newExerciseData.data.grade = 0;
+    newExerciseData.data.answered = newExerciseData.data.answered + 1;
+    if (this.options.bidirectional) {
+      newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
+    }
+    const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
+    newExerciseData.result = {
+      learnLevel: newExerciseData.data.learnLevel,
+      points: 0,
+      streak
+    };
+    this.exerciseData.push(newExerciseData);
+    if (!this.options.ordered) {
+      this.shuffleRemainingExercises();
+    }
+  }
+
+  private shuffleRemainingExercises() {
+    const original = this.exercises.length,
+          total = this.exerciseData.length,
+          nrDone = this.current + 1, // skip next
+          done = this.exerciseData.slice(0, nrDone);
+    if (nrDone > original && total - nrDone > 2) {
+      const todo = this.exerciseData.slice(nrDone, total),
+            shuffled = this.learnService.shuffle(todo);
+      this.exerciseData = done.concat(shuffled);
+    }
+  }
+
   private filter(word: string): string {
     let filteredAnswer = word.toLowerCase();
     filteredAnswer = this.learnService.filterPrefix(filteredAnswer);
@@ -589,10 +635,6 @@ export abstract class Step {
       }
     }
     this.currentChoices = this.learnService.shuffle(choices);
-  }
-
-  protected addExercise(isCorrect: boolean) {
-
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {

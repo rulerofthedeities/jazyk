@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
+import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language, Translation} from '../../models/course.model';
@@ -60,6 +61,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   courseLevel: string; // Course or lesson
   isReady = false;
   isStepsReady = false;
+  exercisesStarted = false;
   maxStreak = 20;
   nextLesson: Subject<string> = new Subject();
 
@@ -67,6 +69,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private learnService: LearnService,
+    private sharedService: SharedService,
     private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService
@@ -85,7 +88,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         }
       }
     );
-
+    this.sharedService.countDownFinishedEvent.subscribe(
+      () => this.exercisesStarted = true
+    );
     this.settings = this.userService.user.jazyk.learn;
     this.settings.nrOfWords = this.settings.nrOfWords || this.defaultNrOfQuestions;
   }

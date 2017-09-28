@@ -21,3 +21,13 @@
   margin-top: 50px;
   height: 70px;
 }
+.image {
+  float: left;
+  margin-right: 16px;
+}
+.image img{
+  border: 1px solid #333;
+  width: 168px;
+  height: 140px;
+  border-radius: 16px;
+}

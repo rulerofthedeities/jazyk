@@ -55,21 +55,21 @@
 
     <ng-template #addExercise>
       <km-build-exercise
-        *ngIf="tpe===0"
+        *ngIf="tpe===exType.Word"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-exercise>
-      <km-build-sentence *ngIf="tpe===1"
+      <km-build-sentence *ngIf="tpe===exType.Sentence"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-sentence>
-      <km-build-qa *ngIf="tpe===2"
+      <km-build-qa *ngIf="tpe===exType.QA"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"

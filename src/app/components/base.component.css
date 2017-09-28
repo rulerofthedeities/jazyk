@@ -16,6 +16,9 @@ img {
 }
 
 .main {
+  margin-top: 12px;
+}
+.main.margin {
   margin-top: 72px;
 }
 

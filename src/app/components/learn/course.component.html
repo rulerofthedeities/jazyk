@@ -1,5 +1,5 @@
 <km-lesson-selector
-  *ngIf="course"
+  *ngIf="course && !exercisesStarted"
   [course]="course"
   [level]="courseLevel"
   [text]="text"
@@ -7,7 +7,7 @@
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
 
-<div *ngIf="isStepsReady">
+<div *ngIf="isStepsReady && !exercisesStarted">
   <ul class="list-unstyled list-inline lead steps">
     <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
       <li 

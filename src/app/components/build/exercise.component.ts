@@ -521,20 +521,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.isFormReady = true;
   }
 
-  private getWordList(filter: Filter) {
-    if (filter.word) {
-      this.buildService
-      .fetchFilterWordPairs(filter, this.languagePair)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        wordpairs => this.wordpairs = wordpairs,
-        error => this.errorService.handleError(error)
-      );
-    } else {
-      this.lanList = null; // collapse dropdown list
-    }
-  }
-
   private checkConjugations(wordpairDetail: WordPairDetail): boolean {
     // Check if both local and foreign details have entries for all conjugations
     let hasConjugations = false;
@@ -571,6 +557,20 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     this.lanList = lan;
     this.getWordList(filter);
+  }
+
+  private getWordList(filter: Filter) {
+    if (filter.word) {
+      this.buildService
+      .fetchFilterWordPairs(filter, this.languagePair)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        wordpairs => this.wordpairs = wordpairs,
+        error => this.errorService.handleError(error)
+      );
+    } else {
+      this.lanList = null; // collapse dropdown list
+    }
   }
 
   ngOnDestroy() {

@@ -8,28 +8,35 @@
     (onKeyPressed)="onKeyPressed($event)">
     <div class="col-xs-8">
       <div class="panel centerpanel">
-        <km-bullets *ngIf="!isStudyDone"
+        <km-bullets *ngIf="isReady && !isStudyDone"
           [exercises]="exerciseData"
           [current]="current">
         </km-bullets>
         <div *ngIf="!isStudyDone" class="card">
-          <km-question
-            [currentData]="currentData"
-            [lanPair]="lanPair"
-            [text]="text"
-            [tpe]="'foreign'"
-            [settings]="settings"
-          ></km-question>
-          <div class="answer">
-            <h1 class="word">
-              <span>
-                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-              </span>
+          <!-- IMAGE -->
+          <div class="image" *ngIf="showLocal && currentData.exercise.image">
+            <img src="{{currentData.exercise.image}}">
+          </div>
+          <div class="qa">
+            <km-question
+              [currentData]="currentData"
+              [lanPair]="lanPair"
+              [text]="text"
+              [dir]="'foreign'"
+              [settings]="settings"
+            ></km-question>
+            <div class="answer">
+              <h1 class="word">
+                <span>
+                  <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+                </span>
                 <span *ngIf="showLocal else loading">
                   {{currentData.exercise?.local?.word}}
                 </span>
-            </h1>
+              </h1>
+            </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <!-- NOTHING MORE TO STUDY -->
         <div *ngIf="exerciseData?.length < 1">

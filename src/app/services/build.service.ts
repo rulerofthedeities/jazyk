@@ -187,7 +187,7 @@ export class BuildService {
     params.set('isExact', filter.isExact.toString());
     params.set('getTotal', filter.getTotal.toString());
     return this.http
-    .get('/api/build/wordpairs/', {search: params, headers})
+    .get('/api/build/wordpairs', {search: params, headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

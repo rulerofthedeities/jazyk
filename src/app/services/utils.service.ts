@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Language, LanPair} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
@@ -10,6 +10,7 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class UtilsService {
+  countDownFinishedEvent = new EventEmitter();
 
   constructor(
     private http: Http
@@ -98,5 +99,11 @@ export class UtilsService {
       'abbreviation',
       'wordpart'
     ];
+  }
+
+  // Events
+
+  countDownFinished() {
+    this.countDownFinishedEvent.emit();
   }
 }

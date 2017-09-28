@@ -30,6 +30,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   isCourseAccess = false;
   infoMsg = '';
   tpe: ExerciseType;
+  exType = ExerciseType;
 
   constructor(
     private route: ActivatedRoute,

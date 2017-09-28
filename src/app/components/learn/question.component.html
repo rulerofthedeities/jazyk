@@ -1,5 +1,6 @@
 <div *ngIf="currentData">
-  <div class="local" *ngIf="tpe==='local'">
+  <!-- LOCAL -->
+  <div class="local" *ngIf="dir==='local'">
     <h1>
       <span>
         <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
@@ -20,7 +21,8 @@
     </div>
   </div>
 
-  <div class="foreign" *ngIf="tpe==='foreign'">
+  <!-- FOREIGN -->
+  <div class="foreign" *ngIf="dir==='foreign'">
     <h1>
       <span>
         <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">

@@ -19,7 +19,7 @@
             [currentData]="currentData"
             [lanPair]="lanPair"
             [text]="text"
-            [tpe]="getQuestionType()"
+            [dir]="getQuestionDir()"
             [settings]="settings"
           ></km-question>
           <km-word-choices *ngIf="isQuestionType(qType.Choices)"

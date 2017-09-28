@@ -1,0 +1,11 @@
+h1 {
+  margin-top: 0;
+  font-size: 46px;
+}
+.label-annotation {
+  background-color: #f3f3f3;
+  border: 1px dotted black;
+  color: #333;
+  margin-right: 3px;
+  border-radius: 6px;
+}

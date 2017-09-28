@@ -5,6 +5,7 @@ import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {SharedService} from '../../services/shared.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Subject} from 'rxjs/Subject';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
@@ -46,7 +47,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   constructor(
     private learnService: LearnService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -56,6 +58,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onCountDownFinished() {
+    this.sharedService.countDownFinished();
     this.isCountDown = false;
     this.nextWord(1);
   }
@@ -205,6 +208,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.exerciseData = this.learnService.shuffle(this.exerciseData);
     }
     if (!this.isCountDown) {
+      this.onCountDownFinished();
       this.nextWord(1);
     }
     this.isReady = true;

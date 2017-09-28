@@ -45,9 +45,12 @@
 .difficult {
   border: 1px solid #f0ad4e;
 }
-.learn {
+.learn, .close {
   border-radius: 6px;
   padding: 4px;
   background-color: #eee;
   background: linear-gradient(90deg, #efefef , #fff);
+}
+.close{
+  margin-bottom: 20px
 }

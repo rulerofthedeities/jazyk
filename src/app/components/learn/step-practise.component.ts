@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseStep, Direction,
+import {Exercise, ExerciseData, ExerciseOptions, Direction,
         ExerciseResult, ExerciseType, Choice, AnswerType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
@@ -20,10 +20,8 @@ interface Map<T> {
 })
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
-  @Input() private exercises: Exercise[];
   @Input() lessonId: string;
   @Input() learnedLevel: number;
-  @Input() options: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() lessonCompleted = new EventEmitter();
   @Output() stepBack = new EventEmitter();
@@ -111,44 +109,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       add = false;
     }
     return add;
-  }
-
-  protected addExercise(isCorrect: boolean) {
-    const newExerciseData: ExerciseData = {
-      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
-      exercise: this.exerciseData[this.current].exercise
-    };
-    newExerciseData.data.isCorrect = false;
-    newExerciseData.data.isDone = false;
-    newExerciseData.data.isAlt = false;
-    newExerciseData.data.isAlmostCorrect = false;
-    newExerciseData.data.grade = 0;
-    newExerciseData.data.answered = newExerciseData.data.answered + 1;
-    if (this.options.bidirectional) {
-      newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
-    }
-    const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
-    newExerciseData.result = {
-      learnLevel: newExerciseData.data.learnLevel,
-      points: 0,
-      streak
-    };
-    this.exerciseData.push(newExerciseData);
-    if (!this.options.ordered) {
-      this.shuffleRemainingExercises();
-    }
-  }
-
-  private shuffleRemainingExercises() {
-    const original = this.exercises.length,
-          total = this.exerciseData.length,
-          nrDone = this.current + 1, // skip next
-          done = this.exerciseData.slice(0, nrDone);
-    if (nrDone > original && total - nrDone > 2) {
-      const todo = this.exerciseData.slice(nrDone, total),
-            shuffled = this.learnService.shuffle(todo);
-      this.exerciseData = done.concat(shuffled);
-    }
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {

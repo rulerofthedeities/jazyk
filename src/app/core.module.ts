@@ -1,6 +1,7 @@
 import {NgModule, ModuleWithProviders, Optional, SkipSelf} from '@angular/core';
 import {UserService} from './services/user.service';
 import {AuthService} from './services/auth.service';
+import {SharedService} from './services/shared.service';
 import {CommonModule} from '@angular/common';
 
 @NgModule({
@@ -14,7 +15,8 @@ export class CoreModule {
       ngModule: CoreModule,
       providers: [
         AuthService,
-        UserService
+        UserService,
+        SharedService
       ]
     };
   }
