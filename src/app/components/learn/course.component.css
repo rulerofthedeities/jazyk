@@ -147,3 +147,8 @@
   text-shadow: 1px 1px 1px #333;
   cursor: pointer;
 }
+.remaining {
+  font-size: 12px;
+  position: relative;
+  top: -2px;
+}

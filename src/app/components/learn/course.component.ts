@@ -5,6 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
+import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
@@ -121,9 +122,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCloseExercises() {
-    this.exercisesStarted = false;
-    this.sharedService.changeExerciseMode(false);
+  onExitExercises(confirm: ModalConfirmComponent) {
+    confirm.showModal = true;
+  }
+
+  onExitConfirmed(exitOk: boolean) {
+    if (exitOk) {
+      console.log('exiting exercises');
+      this.sharedService.changeExerciseMode(false);
+    }
   }
 
   onLessonCompleted() {
@@ -215,6 +222,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
         console.log('RESULTS', results);
         console.log('EXERCISES', this.lesson.exercises);
+
         this.setSteps();
 
         // Fill in step count for the steps without a result
@@ -255,7 +263,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.currentStep = 0;
     this.isStepsReady = true;
   }
 /*
@@ -351,7 +358,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Only use the most recent result per exerciseid to determine isLearned / review time
     for (const key in lastResult) {
       if (lastResult.hasOwnProperty(key)) {
-        console.log(key, lastResult[key]);
         lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key]);
         // Check if word is learned
         if (step === 'review' || step === 'difficult' || (lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
