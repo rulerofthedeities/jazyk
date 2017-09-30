@@ -1,4 +1,4 @@
-<div class="panel panel-default title">
+<div class="panel panel-default title" *ngIf="level===99">
   <div class="panel-body">
     <div class="pull-right">
       <span 
@@ -88,6 +88,43 @@
         </div>
 
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-7 panel-lesson">
+    <div [class.lesson]="courseLevel===level.Lesson">
+      <!-- LESSON SELECTOR READ MODE -->
+      <div class="panel panel-default title" *ngIf="!showSelector">
+        <div class="panel-body">
+          <div class="btn btn-warning pull-right" *ngIf="!showSelector" (click)="onToggleEdit()">
+            {{text['Edit']}}
+          </div>
+          <h3>
+            <span *ngIf="currentChapter">{{currentChapter}} -</span> {{currentLessonName}}
+          </h3>
+        </div>
+      </div>
+      <!-- LESSON SELECTOR EDIT MODE -->
+      <div class="panel panel-default" *ngIf="showSelector">
+        <div class="panel-body">
+            LESSON EDIT MODE
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-5 panel-course">
+    <!-- CHAPTER -->
+    <div class="panel panel-default title" [class.course]="courseLevel===level.Course">
+      <div class="panel-body">
+        <div class="pull-right">
+          <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag pull-left">
+          <h2>
+            {{course?.name}}
+          </h2>
+        </div>
+      </div>
     </div>
   </div>
 </div>

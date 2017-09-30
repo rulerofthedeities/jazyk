@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course, Lesson} from '../../models/course.model';
+import {Course, Lesson, Level} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Subject} from 'rxjs/Subject';
@@ -21,7 +21,7 @@ interface LessonHeader {
 export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   @Input() course: Course;
   @Input() text: Object;
-  @Input() level: string;
+  @Input() courseLevel: Level;
   @Input() private nextLesson: Subject<string>;
   @Output() currentLesson = new EventEmitter<Lesson>();
   @ViewChild('chapter') chapter: ElementRef;
@@ -34,6 +34,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   currentChapterLessons: LessonHeader[] = [];
   isReady = false;
   showSelector = false;
+  level = Level;
 
   constructor(
     private router: Router,
@@ -48,7 +49,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
       console.log('next lesson', lessonId);
       this.navigateLesson(lessonId, 1);
     });
-    if (this.level === 'lesson') {
+    if (this.courseLevel === Level.Lesson) {
       this.getLessons();
     } else {
       // This is a course level review or exam
@@ -84,6 +85,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     this.showSelector = !this.showSelector;
   }
 
+/*
   onChangeLevel(newLevel: string) {
     let step = '';
     if (newLevel === 'course') {
@@ -91,6 +93,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     }
     this.router.navigate(['/learn/course/' + this.course._id + step]);
   }
+*/
 
   private navigateChapter(chapterName: string, direction: number) {
     const len = this.course.chapters.length;

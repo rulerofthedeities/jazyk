@@ -5,89 +5,108 @@
 <km-lesson-selector
   *ngIf="course && !exercisesStarted"
   [course]="course"
-  [level]="courseLevel"
+  [courseLevel]="courseLevel"
   [text]="text"
   [nextLesson]="nextLesson"
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
 
-<div *ngIf="isStepsReady && !exercisesStarted">
-  <ul class="list-unstyled list-inline lead steps">
-    <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
-      <li 
-        *ngIf="i === steps.length - 1"
-        (click)="stepTo(i)" 
-        class="btn btn-lg pull-right"
-        [class.btn-info]="step==='overview'"
-        [class.btn-danger]="step==='exam'"
-        [class.inactive]="currentStep!==i">
-        {{text[capitalize(step)]}} ({{countPerStep[step]?.nrRemaining}})
-      </li>
-      <li 
-        *ngIf="i < steps.length - 1"
-        (click)="stepTo(i)" 
-        class="btn btn-lg"
-        [class.btn-success]="step==='intro'"
-        [class.btn-primary]="step==='review'"
-        [class.btn-warning]="step==='difficult'"
-        [class.btn-info]="step==='study' || step==='practise'"
-        [class.inactive]="currentStep!==i">
-        {{text[capitalize(step)]}} <span *ngIf="step !== 'intro'">({{countPerStep[step]?.nrRemaining}})</span>
-      </li>
-      <li class="arrow" *ngIf="i < steps.length - 2 && courseLevel==='lesson'">
-        <span class="fa fa-arrow-right"></span>
-      </li>
-    </ng-template>
-  </ul>
+
+<div *ngIf="isStepsReady && !exercisesStarted" class="row">
+  <div class="col-xs-7 panel-lesson">
+    <ul class="list-unstyled list-inline steps"
+      [class.activeLevel]="courseLevel===level.Lesson">
+      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
+        <li 
+          *ngIf="step.level === level.Lesson"
+          (click)="stepTo(i)" 
+          class="btn btn-lg btn-step"
+          [ngClass]="{
+            'btn-overview': step.name==='overview',
+            'btn-intro': step.name==='intro',
+            'btn-study': step.name==='study',
+            'btn-practise': step.name==='practise',
+            'active': currentStep===i,
+            'inactive': currentStep!==i
+          }">
+          {{text[capitalize(step.name)]}} <span *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
+  <div class="col-xs-5 panel-course">
+    <ul class="list-unstyled list-inline steps pull-right"
+      [class.activeLevel]="courseLevel===level.Course">
+      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
+        <li *ngIf="step.level === level.Course"
+          (click)="stepTo(i)" 
+          class="btn btn-lg btn-step"
+          [ngClass]="{
+            'btn-review': step.name==='review', 
+            'btn-difficult': step.name==='difficult',
+            'btn-exam': step.name==='exam',
+            'active': currentStep===i,
+            'inactive': currentStep!==i
+          }">
+          {{text[capitalize(step.name)]}} ({{countPerStep[step.name]?.nrRemaining}})
+        </li>
+      </ng-template>
+    </ul>
+  </div>
 </div>
-<div [ngSwitch]="steps[currentStep]" class="learn" [ngClass]="steps[currentStep]" *ngIf="isStepsReady && course">
-  <km-learn-intro *ngSwitchCase="'intro'"
-    [lessonId]="this.lesson._id"
-    [text]="text"
-    (stepCompleted)="onStepCompleted('intro', null)">
-  </km-learn-intro>
-  <km-learn-study  *ngSwitchCase="'study'"
-    [exercises]="lesson.exercises"
-    [lanPair]="course.languagePair"
-    [lessonId]="this.lesson._id"
-    [text]="text"
-    [options]="lesson?.exerciseSteps.study"
-    [settings]="settings"
-    (skipStep)="onSkipStep()"
-    (stepCompleted)="onStepCompleted('study', $event)"
-    (updatedSettings)="onSettingsUpdated($event)"
-  >
-  </km-learn-study>
-  <km-learn-practise *ngSwitchCase="'practise'"
-    [exercises]="lesson.exercises"
-    [lanPair]="course.languagePair"
-    [options]="lesson?.exerciseSteps.practise"
-    [lessonId]="this.lesson._id"
-    [text]="text"
-    [learnedLevel]="isLearnedLevel"
-    [settings]="settings"
-    (lessonCompleted)="onLessonCompleted()"
-    (stepCompleted)="onStepCompleted('practise', $event)"
-    (stepBack)="onStepBack()"
-    (updatedSettings)="onSettingsUpdated($event)"
-  >
-  </km-learn-practise>
-  <km-learn-review *ngSwitchCase="'review'"
-    [courseId]="courseId"
-    [lanPair]="course.languagePair"
-    [text]="text"
-    [settings]="settings"
-    (stepCompleted)="onStepCompleted('review', $event)"
-    (updatedSettings)="onSettingsUpdated($event)"
-  >
-  </km-learn-review>
-  <km-learn-overview *ngSwitchCase="'overview'"
-    [lessonId]="lesson._id"
-    [exercises]="lesson.exercises"
-    [text]="text"
-    [isLearnedLevel]="isLearnedLevel"
-  >
-  </km-learn-overview>
+<div *ngIf="isStepsReady && course">
+  <div class="learn-header"
+    [ngClass]="steps[currentStep].name">
+  </div>
+  <div [ngSwitch]="steps[currentStep].name" class="learn" [ngClass]="steps[currentStep].name" >
+    <km-learn-intro *ngSwitchCase="'intro'"
+      [lessonId]="this.lesson._id"
+      [text]="text"
+      (stepCompleted)="onStepCompleted('intro', null)">
+    </km-learn-intro>
+    <km-learn-study  *ngSwitchCase="'study'"
+      [exercises]="lesson.exercises"
+      [lanPair]="course.languagePair"
+      [lessonId]="this.lesson._id"
+      [text]="text"
+      [options]="lesson?.exerciseSteps.study"
+      [settings]="settings"
+      (skipStep)="onSkipStep()"
+      (stepCompleted)="onStepCompleted('study', $event)"
+      (updatedSettings)="onSettingsUpdated($event)"
+    >
+    </km-learn-study>
+    <km-learn-practise *ngSwitchCase="'practise'"
+      [exercises]="lesson.exercises"
+      [lanPair]="course.languagePair"
+      [options]="lesson?.exerciseSteps.practise"
+      [lessonId]="this.lesson._id"
+      [text]="text"
+      [learnedLevel]="isLearnedLevel"
+      [settings]="settings"
+      (lessonCompleted)="onLessonCompleted()"
+      (stepCompleted)="onStepCompleted('practise', $event)"
+      (stepBack)="onStepBack()"
+      (updatedSettings)="onSettingsUpdated($event)"
+    >
+    </km-learn-practise>
+    <km-learn-review *ngSwitchCase="'review'"
+      [courseId]="courseId"
+      [lanPair]="course.languagePair"
+      [text]="text"
+      [settings]="settings"
+      (stepCompleted)="onStepCompleted('review', $event)"
+      (updatedSettings)="onSettingsUpdated($event)"
+    >
+    </km-learn-review>
+    <km-learn-overview *ngSwitchCase="'overview'"
+      [lessonId]="lesson._id"
+      [exercises]="lesson.exercises"
+      [text]="text"
+      [isLearnedLevel]="isLearnedLevel"
+    >
+    </km-learn-overview>
+  </div>
 </div>
 
 <km-info-msg

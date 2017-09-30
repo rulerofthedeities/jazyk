@@ -1,8 +1,31 @@
 .panel {
   background-color: rgba(239, 239, 239, .9);
+  border: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  height: 100%;
+}
+.panel-lesson, .panel-course {
+  height: 64px;
+  margin-bottom: 0;
+}
+.panel-lesson {
+  padding-right: 0;
+}
+.panel-course {
+  padding-left: 0;
+}
+.panel-course h2, .panel-course .flag {
+  display: inline-block;
+}
+.panel-lesson .panel {
+  border-top-right-radius: 0;
+}
+.panel-course .panel {
+  border-top-left-radius: 0;
 }
 .title {
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 .title h2, .title h3 {
   margin: 0;
@@ -14,4 +37,10 @@
 .toggleLevel{
   font-size: 32px;
   cursor: pointer;
+}
+.course.panel{
+  background-color: rgba(255, 255, 255, 1);
+}
+.lesson .panel{
+  background-color: rgba(255, 255, 255, 1);
 }

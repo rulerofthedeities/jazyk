@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Lesson, Language, Translation} from '../../models/course.model';
+import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
@@ -47,7 +47,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private settings: LearnSettings;
   private defaultNrOfQuestions = 5;
   private settingsUpdated = false;
-  private possibleSteps = ['intro', 'study', 'practise', 'overview'];
   private isLearnedLevel = 12; // minimum level before it is considered learned
   private courseStep: string; // Step to start with defined by route
   lesson: Lesson;
@@ -57,13 +56,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   countPerStep: Map<StepCount> = {};
   text: Object = {};
   currentStep = 0;
-  steps: string[];
-  courseLevel: string; // Course or lesson
+  steps: Step[];
+  courseLevel: Level;
   isReady = false;
   isStepsReady = false;
   exercisesStarted = false;
   maxStreak = 20;
   nextLesson: Subject<string> = new Subject();
+  level = Level;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,14 +76,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.courseLevel = Level.Lesson;
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
         if (params['id']) {
           this.courseId = params['id'];
-          const routeStep = params['step'] || '';
-          this.setCourseType(routeStep);
+          // const routeStep = params['step'] || '';
+          // this.setCourseType(routeStep);
           this.getTranslations();
         }
       }
@@ -97,6 +98,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   stepTo(i: number) {
     this.currentStep = i;
+    this.courseLevel = this.steps[i].level;
+    console.log('new level', this.courseLevel);
   }
 
   onSkipStep() {
@@ -212,11 +215,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
         console.log('RESULTS', results);
         console.log('EXERCISES', this.lesson.exercises);
+        this.setSteps();
 
         // Fill in step count for the steps without a result
-        this.possibleSteps.forEach(step => {
-          if (!this.countPerStep[step]) {
-            this.countPerStep[step] = {nrDone: 0, nrRemaining: lessonTotal};
+        this.steps.forEach(step => {
+          if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
+            this.countPerStep[step.name] = {nrDone: 0, nrRemaining: lessonTotal};
           }
         });
         // Remove lessoncount for studies if tpe === sentence
@@ -231,7 +235,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
         this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
         if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
-          this.setLessonSteps();
+          // this.setSteps();
         } else {
           // This lesson is finished, go to next lesson
           this.nextLesson.next(this.lesson._id);
@@ -241,27 +245,27 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setLessonSteps() {
-    const steps = [];
-    this.possibleSteps.forEach((step, i) => {
+  private setSteps() {
+    const steps = this.utilsService.getSteps();
+    this.steps = [];
+    steps.forEach((step, i) => {
       if (this.lesson.exerciseSteps) {
-        if (step === 'overview' || (this.lesson.exerciseSteps[step] && this.lesson.exerciseSteps[step].active)) {
-          steps.push(step);
+        if (step.alwaysShown || (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active)) {
+          this.steps.push(step);
         }
       }
     });
     this.currentStep = 0;
-    this.steps = steps;
     this.isStepsReady = true;
   }
-
+/*
   private setCourseSteps() {
     const steps = ['review', 'difficult', 'exam'];
     this.steps = steps;
     this.currentStep = steps.findIndex(step => step === this.courseStep);
     this.isStepsReady = true;
   }
-
+*/
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     const lastResult: Map<ResultData> = {}; // Get most recent result per exercise (for isLearned && reviewTime)
@@ -460,6 +464,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
+/*
   private setCourseType(courseStep: string) {
     if (courseStep === 'review' || courseStep === 'exam' || courseStep === 'difficult') {
       this.courseStep = courseStep;
@@ -472,6 +477,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     console.log('course Step:', this.courseStep);
     console.log('course Level:', this.courseLevel);
   }
+*/
 
   ngOnDestroy() {
     this.componentActive = false;

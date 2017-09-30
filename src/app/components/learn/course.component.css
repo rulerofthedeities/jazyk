@@ -1,27 +1,124 @@
 .list-inline {
   margin-left: 0;
 }
-.lead {
-  margin-bottom: 6px;
+.panel-lesson {
+  padding-right: 0;
 }
-.btn-yellow {
-  color: #fff;
-  background-color: #fdd835;
-  border-color: #fdd835;
-  text-shadow: 1px 1px 0 #aaa;
+.panel-course {
+  padding-left: 0;
 }
-.inactive {
-  color: #333;
-  background-color: #fff;
-  text-shadow: 0px 0px;
+.panel-course .btn {
+  float: right;
 }
-.inactive:hover {
-  color: #333;
-  background-color: #f6f6f6;
+.steps {
+  background-color: rgba(239, 239, 239, .9);
+  margin-bottom: 3px;
+  padding: 0 4px;
+  width: 100%;
+  float: right;
 }
-.steps .btn {
+.panel-lesson .activeLevel.steps {
+  background-color: rgba(255, 255, 255, 1);
+}
+.panel-course .activeLevel.steps {
+  background-color: rgba(255, 255, 255, 1);
+}
+.panel-lesson .steps {
+  border-bottom-left-radius: 4px;
+}
+.panel-course .steps {
+  border-bottom-right-radius: 4px;
+}
+.btn-step {
+  margin-top: 4px;
   padding-left: 12px;
   padding-right: 12px;
+  border-radius: 3px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 3px solid #e2dfdd;
+}
+.active {
+  position: relative;
+  top: 4px;
+  margin-top: 0 !important;
+  height: 51px;
+}
+.inactive {
+  border-bottom: 3px solid #e2dfdd;
+}
+.activeLevel .inactive {
+  border-bottom: 3px solid white;
+}
+.active.btn-overview {
+  background-color: rgb(127, 149, 165);
+  border-bottom: 3px solid rgb(127, 149, 165);
+}
+.inactive:hover.btn-overview {
+  border-bottom: 3px solid rgb(127, 149, 165);
+}
+.learn-header.overview {
+  background-color: rgb(127, 149, 165);
+}
+.active.btn-intro {
+  background-color: rgb(125, 164, 131);
+  border-bottom: 3px solid rgb(125, 164, 131);
+}
+.inactive:hover.btn-intro {
+  border-bottom: 3px solid rgb(125, 164, 131);
+}
+.learn-header.intro {
+  background-color: rgb(125, 164, 131);
+}
+.active.btn-study {
+  background-color: rgb(173, 200, 136);
+  border-bottom: 3px solid rgb(173, 200, 136);
+}
+.inactive:hover.btn-study {
+  border-bottom: 3px solid rgb(173, 200, 136);
+}
+.learn-header.study {
+  background-color: rgb(173, 200, 136);
+}
+.active.btn-practise {
+  background-color: rgb(220, 202, 83);
+  border-bottom: 3px solid rgb(220, 202, 83);
+}
+.inactive:hover.btn-practise {
+  border-bottom: 3px solid rgb(220, 202, 83);
+}
+.learn-header.practise {
+  background-color: rgb(220, 202, 83);
+}
+.active.btn-review {
+  background-color: rgb(242, 196, 15);
+  border-bottom: 3px solid rgb(242, 196, 15);
+}
+.inactive:hover.btn-review {
+  border-bottom: 3px solid rgb(242, 196, 15);
+}
+.learn-header.review {
+  background-color: rgb(242, 196, 15);
+}
+.active.btn-difficult {
+  background-color: rgb(243, 156, 17);
+  border-bottom: 3px solid rgb(243, 156, 17);
+}
+.inactive:hover.btn-difficult {
+  border-bottom: 3px solid rgb(243, 156, 17);
+}
+.learn-header.difficult {
+  background-color: rgb(243, 156, 17);
+}
+.active.btn-exam {
+  background-color: rgb(232, 76, 61);
+  border-bottom: 3px solid rgb(232, 76, 61);
+}
+.inactive:hover.btn-exam {
+  border-bottom: 3px solid rgb(232, 76, 61);
+}
+.learn-header.exam {
+  background-color: rgb(232, 76, 61);
 }
 .btn .fa {
   margin-right: 4px;
@@ -30,23 +127,14 @@
   color: whitesmoke;
   margin:10px 12px 0 12px;
 }
-.intro {
-  border: 1px solid #5cb85c;
-}
-.study, .practise, .test {
-  border: 1px solid #5bc0de;
-}
-.review {
-  border: 1px solid #428bca;
-}
-.exam {
-  border: 1px solid #d9534f;
-}
-.difficult {
-  border: 1px solid #f0ad4e;
+.learn-header {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  height: 8px;
 }
 .learn{
-  border-radius: 6px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
   padding: 4px;
   background-color: #eee;
   background: linear-gradient(90deg, #efefef , #fff);

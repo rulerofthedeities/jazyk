@@ -1,6 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
-import {Language, LanPair} from '../models/course.model';
+import {Language, LanPair, Step, Level} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
 import {Translation} from '../models/course.model';
@@ -98,6 +98,46 @@ export class UtilsService {
       'phrase',
       'abbreviation',
       'wordpart'
+    ];
+  }
+
+  getSteps(): Step[] {
+    return [
+      {
+        name: 'overview',
+        level: Level.Lesson,
+        alwaysShown: true
+      },
+      {
+        name: 'intro',
+        level: Level.Lesson,
+        alwaysShown: true
+      },
+      {
+        name: 'study',
+        level: Level.Lesson,
+        alwaysShown: false
+      },
+      {
+        name: 'practise',
+        level: Level.Lesson,
+        alwaysShown: false
+      },
+      {
+        name: 'exam',
+        level: Level.Course,
+        alwaysShown: false
+      },
+      {
+        name: 'difficult',
+        level: Level.Course,
+        alwaysShown: true
+      },
+      {
+        name: 'review',
+        level: Level.Course,
+        alwaysShown: true
+      }
     ];
   }
 

@@ -65,3 +65,11 @@ export interface Translation {
   key: string;
   txt: string;
 }
+
+export enum Level {Course, Lesson}
+
+export interface Step {
+  name: string;
+  level: Level;
+  alwaysShown: boolean;
+}
