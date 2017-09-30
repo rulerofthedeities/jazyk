@@ -9,6 +9,9 @@
   height: 64px;
   margin-bottom: 0;
 }
+.panel-lesson.edit, .panel-course.edit {
+  height: 148px;
+}
 .panel-lesson {
   padding-right: 0;
 }
