@@ -42,7 +42,9 @@
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone">
           <h3>Words reviewed:</h3>
-          <km-completed-list [data]="exerciseData">
+          <km-completed-list
+            [data]="exerciseData"
+            [text]="text">
           </km-completed-list>
           <div class="btn btn-success" (click)="onRestart()">
             <span class="fa fa-step-forward"></span>

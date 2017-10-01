@@ -64,6 +64,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   exercisesStarted = false;
   maxStreak = 20;
   nextLesson: Subject<string> = new Subject();
+  exercisesInterrupted: Subject<boolean> = new Subject();
   level = Level;
 
   constructor(
@@ -130,6 +131,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (exitOk) {
       console.log('exiting exercises');
       this.sharedService.changeExerciseMode(false);
+      this.exercisesInterrupted.next(true);
     }
   }
 

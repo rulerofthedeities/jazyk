@@ -11,7 +11,7 @@ interface Result {
 @Component({
   selector: 'km-completed-list',
   template: `
-  <div class="list">
+  <div class="list" *ngIf="!noResults">
     <div *ngFor="let result of results; let i=index">
       <span 
         class="fa fa-circle" 
@@ -22,6 +22,9 @@ interface Result {
           red: !result.isCorrect && !result.isAlmostCorrect}">
       </span> {{result.exercise.exercise.foreign.word}} <span class="local">- {{result.exercise.exercise.local.word}}</span>
     </div>
+  </div>
+  <div *ngIf="noResults">
+    {{text["NoWordsLearned"]}}.
   </div>`,
   styles: [`
     .list {
@@ -37,28 +40,35 @@ interface Result {
 
 export class LearnCompletedListComponent implements OnInit {
   @Input() private data: ExerciseData[];
+  @Input() text: Object;
   results: Result[] = [];
+  noResults = false;
 
   ngOnInit() {
     // show only 1 result per word
     let result: Result;
     this.data.forEach(exerciseData => {
-      // Check if this exercise is already in results
-      result = this.results.find(existingResult => existingResult.exercise.exercise.foreign.word === exerciseData.exercise.foreign.word);
-      if (!result) {
-        result = {
-          exercise: exerciseData,
-          isCorrect: exerciseData.data.isCorrect,
-          isAlt: exerciseData.data.isAlt,
-          isAlmostCorrect: exerciseData.data.isAlmostCorrect
-        };
-        this.results.push(result);
-      } else {
-        result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
-        result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
-        result.isAlmostCorrect = exerciseData.data.isCorrect ?
-          (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
+      if (exerciseData.data.isDone) {
+        // Check if this exercise is already in results
+        result = this.results.find(existingResult => existingResult.exercise.exercise.foreign.word === exerciseData.exercise.foreign.word);
+        if (!result) {
+          result = {
+            exercise: exerciseData,
+            isCorrect: exerciseData.data.isCorrect,
+            isAlt: exerciseData.data.isAlt,
+            isAlmostCorrect: exerciseData.data.isAlmostCorrect
+          };
+          this.results.push(result);
+        } else {
+          result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
+          result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
+          result.isAlmostCorrect = exerciseData.data.isCorrect ?
+            (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
+        }
       }
     });
+    if (this.results.length === 0) {
+      this.noResults = true;
+    }
   }
 }

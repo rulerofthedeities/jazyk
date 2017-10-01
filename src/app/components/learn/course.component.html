@@ -71,6 +71,7 @@
       [text]="text"
       [options]="lesson?.exerciseSteps.study"
       [settings]="settings"
+      [exercisesInterrupted]="exercisesInterrupted"
       (skipStep)="onSkipStep()"
       (stepCompleted)="onStepCompleted('study', $event)"
       (updatedSettings)="onSettingsUpdated($event)"

@@ -80,7 +80,9 @@
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone && !noMoreExercises">
           <h3>Words practised:</h3>
-          <km-completed-list [data]="exerciseData">
+          <km-completed-list
+            [data]="exerciseData"
+            [text]="text">
           </km-completed-list>
 
           <button type="button" class="btn btn-success" (click)="onRestart()">

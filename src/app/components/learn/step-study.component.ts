@@ -19,6 +19,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
+  @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -54,7 +55,24 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.filterExercises();
     this.fetchLessonResults();
+    this.checkExercisesInterrupted()
     this.isMute = this.settings.mute;
+
+    this.exercisesInterrupted
+    .takeWhile(() => this.componentActive)
+    .subscribe( event => {
+      this.isStudyDone = true;
+      let nrDone = this.current;
+      if (this.currentData.data.isDone) {
+        nrDone++;
+      }
+      if (nrDone > 0) {
+        this.exerciseData = this.exerciseData.slice(0, nrDone);
+      } else {
+        // No words were done
+
+      }
+    });
   }
 
   onCountDownFinished() {
@@ -224,6 +242,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.current = -1;
     this.exerciseData = this.learnService.shuffle(this.exerciseData);
     this.isStudyDone = false;
+    this.sharedService.changeExerciseMode(true);
     this.nextWord(1);
   }
 
@@ -251,6 +270,26 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     } else {
       this.wordDone();
     }
+  }
+
+  checkExercisesInterrupted() {
+    this.exercisesInterrupted
+    .takeWhile(() => this.componentActive)
+    .subscribe( event => {
+      let nrDone = this.current;
+      if (this.currentData.data.isDone) {
+        nrDone++;
+      }
+      if (nrDone > 0) {
+        // Show results page
+        this.isStudyDone = true;
+        this.exerciseData = this.exerciseData.slice(0, nrDone);
+        this.stepCompleted.emit(this.exerciseData);
+      } else {
+        // No words were done
+        this.stepCompleted.emit(null);
+      }
+    });
   }
 
   ngOnDestroy() {

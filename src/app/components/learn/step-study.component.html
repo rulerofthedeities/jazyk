@@ -53,7 +53,9 @@
         <!-- STUDY DONE -->
         <div *ngIf="isStudyDone && exerciseData?.length > 0">
           <h3>Words learned:</h3>
-          <km-completed-list [data]="exerciseData">
+          <km-completed-list 
+            [data]="exerciseData"
+            [text]="text">
           </km-completed-list>
           <h3>Points earned:</h3>
           <km-points-completed [data]="exerciseData">
