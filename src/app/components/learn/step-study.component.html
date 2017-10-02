@@ -60,9 +60,9 @@
           <h3>Points earned:</h3>
           <km-points-completed [data]="exerciseData">
           </km-points-completed>
-          <div class="btn btn-success" (click)="onNextWord(1)">
+          <div class="btn btn-success" (click)="onStudyNewWords()">
             <span class="fa fa-refresh"></span>
-            {{text["RestartStudy"]}}
+            {{text["ContinueStudy"]}}
           </div>
           <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
             <span class="fa fa-fast-forward"></span>
@@ -84,7 +84,7 @@
           {{isStudyDone ? text["Restart"] : text["Next"]}}
         </div>
       </div>
-      <km-points-earned [pointsEarned]="pointsEarned">
+      <km-points-earned [pointsEarned]="pointsEarned" *ngIf="!isStudyDone">
       </km-points-earned>
     </div>
     <div class="clearfix"></div>

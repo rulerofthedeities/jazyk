@@ -54,8 +54,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.filterExercises();
+    this.exercises = this.exercises.slice(0, 2);
     this.fetchLessonResults();
-    this.checkExercisesInterrupted()
+    this.checkExercisesInterrupted();
     this.isMute = this.settings.mute;
 
     this.exercisesInterrupted
@@ -83,6 +84,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   onNextWord(delta: number) {
     this.nextWord(delta);
+  }
+
+  onStudyNewWords() {
+    this.fetchLessonResults();
   }
 
   onSkipRequested(confirm: ModalConfirmComponent) {
@@ -140,6 +145,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
         this.isWordsDone = true;
+        this.sharedService.changeExerciseMode(false);
         if (this.isRestart) {
           this.stepCompleted.emit(null); // don't update step counter
         } else {
@@ -163,13 +169,15 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.showLocal = true;
       const points = 2,
             currentExercise = this.exerciseData[this.current];
-      currentExercise.data.isDone = true;
-      currentExercise.data.isCorrect = true;
-      currentExercise.data.points = 0;
-      if (!currentExercise.result) {
-        this.score = this.score + points;
-        currentExercise.data.points = points;
-        this.pointsEarned.next(points);
+      if (currentExercise) {
+        currentExercise.data.isDone = true;
+        currentExercise.data.isCorrect = true;
+        currentExercise.data.points = 0;
+        if (!currentExercise.result) {
+          this.score = this.score + points;
+          currentExercise.data.points = points;
+          this.pointsEarned.next(points);
+        }
       }
     }
   }

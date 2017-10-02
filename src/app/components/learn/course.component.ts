@@ -101,7 +101,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   stepTo(i: number) {
     this.currentStep = i;
     this.courseLevel = this.steps[i].level;
-    console.log('new level', this.courseLevel);
   }
 
   onSkipStep() {
@@ -129,7 +128,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
-      console.log('exiting exercises');
       this.sharedService.changeExerciseMode(false);
       this.exercisesInterrupted.next(true);
     }
@@ -471,21 +469,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       break;
     }
   }
-
-/*
-  private setCourseType(courseStep: string) {
-    if (courseStep === 'review' || courseStep === 'exam' || courseStep === 'difficult') {
-      this.courseStep = courseStep;
-      this.courseLevel = 'course';
-      this.setCourseSteps();
-    } else {
-      this.courseStep = '';
-      this.courseLevel = 'lesson';
-    }
-    console.log('course Step:', this.courseStep);
-    console.log('course Level:', this.courseLevel);
-  }
-*/
 
   ngOnDestroy() {
     this.componentActive = false;
