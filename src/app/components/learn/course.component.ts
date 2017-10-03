@@ -112,6 +112,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
+    console.log('step completed', step, data);
     if (step === 'intro') {
       this.nextStep();
     } else {

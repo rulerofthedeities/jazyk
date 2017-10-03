@@ -12,6 +12,7 @@ import {LearnQAComponent} from './qa.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
+import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
   [K: string]: T;
@@ -32,6 +33,7 @@ interface LearnLevelData {
 
 export abstract class Step {
   @Input() protected exercises: Exercise[];
+  @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() settings: LearnSettings;
   @Input() text: Object;
   @Input() lanPair: LanPair;
@@ -84,6 +86,12 @@ export abstract class Step {
   onSettingsUpdated(settings: LearnSettings) {
     this.settings = settings;
     this.updatedSettings.emit(settings);
+  }
+
+  onRestart() {
+    if (this.isExercisesDone) {
+      this.restart();
+    }
   }
 
   onKeyPressed(key: string) {
@@ -176,6 +184,7 @@ export abstract class Step {
   protected init() {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
+    this.checkExercisesInterrupted();
     this.getConfig(this.lanPair.to); // For keyboard keys
     if (!this.isCountDown) {
       this.onCountDownFinished();
@@ -221,6 +230,7 @@ export abstract class Step {
     if (this.current >= this.exerciseData.length) {
       this.isExercisesDone = true;
       this.stepCompleted.emit(this.exerciseData);
+      this.sharedService.changeExerciseMode(false);
     }
     if (!this.isExercisesDone) {
       this.nextExercise.next(this.current);
@@ -666,6 +676,17 @@ export abstract class Step {
     });
   }
 
+  private restart() {
+    this.isExercisesDone = false;
+    this.sharedService.changeExerciseMode(true);
+    this.current = -1;
+    this.fetchResults();
+  }
+
+  protected fetchResults() {
+
+  }
+
   private getConfig(lanCode: string) {
     this.learnService
     .fetchLanConfig(lanCode)
@@ -678,6 +699,26 @@ export abstract class Step {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private checkExercisesInterrupted() {
+    this.exercisesInterrupted
+    .takeWhile(() => this.componentActive)
+    .subscribe( event => {
+      let nrDone = this.current;
+      if (this.currentData.data.isDone) {
+        nrDone++;
+      }
+      this.isExercisesDone = true;
+      if (nrDone > 0) {
+        // Show results page
+        this.exerciseData = this.exerciseData.slice(0, nrDone);
+        this.stepCompleted.emit(this.exerciseData);
+      } else {
+        // No words were done
+        this.stepCompleted.emit(null);
+      }
+    });
   }
 
 }

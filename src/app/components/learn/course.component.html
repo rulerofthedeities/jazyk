@@ -85,6 +85,7 @@
       [text]="text"
       [learnedLevel]="isLearnedLevel"
       [settings]="settings"
+      [exercisesInterrupted]="exercisesInterrupted"
       (lessonCompleted)="onLessonCompleted()"
       (stepCompleted)="onStepCompleted('practise', $event)"
       (stepBack)="onStepBack()"
@@ -96,6 +97,7 @@
       [lanPair]="course.languagePair"
       [text]="text"
       [settings]="settings"
+      [exercisesInterrupted]="exercisesInterrupted"
       (stepCompleted)="onStepCompleted('review', $event)"
       (updatedSettings)="onSettingsUpdated($event)"
     >

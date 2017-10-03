@@ -54,26 +54,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.filterExercises();
-    this.exercises = this.exercises.slice(0, 2);
     this.fetchLessonResults();
     this.checkExercisesInterrupted();
     this.isMute = this.settings.mute;
-
-    this.exercisesInterrupted
-    .takeWhile(() => this.componentActive)
-    .subscribe( event => {
-      this.isStudyDone = true;
-      let nrDone = this.current;
-      if (this.currentData.data.isDone) {
-        nrDone++;
-      }
-      if (nrDone > 0) {
-        this.exerciseData = this.exerciseData.slice(0, nrDone);
-      } else {
-        // No words were done
-
-      }
-    });
   }
 
   onCountDownFinished() {
@@ -288,9 +271,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.currentData.data.isDone) {
         nrDone++;
       }
+      this.isStudyDone = true;
       if (nrDone > 0) {
         // Show results page
-        this.isStudyDone = true;
         this.exerciseData = this.exerciseData.slice(0, nrDone);
         this.stepCompleted.emit(this.exerciseData);
       } else {

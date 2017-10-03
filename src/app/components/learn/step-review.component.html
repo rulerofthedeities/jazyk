@@ -41,7 +41,7 @@
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone">
-          <h3>Words reviewed:</h3>
+          <h3>{{text["WordsReviewed"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"
             [text]="text">

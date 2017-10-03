@@ -23,7 +23,7 @@ interface Result {
       </span> {{result.exercise.exercise.foreign.word}} <span class="local">- {{result.exercise.exercise.local.word}}</span>
     </div>
   </div>
-  <div *ngIf="noResults">
+  <div class="list" *ngIf="noResults">
     {{text["NoWordsLearned"]}}.
   </div>`,
   styles: [`

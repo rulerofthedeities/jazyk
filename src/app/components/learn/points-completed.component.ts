@@ -4,7 +4,6 @@ import {ExerciseData} from '../../models/exercise.model';
 @Component({
   selector: 'km-points-completed',
   template: `
-  COMPLETED
   <div class="points">
     {{totalPoints}}
   </div>`,

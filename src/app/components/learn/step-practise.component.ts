@@ -45,12 +45,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.fetchLessonResults();
   }
 
-  onRestart() {
-    if (this.isExercisesDone) {
-      this.restart();
-    }
-  }
-
   onToStudy() {
     this.stepBack.emit();
   }
@@ -71,12 +65,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected nextWord() {
     super.nextWord();
-  }
-
-  private restart() {
-    this.isExercisesDone = false;
-    this.current = -1;
-    this.fetchLessonResults();
   }
 
   protected doAddExercise(aType: AnswerType, qType: QuestionType, learnLevel: number): boolean {
@@ -229,6 +217,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (learnLevel > this.learnedLevel) {
       this.audioService.playSound(this.isMute, this.beep);
     }
+  }
+
+  protected fetchResults() {
+    this.fetchLessonResults();
   }
 
   ngOnDestroy() {

@@ -79,12 +79,14 @@
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone && !noMoreExercises">
-          <h3>Words practised:</h3>
+          <h3>{{text["WordsPractised"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"
             [text]="text">
           </km-completed-list>
-
+          <h3>{{text["PointsEarned"]}}:</h3>
+          <km-points-completed [data]="exerciseData">
+          </km-points-completed>
           <button type="button" class="btn btn-success" (click)="onRestart()">
             <span class="fa fa-step-forward"></span>
             {{text["ContinuePractise"]}}
