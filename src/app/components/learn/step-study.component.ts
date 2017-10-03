@@ -32,7 +32,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
-  private isWordsDone =  false; // true once words are done once
+  isRehearsal = false; // all words have been studied before
   isStudyDone = false; // toggles with every replay
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
@@ -73,13 +73,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.fetchLessonResults();
   }
 
-  onSkipRequested(confirm: ModalConfirmComponent) {
-    // Only show a modal if it is not a restart
-    if (this.isWordsDone) {
-      this.skip();
-    } else {
-      confirm.showModal = true;
-    }
+  onRehearseAll() {
+    this.current = -1;
+    this.isRehearsal = true;
+    this.isCountDown = true;
+    this.buildExerciseData(this.exercises);
+    this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 
   onSkipConfirmed(skipOk: boolean) {
@@ -127,7 +126,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (delta > 0) {
       if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
-        this.isWordsDone = true;
         this.sharedService.changeExerciseMode(false);
         if (this.isRestart) {
           this.stepCompleted.emit(null); // don't update step counter
@@ -150,7 +148,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private wordDone() {
     if (!this.showLocal && this.current > -1) {
       this.showLocal = true;
-      const points = 2,
+      const points = this.isRehearsal ? 0 : 2,
             currentExercise = this.exerciseData[this.current];
       if (currentExercise) {
         currentExercise.data.isDone = true;
@@ -267,11 +265,15 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.exercisesInterrupted
     .takeWhile(() => this.componentActive)
     .subscribe( event => {
-      let nrDone = this.current;
-      if (this.currentData.data.isDone) {
-        nrDone++;
-      }
       this.isStudyDone = true;
+      let nrDone = 0;
+
+      if (!this.isRehearsal) {
+        nrDone = this.current;
+        if (this.currentData.data.isDone) {
+          nrDone++;
+        }
+      }
       if (nrDone > 0) {
         // Show results page
         this.exerciseData = this.exerciseData.slice(0, nrDone);

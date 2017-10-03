@@ -47,7 +47,16 @@
             type="button"
             class="btn btn-success"
             (click)="onToPractise()">
+            <span class="fa fa-arrow-right"></span>
             {{text["PractiseStudy"]}}
+          </button>
+          <br>
+          <button 
+            type="button"
+            class="btn btn-success"
+            (click)="onRehearseAll()">
+            <span class="fa fa-repeat"></span>
+            {{text["RehearseStudy"]}}
           </button>
         </div>
         <!-- STUDY DONE -->
@@ -57,14 +66,16 @@
             [data]="exerciseData"
             [text]="text">
           </km-completed-list>
-          <h3>{{text["PointsEarned"]}}:</h3>
-          <km-points-completed [data]="exerciseData">
-          </km-points-completed>
-          <div class="btn btn-success" (click)="onStudyNewWords()">
-            <span class="fa fa-refresh"></span>
-            {{text["ContinueStudy"]}}
+          <div *ngIf="!isRehearsal">
+            <h3>{{text["PointsEarned"]}}:</h3>
+            <km-points-completed [data]="exerciseData">
+            </km-points-completed>
+            <div class="btn btn-success" (click)="onStudyNewWords()">
+              <span class="fa fa-refresh"></span>
+              {{text["ContinueStudy"]}}
+            </div>
           </div>
-          <div class="btn btn-warning" (click)="onSkipRequested(confirm)">
+          <div class="btn btn-warning" (click)="onToPractise()">
             <span class="fa fa-fast-forward"></span>
             {{text["PractiseStudy"]}}
           </div>
@@ -105,5 +116,5 @@
   [text]="text"
   (confirmed)="onSkipConfirmed($event)">
   <div title>{{text["Warning"]}}</div>
-  <div message>Ben je zeker dat je de studie wil onderbreken?</div>
+  <div message>{{text["ConfirmExit"]}}?</div>
 </km-modal-confirm>
