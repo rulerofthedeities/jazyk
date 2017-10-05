@@ -267,8 +267,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     .subscribe( event => {
       this.isStudyDone = true;
       let nrDone = 0;
-
-      if (!this.isRehearsal) {
+      if (!this.isRehearsal) { // Don't save if this is a rehearsal
         nrDone = this.current;
         if (this.currentData.data.isDone) {
           nrDone++;

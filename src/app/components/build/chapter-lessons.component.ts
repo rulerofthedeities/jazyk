@@ -34,10 +34,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   ) {}
 
   ngOnInit() {
-    /*
-    this.sortedLessonIds = JSON.parse(JSON.stringify(this.lessonIds));
-    console.log('sorted Ids', this.lessonIds, this.sortedLessonIds);
-    */
     this.filterLessonIds();
   }
 

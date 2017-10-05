@@ -7,6 +7,16 @@ import {Lesson, LessonId} from '../../models/course.model';
   selector: 'km-build-lessons',
   templateUrl: 'lessons.component.html',
   styles: [`
+    .noChapter {
+      background-color: #428bca;
+      padding: 2px;
+      margin-top: 20px;
+      font-size: 20px;
+      margin-bottom: 0;
+      border-top-right-radius: 4px;
+      border-top-left-radius: 4px;
+      height: 32px;
+    }
   `]
 })
 

@@ -1,3 +1,19 @@
+<!-- LESSONS WITH NO CHAPTER -->
+<div *ngIf="getLessons('').length > 0">
+  <div class="noChapter">
+  </div>
+  <div>
+    <km-chapter-lessons
+      [lessons]="getLessons('')"
+      [lessonIds]="getLessonIds('')"
+      [text]="text"
+      (remove)="onRemoveLesson($event)"
+      (sorted)="onResortedLessons('', $event)">
+    </km-chapter-lessons>
+  </div>
+</div>
+
+<!-- LESSONS WITH CHAPTER -->
 <div *ngFor="let chapter of chapters; let i = index">
   <km-chapter
     dnd-sortable-container
@@ -21,10 +37,3 @@
     (sorted)="onResortedLessons(chapter, $event)">
   </km-chapter-lessons>
 </div>
-
-<ul class="nochapters list-unstyled">
-  <li *ngFor="let lesson of getLessons(''); let i=index">
-    {{i + 1}}. {{lesson.name}}  ({{lesson.exercises?.length}})
-  </li>
-</ul>
-
