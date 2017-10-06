@@ -10,6 +10,13 @@
 .panel-course .btn {
   float: right;
 }
+.panel-start {
+  text-align: center;
+  padding: 16px;
+}
+.panel-start .btn-start{
+  font-size: 32px;
+}
 .steps {
   background-color: rgba(239, 239, 239, .85);
   margin-bottom: 3px;

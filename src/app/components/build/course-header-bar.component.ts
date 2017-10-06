@@ -40,7 +40,9 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
   }
 
   onStartCourse() {
-    this.router.navigate(['/learn/course/' + this.course._id]);
+    if (this.course.isPublished) {
+      this.router.navigate(['/learn/course/' + this.course._id]);
+    }
   }
 
   onToggle(property: string) {

@@ -66,6 +66,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   nextLesson: Subject<string> = new Subject();
   exercisesInterrupted: Subject<boolean> = new Subject();
   level = Level;
+  showStartButton = false; // Button to show first time if no intro exists
 
   constructor(
     private route: ActivatedRoute,
@@ -109,6 +110,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   onStepBack() {
     this.previousStep();
+  }
+
+  onStartStudy() {
+    this.showStartButton = false;
+    this.stepTo(1);
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
@@ -225,6 +231,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         console.log('EXERCISES', this.lesson.exercises);
 
         this.setSteps();
+        this.setDefaultStep(results.length);
 
         // Fill in step count for the steps without a result
         this.steps.forEach(step => {
@@ -247,7 +254,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           // this.setSteps();
         } else {
           // This lesson is finished, go to next lesson
-          this.nextLesson.next(this.lesson._id);
+          // this.nextLesson.next(this.lesson._id);
         }
       },
       error => this.errorService.handleError(error)
@@ -266,14 +273,23 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     });
     this.isStepsReady = true;
   }
-/*
-  private setCourseSteps() {
-    const steps = ['review', 'difficult', 'exam'];
-    this.steps = steps;
-    this.currentStep = steps.findIndex(step => step === this.courseStep);
-    this.isStepsReady = true;
+
+  private setDefaultStep(results: number) {
+    // if no results: show intro if it exists otherwise show button to start study;
+    // if results: show overview
+    this.showStartButton = false;
+    if (results > 0) {
+      this.currentStep = 0;
+    } else {
+      if  (this.lesson.exerciseSteps['intro'].active) {
+        this.currentStep = 1;
+      } else {
+        this.showStartButton = true;
+        this.currentStep = -1;
+      }
+    }
   }
-*/
+
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
     const lastResult: Map<ResultData> = {}; // Get most recent result per exercise (for isLearned && reviewTime)

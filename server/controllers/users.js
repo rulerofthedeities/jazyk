@@ -124,11 +124,11 @@ module.exports = {
     var data = req.body;
     var lanObj = {};
     if (data && data.lan) {
-        lanObj['$set'] = {'jazyk.learn.lan': data.lan}
-        console.log('updating language', lanObj);
+      lanObj['$set'] = {'jazyk.learn.lan': data.lan}
+      console.log('updating language', lanObj);
     }
     User.findOneAndUpdate(
-      {_id: userId}, updateObj, function(err, result) {
+      {_id: userId}, lanObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating user', function(){
         response.handleSuccess(res, result, 200, 'Updated user');
       });

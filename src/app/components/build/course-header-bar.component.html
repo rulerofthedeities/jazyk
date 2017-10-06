@@ -25,10 +25,9 @@
     (click)="onEditCourse()">
     <span class="fa fa-pencil"></span> {{text["Edit"]}}
   </button>
-  <button 
+  <button *ngIf="course.isPublished"
     type="button"
     class="btn btn-success"
-    [class.disabled]="!course.isPublished"
     (click)="onStartCourse()">
     {{text["startcourse"]}}
   </button>

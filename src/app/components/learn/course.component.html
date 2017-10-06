@@ -56,9 +56,13 @@
 </div>
 <div *ngIf="isStepsReady && course">
   <div class="learn-header"
-    [ngClass]="steps[currentStep].name">
+    [ngClass]="steps[currentStep]?.name">
   </div>
-  <div [ngSwitch]="steps[currentStep].name" class="learn" [ngClass]="steps[currentStep].name" >
+  <div 
+    [ngSwitch]="steps[currentStep]?.name"
+    class="learn"
+    [ngClass]="steps[currentStep]?.name"
+    *ngIf="!showStartButton">
     <km-learn-intro *ngSwitchCase="'intro'"
       [lessonId]="this.lesson._id"
       [text]="text"
@@ -109,6 +113,15 @@
       [isLearnedLevel]="isLearnedLevel"
     >
     </km-learn-overview>
+  </div>
+  <div *ngIf="showStartButton" class="panel panel-start">
+    <button 
+      type="button"
+      class="btn btn-success btn-start"
+      (click)="onStartStudy()"
+    >
+      {{text["StartStudy"]}}
+    </button>
   </div>
 </div>
 

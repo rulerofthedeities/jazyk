@@ -23,7 +23,9 @@ export class BuildCourseSummaryComponent {
   }
 
   onStartCourse() {
-    this.userService.subscribeToCourse(this.course);
-    this.router.navigate(['/learn/course/' + this.course._id]);
+    if (this.course.isPublished) {
+      this.userService.subscribeToCourse(this.course);
+      this.router.navigate(['/learn/course/' + this.course._id]);
+    }
   }
 }

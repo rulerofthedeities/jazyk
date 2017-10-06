@@ -47,7 +47,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     this.nextLesson
     .takeWhile(() => this.componentActive)
     .subscribe(lessonId => {
-      console.log('next lesson', lessonId);
+      console.log('auto navigate to next lesson', lessonId);
       this.navigateLesson(lessonId, 1);
     });
     this.getCourseChapters();
@@ -118,11 +118,13 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
           i = i % len;
         }
         const newLesson = this.currentChapterLessons[i];
-        this.currentLessonName = newLesson.name;
-        if (this.lesson) {
-          this.lesson.nativeElement.value = newLesson._id;
+        if (newLesson) {
+          this.currentLessonName = newLesson.name;
+          if (this.lesson) {
+            this.lesson.nativeElement.value = newLesson._id;
+          }
+          this.getLesson(newLesson._id);
         }
-        this.getLesson(newLesson._id);
       }
     }
   }
