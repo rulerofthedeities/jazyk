@@ -30,6 +30,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   private currentLessonId: string;
   currentChapter: string;
   currentLessonName: string;
+  courseChapters: string[] = [];
   lessons: LessonHeader[] = [];
   currentChapterLessons: LessonHeader[] = [];
   isReady = false;
@@ -49,6 +50,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
       console.log('next lesson', lessonId);
       this.navigateLesson(lessonId, 1);
     });
+    this.getCourseChapters();
     if (this.courseLevel === Level.Lesson) {
       this.getLessons();
     } else {
@@ -85,20 +87,10 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     this.showSelector = !this.showSelector;
   }
 
-/*
-  onChangeLevel(newLevel: string) {
-    let step = '';
-    if (newLevel === 'course') {
-      step = '/review';
-    }
-    this.router.navigate(['/learn/course/' + this.course._id + step]);
-  }
-*/
-
   private navigateChapter(chapterName: string, direction: number) {
-    const len = this.course.chapters.length;
-    if (this.course.chapters && len > 1) {
-      let i = this.course.chapters.indexOf(chapterName);
+    const len = this.courseChapters.length;
+    if (this.courseChapters && len > 1) {
+      let i = this.courseChapters.indexOf(chapterName);
       if (i >= 0) {
         i += direction;
         if (i < 0) {
@@ -106,7 +98,7 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         } else {
           i = i % len;
         }
-        const newChapter = this.course.chapters[i];
+        const newChapter = this.courseChapters[i];
         this.currentChapter = newChapter;
         this.chapter.nativeElement.value = newChapter;
         this.getChapterLessons(newChapter);
@@ -184,8 +176,8 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         } else {
           // start from beginning of the course
           console.log('NO LESSON to load; start from beginning');
-          if (this.course.chapters) {
-            this.currentChapter = this.course.chapters[0];
+          if (this.courseChapters) {
+            this.currentChapter = this.courseChapters[0];
           }
           this.getFirstChapterLessons();
         }
@@ -195,8 +187,8 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
   }
 
   private getFirstChapterLessons() {
-    if (this.course.chapters.length > 0) {
-      this.getChapterLessons(this.course.chapters[0]);
+    if (this.courseChapters.length > 0) {
+      this.getChapterLessons(this.courseChapters[0]);
     } else {
       this.getChapterLessons('');
     }
@@ -218,6 +210,15 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
         },
         error => this.errorService.handleError(error)
       );
+    }
+  }
+
+  private getCourseChapters() {
+    this.courseChapters = this.course.chapters.slice(); // slice for no reference
+    // Check if there are lessons without a chapter
+    const noChapter = this.course.lessons.find(lesson => lesson.chapter === '');
+    if (noChapter && noChapter.lessonIds[0]) {
+      this.courseChapters.unshift('');
     }
   }
 

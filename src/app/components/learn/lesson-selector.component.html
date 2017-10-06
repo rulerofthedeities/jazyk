@@ -31,10 +31,10 @@
                     (change)="onChangeChapter(chapter.value)"
                     #chapter>
                     <option 
-                      *ngFor="let chapter of course.chapters"
+                      *ngFor="let chapter of courseChapters"
                       [value]="chapter"
                       [selected]="chapter === currentChapter">
-                      {{chapter}}
+                      {{chapter||text['NoChapter']}}
                     </option>
                   </select>
                   <span class="input-group-addon" (click)="onNextChapter(chapter.value)">

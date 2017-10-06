@@ -18,10 +18,18 @@
       (click)="onToggle('isPublished')">
     </span>
   </span>
-  <div 
+  <button 
+    type="button"
     class="btn btn-warning" 
     *ngIf="canEditCourse" 
     (click)="onEditCourse()">
     <span class="fa fa-pencil"></span> {{text["Edit"]}}
-  </div>
+  </button>
+  <button 
+    type="button"
+    class="btn btn-success"
+    [class.disabled]="!course.isPublished"
+    (click)="onStartCourse()">
+    {{text["startcourse"]}}
+  </button>
 </h1>

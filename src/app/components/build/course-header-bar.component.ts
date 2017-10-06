@@ -1,4 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Course} from '../../models/course.model';
@@ -27,6 +28,7 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
   };
 
   constructor(
+    private router: Router,
     private buildService: BuildService,
     private errorService: ErrorService
   ) {}
@@ -35,6 +37,10 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
     if (this.canEditCourse) {
       this.edit.emit(true);
     }
+  }
+
+  onStartCourse() {
+    this.router.navigate(['/learn/course/' + this.course._id]);
   }
 
   onToggle(property: string) {
