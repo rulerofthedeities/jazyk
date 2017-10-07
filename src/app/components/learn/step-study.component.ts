@@ -106,6 +106,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.updatedSettings.emit(settings);
   }
 
+  getLocalAlts(word: Exercise): string {
+    let altwords = '';
+    if (word && word.local && word.local.alt) {
+      altwords = word.local.alt.split('|').join('<br>');
+    }
+    return altwords;
+  }
+
   private nextWord(delta: number) {
     if (!this.showLocal && this.current > -1) {
       this.wordDone();

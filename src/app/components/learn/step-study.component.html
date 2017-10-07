@@ -32,6 +32,7 @@
                 </span>
                 <span *ngIf="showLocal else loading">
                   {{currentData.exercise?.local?.word}}
+                  <div class="alts" [innerHTML]="getLocalAlts(currentData.exercise)"></div>
                 </span>
               </h1>
             </div>
