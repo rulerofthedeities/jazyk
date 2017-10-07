@@ -112,36 +112,6 @@
         </select>
       </div>
     </div>
-    <!-- Foreign Hint / Info words -->
-    <div class="form-group">
-      <label 
-        class="control-label col-xs-1">
-      </label>
-      <label 
-        for="foreignHint" 
-        class="control-label col-xs-1 txt">
-        {{text["Hint"]}}:
-      </label>
-      <div class="col-xs-4">
-        <input 
-          class="form-control" 
-          id="foreignHint"
-          autocomplete="off"
-          formControlName="foreignHint">
-      </div>
-      <label 
-        for="info" 
-        class="control-label col-xs-1 txt">
-        {{text["Info"]}}:
-      </label>
-      <div class="col-xs-4">
-        <input 
-          class="form-control" 
-          id="info"
-          autocomplete="off"
-          formControlName="info">
-      </div>
-    </div>
     <!-- Foreign Alt words -->
     <div class="form-group">
       <label 
@@ -221,7 +191,7 @@
       </div>
     </div>
     <!-- Foreign Images -->
-    <div class="form-group">
+    <div class="form-group" *ngIf="images">
       <label 
         class="control-label col-xs-1">
       </label>
@@ -233,7 +203,7 @@
       <div class="col-xs-10">
         <span 
           *ngIf="!addFields['images']"
-          (click)="onActivateField('images');onLoadMedia();"
+          (click)="onActivateField('images')"
           class="fa fa-plus txt add">    
         </span>
         <div class="image" 
@@ -250,7 +220,7 @@
       </div>
     </div>
     <!-- Foreign Audios -->
-    <div class="form-group">
+    <div class="form-group" *ngIf="audios">
       <label 
         class="control-label col-xs-1">
       </label>
@@ -262,7 +232,7 @@
       <div class="col-xs-10">
         <span 
           *ngIf="!addFields['audios']"
-          (click)="onActivateField('audios');onLoadMedia();"
+          (click)="onActivateField('audios')"
           class="fa fa-plus txt add">    
         </span>
         <div class="audio" 

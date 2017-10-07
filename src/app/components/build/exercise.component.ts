@@ -82,6 +82,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   ngOnInit() {
     if (this.exercise) {
       this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
+      this.loadMedia();
     }
     this.lanLocal = this.languagePair.from;
     this.lanForeign = this.languagePair.to;
@@ -205,13 +206,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.addFields[field] = true;
   }
 
-  onLoadMedia() {
-    // Fetching audio and images for wordpairId if wordpairId exists
-    if (!this.isMediaLoaded) {
-      this.loadMedia();
-    }
-  }
-
   onClickImage(i: number) {
     this.currentExercise.image = this.images[i].s3;
   }
@@ -277,7 +271,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private loadMedia() {
-    if (this.currentExercise.wordDetailId) {
+    if (!this.isMediaLoaded && this.currentExercise.wordDetailId) {
       this.buildService
       .fetchMedia(this.currentExercise.wordDetailId)
       .takeWhile(() => this.componentActive)

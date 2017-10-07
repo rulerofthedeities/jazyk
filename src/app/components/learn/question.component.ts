@@ -14,16 +14,16 @@ export class LearnQuestionComponent {
   @Input() text: Object;
   @Input() currentData: ExerciseData;
   @Input() dir: string;
+  @Input() showAlt: false;
   @Input() settings: LearnSettings = null;
 
-  getLocalAlts(word: Exercise): string {
+  getAlts(tpe: string, word: Exercise): string {
     let altwords = '';
-    console.log('local', word);
-    if (word && word.local && word.local.alt) {
-    console.log('local', word.local.alt);
-      altwords = word.local.alt.split('|').join(', ');
+    if (this.showAlt) {
+      if (word && word[tpe] && word[tpe].alt) {
+        altwords = word[tpe].alt.split('|').join(', ');
+      }
     }
-    console.log('local', altwords);
     return altwords;
   }
 }

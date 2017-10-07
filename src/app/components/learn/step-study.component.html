@@ -24,6 +24,7 @@
               [text]="text"
               [dir]="'foreign'"
               [settings]="settings"
+              [showAlt]="true"
             ></km-question>
             <div class="answer">
               <h1 class="word">
@@ -32,7 +33,7 @@
                 </span>
                 <span *ngIf="showLocal else loading">
                   {{currentData.exercise?.local?.word}}
-                  <div class="alts" [innerHTML]="getLocalAlts(currentData.exercise)"></div>
+                  <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
                 </span>
               </h1>
             </div>
