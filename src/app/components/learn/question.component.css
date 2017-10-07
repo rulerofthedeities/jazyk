@@ -9,3 +9,10 @@ h1 {
   margin-right: 3px;
   border-radius: 6px;
 }
+.wordinfo {
+  margin-left: 42px;
+  margin-top: -8px;
+}
+.alts {
+  font-size: 20px;
+}

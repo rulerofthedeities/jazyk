@@ -10,12 +10,14 @@
       </span>
     </h1>
     <div class="wordinfo">
+      <div class="alts" [innerHTML]="getLocalAlts(currentData.exercise)"></div>
       <div
         class="label label-annotation"
         *ngFor="let annotation of currentData.data.annotations">
         {{annotation}}
       </div>
       <div class="hint" *ngIf="currentData.exercise.local.hint">
+        {{currentData.exercise?.local?.word}}
         {{text["hint"]}}: {{currentData.exercise.local.hint}}
       </div>
     </div>
