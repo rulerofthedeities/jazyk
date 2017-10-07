@@ -386,6 +386,7 @@
   <div class="form-group buttons">
     <div class="col-xs-12">
       <button type="button" class="btn btn-success btn-lg"
+        *ngIf="!currentExercise"
         [disabled]="!exerciseForm.valid"
         (click)="onAddNewWord(exerciseForm)">
         {{text["Addword"]}}

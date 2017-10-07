@@ -12,6 +12,7 @@ export class LearnSentenceComponent implements OnInit {
   @Input() lanPair: string;
   @Input() msg: string;
   @Input() data: ExerciseData;
+  @Input() instruction: string;
   @Output() answered = new EventEmitter<boolean>();
   sentence: string[];
   translation: string;

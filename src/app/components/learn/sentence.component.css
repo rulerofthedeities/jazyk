@@ -53,3 +53,11 @@
   padding-top: 0;
   margin-top: -15px;
 }
+.answer-instruction {
+  text-align: left;
+  margin-bottom: 16px;
+  margin-left: 16px;
+  font-size: 16px;
+  font-style: italic;
+  color: #bbb;
+}

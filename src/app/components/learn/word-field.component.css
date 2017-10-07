@@ -7,3 +7,10 @@ label {
   padding-left: 0;
   margin-top: 18px;
 }
+.answer-instruction {
+  text-align: left;
+  margin-left: 48px;
+  font-size: 16px;
+  font-style: italic;
+  color: #bbb;
+}

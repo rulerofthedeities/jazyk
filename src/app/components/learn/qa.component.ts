@@ -18,6 +18,7 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   @Input() msg: string;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
+  @Input() instruction: string = 'THIS IS THE INSTRUCTION';
   @Output() answered = new EventEmitter<boolean>();
   @ViewChild('answer') answer: ElementRef;
   sentence: string[]; // answer without []

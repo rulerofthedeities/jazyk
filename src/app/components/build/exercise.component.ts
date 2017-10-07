@@ -207,11 +207,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onClickImage(i: number) {
-    this.currentExercise.image = this.images[i].s3;
+    this.currentExercise.image = this.images[i].s3 === this.currentExercise.image ? undefined : this.images[i].s3;
   }
 
   onClickAudio(i: number) {
-    this.currentExercise.audio = this.audios[i].s3;
+    this.currentExercise.audio = this.audios[i].s3 === this.currentExercise.audio ? undefined : this.audios[i].s3;
   }
 
   getDynamicFieldLabel(): string {

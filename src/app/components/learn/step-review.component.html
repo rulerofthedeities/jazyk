@@ -29,6 +29,7 @@
             [answer]="answer"
             [answered]="answered"
             [isSelected]="isAnswered"
+            [instruction]="text['instructionChoices']"
             (selected)="onSelected($event)">
           </km-word-choices>
           <km-word-field *ngIf="isQuestionType(qType.Word)"
@@ -36,8 +37,23 @@
             [disabled]="isAnswered"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
+            [instruction]="text['instructionWordfield']"
             [data]="currentData?.data">
           </km-word-field>
+          <km-sentence *ngIf="isQuestionType(qType.Sentence)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [msg]="text['Expectedanswer']"
+            [instruction]="text['instructionSentence']"
+            (answered)="onAnsweredSentence($event)">
+          </km-sentence>
+          <km-qa *ngIf="isQuestionType(qType.QA)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [msg]="text['Expectedanswer']"
+            [instruction]="text['instructionQA']"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+          </km-qa>
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone">

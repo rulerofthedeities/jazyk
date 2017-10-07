@@ -24,6 +24,7 @@ export class LearnWordFieldComponent implements AfterViewChecked {
   @Input() data: ExerciseExtraData;
   @Input() keyboard: Keyboard;
   @Input() solution: Solution;
+  @Input() instruction: string;
   @ViewChild('answer') answer: ElementRef;
 
   constructor(
