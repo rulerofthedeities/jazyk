@@ -92,10 +92,14 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions">
-        <div class="btn btn-success btn-lg" (click)="onNextWord(1)" *ngIf="exerciseData?.length > 0">
+        <button 
+          *ngIf="exerciseData?.length > 0"
+          type="button"
+          class="btn btn-success btn-lg"
+          (click)="onNextWord(1)">
           <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
-          {{isStudyDone ? text["Restart"] : text["Next"]}}
-        </div>
+          {{isStudyDone ? text["Restart"] : (showLocal ? text["Next"] : text["ShowTranslation"])}}
+        </button>
       </div>
       <km-points-earned [pointsEarned]="pointsEarned" *ngIf="!isStudyDone">
       </km-points-earned>

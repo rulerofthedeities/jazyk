@@ -44,11 +44,11 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   }
 
   getData(): string {
-    this.isAnswered = true;
     return this.answer.nativeElement.value;
   }
 
   getCorrect(): string {
+    this.isAnswered = true;
     return this.correctAnswer;
   }
 

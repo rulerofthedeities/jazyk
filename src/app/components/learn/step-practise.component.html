@@ -108,12 +108,15 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions">
-        <div *ngIf="!isExercisesDone"
+        <button 
+          type="button"
+          *ngIf="!isExercisesDone"
+          [disabled]="!isAnswered && isSelectionExercise()"
           class="btn btn-lg btn-success next" 
           (click)="onNextWord()">
           <span class="fa fa-step-forward"></span>
-          {{text["Next"]}}
-        </div>
+          {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
+        </button>
         <div *ngIf="isExercisesDone && !noMoreExercises"
           class="btn btn-lg btn-success next"
           (click)="onRestart()">

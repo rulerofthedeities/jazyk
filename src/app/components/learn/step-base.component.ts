@@ -181,6 +181,26 @@ export abstract class Step {
     return isQTpe;
   }
 
+  isSelectionExercise(): boolean {
+    let isSelection = false;
+    if (this.currentData &&
+        (this.currentData.data.questionType === QuestionType.Choices ||
+        this.currentData.data.questionType === QuestionType.Sentence)) {
+      isSelection = true;
+    }
+    return isSelection;
+  }
+
+  isEnterDataExercise(): boolean {
+    let isEnterData = false;
+    if (this.currentData &&
+        (this.currentData.data.questionType === QuestionType.Word ||
+        this.currentData.data.questionType === QuestionType.QA)) {
+      isEnterData = true;
+    }
+    return isEnterData;
+  }
+
   protected init() {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
@@ -216,7 +236,7 @@ export abstract class Step {
 
   private checkIfQAAnswer() {
     if (!this.isAnswered) {
-      if (this.qaComponent) {
+      if (this.qaComponent && this.qaComponent.getData()) {
         this.checkQAAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect());
       }
     } else {
