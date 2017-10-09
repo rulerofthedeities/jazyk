@@ -1,12 +1,19 @@
 .sentence {
   float:left;
+  top: -12px;
+  position: relative;
 }
 .question {
-  margin-bottom: 32px;
-  margin-left: -15px;
+  margin-bottom: 6px;
 }
 .answer {
   margin-bottom: 32px;
+}
+.solution {
+  font-size: 34px !important;
+  margin-left: 72px !important;
+  position: relative;
+  top: -32px;
 }
 km-keyboard {
   padding-left: 20px;

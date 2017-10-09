@@ -43,7 +43,7 @@
 </div>
 <div class="clearfix"></div>
 <div class="solution" *ngIf="isAnswered && (!data.data.isCorrect || data.data.isAlt)">
-  <span class="msg">{{msg}} </span><span>{{correctAnswer}}</span>
+  <span class="msg">{{msg}} </span><span class="answer">{{correctAnswer}}</span>
 </div>
 <km-keyboard 
   *ngIf="keyboard.showKeyboard && !isAnswered"
