@@ -1,6 +1,6 @@
 <nav class="navbar navbar-earthy navbar-fixed-top">
   <div class="container">
-    <!--<div style="font-size:10px">user: {{userService?.user|json}}</div> -->
+    <!-- <div style="font-size:10px">user: {{userService?.user|json}}</div> -->
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
@@ -42,23 +42,47 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li routerLinkActive="active" class="login">
+        <li routerLinkActive="active" 
+          class="login"
+          *ngIf="!isLoggedIn() && url!=='/auth/signin'">
           <a 
-            routerLink="/auth/signin"
-            *ngIf="!isLoggedIn() && url!=='/auth/signin'">
+            routerLink="/auth/signin">
             <span class="fa fa-sign-in"></span>
             {{text["Login"]}}
             <span class="bar">
             </span>
           </a>
-          <a href="#" 
-            *ngIf="isLoggedIn()"
-            (click)="logOut()">
-            <span class="fa fa-sign-out"></span>
-            {{text["Logout"]}}
-            <span class="bar">
-            </span>
+        </li>
+        <li class="nav-item dropdown" *ngIf="isLoggedIn()" (click)="onToggleDropDown()">
+          <a href="#"
+            class="nav-link dropdown-toggle user-action">
+            {{userService?.user?.userName}} 
+            <span 
+              class="fa fa-caret" [ngClass]="{
+              'fa-caret-right': !showDropDown,
+              'fa-caret-down': showDropDown
+            }"></span>
           </a>
+          <ul 
+            class="dropdown-menu"
+            [style.display]="showDropDown ? 'block' : 'none'">
+            <li (click)="onGoto('profile')">
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-user-o"></i> {{text["Profile"]}}
+              </a>
+            </li>
+            <li (click)="onGoto('settings')">
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-sliders"></i> {{text["Settings"]}}
+              </a>
+            </li>
+            <li class="divider dropdown-divider"></li>
+            <li (click)="onLogOut()">
+              <a href="#" class="dropdown-item">
+                <i class="fa fa-sign-out"></i> {{text["Logout"]}}
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

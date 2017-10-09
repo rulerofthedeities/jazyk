@@ -477,7 +477,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         for (const key in lastResult) {
           if (lastResult.hasOwnProperty(key)) {
             if (lastResult[key].isLearned === true) {
-              // Leanned - Decrease practise count
+              // Learned - Decrease practise count
               remaining = this.countPerStep['practise'].nrRemaining - 1;
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
             }

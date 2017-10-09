@@ -13,6 +13,9 @@
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: black;
 }
+.navbar-earthy .dropdown-menu > li > a:hover {
+  color: black;
+}
 nav {
   box-shadow: 0px 4px 6px rgba(20, 20, 20, 0.3);
 }
@@ -31,6 +34,10 @@ li.active .bar, li > a:hover .bar {
 li.active span.bar {
   background-color: #ddd;
 }
+.fa-caret {
+  font-size: 12px;
+  width: 12px;
+}
 /* override bootstrap */
 .nav > li > a:hover, .nav > li > a:focus {
   text-decoration: none;
@@ -38,4 +45,8 @@ li.active span.bar {
 }
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: #ddd;
+}
+.dropdown-menu {
+  background-color: #2c3033;
+  font-size: 20px;
 }
