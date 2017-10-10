@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter, HostListener, ElementRef} from '@angular/core';
 import {Language} from '../../models/course.model';
 
 @Component({
@@ -16,6 +16,18 @@ export class LanguageSelectorComponent implements OnInit {
   showDropdown = false;
   dataReady = false;
   selectedDropdown: string; // For color indicator of hovered language in dropdown
+
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.showDropdown = false;
+    }
+  }
+
+  constructor(
+    private elementRef: ElementRef
+  ) {}
 
   ngOnInit() {
     console.log(this.languages, this.currentLanguage);

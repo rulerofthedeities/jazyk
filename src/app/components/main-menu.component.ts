@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, HostListener, ElementRef} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
@@ -18,31 +18,18 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   private url: string;
   text: Object = {};
   showDropDown = false;
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      // Outside element, close dropdown
-      this.showDropDown = false;
-    }
-  }
 
   constructor(
     private router: Router,
     private utilsService: UtilsService,
     private userService: UserService,
     private authService: AuthService,
-    private errorService: ErrorService,
-    private elementRef: ElementRef
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
     this.getUrl();
     this.getTranslations();
-  }
-
-  onToggleDropDown() {
-    event.preventDefault();
-    this.showDropDown = !this.showDropDown;
   }
 
   onShowDropDown(show: boolean) {
