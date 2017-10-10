@@ -11,6 +11,7 @@ import {AppComponent} from './components/app.component';
 import {BaseComponent} from './components/base.component';
 import {MainMenuComponent} from './components/main-menu.component';
 import {HomeComponent} from './components/home.component';
+import {UserComponent} from './components/user/user.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import {HomeComponent} from './components/home.component';
     AppComponent,
     BaseComponent,
     MainMenuComponent,
-    HomeComponent
+    HomeComponent,
+    UserComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -37,6 +37,9 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   onGoto(page: string) {
+    event.preventDefault();
+    this.showDropDown = false;
+    console.log('redirect to', page);
     this.router.navigate(['/user/', page]);
   }
 
