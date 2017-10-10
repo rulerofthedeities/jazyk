@@ -38,9 +38,10 @@ li.active span.bar {
   font-size: 12px;
   width: 12px;
 }
-.dropdown {
+.dropdown, .indicator {
   cursor: pointer;
 }
+
 /* override bootstrap */
 .nav > li > a:hover, .nav > li > a:focus {
   text-decoration: none;
@@ -49,6 +50,21 @@ li.active span.bar {
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: #ddd;
 }
+.navbar a.notifications {
+  margin-right: -20px;
+}
+.navbar a.notifications .badge {
+  position: relative;
+  top: -8px;
+  left: -14px;
+  background-color: red;
+}
+.navbar a.messages .badge {
+  position: relative;
+  top: -8px;
+  left: -14px;
+  background-color: red;
+} 
 .dropdown-menu {
   background-color: #2c3033;
   font-size: 20px;
