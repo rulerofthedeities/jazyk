@@ -45,6 +45,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.showDropDown = !this.showDropDown;
   }
 
+  onShowDropDown(show: boolean) {
+    this.showDropDown = show;
+  }
+
   onGoto(page: string) {
     this.router.navigate(['/user/', page]);
   }

@@ -53,8 +53,12 @@
             </span>
           </a>
         </li>
-        <li class="nav-item dropdown" *ngIf="isLoggedIn()" (click)="onToggleDropDown()">
-          <a href="#"
+        <li 
+          class="nav-item dropdown" 
+          *ngIf="isLoggedIn()"
+          on-mouseover='onShowDropDown(true)'
+          on-mouseout='onShowDropDown(false)'>
+          <a 
             class="nav-link dropdown-toggle user-action">
             {{userService?.user?.userName}} 
             <span 
