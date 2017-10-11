@@ -107,11 +107,16 @@ export class UserService {
     }
   }
 
+  getLearnSettings() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/settings', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   saveLearnSettings(settings: LearnSettings) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .put('/api/user/settings', JSON.stringify(settings), {headers})
     .map(response => response.json().obj)
@@ -218,5 +223,15 @@ export class UserService {
     if (user) {
       this._user = user;
     }
+  }
+
+  /*** Common ***/
+
+  private getTokenHeaders(): Headers {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return headers;
   }
 }

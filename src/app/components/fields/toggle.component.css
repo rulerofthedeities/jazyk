@@ -1,0 +1,9 @@
+.fa-toggle-on {
+  color: green;
+  cursor: pointer;
+  font-size: 32px;
+}
+.toggle-off {
+  color: #999;
+  transform:rotateY(180deg);
+}

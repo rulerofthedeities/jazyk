@@ -59,6 +59,7 @@ module.exports.initialize = function(app, router) {
   /* learn */
 
   router.put('/user/settings', users.saveLearnSettings);
+  router.get('/user/settings', users.getLearnSettings);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.post('/user/subscribe', users.subscribe);

@@ -1,0 +1,120 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form *ngIf="isFormReady"
+      [formGroup]="settingsForm"
+      class="form-horizontal">
+      <!-- Nr of Words -->
+      <div class="form-group">
+        <label 
+          for="nrOfWords" 
+          class="control-label col-xs-2">
+          {{text["NrOfWords"]}}
+        </label>
+        <div class="col-xs-10">
+          <select 
+            class="form-control" 
+            id="nrOfWords"
+            formControlName="nrOfWords">
+            <option 
+              *ngFor="let nr of formData.nrofwords"
+              [value]="nr">
+              {{nr}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <!-- Audio -->
+      <div class="form-group">
+        <label 
+          for="audio" 
+          class="control-label col-xs-2">
+          {{text["Audio"]}}
+        </label>
+        <div class="col-xs-10">
+          <km-toggle id="audio"
+            [toggle]="!settingsForm.value.mute"
+            (toggled)="onSetFlag('mute', !$event)">
+          </km-toggle>
+        </div>
+      </div>
+      <!-- Countdown -->
+      <div class="form-group">
+        <label 
+          for="countdown" 
+          class="control-label col-xs-2">
+          {{text["Countdown"]}}
+        </label>
+        <div class="col-xs-10">
+          <km-toggle id="countdown"
+            [toggle]="settingsForm.value.countDown"
+            (toggled)="onSetFlag('countDown', $event)">
+          </km-toggle>
+        </div>
+      </div>
+      <!-- Keyboard -->
+      <div class="form-group">
+        <label 
+          for="keyboard" 
+          class="control-label col-xs-2">
+          {{text["Keyboard"]}}
+        </label>
+        <div class="col-xs-10">
+          <km-toggle id="keyboard"
+            [toggle]="settingsForm.value.keyboard"
+            (toggled)="onSetFlag('keyboard', $event)">
+          </km-toggle>
+        </div>
+      </div>
+      <!-- Color -->
+      <div class="form-group">
+        <label 
+          for="keyboard" 
+          class="control-label col-xs-2">
+          {{text["ColorGender"]}}
+        </label>
+        <div class="col-xs-10">
+          <km-toggle id="color"
+            [toggle]="settingsForm.value.color"
+            (toggled)="onSetFlag('color', $event)">
+          </km-toggle>
+        </div>
+      </div>
+      <!-- Delay -->
+      <div class="form-group">
+        <label 
+          for="delay" 
+          class="control-label col-xs-2">
+          {{text["WordDelay"]}}
+        </label>
+        <div class="col-xs-10">
+          <div class="input-group">
+            <select 
+              class="form-control" 
+              id="delay"
+              formControlName="delay">
+              <option 
+                *ngFor="let nr of formData.delays"
+                [value]="nr">
+                {{nr}}
+              </option>
+            </select>
+            <span class="input-group-addon">
+              {{settingsForm.value.delay.toString() === "1" ? text["second"] : text["seconds"]}}
+            </span>
+          </div>
+        </div>
+      </div>
+      Values: {{settingsForm.value|json}}
+      <!-- Buttons -->
+      <div class="form-group buttons">
+        <div class="col-xs-10 col-xs-offset-2">
+          <button type="button" class="btn btn-success btn-lg"
+            [disabled]="!settingsForm.valid"
+            (click)="onUpdateSettings(settingsForm)">
+            {{text["UpdateSettings"]}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

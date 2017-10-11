@@ -11,9 +11,7 @@ let getCourse = function(req, res, authorOnly) {
       const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
       query = {_id: courseId, authorId: userId};
     }
-    console.log(query);
     Course.findOne(query, {}, function(err, course) {
-      console.log('course', course);
       response.handleError(err, res, 500, 'Error fetching course', function(){
         response.handleSuccess(res, course, 200, 'Fetched course');
       });

@@ -107,10 +107,20 @@ module.exports = {
       });
     })
   },
-  saveLearnSettings: function(req, res) {
+  getLearnSettings: function(req, res) {
+    console.log('getting user settings for', userId);
     var userId = req.decoded.user._id;
-    var settings = req.body;
-    var updateObj = {$set: {'jazyk.learn': settings}};
+    User.findOne(
+      {_id: userId}, {_id: 0, 'jazyk.learn':1}, function(err, result) {
+      response.handleError(err, res, 500, 'Error fetching learn settings', function(){
+        response.handleSuccess(res, result.jazyk.learn, 200, 'Fetched learn settings');
+      });
+    });
+  },
+  saveLearnSettings: function(req, res) {
+    var userId = req.decoded.user._id,
+        settings = req.body,
+        updateObj = {$set: {'jazyk.learn': settings}};
     console.log('updating learn settings', settings);
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
