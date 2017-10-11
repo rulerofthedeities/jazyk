@@ -125,7 +125,7 @@ module.exports = {
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating user settings', function(){
-        response.handleSuccess(res, result, 200, 'Updated user settings');
+        response.handleSuccess(res, true, 200, 'Updated user settings');
       });
     });
   },

@@ -1,6 +1,24 @@
 .panel {
   background-color: rgba(255, 255, 255, .9);
+  width: 60%;
+  margin: 0 auto;
+}
+.panel-heading {
+  font-size: 24px;
 }
 .buttons {
   margin-top: 32px;
+}
+.tiny-control {
+  width: 64px;
+}
+.input-group-addon {
+  float: left;
+  width: fit-content;
+  height: 34px;
+  padding-top: 8px;
+}
+.info-msg {
+  width: 60%;
+  margin: 0 auto;
 }

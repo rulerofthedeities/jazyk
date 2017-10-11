@@ -1,4 +1,7 @@
 <div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="fa fa-sliders"></span> {{text["Settings"]}}
+  </div>
   <div class="panel-body">
     <form *ngIf="isFormReady"
       [formGroup]="settingsForm"
@@ -7,12 +10,12 @@
       <div class="form-group">
         <label 
           for="nrOfWords" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["NrOfWords"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <select 
-            class="form-control" 
+            class="form-control tiny-control" 
             id="nrOfWords"
             formControlName="nrOfWords">
             <option 
@@ -27,10 +30,10 @@
       <div class="form-group">
         <label 
           for="audio" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["Audio"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <km-toggle id="audio"
             [toggle]="!settingsForm.value.mute"
             (toggled)="onSetFlag('mute', !$event)">
@@ -41,10 +44,10 @@
       <div class="form-group">
         <label 
           for="countdown" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["Countdown"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <km-toggle id="countdown"
             [toggle]="settingsForm.value.countDown"
             (toggled)="onSetFlag('countDown', $event)">
@@ -55,10 +58,10 @@
       <div class="form-group">
         <label 
           for="keyboard" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["Keyboard"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <km-toggle id="keyboard"
             [toggle]="settingsForm.value.keyboard"
             (toggled)="onSetFlag('keyboard', $event)">
@@ -69,10 +72,10 @@
       <div class="form-group">
         <label 
           for="keyboard" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["ColorGender"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <km-toggle id="color"
             [toggle]="settingsForm.value.color"
             (toggled)="onSetFlag('color', $event)">
@@ -83,13 +86,13 @@
       <div class="form-group">
         <label 
           for="delay" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-4">
           {{text["WordDelay"]}}
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-8">
           <div class="input-group">
             <select 
-              class="form-control" 
+              class="form-control tiny-control" 
               id="delay"
               formControlName="delay">
               <option 
@@ -104,12 +107,11 @@
           </div>
         </div>
       </div>
-      Values: {{settingsForm.value|json}}
       <!-- Buttons -->
       <div class="form-group buttons">
-        <div class="col-xs-10 col-xs-offset-2">
+        <div class="col-xs-19 col-xs-offset-3">
           <button type="button" class="btn btn-success btn-lg"
-            [disabled]="!settingsForm.valid"
+            [disabled]="!settingsForm.valid || !settingsForm.dirty"
             (click)="onUpdateSettings(settingsForm)">
             {{text["UpdateSettings"]}}
           </button>
@@ -117,4 +119,8 @@
       </div>
     </form>
   </div>
+</div>
+<div  class="info-msg">
+  <km-info-msg [msg]="infoMsg">
+  </km-info-msg>
 </div>

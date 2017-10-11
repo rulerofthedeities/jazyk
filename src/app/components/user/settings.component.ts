@@ -4,6 +4,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {LearnSettings} from '../../models/user.model';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
 interface FormData {
@@ -22,6 +23,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   settingsForm: FormGroup;
   formData: FormData;
   isFormReady = false;
+  infoMsg: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,9 +31,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private errorService: ErrorService
   ) {}
-
-  // UPDATE / SAVE : convert text to number for delay / nr of words
-
 
   ngOnInit() {
     this.getTranslations();
@@ -41,6 +40,15 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   onSetFlag(field: string, status: boolean) {
     this.settingsForm.patchValue({[field]: status});
+    this.settingsForm.markAsDirty();
+    this.infoMsg = '';
+  }
+
+  onUpdateSettings(form: any) {
+    if (form.valid) {
+      const settings = this.buildSettings(form.value);
+      this.updateSettings(settings);
+    }
   }
 
   private fetchSettings() {
@@ -53,6 +61,31 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private updateSettings(newSettings: LearnSettings) {
+    this.userService
+    .saveLearnSettings(newSettings)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {
+        this.infoMsg = this.text['SettingsUpdated'];
+        this.settingsForm.markAsPristine();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private buildSettings(formValues: any): LearnSettings {
+    return {
+      lan: formValues['lan'],
+      nrOfWords: parseInt(formValues['nrOfWords'], 10),
+      countdown: formValues['countDown'],
+      mute: formValues['mute'],
+      color: formValues['color'],
+      delay: parseInt(formValues['delay'], 10),
+      keyboard: formValues['keyboard']
+    };
   }
 
   private buildForm(settings: LearnSettings) {
