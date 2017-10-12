@@ -121,7 +121,6 @@ module.exports = {
     var userId = req.decoded.user._id,
         settings = req.body,
         updateObj = {$set: {'jazyk.learn': settings}};
-    console.log('updating learn settings', settings);
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating user settings', function(){
@@ -137,6 +136,18 @@ module.exports = {
       console.log('result', result);
       response.handleError(err, res, 500, 'Error fetching profile', function(){
         response.handleSuccess(res, result.jazyk.profile, 200, 'Fetched profile');
+      });
+    });
+  },
+  saveProfile: function(req, res) {
+    var userId = req.decoded.user._id,
+        profile = req.body,
+        updateObj = {$set: {'jazyk.profile': profile}};
+    console.log('updating profile', profile);
+    User.findOneAndUpdate(
+      {_id: userId}, updateObj, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating profile', function(){
+        response.handleSuccess(res, true, 200, 'Updated profile');
       });
     });
   },

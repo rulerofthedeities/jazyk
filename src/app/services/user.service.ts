@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings, JazykConfig} from '../models/user.model';
+import {User, LearnSettings, JazykConfig, Profile} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
@@ -136,6 +136,14 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/profile', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  saveProfile(profile: Profile) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put('/api/user/profile', JSON.stringify(profile), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

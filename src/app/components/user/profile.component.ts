@@ -8,7 +8,7 @@ import 'rxjs/add/operator/takeWhile';
 
 @Component({
   templateUrl: 'profile.component.html',
-  styleUrls: ['user.component.css']
+  styleUrls: ['user.css']
 })
 
 export class UserProfileComponent implements OnInit, OnDestroy {
@@ -30,6 +30,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.fetchProfile();
   }
 
+  onUpdateProfile(form: any) {
+    if (form.valid) {
+      const profile = this.buildProfile(form.value);
+      this.updateProfile(profile);
+    }
+  }
+
   private fetchProfile() {
     this.userService
     .getProfile()
@@ -42,7 +49,30 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  buildForm(profile: Profile) {
+  private updateProfile(newProfile: Profile) {
+    this.userService
+    .saveProfile(newProfile)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {
+        this.infoMsg = this.text['ProfileUpdated'];
+        this.profileForm.markAsPristine();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private buildProfile(formValues: any): Profile {
+    return {
+      bio: formValues['bio'],
+      realName: formValues['realName'],
+      location: formValues['location'],
+      nativeLan: formValues['nativeLan'],
+      timeZone: formValues['timeZone']
+    };
+  }
+
+  private buildForm(profile: Profile) {
     this.profileForm = this.formBuilder.group({
       bio: [profile.bio],
       realName: [profile.realName],
