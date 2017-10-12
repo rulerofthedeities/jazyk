@@ -22,6 +22,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   settingsForm: FormGroup;
   formData: FormData;
   isFormReady = false;
+  tab = 'config';
   infoMsg: string;
 
   constructor(
@@ -41,6 +42,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     this.settingsForm.patchValue({[field]: status});
     this.settingsForm.markAsDirty();
     this.infoMsg = '';
+  }
+
+  onChangeTab(newTab: string) {
+    this.tab = newTab;
   }
 
   onUpdateSettings(form: any) {

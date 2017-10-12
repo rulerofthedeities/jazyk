@@ -3,156 +3,195 @@
     <span class="fa fa-sliders"></span> {{text["Settings"]}}
   </div>
   <div class="panel-body">
-    <form *ngIf="isFormReady"
-      [formGroup]="settingsForm"
-      class="form-horizontal col-xs-10">
-      <!-- Nr of Words -->
-      <div class="form-group">
-        <label 
-          for="nrOfWordsStudy" 
-          class="control-label col-xs-4">
-          {{text["NrOfWords"]}}
-        </label>
-        <div class="col-xs-8">
-          <div class="input-group">
-            <select 
-              class="form-control tiny-control" 
-              id="nrOfWordsStudy"
-              formControlName="nrOfWordsStudy">
-              <option 
-                *ngFor="let nr of formData.nrofwords"
-                [value]="nr">
-                {{nr}}
-              </option>
-            </select>
-            <span class="input-group-addon">
-              {{text["perStudySession"]}}
-            </span>
+    <ul class="list-group settings-menu col-xs-2">
+      <li class="list-group-item"
+        (click)="onChangeTab('config')"
+        [class.active]="tab==='config'">
+        <span class="fa fa-cog"></span> CONFIG
+      </li>
+      <li class="list-group-item"
+        (click)="onChangeTab('password')"
+        [class.active]="tab==='password'">
+        <span class="fa fa-key"></span> PASSWORD
+      </li>        
+      <li class="list-group-item"
+        (click)="onChangeTab('email')"
+        [class.active]="tab==='email'">
+        <span class="fa fa-envelope"></span> EMAIL
+      </li>
+      <li class="list-group-item"
+        (click)="onChangeTab('deactivate')"
+        [class.active]="tab==='deactivate'">
+        <span class="fa fa-times"></span> DEACTIVATE
+      </li>
+    </ul>
+    <div [ngSwitch]="tab">
+      <!-- CONFIG TAB -->
+      <div *ngSwitchCase="'config'">
+        <form  *ngIf="isFormReady"
+          [formGroup]="settingsForm"
+          class="form-horizontal col-xs-10">
+          <!-- Nr of Words -->
+          <div class="form-group">
+            <label 
+              for="nrOfWordsStudy" 
+              class="control-label col-xs-4">
+              {{text["NrOfWords"]}}
+            </label>
+            <div class="col-xs-8">
+              <div class="input-group">
+                <select 
+                  class="form-control tiny-control" 
+                  id="nrOfWordsStudy"
+                  formControlName="nrOfWordsStudy">
+                  <option 
+                    *ngFor="let nr of formData.nrofwords"
+                    [value]="nr">
+                    {{nr}}
+                  </option>
+                </select>
+                <span class="input-group-addon">
+                  {{text["perStudySession"]}}
+                </span>
+              </div>
+              <div class="input-group">
+                <select 
+                  class="form-control tiny-control" 
+                  id="nrOfWordsLearn"
+                  formControlName="nrOfWordsLearn">
+                  <option 
+                    *ngFor="let nr of formData.nrofwords"
+                    [value]="nr">
+                    {{nr}}
+                  </option>
+                </select>
+                <span class="input-group-addon">
+                  {{text["perPractiseSession"]}}
+                </span>
+              </div>
+              <div class="input-group">
+                <select 
+                  class="form-control tiny-control" 
+                  id="nrOfWordsReview"
+                  formControlName="nrOfWordsReview">
+                  <option 
+                    *ngFor="let nr of formData.nrofwords"
+                    [value]="nr">
+                    {{nr}}
+                  </option>
+                </select>
+                <span class="input-group-addon">
+                  {{text["perReviewSession"]}}
+                </span>
+              </div>
+            </div>
           </div>
-          <div class="input-group">
-            <select 
-              class="form-control tiny-control" 
-              id="nrOfWordsLearn"
-              formControlName="nrOfWordsLearn">
-              <option 
-                *ngFor="let nr of formData.nrofwords"
-                [value]="nr">
-                {{nr}}
-              </option>
-            </select>
-            <span class="input-group-addon">
-              {{text["perPractiseSession"]}}
-            </span>
+          <!-- Audio -->
+          <div class="form-group">
+            <label 
+              for="audio" 
+              class="control-label col-xs-4">
+              {{text["Audio"]}}
+            </label>
+            <div class="col-xs-8">
+              <km-toggle id="audio"
+                [toggle]="!settingsForm.value.mute"
+                (toggled)="onSetFlag('mute', !$event)">
+              </km-toggle>
+            </div>
           </div>
-          <div class="input-group">
-            <select 
-              class="form-control tiny-control" 
-              id="nrOfWordsReview"
-              formControlName="nrOfWordsReview">
-              <option 
-                *ngFor="let nr of formData.nrofwords"
-                [value]="nr">
-                {{nr}}
-              </option>
-            </select>
-            <span class="input-group-addon">
-              {{text["perReviewSession"]}}
-            </span>
+          <!-- Countdown -->
+          <div class="form-group">
+            <label 
+              for="countdown" 
+              class="control-label col-xs-4">
+              {{text["Countdown"]}}
+            </label>
+            <div class="col-xs-8">
+              <km-toggle id="countdown"
+                [toggle]="settingsForm.value.countDown"
+                (toggled)="onSetFlag('countDown', $event)">
+              </km-toggle>
+            </div>
           </div>
-        </div>
-      </div>
-      <!-- Audio -->
-      <div class="form-group">
-        <label 
-          for="audio" 
-          class="control-label col-xs-4">
-          {{text["Audio"]}}
-        </label>
-        <div class="col-xs-8">
-          <km-toggle id="audio"
-            [toggle]="!settingsForm.value.mute"
-            (toggled)="onSetFlag('mute', !$event)">
-          </km-toggle>
-        </div>
-      </div>
-      <!-- Countdown -->
-      <div class="form-group">
-        <label 
-          for="countdown" 
-          class="control-label col-xs-4">
-          {{text["Countdown"]}}
-        </label>
-        <div class="col-xs-8">
-          <km-toggle id="countdown"
-            [toggle]="settingsForm.value.countDown"
-            (toggled)="onSetFlag('countDown', $event)">
-          </km-toggle>
-        </div>
-      </div>
-      <!-- Keyboard -->
-      <div class="form-group">
-        <label 
-          for="keyboard" 
-          class="control-label col-xs-4">
-          {{text["Keyboard"]}}
-        </label>
-        <div class="col-xs-8">
-          <km-toggle id="keyboard"
-            [toggle]="settingsForm.value.keyboard"
-            (toggled)="onSetFlag('keyboard', $event)">
-          </km-toggle>
-        </div>
-      </div>
-      <!-- Color -->
-      <div class="form-group">
-        <label 
-          for="keyboard" 
-          class="control-label col-xs-4">
-          {{text["ColorGender"]}}
-        </label>
-        <div class="col-xs-8">
-          <km-toggle id="color"
-            [toggle]="settingsForm.value.color"
-            (toggled)="onSetFlag('color', $event)">
-          </km-toggle>
-        </div>
-      </div>
-      <!-- Delay -->
-      <div class="form-group">
-        <label 
-          for="delay" 
-          class="control-label col-xs-4">
-          {{text["WordDelay"]}}
-        </label>
-        <div class="col-xs-8">
-          <div class="input-group">
-            <select 
-              class="form-control tiny-control" 
-              id="delay"
-              formControlName="delay">
-              <option 
-                *ngFor="let nr of formData.delays"
-                [value]="nr">
-                {{nr}}
-              </option>
-            </select>
-            <span class="input-group-addon">
-              {{settingsForm.value.delay.toString() === "1" ? text["second"] : text["seconds"]}}
-            </span>
+          <!-- Keyboard -->
+          <div class="form-group">
+            <label 
+              for="keyboard" 
+              class="control-label col-xs-4">
+              {{text["Keyboard"]}}
+            </label>
+            <div class="col-xs-8">
+              <km-toggle id="keyboard"
+                [toggle]="settingsForm.value.keyboard"
+                (toggled)="onSetFlag('keyboard', $event)">
+              </km-toggle>
+            </div>
           </div>
-        </div>
+          <!-- Color -->
+          <div class="form-group">
+            <label 
+              for="keyboard" 
+              class="control-label col-xs-4">
+              {{text["ColorGender"]}}
+            </label>
+            <div class="col-xs-8">
+              <km-toggle id="color"
+                [toggle]="settingsForm.value.color"
+                (toggled)="onSetFlag('color', $event)">
+              </km-toggle>
+            </div>
+          </div>
+          <!-- Delay -->
+          <div class="form-group">
+            <label 
+              for="delay" 
+              class="control-label col-xs-4">
+              {{text["WordDelay"]}}
+            </label>
+            <div class="col-xs-8">
+              <div class="input-group">
+                <select 
+                  class="form-control tiny-control" 
+                  id="delay"
+                  formControlName="delay">
+                  <option 
+                    *ngFor="let nr of formData.delays"
+                    [value]="nr">
+                    {{nr}}
+                  </option>
+                </select>
+                <span class="input-group-addon">
+                  {{settingsForm.value.delay.toString() === "1" ? text["second"] : text["seconds"]}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="form-group buttons">
+            <div class="col-xs-19 col-xs-offset-3">
+              <button type="button" class="btn btn-success btn-lg"
+                [disabled]="!settingsForm.valid || !settingsForm.dirty"
+                (click)="onUpdateSettings(settingsForm)">
+                {{text["UpdateSettings"]}}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <!-- Buttons -->
-      <div class="form-group buttons">
-        <div class="col-xs-19 col-xs-offset-3">
-          <button type="button" class="btn btn-success btn-lg"
-            [disabled]="!settingsForm.valid || !settingsForm.dirty"
-            (click)="onUpdateSettings(settingsForm)">
-            {{text["UpdateSettings"]}}
-          </button>
-        </div>
+      <!-- PASSWORD TAB -->
+      <div *ngSwitchCase="'password'">
+        
       </div>
-    </form>
+      <!-- EMAIL TAB -->
+      <div *ngSwitchCase="'email'">
+        
+      </div>
+      <!-- DEACTIVATE TAB -->
+      <div *ngSwitchCase="'deactivate'">
+        
+      </div>
+    </div>
   </div>
 </div>
 <div  class="info-msg">

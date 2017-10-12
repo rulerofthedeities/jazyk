@@ -1,6 +1,6 @@
 .panel {
   background-color: rgba(255, 255, 255, .9);
-  width: 60%;
+  width: 75%;
   margin: 0 auto;
 }
 .panel-heading {
@@ -24,4 +24,19 @@
 }
 textarea.bio {
   height: 90px;
+}
+.settings-menu {
+  border-right: 1px solid #ddd;
+  margin-left: -15px;
+  margin-top: -15px;
+  padding-right: 0;
+}
+.settings-menu li {
+  cursor: pointer;
+  border-left: none;
+  border-right: none;
+}
+.settings-menu .list-group-item:first-child {
+  border-top: 0;
+  border-radius: 0;
 }
