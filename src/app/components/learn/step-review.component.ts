@@ -48,7 +48,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
 
   private getToReview() {
     this.learnService
-    .fetchToReview(this.courseId, this.settings.nrOfWords)
+    .fetchToReview(this.courseId, this.settings.nrOfWordsReview)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {

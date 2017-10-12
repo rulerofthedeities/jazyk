@@ -100,7 +100,9 @@ export class UserService {
       learn: {
         lan: this.user.jazyk.learn.lan,
         countdown: true,
-        nrOfWords: 5,
+        nrOfWordsStudy: 5,
+        nrOfWordsLearn: 5,
+        nrOfWordsReview: 5,
         mute: false,
         delay: 2,
         color: true,

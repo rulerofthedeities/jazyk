@@ -5,25 +5,60 @@
   <div class="panel-body">
     <form *ngIf="isFormReady"
       [formGroup]="settingsForm"
-      class="form-horizontal">
+      class="form-horizontal col-xs-10">
       <!-- Nr of Words -->
       <div class="form-group">
         <label 
-          for="nrOfWords" 
+          for="nrOfWordsStudy" 
           class="control-label col-xs-4">
           {{text["NrOfWords"]}}
         </label>
         <div class="col-xs-8">
-          <select 
-            class="form-control tiny-control" 
-            id="nrOfWords"
-            formControlName="nrOfWords">
-            <option 
-              *ngFor="let nr of formData.nrofwords"
-              [value]="nr">
-              {{nr}}
-            </option>
-          </select>
+          <div class="input-group">
+            <select 
+              class="form-control tiny-control" 
+              id="nrOfWordsStudy"
+              formControlName="nrOfWordsStudy">
+              <option 
+                *ngFor="let nr of formData.nrofwords"
+                [value]="nr">
+                {{nr}}
+              </option>
+            </select>
+            <span class="input-group-addon">
+              {{text["perStudySession"]}}
+            </span>
+          </div>
+          <div class="input-group">
+            <select 
+              class="form-control tiny-control" 
+              id="nrOfWordsLearn"
+              formControlName="nrOfWordsLearn">
+              <option 
+                *ngFor="let nr of formData.nrofwords"
+                [value]="nr">
+                {{nr}}
+              </option>
+            </select>
+            <span class="input-group-addon">
+              {{text["perPractiseSession"]}}
+            </span>
+          </div>
+          <div class="input-group">
+            <select 
+              class="form-control tiny-control" 
+              id="nrOfWordsReview"
+              formControlName="nrOfWordsReview">
+              <option 
+                *ngFor="let nr of formData.nrofwords"
+                [value]="nr">
+                {{nr}}
+              </option>
+            </select>
+            <span class="input-group-addon">
+              {{text["perReviewSession"]}}
+            </span>
+          </div>
         </div>
       </div>
       <!-- Audio -->

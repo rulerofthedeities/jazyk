@@ -78,7 +78,9 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   private buildSettings(formValues: any): LearnSettings {
     return {
       lan: formValues['lan'],
-      nrOfWords: parseInt(formValues['nrOfWords'], 10),
+      nrOfWordsStudy: parseInt(formValues['nrOfWordsStudy'], 10),
+      nrOfWordsLearn: parseInt(formValues['nrOfWordsLearn'], 10),
+      nrOfWordsReview: parseInt(formValues['nrOfWordsReview'], 10),
       countdown: formValues['countDown'],
       mute: formValues['mute'],
       color: formValues['color'],
@@ -91,11 +93,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     this.settingsForm = this.formBuilder.group({
       color: [settings.color],
       countDown: [settings.countdown],
-      delay: [settings.delay],
+      delay: [settings.delay || 3],
       keyboard: [settings.keyboard],
       lan: [settings.lan],
       mute: [settings.mute],
-      nrOfWords: [settings.nrOfWords]
+      nrOfWordsStudy: [settings.nrOfWordsStudy || 5],
+      nrOfWordsLearn: [settings.nrOfWordsLearn || 5],
+      nrOfWordsReview: [settings.nrOfWordsReview || 5]
     });
     this.isFormReady = true;
   }

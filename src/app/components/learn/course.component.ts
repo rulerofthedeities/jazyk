@@ -96,7 +96,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       (started) => this.exercisesStarted = started
     );
     this.settings = this.userService.user.jazyk.learn;
-    this.settings.nrOfWords = this.settings.nrOfWords || this.defaultNrOfQuestions;
+    this.settings.nrOfWordsStudy = this.settings.nrOfWordsStudy || this.defaultNrOfQuestions;
   }
 
   stepTo(i: number) {

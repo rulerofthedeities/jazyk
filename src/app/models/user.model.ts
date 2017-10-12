@@ -4,7 +4,9 @@ export interface UserApp {
 
 export interface LearnSettings {
   lan: string;
-  nrOfWords: number;
+  nrOfWordsStudy: number;
+  nrOfWordsLearn: number;
+  nrOfWordsReview: number;
   countdown: boolean;
   mute: boolean;
   color: boolean;

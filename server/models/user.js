@@ -12,7 +12,9 @@ var appSchema = new Schema({
 
 var jazykLearnSchema = new Schema({
   lan: {type: String, required: true},
-  nrOfWords: Number,
+  nrOfWordsStudy: Number,
+  nrOfWordsLearn: Number,
+  nrOfWordsReview: Number,
   countdown: Boolean,
   mute: Boolean,
   color: Boolean,

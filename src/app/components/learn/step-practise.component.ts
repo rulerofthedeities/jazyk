@@ -40,7 +40,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.settings.nrOfWords = 2; // TEMP
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.fetchLessonResults();
   }
@@ -73,12 +72,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (aType === AnswerType.Correct || aType === AnswerType.Alt) {
       switch (qType) {
         case QuestionType.Choices:
-          if (nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord && learnLevel < this.learnedLevel) {
+          if (nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord && learnLevel < this.learnedLevel) {
             add = true;
           }
         break;
         case QuestionType.Word:
-          if ((nrOfQuestions < this.settings.nrOfWords * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
+          if ((nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
             add = true;
           }
         break;
@@ -181,7 +180,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     console.log('getting words for practise');
     // Select exercises that have not been learned yet (but have been studied if word)
     this.exercises.forEach(exercise => {
-      if (nrOfExercises < this.settings.nrOfWords) {
+      if (nrOfExercises < this.settings.nrOfWordsLearn) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
           || (!exerciseResult && exercise.tpe === ExerciseType.Sentence)
