@@ -1,0 +1,93 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="fa fa-user-o"></span> {{text["Profile"]}}
+  </div>
+  <div class="panel-body">
+    <form *ngIf="isFormReady"
+      [formGroup]="profileForm"
+      class="form-horizontal">
+      <!-- Bio -->
+      <div class="form-group">
+        <label 
+          for="bio" 
+          class="control-label col-xs-4">
+          {{text["Bio"]}}
+        </label>
+        <div class="col-xs-8">
+          <textarea
+            class="form-control input-lg bio"
+            id="bio"
+            maxlength="500" 
+            placeholder="{{text['EnterBio']}}"
+            formControlName="bio"
+          ></textarea> 
+        </div>
+      </div>
+      <!-- Real Name -->
+      <div class="form-group">
+        <label 
+          for="realName" 
+          class="control-label col-xs-4">
+          {{text["RealName"]}}
+        </label>
+        <div class="col-xs-8">
+          <input 
+            class="form-control input-lg" 
+            id="realName"
+            autocomplete="off"
+            placeholder="{{text['EnterRealName']}}"
+            maxlength="50" 
+            formControlName="realName">
+        </div>
+      </div>
+      <!-- Location -->
+      <div class="form-group">
+        <label 
+          for="location" 
+          class="control-label col-xs-4">
+          {{text["Location"]}}
+        </label>
+        <div class="col-xs-8">
+          <input 
+            class="form-control input-lg" 
+            id="location"
+            autocomplete="off"
+            placeholder="{{text['EnterLocation']}}"
+            maxlength="50" 
+            formControlName="location">
+        </div>
+      </div>
+      <!-- Native Language -->
+      <div class="form-group">
+        <label 
+          for="nativeLan" 
+          class="control-label col-xs-4">
+          {{text["NativeLanguage"]}}
+        </label>
+        <div class="col-xs-8">
+          <input 
+            class="form-control input-lg" 
+            id="nativeLan"
+            autocomplete="off"
+            placeholder="{{text['EnterNativeLanguage']}}"
+            maxlength="50" 
+            formControlName="nativeLan">
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div class="form-group buttons">
+        <div class="col-xs-19 col-xs-offset-3">
+          <button type="button" class="btn btn-success btn-lg"
+            [disabled]="!profileForm.valid || !profileForm.dirty"
+            (click)="onUpdateProfile(profileForm)">
+            {{text["UpdateProfile"]}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div  class="info-msg">
+  <km-info-msg [msg]="infoMsg">
+  </km-info-msg>
+</div>

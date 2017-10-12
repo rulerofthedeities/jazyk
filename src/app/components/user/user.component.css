@@ -22,3 +22,6 @@
   width: 60%;
   margin: 0 auto;
 }
+textarea.bio {
+  height: 90px;
+}

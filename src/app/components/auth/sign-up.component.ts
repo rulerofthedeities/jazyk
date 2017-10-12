@@ -50,20 +50,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
   onSubmitForm(user: User) {
     const learnLan = this.utilsService.getDefaultLanguage();
     user.lan = this.userService.user.lan;
-    user.jazyk = {
-      learn: {
-        lan: learnLan,
-        countdown: true,
-        nrOfWords: 5,
-        mute: true,
-        delay: 2,
-        color: true,
-        keyboard: false
-      }
-    };
+    user.jazyk = this.userService.getDefaultSettings();
     user.grammator = {learnLan};
     user.vocabulator = {learnLan};
-    console.log('submitting form', user);
     if (this.userForm.valid) {
       this.authService
       .signup(user)

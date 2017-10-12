@@ -20,8 +20,17 @@ var jazykLearnSchema = new Schema({
   keyboard: Boolean
 }, {_id : false});
 
+var JazykProfileSchema = new Schema({
+  realName: String,
+  timeZone: String,
+  location: String,
+  bio: String,
+  nativeLan: String,
+}, {_id : false});
+
 var jazykSchema = new Schema({
-  learn: {type: jazykLearnSchema, required: true}
+  learn: {type: jazykLearnSchema, required: true},
+  profile: {type: JazykProfileSchema, required: true},
 }, {_id : false});
 
 var userSchema = new Schema({

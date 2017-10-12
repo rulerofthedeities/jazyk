@@ -12,9 +12,18 @@ export interface LearnSettings {
   keyboard: boolean;
 }
 
-export interface Jazyk {
+export interface Profile {
+  realName: string;
+  timeZone: string;
+  location: string;
+  bio: string;
+  nativeLan: string;
+}
+
+export interface JazykConfig {
   courses?: string[];
   learn: LearnSettings;
+  profile: Profile;
 }
 
 export interface User {
@@ -23,7 +32,7 @@ export interface User {
   password?: string;
   userName: string;
   lan: string;
-  jazyk?: Jazyk;
+  jazyk?: JazykConfig;
   grammator?: UserApp;
   vocabulator?: UserApp;
 }

@@ -129,6 +129,17 @@ module.exports = {
       });
     });
   },
+  getProfile: function(req, res) {
+    console.log('getting profile for', userId);
+    var userId = req.decoded.user._id;
+    User.findOne(
+      {_id: userId}, {_id: 0, 'jazyk.profile':1}, function(err, result) {
+      console.log('result', result);
+      response.handleError(err, res, 500, 'Error fetching profile', function(){
+        response.handleSuccess(res, result.jazyk.profile, 200, 'Fetched profile');
+      });
+    });
+  },
   updateLan: function(req, res) {
     var userId = req.decoded.user._id;
     var data = req.body;

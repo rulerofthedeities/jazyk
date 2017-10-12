@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings} from '../models/user.model';
+import {User, LearnSettings, JazykConfig} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import 'rxjs/add/operator/map';
@@ -67,34 +67,22 @@ export class UserService {
 
   getDefaultUserData(queryLan: string) {
     const interfaceLan = this.getUserLan(queryLan);
-    const user: User = this.getAnonymousUser(interfaceLan, '');
+    const user: User = this.getAnonymousUser(interfaceLan);
     console.log('getting default user data', user, queryLan);
     this._user = user;
     return Observable.of(user);
   }
 
   clearUser() {
-    const userLan = this.user.lan,
-          learnLan = this.user.jazyk.learn.lan;
-    this._user = this.getAnonymousUser(userLan, learnLan);
+    this._user = this.getAnonymousUser(this.user.lan);
   }
 
-  getAnonymousUser(userLan: string, learnLan: string): User {
+  getAnonymousUser(userLan: string): User {
     const user: User = {
       email: '',
       userName: 'anonymous',
       lan: userLan,
-      jazyk: {
-        learn: {
-          lan: learnLan,
-          countdown: true,
-          nrOfWords: 5,
-          mute: false,
-          delay: 2,
-          color: true,
-          keyboard: false
-        }
-      }
+      jazyk: this.getDefaultSettings()
     };
     return user;
   }
@@ -105,6 +93,27 @@ export class UserService {
       this.updateUserDb(course.languagePair.to, null);
       this._user.jazyk.learn.lan = course.languagePair.to;
     }
+  }
+
+  getDefaultSettings(): JazykConfig {
+    return {
+      learn: {
+        lan: this.user.jazyk.learn.lan,
+        countdown: true,
+        nrOfWords: 5,
+        mute: false,
+        delay: 2,
+        color: true,
+        keyboard: false
+      },
+      profile: {
+        realName: '',
+        timeZone: '',
+        location: '',
+        bio: '',
+        nativeLan: ''
+      }
+    };
   }
 
   getLearnSettings() {
@@ -119,6 +128,14 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .put('/api/user/settings', JSON.stringify(settings), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  getProfile() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/profile', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -157,17 +174,8 @@ export class UserService {
   }
 
   private updateUserCache(lan: string) {
-    // Add subscription + learn language to cached user data
+    // Add learn language to cached user data
     this._user.jazyk.learn.lan = lan;
-    /*
-    if (this.user.jazyk.courses) {
-      const courses = this.user.jazyk.courses.find(courseId => courseId === course._id);
-      if (!courses) {
-        this._user.jazyk.courses.push(course._id);
-      }
-      console.log('updated user', this._user);
-    }
-    */
   }
 
   private getUserLan(queryLan: string): string {

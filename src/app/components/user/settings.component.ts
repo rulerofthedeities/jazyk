@@ -1,10 +1,9 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {LearnSettings} from '../../models/user.model';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
 interface FormData {
@@ -14,7 +13,7 @@ interface FormData {
 
 @Component({
   templateUrl: 'settings.component.html',
-  styleUrls: ['settings.component.css']
+  styleUrls: ['user.component.css']
 })
 
 export class UserSettingsComponent implements OnInit, OnDestroy {
