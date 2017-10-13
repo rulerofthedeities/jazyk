@@ -64,6 +64,7 @@ module.exports.initialize = function(app, router) {
   router.put('/user/profile', users.saveProfile);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
+  router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
   

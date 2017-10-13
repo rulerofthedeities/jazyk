@@ -150,6 +150,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  updatePassword(oldPw: string, newPw: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .patch('/api/user/password', JSON.stringify({old: oldPw, new: newPw}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   subscribeToCourse(course: Course) {
     // Only subscribe if it is a loggedin user
     if (this.authService.isLoggedIn() && this._user) {

@@ -17,8 +17,8 @@ import 'rxjs/add/operator/takeWhile';
 
 export class ErrorMessageComponent implements OnInit, OnDestroy {
   @Input() msg: string;
+  @Input() text: Object;
   private componentActive = true;
-  text: Object = {};
 
   constructor(
     private utilsService: UtilsService,
@@ -27,7 +27,6 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
     this.getError();
   }
 
@@ -45,19 +44,6 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
           this.msg = '';
         }
       }
-    );
-  }
-  private getTranslations() {
-    this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'ErrorComponent')
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      translations => {
-        if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-        }
-      },
-      error => this.errorService.handleError(error)
     );
   }
 

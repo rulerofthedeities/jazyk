@@ -57,6 +57,7 @@
                 <select 
                   class="form-control tiny-control" 
                   id="nrOfWordsStudy"
+                  (change)="onChangeField()"
                   formControlName="nrOfWordsStudy">
                   <option 
                     *ngFor="let nr of formData.nrofwords"
@@ -72,6 +73,7 @@
                 <select 
                   class="form-control tiny-control" 
                   id="nrOfWordsLearn"
+                  (change)="onChangeField()"
                   formControlName="nrOfWordsLearn">
                   <option 
                     *ngFor="let nr of formData.nrofwords"

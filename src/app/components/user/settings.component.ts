@@ -44,6 +44,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     this.infoMsg = '';
   }
 
+  onChangeField() {
+    this.infoMsg = '';
+  }
+
   onChangeTab(newTab: string) {
     this.tab = newTab;
   }

@@ -1,28 +1,39 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ValidationService} from '../../services/validation.service';
+import {UserService} from '../../services/user.service';
+import {ErrorService} from '../../services/error.service';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-user-settings-password',
   templateUrl: 'settings-password.component.html'
 })
 
-export class UserSettingsPasswordComponent implements OnInit {
+export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
+  private componentActive = true;
   pwForm: FormGroup;
   isFormReady = false;
+  infoMsg = '';
   @Input() text: Object;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
     this.buildForm();
   }
 
+  onChangeField() {
+    this.errorService.clearError();
+  }
+
   onChangePassword(form: any) {
     if (form.valid) {
-      console.log('updating password', form.value);
+      this.updatePassword(form.value);
     }
   }
 
@@ -32,5 +43,25 @@ export class UserSettingsPasswordComponent implements OnInit {
       'newPassword': ['', [Validators.required, ValidationService.passwordValidator]]
     }, {validator: ValidationService.equalPasswordsValidator});
     this.isFormReady = true;
+  }
+
+  private updatePassword(passwords: any) {
+    this.userService
+    .updatePassword(passwords.oldPassword, passwords.newPassword)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {
+        this.infoMsg = this.text['PasswordUpdated'];
+        this.errorService.clearError();
+        this.pwForm.patchValue({oldPassword: ''});
+        this.pwForm.patchValue({newPassword: ''});
+        this.pwForm.markAsUntouched();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

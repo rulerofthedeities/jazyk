@@ -7,7 +7,6 @@ const response = require('../response'),
 
 var addUser = function(body, callback) {
   const key = body.password;
-  console.log('adding', body);
   scrypt.kdf(key, {N: 1, r:1, p:1}, function(err, hash) {
     const user = new User({
           userName: body.userName,
@@ -19,7 +18,6 @@ var addUser = function(body, callback) {
           grammator: {learnLan: body.grammator.learnLan}
         });
     user.save(function(err, result) {
-      console.log('saved', err, result);
       callback(err, result);
     });
   });
@@ -46,15 +44,46 @@ var findUser = function(body, expiresIn, callback) {
   })
 };
 
+var checkPassword = function(enteredPassword, userId, callback) {
+  User.findOne({_id: userId}, {_id: 0, password: 1}, function(err, doc) {
+    if (err) {
+      callback(err, {msg: 'user not found'});
+    } else {
+      scrypt.verifyKdf(new Buffer(doc.password, 'base64'), enteredPassword, function(err, result) {
+        if (result !== true) {
+          callback(true, {msg: 'Incorrect password'});
+        } else {
+          callback(null, {message: 'Password correct'});
+        }
+      });
+    }
+  });
+}
+
+var saveNewPassword = function(newPassword, userId, callback) {
+  const key = newPassword;
+  let password;
+  scrypt.kdf(key, {N: 1, r:1, p:1}, function(err, hash) {
+    password = hash.toString('base64');
+    if (password) {
+      const updateObj = {$set: {'password': password}};
+      User.findOneAndUpdate(
+        {_id: userId}, updateObj, function(err, result) {
+          callback(err);
+      });
+    } else {
+      callback({msg: 'no password'});
+    }
+  });
+}
+
 var isUniqueEmail = function(options, callback) {
-  console.log('checking unique email');
   User.findOne({email: options.mail}, function(err, doc) {
     callback(err, doc !== null);
   });
 }
 
 var isUniqueUser = function(options, callback) {
-  console.log('checking unique username');
   User.findOne({userName: options.user}, function(err, doc) {
     callback(err, doc !== null);
   });
@@ -68,7 +97,6 @@ var getUserData = function(userId, callback) {
 
 module.exports = {
   signup: function(req, res) {
-    console.log('signing up');
     addUser(req.body, function(err, doc) {
       response.handleError(err, res, 500, 'Error creating new user', function(){
         response.handleSuccess(res, doc, 200, 'Created new user');
@@ -108,7 +136,6 @@ module.exports = {
     })
   },
   getLearnSettings: function(req, res) {
-    console.log('getting user settings for', userId);
     var userId = req.decoded.user._id;
     User.findOne(
       {_id: userId}, {_id: 0, 'jazyk.learn':1}, function(err, result) {
@@ -129,11 +156,9 @@ module.exports = {
     });
   },
   getProfile: function(req, res) {
-    console.log('getting profile for', userId);
     var userId = req.decoded.user._id;
     User.findOne(
       {_id: userId}, {_id: 0, 'jazyk.profile':1}, function(err, result) {
-      console.log('result', result);
       response.handleError(err, res, 500, 'Error fetching profile', function(){
         response.handleSuccess(res, result.jazyk.profile, 200, 'Fetched profile');
       });
@@ -143,7 +168,6 @@ module.exports = {
     var userId = req.decoded.user._id,
         profile = req.body,
         updateObj = {$set: {'jazyk.profile': profile}};
-    console.log('updating profile', profile);
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating profile', function(){
@@ -157,7 +181,6 @@ module.exports = {
     var lanObj = {};
     if (data && data.lan) {
       lanObj['$set'] = {'jazyk.learn.lan': data.lan}
-      console.log('updating language', lanObj);
     }
     User.findOneAndUpdate(
       {_id: userId}, lanObj, function(err, result) {
@@ -167,13 +190,12 @@ module.exports = {
     });
   },
   subscribe: function(req, res) {
-    var userId = req.decoded.user._id;
-    var data = req.body;
+    var userId = req.decoded.user._id,
+        data = req.body;
 
     if (data && data.courseId) {
-      console.log('subscribing to course', data.courseId);
-      const query = {userId, courseId: data.courseId};
-      const update = {$set: {subscribed: true}, $setOnInsert: {userId, courseId: data.courseId}};
+      const query = {userId, courseId: data.courseId},
+            update = {$set: {subscribed: true}, $setOnInsert: {userId, courseId: data.courseId}};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
         response.handleError(err, res, 500, 'Error updating user', function(){
           response.handleSuccess(res, result, 200, 'Updated user');
@@ -182,7 +204,19 @@ module.exports = {
     } else {
       response.handleSuccess(res, {}, 200, 'No course data to update');
     }
-
+  },
+  updatePassword: function(req, res) {
+    var userId = req.decoded.user._id,
+        data = req.body;
+    checkPassword(data.old, userId, function(err, doc) {
+      response.handleError(err, res, 500, 'IncorrectPassword', function() {
+        saveNewPassword(data.new, userId, function(err) {
+          response.handleError(err, res, 500, 'Error saving password', function() {
+            response.handleSuccess(res, true, 200, 'Updated password');
+          });
+        })
+      });
+    })
   },
   refreshToken: function(req, res) {
     var payload = req.decoded;
