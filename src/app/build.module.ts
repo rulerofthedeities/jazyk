@@ -29,7 +29,6 @@ import {AutocompleteComponent} from './components/fields/autocomplete.component'
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
-import {FieldMessagesComponent} from './components/msg/field-messages.component';
 
 
 @NgModule({
@@ -64,8 +63,7 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,
-    AudioListComponent,
-    FieldMessagesComponent
+    AudioListComponent
   ]
 })
 export class BuildModule {}

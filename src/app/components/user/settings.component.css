@@ -1,0 +1,34 @@
+.settings-menu {
+  border-right: 1px solid #ddd;
+  margin-left: -15px;
+  margin-top: -15px;
+  padding-right: 0;
+}
+.settings-menu li {
+  cursor: pointer;
+  border-left: none;
+  border-right: none;
+}
+.list-group-item:first-child {
+  border-top: 0;
+  border-radius: 0;
+}
+.list-group-item.active.deactivate {
+  background-color: red;
+  border-color: red;
+}
+.list-group-item:hover {
+  background-color: #eee;
+}
+.list-group-item.active:hover {
+  background-color: #337ab7;
+}
+.list-group-item.active.deactivate:hover{
+  background-color: red;
+}
+.list-group-item:hover span{
+  color: #337ab7;
+}
+.list-group-item.active:hover span{
+  color: white;
+}

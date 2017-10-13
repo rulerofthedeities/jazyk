@@ -13,7 +13,7 @@ interface FormData {
 
 @Component({
   templateUrl: 'settings.component.html',
-  styleUrls: ['user.css']
+  styleUrls: ['user.css', 'settings.component.css']
 })
 
 export class UserSettingsComponent implements OnInit, OnDestroy {

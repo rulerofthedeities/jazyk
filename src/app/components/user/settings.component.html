@@ -1,28 +1,42 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="fa fa-sliders"></span> {{text["Settings"]}}
+    <span class="fa fa-sliders"></span> {{text["Settings"]}} - 
+    <span [ngSwitch]="tab">
+      <span *ngSwitchCase="'config'">
+        {{text["Config"]}}
+      </span>
+      <span *ngSwitchCase="'password'">
+        {{text["Password"]}}
+      </span>
+      <span *ngSwitchCase="'email'">
+        {{text["Email"]}}
+      </span>
+      <span *ngSwitchCase="'deactivate'">
+        {{text["Deactivate"]}}
+      </span>
+    </span>
   </div>
   <div class="panel-body">
-    <ul class="list-group settings-menu col-xs-2">
+    <ul class="list-group settings-menu col-xs-3">
       <li class="list-group-item"
         (click)="onChangeTab('config')"
         [class.active]="tab==='config'">
-        <span class="fa fa-cog"></span> CONFIG
+        <span class="fa fa-cog"></span> {{text["Config"]}}
       </li>
       <li class="list-group-item"
         (click)="onChangeTab('password')"
         [class.active]="tab==='password'">
-        <span class="fa fa-key"></span> PASSWORD
+        <span class="fa fa-key"></span> {{text["Password"]}}
       </li>        
       <li class="list-group-item"
         (click)="onChangeTab('email')"
         [class.active]="tab==='email'">
-        <span class="fa fa-envelope"></span> EMAIL
+        <span class="fa fa-envelope"></span> {{text["Email"]}}
       </li>
-      <li class="list-group-item"
+      <li class="list-group-item deactivate"
         (click)="onChangeTab('deactivate')"
         [class.active]="tab==='deactivate'">
-        <span class="fa fa-times"></span> DEACTIVATE
+        <span class="fa fa-times"></span> {{text["Deactivate"]}}
       </li>
     </ul>
     <div [ngSwitch]="tab">
@@ -30,7 +44,7 @@
       <div *ngSwitchCase="'config'">
         <form  *ngIf="isFormReady"
           [formGroup]="settingsForm"
-          class="form-horizontal col-xs-10">
+          class="form-horizontal col-xs-9">
           <!-- Nr of Words -->
           <div class="form-group">
             <label 
@@ -181,7 +195,9 @@
       </div>
       <!-- PASSWORD TAB -->
       <div *ngSwitchCase="'password'">
-        
+        <km-user-settings-password
+          [text]="text">
+        </km-user-settings-password>
       </div>
       <!-- EMAIL TAB -->
       <div *ngSwitchCase="'email'">

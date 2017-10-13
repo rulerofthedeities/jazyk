@@ -19,7 +19,8 @@ export class ValidationService {
       'emailTaken': text['emailTaken'],
       'noSentenceOptions': text['noSentenceOptions'],
       'invalidSentence': text['invalidSentence'],
-      'invalidQAnswer': text['invalidQAnswer']
+      'invalidQAnswer': text['invalidQAnswer'],
+      'matchingPasswords': text['equalPasswords']
       };
 
     return config[validatorName];
@@ -112,6 +113,14 @@ export class ValidationService {
       return null;
     } else {
       return {'invalidQAnswer': true};
+    }
+  }
+
+  static equalPasswordsValidator(group: FormGroup): {[key: string]: any} {
+    if (group.controls['oldPassword'].value === group.controls['newPassword'].value) {
+      return {'matchingPasswords': true};
+    } else {
+      return null;
     }
   }
 }

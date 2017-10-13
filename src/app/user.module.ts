@@ -11,6 +11,7 @@ import {UserNotificationsComponent} from './components/user/notifications.compon
 import {UserMessagesComponent} from './components/user/messages.component';
 import {UserProfileComponent} from './components/user/profile.component';
 import {UserSettingsComponent} from './components/user/settings.component';
+import {UserSettingsPasswordComponent} from './components/user/settings-password.component';
 import {ToggleComponent} from './components/fields/toggle.component';
 
 @NgModule({
@@ -28,6 +29,7 @@ import {ToggleComponent} from './components/fields/toggle.component';
     UserMessagesComponent,
     UserProfileComponent,
     UserSettingsComponent,
+    UserSettingsPasswordComponent,
     ToggleComponent
   ]
 })
