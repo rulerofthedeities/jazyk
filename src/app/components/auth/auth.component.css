@@ -56,3 +56,7 @@ km-field-messages {
 .panel-primary {
   margin-top: 16px;
 }
+.panel-title {
+  font-size: 24px;
+  color: snow;
+}

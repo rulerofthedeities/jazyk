@@ -5,6 +5,9 @@
 }
 .panel-heading {
   font-size: 24px;
+  background-color: #60727e;
+  border-color: #505d66;
+  color: snow;
 }
 .buttons {
   margin-top: 32px;

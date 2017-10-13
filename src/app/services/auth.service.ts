@@ -46,7 +46,6 @@ export class AuthService {
   }
 
   signedIn(data: SignedInData) {
-    console.log('Signed in', data);
     const decoded = this.jwtHelper.decodeToken(data.token);
     const userStorage: UserStorage = {
       token: data.token,

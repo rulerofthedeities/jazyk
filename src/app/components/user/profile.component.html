@@ -82,6 +82,11 @@
             (click)="onUpdateProfile(profileForm)">
             {{text["UpdateProfile"]}}
           </button>
+          <button type="button" class="btn btn-primary btn-lg"
+            *ngIf="!profileForm.dirty"
+            (click)="onGoToPublicProfile()">
+            {{text["ViewProfile"]}}
+          </button>
         </div>
       </div>
     </form>

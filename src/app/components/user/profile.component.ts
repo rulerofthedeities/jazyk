@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -19,6 +20,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   infoMsg: string;
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private utilsService: UtilsService,
     private userService: UserService,
@@ -35,6 +37,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       const profile = this.buildProfile(form.value);
       this.updateProfile(profile);
     }
+  }
+
+  onGoToPublicProfile() {
+    const user = this.userService.user.userName.toLowerCase();
+    this.router.navigate(['/u/' + user]);
   }
 
   private fetchProfile() {

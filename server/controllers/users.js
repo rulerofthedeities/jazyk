@@ -13,7 +13,7 @@ var addUser = function(body, callback) {
           password: hash.toString('base64'),
           email: body.email,
           lan: body.lan,
-          jazyk: {learn: body.jazyk.learn},
+          jazyk: body.jazyk,
           vocabulator: {learnLan: body.vocabulator.learnLan},
           grammator: {learnLan: body.grammator.learnLan}
         });

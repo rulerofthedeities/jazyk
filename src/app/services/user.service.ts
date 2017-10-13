@@ -82,7 +82,7 @@ export class UserService {
       email: '',
       userName: 'anonymous',
       lan: userLan,
-      jazyk: this.getDefaultSettings()
+      jazyk: this.getDefaultSettings(userLan)
     };
     return user;
   }
@@ -95,10 +95,10 @@ export class UserService {
     }
   }
 
-  getDefaultSettings(): JazykConfig {
+  getDefaultSettings(lan: string): JazykConfig {
     return {
       learn: {
-        lan: this.user.jazyk.learn.lan,
+        lan: lan,
         countdown: true,
         nrOfWordsStudy: 5,
         nrOfWordsLearn: 5,
@@ -106,7 +106,7 @@ export class UserService {
         mute: false,
         delay: 2,
         color: true,
-        keyboard: false
+        keyboard: true
       },
       profile: {
         realName: '',

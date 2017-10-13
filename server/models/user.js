@@ -42,7 +42,8 @@ var userSchema = new Schema({
   lan: {type: String, required: true},
   jazyk: jazykSchema,
   vocabulator: appSchema,
-  grammator: appSchema
+  grammator: appSchema,
+  dtJoined: {type: Date, default: Date.now()},
 });
 
 userSchema.plugin(mongooseUniqueValidator);
