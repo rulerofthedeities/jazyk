@@ -175,6 +175,24 @@ module.exports = {
       });
     });
   },
+  getPublicProfile: function(req, res) {
+    var userName = req.params.userId;
+    User.findOne(
+      {userName}, {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1}, function(err, result) {
+        let errCode = 500;
+        if (!result) {
+          err = {msg:'404 not found'};
+          errCode = 404;
+        }
+        response.handleError(err, res, errCode, 'Error fetching public profile', function(){
+        const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
+        publicProfile.userName = result.userName;
+        publicProfile.dtJoined = result.dtJoined;
+        publicProfile.id = result._id
+        response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
+      });
+    });
+  },
   updateLan: function(req, res) {
     var userId = req.decoded.user._id;
     var data = req.body;

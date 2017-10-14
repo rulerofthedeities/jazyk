@@ -4,10 +4,10 @@
   margin: 0 auto;
 }
 .panel-heading {
-  font-size: 24px;
   background-color: #60727e;
   border-color: #505d66;
   color: snow;
+  font-size: 24px;
 }
 .buttons {
   margin-top: 32px;
@@ -17,9 +17,9 @@
 }
 .input-group-addon {
   float: left;
-  width: fit-content;
-  height: 34px;
   padding-top: 8px;
+  height: 34px;
+  width: fit-content;
 }
 .info-msg {
   width: 60%;

@@ -22,6 +22,13 @@ export interface Profile {
   nativeLan: string;
 }
 
+export interface PublicProfile {
+  profile: Profile;
+  courses: string[];
+  userName: string;
+  dtJoined: Date;
+}
+
 export interface JazykConfig {
   courses?: string[];
   learn: LearnSettings;

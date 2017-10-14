@@ -150,6 +150,16 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  getPublicProfile(user: string) {
+    const headers = this.getTokenHeaders();
+    user = user.slice(0, 25);
+    console.log('Fetching public profile for user', user);
+    return this.http
+    .get('/api/user/profile/' + user, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   updatePassword(oldPw: string, newPw: string) {
     const headers = this.getTokenHeaders();
     return this.http
