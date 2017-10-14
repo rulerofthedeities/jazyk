@@ -6,6 +6,18 @@ import {UtilsService} from '../../services/utils.service';
 import {PublicProfile} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
 
+interface Follower {
+  followId: string;
+}
+interface Followed {
+  userId: string;
+}
+
+interface Network {
+  follows: Follower[];
+  followed: Followed[];
+}
+
 @Component({
   templateUrl: 'user.component.html',
   styleUrls: ['user.css', 'user.component.css']
@@ -16,6 +28,9 @@ export class UserComponent implements OnInit, OnDestroy {
   text: Object;
   profileFound: boolean;
   profile: PublicProfile;
+  network: Network;
+  isCurrentUser: boolean;
+  isCurrentlyFollowing: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,13 +53,29 @@ export class UserComponent implements OnInit, OnDestroy {
     );
   }
 
+  onFollowUser(id: string) {
+    if (id) {
+      this.userService
+      .followUser(id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        follow => {
+          console.log('follow', follow);
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
   private fetchPublicProfile(user: string) {
     this.userService
     .getPublicProfile(user)
     .takeWhile(() => this.componentActive)
     .subscribe(
       profile => {
+        this.isCurrentUser = this.userService.user._id === profile._id;
         this.profile = profile;
+        this.fetchFollowers(profile._id);
         console.log('profile', profile);
       },
       error => {
@@ -55,6 +86,28 @@ export class UserComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  private fetchFollowers(userId: string) {
+    this.userService
+    .getFollowers(userId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      network => {
+        this.network = network;
+        this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(this.network.followed);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private checkIfCurrentlyFollowing(followed: Followed[]): boolean {
+    const currentId = this.userService.user._id;
+    let isFollowing = false;
+    if (followed.find(follower => follower.userId === currentId)) {
+      isFollowing = true;
+    };
+    return isFollowing;
   }
 
   private getTranslations() {

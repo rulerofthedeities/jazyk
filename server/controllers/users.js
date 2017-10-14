@@ -3,7 +3,8 @@ const response = require('../response'),
       jwt = require('jsonwebtoken'),
       scrypt = require('scrypt'),
       User = require('../models/user'),
-      UserCourse = require('../models/usercourse')
+      UserCourse = require('../models/usercourse'),
+      Follow = require('../models/follow');
 
 var addUser = function(body, callback) {
   const key = body.password;
@@ -176,20 +177,53 @@ module.exports = {
     });
   },
   getPublicProfile: function(req, res) {
-    var userName = req.params.userId;
+    var userName = req.params.userName;
     User.findOne(
-      {userName}, {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1}, function(err, result) {
+      {userName}, {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1}, (err, result) => {
         let errCode = 500;
         if (!result) {
-          err = {msg:'404 not found'};
+          err = {msg: '404 not found'};
           errCode = 404;
         }
-        response.handleError(err, res, errCode, 'Error fetching public profile', function(){
+        response.handleError(err, res, errCode, 'Error fetching public profile', () => {
         const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
         publicProfile.userName = result.userName;
         publicProfile.dtJoined = result.dtJoined;
-        publicProfile.id = result._id
+        publicProfile._id = result._id
         response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
+      });
+    });
+  },
+  followUser: function(req, res) {
+    const userId = req.decoded.user._id,
+          userIdToFollow = new mongoose.Types.ObjectId(req.body.userId),
+          query = {userId, followId: userIdToFollow},
+          update = {follow: true};
+    Follow.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
+      response.handleError(err, res, 500, 'Error following user', () => {
+        const follow = result ? result.follow : false;
+        response.handleSuccess(res, follow, 200, 'Followed user');
+      });
+    });
+  },
+  getFollowers: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.params.userId),
+          follows = {};
+    let query = {userId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
+        projection = {_id: 0, followId:1};
+        
+    Follow.find(query, projection, (err, result) => {
+      response.handleError(err, res, 500, 'Error fetching followers', () => {
+        console.log('followers', result);
+        follows.follows = result;
+        query = {followId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
+        projection = {_id: 0, userId:1};
+        Follow.find(query, projection, (err, result) => {
+          follows.followed = result;
+          response.handleError(err, res, 500, 'Error fetching followed', () => {
+            response.handleSuccess(res, follows, 200, 'Fetched followers');
+          });
+        });
       });
     });
   },

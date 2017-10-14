@@ -60,9 +60,11 @@ module.exports.initialize = function(app, router) {
 
   router.put('/user/settings', users.saveLearnSettings);
   router.get('/user/settings', users.getLearnSettings);
-  router.get('/user/profile/:userId', users.getPublicProfile);
+  router.get('/user/profile/:userName', users.getPublicProfile);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
+  router.post('/user/follow', users.followUser);
+  router.get('/user/followers/:userId', users.getFollowers);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);

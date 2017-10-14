@@ -160,6 +160,22 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  followUser(userId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .post('/api/user/follow', JSON.stringify({userId}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  getFollowers(userId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/followers/' + userId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   updatePassword(oldPw: string, newPw: string) {
     const headers = this.getTokenHeaders();
     return this.http
