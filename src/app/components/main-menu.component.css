@@ -32,6 +32,9 @@ li.active .bar, li > a:hover .bar {
   position: relative;
   background-color: white;
 }
+li > a:hover .bar.small {
+  width: 26px;
+}
 li.active span.bar {
   background-color: #ddd;
 }
