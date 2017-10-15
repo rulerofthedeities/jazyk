@@ -168,6 +168,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  unFollowUser(userId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put('/api/user/unfollow', JSON.stringify({userId}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   getFollowers(userId: string) {
     const headers = this.getTokenHeaders();
     return this.http

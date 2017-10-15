@@ -54,13 +54,29 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onFollowUser(id: string) {
-    if (id) {
+    if (id && !this.isCurrentlyFollowing) {
       this.userService
       .followUser(id)
       .takeWhile(() => this.componentActive)
       .subscribe(
         follow => {
-          console.log('follow', follow);
+          this.isCurrentlyFollowing = true;
+          this.network.followed.push({userId: id});
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
+  onUnfollowUser(id: string) {
+    if (id && this.isCurrentlyFollowing) {
+      this.userService
+      .unFollowUser(id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        unfollow => {
+          this.isCurrentlyFollowing = false;
+          this.network.followed = this.network.followed.filter(item => item.userId !== id);
         },
         error => this.errorService.handleError(error)
       );

@@ -7,16 +7,5 @@
   padding: 2px;
 }
 .fa-check {
-  color: green;
   font-size: 24px;
-}
-.following{
-  color: #333;
-  background-color: #fff;
-  border-color: #8c8c8c;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
 }

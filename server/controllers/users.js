@@ -201,8 +201,18 @@ module.exports = {
           update = {follow: true};
     Follow.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 500, 'Error following user', () => {
-        const follow = result ? result.follow : false;
-        response.handleSuccess(res, follow, 200, 'Followed user');
+        response.handleSuccess(res, true, 200, 'Followed user');
+      });
+    });
+  },
+  unFollowUser: function(req, res) {
+    const userId = req.decoded.user._id,
+          userIdToUnFollow = new mongoose.Types.ObjectId(req.body.userId),
+          query = {userId, followId: userIdToUnFollow},
+          update = {follow: false};
+    Follow.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 500, 'Error unfollowing user', () => {
+        response.handleSuccess(res, false, 200, 'Unfollowed user');
       });
     });
   },
@@ -211,7 +221,7 @@ module.exports = {
           follows = {};
     let query = {userId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
         projection = {_id: 0, followId:1};
-        
+
     Follow.find(query, projection, (err, result) => {
       response.handleError(err, res, 500, 'Error fetching followers', () => {
         console.log('followers', result);

@@ -64,6 +64,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
   router.post('/user/follow', users.followUser);
+  router.put('/user/unfollow', users.unFollowUser);
   router.get('/user/followers/:userId', users.getFollowers);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
