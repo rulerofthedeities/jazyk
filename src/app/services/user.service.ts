@@ -184,6 +184,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  getCoursesTeaching(userId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/courses/teaching/' + userId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   updatePassword(oldPw: string, newPw: string) {
     const headers = this.getTokenHeaders();
     return this.http

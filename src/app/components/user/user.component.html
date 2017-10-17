@@ -75,18 +75,33 @@
           *ngIf="profile?.courses?.length > 0"
           type="button"
           class="btn btn-info btn-xs"
-          (click)="showCourses()">
+          (click)="onShowCourses('learning')">
           <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
         </button>
       </div>
       <div class="col-xs-9 col-xs-offset-3">
-        {{text["Created"]}}: 
+        {{text["Created"]}}:  {{courses.teaching?.length || '-'}}
         <button 
+          *ngIf="courses?.teaching?.length > 0 && !showCoursesTeaching"
           type="button"
           class="btn btn-info btn-xs"
-          (click)="showCourses()">
+          (click)="onShowCourses('teaching')">
           <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
         </button>
+        <button *ngIf="showCoursesTeaching"
+          type="button"
+          class="btn btn-warning btn-xs"
+          (click)="onCloseCourses('teaching')">
+          <span class="fa fa-times"></span> {{text["Close"]}}
+        </button>
+        <div *ngIf="showCoursesTeaching">
+          <div *ngFor="let course of courses.teaching">
+            <km-course-bar
+              [course]="course"
+              [text]="text">
+            </km-course-bar>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -113,6 +128,14 @@
         <span *ngIf="network?.followed?.length">
           {{network?.followed?.length === 1 ? text['person'] : text['people']}}
         </span>
+      </div>
+      <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.followed?.length || network?.follows?.length">
+        <button 
+          type="button"
+          class="btn btn-info btn-xs"
+          (click)="onShowNetwork()">
+          <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
+        </button>
       </div>
     </div>
   </div>

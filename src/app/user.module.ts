@@ -14,6 +14,7 @@ import {UserSettingsComponent} from './components/user/settings.component';
 import {UserSettingsPasswordComponent} from './components/user/settings-password.component';
 import {ToggleComponent} from './components/fields/toggle.component';
 
+
 @NgModule({
   imports: [
     SharedModule,

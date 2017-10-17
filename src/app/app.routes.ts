@@ -18,7 +18,7 @@ export const routes: Routes = [
       {path: 'learn', loadChildren: './learn.module#LearnModule'},
       {path: 'build', loadChildren: './build.module#BuildModule'},
       {path: 'user', loadChildren: './user.module#UserModule'},
-      {path: 'u/:id', component: UserComponent},
+      {path: 'u/:name', component: UserComponent},
       {path: '404', component: PageNotFoundComponent},
       {path: '**', redirectTo: '404'}
     ]

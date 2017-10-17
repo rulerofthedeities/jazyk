@@ -27,6 +27,7 @@ export interface PublicProfile {
   courses: string[];
   userName: string;
   dtJoined: Date;
+  _id: string;
 }
 
 export interface JazykConfig {

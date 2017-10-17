@@ -11,7 +11,8 @@ import {LanguageSelectorComponent} from './components/fields/language-selector.c
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
 import {AudioFileComponent} from './components/fields/audio-file.component';
 import {FieldMessagesComponent} from './components/msg/field-messages.component';
-
+import {UserComponent} from './components/user/user.component';
+import {UserCourseBarComponent} from './components/user/course-bar.component';
 
 @NgModule({
   imports: [
@@ -25,7 +26,9 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
     LanguageSelectorComponent,
     ModalConfirmComponent,
     AudioFileComponent,
-    FieldMessagesComponent
+    FieldMessagesComponent,
+    UserComponent,
+    UserCourseBarComponent
   ],
   providers: [
     UtilsService,
@@ -38,6 +41,8 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
     ModalConfirmComponent,
     AudioFileComponent,
     FieldMessagesComponent,
+    UserComponent,
+    UserCourseBarComponent,
     CommonModule,
     HttpModule,
     MarkdownModule

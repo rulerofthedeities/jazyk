@@ -64,9 +64,9 @@ module.exports = {
     // Get all courses that this user has created
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     Course.find({authorId: userId}, {}, function(err, courses) {
-        response.handleError(err, res, 500, 'Error fetching user created courses', function(){
-          response.handleSuccess(res, courses, 200, 'Fetched user created courses');
-        });
+      response.handleError(err, res, 500, 'Error fetching user created courses', function(){
+        response.handleSuccess(res, courses, 200, 'Fetched user created courses');
+      });
     })
   },
   getCourse: function(req, res) {
@@ -76,6 +76,18 @@ module.exports = {
   getAuthorCourse: function(req, res) {
     // get course in author mode
     getCourse(req, res, true);
+  },
+  getTeachingCourses: function(req, res) {
+    // get courses for profile
+    const userId = new mongoose.Types.ObjectId(req.params.userId),
+          query = {creatorId: userId, isPublic: true, isPublished: true},
+          projection = {name:1, image:1, exerciseCount: 1, languagePair:1},
+          sort = {sort: {exerciseCount: -1}};
+    Course.find(query, projection, sort, function(err, courses) {
+      response.handleError(err, res, 500, 'Error fetching teaching courses', function(){
+        response.handleSuccess(res, courses, 200, 'Fetched teaching courses');
+      });
+    })
   },
   addCourse: function(req, res) {
     const course = new Course(req.body),

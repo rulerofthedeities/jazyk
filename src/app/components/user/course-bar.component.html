@@ -1,0 +1,23 @@
+<div class="list-group">
+  <a class="list-group-item">
+    <div class="image">
+      <img src="/assets/img/courses/{{course.image}}">
+    </div>
+    <div class="flags pull-right">
+      <img src="/assets/img/flags/{{course.languagePair.from}}.png" class="flag" />
+      <span class="fa fa-arrow-right"></span>
+      <img src="/assets/img/flags/{{course.languagePair.to}}.png" class="flag" />
+    </div>
+    <div class="name">{{course.name}}</div>
+    <div class="content">
+      {{text["NrOfWords"]}}: {{course.exerciseCount}}
+    </div>
+    <button
+      type="button"
+      class="btn btn-success btn-xs"
+      (click)="onGoToCourse(course)">
+      <span class="fa fa-share"></span> {{text["GoToCourse"]}}
+    </button>
+  <div class="clearfix"></div>
+  </a>
+</div>

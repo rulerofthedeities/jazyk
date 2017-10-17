@@ -224,7 +224,6 @@ module.exports = {
 
     Follow.find(query, projection, (err, result) => {
       response.handleError(err, res, 500, 'Error fetching followers', () => {
-        console.log('followers', result);
         follows.follows = result;
         query = {followId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
         projection = {_id: 0, userId:1};

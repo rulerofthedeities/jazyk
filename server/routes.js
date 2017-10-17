@@ -85,6 +85,8 @@ module.exports.initialize = function(app, router) {
 
   router.get('/user', users.getUser);
 
+  router.get('/courses/teaching/:userId', courses.getTeachingCourses);
+
   /* build */
   router.get('/build/courses', courses.getUserCreatedCourses);
   router.get('/build/course/:courseId', courses.getAuthorCourse);
