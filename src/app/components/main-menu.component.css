@@ -45,8 +45,20 @@ li.active span.bar {
 .dropdown, .indicator {
   cursor: pointer;
 }
-
+.gravatar {
+  position: relative;
+  top: 10px;
+}
+.gravatar img {
+  border: 1px solid #ddd;
+}
 /* override bootstrap */
+.dropdown{
+  margin-top: 4px;
+}
+.nav > li > a {
+  margin-bottom: 4px;
+}
 .nav > li > a:hover, .nav > li > a:focus {
   text-decoration: none;
   background-color: inherit;
@@ -70,6 +82,6 @@ li.active span.bar {
   background-color: red;
 } 
 .dropdown-menu {
-  background-color: #2c3033;
+  background-color: #2c3134;
   font-size: 20px;
 }

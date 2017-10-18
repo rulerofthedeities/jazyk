@@ -71,13 +71,6 @@
       </label>
       <div class="col-xs-9">
         {{text["Learning"]}}: {{profile?.courses?.length || '-'}}
-        <button 
-          *ngIf="profile?.courses?.length > 0"
-          type="button"
-          class="btn btn-info btn-xs"
-          (click)="onShowCourses('learning')">
-          <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
-        </button>
       </div>
       <div class="col-xs-9 col-xs-offset-3">
         {{text["Created"]}}:  {{courses.teaching?.length || '-'}}

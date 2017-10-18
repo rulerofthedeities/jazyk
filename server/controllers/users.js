@@ -2,6 +2,7 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       jwt = require('jsonwebtoken'),
       scrypt = require('scrypt'),
+      md5 = require('md5'),
       User = require('../models/user'),
       UserCourse = require('../models/usercourse'),
       Follow = require('../models/follow');
@@ -91,7 +92,11 @@ var isUniqueUser = function(options, callback) {
 }
 
 var getUserData = function(userId, callback) {
-  User.findOne({_id: userId}, {_id: 1, userName: 1, lan: 1, 'jazyk.learn': 1}, function(err, doc) {
+  User.findOne({_id: userId}, {_id: 1, email: 1, userName: 1, lan: 1, 'jazyk.learn': 1}, function(err, doc) {
+    console.log(doc);
+    doc.emailHash = md5(doc.email);
+    doc.email = undefined;
+    console.log(doc);
     callback(err, doc);
   });
 }

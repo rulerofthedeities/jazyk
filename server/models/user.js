@@ -40,6 +40,7 @@ var userSchema = new Schema({
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   lan: {type: String, required: true},
+  emailHash: {type: String},
   jazyk: jazykSchema,
   vocabulator: appSchema,
   grammator: appSchema,
