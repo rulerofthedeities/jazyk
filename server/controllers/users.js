@@ -13,7 +13,7 @@ var addUser = function(body, callback) {
     const user = new User({
           userName: body.userName,
           password: hash.toString('base64'),
-          email: body.email,
+          email: body.email.toLowerCase(),
           lan: body.lan,
           jazyk: body.jazyk,
           vocabulator: {learnLan: body.vocabulator.learnLan},
@@ -80,13 +80,13 @@ var saveNewPassword = function(newPassword, userId, callback) {
 }
 
 var isUniqueEmail = function(options, callback) {
-  User.findOne({email: options.mail}, function(err, doc) {
+  User.findOne({email: options.mail.toLowerCase()}, function(err, doc) {
     callback(err, doc !== null);
   });
 }
 
 var isUniqueUser = function(options, callback) {
-  User.findOne({userName: options.user}, function(err, doc) {
+  User.findOne({userName: {$regex: '^' + options.user, $options:'i'}}, function(err, doc) {
     callback(err, doc !== null);
   });
 }
