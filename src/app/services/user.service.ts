@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings, JazykConfig, Profile} from '../models/user.model';
+import {User, LearnSettings, MainSettings, JazykConfig, Profile} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
+import {UtilsService} from './utils.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
@@ -18,7 +19,8 @@ export class UserService {
 
   constructor(
     private http: Http,
-    private authService: AuthService
+    private authService: AuthService,
+    private utilsService: UtilsService
   ) {}
 
   getUserData() {
@@ -80,6 +82,7 @@ export class UserService {
   getAnonymousUser(userLan: string): User {
     const user: User = {
       email: '',
+      emailHash: '',
       userName: 'anonymous',
       lan: userLan,
       jazyk: this.getDefaultSettings(userLan)
@@ -121,7 +124,7 @@ export class UserService {
   getLearnSettings() {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/settings', {headers})
+    .get('/api/user/settings/learn', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -129,9 +132,18 @@ export class UserService {
   saveLearnSettings(settings: LearnSettings) {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/settings', JSON.stringify(settings), {headers})
+    .put('/api/user/settings/learn', JSON.stringify(settings), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  saveMainSettings(settings: MainSettings) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put('/api/user/settings/main', JSON.stringify(settings), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+
   }
 
   getProfile() {
@@ -252,35 +264,13 @@ export class UserService {
 
   private validateLan(lan: string): string {
     if (lan) {
-      const interfaceLanguages = this.getInterfaceLanguages();
+      const interfaceLanguages = this.utilsService.getInterfaceLanguages();
       const acceptedLanguage = interfaceLanguages.find(language => language._id === lan);
       if (!acceptedLanguage) {
         lan = null;
       }
     }
     return lan;
-  }
-
-  private getInterfaceLanguages() {
-    const languages: Language[] = [
-      {
-        _id: 'en',
-        name: 'EN',
-        active: true
-      },
-      {
-        _id: 'fr',
-        name: 'FR',
-        active: true
-      },
-      {
-        _id: 'nl',
-        name: 'NL',
-        active: true
-      }
-    ];
-
-    return languages;
   }
 
   get user() {

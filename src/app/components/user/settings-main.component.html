@@ -1,0 +1,39 @@
+<form *ngIf="isFormReady"
+  [formGroup]="mainForm"
+  class="form-horizontal col-xs-9">
+  <!-- Interface Lan -->
+  <div class="form-group">
+    <label 
+      for="lan" 
+      class="control-label col-xs-4">
+      {{text["InterfaceLan"]}}
+    </label>
+    <div class="col-xs-8">
+      <select 
+        class="form-control" 
+        id="lan"
+        formControlName="lan">
+        <option 
+          *ngFor="let lan of formData.lans"
+          [value]="lan._id">
+          {{text[lan.name]}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <!-- Button -->
+  <div class="form-group buttons">
+    <div class="col-xs-9 col-xs-offset-3">
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled]="!mainForm.valid || !mainForm.dirty"
+        (click)="onUpdateSettings(mainForm)">
+        {{text["UpdateSettings"]}}
+      </button>
+    </div>
+  </div>
+  
+  <div class="info-msg">
+    <km-info-msg [msg]="infoMsg">
+    </km-info-msg>
+  </div>
+</form>

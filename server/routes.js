@@ -58,8 +58,9 @@ module.exports.initialize = function(app, router) {
   /*** authenticated ***/
   /* learn */
 
-  router.put('/user/settings', users.saveLearnSettings);
-  router.get('/user/settings', users.getLearnSettings);
+  router.put('/user/settings/learn', users.saveLearnSettings);
+  router.get('/user/settings/learn', users.getLearnSettings);
+  router.put('/user/settings/main', users.saveMainSettings);
   router.get('/user/profile/:userName', users.getPublicProfile);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);

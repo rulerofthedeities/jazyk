@@ -7,6 +7,11 @@ const response = require('../response'),
       UserCourse = require('../models/usercourse'),
       Follow = require('../models/follow');
 
+var setEmailHash = (doc) => {
+  doc.emailHash = md5(doc.email);
+  doc.email = undefined;
+};
+
 var addUser = function(body, callback) {
   const key = body.password;
   scrypt.kdf(key, {N: 1, r:1, p:1}, function(err, hash) {
@@ -20,6 +25,9 @@ var addUser = function(body, callback) {
           grammator: {learnLan: body.grammator.learnLan}
         });
     user.save(function(err, result) {
+      console.log('user added', result);
+      setEmailHash(result);
+      console.log('user added2', result);
       callback(err, result);
     });
   });
@@ -38,6 +46,7 @@ var findUser = function(body, expiresIn, callback) {
           callback({error: 'Incorrectpw'}, doc, 401, 'Sign in failed');
         } else {
           doc.password = undefined;
+          setEmailHash(doc);
           var token = jwt.sign({user: doc}, process.env.JWT_TOKEN_SECRET, {expiresIn: expiresIn});
           callback(null, {message: 'Success', token: token, user: doc});
         }
@@ -93,10 +102,7 @@ var isUniqueUser = function(options, callback) {
 
 var getUserData = function(userId, callback) {
   User.findOne({_id: userId}, {_id: 1, email: 1, userName: 1, lan: 1, 'jazyk.learn': 1}, function(err, doc) {
-    console.log(doc);
-    doc.emailHash = md5(doc.email);
-    doc.email = undefined;
-    console.log(doc);
+    setEmailHash(doc);
     callback(err, doc);
   });
 }
@@ -156,8 +162,20 @@ module.exports = {
         updateObj = {$set: {'jazyk.learn': settings}};
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating user settings', function(){
-        response.handleSuccess(res, true, 200, 'Updated user settings');
+      response.handleError(err, res, 500, 'Error updating learn settings', function(){
+        response.handleSuccess(res, true, 200, 'Updated learn settings');
+      });
+    });
+  },
+  saveMainSettings: function(req, res) {
+    var userId = req.decoded.user._id,
+        settings = req.body,
+        updateObj = {$set: {'main': settings}};
+    console.log('saving main settings', updateObj);
+    User.findOneAndUpdate(
+      {_id: userId}, updateObj, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating main settings', function(){
+        response.handleSuccess(res, true, 200, 'Updated main settings');
       });
     });
   },

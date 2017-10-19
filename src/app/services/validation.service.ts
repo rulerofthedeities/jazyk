@@ -52,7 +52,6 @@ export class ValidationService {
 
   static checkUniqueUserName(http: Http) {
     return function(control) {
-      console.log('checking unique username', control.value);
       return http
       .get('/api/user/check?user=' + control.value)
       .map(response => {

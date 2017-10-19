@@ -70,7 +70,7 @@
             <span class="bar"></span>
           </a>
         </li>
-        <li class="gravatar" *ngIf="isLoggedIn()">
+        <li class="gravatar" *ngIf="isLoggedIn() && userService?.user?.emailHash">
           <img kmGravatar [hash]="userService?.user?.emailHash" [width]="32">
         </li>
         <li 

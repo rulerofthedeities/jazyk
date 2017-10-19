@@ -54,27 +54,42 @@ export class UtilsService {
     return languages.filter(language => language.active);
   }
 
+  getInterfaceLanguages() {
+    const languages = this.getLanguages();
+    return languages.filter(language => language.interface);
+  }
+
   private getLanguages() {
     const languages: Language[] = [
       {
         _id: 'en',
         name: 'EN',
+        interface: true,
         active: true
       },
       {
         _id: 'de',
         name: 'DE',
+        interface: false,
         active: false
       },
       {
         _id: 'fr',
         name: 'FR',
+        interface: true,
         active: true
       },
       {
         _id: 'cs',
         name: 'CS',
+        interface: false,
         active: true
+      },
+      {
+        _id: 'nl',
+        name: 'NL',
+        interface: true,
+        active: false
       }
     ];
 
@@ -84,6 +99,7 @@ export class UtilsService {
   getWordTypes(): string[] {
     return [
       'noun',
+      'noungroup',
       'adjective',
       'adverb',
       'verb',

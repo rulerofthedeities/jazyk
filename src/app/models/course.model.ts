@@ -3,6 +3,7 @@ import {Exercise, ExerciseSteps} from './exercise.model';
 export interface Language {
   _id: string;
   name: string;
+  interface: boolean;
   active: boolean;
 }
 

@@ -11,6 +11,8 @@ import {UserNotificationsComponent} from './components/user/notifications.compon
 import {UserMessagesComponent} from './components/user/messages.component';
 import {UserProfileComponent} from './components/user/profile.component';
 import {UserSettingsComponent} from './components/user/settings.component';
+import {UserSettingsMainComponent} from './components/user/settings-main.component';
+import {UserSettingsLearnComponent} from './components/user/settings-learn.component';
 import {UserSettingsPasswordComponent} from './components/user/settings-password.component';
 import {ToggleComponent} from './components/fields/toggle.component';
 
@@ -30,6 +32,8 @@ import {ToggleComponent} from './components/fields/toggle.component';
     UserMessagesComponent,
     UserProfileComponent,
     UserSettingsComponent,
+    UserSettingsMainComponent,
+    UserSettingsLearnComponent,
     UserSettingsPasswordComponent,
     ToggleComponent
   ]

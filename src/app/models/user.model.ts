@@ -2,6 +2,10 @@ export interface UserApp {
   learnLan: string;
 }
 
+export interface MainSettings {
+  lan: string;
+}
+
 export interface LearnSettings {
   lan: string;
   nrOfWordsStudy: number;
@@ -39,6 +43,7 @@ export interface JazykConfig {
 export interface User {
   _id?: string;
   email: string;
+  emailHash: string;
   password?: string;
   userName: string;
   lan: string;
