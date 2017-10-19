@@ -21,6 +21,20 @@
       </select>
     </div>
   </div>
+  <!-- Background -->
+  <div class="form-group">
+    <label 
+      for="background" 
+      class="control-label col-xs-4">
+      {{text["Background"]}}
+    </label>
+    <div class="col-xs-8">
+      <km-toggle id="countdown"
+        [toggle]="mainForm.value.background"
+        (toggled)="onSetFlag('background', $event)">
+      </km-toggle>
+    </div>
+  </div>
   <!-- Button -->
   <div class="form-group buttons">
     <div class="col-xs-9 col-xs-offset-3">

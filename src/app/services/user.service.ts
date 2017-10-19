@@ -17,6 +17,7 @@ import 'rxjs/add/observable/of';
 export class UserService {
   private _user: User;
   languageChanged = new EventEmitter<string>();
+  backgroundChanged = new EventEmitter<boolean>();
 
   constructor(
     private http: Http,
@@ -86,7 +87,8 @@ export class UserService {
       emailHash: '',
       userName: 'anonymous',
       main: {
-        lan: userLan
+        lan: userLan,
+        background: true
       },
       jazyk: this.getDefaultSettings(userLan)
     };
@@ -96,6 +98,10 @@ export class UserService {
   interfaceLanChanged(newLan: string) {
     console.log('new interface lan', newLan);
     this.languageChanged.emit(newLan);
+  }
+
+  backgroundImgChanged(status: boolean) {
+    this.backgroundChanged.emit(status);
   }
 
   continueCourse(course: Course) {

@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {UtilsService} from '../services/utils.service';
+import {UserService} from '../services/user.service';
 import {SharedService} from '../services/shared.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
@@ -8,7 +9,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   template: `
   <div class="corner-ribbon top-right sticky red shadow" *ngIf="!exercisesStarted">alpha version</div>
-  <img src="/assets/img/backgrounds/{{this.month}}.jpg">
+  <img src="/assets/img/backgrounds/{{this.month}}.jpg" *ngIf="showBackground">
   <div class="container">
     <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
     <div class="main" [class.margin]="!exercisesStarted">
@@ -23,18 +24,24 @@ export class BaseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   month: string;
   exercisesStarted = false;
+  showBackground: Boolean;
 
   constructor (
     private authService: AuthService,
+    private userService: UserService,
     private sharedService: SharedService,
     private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
+    this.showBackground = this.userService.user.main.background;
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
     this.sharedService.exerciseModeChanged.subscribe(
-      (started) => this.exercisesStarted = started
+      started => this.exercisesStarted = started
+    );
+    this.userService.backgroundChanged.subscribe(
+      status => this.showBackground = status
     );
   }
 

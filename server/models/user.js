@@ -11,7 +11,8 @@ var appSchema = new Schema({
 }, {_id : false});
 
 var mainSchema = new Schema({
-  lan: {type: String, required: true}
+  lan: {type: String, required: true},
+  background: {type: Boolean, default: true}
 }, {_id : false});
 
 var jazykLearnSchema = new Schema({

@@ -19,9 +19,7 @@ var addUser = function(body, callback) {
           userName: body.userName,
           password: hash.toString('base64'),
           email: body.email.toLowerCase(),
-          'main': {
-            lan: body.main.lan
-          },
+          'main': body.main,
           jazyk: body.jazyk,
           vocabulator: {learnLan: body.vocabulator.learnLan},
           grammator: {learnLan: body.grammator.learnLan}

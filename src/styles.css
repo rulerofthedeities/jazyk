@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  background-color: WhiteSmoke;
+}
 .flag {
   border: 1px solid #333;
   border-radius: 3px;

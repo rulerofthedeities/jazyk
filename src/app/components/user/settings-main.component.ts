@@ -37,8 +37,11 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     this.setFormData();
   }
 
-  onChangeField() {
-    this.errorService.clearError();
+  onSetFlag(field: string, status: boolean) {
+    console.log(field, status);
+    this.mainForm.patchValue({[field]: status});
+    this.mainForm.markAsDirty();
+    this.infoMsg = '';
   }
 
   onUpdateSettings(form: any) {
@@ -50,7 +53,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.mainForm = this.formBuilder.group({
-      'lan': [this.userService.user.main.lan]
+      'lan': [this.userService.user.main.lan],
+      'background': [this.userService.user.main.background]
     });
     this.isFormReady = true;
   }
@@ -66,6 +70,9 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
         if (this.userService.user.main.lan !== settings.lan) {
           this.userService.interfaceLanChanged(settings.lan);
         }
+        if (this.userService.user.main.background !== settings.background) {
+          this.userService.backgroundImgChanged(settings.background);
+        }
         this.userService.user.main = settings;
       },
       error => this.errorService.handleError(error)
@@ -74,7 +81,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   private buildSettings(formValues: any): MainSettings {
     return {
-      lan: formValues['lan']
+      lan: formValues['lan'],
+      background: formValues['background']
     };
   }
 
