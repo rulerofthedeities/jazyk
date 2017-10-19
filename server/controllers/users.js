@@ -19,22 +19,22 @@ var addUser = function(body, callback) {
           userName: body.userName,
           password: hash.toString('base64'),
           email: body.email.toLowerCase(),
-          lan: body.lan,
+          'main': {
+            lan: body.main.lan
+          },
           jazyk: body.jazyk,
           vocabulator: {learnLan: body.vocabulator.learnLan},
           grammator: {learnLan: body.grammator.learnLan}
         });
     user.save(function(err, result) {
-      console.log('user added', result);
       setEmailHash(result);
-      console.log('user added2', result);
       callback(err, result);
     });
   });
 };
 
 var findUser = function(body, expiresIn, callback) {
-  User.findOne({email: body.email}, {_id: 1, userName: 1, email: 1, password: 1, lan: 1, 'jazyk.learn': 1}, function (err, doc) {
+  User.findOne({email: body.email}, {_id: 1, userName: 1, email: 1, password: 1, main: 1, 'jazyk.learn': 1}, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding user')
     }
@@ -101,7 +101,7 @@ var isUniqueUser = function(options, callback) {
 }
 
 var getUserData = function(userId, callback) {
-  User.findOne({_id: userId}, {_id: 1, email: 1, userName: 1, lan: 1, 'jazyk.learn': 1}, function(err, doc) {
+  User.findOne({_id: userId}, {_id: 1, email: 1, userName: 1, main: 1, 'jazyk.learn': 1}, function(err, doc) {
     setEmailHash(doc);
     callback(err, doc);
   });

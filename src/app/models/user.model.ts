@@ -46,7 +46,7 @@ export interface User {
   emailHash: string;
   password?: string;
   userName: string;
-  lan: string;
+  main: MainSettings;
   jazyk?: JazykConfig;
   grammator?: UserApp;
   vocabulator?: UserApp;

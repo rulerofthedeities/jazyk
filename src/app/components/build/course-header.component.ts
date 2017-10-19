@@ -82,7 +82,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   onLanguageSelected(newLanguage: Language) {
-    const userLan = this.userService.user.lan;
+    const userLan = this.userService.user.main.lan;
     this.currentLanguage = newLanguage;
     this.course.languagePair = {
       from: userLan,
@@ -92,7 +92,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   private createNewCourse() {
-    const userLan = this.userService.user.lan;
+    const userLan = this.userService.user.main.lan;
     this.course = {
       _id: '',
       languagePair: {

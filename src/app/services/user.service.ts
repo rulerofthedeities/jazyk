@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
@@ -16,6 +16,7 @@ import 'rxjs/add/observable/of';
 @Injectable()
 export class UserService {
   private _user: User;
+  languageChanged = new EventEmitter<string>();
 
   constructor(
     private http: Http,
@@ -76,7 +77,7 @@ export class UserService {
   }
 
   clearUser() {
-    this._user = this.getAnonymousUser(this.user.lan);
+    this._user = this.getAnonymousUser(this.user.main.lan);
   }
 
   getAnonymousUser(userLan: string): User {
@@ -84,10 +85,17 @@ export class UserService {
       email: '',
       emailHash: '',
       userName: 'anonymous',
-      lan: userLan,
+      main: {
+        lan: userLan
+      },
       jazyk: this.getDefaultSettings(userLan)
     };
     return user;
+  }
+
+  interfaceLanChanged(newLan: string) {
+    console.log('new interface lan', newLan);
+    this.languageChanged.emit(newLan);
   }
 
   continueCourse(course: Course) {

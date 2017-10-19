@@ -5,7 +5,6 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import 'rxjs/add/operator/takeWhile';
 
-
 @Component({
   templateUrl: 'settings.component.html',
   styleUrls: ['user.css', 'settings.component.css']
@@ -17,7 +16,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   settingsForm: FormGroup;
   formData: FormData;
   isFormReady = false;
-  tab = 'config';
+  tab = 'main';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,16 +26,19 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getTranslations(this.userService.user.main.lan);
+    this.userService.languageChanged.subscribe(
+      newLan => this.getTranslations(newLan)
+    );
   }
 
   onChangeTab(newTab: string) {
     this.tab = newTab;
   }
 
-  private getTranslations() {
+  private getTranslations(lan: string) {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'UserComponent')
+    .fetchTranslations(lan, 'UserComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

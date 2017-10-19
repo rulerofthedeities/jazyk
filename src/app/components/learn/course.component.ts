@@ -179,7 +179,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'LearnComponent')
+    .fetchTranslations(this.userService.user.main.lan, 'LearnComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

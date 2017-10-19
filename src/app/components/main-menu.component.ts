@@ -29,7 +29,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUrl();
-    this.getTranslations();
+    this.getTranslations(this.userService.user.main.lan);
+    this.userService.languageChanged.subscribe(
+      newLan => this.getTranslations(newLan)
+    );
   }
 
   onShowDropDown(show: boolean) {
@@ -60,9 +63,9 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getTranslations() {
+  private getTranslations(lan: string) {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'MainMenuComponent')
+    .fetchTranslations(lan, 'MainMenuComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => this.text = this.utilsService.getTranslatedText(translations),

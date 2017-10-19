@@ -49,8 +49,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   onSubmitForm(user: User) {
     const learnLan = this.utilsService.getDefaultLanguage();
-    user.lan = this.userService.user.lan;
-    user.jazyk = this.userService.getDefaultSettings(user.lan);
+    user.main = {
+      lan: this.userService.user.main.lan
+    };
+    user.jazyk = this.userService.getDefaultSettings(user.main.lan);
     user.grammator = {learnLan};
     user.vocabulator = {learnLan};
     if (this.userForm.valid) {
@@ -85,7 +87,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'AuthComponent')
+    .fetchTranslations(this.userService.user.main.lan, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

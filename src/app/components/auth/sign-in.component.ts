@@ -73,7 +73,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'AuthComponent')
+    .fetchTranslations(this.userService.user.main.lan, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

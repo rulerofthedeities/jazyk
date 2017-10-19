@@ -50,7 +50,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.mainForm = this.formBuilder.group({
-      'lan': [this.userService.user.lan]
+      'lan': [this.userService.user.main.lan]
     });
     this.isFormReady = true;
   }
@@ -63,8 +63,10 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
       result => {
         this.infoMsg = this.text['SettingsUpdated'];
         this.mainForm.markAsPristine();
-
-        //!!!ALSO UPDATE IN USER PROPERTY
+        if (this.userService.user.main.lan !== settings.lan) {
+          this.userService.interfaceLanChanged(settings.lan);
+        }
+        this.userService.user.main = settings;
       },
       error => this.errorService.handleError(error)
     );

@@ -187,7 +187,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private getTranslations() {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'UserComponent')
+    .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

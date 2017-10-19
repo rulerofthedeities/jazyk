@@ -10,6 +10,10 @@ var appSchema = new Schema({
   learnLan: {type: String, required: true},
 }, {_id : false});
 
+var mainSchema = new Schema({
+  lan: {type: String, required: true}
+}, {_id : false});
+
 var jazykLearnSchema = new Schema({
   lan: {type: String, required: true},
   nrOfWordsStudy: Number,
@@ -39,7 +43,7 @@ var userSchema = new Schema({
   userName: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true},
-  lan: {type: String, required: true},
+  main: {type: mainSchema, required: true},
   emailHash: {type: String},
   jazyk: jazykSchema,
   vocabulator: appSchema,

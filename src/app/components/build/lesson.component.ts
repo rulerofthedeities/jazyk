@@ -160,7 +160,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   private getTranslations(lessonId: string) {
     this.utilsService
-    .fetchTranslations(this.userService.user.lan, 'LessonComponent')
+    .fetchTranslations(this.userService.user.main.lan, 'LessonComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
