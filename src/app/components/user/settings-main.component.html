@@ -12,6 +12,7 @@
       <select 
         class="form-control" 
         id="lan"
+        (change)="onChangeField()"
         formControlName="lan">
         <option 
           *ngFor="let lan of formData.lans"

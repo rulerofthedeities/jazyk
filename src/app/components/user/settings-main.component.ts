@@ -38,9 +38,12 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   }
 
   onSetFlag(field: string, status: boolean) {
-    console.log(field, status);
     this.mainForm.patchValue({[field]: status});
     this.mainForm.markAsDirty();
+    this.infoMsg = '';
+  }
+
+  onChangeField() {
     this.infoMsg = '';
   }
 

@@ -13,6 +13,7 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
 import {FieldMessagesComponent} from './components/msg/field-messages.component';
 import {UserComponent} from './components/user/user.component';
 import {UserCourseBarComponent} from './components/user/course-bar.component';
+import {GravatarDirective} from './directives/gravatar.directive';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import {UserCourseBarComponent} from './components/user/course-bar.component';
     AudioFileComponent,
     FieldMessagesComponent,
     UserComponent,
-    UserCourseBarComponent
+    UserCourseBarComponent,
+    GravatarDirective
   ],
   providers: [
     UtilsService,
@@ -43,6 +45,7 @@ import {UserCourseBarComponent} from './components/user/course-bar.component';
     FieldMessagesComponent,
     UserComponent,
     UserCourseBarComponent,
+    GravatarDirective,
     CommonModule,
     HttpModule,
     MarkdownModule

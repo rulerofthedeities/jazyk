@@ -96,7 +96,6 @@ export class UserService {
   }
 
   interfaceLanChanged(newLan: string) {
-    console.log('new interface lan', newLan);
     this.languageChanged.emit(newLan);
   }
 

@@ -12,7 +12,6 @@ import {BaseComponent} from './components/base.component';
 import {MainMenuComponent} from './components/main-menu.component';
 import {HomeComponent} from './components/home.component';
 import {PageNotFoundComponent} from './components/not-found.component';
-import {GravatarDirective} from './directives/gravatar.directive';
 
 @NgModule({
   imports: [
@@ -29,8 +28,7 @@ import {GravatarDirective} from './directives/gravatar.directive';
     BaseComponent,
     MainMenuComponent,
     HomeComponent,
-    PageNotFoundComponent,
-    GravatarDirective
+    PageNotFoundComponent
   ],
   bootstrap: [AppComponent]
 })

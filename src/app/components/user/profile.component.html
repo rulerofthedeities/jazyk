@@ -3,93 +3,108 @@
     <span class="fa fa-user-o"></span> {{text["Profile"]}}
   </div>
   <div class="panel-body">
-    <form *ngIf="isFormReady"
-      [formGroup]="profileForm"
-      class="form-horizontal">
-      <!-- Bio -->
-      <div class="form-group">
-        <label 
-          for="bio" 
-          class="control-label col-xs-4">
-          {{text["Bio"]}}
-        </label>
-        <div class="col-xs-8">
-          <textarea
-            class="form-control input-lg bio"
-            id="bio"
-            maxlength="500" 
-            placeholder="{{text['EnterBio']}}"
-            formControlName="bio"
-          ></textarea> 
+    <div class="row">
+      <div class="col-xs-2">
+        <div class="gravatar col-xs-2">
+          <img kmGravatar [hash]="userService?.user?.emailHash" [width]="96">
+          <button
+            type="button"
+            class="btn btn-xs btn-warning btn-gravatar"
+            (click)="onEditGravatar()">
+            <span class="fa fa-share"></span> {{text["EditGravatar"]}}
+          </button>          
         </div>
       </div>
-      <!-- Real Name -->
-      <div class="form-group">
-        <label 
-          for="realName" 
-          class="control-label col-xs-4">
-          {{text["RealName"]}}
-        </label>
-        <div class="col-xs-8">
-          <input 
-            class="form-control input-lg" 
-            id="realName"
-            autocomplete="off"
-            placeholder="{{text['EnterRealName']}}"
-            maxlength="50" 
-            formControlName="realName">
-        </div>
+      <div class="col-xs-10">
+        <form *ngIf="isFormReady"
+          [formGroup]="profileForm"
+          class="form-horizontal">
+          <!-- Bio -->
+          <div class="form-group">
+            <label 
+              for="bio" 
+              class="control-label col-xs-2">
+              {{text["Bio"]}}
+            </label>
+            <div class="col-xs-10">
+              <textarea
+                class="form-control input-lg bio"
+                id="bio"
+                maxlength="500" 
+                placeholder="{{text['EnterBio']}}"
+                formControlName="bio"
+              ></textarea> 
+            </div>
+          </div>
+          <!-- Real Name -->
+          <div class="form-group">
+            <label 
+              for="realName" 
+              class="control-label col-xs-2">
+              {{text["RealName"]}}
+            </label>
+            <div class="col-xs-10">
+              <input 
+                class="form-control input-lg" 
+                id="realName"
+                autocomplete="off"
+                placeholder="{{text['EnterRealName']}}"
+                maxlength="50" 
+                formControlName="realName">
+            </div>
+          </div>
+          <!-- Location -->
+          <div class="form-group">
+            <label 
+              for="location" 
+              class="control-label col-xs-2">
+              {{text["Location"]}}
+            </label>
+            <div class="col-xs-10">
+              <input 
+                class="form-control input-lg" 
+                id="location"
+                autocomplete="off"
+                placeholder="{{text['EnterLocation']}}"
+                maxlength="50" 
+                formControlName="location">
+            </div>
+          </div>
+          <!-- Native Language -->
+          <div class="form-group">
+            <label 
+              for="nativeLan" 
+              class="control-label col-xs-2">
+              {{text["NativeLanguage"]}}
+            </label>
+            <div class="col-xs-10">
+              <input 
+                class="form-control input-lg" 
+                id="nativeLan"
+                autocomplete="off"
+                placeholder="{{text['EnterNativeLanguage']}}"
+                maxlength="50" 
+                formControlName="nativeLan">
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="form-group buttons">
+            <div class="col-xs-9 col-xs-offset-3">
+              <button type="button" class="btn btn-success btn-lg"
+                [disabled]="!profileForm.valid || !profileForm.dirty"
+                (click)="onUpdateProfile(profileForm)">
+                {{text["UpdateProfile"]}}
+              </button>
+              <button type="button" class="btn btn-primary btn-lg"
+                *ngIf="!profileForm.dirty"
+                (click)="onGoToPublicProfile()">
+                {{text["ViewProfile"]}}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <!-- Location -->
-      <div class="form-group">
-        <label 
-          for="location" 
-          class="control-label col-xs-4">
-          {{text["Location"]}}
-        </label>
-        <div class="col-xs-8">
-          <input 
-            class="form-control input-lg" 
-            id="location"
-            autocomplete="off"
-            placeholder="{{text['EnterLocation']}}"
-            maxlength="50" 
-            formControlName="location">
-        </div>
-      </div>
-      <!-- Native Language -->
-      <div class="form-group">
-        <label 
-          for="nativeLan" 
-          class="control-label col-xs-4">
-          {{text["NativeLanguage"]}}
-        </label>
-        <div class="col-xs-8">
-          <input 
-            class="form-control input-lg" 
-            id="nativeLan"
-            autocomplete="off"
-            placeholder="{{text['EnterNativeLanguage']}}"
-            maxlength="50" 
-            formControlName="nativeLan">
-        </div>
-      </div>
-      <!-- Buttons -->
-      <div class="form-group buttons">
-        <div class="col-xs-9 col-xs-offset-3">
-          <button type="button" class="btn btn-success btn-lg"
-            [disabled]="!profileForm.valid || !profileForm.dirty"
-            (click)="onUpdateProfile(profileForm)">
-            {{text["UpdateProfile"]}}
-          </button>
-          <button type="button" class="btn btn-primary btn-lg"
-            *ngIf="!profileForm.dirty"
-            (click)="onGoToPublicProfile()">
-            {{text["ViewProfile"]}}
-          </button>
-        </div>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
 <div  class="info-msg">
