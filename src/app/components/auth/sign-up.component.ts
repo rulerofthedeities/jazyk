@@ -85,13 +85,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private createNotification(userId: string) {
     const notification: Notification = {
-      userId: userId,
+      userId,
       title: 'Welcome to Jazyk',
-      message: `
-        Confirm registration in mail
-        Read wiki for help
-        Suggest improvements
-      `
+      message: '<ul class=\"list-unstyled\"><li>Confirm registration in mail</li><li>Read <a href=\"/wiki\">wiki</a> for help</li><li>Suggest improvements</li></ul>'
     };
     this.userService
     .saveNotification(notification)

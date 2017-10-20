@@ -192,6 +192,30 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchNotifications() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/notifications', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchNotification(notificationId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/notification/' + notificationId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  setNotificationAsRead(notificationId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .patch('/api/user/notificationread', JSON.stringify({notificationId}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   followUser(userId: string) {
     const headers = this.getTokenHeaders();
     return this.http

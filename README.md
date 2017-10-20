@@ -1,2 +1,2 @@
 # jazyk
-Language learning tool
+Language learning platform

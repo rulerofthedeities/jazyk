@@ -199,9 +199,10 @@ module.exports = {
     });
   },
   getPublicProfile: function(req, res) {
-    const userName = req.params.userName;
-    User.findOne(
-      {userName}, {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1}, (err, result) => {
+    const userName = req.params.userName,
+          query = {userName},
+          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1};
+    User.findOne(query, projection, (err, result) => {
         let errCode = 500;
         if (!result) {
           err = {msg: '404 not found'};
@@ -222,6 +223,36 @@ module.exports = {
     notification.save(function(err, result) {
       response.handleError(err, res, 500, 'Error saving notification', function(){
         response.handleSuccess(res, result, 200, 'Saved profile');
+      });
+    });
+  },
+  getNotifications: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {userId},
+          projection = {title: 1, read: 1, dt: 1},
+          sort = {dt: -1};
+    Notification.find(query, projection, {sort}, function(err, notifications) {
+      response.handleError(err, res, 500, 'Error fetching notifications', function(){
+        response.handleSuccess(res, notifications, 200, 'Fetched notifications');
+      });
+    });
+  },
+  getNotification: function(req, res) {
+    const notificationId = new mongoose.Types.ObjectId(req.params.notificationId),
+          query = {_id: notificationId};
+    Notification.findOne(query, function(err, notification) {
+      response.handleError(err, res, 500, 'Error fetching notification', function(){
+        response.handleSuccess(res, notification, 200, 'Fetched notification');
+      });
+    });
+  },
+  setNotificationRead: function(req, res) {
+    const notificationId = new mongoose.Types.ObjectId(req.body.notificationId),
+          query = {_id: notificationId},
+          update = {read: true};
+    Notification.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error setting notification as read', function(){
+        response.handleSuccess(res, true, 200, 'Read notification');
       });
     });
   },

@@ -1,5 +1,6 @@
 {
   "name": "jazyk",
+  "description": "language learning tool",
   "version": "0.0.0",
   "scripts": {
     "preinstall": "npm install pm2 -g",

@@ -68,6 +68,9 @@ module.exports.initialize = function(app, router) {
   router.put('/user/unfollow', users.unFollowUser);
   router.get('/user/followers/:userId', users.getFollowers);
   router.put('/user/notification', users.saveNotification);
+  router.get('/user/notifications', users.getNotifications);
+  router.get('/user/notification/:notificationId', users.getNotification);
+  router.patch('/user/notificationread', users.setNotificationRead);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);

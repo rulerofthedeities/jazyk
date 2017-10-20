@@ -1,0 +1,20 @@
+.list-group-item {
+  cursor: pointer;
+}
+.read {
+  margin-right: 10px;
+}
+.fa-circle {
+  color: red;
+}
+.badge {
+  background-color: #ababab;
+  border-radius: 4px;
+}
+.unread {
+  font-weight: bold;
+}
+.fa-times {
+  cursor: pointer;
+  font-size: 32px;
+}

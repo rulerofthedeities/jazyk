@@ -54,6 +54,7 @@ export interface User {
 }
 
 export interface Notification {
+  _id?: string;
   userId: string;
   title: string;
   message: string;
