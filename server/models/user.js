@@ -2,10 +2,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     mongooseUniqueValidator = require('mongoose-unique-validator');
 
-var profileSchema = new Schema({
-
-}, {_id : false});
-
 var appSchema = new Schema({
   learnLan: {type: String, required: true},
 }, {_id : false});

@@ -66,6 +66,10 @@ export class UserComponent implements OnInit, OnDestroy {
     );
   }
 
+  onEditProfile() {
+    this.router.navigate(['/user/profile']);
+  }
+
   onFollowUser(id: string) {
     if (id && !this.isCurrentlyFollowing) {
       this.userService
@@ -110,7 +114,10 @@ export class UserComponent implements OnInit, OnDestroy {
     } else {
       this.showCoursesLearning = false;
     }
+  }
 
+  onShowNetwork() {
+    console.log(this.network);
   }
 
   private showCourses(tpe: string) {

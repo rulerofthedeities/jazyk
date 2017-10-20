@@ -2,7 +2,7 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings, MainSettings, JazykConfig, Profile} from '../models/user.model';
+import {User, LearnSettings, MainSettings, JazykConfig, Profile, Notification} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import {UtilsService} from './utils.service';
@@ -156,7 +156,6 @@ export class UserService {
     .put('/api/user/settings/main', JSON.stringify(settings), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
-
   }
 
   getProfile() {
@@ -181,6 +180,14 @@ export class UserService {
     console.log('Fetching public profile for user', user);
     return this.http
     .get('/api/user/profile/' + user, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  saveNotification(notification: Notification) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put('/api/user/notification', JSON.stringify(notification), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

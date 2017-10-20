@@ -5,7 +5,8 @@ const response = require('../response'),
       md5 = require('md5'),
       User = require('../models/user'),
       UserCourse = require('../models/usercourse'),
-      Follow = require('../models/follow');
+      Follow = require('../models/follow'),
+      Notification = require('../models/notification');
 
 var setEmailHash = (doc) => {
   doc.emailHash = md5(doc.email);
@@ -121,7 +122,7 @@ module.exports = {
     });
   },
   check: function(req, res) {
-    let options = {mail:req.query.mail, user:req.query.user}
+    const options = {mail:req.query.mail, user:req.query.user}
     if (options.mail) {
       isUniqueEmail(options, function(err, exists){
         response.handleError(err, res, 500, 'Error checking email', function(){
@@ -138,7 +139,7 @@ module.exports = {
     }
   },
   getUser: function(req, res) {
-    var userId = req.decoded.user._id;
+    const userId = req.decoded.user._id;
     getUserData(userId, function(err, doc) {
       response.handleError(err, res, 500, 'Error getting user data for user with id"' + userId + '"', function(){
         response.handleSuccess(res, doc, 200, 'Fetched user data');
@@ -146,7 +147,7 @@ module.exports = {
     })
   },
   getLearnSettings: function(req, res) {
-    var userId = req.decoded.user._id;
+    const userId = req.decoded.user._id;
     User.findOne(
       {_id: userId}, {_id: 0, 'jazyk.learn':1}, function(err, result) {
       response.handleError(err, res, 500, 'Error fetching learn settings', function(){
@@ -155,9 +156,9 @@ module.exports = {
     });
   },
   saveLearnSettings: function(req, res) {
-    var userId = req.decoded.user._id,
-        settings = req.body,
-        updateObj = {$set: {'jazyk.learn': settings}};
+    const userId = req.decoded.user._id,
+          settings = req.body,
+          updateObj = {$set: {'jazyk.learn': settings}};
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating learn settings', function(){
@@ -166,9 +167,9 @@ module.exports = {
     });
   },
   saveMainSettings: function(req, res) {
-    var userId = req.decoded.user._id,
-        settings = req.body,
-        updateObj = {$set: {'main': settings}};
+    const userId = req.decoded.user._id,
+          settings = req.body,
+          updateObj = {$set: {'main': settings}};
     console.log('saving main settings', updateObj);
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
@@ -178,7 +179,7 @@ module.exports = {
     });
   },
   getProfile: function(req, res) {
-    var userId = req.decoded.user._id;
+    const userId = req.decoded.user._id;
     User.findOne(
       {_id: userId}, {_id: 0, 'jazyk.profile':1}, function(err, result) {
       response.handleError(err, res, 500, 'Error fetching profile', function(){
@@ -187,9 +188,9 @@ module.exports = {
     });
   },
   saveProfile: function(req, res) {
-    var userId = req.decoded.user._id,
-        profile = req.body,
-        updateObj = {$set: {'jazyk.profile': profile}};
+    const userId = req.decoded.user._id,
+          profile = req.body,
+          updateObj = {$set: {'jazyk.profile': profile}};
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating profile', function(){
@@ -198,7 +199,7 @@ module.exports = {
     });
   },
   getPublicProfile: function(req, res) {
-    var userName = req.params.userName;
+    const userName = req.params.userName;
     User.findOne(
       {userName}, {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1}, (err, result) => {
         let errCode = 500;
@@ -212,6 +213,15 @@ module.exports = {
         publicProfile.dtJoined = result.dtJoined;
         publicProfile._id = result._id
         response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
+      });
+    });
+  },
+  saveNotification: function(req, res) {
+    const userId = req.decoded.user._id,
+          notification = new Notification(req.body);
+    notification.save(function(err, result) {
+      response.handleError(err, res, 500, 'Error saving notification', function(){
+        response.handleSuccess(res, result, 200, 'Saved profile');
       });
     });
   },
@@ -258,9 +268,9 @@ module.exports = {
     });
   },
   updateLan: function(req, res) {
-    var userId = req.decoded.user._id;
-    var data = req.body;
-    var lanObj = {};
+    const userId = req.decoded.user._id,
+          data = req.body,
+          lanObj = {};
     if (data && data.lan) {
       lanObj['$set'] = {'jazyk.learn.lan': data.lan}
     }
@@ -272,8 +282,8 @@ module.exports = {
     });
   },
   subscribe: function(req, res) {
-    var userId = req.decoded.user._id,
-        data = req.body;
+    const userId = req.decoded.user._id,
+          data = req.body;
 
     if (data && data.courseId) {
       const query = {userId, courseId: data.courseId},
@@ -288,8 +298,8 @@ module.exports = {
     }
   },
   updatePassword: function(req, res) {
-    var userId = req.decoded.user._id,
-        data = req.body;
+    const userId = req.decoded.user._id,
+          data = req.body;
     checkPassword(data.old, userId, function(err, doc) {
       response.handleError(err, res, 500, 'IncorrectPassword', function() {
         saveNewPassword(data.new, userId, function(err) {
@@ -301,11 +311,11 @@ module.exports = {
     })
   },
   refreshToken: function(req, res) {
-    var payload = req.decoded;
+    const payload = req.decoded;
     if (payload) {
       delete payload.iat;
       delete payload.exp;
-      var token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
+      const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
       response.handleSuccess(res, token, 200, 'Refreshed token');
     }
   }

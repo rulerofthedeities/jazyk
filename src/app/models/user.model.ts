@@ -52,3 +52,11 @@ export interface User {
   grammator?: UserApp;
   vocabulator?: UserApp;
 }
+
+export interface Notification {
+  userId: string;
+  title: string;
+  message: string;
+  read?: boolean;
+  dt?: Date;
+}

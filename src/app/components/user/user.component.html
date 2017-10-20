@@ -1,6 +1,16 @@
 <div class="panel panel-default" *ngIf="text">
   <div class="panel-heading">
     <span class="fa fa-user-o"></span> {{profile?.userName}}
+    <!-- Edit button (go to profile) -->
+    <div class="pull-right"  *ngIf="isCurrentUser">
+      <button
+        type="button"
+        class="btn btn-warning"
+        (click)="onEditProfile()">
+        <span class="fa fa-pencil"></span> {{text["Edit"]}}
+      </button>
+    </div>
+    <!-- Follow button -->
     <div class="pull-right"  *ngIf="!isCurrentUser">
       <button 
         *ngIf="!isCurrentlyFollowing"
@@ -23,112 +33,121 @@
     </div>
   </div>
   <div class="panel-body">
-    <div class="row" *ngIf="profile?.profile?.realName">
-      <label 
-        for="bio" 
-        class="control-label col-xs-3">
-        {{text['RealName']}}
-      </label>
-      <div class="col-xs-9">
-        {{profile.profile.realName}}
-      </div>
-    </div>
-    <div class="row" *ngIf="profile?.profile?.location">
-      <label 
-        for="location" 
-        class="control-label col-xs-3">
-        {{text['Location']}}
-      </label>
-      <div class="col-xs-9">
-        {{profile.profile.location}}
-      </div>
-    </div>
-    <div class="row" *ngIf="profile?.profile?.nativeLan">
-      <label 
-        for="language" 
-        class="control-label col-xs-3">
-        {{text['NativeLanguage']}}
-      </label>
-      <div class="col-xs-9">
-        {{profile.profile.nativeLan}}
-      </div>
-    </div>
-    <div class="row" *ngIf="profile?.profile?.bio">
-      <label 
-        for="bio" 
-        class="control-label col-xs-3">
-        {{text['Bio']}}
-      </label>
-      <div class="col-xs-9">
-        {{profile.profile.bio}}
-      </div>
-    </div>
     <div class="row">
-      <label 
-        for="courses" 
-        class="control-label col-xs-3">
-        {{text['ProfileCourses']}}
-      </label>
-      <div class="col-xs-9">
-        {{text["Learning"]}}: {{profile?.courses?.length || '-'}}
-      </div>
-      <div class="col-xs-9 col-xs-offset-3">
-        {{text["Created"]}}:  {{courses.teaching?.length || '-'}}
-        <button 
-          *ngIf="courses?.teaching?.length > 0 && !showCoursesTeaching"
-          type="button"
-          class="btn btn-info btn-xs"
-          (click)="onShowCourses('teaching')">
-          <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
-        </button>
-        <button *ngIf="showCoursesTeaching"
-          type="button"
-          class="btn btn-warning btn-xs"
-          (click)="onCloseCourses('teaching')">
-          <span class="fa fa-times"></span> {{text["Close"]}}
-        </button>
-        <div *ngIf="showCoursesTeaching">
-          <div *ngFor="let course of courses.teaching">
-            <km-course-bar
-              [course]="course"
-              [text]="text">
-            </km-course-bar>
-          </div>
+      <div class="col-xs-2">
+        <div class="gravatar col-xs-2">
+          <img kmGravatar [hash]="userService?.user?.emailHash" [width]="96">
         </div>
       </div>
-    </div>
-    <div class="row">
-      <label 
-        for="joinDate" 
-        class="control-label col-xs-3">
-        {{text['JoinDate']}}
-      </label>
-      <div class="col-xs-9">
-        {{profile?.dtJoined | date: 'dd'}} {{text[profile?.dtJoined | date: 'MMMM']}} {{profile?.dtJoined | date: 'yyyy'}}
-      </div>
-    </div>
-    <div class="row" *ngIf="network">
-      <label 
-        for="network" 
-        class="control-label col-xs-3">
-        {{text['Network']}}
-      </label>
-      <div class="col-xs-9">
-        {{text['Follows']}} {{network?.follows?.length || text['noone']}} {{ network?.follows?.length === 1 ? text['person'] : ''}}
-      </div>
-      <div class="col-xs-9 col-xs-offset-3">
-        {{text['FollowedBy']}} {{network?.followed?.length || text['noone']}}
-        <span *ngIf="network?.followed?.length">
-          {{network?.followed?.length === 1 ? text['person'] : text['people']}}
-        </span>
-      </div>
-      <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.followed?.length || network?.follows?.length">
-        <button 
-          type="button"
-          class="btn btn-info btn-xs"
-          (click)="onShowNetwork()">
-          <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
-        </button>
+      <div class="col-xs-10">
+        <div class="row" *ngIf="profile?.profile?.realName">
+          <label 
+            for="bio" 
+            class="control-label col-xs-3">
+            {{text['RealName']}}
+          </label>
+          <div class="col-xs-9">
+            {{profile.profile.realName}}
+          </div>
+        </div>
+        <div class="row" *ngIf="profile?.profile?.location">
+          <label 
+            for="location" 
+            class="control-label col-xs-3">
+            {{text['Location']}}
+          </label>
+          <div class="col-xs-9">
+            {{profile.profile.location}}
+          </div>
+        </div>
+        <div class="row" *ngIf="profile?.profile?.nativeLan">
+          <label 
+            for="language" 
+            class="control-label col-xs-3">
+            {{text['NativeLanguage']}}
+          </label>
+          <div class="col-xs-9">
+            {{profile.profile.nativeLan}}
+          </div>
+        </div>
+        <div class="row" *ngIf="profile?.profile?.bio">
+          <label 
+            for="bio" 
+            class="control-label col-xs-3">
+            {{text['Bio']}}
+          </label>
+          <div class="col-xs-9">
+            {{profile.profile.bio}}
+          </div>
+        </div>
+        <div class="row">
+          <label 
+            for="courses" 
+            class="control-label col-xs-3">
+            {{text['ProfileCourses']}}
+          </label>
+          <div class="col-xs-9">
+            {{text["Learning"]}}: {{profile?.courses?.length || '-'}}
+          </div>
+          <div class="col-xs-9 col-xs-offset-3">
+            {{text["Created"]}}:  {{courses.teaching?.length || '-'}}
+            <button 
+              *ngIf="courses?.teaching?.length > 0 && !showCoursesTeaching"
+              type="button"
+              class="btn btn-info btn-xs"
+              (click)="onShowCourses('teaching')">
+              <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
+            </button>
+            <button *ngIf="showCoursesTeaching"
+              type="button"
+              class="btn btn-warning btn-xs"
+              (click)="onCloseCourses('teaching')">
+              <span class="fa fa-times"></span> {{text["Close"]}}
+            </button>
+            <div *ngIf="showCoursesTeaching">
+              <div *ngFor="let course of courses.teaching">
+                <km-course-bar
+                  [course]="course"
+                  [text]="text">
+                </km-course-bar>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <label 
+            for="joinDate" 
+            class="control-label col-xs-3">
+            {{text['JoinDate']}}
+          </label>
+          <div class="col-xs-9">
+            {{profile?.dtJoined | date: 'dd'}} {{text[profile?.dtJoined | date: 'MMMM']}} {{profile?.dtJoined | date: 'yyyy'}}
+          </div>
+        </div>
+        <div class="row" *ngIf="network">
+          <label 
+            for="network" 
+            class="control-label col-xs-3">
+            {{text['Network']}}
+          </label>
+          <div class="col-xs-9">
+            {{text['Follows']}} {{network?.follows?.length || text['noone']}} {{ network?.follows?.length === 1 ? text['person'] : ''}}
+          </div>
+          <div class="col-xs-9 col-xs-offset-3">
+            {{text['FollowedBy']}} {{network?.followed?.length || text['noone']}}
+            <span *ngIf="network?.followed?.length">
+              {{network?.followed?.length === 1 ? text['person'] : text['people']}}
+            </span>
+          </div>
+          <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.followed?.length || network?.follows?.length">
+            <button 
+              type="button"
+              class="btn btn-info btn-xs"
+              (click)="onShowNetwork()">
+              <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

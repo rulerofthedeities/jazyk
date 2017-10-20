@@ -6,7 +6,7 @@ import {UserService} from '../../services/user.service';
 import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
-import {User} from '../../models/user.model';
+import {User, Notification} from '../../models/user.model';
 
 @Component({
   templateUrl: 'sign-up.component.html',
@@ -62,20 +62,46 @@ export class SignUpComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         data => {
-          this.authService
-          .signin(user)
-          .takeWhile(() => this.componentActive)
-          .subscribe(
-            signInData => {
-              this.authService.signedIn(signInData);
-              this.userService.user = signInData.user;
-            },
-            error => this.errorService.handleError(error)
-          );
+          this.signIn(user);
         },
         error => this.errorService.handleError(error)
       );
     }
+  }
+
+  private signIn(user: User) {
+    this.authService
+    .signin(user)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      signInData => {
+        this.authService.signedIn(signInData);
+        this.userService.user = signInData.user;
+        this.createNotification(signInData.user._id);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private createNotification(userId: string) {
+    const notification: Notification = {
+      userId: userId,
+      title: 'Welcome to Jazyk',
+      message: `
+        Confirm registration in mail
+        Read wiki for help
+        Suggest improvements
+      `
+    };
+    this.userService
+    .saveNotification(notification)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {
+        console.log('saved notification', result);
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private buildForm() {

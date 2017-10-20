@@ -41,7 +41,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   onEditGravatar() {
     // Redirect to gravatar page
-    // window.location.href = 'https://gravatar.com/emails/';
     window.open('https://gravatar.com/emails/', '_blank');
   }
 
