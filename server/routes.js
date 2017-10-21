@@ -72,6 +72,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/notificationsCount', users.getNotificationsCount);
   router.get('/user/notification/:notificationId', users.getNotification);
   router.patch('/user/notificationread', users.setNotificationRead);
+  router.patch('/user/notificationsread', users.setAllNotificationsRead);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);

@@ -104,7 +104,7 @@ export class UserService {
     this.backgroundChanged.emit(status);
   }
 
-  updateUnreadCount(allUnread: boolean) {
+  updateUnreadNotificationsCount(allUnread: boolean) {
     this.notificationRead.emit(allUnread);
   }
 
@@ -225,6 +225,14 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .patch('/api/user/notificationread', JSON.stringify({notificationId}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  setAllNotificationsAsRead() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .patch('/api/user/notificationsread', JSON.stringify({}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

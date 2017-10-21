@@ -7,6 +7,13 @@
       (click)='onCloseNotification()'
       class="fa fa-times pull-right">
     </span>
+    <button 
+      *ngIf="!currentNotification"
+      type="button"
+      (click)='onMarkAllRead()'
+      class="btn btn-warning pull-right">
+      {{text['MarkAllRead']}}
+    </button>
   </div>
   <div class="panel-body">
     <div *ngIf="notifications?.length===0 else notificationsList">

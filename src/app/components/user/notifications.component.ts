@@ -38,6 +38,16 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.currentNotification = null;
   }
 
+  onMarkAllRead() {
+    this.markAllRead();
+    this.setAllNotificationsAsRead();
+  }
+
+  private markAllRead() {
+    this.notifications.map(notification => notification.read = true);
+    this.userService.updateUnreadNotificationsCount(true);
+  }
+
   private fetchNotifications() {
     this.userService
     .fetchNotifications()
@@ -57,7 +67,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         if (notification) {
           if (!notification.read) {
             this.setNotificationAsRead(i);
-            this.userService.updateUnreadCount(false);
+            this.userService.updateUnreadNotificationsCount(false);
           }
           notification.read = true;
           this.notifications[i] = notification;
@@ -69,9 +79,18 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private setNotificationAsRead(i: number) {
-    console.log('setting notification as read');
     this.userService
     .setNotificationAsRead(this.notifications[i]._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      read => {},
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private setAllNotificationsAsRead() {
+    this.userService
+    .setAllNotificationsAsRead()
     .takeWhile(() => this.componentActive)
     .subscribe(
       read => {},

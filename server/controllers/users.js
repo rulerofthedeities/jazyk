@@ -256,6 +256,16 @@ module.exports = {
       });
     });
   },
+  setAllNotificationsRead: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {userId, read: false},
+          update = {read: true};
+    Notification.updateMany(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error marking all notifications unread', function(){
+        response.handleSuccess(res, result, 200, 'Marked all notifications unread');
+      });
+    });
+  },
   getNotificationsCount: function(req, res) {
     const userId = req.decoded.user._id,
           query = {userId, read: false};
