@@ -9,8 +9,10 @@ const response = require('../response'),
       Notification = require('../models/notification');
 
 var setEmailHash = (doc) => {
-  doc.emailHash = md5(doc.email);
-  doc.email = undefined;
+  if (doc) {
+    doc.emailHash = md5(doc.email);
+    doc.email = undefined;
+  }
 };
 
 var addUser = function(body, callback) {

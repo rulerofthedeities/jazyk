@@ -78,6 +78,8 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
+
+  router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   
   router.get('/user/results/lesson/lastperexercise/:lessonId', results.getLastResults);
   router.get('/user/results/lesson/countbystep/:lessonId', results.getResultsDone);

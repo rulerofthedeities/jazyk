@@ -6,16 +6,20 @@ import {User, LearnSettings, MainSettings, JazykConfig, Profile, Notification} f
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import {UtilsService} from './utils.service';
+import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/takeWhile';
+
 
 @Injectable()
 export class UserService {
   private _user: User;
+  private subscription: Subscription;
   languageChanged = new EventEmitter<string>();
   backgroundChanged = new EventEmitter<boolean>();
   notificationRead = new EventEmitter<boolean>();
@@ -237,6 +241,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  getWelcomeNotification(lan: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/config/welcome/' + lan, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   followUser(userId: string) {
     const headers = this.getTokenHeaders();
     return this.http
@@ -284,6 +296,35 @@ export class UserService {
       this.updateUserDb(lan, course._id);
       this.updateUserCache(lan);
     }
+  }
+
+  fetchWelcomeNotification(user: User) {
+    let notificationLoaded = false;
+    this.subscription = this
+    .getWelcomeNotification(user.main.lan)
+    .takeWhile(() => !notificationLoaded)
+    .subscribe(
+      notification => {
+        notificationLoaded = true;
+        if (notification) {
+          notification.userId = user._id;
+          this.createNotification(notification);
+        }
+      }
+    );
+  }
+
+  private createNotification(notification: Notification) {
+    let notificationCreated = false;
+    this.subscription = this
+    .saveNotification(notification)
+    .takeWhile(() => !notificationCreated)
+    .subscribe(
+      result => {
+        notificationCreated = true;
+        this.updateUnreadNotificationsCount(null);
+      }
+    );
   }
 
   private updateUserDb(lan: string, courseId: string) {

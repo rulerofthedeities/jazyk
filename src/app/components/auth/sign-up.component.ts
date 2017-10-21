@@ -7,6 +7,7 @@ import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
 import {User, Notification} from '../../models/user.model';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   templateUrl: 'sign-up.component.html',
@@ -77,24 +78,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       signInData => {
         this.authService.signedIn(signInData);
         this.userService.user = signInData.user;
-        this.createNotification(signInData.user._id);
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private createNotification(userId: string) {
-    const notification: Notification = {
-      userId,
-      title: 'Welcome to Jazyk',
-      message: '<ul class=\"list-unstyled\"><li>Confirm registration in mail</li><li>Read <a href=\"/wiki\">wiki</a> for help</li><li>Suggest improvements</li></ul>'
-    };
-    this.userService
-    .saveNotification(notification)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      result => {
-        console.log('saved notification', result);
+        this.userService.fetchWelcomeNotification(signInData.user);
       },
       error => this.errorService.handleError(error)
     );

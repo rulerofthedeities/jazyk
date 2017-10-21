@@ -41,7 +41,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       isAllRead => this.updateUnReadCount(isAllRead)
     );
     this.sharedService.justLoggedInOut.subscribe(
-      (loggedIn) => {
+      loggedIn => {
         const interfaceLan = this.userService.user.main.lan;
         if (loggedIn) {
           this.getNotificationsCount();
@@ -83,8 +83,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getNotificationsCount() {
-    console.log('updating unread count');
     if (this.isLoggedIn()) {
+      console.log('updating unread count');
       this.userService
       .fetchNotificationsCount()
       .takeWhile(() => this.componentActive)
@@ -96,9 +96,12 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private updateUnReadCount(isAllRead: boolean) {
+    console.log('update unread count', isAllRead);
     if (isAllRead) {
       this.nrOfNotifications = 0;
-    } else if (this.nrOfNotifications > 0) {
+    } else if (isAllRead === null) {
+      this.getNotificationsCount();
+    }  else if (this.nrOfNotifications > 0) {
       this.nrOfNotifications--;
     }
   }
