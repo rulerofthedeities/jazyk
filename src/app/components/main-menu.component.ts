@@ -18,6 +18,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   private url: string;
   text: Object = {};
   showDropDown = false;
+  nrOfNotifications = 0;
 
   constructor(
     private router: Router,
@@ -30,8 +31,12 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getUrl();
     this.getTranslations(this.userService.user.main.lan);
+    this.getNotificationsCount();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
+    );
+    this.userService.notificationRead.subscribe(
+      isAllRead => this.updateUnReadCount(isAllRead)
     );
   }
 
@@ -61,6 +66,26 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .subscribe((route: NavigationEnd) => {
       this.url = route.url;
     });
+  }
+
+  private getNotificationsCount() {
+    if (this.isLoggedIn()) {
+      this.userService
+      .fetchNotificationsCount()
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        count => this.nrOfNotifications = count,
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
+  private updateUnReadCount(isAllRead: boolean) {
+    if (isAllRead) {
+      this.nrOfNotifications = 0;
+    } else if (this.nrOfNotifications > 0) {
+      this.nrOfNotifications--;
+    }
   }
 
   private getTranslations(lan: string) {

@@ -47,7 +47,10 @@
           *ngIf="isLoggedIn()">
           <a class="nav-link notifications">
             <i class="fa fa-bell-o"></i>
-            <span class="badge">1</span>
+            <span class="badge"
+              [style.visibility]="nrOfNotifications > 0 ? 'visible': 'hidden'">
+              {{nrOfNotifications}}
+            </span>
             <span class="bar small"></span>
           </a>
         </li>
@@ -70,7 +73,9 @@
             <span class="bar"></span>
           </a>
         </li>
-        <li class="gravatar" *ngIf="isLoggedIn() && userService?.user?.emailHash">
+        <li
+          class="gravatar"
+          *ngIf="isLoggedIn() && userService?.user?.emailHash">
           <img kmGravatar [hash]="userService?.user?.emailHash" [width]="32">
         </li>
         <li 

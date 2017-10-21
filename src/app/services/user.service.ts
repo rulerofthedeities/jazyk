@@ -18,6 +18,7 @@ export class UserService {
   private _user: User;
   languageChanged = new EventEmitter<string>();
   backgroundChanged = new EventEmitter<boolean>();
+  notificationRead = new EventEmitter<boolean>();
 
   constructor(
     private http: Http,
@@ -101,6 +102,10 @@ export class UserService {
 
   backgroundImgChanged(status: boolean) {
     this.backgroundChanged.emit(status);
+  }
+
+  updateUnreadCount(allUnread: boolean) {
+    this.notificationRead.emit(allUnread);
   }
 
   continueCourse(course: Course) {
@@ -204,6 +209,14 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/notification/' + notificationId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchNotificationsCount() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/notificationsCount', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

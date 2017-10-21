@@ -256,6 +256,15 @@ module.exports = {
       });
     });
   },
+  getNotificationsCount: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {userId, read: false};
+    Notification.count(query, function(err, count) {
+      response.handleError(err, res, 500, 'Error fetching notifications count', function(){
+        response.handleSuccess(res, count, 200, 'Fetched notifications count');
+      });
+    });
+  },
   followUser: function(req, res) {
     const userId = req.decoded.user._id,
           userIdToFollow = new mongoose.Types.ObjectId(req.body.userId),

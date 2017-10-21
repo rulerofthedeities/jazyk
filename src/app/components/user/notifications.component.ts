@@ -57,6 +57,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         if (notification) {
           if (!notification.read) {
             this.setNotificationAsRead(i);
+            this.userService.updateUnreadCount(false);
           }
           notification.read = true;
           this.notifications[i] = notification;
