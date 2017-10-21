@@ -56,8 +56,14 @@ export class SignInComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         data => {
+          const currentLan = this.userService.user.main.lan;
           this.authService.signedIn(data);
           this.userService.user = data.user;
+          const newLan = this.userService.user.main.lan;
+          if (currentLan !== newLan) {
+            this.userService.languageChanged.emit(newLan);
+          }
+          this.userService.notificationCheck.emit();
         },
         error => this.errorService.handleError(error)
       );

@@ -19,6 +19,7 @@ export class UserService {
   languageChanged = new EventEmitter<string>();
   backgroundChanged = new EventEmitter<boolean>();
   notificationRead = new EventEmitter<boolean>();
+  notificationCheck = new EventEmitter();
 
   constructor(
     private http: Http,
@@ -106,6 +107,10 @@ export class UserService {
 
   updateUnreadNotificationsCount(allUnread: boolean) {
     this.notificationRead.emit(allUnread);
+  }
+
+  checkNotifications() {
+    this.notificationCheck.emit();
   }
 
   continueCourse(course: Course) {

@@ -38,6 +38,9 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.userService.notificationRead.subscribe(
       isAllRead => this.updateUnReadCount(isAllRead)
     );
+    this.userService.notificationCheck.subscribe(
+      () => this.getNotificationsCount()
+    );
   }
 
   onShowDropDown(show: boolean) {
@@ -69,6 +72,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getNotificationsCount() {
+    console.log('updating unread count');
     if (this.isLoggedIn()) {
       this.userService
       .fetchNotificationsCount()
