@@ -35,7 +35,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   onCloseNotification() {
-    this.currentNotification = null;
+    this.closeNotification();
   }
 
   onMarkAllRead() {
@@ -43,9 +43,19 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.setAllNotificationsAsRead();
   }
 
+  onKeyPressed(key: string) {
+    if (key === 'Escape') {
+      this.closeNotification();
+    }
+  }
+
   private markAllRead() {
     this.notifications.map(notification => notification.read = true);
     this.userService.updateUnreadNotificationsCount(true);
+  }
+
+  private closeNotification() {
+    this.currentNotification = null;
   }
 
   private fetchNotifications() {

@@ -33,7 +33,6 @@ import {LearnQAComponent} from './components/learn/qa.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
 
-import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {WordColorDirective} from './directives/word-color.directive';
 
 @NgModule({
@@ -71,7 +70,6 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnQAComponent,
     LearnKeyboardComponent,
     LearnCountdownComponent,
-    GetKeyPressDirective,
     WordColorDirective
   ]
 })

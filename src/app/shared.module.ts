@@ -14,6 +14,7 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
 import {UserComponent} from './components/user/user.component';
 import {UserCourseBarComponent} from './components/user/course-bar.component';
 import {GravatarDirective} from './directives/gravatar.directive';
+import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import {GravatarDirective} from './directives/gravatar.directive';
     FieldMessagesComponent,
     UserComponent,
     UserCourseBarComponent,
-    GravatarDirective
+    GravatarDirective,
+    GetKeyPressDirective
   ],
   providers: [
     UtilsService,
@@ -46,6 +48,7 @@ import {GravatarDirective} from './directives/gravatar.directive';
     UserComponent,
     UserCourseBarComponent,
     GravatarDirective,
+    GetKeyPressDirective,
     CommonModule,
     HttpModule,
     MarkdownModule

@@ -40,7 +40,9 @@
 </ng-template>
 
 <ng-template #notificiationDetail>
-  <div [innerHTML]="currentNotification.message">
+  <div [innerHTML]="currentNotification.message"
+  kmPressed 
+  (onKeyPressed)="onKeyPressed($event)">
   </div>
   <div class="badge pull-right">
     {{currentNotification.dt | date: "yyyy-MM-dd HH:mm"}}
