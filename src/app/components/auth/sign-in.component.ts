@@ -4,6 +4,7 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import {SharedService} from '../../services/shared.service';
 import {ValidationService} from '../../services/validation.service';
 import {User} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
@@ -25,6 +26,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private utilsService: UtilsService,
     private userService: UserService,
+    private sharedService: SharedService,
     private errorService: ErrorService
   ) {}
 
@@ -56,14 +58,9 @@ export class SignInComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         data => {
-          const currentLan = this.userService.user.main.lan;
           this.authService.signedIn(data);
           this.userService.user = data.user;
-          const newLan = this.userService.user.main.lan;
-          if (currentLan !== newLan) {
-            this.userService.languageChanged.emit(newLan);
-          }
-          this.userService.notificationCheck.emit();
+          this.sharedService.userJustLoggedIn();
         },
         error => this.errorService.handleError(error)
       );

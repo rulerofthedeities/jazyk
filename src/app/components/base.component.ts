@@ -43,6 +43,15 @@ export class BaseComponent implements OnInit, OnDestroy {
     this.userService.backgroundChanged.subscribe(
       status => this.showBackground = status
     );
+    this.sharedService.justLoggedInOut.subscribe(
+      (loggedIn) => {
+        if (loggedIn) {
+          this.showBackground = this.userService.user.main.background;
+        } else {
+          this.showBackground = true;
+        }
+      }
+    );
   }
 
   private setBackgroundMonth() {

@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
+import {SharedService} from '../services/shared.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
 import {Translation} from '../models/course.model';
@@ -24,6 +25,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     private router: Router,
     private utilsService: UtilsService,
     private userService: UserService,
+    private sharedService: SharedService,
     private authService: AuthService,
     private errorService: ErrorService
   ) {}
@@ -38,8 +40,17 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.userService.notificationRead.subscribe(
       isAllRead => this.updateUnReadCount(isAllRead)
     );
-    this.userService.notificationCheck.subscribe(
-      () => this.getNotificationsCount()
+    this.sharedService.justLoggedInOut.subscribe(
+      (loggedIn) => {
+        const interfaceLan = this.userService.user.main.lan;
+        if (loggedIn) {
+          this.getNotificationsCount();
+        } else {
+          // reset cached user data
+          this.userService.getDefaultUserData(interfaceLan);
+        }
+        this.getTranslations(interfaceLan);
+      }
     );
   }
 

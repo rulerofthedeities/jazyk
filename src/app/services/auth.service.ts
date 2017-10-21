@@ -4,6 +4,7 @@ import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {tokenNotExpired} from 'angular2-jwt';
 import {JwtHelper} from 'angular2-jwt';
+import {SharedService} from '../services/shared.service';
 import {User} from '../models/user.model';
 
 interface UserStorage {
@@ -24,7 +25,8 @@ export class AuthService {
 
   constructor (
     private http: Http,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {}
 
   signup(user: User) {
@@ -60,6 +62,7 @@ export class AuthService {
     event.preventDefault();
     this.clearStorage();
     this.router.navigate(['/']);
+    this.sharedService.userJustLoggedOut();
   }
 
   isLoggedIn(): boolean {
