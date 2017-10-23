@@ -203,7 +203,7 @@ module.exports = {
   getPublicProfile: function(req, res) {
     const userName = req.params.userName,
           query = {userName},
-          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1};
+          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1, email: 1};
     User.findOne(query, projection, (err, result) => {
         let errCode = 500;
         if (!result) {
@@ -215,6 +215,8 @@ module.exports = {
         publicProfile.userName = result.userName;
         publicProfile.dtJoined = result.dtJoined;
         publicProfile._id = result._id
+        publicProfile.email = result.email
+        setEmailHash(publicProfile);
         response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
       });
     });

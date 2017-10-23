@@ -32,6 +32,7 @@ export interface PublicProfile {
   courses: string[];
   userName: string;
   dtJoined: Date;
+  emailHash: string;
   _id: string;
 }
 
