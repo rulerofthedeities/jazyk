@@ -7,9 +7,18 @@ import {PublicProfile} from '../../models/user.model';
 import {Course} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
+interface CompactProfile {
+  _id: string;
+  userName?: string;
+  emailHash?: string;
+  isFollower?: boolean;
+  isFollow?: boolean;
+}
+
 interface Follower {
   followId: string;
 }
+
 interface Followed {
   userId: string;
 }
@@ -34,12 +43,14 @@ export class UserComponent implements OnInit, OnDestroy {
   text: Object;
   profileFound: boolean;
   profile: PublicProfile;
-  network: Network;
+  private network: Network;
+  public publicNetwork: CompactProfile[] = [];
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
   courses: Courses;
   showCoursesLearning = false;
   showCoursesTeaching = false;
+  showNetwork = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -117,9 +128,36 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onShowNetwork() {
+    this.showNetwork = true;
     console.log(this.network);
+    const maxPerCall = 10;
+    /*
+    const followers = this.network.followed.filter(follower => !follower.profile);
+    followers.forEach(follower => this.addId(users, follower.userId));
+    if (users.length < maxPerCall) {
+      const follows = this.network.follows.filter(follow => !follow.profile);
+      follows.forEach(follow => this.addId(users, follow.followId));
+    }
+    */
+    const followers = this.publicNetwork.filter(follower => !follower.userName),
+          users: string[] = followers.map(follower => follower._id);
+    console.log('users in network', users);
+    if (users.length > 0) {
+      users.slice(0, 10);
+      this.fetchUserData(users);
+    }
   }
 
+  onCloseNetwork() {
+    this.showNetwork = false;
+  }
+/*
+  private addId(users: string[], userId: string) {
+    if (!users.find(user => user === userId)) {
+      users.push(userId);
+    }
+  }
+*/
   private showCourses(tpe: string) {
     console.log('showing courses', tpe, this.courses[tpe]);
     if (tpe === 'teaching') {
@@ -177,10 +215,35 @@ export class UserComponent implements OnInit, OnDestroy {
     .subscribe(
       network => {
         this.network = network;
+        this.mergeNetwork();
         this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(this.network.followed);
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private mergeNetwork() {
+    this.network.followed.forEach(followed => {
+      if (!this.publicNetwork.find(user => user._id === followed.userId)) {
+        this.publicNetwork.push({
+          _id: followed.userId,
+          isFollower: true,
+          isFollow: false
+        });
+      }
+    });
+    this.network.follows.forEach(follow => {
+      const followed = this.publicNetwork.find(user => user._id === follow.followId);
+      if (!followed) {
+        this.publicNetwork.push({
+          _id: follow.followId,
+          isFollower: false,
+          isFollow: true
+        });
+      } else {
+        followed.isFollow = true;
+      }
+    });
   }
 
   private checkIfCurrentlyFollowing(followed: Followed[]): boolean {
@@ -190,6 +253,40 @@ export class UserComponent implements OnInit, OnDestroy {
       isFollowing = true;
     };
     return isFollowing;
+  }
+
+  private fetchUserData(users: string[]) {
+    this.userService
+    .getCompactProfiles(users)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      profiles => {
+        if (profiles) {
+          console.log('profiles', profiles);
+          profiles.forEach(profile => {
+            this.mapProfileToUser(profile);
+          });
+          console.log('new network', this.network);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private mapProfileToUser(profile: CompactProfile) {
+    const follower = this.publicNetwork.find(user => user._id === profile._id);
+    follower.emailHash = profile.emailHash;
+    follower.userName = profile.userName;
+    /*
+    const follower = this.network.followed.find(user => user.userId === profile._id);
+    if (follower) {
+      follower.profile = profile;
+    }
+    const follow = this.network.followed.find(user => user.userId === profile._id);
+    if (follow) {
+      follow.profile = profile;
+    }
+    */
   }
 
   private getTranslations() {

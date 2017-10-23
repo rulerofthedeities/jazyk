@@ -189,6 +189,17 @@ module.exports = {
       });
     });
   },
+  getCompactProfiles: function(req, res) {
+    const userIds = req.params.userIds.split(','),
+          query = {_id: {$in: userIds}}
+          projection = {userName: 1, email: 1};
+    User.find(query, projection, function(err, users) {
+      response.handleError(err, res, 500, 'Error fetching users', function(){
+        users.forEach(user => setEmailHash(user));
+        response.handleSuccess(res, users, 200, 'fetched users');
+      });
+    })
+  },
   saveProfile: function(req, res) {
     const userId = req.decoded.user._id,
           profile = req.body,
@@ -214,8 +225,8 @@ module.exports = {
         const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
         publicProfile.userName = result.userName;
         publicProfile.dtJoined = result.dtJoined;
-        publicProfile._id = result._id
-        publicProfile.email = result.email
+        publicProfile._id = result._id;
+        publicProfile.email = result.email;
         setEmailHash(publicProfile);
         response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
       });

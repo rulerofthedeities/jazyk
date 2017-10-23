@@ -23,6 +23,8 @@ module.exports.initialize = function(app, router) {
   router.post('/user/signin', users.signin);
   router.post('/user/signup', users.signup);
 
+  router.get('/user/profiles/:userIds', users.getCompactProfiles);
+
   router.get('/config/lan/:lan', config.getLanConfig);
 
   router.get('/translations/:lan/:component', translations.getTranslations);

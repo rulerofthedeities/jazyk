@@ -289,6 +289,15 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  getCompactProfiles(userIds: string[]) {
+    userIds.join(',');
+    console.log('userIds', userIds);
+    return this.http
+    .get('/api/user/profiles/' + userIds)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   getCoursesTeaching(userId: string) {
     const headers = this.getTokenHeaders();
     return this.http

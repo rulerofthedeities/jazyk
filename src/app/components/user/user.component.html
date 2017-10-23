@@ -140,12 +140,23 @@
             </span>
           </div>
           <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.followed?.length || network?.follows?.length">
-            <button 
+            <button *ngIf="!showNetwork"
               type="button"
               class="btn btn-info btn-xs"
               (click)="onShowNetwork()">
               <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
             </button>
+            <div *ngIf="showNetwork">
+              <div *ngFor="let user of publicNetwork">
+                {{user|json}}
+              </div>
+              <button 
+                type="button"
+                class="btn btn-warning btn-xs"
+                (click)="onCloseNetwork()">
+                <span class="fa fa-eye"></span> {{text["Close"]}}
+              </button>
+            </div>
           </div>
         </div>
       </div>
