@@ -10,15 +10,26 @@
     <button 
       *ngIf="!currentNotification"
       type="button"
+      (click)='onDeleteAllRead()'
+      class="btn btn-danger pull-right btn-deleteall">
+      <span class="fa fa-trash"></span> {{text['DeleteAllReadNotifications']}}
+    </button>
+    <button 
+      *ngIf="!currentNotification"
+      type="button"
       (click)='onMarkAllRead()'
       class="btn btn-warning pull-right">
-      {{text['MarkAllRead']}}
+      <span class="fa fa-check"></span> {{text['MarkAllRead']}}
     </button>
   </div>
   <div class="panel-body">
     <div *ngIf="notifications?.length===0 else notificationsList">
       {{text["NoRecentNotifications"]}}
     </div>
+  </div>
+  <div class="info-msg">
+    <km-info-msg [msg]="infoMsg">
+    </km-info-msg>
   </div>
 </div>
 
@@ -30,9 +41,15 @@
       (click)="onSelectNotification(i)">
       <span class="read fa" [ngClass]="{
         'fa-circle':!notification.read,
-        'fa-circle-o': notification.read}"></span>
+        'fa-circle-o': notification.read}">
+      </span>
       <span [class.unread]="!notification.read">{{notification.title}}</span>
-      <span class="badge">
+      <button type="button" *ngIf="notification.read"
+        class="btn btn-danger btn-xs btn-delete pull-right"
+        (click)="onDeleteNotification(notification._id)">
+        <span class="fa fa-trash"></span>
+      </button>
+      <span class="badge" [class.badgeMargin]="!notification.read">
         {{notification.dt | date: 'dd'}} {{text[notification.dt | date: 'MMMM']}} {{notification.dt | date: 'yyyy'}}
       </span>
     </a>

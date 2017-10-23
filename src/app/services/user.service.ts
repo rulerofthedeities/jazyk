@@ -217,6 +217,22 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  deleteNotification(notificationId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .delete('/api/user/notification/' + notificationId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  deleteReadNotifications() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .delete('/api/user/notifications/', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   fetchNotificationsCount() {
     const headers = this.getTokenHeaders();
     return this.http

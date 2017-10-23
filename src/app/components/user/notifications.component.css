@@ -18,3 +18,13 @@
   cursor: pointer;
   font-size: 32px;
 }
+.btn-delete {
+  margin-left: 8px;
+  margin-right: -7px;
+}
+.btn-deleteall {
+  margin-left: 12px;
+}
+.badgeMargin {
+  margin-right: 24px;
+}

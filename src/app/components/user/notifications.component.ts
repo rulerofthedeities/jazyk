@@ -15,6 +15,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   text: Object = {};
   notifications: Notification[];
   currentNotification: Notification;
+  infoMsg: string;
 
   constructor(
     private utilsService: UtilsService,
@@ -28,10 +29,23 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   onSelectNotification(i: number) {
+    this.infoMsg = '';
     this.currentNotification = this.notifications[i];
     if (!this.currentNotification.message) {
       this.fetchNotification(i);
     }
+  }
+
+  onDeleteNotification(notificationId: string) {
+    this.infoMsg = '';
+    this.notifications = this.notifications.filter(notification => notification._id !== notificationId);
+    this.deleteNotification(notificationId);
+  }
+
+  onDeleteAllRead() {
+    this.infoMsg = '';
+    this.notifications = this.notifications.filter(notification => !notification.read);
+    this.deleteReadNotifications();
   }
 
   onCloseNotification() {
@@ -39,6 +53,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   onMarkAllRead() {
+    this.infoMsg = '';
     this.markAllRead();
     this.setAllNotificationsAsRead();
   }
@@ -83,6 +98,30 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           this.notifications[i] = notification;
           this.currentNotification = notification;
         }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private deleteNotification(notificationId: string) {
+    this.userService
+    .deleteNotification(notificationId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      deleted => {
+        this.infoMsg = this.text['NotificationDeleted'];
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private deleteReadNotifications() {
+    this.userService
+    .deleteReadNotifications()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      deleted => {
+        this.infoMsg = this.text['NotificationsDeleted'];
       },
       error => this.errorService.handleError(error)
     );

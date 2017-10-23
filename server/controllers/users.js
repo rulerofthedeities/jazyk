@@ -248,6 +248,25 @@ module.exports = {
       });
     });
   },
+  removeNotification: function(req, res) {
+    const notificationId = new mongoose.Types.ObjectId(req.params.notificationId),
+          query = {_id: notificationId};
+    Notification.findOneAndRemove(query, function(err, result) {
+      response.handleError(err, res, 500, 'Error removing notification', function(){
+        response.handleSuccess(res, result, 200, 'Removed notification');
+      });
+    });
+  },
+  removeNotifications: function(req, res) {
+    // Remove all read notifications for this user
+    const userId = req.decoded.user._id,
+          query = {userId, read: true};
+    Notification.remove(query, {}, {multi: true}, function(err, result) {
+      response.handleError(err, res, 500, 'Error removing notifications', function(){
+        response.handleSuccess(res, result, 200, 'Removed notifications');
+      });
+    });
+  },
   setNotificationRead: function(req, res) {
     const notificationId = new mongoose.Types.ObjectId(req.body.notificationId),
           query = {_id: notificationId},
