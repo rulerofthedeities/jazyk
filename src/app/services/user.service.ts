@@ -274,6 +274,7 @@ export class UserService {
   }
 
   unFollowUser(userId: string) {
+    console.log('unfollowing user', userId);
     const headers = this.getTokenHeaders();
     return this.http
     .put('/api/user/unfollow', JSON.stringify({userId}), {headers})
@@ -290,8 +291,9 @@ export class UserService {
   }
 
   getCompactProfiles(userIds: string[]) {
+    console.log('userId length', userIds.length);
     userIds.join(',');
-    console.log('userIds', userIds);
+    console.log('fetch userIds', userIds);
     return this.http
     .get('/api/user/profiles/' + userIds)
     .map(response => response.json().obj)

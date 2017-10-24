@@ -11,12 +11,12 @@
       </button>
     </div>
     <!-- Follow button -->
-    <div class="pull-right"  *ngIf="!isCurrentUser">
+    <div class="pull-right"  *ngIf="!isCurrentUser && profile">
       <button 
         *ngIf="!isCurrentlyFollowing"
         type="button"
         class="btn btn-success"
-        (click)="onFollowUser(profile?._id)">
+        (click)="onFollowUser(profile._id)">
         <span class="fa fa-user-plus"></span> {{text["Follow"]}} '{{profile?.userName}}'
       </button>
       <div *ngIf="isCurrentlyFollowing">
@@ -24,7 +24,7 @@
           <span class="fa fa-check"></span> {{text['Following']}}
         <button
           type="button"
-          (click)="onUnfollowUser(profile?._id)"
+          (click)="onUnfollowUser(profile._id)"
           class="btn btn-warning btn-sm">
           {{text["Unfollow"]}}
         </button>
@@ -139,23 +139,24 @@
               {{network?.followed?.length === 1 ? text['person'] : text['people']}}
             </span>
           </div>
-          <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.followed?.length || network?.follows?.length">
-            <button *ngIf="!showNetwork"
+          <div class="col-xs-9 col-xs-offset-3" *ngIf="publicNetwork?.length > 0">
+            <button *ngIf="!networkShown"
               type="button"
               class="btn btn-info btn-xs"
               (click)="onShowNetwork()">
               <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
             </button>
-            <div *ngIf="showNetwork">
+            <div *ngIf="networkShown">
               <km-compact-profile *ngFor="let user of publicNetwork"
                   [profile]="user"
                   [text]="text">
               </km-compact-profile>
+              <div class="clearfix"></div>
               <button 
                 type="button"
                 class="btn btn-warning btn-xs"
                 (click)="onCloseNetwork()">
-                <span class="fa fa-eye"></span> {{text["Close"]}}
+                <span class="fa fa-times"></span> {{text["Close"]}}
               </button>
             </div>
           </div>
