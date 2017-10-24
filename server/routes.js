@@ -8,6 +8,8 @@ var path = require("path"),
     config = require("./controllers/config"),
     translations = require("./controllers/translations"),
     exercises = require("./controllers/exercises"),
+    notifications = require("./controllers/notifications"),
+    messages = require("./controllers/messages"),
     results = require("./controllers/results"),
     response = require("./response");
 
@@ -69,19 +71,22 @@ module.exports.initialize = function(app, router) {
   router.post('/user/follow', users.followUser);
   router.put('/user/unfollow', users.unFollowUser);
   router.get('/user/followers/:userId', users.getFollowers);
-  router.put('/user/notification', users.saveNotification);
-  router.get('/user/notifications', users.getNotifications);
-  router.delete('/user/notifications', users.removeNotifications);
-  router.get('/user/notificationsCount', users.getNotificationsCount);
-  router.get('/user/notification/:notificationId', users.getNotification);
-  router.delete('/user/notification/:notificationId', users.removeNotification);
-  router.patch('/user/notificationread', users.setNotificationRead);
-  router.patch('/user/notificationsread', users.setAllNotificationsRead);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
+
+  router.put('/user/notification', notifications.saveNotification);
+  router.get('/user/notifications', notifications.getNotifications);
+  router.delete('/user/notifications', notifications.removeNotifications);
+  router.get('/user/notificationsCount', notifications.getNotificationsCount);
+  router.get('/user/notification/:notificationId', notifications.getNotification);
+  router.delete('/user/notification/:notificationId', notifications.removeNotification);
+  router.patch('/user/notificationread', notifications.setNotificationRead);
+  router.patch('/user/notificationsread', notifications.setAllNotificationsRead);
+
+  router.put('/user/message', messages.saveMessage);
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   

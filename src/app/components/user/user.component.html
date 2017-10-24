@@ -10,8 +10,8 @@
         <span class="fa fa-pencil"></span> {{text["Edit"]}}
       </button>
     </div>
-    <!-- Follow button -->
-    <div class="pull-right"  *ngIf="!isCurrentUser && profile">
+    <!-- Follow / Unfollow button -->
+    <div class="pull-right" *ngIf="!isCurrentUser && profile">
       <button 
         *ngIf="!isCurrentlyFollowing"
         type="button"
@@ -22,12 +22,12 @@
       <div *ngIf="isCurrentlyFollowing">
         <div class="following">
           <span class="fa fa-check"></span> {{text['Following']}}
-        <button
-          type="button"
-          (click)="onUnfollowUser(profile._id)"
-          class="btn btn-warning btn-sm">
-          {{text["Unfollow"]}}
-        </button>
+          <button
+            type="button"
+            (click)="onUnfollowUser(profile._id)"
+            class="btn btn-warning btn-sm">
+            <span class="fa fa-times"></span> {{text["Unfollow"]}}
+          </button>
         </div>
       </div>
     </div>
@@ -161,7 +161,34 @@
             </div>
           </div>
         </div>
+        <div class="row" *ngIf="!isCurrentUser && isCurrentlyFollowing && isCurrentlyFollowed && profile">
+          <button [style.display]="messageShown ? 'none' : 'inline-block'"
+            type="button"
+            (click)="onCreateMessage(msg)"
+            class="btn btn-primary btn-sm">
+            <span class="fa fa-envelope"></span> {{text["SendMessage"]}}
+          </button>
+          <div [style.display]="messageShown ? 'block' : 'none'">
+            <textarea #msg
+              [ngModel]="message"
+              autofocus
+              maxlength="maxMessageLength">
+            </textarea>
+            <div class="clearfix"></div>
+            <button
+            [disabled]="msg.value.trim().length < minMessageLength"
+            type="button"
+            (click)="onSendMessage(profile._id, msg)"
+            class="btn btn-success btn-sm">
+            <span class="fa fa-location-arrow"></span> {{text["Send"]}}
+          </button>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+  <div  class="info-msg">
+    <km-info-msg [msg]="infoMsg">
+    </km-info-msg>
   </div>
 </div>

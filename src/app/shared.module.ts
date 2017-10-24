@@ -1,4 +1,5 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {CommonModule} from '@angular/common';
 import {MarkdownModule} from 'angular2-markdown';
@@ -21,6 +22,7 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
   imports: [
     CommonModule,
     HttpModule,
+    FormsModule,
     MarkdownModule.forRoot()
   ],
   declarations: [

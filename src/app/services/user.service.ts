@@ -291,9 +291,7 @@ export class UserService {
   }
 
   getCompactProfiles(userIds: string[]) {
-    console.log('userId length', userIds.length);
     userIds.join(',');
-    console.log('fetch userIds', userIds);
     return this.http
     .get('/api/user/profiles/' + userIds)
     .map(response => response.json().obj)
@@ -304,6 +302,14 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/courses/teaching/' + userId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  saveMessage(recipientId: string, msg: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put('/api/user/message', JSON.stringify({recipientId, msg}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

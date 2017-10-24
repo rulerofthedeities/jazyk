@@ -38,10 +38,16 @@ export class UserComponent implements OnInit, OnDestroy {
   publicNetwork: CompactProfile[] = [];
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
+  isCurrentlyFollowed: boolean;
   courses: Courses;
   showCoursesLearning: boolean;
   showCoursesTeaching: boolean;
   networkShown: boolean;
+  minMessageLength = 5;
+  maxMessageLength = 140;
+  messageShown: boolean;
+  message: string;
+  infoMsg: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,6 +77,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onFollowUser(userId: string) {
+    this.infoMsg = '';
     if (!this.isCurrentlyFollowing) {
       const id = this.userService.user._id;
       this.userService
@@ -92,7 +99,8 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onUnfollowUser(userId: string) {
-    console.log('removing', userId);
+    this.infoMsg = '';
+    this.messageShown = false;
     if (this.isCurrentlyFollowing) {
       const id = this.userService.user._id;
       this.userService
@@ -101,16 +109,12 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         unfollow => {
           this.isCurrentlyFollowing = false;
-          console.log('removing id', id);
           this.network.followed = this.network.followed.filter(item => item.userId !== id);
-          console.log('old network', this.publicNetwork);
           const previousLength = this.publicNetwork.length;
           this.publicNetwork = this.publicNetwork.filter(item => item._id !== id || item.isFollow);
-          console.log('new network', this.publicNetwork, id);
           if (previousLength === this.publicNetwork.length) {
             // Was a two-way connection, remove one connection only
             const follow: CompactProfile = this.publicNetwork.find(item => item._id === id);
-            console.log('length equal', follow);
             if (follow) {
               follow.isFollower = false;
             }
@@ -122,6 +126,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onShowCourses(tpe: string) {
+    this.infoMsg = '';
     if (!this.courses[tpe]) {
       this.fetchCourses(tpe, true);
     } else {
@@ -130,6 +135,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onCloseCourses(tpe: string) {
+    this.infoMsg = '';
     if (tpe === 'teaching') {
       this.showCoursesTeaching = false;
     } else {
@@ -138,12 +144,24 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onShowNetwork() {
+    this.infoMsg = '';
     this.showNetwork();
     this.networkShown = true;
   }
 
   onCloseNetwork() {
     this.networkShown = false;
+    this.infoMsg = '';
+  }
+
+  onCreateMessage(msgField: any) {
+    this.infoMsg = '';
+    msgField.value = '';
+    this.messageShown = true;
+  }
+
+  onSendMessage(recipientId: string, msgField: any) {
+    this.sendMessage(recipientId, msgField.value);
   }
 
   private init() {
@@ -151,6 +169,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.profile = undefined;
     this.isCurrentUser = false;
     this.isCurrentlyFollowing = false;
+    this.isCurrentlyFollowed = false;
     this.publicNetwork = [];
     this.network = {
       follows: [],
@@ -163,13 +182,14 @@ export class UserComponent implements OnInit, OnDestroy {
     this.showCoursesLearning = false;
     this.showCoursesTeaching = false;
     this.networkShown = false;
+    this.messageShown = false;
+    this.infoMsg = '';
   }
 
   private showNetwork() {
     const maxPerCall = 10,
           followers = this.publicNetwork.filter(follower => !follower.userName),
           users: string[] = followers.map(follower => follower._id);
-    console.log('users in network', this.publicNetwork, users);
     if (users.length > 0) {
       users.slice(0, 10);
       this.fetchUserData(users);
@@ -198,7 +218,6 @@ export class UserComponent implements OnInit, OnDestroy {
     .subscribe(
       courses => {
         this.courses.teaching = courses;
-        console.log('courses teaching', courses);
       },
       error => this.errorService.handleError(error)
     );
@@ -235,6 +254,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.network = network;
         this.mergeNetwork();
         this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(this.network.followed);
+        this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(this.network.follows);
       },
       error => this.errorService.handleError(error)
     );
@@ -278,10 +298,19 @@ export class UserComponent implements OnInit, OnDestroy {
   private checkIfCurrentlyFollowing(followed: Followed[]): boolean {
     const currentId = this.userService.user._id;
     let isFollowing = false;
-    if (followed.find(follower => follower.userId === currentId)) {
+    if (followed.find(user => user.userId === currentId)) {
       isFollowing = true;
     };
     return isFollowing;
+  }
+
+  private checkIfCurrentlyFollowed(follow: Follower[]): boolean {
+    const currentId = this.userService.user._id;
+    let isFollowed = false;
+    if (follow.find(user => user.followId === currentId)) {
+      isFollowed = true;
+    };
+    return isFollowed;
   }
 
   private fetchUserData(users: string[]) {
@@ -308,6 +337,29 @@ export class UserComponent implements OnInit, OnDestroy {
     const follower: CompactProfile = this.publicNetwork.find(user => user._id === profile._id);
     follower.emailHash = profile.emailHash;
     follower.userName = profile.userName;
+  }
+
+  private sendMessage(recipientId: string, msg: string) {
+    if (msg.trim().length >= this.minMessageLength) {
+      this.messageShown = false;
+      this.saveMessage(recipientId, msg);
+      console.log('sending message', msg, 'to', recipientId);
+    } else {
+      this.infoMsg = '';
+    }
+  }
+
+  private saveMessage(recipientId: string, msg: string) {
+    this.userService
+    .saveMessage(recipientId, msg)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      saved => {
+        const info = this.text['MessageSent'];
+        this.infoMsg = info.replace('%s', this.profile.userName);
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getTranslations() {
