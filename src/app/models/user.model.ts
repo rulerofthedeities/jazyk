@@ -36,6 +36,14 @@ export interface PublicProfile {
   _id: string;
 }
 
+export interface CompactProfile {
+  _id: string;
+  userName?: string;
+  emailHash?: string;
+  isFollower?: boolean;
+  isFollow?: boolean;
+}
+
 export interface JazykConfig {
   courses?: string[];
   learn: LearnSettings;

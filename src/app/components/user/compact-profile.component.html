@@ -1,0 +1,14 @@
+<li class="list-group-item profile">
+  <img kmGravatar [hash]="profile.emailHash" [width]="42"
+    class="gravatar pull-left" *ngIf="profile.emailHash">
+  <div class="user">
+    <div class="name truncate">{{profile.userName}}</div>
+    <div class="fa left" [class.fa-long-arrow-left]="profile.isFollow"></div>
+    <div class="fa right" [class.fa-long-arrow-right]="profile.isFollower"></div>
+    <button type="button"
+      class="btn btn-info btn-xs open" 
+      (click)="onOpenProfile(profile.userName)">
+      {{text["ViewProfile"]}}
+    </button>
+  </div>
+</li>

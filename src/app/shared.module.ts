@@ -12,6 +12,7 @@ import {ModalConfirmComponent} from './components/modals/modal-confirm.component
 import {AudioFileComponent} from './components/fields/audio-file.component';
 import {FieldMessagesComponent} from './components/msg/field-messages.component';
 import {UserComponent} from './components/user/user.component';
+import {UserCompactProfileComponent} from './components/user/compact-profile.component';
 import {UserCourseBarComponent} from './components/user/course-bar.component';
 import {GravatarDirective} from './directives/gravatar.directive';
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
@@ -30,6 +31,7 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     AudioFileComponent,
     FieldMessagesComponent,
     UserComponent,
+    UserCompactProfileComponent,
     UserCourseBarComponent,
     GravatarDirective,
     GetKeyPressDirective
@@ -46,6 +48,7 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     AudioFileComponent,
     FieldMessagesComponent,
     UserComponent,
+    UserCompactProfileComponent,
     UserCourseBarComponent,
     GravatarDirective,
     GetKeyPressDirective,

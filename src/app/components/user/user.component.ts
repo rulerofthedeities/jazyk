@@ -3,17 +3,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {PublicProfile} from '../../models/user.model';
+import {PublicProfile, CompactProfile} from '../../models/user.model';
 import {Course} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface CompactProfile {
-  _id: string;
-  userName?: string;
-  emailHash?: string;
-  isFollower?: boolean;
-  isFollow?: boolean;
-}
 
 interface Follower {
   followId: string;
@@ -41,16 +33,15 @@ interface Courses {
 export class UserComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object;
-  profileFound: boolean;
   profile: PublicProfile;
-  private network: Network;
-  public publicNetwork: CompactProfile[] = [];
+  network: Network;
+  publicNetwork: CompactProfile[] = [];
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
   courses: Courses;
-  showCoursesLearning = false;
-  showCoursesTeaching = false;
-  showNetwork = false;
+  showCoursesLearning: boolean;
+  showCoursesTeaching: boolean;
+  showNetwork: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,15 +52,13 @@ export class UserComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.courses = {
-      learning: [],
-      teaching: []
-    };
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
+        console.log('route params user profile');
         if (params['name']) {
+          this.init();
           this.fetchPublicProfile(params['name'].toLowerCase());
           this.getTranslations();
         }
@@ -129,17 +118,8 @@ export class UserComponent implements OnInit, OnDestroy {
 
   onShowNetwork() {
     this.showNetwork = true;
-    console.log(this.network);
-    const maxPerCall = 10;
-    /*
-    const followers = this.network.followed.filter(follower => !follower.profile);
-    followers.forEach(follower => this.addId(users, follower.userId));
-    if (users.length < maxPerCall) {
-      const follows = this.network.follows.filter(follow => !follow.profile);
-      follows.forEach(follow => this.addId(users, follow.followId));
-    }
-    */
-    const followers = this.publicNetwork.filter(follower => !follower.userName),
+    const maxPerCall = 10,
+          followers = this.publicNetwork.filter(follower => !follower.userName),
           users: string[] = followers.map(follower => follower._id);
     console.log('users in network', users);
     if (users.length > 0) {
@@ -151,13 +131,26 @@ export class UserComponent implements OnInit, OnDestroy {
   onCloseNetwork() {
     this.showNetwork = false;
   }
-/*
-  private addId(users: string[], userId: string) {
-    if (!users.find(user => user === userId)) {
-      users.push(userId);
-    }
+
+  private init() {
+    // In case user navigates to another public profile
+    this.profile = undefined;
+    this.isCurrentUser = false;
+    this.isCurrentlyFollowing = false;
+    this.publicNetwork = [];
+    this.network = {
+      follows: [],
+      followed: []
+    };
+    this.courses = {
+      learning: [],
+      teaching: []
+    };
+    this.showCoursesLearning = false;
+    this.showCoursesTeaching = false;
+    this.showNetwork = false;
   }
-*/
+
   private showCourses(tpe: string) {
     console.log('showing courses', tpe, this.courses[tpe]);
     if (tpe === 'teaching') {
@@ -277,16 +270,6 @@ export class UserComponent implements OnInit, OnDestroy {
     const follower = this.publicNetwork.find(user => user._id === profile._id);
     follower.emailHash = profile.emailHash;
     follower.userName = profile.userName;
-    /*
-    const follower = this.network.followed.find(user => user.userId === profile._id);
-    if (follower) {
-      follower.profile = profile;
-    }
-    const follow = this.network.followed.find(user => user.userId === profile._id);
-    if (follow) {
-      follow.profile = profile;
-    }
-    */
   }
 
   private getTranslations() {

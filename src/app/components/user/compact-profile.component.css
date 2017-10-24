@@ -1,0 +1,40 @@
+.profile {
+  display: inline-block;
+  width: 248px;
+}
+.gravatar {
+  margin-right: 8px;
+}
+.fa {
+  color: green;
+  width: 24px;
+  font-size: 24px;
+}
+.user {
+  height: 52px;
+}
+.left {
+  position: relative;
+  top: -12px;
+}
+.right {
+  position: relative;
+  left: -27px;
+  top: -4px;
+}
+.name {
+  margin-top: -10px;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+.open {
+  position: relative;
+  top: -10px;
+  left: -24px;
+}
+.truncate {
+  width: 164px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,7 +1,7 @@
 .panel-body {
   font-size: 18px;
 }
-.row {
+.data .row {
   border-bottom: 1px dashed #ddd;
   margin-bottom: 8px;
   padding: 2px;

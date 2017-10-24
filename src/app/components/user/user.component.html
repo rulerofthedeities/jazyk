@@ -36,11 +36,11 @@
     <div class="row">
       <div class="col-xs-2">
         <div class="gravatar col-xs-2">
-          <img kmGravatar [hash]="profile?.emailHash" [width]="96">
+          <img kmGravatar [hash]="profile.emailHash" [width]="96" *ngIf="profile">
         </div>
       </div>
-      <div class="col-xs-10">
-        <div class="row" *ngIf="profile?.profile?.realName">
+      <div class="col-xs-10 data">
+        <div class="row " *ngIf="profile?.profile?.realName">
           <label 
             for="bio" 
             class="control-label col-xs-3">
@@ -147,9 +147,10 @@
               <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
             </button>
             <div *ngIf="showNetwork">
-              <div *ngFor="let user of publicNetwork">
-                {{user|json}}
-              </div>
+              <km-compact-profile *ngFor="let user of publicNetwork"
+                  [profile]="user"
+                  [text]="text">
+              </km-compact-profile>
               <button 
                 type="button"
                 class="btn btn-warning btn-xs"
