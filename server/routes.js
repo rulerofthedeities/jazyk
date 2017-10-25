@@ -87,6 +87,9 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/notificationsread', notifications.setAllNotificationsRead);
 
   router.put('/user/message', messages.saveMessage);
+  router.get('/user/messages/:tpe', messages.getMessages);
+  router.patch('/user/messageread', messages.setMessageRead);
+
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   

@@ -1,8 +1,72 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="fa fa-envelope-o"></span> {{text["PrivateMessages"]}}
+    <span class="fa fa-envelope-o"></span>
+    {{currentMessage ? text["Message"] : text["PrivateMessages"]}}
+    <span 
+      *ngIf="currentMessage"
+      (click)='onCloseMessage()'
+      class="fa fa-times pull-right">
+    </span>
   </div>
   <div class="panel-body">
-    {{text["NoNewMessages"]}}
+    <div *ngIf="!currentMessage else messageDetail">
+      <ul class="nav nav-tabs">
+          <li 
+            [class.active]="tab==='inbox'"
+            (click)="onSelectTab('inbox')">
+            <a>
+              <span class="fa fa-envelope"></span> Inbox
+            </a>
+          </li>
+          <li
+            [class.active]="tab==='sent'"
+            (click)="onSelectTab('sent')">
+            <a>
+              <span class="fa fa-location-arrow"></span> Sent
+            </a>
+          </li>
+          <li
+            [class.active]="tab==='trash'"
+            (click)="onSelectTab('trash')">
+            <a>
+              <span class="fa fa-trash"></span> Trash
+            </a>
+          </li>
+      </ul>
+      <div *ngIf="messages && messages[0] else nomessages" class="messages">
+        <div class="list-group">
+          <a class="list-group-item"
+            *ngFor="let message of messages; let i=index" 
+            (click)="onSelectMessage(i)">
+            <span class="fa"  
+              *ngIf="isRecipient(message)"
+              [ngClass]="{
+              'fa-circle': !message.read,
+              'fa-circle-o': message.read}">
+            </span>
+            <span [class.unread]="!message.read && isRecipient(message)">{{message.message}}</span>
+            <span class="badge">
+              {{message.dt | date: 'dd'}} {{text[message.dt | date: 'MMMM']}} {{message.dt | date: 'yyyy HH:mm'}}
+            </span>
+          </a>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #nomessages>
+  <div class="messages">
+    {{text["NoMessages"]}}
+  </div>
+</ng-template>
+
+<ng-template #messageDetail>
+  <div class="message"
+    kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    {{currentMessage|json}}
+    <div class="badge pull-right">
+      {{currentMessage.dt | date: "yyyy-MM-dd HH:mm"}}
+    </div>
+  </div>
+</ng-template>

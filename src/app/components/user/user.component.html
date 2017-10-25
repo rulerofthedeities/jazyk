@@ -178,7 +178,7 @@
             <button
             [disabled]="msg.value.trim().length < minMessageLength"
             type="button"
-            (click)="onSendMessage(profile._id, msg)"
+            (click)="onSendMessage(profile, msg)"
             class="btn btn-success btn-sm">
             <span class="fa fa-location-arrow"></span> {{text["Send"]}}
           </button>

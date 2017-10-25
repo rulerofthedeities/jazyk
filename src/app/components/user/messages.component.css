@@ -1,0 +1,25 @@
+li {
+  cursor: pointer;
+}
+.messages {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 4px;
+}
+.read {
+  margin-right: 10px;
+}
+.fa-circle {
+  color: red;
+}
+.list-group-item {
+  cursor: pointer;
+}
+.fa-times {
+  cursor: pointer;
+  font-size: 32px;
+}
+.unread {
+  font-weight: bold;
+}

@@ -70,3 +70,19 @@ export interface Notification {
   read?: boolean;
   dt?: Date;
 }
+
+interface MessageUser {
+  id: string;
+  userName: string;
+  emailHash?: string;
+}
+
+export interface Message {
+  _id?: string;
+  sender: MessageUser;
+  recipient: MessageUser;
+  message: string;
+  read: boolean;
+  trash: boolean;
+  dt: Date;
+}

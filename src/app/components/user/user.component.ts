@@ -160,8 +160,8 @@ export class UserComponent implements OnInit, OnDestroy {
     this.messageShown = true;
   }
 
-  onSendMessage(recipientId: string, msgField: any) {
-    this.sendMessage(recipientId, msgField.value);
+  onSendMessage(profile: PublicProfile, msgField: any) {
+    this.sendMessage(profile, msgField.value);
   }
 
   private init() {
@@ -339,24 +339,24 @@ export class UserComponent implements OnInit, OnDestroy {
     follower.userName = profile.userName;
   }
 
-  private sendMessage(recipientId: string, msg: string) {
+  private sendMessage(profile: PublicProfile, msg: string) {
     if (msg.trim().length >= this.minMessageLength) {
       this.messageShown = false;
-      this.saveMessage(recipientId, msg);
-      console.log('sending message', msg, 'to', recipientId);
+      this.saveMessage(profile, msg);
+      console.log('sending message', msg, 'to', profile._id);
     } else {
       this.infoMsg = '';
     }
   }
 
-  private saveMessage(recipientId: string, msg: string) {
+  private saveMessage(profile: PublicProfile, msg: string) {
     this.userService
-    .saveMessage(recipientId, msg)
+    .saveMessage(profile, msg)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
         const info = this.text['MessageSent'];
-        this.infoMsg = info.replace('%s', this.profile.userName);
+        this.infoMsg = info.replace('%s', profile.userName);
       },
       error => this.errorService.handleError(error)
     );

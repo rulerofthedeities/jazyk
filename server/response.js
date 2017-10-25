@@ -13,7 +13,7 @@ module.exports = {
   },
   handleSuccess: function(res, result, statusno, message, objname) {
     objname = objname || 'obj';
-    var returnObj = {message:message};
+    var returnObj = {message};
     returnObj[objname] = result;
     
     res.status(statusno).send(returnObj);
