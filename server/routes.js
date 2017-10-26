@@ -60,8 +60,8 @@ module.exports.initialize = function(app, router) {
   });
 
   /*** authenticated ***/
-  /* learn */
 
+  /* user */
   router.put('/user/settings/learn', users.saveLearnSettings);
   router.get('/user/settings/learn', users.getLearnSettings);
   router.put('/user/settings/main', users.saveMainSettings);
@@ -89,7 +89,7 @@ module.exports.initialize = function(app, router) {
   router.put('/user/message', messages.saveMessage);
   router.get('/user/messages/:tpe', messages.getMessages);
   router.patch('/user/messageread', messages.setMessageRead);
-
+  router.patch('/user/messagedelete', messages.setMessageDelete);
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   
@@ -105,6 +105,8 @@ module.exports.initialize = function(app, router) {
   router.get('/user/courses/learn', courses.getUserCourses);
 
   router.get('/user', users.getUser);
+
+  /* learn */
 
   router.get('/courses/teaching/:userId', courses.getTeachingCourses);
 

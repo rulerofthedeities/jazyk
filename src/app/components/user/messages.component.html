@@ -15,21 +15,21 @@
             [class.active]="tab==='inbox'"
             (click)="onSelectTab('inbox')">
             <a>
-              <span class="fa fa-envelope"></span> Inbox
+              <span class="fa fa-envelope"></span> {{text["Inbox"]}}
             </a>
           </li>
           <li
             [class.active]="tab==='sent'"
             (click)="onSelectTab('sent')">
             <a>
-              <span class="fa fa-location-arrow"></span> Sent
+              <span class="fa fa-location-arrow"></span> {{text["Sent"]}}
             </a>
           </li>
           <li
             [class.active]="tab==='trash'"
             (click)="onSelectTab('trash')">
             <a>
-              <span class="fa fa-trash"></span> Trash
+              <span class="fa fa-trash"></span> {{text["Trash"]}}
             </a>
           </li>
       </ul>
@@ -41,11 +41,23 @@
             <span class="fa"  
               *ngIf="isRecipient(message)"
               [ngClass]="{
-              'fa-circle': !message.read,
-              'fa-circle-o': message.read}">
+              'fa-circle': !message.recipient.read,
+              'fa-circle-o': message.recipient.read}">
             </span>
-            <span [class.unread]="!message.read && isRecipient(message)">{{message.message}}</span>
-            <span class="badge">
+            <span class="user truncate">
+              {{isRecipient(message) ? message.sender.userName : message.recipient.userName}}
+            </span>
+            <span
+              class="content truncate"
+              [class.unread]="!message.recipient.read && isRecipient(message)">
+              {{message.message}}
+            </span>
+            <button type="button" *ngIf="message.recipient.read || !isRecipient(message)"
+              class="btn btn-danger btn-xs btn-delete pull-right"
+              (click)="onDeleteMessage(message)">
+              <span class="fa fa-trash"></span>
+            </button>
+            <span class="badge" [class.badgeMargin]="!message.recipient.read">
               {{message.dt | date: 'dd'}} {{text[message.dt | date: 'MMMM']}} {{message.dt | date: 'yyyy HH:mm'}}
             </span>
           </a>
@@ -64,9 +76,58 @@
   <div class="message"
     kmPressed 
     (onKeyPressed)="onKeyPressed($event)">
-    {{currentMessage|json}}
+    <div class="row">
+      <label  
+        class="control-label col-xs-1">
+        {{text["From"]}}
+      </label>
+      <div class="col-xs-11">
+        <span class="gravatar">
+          <span *ngIf="currentMessage.sender.emailHash">
+            <img kmGravatar [hash]="currentMessage.sender.emailHash" [width]="16">
+          </span>
+        </span>
+        {{currentMessage.sender.userName}}
+      </div>
+    </div>
+    <div class="row">
+      <label  
+        class="control-label col-xs-1">
+        {{text["To"]}}
+      </label>
+      <div class="col-xs-11">
+        <span class="gravatar">
+          <span *ngIf="currentMessage.recipient.emailHash">
+            <img kmGravatar [hash]="currentMessage.recipient.emailHash" [width]="16">
+          </span>
+        </span>
+        {{currentMessage.recipient.userName}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel-body">
+        <div class="message-content">
+          {{currentMessage.message}}
+        </div>
+      </div>
+    </div>
     <div class="badge pull-right">
       {{currentMessage.dt | date: "yyyy-MM-dd HH:mm"}}
+    </div>
+    <!-- BUTTONS -->
+    <div class="row buttons" *ngIf="!showReply">
+      <button type="button" *ngIf="isRecipient(currentMessage)"
+        class="btn btn-primary" (click)="onCreateReply(currentMessage)">
+        <span class="fa fa-reply"></span> {{text["Reply"]}}
+      </button>
+      <button type="button" *ngIf="tab==='inbox'"
+        class="btn btn-danger" (click)="onDeleteMessage(currentMessage)">
+        <span class="fa fa-trash"></span> {{text["Delete"]}}
+      </button>
+    </div>
+    <!-- REPLY -->
+    <div *ngIf="showReply">
+      REPLY
     </div>
   </div>
 </ng-template>

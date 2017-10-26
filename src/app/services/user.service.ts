@@ -2,7 +2,7 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings, MainSettings, JazykConfig, Profile, PublicProfile, Notification} from '../models/user.model';
+import {User, LearnSettings, MainSettings, JazykConfig, Profile, Message, PublicProfile, Notification} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
 import {UtilsService} from './utils.service';
@@ -322,24 +322,19 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
-  saveMessage(profile: PublicProfile, msg: string) {
-    const headers = this.getTokenHeaders(),
-          data = {
-            recipient: {
-              id: profile._id,
-              userName: profile.userName,
-              emailHash: profile.emailHash
-            },
-            sender: {
-              id: this.user._id,
-              userName: this.user.userName,
-              emailHash: this.user.emailHash
-            },
-            msg
-          };
-    console.log('saving msg', data);
+  deleteMessage(messageId: string, tpe: string, action: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/message', JSON.stringify(data), {headers})
+    .patch('/api/user/messagedelete', JSON.stringify({action, tpe, messageId}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  saveMessage(message: Message) {
+    const headers = this.getTokenHeaders();
+    console.log('saving msg', message);
+    return this.http
+    .put('/api/user/message', JSON.stringify(message), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

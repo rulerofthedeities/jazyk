@@ -13,6 +13,12 @@ li {
 .fa-circle {
   color: red;
 }
+.badge {
+  background-color: #ababab;
+  border-radius: 4px;
+  position: relative;
+  top: 3px;
+}
 .list-group-item {
   cursor: pointer;
 }
@@ -22,4 +28,41 @@ li {
 }
 .unread {
   font-weight: bold;
+}
+.btn-delete {
+  margin-left: 8px;
+  margin-right: -7px;
+}
+.badgeMargin {
+}
+.truncate {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 5px;
+}
+.content.truncate {
+  width: 400px;
+}
+.user.truncate {
+  width: 130px;
+  margin-right: 6px;
+}
+/* Message */
+.gravatar {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+}
+.message-content {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 6px;
+  font-size: 18px;
+}
+.buttons {
+  padding-left: 15px;
 }

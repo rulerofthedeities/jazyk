@@ -43,8 +43,6 @@ export class UserComponent implements OnInit, OnDestroy {
   showCoursesLearning: boolean;
   showCoursesTeaching: boolean;
   networkShown: boolean;
-  minMessageLength = 5;
-  maxMessageLength = 140;
   messageShown: boolean;
   message: string;
   infoMsg: string;
@@ -156,12 +154,13 @@ export class UserComponent implements OnInit, OnDestroy {
 
   onCreateMessage(msgField: any) {
     this.infoMsg = '';
-    msgField.value = '';
+    msgField.clearField();
     this.messageShown = true;
   }
 
-  onSendMessage(profile: PublicProfile, msgField: any) {
-    this.sendMessage(profile, msgField.value);
+  onSendMessage(msg: string) {
+    console.log('sending message', msg);
+    this.sendMessage(this.profile, msg);
   }
 
   private init() {
@@ -340,18 +339,27 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private sendMessage(profile: PublicProfile, msg: string) {
-    if (msg.trim().length >= this.minMessageLength) {
-      this.messageShown = false;
-      this.saveMessage(profile, msg);
-      console.log('sending message', msg, 'to', profile._id);
-    } else {
-      this.infoMsg = '';
-    }
+    this.messageShown = false;
+    this.saveMessage(profile, msg);
+    console.log('sending message', msg, 'to', profile._id);
   }
 
   private saveMessage(profile: PublicProfile, msg: string) {
+      const message = {
+        recipient: {
+          id: profile._id,
+          userName: profile.userName,
+          emailHash: profile.emailHash
+        },
+        sender: {
+          id: this.userService.user._id,
+          userName: this.userService.user.userName,
+          emailHash: this.userService.user.emailHash
+        },
+        message: msg
+      };
     this.userService
-    .saveMessage(profile, msg)
+    .saveMessage(message)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {

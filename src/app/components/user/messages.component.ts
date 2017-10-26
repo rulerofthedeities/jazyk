@@ -16,6 +16,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   text: Object = {};
   messages: Message[];
   currentMessage: Message;
+  showReply = false;
   tab = 'inbox';
   infoMsg = '';
 
@@ -38,11 +39,25 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onSelectMessage(i: number) {
     this.infoMsg = '';
+    this.showReply = false;
     this.currentMessage = this.messages[i];
-    if (!this.currentMessage.read && this.isRecipient(this.currentMessage)) {
+    if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
       this.setMessageAsRead(i);
       //this.userService.updateUnreadMessagesCount(false);
     }
+  }
+
+  onCreateReply(message: Message) {
+    this.infoMsg = '';
+    this.showReply = true;
+  }
+
+  onDeleteMessage(message: Message) {
+    const tpe = this.isRecipient(message) ? 'recipient' : 'sender';
+    const action = this.tab === 'sent' || this.tab === 'trash'  ? 'deleted' : 'trash';
+    this.messages = this.messages.filter(msg => msg._id !== message._id);
+    this.deleteMessage(message._id, tpe, action);
+    this.closeMessage(); // In case it was deleted from inside the message
   }
 
   onCloseMessage() {
@@ -64,6 +79,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private closeMessage() {
+    this.infoMsg = '';
     this.currentMessage = null;
   }
 
@@ -72,7 +88,19 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .setMessageAsRead(this.messages[i]._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      read => this.messages[i].read = true,
+      read => this.messages[i].recipient.read = true,
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private deleteMessage(messageId: string, tpe: string, action: string) {
+    this.userService
+    .deleteMessage(messageId, tpe, action)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      deleted => {
+        this.infoMsg = this.text['MessageDeleted'];
+      },
       error => this.errorService.handleError(error)
     );
   }

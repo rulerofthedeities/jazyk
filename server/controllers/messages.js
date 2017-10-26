@@ -1,13 +1,13 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Message = require('../models/message');
-      
+
 module.exports = {
   saveMessage: function(req, res) {
     const userId = req.decoded.user._id,
           recipient = req.body.recipient,
           sender = req.body.sender,
-          msg = req.body.msg,
+          msg = req.body.message,
           message = new Message({
             recipient: {
               id : new mongoose.Types.ObjectId(recipient.id),
@@ -37,19 +37,22 @@ module.exports = {
       case 'inbox':
         query = {
           'recipient.id': userId,
-          trash: false
+          'recipient.trash': false,
+          'recipient.deleted': false
         };
       break;
       case 'trash':
         query = {
           'recipient.id': userId,
-          trash: true
+          'recipient.trash': true,
+          'recipient.deleted': false
         };
       break;
       case 'sent':
         query = {
           'sender.id': userId,
-          trash: false
+          'sender.trash': false,
+          'sender.deleted': false
         };
       break;
     }
@@ -66,11 +69,24 @@ module.exports = {
   setMessageRead: function(req, res) {
     const messageId = new mongoose.Types.ObjectId(req.body.messageId),
           query = {_id: messageId},
-          update = {read: true};
-    console.log('setting message read', messageId);
+          update = {'recipient.read': true};
     Message.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 500, 'Error setting message as read', function(){
         response.handleSuccess(res, true, 200, 'Read message');
+      });
+    });
+  },
+  setMessageDelete: function(req, res) {
+    const messageId = new mongoose.Types.ObjectId(req.body.messageId),
+          tpe = req.body.tpe, // recipient or sender
+          action = req.body.action, // deleted or trash
+          query = {_id: messageId},
+          update = {[tpe + '.' + action]: true};
+    console.log(req.body);
+    console.log('setting message to ' + action, messageId, update);
+    Message.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error setting message to ' + action, function(){
+        response.handleSuccess(res, result, 200, 'Set message to ' + action);
       });
     });
   }

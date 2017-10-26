@@ -15,6 +15,7 @@ import {FieldMessagesComponent} from './components/msg/field-messages.component'
 import {UserComponent} from './components/user/user.component';
 import {UserCompactProfileComponent} from './components/user/compact-profile.component';
 import {UserCourseBarComponent} from './components/user/course-bar.component';
+import {MailFieldComponent} from './components/fields/message.component';
 import {GravatarDirective} from './directives/gravatar.directive';
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 
@@ -35,6 +36,7 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     UserComponent,
     UserCompactProfileComponent,
     UserCourseBarComponent,
+    MailFieldComponent,
     GravatarDirective,
     GetKeyPressDirective
   ],
@@ -52,6 +54,7 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     UserComponent,
     UserCompactProfileComponent,
     UserCourseBarComponent,
+    MailFieldComponent,
     GravatarDirective,
     GetKeyPressDirective,
     CommonModule,

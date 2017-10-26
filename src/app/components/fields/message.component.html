@@ -1,0 +1,13 @@
+<textarea #msg
+  [ngModel]="message"
+  autofocus
+  maxlength="maxLength">
+</textarea>
+<div class="clearfix"></div>
+<button
+  [disabled]="msg.value.trim().length < minLength"
+  type="button"
+  (click)="onSendMessage(msg.value)"
+  class="btn btn-success btn-sm">
+  <span class="fa fa-location-arrow"></span> {{sendTxt}}
+</button>

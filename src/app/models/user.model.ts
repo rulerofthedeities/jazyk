@@ -75,6 +75,9 @@ interface MessageUser {
   id: string;
   userName: string;
   emailHash?: string;
+  read?: boolean;
+  trash?: boolean;
+  deleted?: boolean;
 }
 
 export interface Message {
@@ -82,7 +85,6 @@ export interface Message {
   sender: MessageUser;
   recipient: MessageUser;
   message: string;
-  read: boolean;
-  trash: boolean;
-  dt: Date;
+  parentId?: string;
+  dt?: Date;
 }
