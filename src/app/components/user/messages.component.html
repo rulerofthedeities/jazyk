@@ -1,15 +1,23 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="fa fa-envelope-o"></span>
-    {{currentMessage ? text["Message"] : text["PrivateMessages"]}}
+    <span class="fa"
+      [ngClass]="{'fa-envelope-open-o': currentMessage || showNewMessage, 'fa-envelope-o': !(currentMessage || showNewMessage)}"></span>
+    {{currentMessage ? text["Message"] : (showNewMessage ? text["NewMessage"] : text["PrivateMessages"])}}
+    <button type="button" *ngIf="!currentMessage && !showNewMessage"
+      class="btn btn-primary pull-right" 
+      (click)="onCreateMessage()"
+    ><span class="fa "></span>
+      {{text["NewMessage"]}}
+    </button>
     <span 
-      *ngIf="currentMessage"
+      *ngIf="currentMessage || showNewMessage"
       (click)='onCloseMessage()'
       class="fa fa-times pull-right">
     </span>
   </div>
   <div class="panel-body">
-    <div *ngIf="!currentMessage else messageDetail">
+    <!-- MESSAGE LIST -->
+    <div *ngIf="!currentMessage && !showNewMessage else messageDetail">
       <ul class="nav nav-tabs">
           <li 
             [class.active]="tab==='inbox'"
@@ -75,8 +83,9 @@
   </div>
 </ng-template>
 
+<!-- MESSAGE DETAIL -->
 <ng-template #messageDetail>
-  <div class="message"
+  <div class="message" *ngIf="!showNewMessage else newMessage"
     kmPressed 
     (onKeyPressed)="onKeyPressed($event)">
     <div class="row">
@@ -123,7 +132,7 @@
     <!-- BUTTONS -->
     <div class="row buttons" *ngIf="!showReply">
       <button type="button" *ngIf="isRecipient(currentMessage)"
-        class="btn btn-primary" (click)="onCreateReply(msgField)">
+        class="btn btn-primary" (click)="onCreateReply(replyField)">
         <span class="fa fa-reply"></span> {{text["Reply"]}}
       </button>
       <button type="button" *ngIf="tab==='inbox'"
@@ -132,10 +141,31 @@
       </button>
     </div>
     <!-- REPLY -->
-    <div [style.display]="showReply ? 'block' : 'none'">
+    <div [style.display]="showReply ? 'block' : 'none'" class="reply">
       <km-message
         [sendTxt]="text['Send']"
         (send)="onSendReply(currentMessage, $event)"
+        #replyField>
+      </km-message>
+    </div>
+  </div>
+</ng-template>
+
+<!-- NEW MESSAGE -->
+<ng-template #newMessage>
+  <div
+    kmPressed 
+    (onKeyPressed)="onKeyPressed($event)">
+    <km-user-selector *ngIf="recipients[0]"
+      [prefix]="text['To'] + ':'"
+      [users]="recipients"
+      [selectedUser]="selectedRecipient"
+      (userSelected)="onRecipientSelected($event, msgField)">    
+    </km-user-selector>
+    <div [style.display]="selectedRecipient ? 'block' : 'none'">
+      <km-message
+        [sendTxt]="text['Send']"
+        (send)="onSendMessage($event)"
         #msgField>
       </km-message>
     </div>

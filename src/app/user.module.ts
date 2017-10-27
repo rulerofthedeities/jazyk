@@ -14,8 +14,8 @@ import {UserSettingsComponent} from './components/user/settings.component';
 import {UserSettingsMainComponent} from './components/user/settings-main.component';
 import {UserSettingsLearnComponent} from './components/user/settings-learn.component';
 import {UserSettingsPasswordComponent} from './components/user/settings-password.component';
+import {UserSelectorComponent} from './components/fields/user-selector.component';
 import {ToggleComponent} from './components/fields/toggle.component';
-
 
 @NgModule({
   imports: [
@@ -35,6 +35,7 @@ import {ToggleComponent} from './components/fields/toggle.component';
     UserSettingsMainComponent,
     UserSettingsLearnComponent,
     UserSettingsPasswordComponent,
+    UserSelectorComponent,
     ToggleComponent
   ]
 })

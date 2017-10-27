@@ -4,8 +4,7 @@ const response = require('../response'),
       scrypt = require('scrypt'),
       md5 = require('md5'),
       User = require('../models/user'),
-      UserCourse = require('../models/usercourse'),
-      Follow = require('../models/follow');
+      UserCourse = require('../models/usercourse');
 
 var setEmailHash = (doc) => {
   if (doc) {
@@ -231,49 +230,6 @@ module.exports = {
       });
     });
   },
-  followUser: function(req, res) {
-    const userId = req.decoded.user._id,
-          userIdToFollow = new mongoose.Types.ObjectId(req.body.userId),
-          query = {userId, followId: userIdToFollow},
-          update = {follow: true};
-    Follow.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
-      response.handleError(err, res, 500, 'Error following user', () => {
-        response.handleSuccess(res, true, 200, 'Followed user');
-      });
-    });
-  },
-  unFollowUser: function(req, res) {
-    const userId = req.decoded.user._id,
-          userIdToUnFollow = new mongoose.Types.ObjectId(req.body.userId),
-          query = {userId, followId: userIdToUnFollow},
-          update = {follow: false};
-    console.log('unfollowing', query);
-    Follow.findOneAndUpdate(query, update, (err, result) => {
-      response.handleError(err, res, 500, 'Error unfollowing user', () => {
-        response.handleSuccess(res, false, 200, 'Unfollowed user');
-      });
-    });
-  },
-  getFollowers: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.params.userId),
-          follows = {};
-    let query = {userId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
-        projection = {_id: 0, followId:1};
-
-    Follow.find(query, projection, (err, result) => {
-      response.handleError(err, res, 500, 'Error fetching followers', () => {
-        follows.follows = result;
-        query = {followId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
-        projection = {_id: 0, userId:1};
-        Follow.find(query, projection, (err, result) => {
-          follows.followed = result;
-          response.handleError(err, res, 500, 'Error fetching followed', () => {
-            response.handleSuccess(res, follows, 200, 'Fetched followers');
-          });
-        });
-      });
-    });
-  },
   updateLan: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body,
@@ -324,6 +280,26 @@ module.exports = {
       delete payload.exp;
       const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
       response.handleSuccess(res, token, 200, 'Refreshed token');
+    }
+  },
+  getMailData: function(req, res, recipients) {
+    if (recipients.length > 0) {
+      recipients = recipients.slice(0, 1000); // max 1000 ids
+      recipientIds = recipients.map(recipient => recipient.recipient);
+      console.log(recipientIds);
+      const query = {'_id': {$in: recipientIds}},
+            projection = {userName: 1, email: 1},
+            options = {sort: {userName: 1}};
+      User.find(query, projection, options, function(err, docs) {
+        response.handleError(err, res, 500, 'Error getting mail data for recipients', function(){
+          console.log(docs);
+          docs.forEach(doc => setEmailHash(doc));
+          console.log(docs);
+          response.handleSuccess(res, docs, 200, 'Fetched recipients mail data');
+        });
+      })
+    } else {
+      response.handleSuccess(res, null, 200, 'No recipient Ids');
     }
   }
 }

@@ -347,6 +347,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchRecipients() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/recipients', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   updatePassword(oldPw: string, newPw: string) {
     const headers = this.getTokenHeaders();
     return this.http

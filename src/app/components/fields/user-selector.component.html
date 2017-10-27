@@ -1,0 +1,27 @@
+<div *ngIf="dataReady">
+  <div class="selector" [class.disabled]="disabled">
+    <div class="input-group col-xs-12">
+      <div class="btn btn-default btn-dropdown btn-lg" (click)="onToggleDropdown()">
+        {{prefix}}
+        <span>
+          <img kmGravatar [hash]="selectedUser.emailHash" [width]="20" *ngIf="gravatarSelected===0" class="gravatar">
+          <img kmGravatar [hash]="selectedUser.emailHash" [width]="20" *ngIf="gravatarSelected===1" class="gravatar">
+        </span>
+        {{selectedUser.userName}}
+        <span class="caret" *ngIf="!disabled"></span>
+      </div>
+    </div>
+    <ul class="list-group dropdown" *ngIf="showDropdown">
+      <li 
+        class="list-group-item"
+        *ngFor="let user of users; let i:index"
+        [ngClass]="{active:user._id===selectedDropdown}"
+        (click)="onSelectUser(i)"
+        (mouseover)="onHoverUser(i)"
+        >
+        <img kmGravatar [hash]="user.emailHash" [width]="20" class="gravatar">
+        {{user.userName}}
+      </li>
+    </ul>
+  </div>
+</div>

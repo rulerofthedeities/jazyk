@@ -20,6 +20,13 @@
   margin-right: 8px;
   width: 30px;
 }
+.gravatar {
+  border: 1px solid #999;
+  border-radius: 2px;
+  height: 22px;
+  margin-right: 8px;
+  width: 22px;
+}
 .caret {
   float: right;
   margin-top: 8px;

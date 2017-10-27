@@ -10,6 +10,7 @@ var path = require("path"),
     exercises = require("./controllers/exercises"),
     notifications = require("./controllers/notifications"),
     messages = require("./controllers/messages"),
+    follows = require("./controllers/follows"),
     results = require("./controllers/results"),
     response = require("./response");
 
@@ -68,15 +69,17 @@ module.exports.initialize = function(app, router) {
   router.get('/user/profile/:userName', users.getPublicProfile);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
-  router.post('/user/follow', users.followUser);
-  router.put('/user/unfollow', users.unFollowUser);
-  router.get('/user/followers/:userId', users.getFollowers);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
   router.get('/user', users.getUser);
 
+  router.post('/user/follow', follows.followUser);
+  router.put('/user/unfollow', follows.unFollowUser);
+  router.get('/user/followers/:userId', follows.getFollowers);
+  router.get('/user/recipients', follows.getTwoWayFollowers);
+  
   router.put('/user/notification', notifications.saveNotification);
   router.get('/user/notifications', notifications.getNotifications);
   router.delete('/user/notifications', notifications.removeNotifications);

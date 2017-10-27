@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {Message} from '../../models/user.model';
+import {Message, CompactProfile} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -18,8 +18,11 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   currentMessage: Message;
   parentMessage: Message;
   showReply = false;
+  showNewMessage = false;
   tab = 'inbox';
   infoMsg = '';
+  recipients: CompactProfile[] = [];
+  selectedRecipient: CompactProfile;
 
   constructor(
     private utilsService: UtilsService,
@@ -52,15 +55,30 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreateReply(msgField: any) {
+  onCreateReply(replyField: any) {
     this.infoMsg = '';
-    msgField.clearField();
+    replyField.clearField();
     this.showReply = true;
   }
 
+  onCreateMessage() {
+    this.infoMsg = '';
+    this.showNewMessage = true;
+    this.getPossibleRecipients();
+  }
+
   onSendReply(message: Message, content: string) {
+    this.infoMsg = '';
+    console.log('sending reply', content);
+    this.sendReplyMessage(message, content);
+  }
+
+  onSendMessage(content: string) {
+    this.infoMsg = '';
     console.log('sending message', content);
-    this.sendMessage(message, content, true);
+    if (this.selectedRecipient) {
+      this.sendNewMessage(content);
+    }
   }
 
   onDeleteMessage(message: Message) {
@@ -69,6 +87,11 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     this.messages = this.messages.filter(msg => msg._id !== message._id);
     this.deleteMessage(message._id, tpe, action);
     this.closeMessage(); // In case it was deleted from inside the message
+  }
+
+  onRecipientSelected(user: CompactProfile, msgField: any) {
+    this.selectedRecipient = user;
+    msgField.clearField();
   }
 
   onCloseMessage() {
@@ -92,33 +115,52 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private closeMessage() {
     this.infoMsg = '';
     this.currentMessage = null;
+    this.showNewMessage = false;
   }
 
-  private sendMessage(message: Message, content: string, isReply: boolean) {
+  private sendReplyMessage(message: Message, content: string) {
     this.showReply = false;
-    this.saveMessage(message, content, isReply);
+    const replyMessage: Message = {
+      recipient: {
+        id: message.sender.id,
+        userName: message.sender.userName,
+        emailHash: message.sender.emailHash
+      },
+      sender: {
+        id: this.userService.user._id,
+        userName: this.userService.user.userName,
+        emailHash: this.userService.user.emailHash
+      },
+      message: content
+    };
+    this.saveMessage(replyMessage, true);
     console.log('sending reply', message.message, 'to', message.sender.userName);
   }
 
-  private saveMessage(message: Message, content: string, isReply: boolean) {
-      const newMessage: Message = {
-        recipient: {
-          id: message.sender.id,
-          userName: message.sender.userName,
-          emailHash: message.sender.emailHash
-        },
-        sender: {
-          id: this.userService.user._id,
-          userName: this.userService.user.userName,
-          emailHash: this.userService.user.emailHash
-        },
-        message: content
-      };
+  private sendNewMessage(content: string) {
+    this.showNewMessage = false;
+    const newMessage: Message = {
+      recipient: {
+        id: this.selectedRecipient._id,
+        userName: this.selectedRecipient.userName,
+        emailHash: this.selectedRecipient.emailHash
+      },
+      sender: {
+        id: this.userService.user._id,
+        userName: this.userService.user.userName,
+        emailHash: this.userService.user.emailHash
+      },
+      message: content
+    };
+    this.saveMessage(newMessage, false);
+  }
+
+  private saveMessage(message: Message, isReply: boolean) {
     if (isReply) {
-      newMessage.parentId = message._id;
+      message.parentId = message._id;
     }
     this.userService
-    .saveMessage(newMessage)
+    .saveMessage(message)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
@@ -126,9 +168,10 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
         this.closeMessage();
         if (isReply) {
           const info = this.text['ReplySent'];
-          this.infoMsg = info.replace('%s', message.sender.userName);
+          this.infoMsg = info.replace('%s', message.recipient.userName);
         } else {
-          this.infoMsg = 'MESSAGE SENT';
+          const info = this.text['MessageSent'];
+          this.infoMsg = info.replace('%s', message.recipient.userName);
         }
       },
       error => this.errorService.handleError(error)
@@ -173,6 +216,21 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       message => this.parentMessage = message,
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getPossibleRecipients() {
+    this.userService
+    .fetchRecipients()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      recipients => {
+        this.recipients = recipients;
+        if (recipients.length > 0) {
+          this.selectedRecipient = recipients[0];
+        }
+      },
       error => this.errorService.handleError(error)
     );
   }

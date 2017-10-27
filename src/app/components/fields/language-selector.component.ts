@@ -4,7 +4,7 @@ import {Language} from '../../models/course.model';
 @Component({
   selector: 'km-language-selector',
   templateUrl: 'language-selector.component.html',
-  styleUrls: ['language-selector.component.css']
+  styleUrls: ['selector.css']
 })
 export class LanguageSelectorComponent implements OnInit {
   @Input() languages: [Language];
@@ -30,26 +30,25 @@ export class LanguageSelectorComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.languages, this.currentLanguage);
     this.setSelectedLanguage(this.currentLanguage);
     this.dataReady = true;
   }
 
-  toggleDropdown() {
+  onToggleDropdown() {
     if (!this.disabled) {
       this.showDropdown = !this.showDropdown;
       this.selectedDropdown = this.selectedLanguage._id;
     }
   }
 
-  selectLanguage(newLanguage: Language) {
+  onSelectLanguage(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
     this.selectedDropdown = newLanguage._id;
     this.showDropdown = false;
     this.languageSelected.emit(newLanguage);
   }
 
-  hoverLanguage(hoveredLanguage: Language) {
+  onHoverLanguage(hoveredLanguage: Language) {
     this.selectedDropdown = hoveredLanguage._id;
   }
 
