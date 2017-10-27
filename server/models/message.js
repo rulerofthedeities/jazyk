@@ -15,7 +15,7 @@ var messageSchema = new Schema({
   recipient: {type: userSchema, required: true},
   message: {type: String, required: true},
   parentId: String,
-  dt: {type: Date, default: Date.now()}
+  dt: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Message', messageSchema);

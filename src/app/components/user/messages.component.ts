@@ -16,6 +16,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   text: Object = {};
   messages: Message[];
   currentMessage: Message;
+  parentMessage: Message;
   showReply = false;
   tab = 'inbox';
   infoMsg = '';
@@ -38,12 +39,16 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   onSelectMessage(i: number) {
+    this.parentMessage = null;
     this.infoMsg = '';
     this.showReply = false;
     this.currentMessage = this.messages[i];
     if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
       this.setMessageAsRead(i);
       //this.userService.updateUnreadMessagesCount(false);
+    }
+    if (this.currentMessage.parentId) {
+      this.fetchParentMessage(this.currentMessage.parentId);
     }
   }
 
@@ -158,6 +163,16 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       messages => this.messages = messages,
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private fetchParentMessage(messageId: string) {
+    this.userService
+    .fetchMessage(messageId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      message => this.parentMessage = message,
       error => this.errorService.handleError(error)
     );
   }

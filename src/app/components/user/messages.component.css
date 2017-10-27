@@ -50,6 +50,18 @@ li {
   width: 130px;
   margin-right: 6px;
 }
+.fa-retweet+.user.truncate {
+  width: 116px;
+}
+.parent {
+  background-color: #ddd;
+  border: 1px solid #999;
+  margin-left: 16px;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  font-style: italic;
+}
 /* Message */
 .gravatar {
   display: inline-block;

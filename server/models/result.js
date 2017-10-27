@@ -11,7 +11,7 @@ var resultSchema = new Schema({
   points: Number,
   learnLevel: Number,
   isLearned: Boolean,
-  dt: {type: Date, default: Date.now()},
+  dt: {type: Date, default: Date.now},
   dtToReview: Date,
   daysBetweenReviews: Number,
   percentOverdue: Number,

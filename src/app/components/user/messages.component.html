@@ -44,6 +44,9 @@
               'fa-circle': !message.recipient.read,
               'fa-circle-o': message.recipient.read}">
             </span>
+            <span class="fa"
+              [class.fa-retweet]="message.parentId ? true : false"
+            ></span>
             <span class="user truncate">
               {{isRecipient(message) ? message.sender.userName : message.recipient.userName}}
             </span>
@@ -108,6 +111,9 @@
       <div class="panel-body">
         <div class="message-content">
           {{currentMessage.message}}
+          <div *ngIf="currentMessage.parentId && parentMessage" class="parent">
+            {{parentMessage.message}}
+          </div>
         </div>
       </div>
     </div>

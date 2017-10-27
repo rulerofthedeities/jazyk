@@ -314,6 +314,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchMessage(messageId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/message/' + messageId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   setMessageAsRead(messageId: string) {
     const headers = this.getTokenHeaders();
     return this.http

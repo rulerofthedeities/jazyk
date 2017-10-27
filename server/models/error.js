@@ -6,7 +6,7 @@ var errorSchema = new Schema({
   src: String,
   msg: String,
   module: String,
-  dt: {type: Date, default: new Date()}
+  dt: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Error', errorSchema);

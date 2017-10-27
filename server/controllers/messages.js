@@ -68,6 +68,16 @@ module.exports = {
       response.handleSuccess(res, null, 200, 'Unknown message type');
     }
   },
+  getMessage: function(req, res) {
+    const messageId = new mongoose.Types.ObjectId(req.params.messageId),
+          userId = req.decoded.user._id,
+          query = {_id: messageId, $or: [{'sender.id': userId}, {'recipient.id': userId}]};
+    Message.findOne(query, function(err, message) {
+        response.handleError(err, res, 500, 'Error fetching message', function(){
+          response.handleSuccess(res, message, 200, 'Fetched message');
+        });
+      });
+  },
   setMessageRead: function(req, res) {
     const messageId = new mongoose.Types.ObjectId(req.body.messageId),
           query = {_id: messageId},

@@ -87,6 +87,7 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/notificationsread', notifications.setAllNotificationsRead);
 
   router.put('/user/message', messages.saveMessage);
+  router.get('/user/message/:messageId', messages.getMessage);
   router.get('/user/messages/:tpe', messages.getMessages);
   router.patch('/user/messageread', messages.setMessageRead);
   router.patch('/user/messagedelete', messages.setMessageDelete);
