@@ -47,9 +47,15 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCreateReply(message: Message) {
+  onCreateReply(msgField: any) {
     this.infoMsg = '';
+    msgField.clearField();
     this.showReply = true;
+  }
+
+  onSendReply(message: Message, content: string) {
+    console.log('sending message', content);
+    this.sendMessage(message, content, true);
   }
 
   onDeleteMessage(message: Message) {
@@ -81,6 +87,47 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private closeMessage() {
     this.infoMsg = '';
     this.currentMessage = null;
+  }
+
+  private sendMessage(message: Message, content: string, isReply: boolean) {
+    this.showReply = false;
+    this.saveMessage(message, content, isReply);
+    console.log('sending reply', message.message, 'to', message.sender.userName);
+  }
+
+  private saveMessage(message: Message, content: string, isReply: boolean) {
+      const newMessage: Message = {
+        recipient: {
+          id: message.sender.id,
+          userName: message.sender.userName,
+          emailHash: message.sender.emailHash
+        },
+        sender: {
+          id: this.userService.user._id,
+          userName: this.userService.user.userName,
+          emailHash: this.userService.user.emailHash
+        },
+        message: content
+      };
+    if (isReply) {
+      newMessage.parentId = message._id;
+    }
+    this.userService
+    .saveMessage(newMessage)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      saved => {
+        this.showReply = false;
+        this.closeMessage();
+        if (isReply) {
+          const info = this.text['ReplySent'];
+          this.infoMsg = info.replace('%s', message.sender.userName);
+        } else {
+          this.infoMsg = 'MESSAGE SENT';
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private setMessageAsRead(i: number) {

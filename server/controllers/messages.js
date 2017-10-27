@@ -8,6 +8,7 @@ module.exports = {
           recipient = req.body.recipient,
           sender = req.body.sender,
           msg = req.body.message,
+          parentId = req.body.parentId,
           message = new Message({
             recipient: {
               id : new mongoose.Types.ObjectId(recipient.id),
@@ -19,7 +20,8 @@ module.exports = {
               userName: sender.userName,
               emailHash: sender.emailHash
             },
-            message: msg
+            message: msg,
+            parentId
           });
     message.save(function(err, result) {
       response.handleError(err, res, 500, 'Error saving message', function(){

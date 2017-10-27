@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import {PublicProfile, CompactProfile} from '../../models/user.model';
+import {PublicProfile, CompactProfile, Message} from '../../models/user.model';
 import {Course} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -345,7 +345,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private saveMessage(profile: PublicProfile, msg: string) {
-      const message = {
+      const message: Message = {
         recipient: {
           id: profile._id,
           userName: profile.userName,

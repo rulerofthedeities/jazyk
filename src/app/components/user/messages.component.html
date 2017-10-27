@@ -117,7 +117,7 @@
     <!-- BUTTONS -->
     <div class="row buttons" *ngIf="!showReply">
       <button type="button" *ngIf="isRecipient(currentMessage)"
-        class="btn btn-primary" (click)="onCreateReply(currentMessage)">
+        class="btn btn-primary" (click)="onCreateReply(msgField)">
         <span class="fa fa-reply"></span> {{text["Reply"]}}
       </button>
       <button type="button" *ngIf="tab==='inbox'"
@@ -126,8 +126,17 @@
       </button>
     </div>
     <!-- REPLY -->
-    <div *ngIf="showReply">
-      REPLY
+    <div [style.display]="showReply ? 'block' : 'none'">
+      <km-message
+        [sendTxt]="text['Send']"
+        (send)="onSendReply(currentMessage, $event)"
+        #msgField>
+      </km-message>
     </div>
   </div>
 </ng-template>
+
+<div  class="info-msg">
+  <km-info-msg [msg]="infoMsg">
+  </km-info-msg>
+</div>
