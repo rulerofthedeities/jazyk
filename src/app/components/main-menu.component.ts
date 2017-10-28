@@ -6,6 +6,7 @@ import {SharedService} from '../services/shared.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
 import {Translation} from '../models/course.model';
+import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -35,7 +36,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getUrl();
     this.getTranslations(this.userService.user.main.lan);
     this.getNotificationsCount();
-    this.getMessagesCount();
+    this.checkMessages();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
@@ -112,6 +113,13 @@ export class MainMenuComponent implements OnInit, OnDestroy {
         error => this.errorService.handleError(error)
       );
     }
+  }
+
+  private checkMessages() {
+    TimerObservable
+    .create(0, 900000) // Start immediately, then check every 15 minutes
+    .takeWhile(() => this.componentActive)
+    .subscribe(t => this.getMessagesCount());
   }
 
   private updateNotificationsUnReadCount(isAllRead: boolean) {

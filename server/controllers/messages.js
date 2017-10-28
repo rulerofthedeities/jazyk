@@ -104,7 +104,9 @@ module.exports = {
   getMessagesCount: function(req, res) {
     const userId = req.decoded.user._id,
           query = {'recipient.id': userId, 'recipient.read': false};
+      console.log('fetching count for ', req.decoded.user);
     Message.count(query, function(err, count) {
+      console.log('count', count);
       response.handleError(err, res, 500, 'Error fetching messages count', function(){
         response.handleSuccess(res, count, 200, 'Fetched messages count');
       });
