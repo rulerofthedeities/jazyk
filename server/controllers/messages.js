@@ -99,24 +99,42 @@ module.exports = {
     });
   },
   setMessageDelete: function(req, res) {
-    const messageId = new mongoose.Types.ObjectId(req.body.messageId),
+    const userId = req.decoded.user._id,
+          messageId = new mongoose.Types.ObjectId(req.body.messageId),
           tpe = req.body.tpe, // recipient or sender
           action = req.body.action, // deleted or trash
-          query = {_id: messageId},
+          query = {_id: messageId, [tpe + '.id']: userId},
           update = {[tpe + '.' + action]: true};
-    console.log(req.body);
     Message.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 500, 'Error setting message to ' + action, function(){
         response.handleSuccess(res, result, 200, 'Set message to ' + action);
       });
     });
   },
+  setMessagesDelete: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {
+            'recipient.id': userId,
+            'recipient.read': true,
+            'recipient.trash': false,
+            'recipient.deleted': false 
+          },
+          update = {'recipient.trash': true};
+    Message.updateMany(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error setting messages to trash', function(){
+        response.handleSuccess(res, result, 200, 'Set messages to trash');
+      });
+    });
+  },
   getMessagesCount: function(req, res) {
     const userId = req.decoded.user._id,
-          query = {'recipient.id': userId, 'recipient.read': false};
-      console.log('fetching count for ', req.decoded.user);
+          query = {
+            'recipient.id': userId,
+            'recipient.read': false,
+            'recipient.trash': false,
+            'recipient.deleted': false
+          };
     Message.count(query, function(err, count) {
-      console.log('count', count);
       response.handleError(err, res, 500, 'Error fetching messages count', function(){
         response.handleSuccess(res, count, 200, 'Fetched messages count');
       });

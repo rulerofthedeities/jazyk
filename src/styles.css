@@ -34,6 +34,9 @@ body {
   margin-right: 12px;
   color: green;
 }
+.fa-spacing {
+  padding-right: 2px;
+}
 
 /* ng2-dnd */
 

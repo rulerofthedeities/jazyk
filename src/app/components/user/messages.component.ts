@@ -100,6 +100,12 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     this.setAllMessagesAsRead();
   }
 
+  onDeleteAllRead() {
+    this.infoMsg = '';
+    this.messages = this.messages.filter(message => !message.recipient.read && !message.recipient.trash);
+    this.deleteReadMessages();
+  }
+
   onCloseMessage() {
     this.closeMessage();
   }
@@ -216,6 +222,18 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .subscribe(
       deleted => {
         this.infoMsg = this.text['MessageDeleted'];
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private deleteReadMessages() {
+    this.userService
+    .deleteReadMessages()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      deleted => {
+        this.infoMsg = this.text['NotificationsDeleted'];
       },
       error => this.errorService.handleError(error)
     );

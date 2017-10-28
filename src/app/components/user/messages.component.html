@@ -3,11 +3,19 @@
     <span class="fa"
       [ngClass]="{'fa-envelope-open-o': currentMessage || showNewMessage, 'fa-envelope-o': !(currentMessage || showNewMessage)}"></span>
     {{currentMessage ? text["Message"] : (showNewMessage ? text["NewMessage"] : text["PrivateMessages"])}}
-    <button type="button" *ngIf="!currentMessage && !showNewMessage"
-      class="btn btn-primary pull-right" 
-      (click)="onCreateMessage()"
-    ><span class="fa "></span>
-      <span class="fa fa-file-o"></span>{{text["NewMessage"]}}
+    <button type="button"
+      *ngIf="!currentMessage && !showNewMessage && tab==='inbox'"
+      class="btn btn-danger btn-deleteall pull-right"
+      (click)='onDeleteAllRead()'>
+      <span class="fa fa-check fa-spacing"></span>
+      {{text["DeleteAllReadMessages"]}}
+    </button>
+    <button type="button"
+      *ngIf="!currentMessage && !showNewMessage && tab==='inbox'"
+      class="btn btn-warning pull-right"
+      (click)='onMarkAllRead()'>
+      <span class="fa fa-check fa-spacing"></span>
+      {{text["MarkAllRead"]}}
     </button>
     <span 
       *ngIf="currentMessage || showNewMessage"
@@ -41,10 +49,11 @@
             </a>
           </li>
           <li class="pull-right">
-            <button type="button" 
-              class="btn btn-warning"
-              (click)='onMarkAllRead()'>
-              <span class="fa fa-check"></span> {{text["MarkAllRead"]}}
+            <button type="button"
+              class="btn btn-primary" 
+              (click)="onCreateMessage()">
+              <span class="fa fa-file-o fa-spacing"></span>
+              {{text["NewMessage"]}}
             </button>
           </li>
       </ul>

@@ -359,6 +359,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  deleteReadMessages() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .patch('/api/user/messagesdelete', {}, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   saveMessage(message: Message) {
     const headers = this.getTokenHeaders();
     console.log('saving msg', message);
