@@ -95,10 +95,18 @@ module.exports = {
           query = {_id: messageId},
           update = {[tpe + '.' + action]: true};
     console.log(req.body);
-    console.log('setting message to ' + action, messageId, update);
     Message.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 500, 'Error setting message to ' + action, function(){
         response.handleSuccess(res, result, 200, 'Set message to ' + action);
+      });
+    });
+  },
+  getMessagesCount: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {'recipient.id': userId, 'recipient.read': false};
+    Message.count(query, function(err, count) {
+      response.handleError(err, res, 500, 'Error fetching messages count', function(){
+        response.handleSuccess(res, count, 200, 'Fetched messages count');
       });
     });
   }

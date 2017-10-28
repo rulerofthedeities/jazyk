@@ -83,7 +83,7 @@ module.exports.initialize = function(app, router) {
   router.put('/user/notification', notifications.saveNotification);
   router.get('/user/notifications', notifications.getNotifications);
   router.delete('/user/notifications', notifications.removeNotifications);
-  router.get('/user/notificationsCount', notifications.getNotificationsCount);
+  router.get('/user/notificationscount', notifications.getNotificationsCount);
   router.get('/user/notification/:notificationId', notifications.getNotification);
   router.delete('/user/notification/:notificationId', notifications.removeNotification);
   router.patch('/user/notificationread', notifications.setNotificationRead);
@@ -94,6 +94,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/messages/:tpe', messages.getMessages);
   router.patch('/user/messageread', messages.setMessageRead);
   router.patch('/user/messagedelete', messages.setMessageDelete);
+  router.get('/user/messagescount', messages.getMessagesCount);
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   

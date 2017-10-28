@@ -62,6 +62,9 @@ li {
   border-radius: 4px;
   font-style: italic;
 }
+.fa-file-o {
+  padding-right: 8px;
+}
 /* Message */
 .gravatar {
   display: inline-block;

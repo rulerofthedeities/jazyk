@@ -59,7 +59,10 @@
           *ngIf="isLoggedIn()">
           <a class="nav-link messages">
             <i class="fa fa-envelope-o"></i>
-            <span class="badge">10</span>
+            <span class="badge"
+              [style.visibility]="nrOfMessages > 0 ? 'visible': 'hidden'">
+              {{nrOfMessages}}
+            </span>
             <span class="bar small"></span>
           </a>
         </li>

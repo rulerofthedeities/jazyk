@@ -48,7 +48,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     this.currentMessage = this.messages[i];
     if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
       this.setMessageAsRead(i);
-      //this.userService.updateUnreadMessagesCount(false);
+      this.userService.updateUnreadMessagesCount(false);
     }
     if (this.currentMessage.parentId) {
       this.fetchParentMessage(this.currentMessage.parentId);

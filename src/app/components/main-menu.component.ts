@@ -20,6 +20,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   text: Object = {};
   showDropDown = false;
   nrOfNotifications = 0;
+  nrOfMessages = 0;
 
   constructor(
     private router: Router,
@@ -34,17 +35,22 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getUrl();
     this.getTranslations(this.userService.user.main.lan);
     this.getNotificationsCount();
+    this.getMessagesCount();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
     this.userService.notificationRead.subscribe(
-      isAllRead => this.updateUnReadCount(isAllRead)
+      isAllRead => this.updateNotificationsUnReadCount(isAllRead)
+    );
+    this.userService.messageRead.subscribe(
+      isAllRead => this.updateMessagesUnReadCount(isAllRead)
     );
     this.sharedService.justLoggedInOut.subscribe(
       loggedIn => {
         const interfaceLan = this.userService.user.main.lan;
         if (loggedIn) {
           this.getNotificationsCount();
+          this.getMessagesCount();
         } else {
           // reset cached user data
           this.userService.getDefaultUserData(interfaceLan);
@@ -84,7 +90,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private getNotificationsCount() {
     if (this.isLoggedIn()) {
-      console.log('updating unread count');
+      console.log('updating unread count notifications');
       this.userService
       .fetchNotificationsCount()
       .takeWhile(() => this.componentActive)
@@ -95,14 +101,38 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateUnReadCount(isAllRead: boolean) {
-    console.log('update unread count', isAllRead);
+  private getMessagesCount() {
+    if (this.isLoggedIn()) {
+      console.log('updating unread count messages');
+      this.userService
+      .fetchMessagesCount()
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        count => this.nrOfMessages = count,
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
+  private updateNotificationsUnReadCount(isAllRead: boolean) {
+    console.log('update unread notifications count', isAllRead);
     if (isAllRead) {
       this.nrOfNotifications = 0;
     } else if (isAllRead === null) {
       this.getNotificationsCount();
     }  else if (this.nrOfNotifications > 0) {
       this.nrOfNotifications--;
+    }
+  }
+
+  private updateMessagesUnReadCount(isAllRead: boolean) {
+    console.log('update unread messages count', isAllRead);
+    if (isAllRead) {
+      this.nrOfMessages = 0;
+    } else if (isAllRead === null) {
+      this.getMessagesCount();
+    }  else if (this.nrOfMessages > 0) {
+      this.nrOfMessages--;
     }
   }
 
