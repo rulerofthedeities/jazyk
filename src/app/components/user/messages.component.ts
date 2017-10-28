@@ -94,6 +94,12 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     msgField.clearField();
   }
 
+  onMarkAllRead() {
+    this.infoMsg = '';
+    this.markAllRead();
+    this.setAllMessagesAsRead();
+  }
+
   onCloseMessage() {
     this.closeMessage();
   }
@@ -110,6 +116,11 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
       isRecipient = true;
     }
     return isRecipient;
+  }
+
+  private markAllRead() {
+    this.messages.map(message => message.recipient.read = true);
+    this.userService.updateUnreadMessagesCount(true);
   }
 
   private closeMessage() {
@@ -184,6 +195,16 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       read => this.messages[i].recipient.read = true,
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private setAllMessagesAsRead() {
+    this.userService
+    .setAllMessagesAsRead()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      read => {},
       error => this.errorService.handleError(error)
     );
   }

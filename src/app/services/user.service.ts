@@ -343,6 +343,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  setAllMessagesAsRead() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .patch('/api/user/messagesread', JSON.stringify({}), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   deleteMessage(messageId: string, tpe: string, action: string) {
     const headers = this.getTokenHeaders();
     return this.http

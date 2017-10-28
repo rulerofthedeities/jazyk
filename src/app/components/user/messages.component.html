@@ -40,6 +40,13 @@
               <span class="fa fa-trash"></span> {{text["Trash"]}}
             </a>
           </li>
+          <li class="pull-right">
+            <button type="button" 
+              class="btn btn-warning"
+              (click)='onMarkAllRead()'>
+              <span class="fa fa-check"></span> {{text["MarkAllRead"]}}
+            </button>
+          </li>
       </ul>
       <div *ngIf="messages && messages[0] else nomessages" class="messages">
         <div class="list-group">

@@ -123,7 +123,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private updateNotificationsUnReadCount(isAllRead: boolean) {
-    console.log('update unread notifications count', isAllRead);
     if (isAllRead) {
       this.nrOfNotifications = 0;
     } else if (isAllRead === null) {
@@ -134,7 +133,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private updateMessagesUnReadCount(isAllRead: boolean) {
-    console.log('update unread messages count', isAllRead);
     if (isAllRead) {
       this.nrOfMessages = 0;
     } else if (isAllRead === null) {

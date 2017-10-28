@@ -88,6 +88,16 @@ module.exports = {
       });
     });
   },
+  setAllMessagesRead: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {'recipient.id': userId, 'recipient.read': false},
+          update = {'recipient.read': true};
+    Message.updateMany(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error marking all messages unread', function(){
+        response.handleSuccess(res, result, 200, 'Marked all messages unread');
+      });
+    });
+  },
   setMessageDelete: function(req, res) {
     const messageId = new mongoose.Types.ObjectId(req.body.messageId),
           tpe = req.body.tpe, // recipient or sender
