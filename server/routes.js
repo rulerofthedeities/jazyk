@@ -96,6 +96,7 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/messagesread', messages.setAllMessagesRead);
   router.patch('/user/messagedelete', messages.setMessageDelete);
   router.patch('/user/messagesdelete', messages.setMessagesDelete);
+  router.patch('/user/emptytrash', messages.setEmptyTrash);
   router.get('/user/messagescount', messages.getMessagesCount);
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);

@@ -16,6 +16,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   notifications: Notification[];
   currentNotification: Notification;
   infoMsg: string;
+  showActions = false;
 
   constructor(
     private utilsService: UtilsService,
@@ -26,6 +27,10 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getTranslations();
     this.fetchNotifications();
+  }
+
+  onOpenActions() {
+    this.showActions = !this.showActions;
   }
 
   onSelectNotification(i: number) {
@@ -71,6 +76,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
   private closeNotification() {
     this.currentNotification = null;
+    this.showActions = false;
   }
 
   private fetchNotifications() {

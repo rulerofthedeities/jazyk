@@ -126,6 +126,20 @@ module.exports = {
       });
     });
   },
+  setEmptyTrash: function(req, res) {
+    const userId = req.decoded.user._id,
+          query = {
+            'recipient.id': userId,
+            'recipient.trash': true,
+            'recipient.deleted': false 
+          },
+          update = {'recipient.deleted': true};
+    Message.updateMany(query, update, function(err, result) {
+      response.handleError(err, res, 500, 'Error setting messages to deleted', function(){
+        response.handleSuccess(res, result, 200, 'Set messages to deleted');
+      });
+    });
+  },
   getMessagesCount: function(req, res) {
     const userId = req.decoded.user._id,
           query = {

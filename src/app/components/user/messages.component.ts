@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
@@ -19,10 +19,20 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   parentMessage: Message;
   showReply = false;
   showNewMessage = false;
+  showActions = false;
   tab = 'inbox';
   infoMsg = '';
   recipients: CompactProfile[] = [];
   selectedRecipient: CompactProfile;
+
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.showActions = false;
+    }
+  }
 
   constructor(
     private utilsService: UtilsService,
@@ -41,6 +51,10 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     this.fetchMessages();
   }
 
+  onOpenActions() {
+    this.showActions = !this.showActions;
+  }
+
   onSelectMessage(i: number) {
     this.parentMessage = null;
     this.infoMsg = '';
@@ -48,7 +62,9 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     this.currentMessage = this.messages[i];
     if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
       this.setMessageAsRead(i);
-      this.userService.updateUnreadMessagesCount(false);
+      if (this.tab === 'inbox') {
+        this.userService.updateUnreadMessagesCount(false);
+      }
     }
     if (this.currentMessage.parentId) {
       this.fetchParentMessage(this.currentMessage.parentId);
@@ -63,6 +79,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onCreateMessage() {
     this.infoMsg = '';
+    this.showActions = false;
     this.showNewMessage = true;
     this.getPossibleRecipients();
   }
@@ -96,14 +113,23 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onMarkAllRead() {
     this.infoMsg = '';
+    this.showActions = false;
     this.markAllRead();
     this.setAllMessagesAsRead();
   }
 
   onDeleteAllRead() {
     this.infoMsg = '';
+    this.showActions = false;
     this.messages = this.messages.filter(message => !message.recipient.read && !message.recipient.trash);
     this.deleteReadMessages();
+  }
+
+  onEmptyTrash() {
+    this.infoMsg = '';
+    this.showActions = false;
+    this.messages = null;
+    this.emptyTrash();
   }
 
   onCloseMessage() {
@@ -124,6 +150,10 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     return isRecipient;
   }
 
+  getActionCount() {
+    return this.tab === 'inbox' ? 3 : (this.tab === 'sent' ? 1 : 2);
+  }
+
   private markAllRead() {
     this.messages.map(message => message.recipient.read = true);
     this.userService.updateUnreadMessagesCount(true);
@@ -132,6 +162,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private closeMessage() {
     this.infoMsg = '';
     this.currentMessage = null;
+    this.showActions = false;
     this.showNewMessage = false;
   }
 
@@ -151,7 +182,6 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
       message: content
     };
     this.saveMessage(replyMessage, true);
-    console.log('sending reply', message.message, 'to', message.sender.userName);
   }
 
   private sendNewMessage(content: string) {
@@ -233,7 +263,19 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       deleted => {
-        this.infoMsg = this.text['NotificationsDeleted'];
+        this.infoMsg = this.text['MessagesDeleted'];
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private emptyTrash() {
+    this.userService
+    .emptyTrash()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      deleted => {
+        this.infoMsg = this.text['MessagesDeleted'];
       },
       error => this.errorService.handleError(error)
     );

@@ -35,7 +35,7 @@ body {
   color: green;
 }
 .fa-spacing {
-  padding-right: 2px;
+  margin-right: 6px;
 }
 
 /* ng2-dnd */

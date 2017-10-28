@@ -63,6 +63,10 @@ li {
   border-radius: 4px;
   font-style: italic;
 }
+.btnicon {
+  padding: 2px 6px;
+  width: 28px;
+}
 /* Message */
 .gravatar {
   display: inline-block;

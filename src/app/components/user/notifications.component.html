@@ -2,26 +2,42 @@
   <div class="panel-heading">
     <span class="fa fa-bell-o"></span>
       {{currentNotification ? currentNotification.title : text["Notifications"]}}
+    <!-- Action Buttons -->
+    <div class="btn-group pull-right" *ngIf="!currentNotification" #dropdown>
+      <button type="button"
+        (click)="onOpenActions()"
+        class="btn btn-primary dropdown-toggle">
+        <span class="fa fa-plus-circle fa-spacing"></span>{{text["Actions"]}} (2)
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu"
+        [style.display]="showActions ? 'block': 'none'">
+        <li (click)="onMarkAllRead()">
+          <a>
+            <button class="btn btn-warning btnicon">
+              <span class="fa fa-check"></span>
+            </button>
+            {{text["MarkAllRead"]}}
+          </a>
+        </li>
+        <li (click)="onDeleteAllRead()">
+          <a>
+            <button class="btn btn-danger btnicon">
+              <span class="fa fa-trash"></span>
+            </button>
+            {{text["DeleteAllReadNotifications"]}}
+          </a>
+        </li>
+      </ul>
+    </div>
     <span 
       *ngIf="currentNotification"
       (click)='onCloseNotification()'
       class="fa fa-times pull-right">
     </span>
-    <button 
-      *ngIf="!currentNotification"
-      type="button"
-      (click)='onDeleteAllRead()'
-      class="btn btn-danger pull-right btn-deleteall">
-      <span class="fa fa-trash"></span> {{text['DeleteAllReadNotifications']}}
-    </button>
-    <button 
-      *ngIf="!currentNotification"
-      type="button"
-      (click)='onMarkAllRead()'
-      class="btn btn-warning pull-right">
-      <span class="fa fa-check"></span> {{text['MarkAllRead']}}
-    </button>
   </div>
+
+
   <div class="panel-body">
     <div *ngIf="notifications?.length===0 else notificationsList">
       {{text["NoRecentNotifications"]}}

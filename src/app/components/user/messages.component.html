@@ -3,20 +3,54 @@
     <span class="fa"
       [ngClass]="{'fa-envelope-open-o': currentMessage || showNewMessage, 'fa-envelope-o': !(currentMessage || showNewMessage)}"></span>
     {{currentMessage ? text["Message"] : (showNewMessage ? text["NewMessage"] : text["PrivateMessages"])}}
-    <button type="button"
-      *ngIf="!currentMessage && !showNewMessage && tab==='inbox'"
-      class="btn btn-danger btn-deleteall pull-right"
-      (click)='onDeleteAllRead()'>
-      <span class="fa fa-check fa-spacing"></span>
-      {{text["DeleteAllReadMessages"]}}
-    </button>
-    <button type="button"
-      *ngIf="!currentMessage && !showNewMessage && tab==='inbox'"
-      class="btn btn-warning pull-right"
-      (click)='onMarkAllRead()'>
-      <span class="fa fa-check fa-spacing"></span>
-      {{text["MarkAllRead"]}}
-    </button>
+    <!-- Action Buttons -->
+    <div class="btn-group pull-right" *ngIf="!currentMessage && !showNewMessage" #dropdown>
+      <button type="button"
+        (click)="onOpenActions()"
+        class="btn btn-primary dropdown-toggle">
+        <span class="fa fa-plus-circle fa-spacing"></span>{{text["Actions"]}} ({{getActionCount()}})
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu"
+        [style.display]="showActions ? 'block': 'none'">
+        <li *ngIf="tab==='inbox'"
+          (click)="onMarkAllRead()">
+          <a>
+            <button class="btn btn-warning btnicon">
+              <span class="fa fa-check"></span>
+            </button>
+            {{text["MarkAllRead"]}}
+          </a>
+        </li>
+        <li *ngIf="tab==='inbox'"
+          (click)="onDeleteAllRead()">
+          <a>
+            <button class="btn btn-danger btnicon">
+              <span class="fa fa-trash"></span>
+            </button>
+            {{text["DeleteAllReadMessages"]}}
+          </a>
+        </li>
+        <li *ngIf="tab==='trash'"
+          (click)="onEmptyTrash()">
+          <a>
+            <button class="btn btn-danger btnicon">
+              <span class="fa fa-trash-o"></span>
+            </button>
+            {{text["EmptyTrash"]}}
+          </a>
+        </li>
+        <li class="divider" *ngIf="tab!=='sent'"></li>
+        <li (click)="onCreateMessage()">
+          <a>
+            <button class="btn btn-primary btnicon">
+              <span class="fa fa-file-o"></span>
+            </button>
+            {{text["NewMessage"]}}
+          </a>
+        </li>
+      </ul>
+    </div>
     <span 
       *ngIf="currentMessage || showNewMessage"
       (click)='onCloseMessage()'
@@ -27,35 +61,27 @@
     <!-- MESSAGE LIST -->
     <div *ngIf="!currentMessage && !showNewMessage else messageDetail">
       <ul class="nav nav-tabs">
-          <li 
-            [class.active]="tab==='inbox'"
-            (click)="onSelectTab('inbox')">
-            <a>
-              <span class="fa fa-envelope"></span> {{text["Inbox"]}}
-            </a>
-          </li>
-          <li
-            [class.active]="tab==='sent'"
-            (click)="onSelectTab('sent')">
-            <a>
-              <span class="fa fa-location-arrow"></span> {{text["Sent"]}}
-            </a>
-          </li>
-          <li
-            [class.active]="tab==='trash'"
-            (click)="onSelectTab('trash')">
-            <a>
-              <span class="fa fa-trash"></span> {{text["Trash"]}}
-            </a>
-          </li>
-          <li class="pull-right">
-            <button type="button"
-              class="btn btn-primary" 
-              (click)="onCreateMessage()">
-              <span class="fa fa-file-o fa-spacing"></span>
-              {{text["NewMessage"]}}
-            </button>
-          </li>
+        <li 
+          [class.active]="tab==='inbox'"
+          (click)="onSelectTab('inbox')">
+          <a>
+            <span class="fa fa-envelope"></span> {{text["Inbox"]}}
+          </a>
+        </li>
+        <li
+          [class.active]="tab==='sent'"
+          (click)="onSelectTab('sent')">
+          <a>
+            <span class="fa fa-location-arrow"></span> {{text["Sent"]}}
+          </a>
+        </li>
+        <li
+          [class.active]="tab==='trash'"
+          (click)="onSelectTab('trash')">
+          <a>
+            <span class="fa fa-trash"></span> {{text["Trash"]}}
+          </a>
+        </li>
       </ul>
       <div *ngIf="messages && messages[0] else nomessages" class="messages">
         <div class="list-group">
@@ -90,6 +116,10 @@
           </a>
       </div>
     </div>
+  </div>
+  <div  class="info-msg">
+    <km-info-msg [msg]="infoMsg">
+    </km-info-msg>
   </div>
 </div>
 
@@ -187,8 +217,3 @@
     </div>
   </div>
 </ng-template>
-
-<div  class="info-msg">
-  <km-info-msg [msg]="infoMsg">
-  </km-info-msg>
-</div>
