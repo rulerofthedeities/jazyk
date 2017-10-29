@@ -49,12 +49,12 @@ export class UtilsService {
     return lan;
   }
 
-  getActiveLanguages() {
+  getActiveLanguages(): Language[] {
     const languages = this.getLanguages();
     return languages.filter(language => language.active);
   }
 
-  getInterfaceLanguages() {
+  getInterfaceLanguages(): Language[] {
     const languages = this.getLanguages();
     return languages.filter(language => language.interface);
   }
@@ -64,30 +64,35 @@ export class UtilsService {
       {
         _id: 'en',
         name: 'EN',
+        nativeName: 'English',
         interface: true,
         active: true
       },
       {
         _id: 'de',
         name: 'DE',
+        nativeName: 'Deutsch',
         interface: false,
         active: false
       },
       {
         _id: 'fr',
         name: 'FR',
+        nativeName: 'Français',
         interface: true,
         active: true
       },
       {
         _id: 'cs',
         name: 'CS',
+        nativeName: 'Čeština',
         interface: false,
         active: true
       },
       {
         _id: 'nl',
         name: 'NL',
+        nativeName: 'Nederlands',
         interface: true,
         active: false
       }

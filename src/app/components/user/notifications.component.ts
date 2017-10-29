@@ -49,6 +49,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
   onDeleteAllRead() {
     this.infoMsg = '';
+    this.showActions = false;
     this.notifications = this.notifications.filter(notification => !notification.read);
     this.deleteReadNotifications();
   }
@@ -59,6 +60,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
   onMarkAllRead() {
     this.infoMsg = '';
+    this.showActions = false;
     this.markAllRead();
     this.setAllNotificationsAsRead();
   }

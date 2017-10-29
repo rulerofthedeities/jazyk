@@ -5,6 +5,7 @@ export interface Language {
   name: string;
   interface: boolean;
   active: boolean;
+  nativeName: string;
 }
 
 export interface LanPair {

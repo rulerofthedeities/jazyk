@@ -52,6 +52,9 @@ li.active span.bar {
 .gravatar img {
   border: 1px solid #ddd;
 }
+.navbar-nav > li > .dropdown-lan {
+  margin-top: -8px;
+}
 /* override bootstrap */
 .dropdown{
   margin-top: 4px;

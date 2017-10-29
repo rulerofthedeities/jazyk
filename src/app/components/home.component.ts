@@ -20,12 +20,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getTranslations(this.userService.user.main.lan);
+    this.userService.languageChanged.subscribe(
+      newLan => this.getTranslations(newLan)
+    );
   }
 
-  private getTranslations() {
+  private getTranslations(lan) {
     this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'HomeComponent')
+    .fetchTranslations(lan, 'HomeComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

@@ -41,6 +41,7 @@
           </a>
         </li>
       </ul>
+      <!-- Notifications & Messages -->
       <ul class="nav navbar-nav navbar-right">
         <li class="nav-item indicator" 
           (click)="onGoto('notifications')" 
@@ -66,6 +67,7 @@
             <span class="bar small"></span>
           </a>
         </li>
+        <!-- Not Logged In -->
         <li routerLinkActive="active" 
           class="login"
           *ngIf="!isLoggedIn() && url!=='/auth/signin'">
@@ -76,6 +78,39 @@
             <span class="bar"></span>
           </a>
         </li>
+        <li 
+          class="nav-item dropdown" 
+          *ngIf="!isLoggedIn()"
+          on-mouseover='onShowDropDown(true)'
+          on-mouseout='onShowDropDown(false)'>
+          <a 
+            class="nav-link dropdown-toggle user-action">
+            <img 
+              src="/assets/img/flags/{{intLan._id}}.png"
+              alt="{{intLan?.nativeName}}" class="flag" />
+              {{intLan?.nativeName}}
+            <span 
+              class="fa fa-caret" [ngClass]="{
+              'fa-caret-right': !showDropDown,
+              'fa-caret-down': showDropDown
+            }"></span>
+          </a>
+          <ul 
+            class="dropdown-menu dropdown-lan"
+            [style.display]="showDropDown ? 'block' : 'none'">
+            <li
+              *ngFor="let lan of intLans" 
+              (click)="onSelectLanguage(lan)">
+              <a class="dropdown-item" *ngIf="lan._id !== intLan._id">
+                <img 
+                  src="/assets/img/flags/{{lan._id}}.png"
+                  alt="{{lan?.nativeName}}" class="flag" />
+                {{lan.nativeName}}
+              </a>
+            </li>
+          </ul>
+        </li>
+        <!-- Logged In -->
         <li
           class="gravatar"
           *ngIf="isLoggedIn() && userService?.user?.emailHash">
@@ -99,19 +134,19 @@
             class="dropdown-menu"
             [style.display]="showDropDown ? 'block' : 'none'">
             <li (click)="onGoto('profile')">
-              <a href="#" class="dropdown-item">
-                <i class="fa fa-user-o"></i> {{text["Profile"]}}
+              <a class="dropdown-item">
+                <span class="fa fa-user-o"></span> {{text["Profile"]}}
               </a>
             </li>
             <li (click)="onGoto('settings')">
-              <a href="#" class="dropdown-item">
-                <i class="fa fa-sliders"></i> {{text["Settings"]}}
+              <a class="dropdown-item">
+                <span class="fa fa-sliders"></span> {{text["Settings"]}}
               </a>
             </li>
             <li class="divider dropdown-divider"></li>
             <li (click)="onLogOut()">
-              <a href="#" class="dropdown-item">
-                <i class="fa fa-sign-out"></i> {{text["Logout"]}}
+              <a class="dropdown-item">
+                <span class="fa fa-sign-out"></span> {{text["Logout"]}}
               </a>
             </li>
           </ul>

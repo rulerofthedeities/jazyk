@@ -5,7 +5,7 @@ import {UserService} from '../services/user.service';
 import {SharedService} from '../services/shared.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
-import {Translation} from '../models/course.model';
+import {Translation, Language} from '../models/course.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
@@ -22,6 +22,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   showDropDown = false;
   nrOfNotifications = 0;
   nrOfMessages = 0;
+  intLan: Language;
+  intLans: Language[];
 
   constructor(
     private router: Router,
@@ -37,6 +39,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getTranslations(this.userService.user.main.lan);
     this.getNotificationsCount();
     this.checkMessages();
+    this.setInterfaceLan();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
@@ -71,6 +74,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['/user/', page]);
   }
 
+  onSelectLanguage(newInterfaceLan: Language) {
+    this.updateInterfaceLan(newInterfaceLan);
+  }
+
   onLogOut() {
     event.preventDefault();
     this.authService.logout();
@@ -87,6 +94,21 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .subscribe((route: NavigationEnd) => {
       this.url = route.url;
     });
+  }
+
+  private setInterfaceLan() {
+    const lan = this.userService.user.main.lan;
+    this.intLans = this.utilsService.getInterfaceLanguages();
+    this.intLan = this.intLans.find(lanItem => lanItem._id === lan);
+    console.log(this.intLan, this.intLans);
+  }
+
+  private updateInterfaceLan(newLan: Language) {
+    // this.getTranslations(newLan._id);
+    localStorage.setItem('km-jazyk.lan', newLan._id);
+    this.intLan = newLan;
+    this.showDropDown = false;
+    this.userService.languageChanged.emit(newLan._id);
   }
 
   private getNotificationsCount() {

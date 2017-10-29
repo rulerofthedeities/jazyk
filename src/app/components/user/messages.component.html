@@ -65,21 +65,24 @@
           [class.active]="tab==='inbox'"
           (click)="onSelectTab('inbox')">
           <a>
-            <span class="fa fa-envelope"></span> {{text["Inbox"]}}
+            <span class="fa fa-envelope fa-spacing"></span>
+            {{text["Inbox"]}}
           </a>
         </li>
         <li
           [class.active]="tab==='sent'"
           (click)="onSelectTab('sent')">
           <a>
-            <span class="fa fa-location-arrow"></span> {{text["Sent"]}}
+            <span class="fa fa-location-arrow fa-spacing"></span>
+            {{text["Sent"]}}
           </a>
         </li>
         <li
           [class.active]="tab==='trash'"
           (click)="onSelectTab('trash')">
           <a>
-            <span class="fa fa-trash"></span> {{text["Trash"]}}
+            <span class="fa fa-trash fa-spacing"></span>
+            {{text["Trash"]}}
           </a>
         </li>
       </ul>
