@@ -20,7 +20,7 @@ var addUser = function(body, callback) {
           userName: body.userName,
           password: hash.toString('base64'),
           email: body.email.toLowerCase(),
-          'main': body.main,
+          main: body.main,
           jazyk: body.jazyk,
           vocabulator: {learnLan: body.vocabulator.learnLan},
           grammator: {learnLan: body.grammator.learnLan}
@@ -106,6 +106,15 @@ var getUserData = function(userId, callback) {
   });
 }
 
+var updateLastLoginDate = function(user, res) {
+  const update = {'jazyk.dt.lastLogin': Date.now()};
+  User.findOneAndUpdate(user._id, update, (err, result) => {
+    if (err) {
+      console.log('Error updating user login date');
+    }
+  });
+}
+
 module.exports = {
   signup: function(req, res) {
     addUser(req.body, function(err, doc) {
@@ -118,6 +127,7 @@ module.exports = {
     findUser(req.body, req.expiresIn, function(err, result, errno, errmsg) {
       response.handleError(err, res, errno, errmsg, function(){
         response.handleSuccess(res, result, 200, 'Signed in successfully');
+        updateLastLoginDate(result, res);
       });
     });
   },
@@ -212,7 +222,7 @@ module.exports = {
   getPublicProfile: function(req, res) {
     const userName = req.params.userName,
           query = {userName},
-          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, userName: 1, dtJoined: 1, email: 1};
+          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, 'jazyk.dt': 1, userName: 1, email: 1};
     User.findOne(query, projection, (err, result) => {
         let errCode = 500;
         if (!result) {
@@ -222,7 +232,7 @@ module.exports = {
         response.handleError(err, res, errCode, 'Error fetching public profile', () => {
         const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
         publicProfile.userName = result.userName;
-        publicProfile.dtJoined = result.dtJoined;
+        publicProfile.dtJoined = result.jazyk.dt.joined;
         publicProfile._id = result._id;
         publicProfile.email = result.email;
         setEmailHash(publicProfile);

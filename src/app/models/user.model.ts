@@ -44,10 +44,16 @@ export interface CompactProfile {
   isFollow?: boolean;
 }
 
+interface AppDates {
+  joined?: Date;
+  lastLogin?: Date;
+}
+
 export interface JazykConfig {
   courses?: string[];
   learn: LearnSettings;
   profile: Profile;
+  dt: AppDates;
 }
 
 export interface User {

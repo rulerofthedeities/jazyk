@@ -31,7 +31,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getTranslations(this.userService.user.main.lan);
     this.buildForm();
   }
 
@@ -73,10 +73,10 @@ export class SignInComponent implements OnInit, OnDestroy {
       'password': ['', Validators.required]
     });
   }
-
-  private getTranslations() {
+  
+  private getTranslations(lan: string) {
     this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'AuthComponent')
+    .fetchTranslations(lan, 'AuthComponent')
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {

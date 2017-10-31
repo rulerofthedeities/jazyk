@@ -70,7 +70,7 @@
         <!-- Not Logged In -->
         <li routerLinkActive="active" 
           class="login"
-          *ngIf="!isLoggedIn() && url!=='/auth/signin'">
+          *ngIf="!isLoggedIn() && url!=='/auth/signin' && url!=='/home'">
           <a 
             routerLink="/auth/signin">
             <span class="fa fa-sign-in"></span>
@@ -80,7 +80,7 @@
         </li>
         <li 
           class="nav-item dropdown" 
-          *ngIf="!isLoggedIn()"
+          *ngIf="!isLoggedIn()  && url==='/home'"
           on-mouseover='onShowDropDown(true)'
           on-mouseout='onShowDropDown(false)'>
           <a 

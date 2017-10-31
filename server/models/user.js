@@ -31,10 +31,17 @@ var JazykProfileSchema = new Schema({
   nativeLan: String,
 }, {_id : false});
 
+var dtSchema = new Schema({
+  joined: {type: Date, default: Date.now},
+  lastLogin: {type: Date, default: Date.now}
+}, {_id : false});
+
 var jazykSchema = new Schema({
   learn: {type: jazykLearnSchema, required: true},
   profile: {type: JazykProfileSchema, required: true},
+  dt: dtSchema
 }, {_id : false});
+
 
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true},
@@ -45,7 +52,7 @@ var userSchema = new Schema({
   jazyk: jazykSchema,
   vocabulator: appSchema,
   grammator: appSchema,
-  dtJoined: {type: Date, default: Date.now},
+  dtCreated: {type: Date, default: Date.now}
 });
 
 userSchema.plugin(mongooseUniqueValidator);

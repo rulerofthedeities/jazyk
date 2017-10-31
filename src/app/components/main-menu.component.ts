@@ -104,7 +104,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private updateInterfaceLan(newLan: Language) {
-    // this.getTranslations(newLan._id);
+    this.userService.user.main.lan = newLan._id;
     localStorage.setItem('km-jazyk.lan', newLan._id);
     this.intLan = newLan;
     this.showDropDown = false;

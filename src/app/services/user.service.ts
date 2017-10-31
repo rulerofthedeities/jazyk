@@ -144,7 +144,8 @@ export class UserService {
         location: '',
         bio: '',
         nativeLan: ''
-      }
+      },
+      dt: {}
     };
   }
 
@@ -408,7 +409,7 @@ export class UserService {
       this.updateUserCache(lan);
     }
   }
-
+  
   fetchWelcomeNotification(user: User) {
     let notificationLoaded = false;
     this.subscription = this
@@ -468,14 +469,19 @@ export class UserService {
   }
 
   private getUserLan(queryLan: string): string {
-    // User is not logged in, or no lan data -> get lan from url parm
+    // User is not logged in, or no lan data
+    // First get lan from url parm
     let lan = this.validateLan(queryLan);
-    // if not in url parm, get from navigator
     if (!lan) {
-      lan = this.validateLan(navigator.language.slice(0, 2));
+      // if not in url parm, check if the lan is set in the browser
+      lan = localStorage.getItem('km-jazyk.lan');
+      // if not set in browser, get from navigator
+      if (!lan) {
+        lan = this.validateLan(navigator.language.slice(0, 2));
+      }
+      // if not in navigator, get from config
+      lan = lan || config.language;
     }
-    // if not in navigator, get from config
-    lan = lan || config.language;
     return lan;
   }
 
