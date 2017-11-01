@@ -13,6 +13,7 @@
     <li *ngFor="let exercise of exercises; let i = index;">
       <div 
         [class.editing]="editingId === exercise._id"
+        [class.viewing]="viewId === exercise._id"
         class="list-group-item row"
         dnd-sortable
         [sortableIndex]="i"
@@ -25,6 +26,10 @@
           <span 
             class="btn btn-primary fa fa-pencil"
             (click)="onEditExercise(exercise._id)">
+          </span>
+          <span 
+            class="btn btn-info fa fa-eye"
+            (click)="onViewExercise(exercise._id)">
           </span>
         </div>
         <div class="items">
@@ -94,6 +99,14 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- EDIT / VIEW Exercise -->
+      <div *ngIf="exercise._id===viewId">
+        <km-preview-question class="view"
+          [lanPair]="languagePair"
+          [exercise]="exercise"
+          [text]="text">
+        </km-preview-question>
       </div>
       <km-build-exercise *ngIf="exercise._id===editingId && exercise.tpe === exType.Word" class="edit"
         [languagePair]="languagePair"

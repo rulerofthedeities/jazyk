@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
+import {PreviewModule} from './preview.module';
 import {RouterModule} from '@angular/router';
 
 import {routes} from './learn.routes';
@@ -23,7 +24,6 @@ import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
 import {LearnPointsCompletedComponent} from './components/learn/points-completed.component';
 import {LearnPointsEarnedComponent} from './components/learn/points-earned.component';
-import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.component';
 import {LearnWordFieldComponent} from './components/learn/word-field.component';
@@ -33,11 +33,11 @@ import {LearnQAComponent} from './components/learn/qa.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
 
-import {WordColorDirective} from './directives/word-color.directive';
 
 @NgModule({
   imports: [
     SharedModule,
+    PreviewModule,
     RouterModule.forChild(routes)
   ],
   providers: [
@@ -61,7 +61,6 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnCompletedListComponent,
     LearnPointsCompletedComponent,
     LearnPointsEarnedComponent,
-    LearnQuestionComponent,
     LearnBulletsComponent,
     LearnLevelBarComponent,
     LearnWordFieldComponent,
@@ -69,8 +68,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnSentenceComponent,
     LearnQAComponent,
     LearnKeyboardComponent,
-    LearnCountdownComponent,
-    WordColorDirective
+    LearnCountdownComponent
   ]
 })
 export class LearnModule {}

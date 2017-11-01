@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
+import {PreviewModule} from './preview.module';
 import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DndModule} from 'ng2-dnd'; // Sorting
@@ -30,10 +31,10 @@ import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
 
-
 @NgModule({
   imports: [
     SharedModule,
+    PreviewModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),

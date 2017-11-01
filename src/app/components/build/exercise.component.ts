@@ -3,6 +3,7 @@ import {Component, Input, Output, OnInit, AfterViewInit,
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
+import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
@@ -75,6 +76,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     private utilsService: UtilsService,
     private formBuilder: FormBuilder,
     private buildService: BuildService,
+    private previewService: PreviewService,
     private errorService: ErrorService,
     private element: ElementRef,
     private ref: ChangeDetectorRef,
@@ -592,7 +594,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
           const filteredList = [];
           wordpairs.forEach(wp => {
             word = wp[filter.languageId].word;
-            score = this.getDamerauLevenshteinDistance(word, filter.word);
+            score = this.previewService.getDamerauLevenshteinDistance(word, filter.word);
             filteredList.push({wordpair: wp, score});
           });
           filteredList.sort((a, b) => a.score - b.score);
@@ -603,52 +605,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     } else {
       this.lanList = null; // collapse dropdown list
     }
-  }
-
-  private getDamerauLevenshteinDistance(source: string, target: string): number {
-    if (!source) {
-      return target ? target.length : 0;
-    } else if (!target) {
-      return source.length;
-    }
-
-    const sourceLength = source.length,
-          targetLength = target.length,
-          INF = sourceLength + targetLength,
-          score = new Array(sourceLength + 2),
-          sd = {};
-    let DB: number;
-
-    for (let i = 0; i < sourceLength + 2; i++) {
-      score[i] = new Array(targetLength + 2);
-    }
-    score[0][0] = INF;
-    for (let i = 0; i <= sourceLength; i++) {
-      score[i + 1][1] = i;
-      score[i + 1][0] = INF;
-      sd[source[i]] = 0;
-    }
-    for (let j = 0; j <= targetLength; j++) {
-      score[1][j + 1] = j;
-      score[0][j + 1] = INF;
-      sd[target[j]] = 0;
-    }
-    for (let i = 1; i <= sourceLength; i++) {
-      DB = 0;
-      for (let j = 1; j <= targetLength; j++) {
-        const i1 = sd[target[j - 1]],
-              j1 = DB;
-        if (source[i - 1] === target[j - 1]) {
-          score[i + 1][j + 1] = score[i][j];
-          DB = j;
-        } else {
-          score[i + 1][j + 1] = Math.min(score[i][j], Math.min(score[i + 1][j], score[i][j + 1])) + 1;
-        }
-        score[i + 1][j + 1] = Math.min(score[i + 1][j + 1], score[i1] ? score[i1][j1] + (i - i1 - 1) + 1 + (j - j1 - 1) : Infinity);
-      }
-      sd[source[i - 1]] = i;
-    }
-    return score[sourceLength + 1][targetLength + 1];
   }
 
   ngOnDestroy() {

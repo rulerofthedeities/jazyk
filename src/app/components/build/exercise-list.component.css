@@ -26,6 +26,11 @@
   cursor: text;
 }
 .editing {
+  background-color: #428bca;
+  border-color: #286090;
+  margin-top: 6px;
+}
+.viewing {
   background-color: #5bc0de;
   border-color: #428bca;
   margin-top: 6px;

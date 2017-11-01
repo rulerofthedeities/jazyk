@@ -22,6 +22,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   private componentActive = true;
   private isRemoving = false;
   editingId: string = null;
+  viewId: string = null;
   removingId: string = null;
   focusField: string = null;
   exType = ExerciseType;
@@ -33,6 +34,7 @@ export class BuildExerciseListComponent implements OnDestroy {
 
   onEditExercise(id: string, focus = null) {
     console.log('editing id', id);
+    this.viewId = null;
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
       this.focusField = focus;
@@ -65,15 +67,14 @@ export class BuildExerciseListComponent implements OnDestroy {
     }
   }
 
-  onMoveExercise(i: number) {
-    if (!this.isRemoving) {
-      console.log('move exercise');
-    }
-  }
-
   onResorted(event) {
     console.log('resorted', event);
     this.saveResortedExercises();
+  }
+
+  onViewExercise(id: string) {
+    this.editingId = null;
+    this.viewId = this.viewId === id ? null : id;
   }
 
   getRemoveMessage(): string {
