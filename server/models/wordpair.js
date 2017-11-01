@@ -33,4 +33,22 @@ var wordSchema = new Schema({
   }, {collection: 'wordpairs'}
 );
 
+/*
+wordSchema.index(
+  {
+    docTpe:1,
+    lanPair:1,
+    'cs.word': 'text',
+    'cs.alt': 'text',
+    'nl.word': 'text',
+    'nl.alt': 'text'
+  },{
+    name: 'Wordpairindex',
+    weights: {
+      'cs.word': 10, 'cs.alt': 3,
+      'nl.word': 10, 'nl.alt': 3
+    }
+  });
+wordSchema.index({userId: 1, courseId: 1}); 
+*/
 module.exports = mongoose.model('Wordpair', wordSchema);

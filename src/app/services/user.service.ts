@@ -102,6 +102,7 @@ export class UserService {
   }
 
   interfaceLanChanged(newLan: string) {
+    localStorage.setItem('km-jazyk.lan', newLan); // Set current logged in lan also as default lan for when logged out
     this.languageChanged.emit(newLan);
   }
 

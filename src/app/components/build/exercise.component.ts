@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, AfterViewInit,
   ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
@@ -8,6 +8,7 @@ import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
+import 'rxjs/add/operator/debounceTime';
 
 interface AddFields {
   altForeign: boolean;
@@ -125,7 +126,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.exerciseForm.patchValue({
       foreignWord: wordpairDetail.wordPair[this.lanForeign].word,
       localWord: wordpairDetail.wordPair[this.lanLocal].word
-    });
+    }, {emitEvent: false});
     if (!this.currentExercise) {
       // Update word
       if (wordpairDetail[this.lanLocal]) {
@@ -512,6 +513,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       });
     }
 
+    this.setupFilterEvent();
     this.isFormReady = true;
   }
 
@@ -537,6 +539,23 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     return hasConjugations;
   }
 
+  private setupFilterEvent() {
+    this.exerciseForm.controls['foreignWord']
+    .valueChanges
+    .debounceTime(400)
+    .takeWhile(() => this.componentActive)
+    .subscribe(newValue => {
+      this.changeFilter(newValue, this.lanForeign);
+    });
+    this.exerciseForm.controls['localWord']
+    .valueChanges
+    .takeWhile(() => this.componentActive)
+    .debounceTime(400)
+    .subscribe(newValue => {
+      this.changeFilter(newValue, this.lanLocal);
+    });
+  }
+
   private changeFilter(word: string, lan: string) {
     const filter: Filter = {
       isExact: false,
@@ -559,7 +578,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       .fetchFilterWordPairs(filter, this.languagePair)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        wordpairs => this.wordpairs = wordpairs,
+        wordpairs => {
+          console.log(wordpairs);
+          this.wordpairs = wordpairs;
+        },
         error => this.errorService.handleError(error)
       );
     } else {

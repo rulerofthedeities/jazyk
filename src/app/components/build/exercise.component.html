@@ -18,7 +18,6 @@
         required
         formControlName="foreignWord"
         (focus)="onFocus(foreign.value, lanForeign)" 
-        (ngModelChange)="onFilterChanged(foreign.value, lanForeign)"
         #foreign>
     </div>
   </div>
@@ -267,7 +266,6 @@
         required
         formControlName="localWord"
         (focus)="onFocus(local.value, lanLocal)"
-        (ngModelChange)="onFilterChanged(local.value, lanLocal)"
         #local>
     </div>
   </div>

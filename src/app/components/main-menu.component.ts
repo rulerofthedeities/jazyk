@@ -17,7 +17,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class MainMenuComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  private url: string;
+  url: string;
   text: Object = {};
   showDropDown = false;
   nrOfNotifications = 0;
@@ -41,7 +41,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.checkMessages();
     this.setInterfaceLan();
     this.userService.languageChanged.subscribe(
-      newLan => this.getTranslations(newLan)
+      newLan => {
+        console.log('NEW LAN');
+        this.getTranslations(newLan);
+      }
     );
     this.userService.notificationRead.subscribe(
       isAllRead => this.updateNotificationsUnReadCount(isAllRead)
@@ -52,7 +55,11 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.sharedService.justLoggedInOut.subscribe(
       loggedIn => {
         const interfaceLan = this.userService.user.main.lan;
+        this.nrOfMessages = 0;
+        this.nrOfNotifications = 0;
+        this.showDropDown = false;
         if (loggedIn) {
+          this.setInterfaceLan();
           this.getNotificationsCount();
           this.getMessagesCount();
         } else {
@@ -93,6 +100,9 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe((route: NavigationEnd) => {
       this.url = route.url;
+      if (this.url === '/') {
+        this.url = '/home';
+      }
     });
   }
 
@@ -100,7 +110,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     const lan = this.userService.user.main.lan;
     this.intLans = this.utilsService.getInterfaceLanguages();
     this.intLan = this.intLans.find(lanItem => lanItem._id === lan);
-    console.log(this.intLan, this.intLans);
   }
 
   private updateInterfaceLan(newLan: Language) {
