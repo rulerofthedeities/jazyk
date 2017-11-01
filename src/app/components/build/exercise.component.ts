@@ -69,6 +69,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   images: File[];
   audios: File[];
   hasConjugations = false;
+  maxFilterListLength = 8;
 
   constructor(
     private utilsService: UtilsService,
@@ -540,19 +541,27 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private setupFilterEvent() {
+    let foreign = '',
+        local = '';
     this.exerciseForm.controls['foreignWord']
     .valueChanges
-    .debounceTime(400)
+    .debounceTime(300)
     .takeWhile(() => this.componentActive)
     .subscribe(newValue => {
-      this.changeFilter(newValue, this.lanForeign);
+      if (newValue !== foreign) {
+        this.changeFilter(newValue, this.lanForeign);
+        foreign = newValue;
+      }
     });
     this.exerciseForm.controls['localWord']
     .valueChanges
     .takeWhile(() => this.componentActive)
-    .debounceTime(400)
+    .debounceTime(300)
     .subscribe(newValue => {
-      this.changeFilter(newValue, this.lanLocal);
+      if (newValue !== local) {
+        this.changeFilter(newValue, this.lanLocal);
+        local = newValue;
+      }
     });
   }
 
@@ -562,7 +571,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       isFromStart: false,
       getTotal: false,
       languageId: lan,
-      limit: 8,
+      limit: 12,
       word
     };
     if (this.lanList !== lan) {
@@ -579,14 +588,67 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       .takeWhile(() => this.componentActive)
       .subscribe(
         wordpairs => {
-          console.log(wordpairs);
-          this.wordpairs = wordpairs;
+          let word, score;
+          const filteredList = [];
+          wordpairs.forEach(wp => {
+            word = wp[filter.languageId].word;
+            score = this.getDamerauLevenshteinDistance(word, filter.word);
+            filteredList.push({wordpair: wp, score});
+          });
+          filteredList.sort((a, b) => a.score - b.score);
+          this.wordpairs = filteredList.map(item => item.wordpair).slice(0, this.maxFilterListLength);
         },
         error => this.errorService.handleError(error)
       );
     } else {
       this.lanList = null; // collapse dropdown list
     }
+  }
+
+  private getDamerauLevenshteinDistance(source: string, target: string): number {
+    if (!source) {
+      return target ? target.length : 0;
+    } else if (!target) {
+      return source.length;
+    }
+
+    const sourceLength = source.length,
+          targetLength = target.length,
+          INF = sourceLength + targetLength,
+          score = new Array(sourceLength + 2),
+          sd = {};
+    let DB: number;
+
+    for (let i = 0; i < sourceLength + 2; i++) {
+      score[i] = new Array(targetLength + 2);
+    }
+    score[0][0] = INF;
+    for (let i = 0; i <= sourceLength; i++) {
+      score[i + 1][1] = i;
+      score[i + 1][0] = INF;
+      sd[source[i]] = 0;
+    }
+    for (let j = 0; j <= targetLength; j++) {
+      score[1][j + 1] = j;
+      score[0][j + 1] = INF;
+      sd[target[j]] = 0;
+    }
+    for (let i = 1; i <= sourceLength; i++) {
+      DB = 0;
+      for (let j = 1; j <= targetLength; j++) {
+        const i1 = sd[target[j - 1]],
+              j1 = DB;
+        if (source[i - 1] === target[j - 1]) {
+          score[i + 1][j + 1] = score[i][j];
+          DB = j;
+        } else {
+          score[i + 1][j + 1] = Math.min(score[i][j], Math.min(score[i + 1][j], score[i][j + 1])) + 1;
+        }
+        score[i + 1][j + 1] = Math.min(score[i + 1][j + 1], score[i1] ? score[i1][j1] + (i - i1 - 1) + 1 + (j - j1 - 1) : Infinity);
+      }
+      sd[source[i - 1]] = i;
+    }
+    return score[sourceLength + 1][targetLength + 1];
   }
 
   ngOnDestroy() {

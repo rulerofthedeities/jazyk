@@ -333,7 +333,6 @@ export class LearnService {
       console.log('error percentage', errPerc);
       isCorrect = errPerc > 20 ? false : true;
     }
-
     return isCorrect;
   }
 

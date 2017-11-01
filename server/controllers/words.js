@@ -19,10 +19,12 @@ module.exports = {
     const query = req.query,
           getTotal = query.getTotal === 'true' ? true : false;
           limit = parseInt(query.limit, 10) > 0 ? parseInt(query.limit, 10) : 50,
-          word = query.isFromStart === 'true' ? "^" + query.word : query.word,
+          forceFromStart = query.word.length < 4 ? true : false,
+          word = query.isFromStart === 'true' || forceFromStart ? "^" + query.word : query.word,
           lanpair = query.languagePair.split(';'),
           key =  query.languageId + '.word',
-          search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'},
+          forceExact = query.word.length < 3 ? true : false,
+          search = query.isExact === 'true' || forceExact ? query.word : {$regex: word, $options:'i'},
           q = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], [key]:search};
 
 /*
