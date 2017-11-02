@@ -24,6 +24,7 @@ var exerciseSchema = new Schema({
   genus: String,
   article: String,
   aspect: String,
+  motion: String,
   image: String,
   audio: String,
   options: [String],

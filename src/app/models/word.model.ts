@@ -63,6 +63,7 @@ export interface WordDetail {
   isSuperlative?: boolean;
   aspect?: string;
   aspectPair?: string;
+  motion?: string;
   images?: File[];
   audios?: File[];
   conjugation?: Conjugation;

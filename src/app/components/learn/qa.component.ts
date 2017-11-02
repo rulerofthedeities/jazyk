@@ -1,6 +1,5 @@
 import {Component, Input, Output, OnInit, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {ExerciseData, Exercise} from '../../models/exercise.model';
-import {LearnService} from '../../services/learn.service';
 
 interface Keyboard {
   showKeyboard: boolean;
@@ -26,11 +25,8 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   correctAnswer: string;
   isAnswered = false;
 
-  constructor(
-    private learnService: LearnService
-  ) {}
-
   ngOnInit() {
+    console.log('init QA', this.data);
     const exercise = this.data.exercise;
     this.getQAData(exercise);
   }

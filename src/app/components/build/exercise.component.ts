@@ -321,7 +321,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
       exercise.genus = this.selected[this.lanForeign].genus;
       exercise.article = this.selected[this.lanForeign].article;
-      exercise.followingCase = this.selected[this.lanForeign].followingCase;
+      if (this.selected[this.lanForeign].wordTpe === 'preposition') {
+        exercise.followingCase = this.selected[this.lanForeign].followingCase;
+      }
       exercise.aspect = this.selected[this.lanForeign].aspect;
       this.addAnnotations(foreignAnnotations, this.selected, 'foreign');
       exercise.foreign.annotations = foreignAnnotations.join('|');
@@ -423,22 +425,23 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       if (word[this.lanForeign].wordTpe) {
         annotations.push(this.text[word[this.lanForeign].wordTpe]);
       }
+      if (word[this.lanForeign].aspect) {
+        annotations.push(this.text[word[this.lanForeign].aspect]);
+      }
+      if (word[this.lanForeign].motion) {
+        annotations.push(this.text[word[this.lanForeign].motion]);
+      }
     }
     if (tpe === 'foreign' && (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective')) {
       annotations.push(this.text[detail.wordTpe]);
     }
 
-    if (detail.wordTpe) {
-      // If verb has aspect, add to both local and foreign annotations
-      if (detail.wordTpe === 'verb') {
-        if (detail.aspect) {
-          annotations.push(this.text[detail.aspect]);
-        } else if (tpe === 'local') {
-          if (word[this.lanForeign].aspect) {
-            annotations.push(this.text[word[this.lanForeign].aspect]);
-          }
-        }
-      }
+    // If verb has aspect or motion, add to annotations
+    if (detail.aspect) {
+      annotations.push(this.text[detail.aspect]);
+    }
+    if (detail.motion) {
+      annotations.push(this.text[detail.motion]);
     }
     if (detail.isPlural) {
       annotations.push(this.text['plural']);

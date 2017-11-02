@@ -8,6 +8,8 @@ import {PreviewService} from './services/preview.service';
 import {PreviewQuestionComponent} from './components/build/preview-question.component';
 import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnSentenceComponent} from './components/learn/sentence.component';
+import {LearnQAComponent} from './components/learn/qa.component';
+import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {WordColorDirective} from './directives/word-color.directive';
 
 @NgModule({
@@ -21,6 +23,8 @@ import {WordColorDirective} from './directives/word-color.directive';
     PreviewQuestionComponent,
     LearnQuestionComponent,
     LearnSentenceComponent,
+    LearnQAComponent,
+    LearnKeyboardComponent,
     WordColorDirective
   ],
   providers: [
@@ -30,6 +34,8 @@ import {WordColorDirective} from './directives/word-color.directive';
     PreviewQuestionComponent,
     LearnQuestionComponent,
     LearnSentenceComponent,
+    LearnQAComponent,
+    LearnKeyboardComponent,
     WordColorDirective
   ]
 })

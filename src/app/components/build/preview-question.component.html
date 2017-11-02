@@ -28,7 +28,13 @@
       </km-sentence>
     </div>
     <div *ngSwitchCase="exType.QA">
-      QA
+      <km-qa
+        [lanPair]="lanPair"
+        [data]="exerciseData"
+        [msg]="text['Expectedanswer']"
+        [instruction]="text['instructionQA']"
+        [keyboard]="{showKeyboard: false, keys: null}">
+      </km-qa>
     </div>
   </div>
 </div>

@@ -28,8 +28,6 @@ import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.component';
 import {LearnWordFieldComponent} from './components/learn/word-field.component';
 import {LearnWordChoicesComponent} from './components/learn/word-choices.component';
-import {LearnQAComponent} from './components/learn/qa.component';
-import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
 
 
@@ -64,8 +62,6 @@ import {LearnCountdownComponent} from './components/learn/countdown.component';
     LearnLevelBarComponent,
     LearnWordFieldComponent,
     LearnWordChoicesComponent,
-    LearnQAComponent,
-    LearnKeyboardComponent,
     LearnCountdownComponent
   ]
 })

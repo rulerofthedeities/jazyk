@@ -29,7 +29,7 @@ export class PreviewQuestionComponent implements OnInit {
       result: {}
     };
     this.previewService.buildLocalData(this.exerciseData, this.text, this.exercise);
-    console.log(this.exerciseData);
+    console.log('exercise Data', this.exerciseData);
   }
 
   onSwitchDirection() {
