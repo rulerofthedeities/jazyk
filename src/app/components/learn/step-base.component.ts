@@ -1,5 +1,6 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
@@ -74,6 +75,7 @@ export abstract class Step {
 
   constructor(
     protected learnService: LearnService,
+    protected previewService: PreviewService,
     protected errorService: ErrorService,
     protected sharedService: SharedService
   ) {}
@@ -455,7 +457,7 @@ export abstract class Step {
           done = this.exerciseData.slice(0, nrDone);
     if (nrDone > original && total - nrDone > 2) {
       const todo = this.exerciseData.slice(nrDone, total),
-            shuffled = this.learnService.shuffle(todo);
+            shuffled = this.previewService.shuffle(todo);
       this.exerciseData = done.concat(shuffled);
     }
   }
@@ -664,7 +666,7 @@ export abstract class Step {
         choices.push(choice);
       }
     }
-    this.currentChoices = this.learnService.shuffle(choices);
+    this.currentChoices = this.previewService.shuffle(choices);
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {

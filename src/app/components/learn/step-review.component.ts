@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
@@ -17,10 +18,11 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
 
   constructor(
     learnService: LearnService,
+    previewService: PreviewService,
     errorService: ErrorService,
     sharedService: SharedService
   ) {
-    super(learnService, errorService, sharedService);
+    super(learnService, previewService, errorService, sharedService);
   }
 
   ngOnInit() {
@@ -81,7 +83,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
       isBidirectional: true,
       direction: Direction.LocalToForeign
     });
-    this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    this.exerciseData = this.previewService.shuffle(this.exerciseData);
     this.getChoices('course', this.courseId);
     this.setExerciseDataById();
   }

@@ -4,11 +4,12 @@ import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseR
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {Subscription} from 'rxjs/Subscription';
-import {Subject} from 'rxjs/Subject';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -48,6 +49,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   constructor(
     private learnService: LearnService,
+    private previewService: PreviewService,
     private errorService: ErrorService,
     private sharedService: SharedService
   ) {}
@@ -220,7 +222,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       direction: Direction.ForeignToLocal
     });
     if (!this.options.ordered) {
-      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+      this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     if (!this.isCountDown) {
       this.onCountDownFinished();
@@ -237,7 +239,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private restart() {
     this.isRestart = true;
     this.current = -1;
-    this.exerciseData = this.learnService.shuffle(this.exerciseData);
+    this.exerciseData = this.previewService.shuffle(this.exerciseData);
     this.isStudyDone = false;
     this.sharedService.changeExerciseMode(true);
     this.nextWord(1);

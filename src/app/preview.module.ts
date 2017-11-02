@@ -7,6 +7,7 @@ import {CommonModule} from '@angular/common';
 import {PreviewService} from './services/preview.service';
 import {PreviewQuestionComponent} from './components/build/preview-question.component';
 import {LearnQuestionComponent} from './components/learn/question.component';
+import {LearnSentenceComponent} from './components/learn/sentence.component';
 import {WordColorDirective} from './directives/word-color.directive';
 
 @NgModule({
@@ -19,6 +20,7 @@ import {WordColorDirective} from './directives/word-color.directive';
   declarations: [
     PreviewQuestionComponent,
     LearnQuestionComponent,
+    LearnSentenceComponent,
     WordColorDirective
   ],
   providers: [
@@ -27,6 +29,7 @@ import {WordColorDirective} from './directives/word-color.directive';
   exports: [
     PreviewQuestionComponent,
     LearnQuestionComponent,
+    LearnSentenceComponent,
     WordColorDirective
   ]
 })

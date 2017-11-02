@@ -4,6 +4,7 @@ import {Exercise, ExerciseData, ExerciseOptions, Direction,
         ExerciseResult, ExerciseType, Choice, AnswerType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 import {SharedService} from '../../services/shared.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
@@ -32,11 +33,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   constructor(
     learnService: LearnService,
+    previewService: PreviewService,
     sharedService: SharedService,
     errorService: ErrorService,
     private audioService: AudioService
   ) {
-    super(learnService, errorService, sharedService);
+    super(learnService, previewService, errorService, sharedService);
   }
 
   ngOnInit() {
@@ -206,7 +208,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       direction: Direction.LocalToForeign
     });
     if (!this.options.ordered) {
-      this.exerciseData = this.learnService.shuffle(this.exerciseData);
+      this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     this.setExerciseDataById();
     this.getChoices('lesson', this.lessonId, this.options.bidirectional);

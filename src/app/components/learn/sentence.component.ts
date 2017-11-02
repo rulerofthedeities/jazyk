@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {ExerciseData, Exercise} from '../../models/exercise.model';
-import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 
 @Component({
   selector: 'km-sentence',
@@ -23,7 +23,7 @@ export class LearnSentenceComponent implements OnInit {
   isCorrect: boolean;
 
   constructor(
-    private learnService: LearnService
+    private previewService: PreviewService
   ) {}
 
   ngOnInit() {
@@ -54,7 +54,7 @@ export class LearnSentenceComponent implements OnInit {
     this.options = JSON.parse(JSON.stringify(exercise.options));
     this.correctOption = this.getCorrectOption(exercise.foreign.word);
     this.options.push(this.correctOption);
-    this.options = this.learnService.shuffle(this.options);
+    this.options = this.previewService.shuffle(this.options);
     // get sentence without []
     this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
     console.log('sentence', this.sentence);
