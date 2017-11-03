@@ -44,11 +44,25 @@
         <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
           <span class="fa fa-font"></span> {{text["Newword"]}}
         </div>
-        <div class="btn btn-success btn-lg" (click)="onNewSelect()">
-          <span class="fa fa-list-alt"></span> {{text["NewSelect"]}}
-        </div>
-        <div class="btn btn-success btn-lg" (click)="onNewQA()">
-          <span class="fa fa-comments"></span> {{text["NewQA"]}}
+
+        <div class="btn-group" #dropdown>
+          <button 
+            type="button"
+            data-toggle="dropdown"
+            class="btn btn-success btn-lg dropdown-toggle"
+            (click)="onToggleDropDown()">
+            {{text["New..."]}}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" 
+            [style.display]="showDropDown ? 'block' : 'none'">
+            <li (click)="onNewSelect()"><a>
+              <span class="fa fa-list-alt fa-spacing"></span>{{text["NewSelect"]}}
+            </a></li>
+            <li (click)="onNewQA()"><a>
+              <span class="fa fa-comments fa-spacing"></span>{{text["NewQA"]}}
+            </a></li>
+          </ul>
         </div>
       </div>
     </div>

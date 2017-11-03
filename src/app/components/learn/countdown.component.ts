@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, ElementRef, ViewChild, EventEmitter} from '@angular/core';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 

@@ -50,8 +50,8 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
       const optionControls: FormControl[] = [];
       optionControls.push(new FormControl(''));
       this.exerciseForm = this.formBuilder.group({
-        sentence: ['', [Validators.required, ValidationService.checkSelect]],
-        sentenceLocal: [''],
+        select: ['', [Validators.required, ValidationService.checkSelect]],
+        selectLocal: [''],
         options: new FormArray(optionControls)
       },
       {

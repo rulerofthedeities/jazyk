@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
@@ -12,7 +12,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-build-lesson',
   templateUrl: 'lesson.component.html',
-  styleUrls: ['headers.css']
+  styleUrls: ['headers.css', 'lesson.component.css']
 })
 
 export class BuildLessonComponent implements OnInit, OnDestroy {
@@ -31,6 +31,16 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   infoMsg = '';
   tpe: ExerciseType;
   exType = ExerciseType;
+  showDropDown = false;
+
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.showDropDown = false;
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -54,29 +64,39 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   onNewWord() {
+    this.showDropDown = false;
     this.isNewExercise = true;
     this.tpe = ExerciseType.Word;
   }
 
   onCancelNew() {
+    this.showDropDown = false;
     this.isNewExercise = false;
   }
 
   onNewSelect() {
+    this.showDropDown = false;
     this.isNewExercise = true;
     this.tpe = ExerciseType.Select;
   }
 
   onNewQA() {
+    this.showDropDown = false;
     this.isNewExercise = true;
     this.tpe = ExerciseType.QA;
   }
 
   onEditLesson() {
+    this.showDropDown = false;
     this.isEditMode = true;
   }
 
+  onToggleDropDown(show: boolean) {
+    this.showDropDown = !this.showDropDown;
+  }
+
   onCloseHeader(updatedLesson: Lesson) {
+    this.showDropDown = false;
     if (updatedLesson) {
       this.lesson = updatedLesson;
       console.log('updated lesson');
