@@ -48,11 +48,11 @@
             [instruction]="text['instructionSelect']"
             (answered)="onAnsweredSelect($event)">
           </km-select>
-          <km-qa *ngIf="isQuestionType(qType.QA)"
+          <km-qa *ngIf="isQuestionType(qType.FillIn)"
             [lanPair]="lanPair"
+            [text]="text"
+            [tpe]="exType.FillIn"
             [data]="currentData"
-            [msg]="text['Expectedanswer']"
-            [instruction]="text['instructionQA']"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-qa>
         </div>

@@ -9,6 +9,9 @@
 .answer {
   margin-bottom: 32px;
 }
+.hint {
+  color: black;
+}
 .solution {
   font-size: 34px !important;
   margin-left: 72px !important;

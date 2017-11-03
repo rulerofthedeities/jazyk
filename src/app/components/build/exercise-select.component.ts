@@ -64,8 +64,8 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
         optionControls.push(new FormControl(option))
       );
       this.exerciseForm = this.formBuilder.group({
-        sentence: [exercise.foreign.word, [Validators.required, ValidationService.checkSelect]],
-        sentenceLocal: [exercise.local.word],
+        select: [exercise.foreign.word, [Validators.required, ValidationService.checkSelect]],
+        selectLocal: [exercise.local.word],
         options: new FormArray(optionControls)
       },
       {

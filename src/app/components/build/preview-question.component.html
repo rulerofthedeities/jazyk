@@ -31,9 +31,18 @@
     <div *ngSwitchCase="exType.QA">
       <km-qa
         [lanPair]="lanPair"
+        [text]="text"
+        [tpe]="exType.QA"
         [data]="exerciseData"
-        [msg]="text['Expectedanswer']"
-        [instruction]="text['instructionQA']"
+        [keyboard]="{showKeyboard: false, keys: null}">
+      </km-qa>
+    </div>
+    <div *ngSwitchCase="exType.FillIn">
+      <km-qa
+        [lanPair]="lanPair"
+        [text]="text"
+        [tpe]="exType.FillIn"
+        [data]="exerciseData"
         [keyboard]="{showKeyboard: false, keys: null}">
       </km-qa>
     </div>

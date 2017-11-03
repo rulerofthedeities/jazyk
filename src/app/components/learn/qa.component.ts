@@ -1,5 +1,5 @@
 import {Component, Input, Output, OnInit, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
-import {ExerciseData, Exercise} from '../../models/exercise.model';
+import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
   showKeyboard: boolean;
@@ -14,20 +14,23 @@ interface Keyboard {
 
 export class LearnQAComponent implements OnInit, AfterViewChecked {
   @Input() lanPair: string;
-  @Input() msg: string;
+  @Input() tpe: ExerciseType;
+  @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
-  @Input() instruction: string;
   @Output() answered = new EventEmitter<boolean>();
   @ViewChild('answer') answer: ElementRef;
   sentence: string[]; // answer without []
   question: string;
   correctAnswer: string;
+  instruction: string;
   isAnswered = false;
+  exType = ExerciseType;
 
   ngOnInit() {
     console.log('init QA', this.data);
     const exercise = this.data.exercise;
+    this.instruction = this.tpe = ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
     this.getQAData(exercise);
   }
 

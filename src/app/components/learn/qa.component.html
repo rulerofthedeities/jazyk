@@ -1,5 +1,5 @@
 
-<div class="form-group translation">
+<div class="form-group translation" *ngIf="tpe === exType.QA">
   <div class="col-xs-12">
     <div class="input-group input-lg question">
       {{question}}
@@ -10,6 +10,9 @@
 <div class="answer-instruction" [style.display]="isAnswered ? 'none' : 'block'">
   <span class="fa fa-info-circle"></span>
   {{instruction}}
+  <br>
+  <span class="fa fa-exclamation-circle"></span>
+  {{text["hint"]}}: <span class="hint">{{question}}</span>
 </div>
 <div class="form-group">
   <label 
@@ -43,7 +46,7 @@
 </div>
 <div class="clearfix"></div>
 <div class="solution" *ngIf="isAnswered && (!data.data.isCorrect || data.data.isAlt)">
-  <span class="msg">{{msg}} </span><span class="answer">{{correctAnswer}}</span>
+  <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{correctAnswer}}</span>
 </div>
 <km-keyboard 
   *ngIf="keyboard.showKeyboard && !isAnswered"

@@ -6,7 +6,7 @@ import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
-        ExerciseType, AnswerType, QuestionType, Direction} from '../../models/exercise.model';
+        ExerciseType, AnsweredType, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './word-field.component';
 import {LearnSelectComponent} from './select.component';
 import {LearnQAComponent} from './qa.component';
@@ -159,8 +159,8 @@ export abstract class Step {
       case QuestionType.Select:
         this.nextWord();
       break;
-      case QuestionType.QA:
-        this.checkIfQAAnswer();
+      case QuestionType.FillIn:
+        this.checkIfFillInAnswer();
       break;
     }
   }
@@ -197,7 +197,7 @@ export abstract class Step {
     let isEnterData = false;
     if (this.currentData &&
         (this.currentData.data.questionType === QuestionType.Word ||
-        this.currentData.data.questionType === QuestionType.QA)) {
+        this.currentData.data.questionType === QuestionType.FillIn)) {
       isEnterData = true;
     }
     return isEnterData;
@@ -236,10 +236,10 @@ export abstract class Step {
     }
   }
 
-  private checkIfQAAnswer() {
+  private checkIfFillInAnswer() {
     if (!this.isAnswered) {
       if (this.qaComponent && this.qaComponent.getData()) {
-        this.checkQAAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect());
+        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect());
       }
     } else {
       this.nextWord();
@@ -301,16 +301,16 @@ export abstract class Step {
             filteredSolution = this.filter(solution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
-        this.checkAnswer(AnswerType.Correct, QuestionType.Word, solution);
+        this.checkAnswer(AnsweredType.Correct, QuestionType.Word, solution);
       } else if (this.checkAltAnswers(this.currentData.exercise, filteredAnswer)) {
         // Alternative answer (synonym)
-        this.checkAnswer(AnswerType.Alt, QuestionType.Word, solution);
+        this.checkAnswer(AnsweredType.Alt, QuestionType.Word, solution);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
-        this.checkAnswer(AnswerType.AlmostCorrect, QuestionType.Word, solution);
+        this.checkAnswer(AnsweredType.AlmostCorrect, QuestionType.Word, solution);
       } else {
         // Incorrect answer
-        this.checkAnswer(AnswerType.Incorrect, QuestionType.Word, solution);
+        this.checkAnswer(AnsweredType.Incorrect, QuestionType.Word, solution);
       }
     }
   }
@@ -323,9 +323,9 @@ export abstract class Step {
           word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
 
     if (choice === word) {
-      this.checkAnswer(AnswerType.Correct, QuestionType.Choices);
+      this.checkAnswer(AnsweredType.Correct, QuestionType.Choices);
     } else {
-      this.checkAnswer(AnswerType.Incorrect, QuestionType.Choices);
+      this.checkAnswer(AnsweredType.Incorrect, QuestionType.Choices);
       // Show correct answer
       this.currentChoices.forEach( (item, j) => {
         if (item === word) {
@@ -337,30 +337,30 @@ export abstract class Step {
 
   protected checkSelectAnswer(isCorrect: boolean) {
     if (isCorrect) {
-      this.checkAnswer(AnswerType.Correct, QuestionType.Select);
+      this.checkAnswer(AnsweredType.Correct, QuestionType.Select);
     } else {
-      this.checkAnswer(AnswerType.Incorrect, QuestionType.Select);
+      this.checkAnswer(AnsweredType.Incorrect, QuestionType.Select);
     }
   }
 
-  protected checkQAAnswer(answer: string, solution: string) {
+  protected checkFillInAnswer(answer: string, solution: string) {
     const filteredAnswer = this.filter(answer);
     if (filteredAnswer) {
       const filteredSolution = this.filter(solution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
-        this.checkAnswer(AnswerType.Correct, QuestionType.QA, solution);
+        this.checkAnswer(AnsweredType.Correct, QuestionType.FillIn, solution);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
-        this.checkAnswer(AnswerType.AlmostCorrect, QuestionType.QA, solution);
+        this.checkAnswer(AnsweredType.AlmostCorrect, QuestionType.FillIn, solution);
       } else {
         // Incorrect answer
-        this.checkAnswer(AnswerType.Incorrect, QuestionType.QA, solution);
+        this.checkAnswer(AnsweredType.Incorrect, QuestionType.FillIn, solution);
       }
     }
   }
 
-  private checkAnswer(answer: AnswerType, question: QuestionType, solution = '') {
+  private checkAnswer(answer: AnsweredType, question: QuestionType, solution = '') {
     this.endDate = new Date();
     const timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
     let learnLevel = this.getCurrentLearnLevel(this.currentData);
@@ -370,28 +370,28 @@ export abstract class Step {
     this.currentData.data.timeDelta = timeDelta;
 
     switch (answer) {
-      case AnswerType.Correct:
+      case AnsweredType.Correct:
         this.isCorrect = true;
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = this.calculateGrade(question, timeDelta, 0, solution);
       break;
-      case AnswerType.Alt:
+      case AnsweredType.Alt:
         this.isCorrect = true;
         this.currentData.data.isCorrect = true;
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = this.calculateGrade(question, timeDelta, 1, solution);
       break;
-      case AnswerType.AlmostCorrect:
+      case AnsweredType.AlmostCorrect:
         this.isCorrect = false;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = true;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = 1;
       break;
-      case AnswerType.Incorrect:
+      case AnsweredType.Incorrect:
         this.isCorrect = false;
         this.currentData.data.isCorrect = false;
         this.currentData.data.isAlmostCorrect = false;
@@ -420,7 +420,7 @@ export abstract class Step {
     this.pointsEarned.next(points);
   }
 
-  protected doAddExercise(a: AnswerType, q: QuestionType, learnLevel: number): boolean {
+  protected doAddExercise(a: AnsweredType, q: QuestionType, learnLevel: number): boolean {
     return false;
   }
 
@@ -491,11 +491,11 @@ export abstract class Step {
     return isAltAnswer;
   }
 
-  private calculatePoints(answer: AnswerType, question: QuestionType): number {
+  private calculatePoints(answer: AnsweredType, question: QuestionType): number {
     let points = 0;
     switch (question) {
       case QuestionType.Word:
-      case QuestionType.QA:
+      case QuestionType.FillIn:
         if (this.currentData.data.isCorrect) {
           points = 100;
         } else if (this.currentData.data.isAlt) {
@@ -528,7 +528,7 @@ export abstract class Step {
         grade = this.calculateChoicesGrade(delta);
       break;
       case QuestionType.Word:
-      case QuestionType.QA:
+      case QuestionType.FillIn:
         grade = this.calculateWordGrade(delta, deduction, solution);
       break;
     }
@@ -575,7 +575,7 @@ export abstract class Step {
         level = this.calculateChoicesLearnLevel(learnLevelData);
       break;
       case QuestionType.Word:
-      case QuestionType.QA:
+      case QuestionType.FillIn:
         level = this.calculateWordLearnLevel(learnLevelData);
       break;
     }

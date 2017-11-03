@@ -38,6 +38,7 @@
             <span class="fa fa-font" *ngSwitchDefault></span>
             <span class="fa fa-list-alt" *ngSwitchCase="exType.Select"></span>
             <span class="fa fa-comments" *ngSwitchCase="exType.QA"></span>
+            <span class="fa fa-terminal" *ngSwitchCase="exType.FillIn"></span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
@@ -99,6 +100,20 @@
             </div>
           </div>
         </div>
+        <!-- Fill In -->
+        <div *ngIf="exercise.tpe === exType.FillIn">
+          <div class="col-xs-8">
+            <div class="words">
+              <span 
+                (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                <strong>{{exercise.foreign?.word}}</strong>
+              </span> <span *ngIf="exercise.foreign?.word">/</span>
+              <span (dblclick)="onEditExercise(exercise._id)">
+                {{exercise.foreign?.hint}}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- EDIT / VIEW Exercise -->
       <div *ngIf="exercise._id===viewId">
@@ -108,32 +123,42 @@
           [text]="text">
         </km-preview-question>
       </div>
-      <km-build-exercise *ngIf="exercise._id===editingId && exercise.tpe === exType.Word" class="edit"
-        [languagePair]="languagePair"
-        [lessonId]="lessonId"
-        [exercise]="exercise"
-        [text]="text"
-        [focus]="focusField"
-        [isBidirectional]="isBidirectional"
-        (updatedExercise)="onUpdatedExercise($event)"
-        (cancelEdit)="onCancelEdit()">
-      </km-build-exercise>
-      <km-build-select *ngIf="exercise._id===editingId && exercise.tpe === exType.Select" class="edit"
-        [languagePair]="languagePair"
-        [lessonId]="lessonId"
-        [exercise]="exercise"
-        [text]="text"
-        (updatedExercise)="onUpdatedExercise($event)"
-        (cancelEdit)="onCancelEdit()">
-      </km-build-select>
-      <km-build-qa *ngIf="exercise._id===editingId && exercise.tpe === exType.QA" class="edit"
-        [languagePair]="languagePair"
-        [lessonId]="lessonId"
-        [exercise]="exercise"
-        [text]="text"
-        (updatedExercise)="onUpdatedExercise($event)"
-        (cancelEdit)="onCancelEdit()">
-      </km-build-qa>
+      <div *ngIf="exercise._id===editingId">
+        <km-build-exercise *ngIf="exercise.tpe === exType.Word" class="edit"
+          [languagePair]="languagePair"
+          [lessonId]="lessonId"
+          [exercise]="exercise"
+          [text]="text"
+          [focus]="focusField"
+          [isBidirectional]="isBidirectional"
+          (updatedExercise)="onUpdatedExercise($event)"
+          (cancelEdit)="onCancelEdit()">
+        </km-build-exercise>
+        <km-build-select *ngIf="exercise.tpe === exType.Select" class="edit"
+          [languagePair]="languagePair"
+          [lessonId]="lessonId"
+          [exercise]="exercise"
+          [text]="text"
+          (updatedExercise)="onUpdatedExercise($event)"
+          (cancelEdit)="onCancelEdit()">
+        </km-build-select>
+        <km-build-qa *ngIf="exercise.tpe === exType.QA" class="edit"
+          [languagePair]="languagePair"
+          [lessonId]="lessonId"
+          [exercise]="exercise"
+          [text]="text"
+          (updatedExercise)="onUpdatedExercise($event)"
+          (cancelEdit)="onCancelEdit()">
+        </km-build-qa>
+        <km-build-fillin *ngIf="exercise.tpe === exType.FillIn" class="edit"
+          [languagePair]="languagePair"
+          [lessonId]="lessonId"
+          [exercise]="exercise"
+          [text]="text"
+          (updatedExercise)="onUpdatedExercise($event)"
+          (cancelEdit)="onCancelEdit()">
+        </km-build-fillin>
+      </div>
     </li>
   </ul>
 </div>

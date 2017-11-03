@@ -20,6 +20,7 @@ export class ValidationService {
       'noSelectOptions': text['noSelectOptions'],
       'invalidSelect': text['invalidSentence'],
       'invalidQAnswer': text['invalidQAnswer'],
+      'invalidFillInSentence': text['invalidFillInSentence'],
       'matchingPasswords': text['equalPasswords']
       };
 
@@ -112,6 +113,14 @@ export class ValidationService {
       return null;
     } else {
       return {'invalidQAnswer': true};
+    }
+  }
+
+  static checkFillInSentence(control: FormControl): {[key: string]: any} {
+    if (control.value && control.value.match(/\[(.{1,}?)\]/)) {
+      return null;
+    } else {
+      return {'invalidFillInSentence': true};
     }
   }
 

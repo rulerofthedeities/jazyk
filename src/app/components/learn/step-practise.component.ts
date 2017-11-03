@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {Exercise, ExerciseData, ExerciseOptions, Direction,
-        ExerciseResult, ExerciseType, Choice, AnswerType, QuestionType} from '../../models/exercise.model';
+        ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
@@ -68,10 +68,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     super.nextWord();
   }
 
-  protected doAddExercise(aType: AnswerType, qType: QuestionType, learnLevel: number): boolean {
+  protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
     const nrOfQuestions = this.exerciseData.length;
     let add = false;
-    if (aType === AnswerType.Correct || aType === AnswerType.Alt) {
+    if (aType === AnsweredType.Correct || aType === AnsweredType.Alt) {
       switch (qType) {
         case QuestionType.Choices:
           if (nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord && learnLevel < this.learnedLevel) {
@@ -84,7 +84,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           }
         break;
         case QuestionType.Select:
-        case QuestionType.QA:
+        case QuestionType.FillIn:
           add = false;
         break;
       }
@@ -94,7 +94,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // Only readd exercise to the back if question asked < x times
     const exercise = this.dataByExercise[this.currentData.exercise._id],
           countWrong = exercise.countWrong ? exercise.countWrong : 0,
-          correct = aType === AnswerType.Correct  || aType === AnswerType.Alt,
+          correct = aType === AnsweredType.Correct  || aType === AnsweredType.Alt,
           countRight = exercise.countRight ? exercise.countRight : 0;
     if (!(correct && countRight <= 2 || !correct && countWrong <= 3)) {
       add = false;
@@ -123,7 +123,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Select;
         break;
       case ExerciseType.QA:
-        qTpe = QuestionType.QA;
+      case ExerciseType.FillIn:
+        qTpe = QuestionType.FillIn;
       break;
     }
     return qTpe;
@@ -187,6 +188,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         if ((exerciseResult && !exerciseResult.isLearned)
           || (!exerciseResult && exercise.tpe === ExerciseType.Select)
           || (!exerciseResult && exercise.tpe === ExerciseType.QA)
+          || (!exerciseResult && exercise.tpe === ExerciseType.FillIn)
         ) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);

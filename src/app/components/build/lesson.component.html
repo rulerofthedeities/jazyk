@@ -42,7 +42,8 @@
     <div class="footer">
       <div *ngIf="!isNewExercise; else addExercise">
         <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
-          <span class="fa fa-font"></span> {{text["Newword"]}}
+          <span class="fa fa-font fa-spacing"></span>
+          {{text["Newword"]}}
         </div>
 
         <div class="btn-group" #dropdown>
@@ -51,6 +52,7 @@
             data-toggle="dropdown"
             class="btn btn-success btn-lg dropdown-toggle"
             (click)="onToggleDropDown()">
+            <span class="fa fa-file-o fa-spacing"></span>
             {{text["New..."]}}
             <span class="caret"></span>
           </button>
@@ -61,6 +63,9 @@
             </a></li>
             <li (click)="onNewQA()"><a>
               <span class="fa fa-comments fa-spacing"></span>{{text["NewQA"]}}
+            </a></li>
+            <li (click)="onNewFillIn()"><a>
+              <span class="fa fa-terminal fa-spacing"></span>{{text["NewFillIn"]}}
             </a></li>
           </ul>
         </div>
@@ -90,6 +95,13 @@
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-qa>
+      <km-build-fillin *ngIf="tpe===exType.FillIn"
+        [languagePair]="lesson?.languagePair"
+        [lessonId]="lesson?._id"
+        [text]="text"
+        (addedExercises)="onExercisesAdded($event)"
+        (cancelNew)="onCancelNew()">
+      </km-build-fillin>
     </ng-template>
   </div>
 

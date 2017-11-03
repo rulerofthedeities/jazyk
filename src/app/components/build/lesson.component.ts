@@ -86,6 +86,12 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.tpe = ExerciseType.QA;
   }
 
+  onNewFillIn() {
+    this.showDropDown = false;
+    this.isNewExercise = true;
+    this.tpe = ExerciseType.FillIn;
+  }
+
   onEditLesson() {
     this.showDropDown = false;
     this.isEditMode = true;

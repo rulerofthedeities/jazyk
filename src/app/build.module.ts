@@ -26,6 +26,7 @@ import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
 import {BuildSelectComponent} from './components/build/exercise-select.component';
 import {BuildQAComponent} from './components/build/exercise-qa.component';
+import {BuildFillInComponent} from './components/build/exercise-fillin.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
@@ -61,6 +62,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildExerciseListComponent,
     BuildSelectComponent,
     BuildQAComponent,
+    BuildFillInComponent,
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,

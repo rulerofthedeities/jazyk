@@ -5,39 +5,39 @@
   <!-- QUESTION-->
   <div class="form-group">
     <label 
-      for="question" 
+      for="hint" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+      
     </label>
     <div class="col-xs-11">
       <input 
         class="form-control input-lg" 
-        id="question"
+        id="hint"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterQuestion']}}"
+        placeholder="{{text['EnterHint']}}"
         required
-        formControlName="question">
+        formControlName="hint">
     </div>
   </div>
 
   <!-- ANSWER -->
   <div class="form-group">
     <label 
-      for="answer" 
+      for="sentence" 
       class="control-label col-xs-1">
       <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
     </label>
     <div class="col-xs-11">
       <input 
         class="form-control input-lg" 
-        id="answer"
+        id="sentence"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterAnswer']}}"
-        formControlName="answer">
+        placeholder="{{text['EnterSentence']}}"
+        formControlName="sentence">
       <km-field-messages 
-        [control]="exerciseForm.controls.answer"
+        [control]="exerciseForm.controls.sentence"
         [text]="text"
         [touchRequired]="true">
       </km-field-messages>
@@ -51,7 +51,7 @@
         <button type="button" class="btn btn-success btn-lg"
           [disabled]="!exerciseForm.valid"
           (click)="onAddNewExercise(exerciseForm)">
-          {{text["AddQA"]}}
+          {{text["AddFillIn"]}}
         </button>
         <button type="button" class="btn btn-warning btn-lg"
           (click)="onCancelNew()"
@@ -63,7 +63,7 @@
         <button type="button" class="btn btn-success btn-lg"
           [disabled] = "isSaving || !exerciseForm.valid"
           (click)="onUpdateExercise(exerciseForm)">
-          {{text["UpdateQA"]}}
+          {{text["UpdateFillIn"]}}
         </button>
         <button type="button" class="btn btn-warning btn-lg"
           (click)="onCancelEdit()">
