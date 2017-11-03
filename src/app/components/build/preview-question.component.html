@@ -15,17 +15,18 @@
         [currentData]="exerciseData"
         [lanPair]="lanPair"
         [text]="text"
+        [showAlt]="true"
         [dir]="direction"
       ></km-question>
       <div class="clearfix"></div>
     </div>
-    <div *ngSwitchCase="exType.Sentence">
-      <km-sentence
+    <div *ngSwitchCase="exType.Select">
+      <km-select
         [lanPair]="lanPair"
         [data]="exerciseData"
         [msg]="text['Expectedanswer']"
-        [instruction]="text['instructionSentence']">
-      </km-sentence>
+        [instruction]="text['instructionSelect']">
+      </km-select>
     </div>
     <div *ngSwitchCase="exType.QA">
       <km-qa

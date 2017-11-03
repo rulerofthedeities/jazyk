@@ -8,7 +8,7 @@ import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnswerType, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './word-field.component';
-import {LearnSentenceComponent} from './sentence.component';
+import {LearnSelectComponent} from './select.component';
 import {LearnQAComponent} from './qa.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -42,7 +42,7 @@ export abstract class Step {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
-  @ViewChild(LearnSentenceComponent) sentenceComponent: LearnSentenceComponent;
+  @ViewChild(LearnSelectComponent) sentenceComponent: LearnSelectComponent;
   @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
   protected componentActive = true;
   protected choices: Choice[];
@@ -139,9 +139,9 @@ export abstract class Step {
     }
   }
 
-  onAnsweredSentence(isCorrect: boolean) {
+  onAnsweredSelect(isCorrect: boolean) {
     if (!this.isAnswered) {
-      this.checkSentenceAnswer(isCorrect);
+      this.checkSelectAnswer(isCorrect);
     }
   }
 
@@ -156,7 +156,7 @@ export abstract class Step {
       case QuestionType.Word:
         this.checkIfWordAnswer();
       break;
-      case QuestionType.Sentence:
+      case QuestionType.Select:
         this.nextWord();
       break;
       case QuestionType.QA:
@@ -187,7 +187,7 @@ export abstract class Step {
     let isSelection = false;
     if (this.currentData &&
         (this.currentData.data.questionType === QuestionType.Choices ||
-        this.currentData.data.questionType === QuestionType.Sentence)) {
+        this.currentData.data.questionType === QuestionType.Select)) {
       isSelection = true;
     }
     return isSelection;
@@ -335,11 +335,11 @@ export abstract class Step {
     }
   }
 
-  protected checkSentenceAnswer(isCorrect: boolean) {
+  protected checkSelectAnswer(isCorrect: boolean) {
     if (isCorrect) {
-      this.checkAnswer(AnswerType.Correct, QuestionType.Sentence);
+      this.checkAnswer(AnswerType.Correct, QuestionType.Select);
     } else {
-      this.checkAnswer(AnswerType.Incorrect, QuestionType.Sentence);
+      this.checkAnswer(AnswerType.Incorrect, QuestionType.Select);
     }
   }
 
@@ -509,7 +509,7 @@ export abstract class Step {
           points = 2 + this.currentChoices.length * 3;
         }
       break;
-      case QuestionType.Sentence:
+      case QuestionType.Select:
         if (this.currentData.data.isCorrect) {
           points = 2 + Math.min(20, this.currentData.exercise.options.length * 4);
         }
@@ -524,7 +524,7 @@ export abstract class Step {
 
     switch (question) {
       case QuestionType.Choices :
-      case QuestionType.Sentence:
+      case QuestionType.Select:
         grade = this.calculateChoicesGrade(delta);
       break;
       case QuestionType.Word:
@@ -571,7 +571,7 @@ export abstract class Step {
 
     switch (question) {
       case QuestionType.Choices :
-      case QuestionType.Sentence:
+      case QuestionType.Select:
         level = this.calculateChoicesLearnLevel(learnLevelData);
       break;
       case QuestionType.Word:
@@ -607,7 +607,7 @@ export abstract class Step {
   private calculateChoicesLearnLevel(learnLevelData: LearnLevelData): number {
     let level = learnLevelData.level;
     if (learnLevelData.correct) {
-      if (this.currentData.exercise.tpe === ExerciseType.Sentence) {
+      if (this.currentData.exercise.tpe === ExerciseType.Select) {
         level += 6;
       } else {
         level += 3;

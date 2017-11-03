@@ -20,6 +20,7 @@
             [currentData]="currentData"
             [lanPair]="lanPair"
             [text]="text"
+            [showAlt]="true"
             [dir]="getQuestionDir()"
             [settings]="settings"
           ></km-question>
@@ -40,13 +41,13 @@
             [instruction]="text['instructionWordfield']"
             [data]="currentData?.data">
           </km-word-field>
-          <km-sentence *ngIf="isQuestionType(qType.Sentence)"
+          <km-select *ngIf="isQuestionType(qType.Select)"
             [lanPair]="lanPair"
             [data]="currentData"
             [msg]="text['Expectedanswer']"
-            [instruction]="text['instructionSentence']"
-            (answered)="onAnsweredSentence($event)">
-          </km-sentence>
+            [instruction]="text['instructionSelect']"
+            (answered)="onAnsweredSelect($event)">
+          </km-select>
           <km-qa *ngIf="isQuestionType(qType.QA)"
             [lanPair]="lanPair"
             [data]="currentData"

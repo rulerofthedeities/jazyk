@@ -145,7 +145,7 @@ export class BuildExerciseListComponent implements OnDestroy {
     return alt;
   }
 
-  getSentenceOptions(exercise: Exercise): string {
+  getSelectOptions(exercise: Exercise): string {
     let options = '';
     if (exercise.options) {
       exercise.options.forEach( (option, i) => {

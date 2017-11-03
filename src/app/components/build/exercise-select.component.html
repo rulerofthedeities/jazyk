@@ -5,22 +5,22 @@
   <!-- FOREIGN SENTENCE-->
   <div class="form-group">
     <label 
-      for="sentence" 
+      for="select" 
       class="control-label col-xs-1">
       <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
     </label>
     <div class="col-xs-11">
       <input 
         class="form-control input-lg" 
-        id="sentence"
+        id="select"
         autocomplete="off"
         spellcheck="false"
         placeholder="{{text['EnterSentence']}}"
         required
-        formControlName="sentence">
+        formControlName="select">
 
       <km-field-messages 
-        [control]="exerciseForm.controls.sentence"
+        [control]="exerciseForm.controls.select"
         [label]="'TheSentence'"
         [text]="text"
         [touchRequired]="true">

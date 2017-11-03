@@ -3,12 +3,12 @@ import {ExerciseData, Exercise} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
 
 @Component({
-  selector: 'km-sentence',
-  templateUrl: 'sentence.component.html',
-  styleUrls: ['sentence.component.css']
+  selector: 'km-select',
+  templateUrl: 'select.component.html',
+  styleUrls: ['select.component.css']
 })
 
-export class LearnSentenceComponent implements OnInit {
+export class LearnSelectComponent implements OnInit {
   @Input() lanPair: string;
   @Input() msg: string;
   @Input() data: ExerciseData;
@@ -27,9 +27,9 @@ export class LearnSentenceComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('SENTENCE', this.data.exercise);
+    console.log('SELECT', this.data.exercise);
     const exercise = this.data.exercise;
-    this.getSentenceData(exercise);
+    this.getSelectData(exercise);
   }
 
   onSelected(selectedOption: string) {
@@ -49,7 +49,7 @@ export class LearnSentenceComponent implements OnInit {
     this.isCorrect = null;
   }
 
-  private getSentenceData(exercise: Exercise) {
+  private getSelectData(exercise: Exercise) {
     // get options
     this.options = JSON.parse(JSON.stringify(exercise.options));
     this.correctOption = this.getCorrectOption(exercise.foreign.word);
@@ -57,7 +57,7 @@ export class LearnSentenceComponent implements OnInit {
     this.options = this.previewService.shuffle(this.options);
     // get sentence without []
     this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
-    console.log('sentence', this.sentence);
+    console.log('select', this.sentence);
     if (exercise.local) {
       this.translation = exercise.local.word;
     }

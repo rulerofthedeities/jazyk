@@ -3,15 +3,12 @@ import {Exercise, ExerciseData} from '../models/exercise.model';
 export class PreviewService {
   buildForeignData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
     const annotations: string[] = [];
-    let suffix: string;
-    let genus: string;
-    genus = '';
-    suffix = '';
+    let suffix = '',
+        genus = '';
     // Annotations
     if (exercise.foreign.annotations) {
       const annotationArr = exercise.foreign.annotations.split('|');
-      annotationArr.forEach(annotation => {
-        annotations.push(annotation);      });
+      annotationArr.forEach(annotation => annotations.push(annotation));
     }
     // genus
     if (exercise.genus) {
@@ -19,7 +16,7 @@ export class PreviewService {
     }
     // suffix
     if (exercise.followingCase) {
-      suffix =  text['case' + exercise.followingCase];
+      suffix = text['case' + exercise.followingCase];
       if (suffix) {
         suffix = '(+' + suffix.slice(0, 1).toUpperCase() + ')';
       }
@@ -35,8 +32,7 @@ export class PreviewService {
     // Annotations
     if (exercise.local.annotations) {
       const annotationArr = exercise.local.annotations.split('|');
-      annotationArr.forEach(annotation => {
-        annotations.push(annotation);      });
+      annotationArr.forEach(annotation => annotations.push(annotation));
     }
     exerciseData.data.annotations = annotations;
     exerciseData.data.hint = exercise.local.hint;

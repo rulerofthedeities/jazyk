@@ -7,12 +7,12 @@ import {ValidationService} from '../../services/validation.service';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 
 @Component({
-  selector: 'km-build-sentence',
-  templateUrl: 'exercise-sentence.component.html',
-  styleUrls: ['exercise-sentence.component.css', 'exercise-wrapper.css']
+  selector: 'km-build-select',
+  templateUrl: 'exercise-select.component.html',
+  styleUrls: ['exercise-select.component.css', 'exercise-wrapper.css']
 })
 
-export class BuildSentenceComponent extends ExerciseBase implements OnInit, OnDestroy {
+export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDestroy {
 
   constructor(
     protected buildService: BuildService,
@@ -50,12 +50,12 @@ export class BuildSentenceComponent extends ExerciseBase implements OnInit, OnDe
       const optionControls: FormControl[] = [];
       optionControls.push(new FormControl(''));
       this.exerciseForm = this.formBuilder.group({
-        sentence: ['', [Validators.required, ValidationService.checkSentence]],
+        sentence: ['', [Validators.required, ValidationService.checkSelect]],
         sentenceLocal: [''],
         options: new FormArray(optionControls)
       },
       {
-        validator: ValidationService.checkSentenceOptions
+        validator: ValidationService.checkSelectOptions
       });
     } else {
       // Edit sentence
@@ -64,12 +64,12 @@ export class BuildSentenceComponent extends ExerciseBase implements OnInit, OnDe
         optionControls.push(new FormControl(option))
       );
       this.exerciseForm = this.formBuilder.group({
-        sentence: [exercise.foreign.word, [Validators.required, ValidationService.checkSentence]],
+        sentence: [exercise.foreign.word, [Validators.required, ValidationService.checkSelect]],
         sentenceLocal: [exercise.local.word],
         options: new FormArray(optionControls)
       },
       {
-        validator: ValidationService.checkSentenceOptions
+        validator: ValidationService.checkSelectOptions
       });
     }
     this.isFormReady = true;
@@ -82,7 +82,7 @@ export class BuildSentenceComponent extends ExerciseBase implements OnInit, OnDe
       foreign: {word: formValues.sentence},
       local: {word: formValues.sentenceLocal},
       options: options,
-      tpe: ExerciseType.Sentence,
+      tpe: ExerciseType.Select,
       difficulty: 0
     };
     this.saveNewExercise(exercise);

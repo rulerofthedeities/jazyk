@@ -44,8 +44,8 @@
         <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
           <span class="fa fa-font"></span> {{text["Newword"]}}
         </div>
-        <div class="btn btn-success btn-lg" (click)="onNewSentence()">
-          <span class="fa fa-file-text-o"></span> {{text["NewSentence"]}}
+        <div class="btn btn-success btn-lg" (click)="onNewSelect()">
+          <span class="fa fa-list-alt"></span> {{text["NewSelect"]}}
         </div>
         <div class="btn btn-success btn-lg" (click)="onNewQA()">
           <span class="fa fa-comments"></span> {{text["NewQA"]}}
@@ -62,13 +62,13 @@
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-exercise>
-      <km-build-sentence *ngIf="tpe===exType.Sentence"
+      <km-build-select *ngIf="tpe===exType.Select"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
-      </km-build-sentence>
+      </km-build-select>
       <km-build-qa *ngIf="tpe===exType.QA"
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"

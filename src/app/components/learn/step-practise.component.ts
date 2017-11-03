@@ -83,7 +83,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
             add = true;
           }
         break;
-        case QuestionType.Sentence:
+        case QuestionType.Select:
         case QuestionType.QA:
           add = false;
         break;
@@ -119,8 +119,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           }
         }
       break;
-      case ExerciseType.Sentence:
-        qTpe = QuestionType.Sentence;
+      case ExerciseType.Select:
+        qTpe = QuestionType.Select;
         break;
       case ExerciseType.QA:
         qTpe = QuestionType.QA;
@@ -185,7 +185,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       if (nrOfExercises < this.settings.nrOfWordsLearn) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
-          || (!exerciseResult && exercise.tpe === ExerciseType.Sentence)
+          || (!exerciseResult && exercise.tpe === ExerciseType.Select)
           || (!exerciseResult && exercise.tpe === ExerciseType.QA)
         ) {
           // word is not learned yet; add to list of new questions

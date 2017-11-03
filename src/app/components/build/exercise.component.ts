@@ -432,7 +432,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         annotations.push(this.text[word[this.lanForeign].motion]);
       }
     }
-    if (tpe === 'foreign' && (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective')) {
+    if (tpe === 'foreign' && (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective' || detail.wordTpe === 'preposition')) {
       annotations.push(this.text[detail.wordTpe]);
     }
 

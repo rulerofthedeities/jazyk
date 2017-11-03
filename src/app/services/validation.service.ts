@@ -17,8 +17,8 @@ export class ValidationService {
       'invalidUserName': text['invalidUserName'],
       'usernameTaken': text['usernameTaken'],
       'emailTaken': text['emailTaken'],
-      'noSentenceOptions': text['noSentenceOptions'],
-      'invalidSentence': text['invalidSentence'],
+      'noSelectOptions': text['noSelectOptions'],
+      'invalidSelect': text['invalidSentence'],
       'invalidQAnswer': text['invalidQAnswer'],
       'matchingPasswords': text['equalPasswords']
       };
@@ -80,15 +80,15 @@ export class ValidationService {
     };
   }
 
-  static checkSentence(control: FormControl): {[key: string]: any} {
+  static checkSelect(control: FormControl): {[key: string]: any} {
     if (control.value && control.value.match(/\[(.{1,}?)\]/)) {
       return null;
     } else {
-      return {'invalidSentence': true};
+      return {'invalidSelect': true};
     }
   }
 
-  static checkSentenceOptions(group: FormGroup): {[key: string]: any} {
+  static checkSelectOptions(group: FormGroup): {[key: string]: any} {
     const options = <FormArray>group.controls['options'];
     if (options.controls.length > 0) {
       let value = '';
@@ -100,10 +100,10 @@ export class ValidationService {
       if (value) {
         return null;
       } else {
-        return {'noSentenceOptions': true};
+        return {'noSelectOptions': true};
       }
     } else {
-      return {'noSentenceOptions': true};
+      return {'noSelectOptions': true};
     }
   }
 

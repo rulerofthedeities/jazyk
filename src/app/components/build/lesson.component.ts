@@ -62,9 +62,9 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.isNewExercise = false;
   }
 
-  onNewSentence() {
+  onNewSelect() {
     this.isNewExercise = true;
-    this.tpe = ExerciseType.Sentence;
+    this.tpe = ExerciseType.Select;
   }
 
   onNewQA() {

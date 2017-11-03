@@ -24,7 +24,7 @@ import {BuildLessonIntroComponent} from './components/build/lesson-intro.compone
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
-import {BuildSentenceComponent} from './components/build/exercise-sentence.component';
+import {BuildSelectComponent} from './components/build/exercise-select.component';
 import {BuildQAComponent} from './components/build/exercise-qa.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
@@ -59,7 +59,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildLessonIntroComponent,
     BuildExerciseComponent,
     BuildExerciseListComponent,
-    BuildSentenceComponent,
+    BuildSelectComponent,
     BuildQAComponent,
     AutocompleteComponent,
     FilterListComponent,

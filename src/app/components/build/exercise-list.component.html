@@ -36,7 +36,7 @@
           {{i + 1}}. 
           <span class="item active" [ngSwitch]="exercise.tpe">
             <span class="fa fa-font" *ngSwitchDefault></span>
-            <span class="fa fa-file-text-o" *ngSwitchCase="exType.Sentence"></span>
+            <span class="fa fa-list-alt" *ngSwitchCase="exType.Select"></span>
             <span class="fa fa-comments" *ngSwitchCase="exType.QA"></span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
@@ -70,7 +70,7 @@
           </div>
         </div>
         <!-- SENTENCE -->
-        <div *ngIf="exercise.tpe === exType.Sentence">
+        <div *ngIf="exercise.tpe === exType.Select">
           <div class="col-xs-6">
             <div class="words">
               <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
@@ -82,7 +82,7 @@
             </div>
           </div>
           <div class="col-xs-2 annotations">
-            <div [innerHTML]="getSentenceOptions(exercise)"></div>
+            <div [innerHTML]="getSelectOptions(exercise)"></div>
           </div>
         </div>
         <!-- QA -->
@@ -118,14 +118,14 @@
         (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
       </km-build-exercise>
-      <km-build-sentence *ngIf="exercise._id===editingId && exercise.tpe === exType.Sentence" class="edit"
+      <km-build-select *ngIf="exercise._id===editingId && exercise.tpe === exType.Select" class="edit"
         [languagePair]="languagePair"
         [lessonId]="lessonId"
         [exercise]="exercise"
         [text]="text"
         (updatedExercise)="onUpdatedExercise($event)"
         (cancelEdit)="onCancelEdit()">
-      </km-build-sentence>
+      </km-build-select>
       <km-build-qa *ngIf="exercise._id===editingId && exercise.tpe === exType.QA" class="edit"
         [languagePair]="languagePair"
         [lessonId]="lessonId"
