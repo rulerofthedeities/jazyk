@@ -393,7 +393,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         exercise.tpe = ExerciseType.Comparison;
         exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative;
         exercise.foreign.word += '|' + this.selected[this.lanForeign].superlative;
-        console.log('COMPARISON', exercise);
       }
 
       /* Conjugation test */
@@ -404,8 +403,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         const localWords = this.selected[this.lanLocal].conjugation[nr].split(';');
         const foreignWords = this.selected[this.lanForeign].conjugation[nr].split(';');
         // Add first word in list as the main word
-        const localPronoun = '[' + this.text['subjectpronoun' + nr.toString()] + '] ';
-        const foreignPronoun = '[' + foreignPronouns[nr] + '] ';
+        const localPronoun = '(' + this.text['subjectpronoun' + nr.toString()] + ') ';
+        const foreignPronoun = '(' + foreignPronouns[nr] + ') ';
         exercise.local.word = localPronoun + localWords[0];
         exercise.foreign.word = foreignPronoun + foreignWords[0];
         // Add other words as synonyms
@@ -427,7 +426,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         }
       }
     }
-
     this.saveNewExercise(exercise, options.lastDoc);
   }
 

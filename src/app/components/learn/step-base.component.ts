@@ -472,7 +472,7 @@ export abstract class Step {
 
   private getPrefix(word: string): string {
     let filter = '';
-    const matches = word.match(/\[(.*?)\]/);
+    const matches = word.match(/\((.*?)\)/);
     if (matches && matches.length > 1) {
       filter = matches[1];
     }

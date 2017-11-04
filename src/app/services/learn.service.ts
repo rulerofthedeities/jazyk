@@ -279,7 +279,7 @@ export class LearnService {
     // Remove prefix from word
     let filteredWord = word;
     if (filteredWord) {
-      const matches = filteredWord.match(/\[(.*?)\]/);
+      const matches = word.match(/\((.*?)\)/);
       if (matches && matches.length > 0) {
         filteredWord = filteredWord.replace(matches[0], '');
       }
@@ -287,6 +287,7 @@ export class LearnService {
         filteredWord = filteredWord.trim();
       }
     }
+    console.log('Filtered:', word, filteredWord);
     return filteredWord;
   }
 
