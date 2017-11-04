@@ -599,7 +599,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private checkComparison(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
-    if (detail.wordTpe === 'adjective' && detail.comparative && detail.superlative) {
+    if ((detail.wordTpe === 'adjective' || detail.wordTpe === 'adverb') && detail.comparative && detail.superlative) {
       return true;
     }
   }
