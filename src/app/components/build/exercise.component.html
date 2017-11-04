@@ -380,7 +380,6 @@
       </div>
     </div>
   </div>
-
   <div class="form-group buttons">
     <div class="col-xs-12">
       <button type="button" class="btn btn-success btn-lg"
@@ -399,7 +398,13 @@
         [disabled] = "isSaving ? '' : null"
         (click)="onAddNewGenus(exerciseForm)"
         *ngIf="!currentExercise && exerciseForm.valid && hasGenus">
-        {{text["AddGenus"]}}
+        <span class="fa fa-venus-mars fa-spacing"></span>{{text["AddGenus"]}}
+      </button>
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled] = "isSaving ? '' : null"
+        (click)="onAddNewComparison(exerciseForm)"
+        *ngIf="!currentExercise && exerciseForm.valid && hasComparison">
+        <span class="fa fa-signal fa-spacing"></span>{{text["AddComparison"]}}
       </button>
       <button type="button" class="btn btn-success btn-lg"
         [disabled] = "isSaving ? '' : null"
@@ -421,5 +426,4 @@
       </button>
     </div>
   </div>
-
 </form>

@@ -4,17 +4,15 @@ import {ExerciseBase} from './exercise-base.component';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
-import {LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 
 @Component({
-  selector: 'km-build-genus',
-  templateUrl: 'exercise-genus.component.html',
+  selector: 'km-build-comparison',
+  templateUrl: 'exercise-comparison.component.html',
   styleUrls: ['exercise-wrapper.css']
 })
 
-export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestroy {
-  config: LanConfig;
+export class BuildComparisonComponent extends ExerciseBase implements OnInit, OnDestroy {
 
   constructor(
     protected buildService: BuildService,
@@ -26,35 +24,26 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
 
   ngOnInit() {
     super.init();
-    this.getConfig(this.languagePair.to);
-  }
-
-  private getConfig(lanCode: string) {
-    this.buildService
-    .fetchLanConfig(lanCode)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      config => this.config = config,
-      error => this.errorService.handleError(error)
-    );
   }
 
   protected buildForm(exercise: Exercise) {
+    const words = exercise.foreign.word.split('|');
     this.exerciseForm = this.formBuilder.group({
       localWord: [exercise.local.word, [Validators.required]],
-      foreignWord: [exercise.foreign.word, [Validators.required]],
-      genus: [exercise.genus],
-      article: [exercise.article]
+      foreignWord: [words[0], [Validators.required]],
+      foreignComparative: [words[1], [Validators.required]],
+      foreignSuperlative: [words[2], [Validators.required]]
     });
     this.isFormReady = true;
   }
 
   protected buildExistingExercise(formValues: any) {
-    const exercise: Exercise = this.currentExercise;
+    const exercise: Exercise = this.currentExercise,
+          words = formValues['foreignWord'] + '|'
+                  + formValues['foreignComparative'] + '|'
+                  + formValues['foreignSuperlative'];
     exercise.local.word = formValues['localWord'];
-    exercise.foreign.word = formValues['foreignWord'];
-    exercise.genus = this.checkIfValue(formValues['genus']);
-    exercise.article = this.checkIfValue(formValues['article']);
+    exercise.foreign.word = words;
     console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }

@@ -31,6 +31,7 @@ interface NewExerciseOptions {
   hasConjugation?: boolean;
   conjugationNr?: number;
   hasGenus?: boolean;
+  hasComparison?: boolean;
   lastDoc?: boolean;
 }
 
@@ -72,6 +73,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   audios: File[];
   hasConjugations = false;
   hasGenus = false;
+  hasComparison = false;
   maxFilterListLength = 8;
 
   constructor(
@@ -119,6 +121,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onFilterChanged(word: string, lan: string) {
     this.hasConjugations = false;
     this.hasGenus = false;
+    this.hasComparison = false;
     // Only show list after user puts focus in field
     if (!this.isSelected) {
       this.changeFilter(word, lan);
@@ -143,6 +146,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     this.hasConjugations = this.checkConjugations(wordpairDetail);
     this.hasGenus = this.checkGenus(wordpairDetail);
+    this.hasComparison = this.checkComparison(wordpairDetail);
   }
 
   onAddNewWord(form: any) {
@@ -151,6 +155,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       this.buildNewExercise(form.value, {
         hasConjugation: false,
         hasGenus: false,
+        hasComparison: false,
         lastDoc: true
       });
     }
@@ -174,6 +179,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (form.valid) {
       const options: NewExerciseOptions = {
         hasGenus: true,
+        lastDoc: true
+      };
+      this.isSaving = true;
+      this.buildNewExercise(form.value, options);
+    }
+  }
+
+  onAddNewComparison(form: any) {
+    if (form.valid) {
+      const options: NewExerciseOptions = {
+        hasComparison: true,
         lastDoc: true
       };
       this.isSaving = true;
@@ -323,7 +339,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const exercise: Exercise = {
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord},
-      tpe: options.hasGenus ? ExerciseType.Genus : ExerciseType.Word
+      tpe: options.hasGenus ? ExerciseType.Genus : (ExerciseType.Word)
     };
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];
@@ -370,6 +386,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Genus test */
       if (options.hasGenus) {
         // Nothing to add, tpe is set at object creation time
+      }
+
+      /* Comparison test */
+      if (options.hasComparison) {
+        exercise.tpe = ExerciseType.Comparison;
+        exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative;
+        exercise.foreign.word += '|' + this.selected[this.lanForeign].superlative;
+        console.log('COMPARISON', exercise);
       }
 
       /* Conjugation test */
@@ -561,22 +585,23 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private checkLanConjugations(conjugations: string[]): boolean {
     // Check if this worddetail has entries for all conjugations
-    let hasConjugations = false;
-    if (conjugations) {
-      if (conjugations.length === 6) {
-        hasConjugations = true;
-      }
+    if (conjugations && conjugations.length === 6) {
+      return true;
     }
-    return hasConjugations;
   }
 
   private checkGenus(wordpairDetail: WordPairDetail): boolean {
-    let hasGenus = false;
     const detail = wordpairDetail[this.lanForeign];
     if (detail.wordTpe === 'noun' && detail.genus) {
-      hasGenus = true;
+      return true;
     }
-    return hasGenus;
+  }
+
+  private checkComparison(wordpairDetail: WordPairDetail): boolean {
+    const detail = wordpairDetail[this.lanForeign];
+    if (detail.wordTpe === 'adjective' && detail.comparative && detail.superlative) {
+      return true;
+    }
   }
 
   private setupFilterEvent() {

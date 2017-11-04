@@ -40,6 +40,7 @@
             <span class="fa fa-comments" *ngSwitchCase="exType.QA"></span>
             <span class="fa fa-terminal" *ngSwitchCase="exType.FillIn"></span>
             <span class="fa fa-venus-mars" *ngSwitchCase="exType.Genus"></span>
+            <span class="fa fa-signal" *ngSwitchCase="exType.Comparison"></span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
@@ -132,6 +133,22 @@
               {{getGenus(exercise)}}
             </div>
           </div>
+          <!-- COMPARISON -->
+          <div *ngSwitchCase="exType.Comparison">
+            <div class="col-xs-4">
+              <div class="words">
+                <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{getComparisons(exercise)}}</strong>
+                </span> / 
+                <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                  {{exercise.local?.word}}
+                </span>
+              </div>
+            </div>
+            <div class="col-xs-4 annotations">
+              {{getGenus(exercise)}}
+            </div>
+          </div>
         </div>
       </div>
       <!-- EDIT / VIEW Exercise -->
@@ -186,6 +203,14 @@
             (updatedExercise)="onUpdatedExercise($event)"
             (cancelEdit)="onCancelEdit()">
           </km-build-genus>
+          <km-build-comparison *ngSwitchCase="exType.Comparison"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-comparison>
         </div>
       </div>
     </li>

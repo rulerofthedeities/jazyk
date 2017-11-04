@@ -164,6 +164,15 @@ export class BuildExerciseListComponent implements OnDestroy {
     }
   }
 
+  getComparisons(exercise: Exercise): string {
+    if (exercise.foreign) {
+      const comparisons = exercise.foreign.word.split('|');
+      if (comparisons.length === 3) {
+        return comparisons.join(', ');
+      }
+    }
+  }
+
   private removeCurrentExercise() {
     this.isRemoving = true;
     this.buildService
