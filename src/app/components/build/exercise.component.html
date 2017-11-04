@@ -71,7 +71,7 @@
           id="genus"
           formControlName="genus">
           <option 
-            *ngFor="let genus of this.config.genera"
+            *ngFor="let genus of config.genera"
             [value]="genus">
             {{text[genus.toLowerCase()]}}
           </option>
@@ -82,7 +82,7 @@
           id="article"
           formControlName="article">
           <option 
-            *ngFor="let article of this.config.articles"
+            *ngFor="let article of config.articles"
             [value]="article">
             {{text[article]}}
           </option>
@@ -93,7 +93,7 @@
           id="followingCase"
           formControlName="followingCase">
           <option 
-            *ngFor="let case of this.config.cases"
+            *ngFor="let case of config.cases"
             [value]="case.value">
             {{text['+' + case.value]}}
           </option>
@@ -104,7 +104,7 @@
           id="aspect"
           formControlName="aspect">
           <option 
-            *ngFor="let aspect of this.config.aspects"
+            *ngFor="let aspect of config.aspects"
             [value]="aspect">
             {{text[aspect]}}
           </option>
@@ -389,30 +389,36 @@
         (click)="onAddNewWord(exerciseForm)">
         {{text["Addword"]}}
       </button>
-      <div class="btn btn-success btn-lg"
-        [attr.disabled] = "isSaving ? '' : null"
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled] = "isSaving ? '' : null"
         (click)="onAddNewConjugations(exerciseForm)"
         *ngIf="!currentExercise && exerciseForm.valid && hasConjugations">
         {{text["AddConjugations"]}}
-      </div>
-      <div class="btn btn-success btn-lg"
-        [attr.disabled] = "isSaving ? '' : null"
+      </button>
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled] = "isSaving ? '' : null"
+        (click)="onAddNewGenus(exerciseForm)"
+        *ngIf="!currentExercise && exerciseForm.valid && hasGenus">
+        {{text["AddGenus"]}}
+      </button>
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled] = "isSaving ? '' : null"
         (click)="onUpdateWord(exerciseForm)"
         *ngIf="currentExercise && exerciseForm.valid">
         {{text["Editword"]}}
-      </div>
-      <div class="btn btn-warning btn-lg"
-        [attr.disabled] = "isSaving ? '' : null"
+      </button>
+      <button type="button" class="btn btn-warning btn-lg"
+        [disabled] = "isSaving ? '' : null"
         (click)="onCancelEdit()"
         *ngIf="currentExercise">
         {{text["cancel"]}}
-      </div>
-      <div class="btn btn-warning btn-lg"
-        [attr.disabled] = "isSaving ? '' : null"
+      </button>
+      <button type="button" class="btn btn-warning btn-lg"
+        [disabled] = "isSaving ? '' : null"
         (click)="onCancelNewWord()"
         *ngIf="!currentExercise">
         {{text["cancel"]}}
-      </div>
+      </button>
     </div>
   </div>
 

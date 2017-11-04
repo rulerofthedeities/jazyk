@@ -9,7 +9,7 @@ interface Keyboard {
 @Component({
   selector: 'km-qa',
   templateUrl: 'qa.component.html',
-  styleUrls: ['qa.component.css', 'field.css']
+  styleUrls: ['field.css', 'qa.component.css']
 })
 
 export class LearnQAComponent implements OnInit, AfterViewChecked {
@@ -59,6 +59,9 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   private getQAData(exercise: Exercise) {
     // get answer without []
     this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
+    console.log(this.sentence);
+    this.sentence = this.sentence.map(section => section.trim());
+    console.log(this.sentence);
     this.question = exercise.foreign.hint;
     this.correctAnswer = this.getCorrectAnswer(exercise.foreign.word);
   }

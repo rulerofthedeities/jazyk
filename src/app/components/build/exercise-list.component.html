@@ -39,6 +39,7 @@
             <span class="fa fa-list-alt" *ngSwitchCase="exType.Select"></span>
             <span class="fa fa-comments" *ngSwitchCase="exType.QA"></span>
             <span class="fa fa-terminal" *ngSwitchCase="exType.FillIn"></span>
+            <span class="fa fa-venus-mars" *ngSwitchCase="exType.Genus"></span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>
@@ -47,70 +48,88 @@
             <span class="fa fa-camera"></span>
           </span>
         </div>
-        <!-- WORD -->
-        <div *ngIf="exercise.tpe === exType.Word">
-          <div class="col-xs-4">
-            <div class="words">
-              <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-                <strong>{{exercise.foreign?.word}}</strong>
-              </span> / 
-              <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-                {{exercise.local?.word}}
-              </span>
-              <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
+        <div [ngSwitch]="exercise.tpe">
+          <!-- WORD -->
+          <div *ngSwitchCase="exType.Word">
+            <div class="col-xs-4">
+              <div class="words">
+                <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{exercise.foreign?.word}}</strong>
+                </span> / 
+                <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                  {{exercise.local?.word}}
+                </span>
+                <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
+              </div>
             </div>
-          </div>
-          <div class="col-xs-2 annotations">
-            {{getInfo(exercise)}}
-            <span>
-              <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
-            </span>
-          </div>
-          <div class="col-xs-2 annotations">
-            <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
-          </div>
-        </div>
-        <!-- SENTENCE -->
-        <div *ngIf="exercise.tpe === exType.Select">
-          <div class="col-xs-6">
-            <div class="words">
-              <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-                <strong>{{exercise.foreign?.word}}</strong>
-              </span> / 
-              <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-                {{exercise.local?.word}}
+            <div class="col-xs-2 annotations">
+              {{getInfo(exercise)}}
+              <span>
+                <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
               </span>
             </div>
-          </div>
-          <div class="col-xs-2 annotations">
-            <div [innerHTML]="getSelectOptions(exercise)"></div>
-          </div>
-        </div>
-        <!-- QA -->
-        <div *ngIf="exercise.tpe === exType.QA">
-          <div class="col-xs-8">
-            <div class="words">
-              <span 
-                (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-                <strong>{{exercise.foreign?.word}}</strong>
-              </span> <span *ngIf="exercise.foreign?.word">/</span>
-              <span (dblclick)="onEditExercise(exercise._id)">
-                {{exercise.foreign?.hint}}
-              </span>
+            <div class="col-xs-2 annotations">
+              <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
             </div>
           </div>
-        </div>
-        <!-- Fill In -->
-        <div *ngIf="exercise.tpe === exType.FillIn">
-          <div class="col-xs-8">
-            <div class="words">
-              <span 
-                (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-                <strong>{{exercise.foreign?.word}}</strong>
-              </span> <span *ngIf="exercise.foreign?.word">/</span>
-              <span (dblclick)="onEditExercise(exercise._id)">
-                {{exercise.foreign?.hint}}
-              </span>
+          <!-- SELECT -->
+          <div *ngSwitchCase="exType.Select">
+            <div class="col-xs-6">
+              <div class="words">
+                <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{exercise.foreign?.word}}</strong>
+                </span> / 
+                <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                  {{exercise.local?.word}}
+                </span>
+              </div>
+            </div>
+            <div class="col-xs-2 annotations">
+              <div [innerHTML]="getSelectOptions(exercise)"></div>
+            </div>
+          </div>
+          <!-- QA -->
+          <div *ngSwitchCase="exType.QA">
+            <div class="col-xs-8">
+              <div class="words">
+                <span 
+                  (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{exercise.foreign?.word}}</strong>
+                </span> <span *ngIf="exercise.foreign?.word">/</span>
+                <span (dblclick)="onEditExercise(exercise._id)">
+                  {{exercise.foreign?.hint}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- Fill In -->
+          <div *ngSwitchCase="exType.FillIn">
+            <div class="col-xs-8">
+              <div class="words">
+                <span 
+                  (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{exercise.foreign?.word}}</strong>
+                </span> <span *ngIf="exercise.foreign?.word">/</span>
+                <span (dblclick)="onEditExercise(exercise._id)">
+                  {{exercise.foreign?.hint}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- GENUS -->
+          <div *ngSwitchCase="exType.Genus">
+            <div class="col-xs-4">
+              <div class="words">
+                <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <strong>{{exercise.foreign?.word}}</strong>
+                </span> / 
+                <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                  {{exercise.local?.word}}
+                </span>
+              </div>
+            </div>
+            <div class="col-xs-4 annotations">
+              {{getGenus(exercise)}}
             </div>
           </div>
         </div>
@@ -123,41 +142,51 @@
           [text]="text">
         </km-preview-question>
       </div>
-      <div *ngIf="exercise._id===editingId">
-        <km-build-exercise *ngIf="exercise.tpe === exType.Word" class="edit"
-          [languagePair]="languagePair"
-          [lessonId]="lessonId"
-          [exercise]="exercise"
-          [text]="text"
-          [focus]="focusField"
-          [isBidirectional]="isBidirectional"
-          (updatedExercise)="onUpdatedExercise($event)"
-          (cancelEdit)="onCancelEdit()">
-        </km-build-exercise>
-        <km-build-select *ngIf="exercise.tpe === exType.Select" class="edit"
-          [languagePair]="languagePair"
-          [lessonId]="lessonId"
-          [exercise]="exercise"
-          [text]="text"
-          (updatedExercise)="onUpdatedExercise($event)"
-          (cancelEdit)="onCancelEdit()">
-        </km-build-select>
-        <km-build-qa *ngIf="exercise.tpe === exType.QA" class="edit"
-          [languagePair]="languagePair"
-          [lessonId]="lessonId"
-          [exercise]="exercise"
-          [text]="text"
-          (updatedExercise)="onUpdatedExercise($event)"
-          (cancelEdit)="onCancelEdit()">
-        </km-build-qa>
-        <km-build-fillin *ngIf="exercise.tpe === exType.FillIn" class="edit"
-          [languagePair]="languagePair"
-          [lessonId]="lessonId"
-          [exercise]="exercise"
-          [text]="text"
-          (updatedExercise)="onUpdatedExercise($event)"
-          (cancelEdit)="onCancelEdit()">
-        </km-build-fillin>
+      <div *ngIf="exercise._id===editingId" class="edit">
+        <div [ngSwitch]="exercise.tpe">
+          <km-build-exercise *ngSwitchCase="exType.Word"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            [focus]="focusField"
+            [isBidirectional]="isBidirectional"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-exercise>
+          <km-build-select *ngSwitchCase="exType.Select"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-select>
+          <km-build-qa *ngSwitchCase="exType.QA"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-qa>
+          <km-build-fillin *ngSwitchCase="exType.FillIn"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-fillin>
+          <km-build-genus *ngSwitchCase="exType.Genus"
+            [languagePair]="languagePair"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-genus>
+        </div>
       </div>
     </li>
   </ul>

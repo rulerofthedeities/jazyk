@@ -1,0 +1,91 @@
+<form *ngIf="isFormReady && config"
+  [formGroup]="exerciseForm"
+  class="form-horizontal">
+
+  <!-- FOREIGN WORD -->
+  <div class="form-group">
+    <label 
+      for="foreignWord" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="foreignWord"
+        autocomplete="off"
+        placeholder="{{text['Enterword' + lanForeign]}}"
+        required
+        formControlName="foreignWord"
+        (focus)="onFocus(foreign.value, lanForeign)" 
+        #foreign>
+    </div>
+  </div>
+  <div class="form-group">
+    <label 
+      for="foreignWord" 
+      class="control-label col-xs-1">
+    </label>
+    <div class="col-xs-11">
+      <select 
+        *ngIf="exercise.genus"
+        class="form-control" 
+        id="genus"
+        formControlName="genus">
+        <option 
+          *ngFor="let genus of config.genera"
+          [value]="genus">
+          {{text[genus.toLowerCase()]}}
+        </option>
+      </select>
+      <select 
+        *ngIf="exercise.article"
+        class="form-control" 
+        id="article"
+        formControlName="article">
+        <option 
+          *ngFor="let article of config.articles"
+          [value]="article">
+          {{text[article]}}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- LOCAL WORD -->
+  <div class="form-group">
+    <label 
+      for="localWord" 
+      class="control-label col-xs-1">
+      <img src="/assets/img/flags/{{this.languagePair.from}}.png" class="flag">
+    </label>
+    <div class="col-xs-11">
+      <input 
+        class="form-control input-lg" 
+        id="localWord"
+        autocomplete="off"
+        placeholder="{{text['Enterword' + lanLocal]}}"
+        required
+        formControlName="localWord"
+        (focus)="onFocus(local.value, lanLocal)"
+        #local>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="form-group buttons">
+    <div class="col-xs-12">
+      <div *ngIf="currentExercise">
+        <button type="button" class="btn btn-success btn-lg"
+          [disabled] = "isSaving || !exerciseForm.valid"
+          (click)="onUpdateExercise(exerciseForm)">
+          {{text["UpdateGenus"]}}
+        </button>
+        <button type="button" class="btn btn-warning btn-lg"
+          (click)="onCancelEdit()">
+          {{text["cancel"]}}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

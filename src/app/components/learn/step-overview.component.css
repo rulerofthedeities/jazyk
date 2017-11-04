@@ -27,8 +27,12 @@
   border-left:none;
   border-right:none;
 }
-.icon {
-  width: 32px;
+.icons{
+  padding-left: 6px;
+  padding-right: 0;
+}
+.icons .fa{
+  width: 20px;
 }
 .fa-check, .fa-bookmark {
   color: green;

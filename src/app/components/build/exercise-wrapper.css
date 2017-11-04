@@ -4,7 +4,7 @@
   border-radius: 6px;
   margin: 0 -15px;
 }
-:host.edit {
+.edit :host {
   border-radius: 0 0 6px 6px;
   background-color: #efefef;
   border: 1px solid #428bca;

@@ -28,8 +28,9 @@ interface FormData {
 }
 
 interface NewExerciseOptions {
-  hasConjugation: boolean;
+  hasConjugation?: boolean;
   conjugationNr?: number;
+  hasGenus?: boolean;
   lastDoc?: boolean;
 }
 
@@ -70,6 +71,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   images: File[];
   audios: File[];
   hasConjugations = false;
+  hasGenus = false;
   maxFilterListLength = 8;
 
   constructor(
@@ -116,6 +118,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   onFilterChanged(word: string, lan: string) {
     this.hasConjugations = false;
+    this.hasGenus = false;
     // Only show list after user puts focus in field
     if (!this.isSelected) {
       this.changeFilter(word, lan);
@@ -139,12 +142,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     }
     this.hasConjugations = this.checkConjugations(wordpairDetail);
+    this.hasGenus = this.checkGenus(wordpairDetail);
   }
 
   onAddNewWord(form: any) {
     if (form.valid) {
       this.isSaving = true;
-      this.buildNewExercise(form.value, {hasConjugation: false, lastDoc: true});
+      this.buildNewExercise(form.value, {
+        hasConjugation: false,
+        hasGenus: false,
+        lastDoc: true
+      });
     }
   }
 
@@ -159,6 +167,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         options.lastDoc = i === 5;
         this.buildNewExercise(form.value, options);
       }
+    }
+  }
+
+  onAddNewGenus(form: any) {
+    if (form.valid) {
+      const options: NewExerciseOptions = {
+        hasGenus: true,
+        lastDoc: true
+      };
+      this.isSaving = true;
+      this.buildNewExercise(form.value, options);
     }
   }
 
@@ -304,7 +323,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const exercise: Exercise = {
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord},
-      tpe: ExerciseType.Word
+      tpe: options.hasGenus ? ExerciseType.Genus : ExerciseType.Word
     };
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];
@@ -348,6 +367,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       exercise.local.annotations = localAnnotations.join('|');
       exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
 
+      /* Genus test */
+      if (options.hasGenus) {
+        // Nothing to add, tpe is set at object creation time
+      }
+
+      /* Conjugation test */
       if (options.hasConjugation) {
         const nr = options.conjugationNr;
         const foreignPronouns = this.config.subjectPronouns;
@@ -543,6 +568,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     }
     return hasConjugations;
+  }
+
+  private checkGenus(wordpairDetail: WordPairDetail): boolean {
+    let hasGenus = false;
+    const detail = wordpairDetail[this.lanForeign];
+    if (detail.wordTpe === 'noun' && detail.genus) {
+      hasGenus = true;
+    }
+    return hasGenus;
   }
 
   private setupFilterEvent() {

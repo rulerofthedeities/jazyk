@@ -158,6 +158,12 @@ export class BuildExerciseListComponent implements OnDestroy {
     return options;
   }
 
+  getGenus(exercise: Exercise): string {
+    if (exercise.genus) {
+      return this.text[exercise.genus.toLowerCase()];
+    }
+  }
+
   private removeCurrentExercise() {
     this.isRemoving = true;
     this.buildService

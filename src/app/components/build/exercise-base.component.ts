@@ -96,4 +96,13 @@ export abstract class ExerciseBase {
       error => this.errorService.handleError(error)
     );
   }
+
+  protected checkIfValue(field: string): string {
+    // Prevent saving empty values to db
+    let value = undefined;
+    if (field) {
+      value = field;
+    }
+    return value;
+  }
 }

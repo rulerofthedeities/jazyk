@@ -33,7 +33,7 @@ km-keyboard {
   font-size: 34px;
   background-color: inherit;
   border: none;
-  padding-left: 0;
+  padding-left: 12px;
 }
 .answer-instruction {
   text-align: left;
