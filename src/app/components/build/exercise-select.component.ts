@@ -59,8 +59,9 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
       });
     } else {
       // Edit sentence
-      const optionControls: FormControl[] = [];
-      exercise.options.forEach(option =>
+      const optionControls: FormControl[] = [],
+            optionArray = exercise.options.split('|');
+      optionArray.forEach(option =>
         optionControls.push(new FormControl(option))
       );
       this.exerciseForm = this.formBuilder.group({
@@ -79,9 +80,9 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
     const options = formValues.options.filter(option => option);
     console.log('filtered options', options);
     const exercise: Exercise = {
-      foreign: {word: formValues.sentence},
-      local: {word: formValues.sentenceLocal},
-      options: options,
+      foreign: {word: formValues.select},
+      local: {word: formValues.selectLocal},
+      options: options.join('|'),
       tpe: ExerciseType.Select,
       difficulty: 0
     };
@@ -89,11 +90,11 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
   }
 
   protected buildExistingExercise(formValues: any) {
-    const options = formValues.options.filter(option => option);
-    const exercise: Exercise = this.currentExercise;
-    exercise.foreign.word = this.exerciseForm.value['sentence'];
-    exercise.local.word = this.exerciseForm.value['sentenceLocal'];
-    exercise.options = options;
+    const options = formValues.options.filter(option => option),
+          exercise: Exercise = this.currentExercise;
+    exercise.foreign.word = this.exerciseForm.value['select'];
+    exercise.local.word = this.exerciseForm.value['selectLocal'];
+    exercise.options = options.join('|');
     console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }

@@ -1,0 +1,18 @@
+.steps-flag {
+  margin-left: -15px;
+}
+label.step{
+  font-size: 24px;
+  font-weight: normal;
+  color: #666;
+  margin-top: 16px;
+}
+.answer-instruction {
+  text-align: left;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  margin-left: 0;
+  font-size: 16px;
+  font-style: italic;
+  color: #bbb;
+}

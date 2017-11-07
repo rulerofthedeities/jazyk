@@ -34,7 +34,7 @@
 .icons .fa{
   width: 20px;
 }
-.fa-check, .fa-bookmark {
+.fa-check, .fa-bookmark, .fa-bookmark-o {
   color: green;
 }
 .fa-flag {

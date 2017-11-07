@@ -32,7 +32,8 @@
       </span>
     </span>
     <span>
-      <span class="fa fa-bookmark" *ngIf="exercise.result"></span>
+      <span class="fa fa-bookmark" *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"></span>
+      <span class="fa fa-bookmark-o" *ngIf="exercise.exercise.tpe !== exType.Word"></span>
     </span>
     <span>
       <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
@@ -42,7 +43,7 @@
     </span>
   </div>
   <div class="col-xs-5">
-    <span class="word">{{exercise.exercise.foreign?.word}}</span>
+    <span class="word">{{showWord(exercise.exercise.foreign?.word)}}</span>
     <span class="word local">{{exercise.exercise.local?.word}}</span>
   </div>
   <div class="col-xs-3">

@@ -50,17 +50,21 @@
           <km-select *ngIf="isQuestionType(qType.Select)"
             [lanPair]="lanPair"
             [data]="currentData"
-            [msg]="text['Expectedanswer']"
-            [instruction]="text['instructionSelect']"
+            [text]="text"
             (answered)="onAnsweredSelect($event)">
           </km-select>
           <km-qa *ngIf="isQuestionType(qType.FillIn)"
             [lanPair]="lanPair"
-            [tpe]="exType.FillIn"
             [data]="currentData"
             [text]="text"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-qa>
+          <km-comparison *ngIf="isQuestionType(qType.Comparison)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [text]="text"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+          </km-comparison>
         </div>
         <!-- NO MORE EXERCISES -->
         <div *ngIf="noMoreExercises">

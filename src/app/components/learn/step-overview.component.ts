@@ -27,6 +27,13 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     this.fetchLessonResults();
   }
 
+  showWord(word: string): string {
+    if (word) {
+      word = word.replace(/\|/g, ', ');
+      return word.replace(/\[|\]/g, '');
+    }
+  }
+
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService

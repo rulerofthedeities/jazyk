@@ -26,10 +26,9 @@ import {LearnPointsCompletedComponent} from './components/learn/points-completed
 import {LearnPointsEarnedComponent} from './components/learn/points-earned.component';
 import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.component';
-import {LearnWordFieldComponent} from './components/learn/word-field.component';
-import {LearnWordChoicesComponent} from './components/learn/word-choices.component';
+import {LearnWordFieldComponent} from './components/learn/exercise-word-field.component';
+import {LearnWordChoicesComponent} from './components/learn/exercise-word-choices.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
-
 
 @NgModule({
   imports: [

@@ -1,0 +1,37 @@
+<div class="answer-instruction" [style.display]="isAnswered ? 'none' : 'block'">
+  <span class="fa fa-info-circle"></span>
+  {{instruction}}
+</div>
+
+<div class="col-xs-6">
+<km-question
+  [currentData]="questionData"
+  [lanPair]="lanPair"
+  [text]="text"
+  [hideGenus]="true"
+  [dir]="'foreign'"
+></km-question>
+</div>
+<div class="col-xs-6">
+  <select 
+    class="form-control selector input-lg" 
+    id="genus"
+    #answer>
+    <option *ngFor="let genus of genera"
+      [value]="genus"
+      (click)="onSelected(option)">
+      {{text[genus.toLowerCase()]}}
+    </option>
+  </select>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="solution" *ngIf="isAnswered && (!data.data.isCorrect || data.data.isAlt)">
+  <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{correctAnswer}}</span>
+</div>
+<km-keyboard 
+  *ngIf="keyboard.showKeyboard && !isAnswered"
+  [keys]="keyboard.keys"
+  (selectedKey)="onKeySelected($event)">
+</km-keyboard>

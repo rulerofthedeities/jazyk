@@ -44,14 +44,12 @@
           <km-select *ngIf="isQuestionType(qType.Select)"
             [lanPair]="lanPair"
             [data]="currentData"
-            [msg]="text['Expectedanswer']"
-            [instruction]="text['instructionSelect']"
+            [text]="text"
             (answered)="onAnsweredSelect($event)">
           </km-select>
           <km-qa *ngIf="isQuestionType(qType.FillIn)"
             [lanPair]="lanPair"
             [text]="text"
-            [tpe]="exType.FillIn"
             [data]="currentData"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-qa>

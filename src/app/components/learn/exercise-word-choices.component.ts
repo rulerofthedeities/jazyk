@@ -19,7 +19,7 @@ import {LearnService} from '../../services/learn.service';
       (click)="onSelected(i)">
       <span class="nr">{{i+1}}.</span> <span>{{filter(choice)}}</span>
     </div>`,
-    styleUrls: ['word-choices.component.css']
+    styleUrls: ['exercise-word-choices.component.css']
 })
 
 export class LearnWordChoicesComponent {

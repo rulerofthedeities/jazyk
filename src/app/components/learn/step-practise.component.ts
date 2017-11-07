@@ -119,12 +119,16 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           }
         }
       break;
+      case ExerciseType.Genus:
       case ExerciseType.Select:
         qTpe = QuestionType.Select;
         break;
       case ExerciseType.QA:
       case ExerciseType.FillIn:
         qTpe = QuestionType.FillIn;
+      break;
+      case ExerciseType.Comparison:
+        qTpe = QuestionType.Comparison;
       break;
     }
     return qTpe;
@@ -186,9 +190,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       if (nrOfExercises < this.settings.nrOfWordsLearn) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
-          || (!exerciseResult && exercise.tpe === ExerciseType.Select)
-          || (!exerciseResult && exercise.tpe === ExerciseType.QA)
-          || (!exerciseResult && exercise.tpe === ExerciseType.FillIn)
+          || (!exerciseResult && exercise.tpe !== ExerciseType.Word)
         ) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);

@@ -7,9 +7,9 @@ import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction} from '../../models/exercise.model';
-import {LearnWordFieldComponent} from './word-field.component';
-import {LearnSelectComponent} from './select.component';
-import {LearnQAComponent} from './qa.component';
+import {LearnWordFieldComponent} from './exercise-word-field.component';
+import {LearnSelectComponent} from './exercise-select.component';
+import {LearnQAComponent} from './exercise-qa.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
@@ -511,7 +511,8 @@ export abstract class Step {
       break;
       case QuestionType.Select:
         if (this.currentData.data.isCorrect) {
-          points = 2 + Math.min(20, this.currentData.exercise.options.length * 4);
+          const optionsArr = this.currentData.exercise.options;
+          points = 2 + Math.min(20, optionsArr.length * 4);
         }
       break;
     }
@@ -654,10 +655,9 @@ export abstract class Step {
           nrOfChoices = this.getNrOfChoices(learnLevel),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
 
-    availableChoices = this.choices.map(c => {
-      return direction === Direction.ForeignToLocal ? c.local : c.foreign;
-    });
+    availableChoices = this.choices.map(c => direction === Direction.ForeignToLocal ? c.local : c.foreign);
     choices.push(word);
+    console.log('Available choices', availableChoices);
     while (choices.length < nrOfChoices && availableChoices) {
       rand = Math.floor(Math.random() * availableChoices.length);
       choice = availableChoices[rand];

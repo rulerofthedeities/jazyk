@@ -31,7 +31,7 @@ var options = {
   server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
   replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
 };
-//mongoose.Promise = require('bluebird');
+mongoose.Promise = global.Promise;
 mongoose.connect(db_url, options, function(err) {
   app.listen(app.get('port'), function() { 
     console.log('Server running on port ' + app.get('port'));

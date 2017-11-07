@@ -1,26 +1,28 @@
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
-import {ExerciseData, Exercise} from '../../models/exercise.model';
+import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
 
 @Component({
   selector: 'km-select',
-  templateUrl: 'select.component.html',
-  styleUrls: ['select.component.css']
+  templateUrl: 'exercise-select.component.html',
+  styleUrls: ['exercise-select.component.css']
 })
 
 export class LearnSelectComponent implements OnInit {
   @Input() lanPair: string;
-  @Input() msg: string;
+  @Input() text: Object;
   @Input() data: ExerciseData;
-  @Input() instruction: string;
   @Output() answered = new EventEmitter<boolean>();
   sentence: string[];
+  instruction: string;
+  msg: string;
   translation: string;
   correctOption: string;
   options: string[];
   answer: string;
   isAnswered = false;
   isCorrect: boolean;
+  exerciseTpe: ExerciseType;
 
   constructor(
     private previewService: PreviewService
@@ -50,14 +52,22 @@ export class LearnSelectComponent implements OnInit {
   }
 
   private getSelectData(exercise: Exercise) {
-    // get options
-    this.options = JSON.parse(JSON.stringify(exercise.options));
-    this.correctOption = this.getCorrectOption(exercise.foreign.word);
-    this.options.push(this.correctOption);
+    this.exerciseTpe = exercise.tpe;
+    this.msg = this.text['Expectedanswer'];
+    this.options = exercise.options.split('|');
+    if (this.exerciseTpe === ExerciseType.Select) {
+      this.instruction = this.text['instructionSelect'];
+      this.correctOption = this.getCorrectOption(exercise.foreign.word);
+      this.options.push(this.correctOption);
+      // get sentence without []
+      this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
+    } else {
+      this.instruction = this.text['instructionGenus'];
+      this.options = this.options.map(option => this.text[option.toLowerCase()]);
+      this.correctOption = this.text[exercise.genus.toLowerCase()];
+      this.sentence = [exercise.foreign.word, ''];
+    }
     this.options = this.previewService.shuffle(this.options);
-    // get sentence without []
-    this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
-    console.log('select', this.sentence);
     if (exercise.local) {
       this.translation = exercise.local.word;
     }

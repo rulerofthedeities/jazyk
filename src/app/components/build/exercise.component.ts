@@ -349,43 +349,52 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         this.selected[this.lanForeign] &&
         formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
+
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
-      /* Foreign */
-      exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
-      exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
-      exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
-      exercise.genus = this.selected[this.lanForeign].genus;
-      exercise.article = this.selected[this.lanForeign].article;
-      if (this.selected[this.lanForeign].wordTpe === 'preposition') {
-        exercise.followingCase = this.selected[this.lanForeign].followingCase;
+        /* Foreign */
+      if (!options.hasGenus) {
+        exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
+        exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
+        exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
+        exercise.genus = this.selected[this.lanForeign].genus;
+        exercise.article = this.selected[this.lanForeign].article;
+        if (this.selected[this.lanForeign].wordTpe === 'preposition') {
+          exercise.followingCase = this.selected[this.lanForeign].followingCase;
+        }
+        exercise.aspect = this.selected[this.lanForeign].aspect;
+        this.addAnnotations(foreignAnnotations, this.selected, 'foreign');
+        exercise.foreign.annotations = foreignAnnotations.join('|');
+        exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
+        if (this.selected.wordPair[this.lanForeign].alt) {
+          exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
+        }
+        exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
+        if (this.selected[this.lanForeign].audios) {
+          exercise.audio = this.selected[this.lanForeign].audios[0].s3;
+        }
+        if (this.selected[this.lanForeign].images) {
+          exercise.image = this.selected[this.lanForeign].images[0].s3;
+        }
+        /* Local */
+        this.addAnnotations(localAnnotations, this.selected, 'local');
+        exercise.local.hint = this.selected.wordPair[this.lanLocal].hint;
+        if (this.selected.wordPair[this.lanLocal].alt) {
+          exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
+        }
+        exercise.local.alt = this.checkIfValue(exercise.local.alt);
+        exercise.local.annotations = localAnnotations.join('|');
+        exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
       }
-      exercise.aspect = this.selected[this.lanForeign].aspect;
-      this.addAnnotations(foreignAnnotations, this.selected, 'foreign');
-      exercise.foreign.annotations = foreignAnnotations.join('|');
-      exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
-      if (this.selected.wordPair[this.lanForeign].alt) {
-        exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
-      }
-      exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
-      if (this.selected[this.lanForeign].audios) {
-        exercise.audio = this.selected[this.lanForeign].audios[0].s3;
-      }
-      if (this.selected[this.lanForeign].images) {
-        exercise.image = this.selected[this.lanForeign].images[0].s3;
-      }
-      /* Local */
-      this.addAnnotations(localAnnotations, this.selected, 'local');
-      exercise.local.hint = this.selected.wordPair[this.lanLocal].hint;
-      if (this.selected.wordPair[this.lanLocal].alt) {
-        exercise.local.alt = this.selected.wordPair[this.lanLocal].alt.map(alt => alt.word).join('|');
-      }
-      exercise.local.alt = this.checkIfValue(exercise.local.alt);
-      exercise.local.annotations = localAnnotations.join('|');
-      exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
 
       /* Genus test */
       if (options.hasGenus) {
-        // Nothing to add, tpe is set at object creation time
+        // tpe is set at object creation time
+        exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
+        exercise.genus = this.selected[this.lanForeign].genus;
+        exercise.options = this.config.genera.join('|');
+        if (this.selected[this.lanForeign].audios) {
+          exercise.audio = this.selected[this.lanForeign].audios[0].s3;
+        }
       }
 
       /* Comparison test */
@@ -397,14 +406,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
       /* Conjugation test */
       if (options.hasConjugation) {
-        const nr = options.conjugationNr;
-        const foreignPronouns = this.config.subjectPronouns;
+        const nr = options.conjugationNr,
+              foreignPronouns = this.config.subjectPronouns;
         // Split conjugation if there are multiple
-        const localWords = this.selected[this.lanLocal].conjugation[nr].split(';');
-        const foreignWords = this.selected[this.lanForeign].conjugation[nr].split(';');
+        const localWords = this.selected[this.lanLocal].conjugation[nr].split(';'),
+              foreignWords = this.selected[this.lanForeign].conjugation[nr].split(';');
         // Add first word in list as the main word
-        const localPronoun = '(' + this.text['subjectpronoun' + nr.toString()] + ') ';
-        const foreignPronoun = '(' + foreignPronouns[nr] + ') ';
+        const localPronoun = '(' + this.text['subjectpronoun' + nr.toString()] + ') ',
+              foreignPronoun = '(' + foreignPronouns[nr] + ') ';
         exercise.local.word = localPronoun + localWords[0];
         exercise.foreign.word = foreignPronoun + foreignWords[0];
         // Add other words as synonyms

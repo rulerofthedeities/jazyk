@@ -24,15 +24,13 @@
       <km-select
         [lanPair]="lanPair"
         [data]="exerciseData"
-        [msg]="text['Expectedanswer']"
-        [instruction]="text['instructionSelect']">
+        [text]="text">
       </km-select>
     </div>
     <div *ngSwitchCase="exType.QA">
       <km-qa
         [lanPair]="lanPair"
         [text]="text"
-        [tpe]="exType.QA"
         [data]="exerciseData"
         [keyboard]="{showKeyboard: false, keys: null}">
       </km-qa>
@@ -41,10 +39,25 @@
       <km-qa
         [lanPair]="lanPair"
         [text]="text"
-        [tpe]="exType.FillIn"
         [data]="exerciseData"
         [keyboard]="{showKeyboard: false, keys: null}">
       </km-qa>
+    </div>
+    <div *ngSwitchCase="exType.Genus">
+      <km-genus
+        [lanPair]="lanPair"
+        [text]="text"
+        [data]="exerciseData"
+        [keyboard]="{showKeyboard: false, keys: null}">
+      </km-genus>
+    </div>
+    <div *ngSwitchCase="exType.Comparison">
+      <km-comparison
+        [lanPair]="lanPair"
+        [text]="text"
+        [data]="exerciseData"
+        [keyboard]="{showKeyboard: false, keys: null}">
+      </km-comparison>
     </div>
   </div>
 </div>

@@ -7,43 +7,42 @@ interface Keyboard {
 }
 
 @Component({
-  selector: 'km-qa',
-  templateUrl: 'qa.component.html',
-  styleUrls: ['field.css', 'qa.component.css']
+  selector: 'km-genus',
+  templateUrl: 'exercise-genus.component.html',
+  styleUrls: ['field.css', 'exercise-genus.component.css']
 })
 
-export class LearnQAComponent implements OnInit, AfterViewChecked {
+export class LearnGenusComponent implements OnInit, AfterViewChecked {
   @Input() lanPair: string;
-  @Input() tpe: ExerciseType;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
   @Output() answered = new EventEmitter<boolean>();
   @ViewChild('answer') answer: ElementRef;
-  sentence: string[]; // answer without []
-  question: string;
+  questionData: ExerciseData;
+  genera: string[];
   correctAnswer: string;
   instruction: string;
   isAnswered = false;
-  exType = ExerciseType;
 
   ngOnInit() {
-    console.log('init QA', this.data);
+    console.log('init Genus', this.data);
     const exercise = this.data.exercise;
-    this.instruction = this.tpe = ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
-    this.getQAData(exercise);
+    this.instruction = this.text['instructionGenus'];
+    this.getGenusData(exercise);
   }
 
   ngAfterViewChecked() {
-    this.answer.nativeElement.focus();
+    // this.answer.nativeElement.focus();
   }
 
   onKeySelected(key: string) {
-    this.answer.nativeElement.value += key;
+    // this.answer.nativeElement.value += key;
   }
 
   getData(): string {
-    return this.answer.nativeElement.value;
+    // return this.answer.nativeElement.value;
+    return '';
   }
 
   getCorrect(): string {
@@ -52,18 +51,21 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   }
 
   clearData() {
-    this.answer.nativeElement.value = '';
+    // this.answer.nativeElement.value = '';
     this.isAnswered = false;
   }
 
-  private getQAData(exercise: Exercise) {
+  private getGenusData(exercise: Exercise) {
     // get answer without []
+    /*
     this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
     console.log(this.sentence);
     this.sentence = this.sentence.map(section => section.trim());
     console.log(this.sentence);
-    this.question = exercise.foreign.hint;
-    this.correctAnswer = this.getCorrectAnswer(exercise.foreign.word);
+    */
+    this.questionData = JSON.parse(JSON.stringify(this.data));
+    this.genera = this.data.exercise.options.split('|');
+    // this.correctAnswer = this.getCorrectAnswer(exercise.foreign.word);
   }
 
   private getCorrectAnswer(answer: string): string {

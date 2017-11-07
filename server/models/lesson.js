@@ -7,17 +7,17 @@ var lanPairSchema = new Schema({
 }, {_id: false});
 
 var wordSchema = new Schema({
-  word: { type: String, required: true },
+  word: { type: String, required: true, trim: true },
   annotations: String,
-  hint: String,
-  info: String,
+  hint: { type: String, trim: true },
+  info: { type: String, trim: true },
   alt: String
 }, {_id: false});
 
 var exerciseSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
-  local: { type: wordSchema, required: true },
-  foreign: { type: wordSchema, required: true },
+  local: { type: wordSchema, required: true, trim: true},
+  foreign: { type: wordSchema, required: true, trim: true},
   wordDetailId: String,
   wordTpe: String,
   followingCase: String,
@@ -27,7 +27,7 @@ var exerciseSchema = new Schema({
   motion: String,
   image: String,
   audio: String,
-  options: [String],
+  options: String,
   tpe: Number,
   difficulty: { type: Number, default: 0 }
 })

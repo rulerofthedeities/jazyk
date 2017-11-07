@@ -32,7 +32,7 @@
         kmWordColor 
           [identifier]="currentData.exercise.genus" 
           [tpe]="currentData.exercise.wordTpe"
-          [active]="settings?.color || true">
+          [active]="showGenusColor()">
         {{currentData.exercise?.foreign?.word}}
       </span>
       <span class="suffix">{{currentData.data.suffix}}</span>

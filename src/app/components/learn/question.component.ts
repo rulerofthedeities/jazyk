@@ -15,6 +15,7 @@ export class LearnQuestionComponent {
   @Input() currentData: ExerciseData;
   @Input() dir: string;
   @Input() showAlt: false;
+  @Input() hideGenus: false;
   @Input() settings: LearnSettings = null;
 
   getAlts(tpe: string, word: Exercise): string {
@@ -25,5 +26,13 @@ export class LearnQuestionComponent {
       }
     }
     return altwords;
+  }
+
+  showGenusColor(): boolean {
+    let showGenus = false;
+    if (!this.hideGenus) {
+      showGenus = this.settings ? this.settings.color : true;
+    }
+    return showGenus;
   }
 }

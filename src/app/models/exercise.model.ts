@@ -1,7 +1,7 @@
 export enum Direction {LocalToForeign, ForeignToLocal};
 export enum AnsweredType {Correct, Incorrect, AlmostCorrect, Alt};
 export enum ExerciseType {Word, Select, QA, FillIn, Genus, Comparison};
-export enum QuestionType {Choices, Word, Select, FillIn};
+export enum QuestionType {Choices, Word, Select, FillIn, Comparison};
 
 interface ExerciseWord {
   word: string;
@@ -23,7 +23,7 @@ export interface Exercise {
   aspect?: string;
   image?: string;
   audio?: string;
-  options?: string[];
+  options?: string;
   tpe?: ExerciseType;
   difficulty?: number; // 0-100
 }

@@ -13,8 +13,8 @@ interface Solution {
 
 @Component({
   selector: 'km-word-field',
-  templateUrl: 'word-field.component.html',
-  styleUrls: ['word-field.component.css', 'field.css']
+  templateUrl: 'exercise-word-field.component.html',
+  styleUrls: ['field.css', 'exercise-word-field.component.css']
 })
 
 export class LearnWordFieldComponent implements AfterViewChecked {
