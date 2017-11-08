@@ -400,8 +400,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Comparison test */
       if (options.hasComparison) {
         exercise.tpe = ExerciseType.Comparison;
-        exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative;
-        exercise.foreign.word += '|' + this.selected[this.lanForeign].superlative;
+        if (this.selected[this.lanForeign].comparative) {
+          exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative.split(';')[0];
+        }
+        if (this.selected[this.lanForeign].superlative) {
+          exercise.foreign.word += '|' + this.selected[this.lanForeign].superlative.split(';')[0];
+        }
       }
 
       /* Conjugation test */

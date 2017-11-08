@@ -15,7 +15,7 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn)">
+          <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
             <!-- IMAGE -->
             <div class="image" *ngIf="currentData.exercise.image">
               <img src="{{currentData.exercise.image}}">

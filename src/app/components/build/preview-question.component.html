@@ -44,12 +44,11 @@
       </km-qa>
     </div>
     <div *ngSwitchCase="exType.Genus">
-      <km-genus
+      <km-select
         [lanPair]="lanPair"
         [text]="text"
-        [data]="exerciseData"
-        [keyboard]="{showKeyboard: false, keys: null}">
-      </km-genus>
+        [data]="exerciseData">
+      </km-select>
     </div>
     <div *ngSwitchCase="exType.Comparison">
       <km-comparison

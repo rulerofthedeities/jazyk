@@ -9,6 +9,7 @@ import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
+import {LearnComparisonComponent} from './exercise-comparison.component';
 import {LearnQAComponent} from './exercise-qa.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -42,6 +43,7 @@ export abstract class Step {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
+  @ViewChild(LearnComparisonComponent) comparisonComponent: LearnComparisonComponent;
   @ViewChild(LearnSelectComponent) sentenceComponent: LearnSelectComponent;
   @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
   protected componentActive = true;
@@ -162,15 +164,19 @@ export abstract class Step {
       case QuestionType.FillIn:
         this.checkIfFillInAnswer();
       break;
+      case QuestionType.Comparison:
+        this.checkIfComparisonAnswer();
+      break;
     }
   }
 
   getQuestionDir(): string {
     let tpe = 'local';
-    if (this.currentData
-      && this.currentData.data.questionType === QuestionType.Choices
-      && this.currentData.data.direction === Direction.ForeignToLocal) {
-      tpe = 'foreign';
+    if (this.currentData) {
+      if (this.currentData.data.questionType === QuestionType.Choices
+        && this.currentData.data.direction === Direction.ForeignToLocal) {
+        tpe = 'foreign';
+      }
     }
     return tpe;
   }
@@ -246,6 +252,16 @@ export abstract class Step {
     }
   }
 
+  private checkIfComparisonAnswer() {
+    if (!this.isAnswered) {
+      if (this.comparisonComponent && this.comparisonComponent.getData()) {
+        this.checkFillInAnswer(this.comparisonComponent.getData(), this.comparisonComponent.getCorrect());
+      }
+    } else {
+      this.nextWord();
+    }
+  }
+
   protected nextWord() {
     this.clearData();
     this.current++;
@@ -288,6 +304,9 @@ export abstract class Step {
     }
     if (this.qaComponent) {
       this.qaComponent.clearData();
+    }
+    if (this.comparisonComponent) {
+      this.comparisonComponent.clearData();
     }
     if (this.nextWordTimer) {
       this.nextWordTimer.unsubscribe();
@@ -524,12 +543,13 @@ export abstract class Step {
     let grade;
 
     switch (question) {
-      case QuestionType.Choices :
+      case QuestionType.Choices:
       case QuestionType.Select:
         grade = this.calculateChoicesGrade(delta);
       break;
       case QuestionType.Word:
       case QuestionType.FillIn:
+      case QuestionType.Comparison:
         grade = this.calculateWordGrade(delta, deduction, solution);
       break;
     }

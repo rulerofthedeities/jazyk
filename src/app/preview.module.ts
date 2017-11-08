@@ -10,7 +10,6 @@ import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnSelectComponent} from './components/learn/exercise-select.component';
 import {LearnQAComponent} from './components/learn/exercise-qa.component';
 import {LearnComparisonComponent} from './components/learn/exercise-comparison.component';
-import {LearnGenusComponent} from './components/learn/exercise-genus.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {WordColorDirective} from './directives/word-color.directive';
 
@@ -27,7 +26,6 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnSelectComponent,
     LearnQAComponent,
     LearnComparisonComponent,
-    LearnGenusComponent,
     LearnKeyboardComponent,
     WordColorDirective
   ],
@@ -40,7 +38,6 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnSelectComponent,
     LearnQAComponent,
     LearnComparisonComponent,
-    LearnGenusComponent,
     LearnKeyboardComponent,
     WordColorDirective
   ]

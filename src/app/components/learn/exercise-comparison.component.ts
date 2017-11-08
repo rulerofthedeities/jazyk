@@ -1,9 +1,14 @@
-import {Component, Input, Output, OnInit, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
   showKeyboard: boolean;
   keys: string[];
+}
+
+interface Answer {
+  comparative: string;
+  superlative: string;
 }
 
 @Component({
@@ -12,18 +17,21 @@ interface Keyboard {
   styleUrls: ['field.css', 'exercise-comparison.component.css']
 })
 
-export class LearnComparisonComponent implements OnInit, AfterViewChecked {
+export class LearnComparisonComponent implements OnInit {
   @Input() lanPair: string;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
   @Output() answered = new EventEmitter<boolean>();
-  @ViewChild('answer1') answer1: ElementRef;
+  @ViewChild('answerComparative') answerComparative: ElementRef;
+  @ViewChild('answerSuperlative') answerSuperlative: ElementRef;
   questionData: ExerciseData;
-  comparisonSteps: string[];
-  correctAnswer: string;
+  correctAnswer: Answer;
   instruction: string;
+  currentField = 'comparative';
   isAnswered = false;
+  isComparativeCorrect = false;
+  isSuperlativeCorrect = false;
 
   ngOnInit() {
     console.log('init Comparison', this.data);
@@ -32,50 +40,52 @@ export class LearnComparisonComponent implements OnInit, AfterViewChecked {
     this.getComparisonData(exercise);
   }
 
-  ngAfterViewChecked() {
-    // this.answer.nativeElement.focus();
+  onFocus(field: string) {
+    this.currentField = field;
+    console.log('Current field', field);
   }
 
   onKeySelected(key: string) {
-    // this.answer.nativeElement.value += key;
+    if (this.currentField === 'superlative') {
+      this.answerSuperlative.nativeElement.value += key;
+    } else {
+      this.answerComparative.nativeElement.value += key;
+    }
   }
 
   getData(): string {
     // return this.answer.nativeElement.value;
-    return '';
+    return this.answerComparative.nativeElement.value + '|' + this.answerSuperlative.nativeElement.value;
   }
 
   getCorrect(): string {
     this.isAnswered = true;
-    return this.correctAnswer;
+    if (this.answerComparative.nativeElement.value === this.correctAnswer.comparative) {
+      this.isComparativeCorrect = true;
+    }
+    if (this.answerSuperlative.nativeElement.value === this.correctAnswer.superlative) {
+      this.isSuperlativeCorrect = true;
+    }
+    return this.correctAnswer.comparative + '|'  + this.correctAnswer.superlative;
   }
 
   clearData() {
-    // this.answer.nativeElement.value = '';
+    this.answerComparative.nativeElement.value = '';
+    this.answerSuperlative.nativeElement.value = '';
     this.isAnswered = false;
+    this.isComparativeCorrect = false;
+    this.isSuperlativeCorrect = false;
   }
 
   private getComparisonData(exercise: Exercise) {
-    // get answer without []
-    /*
-    this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
-    console.log(this.sentence);
-    this.sentence = this.sentence.map(section => section.trim());
-    console.log(this.sentence);
-    */
     this.questionData = JSON.parse(JSON.stringify(this.data));
-    this.comparisonSteps = exercise.foreign.word.split('|');
-    this.comparisonSteps.map( step => step.split(';')[0]);
-    this.questionData.exercise.foreign.word = this.comparisonSteps[0];
-    // this.correctAnswer = this.getCorrectAnswer(exercise.foreign.word);
-  }
-
-  private getCorrectAnswer(answer: string): string {
-    let correctAnswer = '';
-    const matches = answer.match(/\[(.*?)\]/);
-    if (matches && matches.length > 1) {
-      correctAnswer = matches[1];
-    }
-    return correctAnswer;
+    const comparisonSteps = exercise.foreign.word.split('|');
+    comparisonSteps.map( step => step.split(';')[0]);
+    this.questionData.exercise.foreign.word = comparisonSteps[0];
+    this.correctAnswer = {
+      comparative: comparisonSteps[1],
+      superlative: comparisonSteps[2]
+    };
+    console.log('correct answer: ', this.correctAnswer);
   }
 }

@@ -244,17 +244,21 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         sentences.forEach(sentence => {
           // If no result for this sentence, remove from study
           if (!results.find(result => result.exerciseId === sentence._id)) {
-            this.countPerStep['study'].nrRemaining--;
+            if (this.countPerStep['study']) { // Study is optional!!
+              this.countPerStep['study'].nrRemaining--;
+            }
           }
         });
         // Practise step must have study finished or tpe != word
-        const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-        this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
-        if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
-          // this.setSteps();
-        } else {
-          // This lesson is finished, go to next lesson
-          // this.nextLesson.next(this.lesson._id);
+        if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
+          const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
+          this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
+          if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
+            // this.setSteps();
+          } else {
+            // This lesson is finished, go to next lesson
+            // this.nextLesson.next(this.lesson._id);
+          }
         }
       },
       error => this.errorService.handleError(error)
