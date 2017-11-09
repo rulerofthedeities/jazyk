@@ -215,49 +215,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        this.countPerStep = {};
-        const lessonTotal = this.lesson.exercises.length;
-        // get study completed count
-        if (results) {
-          results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
-          results.forEach(result => {
-            this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
-          });
-        }
-
-        console.log('RESULTS', results);
-        console.log('EXERCISES', this.lesson.exercises);
-
+        this.getStepCount(results);
         this.setSteps();
         this.setDefaultStep(results.length);
 
-        // Fill in step count for the steps without a result
-        this.steps.forEach(step => {
-          if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
-            this.countPerStep[step.name] = {nrDone: 0, nrRemaining: lessonTotal};
-          }
-        });
-        // Remove lessoncount for studies if tpe === sentence
-        const sentences = this.lesson.exercises.filter(exercise => exercise.tpe > 0);
-        sentences.forEach(sentence => {
-          // If no result for this sentence, remove from study
-          if (!results.find(result => result.exerciseId === sentence._id)) {
-            if (this.countPerStep['study']) { // Study is optional!!
-              this.countPerStep['study'].nrRemaining--;
-            }
-          }
-        });
-        // Practise step must have study finished or tpe != word
-        if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
-          const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-          this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
-          if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
-            // this.setSteps();
-          } else {
-            // This lesson is finished, go to next lesson
-            // this.nextLesson.next(this.lesson._id);
-          }
-        }
+        console.log('EXERCISES', this.lesson.exercises);
       },
       error => this.errorService.handleError(error)
     );
@@ -267,13 +229,28 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const steps = this.utilsService.getSteps();
     this.steps = [];
     steps.forEach((step, i) => {
-      if (this.lesson.exerciseSteps) {
-        if (step.alwaysShown || (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active)) {
+      if (step.alwaysShown || (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active)) {
+        if (this.showStep(step)) {
           this.steps.push(step);
         }
       }
     });
     this.isStepsReady = true;
+  }
+
+  private showStep(step: Step): boolean {
+    if (step.alwaysShown) {
+      return true;
+    }
+    if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
+      if (step.name === 'study') {
+        // Check if there are words to study
+        const word = this.lesson.exercises.find(exercise => exercise.tpe === ExerciseType.Word);
+        return word ? true : false;
+      } else {
+        return true;
+      }
+    }
   }
 
   private setDefaultStep(results: number) {
@@ -290,6 +267,47 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.currentStep = -1;
       }
     }
+  }
+
+  private getStepCount(results: ExerciseResult[]) {
+    console.log('RESULTS', results);
+    this.countPerStep = {};
+    const lessonTotal = this.lesson.exercises.length;
+    /*
+    if (results && results.length > 0) {
+      results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
+      results.forEach(result => {
+        this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
+      });
+    }
+    // Fill in step count for the steps without a result
+    this.steps.forEach(step => {
+      if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
+        this.countPerStep[step.name] = {nrDone: 0, nrRemaining: lessonTotal};
+      }
+    });
+    // Remove lessoncount for studies if tpe === sentence
+    const sentences = this.lesson.exercises.filter(exercise => exercise.tpe > 0);
+    sentences.forEach(sentence => {
+      // If no result for this sentence, remove from study
+      if (!results.find(result => result.exerciseId === sentence._id)) {
+        if (this.countPerStep['study']) { // Study is optional!!
+          this.countPerStep['study'].nrRemaining--;
+        }
+      }
+    });
+    // Practise step must have study finished or tpe != word
+    if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
+      const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
+      this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
+      if (this.countPerStep['practise'].nrRemaining + this.countPerStep['study'].nrRemaining > 0) {
+        // this.setSteps();
+      } else {
+        // This lesson is finished, go to next lesson
+        // this.nextLesson.next(this.lesson._id);
+      }
+    }
+    */
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
