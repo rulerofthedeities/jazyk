@@ -11,7 +11,7 @@ module.exports = {
     ];
 
     Translation.aggregate(pipeline, function(err, docs) {
-      response.handleError(err, res, 500, 'Error fetching translations', function(){
+      response.handleError(err, res, 400, 'Error fetching translations', function(){
         response.handleSuccess(res, docs, 200, 'Fetched translations');
       });
     });
