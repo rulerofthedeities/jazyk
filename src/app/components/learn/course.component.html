@@ -61,8 +61,7 @@
   <div 
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"
-    [ngClass]="steps[currentStep]?.name"
-    *ngIf="!showStartButton">
+    [ngClass]="steps[currentStep]?.name">
     <km-learn-intro *ngSwitchCase="'intro'"
       [lessonId]="this.lesson._id"
       [text]="text"
@@ -78,8 +77,7 @@
       [exercisesInterrupted]="exercisesInterrupted"
       (skipStep)="onSkipStep()"
       (stepCompleted)="onStepCompleted('study', $event)"
-      (updatedSettings)="onSettingsUpdated($event)"
-    >
+      (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-study>
     <km-learn-practise *ngSwitchCase="'practise'"
       [exercises]="lesson.exercises"
@@ -93,8 +91,7 @@
       (lessonCompleted)="onLessonCompleted()"
       (stepCompleted)="onStepCompleted('practise', $event)"
       (stepBack)="onStepBack()"
-      (updatedSettings)="onSettingsUpdated($event)"
-    >
+      (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-practise>
     <km-learn-review *ngSwitchCase="'review'"
       [courseId]="courseId"
@@ -103,25 +100,14 @@
       [settings]="settings"
       [exercisesInterrupted]="exercisesInterrupted"
       (stepCompleted)="onStepCompleted('review', $event)"
-      (updatedSettings)="onSettingsUpdated($event)"
-    >
+      (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-review>
     <km-learn-overview *ngSwitchCase="'overview'"
       [lessonId]="lesson._id"
       [exercises]="lesson.exercises"
       [text]="text"
-      [isLearnedLevel]="isLearnedLevel"
-    >
+      [isLearnedLevel]="isLearnedLevel">
     </km-learn-overview>
-  </div>
-  <div *ngIf="showStartButton" class="panel panel-start">
-    <button 
-      type="button"
-      class="btn btn-success btn-start"
-      (click)="onStartStudy()"
-    >
-      {{text["StartStudy"]}}
-    </button>
   </div>
 </div>
 

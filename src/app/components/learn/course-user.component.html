@@ -5,20 +5,23 @@
     </div>
     <div class="course">
       <h3>{{course.name}}</h3>
-      <button class="btn btn-success"
+      <button type="button" class="btn btn-success"
         (click)="onContinueCourse()">
         {{text["continuecourse"]}}
       </button>
-       <button class="btn btn-primary"
+       <button type="button" class="btn btn-primary"
         (click)="onContinueCourse('review')">
+        <span class="fa fa-repeat fa-spacing"></span>
         {{text["reviewwords"]}}
       </button>
-       <button class="btn btn-warning"
+       <button type="button" class="btn btn-warning"
         (click)="onContinueCourse('difficult')">
+        <span class="fa fa-fire fa-spacing"></span>
         {{text["difficultwords"]}}
       </button>
-       <button class="btn btn-danger"
+       <button type="button" class="btn btn-danger"
         (click)="onContinueCourse('exam')">
+        <span class="fa fa-clock-o fa-spacing"></span>
         {{text["takeexam"]}}
       </button>
       <div class="info">
