@@ -215,8 +215,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        this.getStepCount(results);
         this.setSteps();
+        this.getStepCount(results);
         this.setDefaultStep(results.length);
 
         console.log('EXERCISES', this.lesson.exercises);
@@ -229,10 +229,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const steps = this.utilsService.getSteps();
     this.steps = [];
     steps.forEach((step, i) => {
-      if (step.alwaysShown || (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active)) {
-        if (this.showStep(step)) {
-          this.steps.push(step);
-        }
+      if (this.showStep(step)) {
+        this.steps.push(step);
       }
     });
     this.isStepsReady = true;
@@ -254,19 +252,37 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private setDefaultStep(results: number) {
-    // if no results: show intro if it exists otherwise show button to start study;
-    // if results: show overview
-    this.showStartButton = false;
     if (results > 0) {
-      this.currentStep = 0;
+      // When pressing button 'continue course'
+      if (this.hasStep('study')) {
+        this.currentStep = this.getStepNr('study');
+      } else if (this.hasStep('practise')) {
+        this.currentStep = this.getStepNr('practise');
+      }
     } else {
-      if  (this.lesson.exerciseSteps['intro'].active) {
-        this.currentStep = 1;
-      } else {
-        this.showStartButton = true;
-        this.currentStep = -1;
+      // new course: show intro if it exists otherwise show button to start study;
+      if (this.hasStep('intro')) {
+        this.currentStep = this.getStepNr('intro');
+      } else if (this.hasStep('study')) {
+        this.currentStep = this.getStepNr('study');
+      } else if (this.hasStep('practise')) {
+        this.currentStep = this.getStepNr('practise');
       }
     }
+  }
+
+  private hasStep(stepName: string): boolean {
+    return this.steps.find(step => step.name === stepName) ? true : false;
+  }
+
+  private getStepNr(stepName: string): number {
+    let stepNr = -1;
+    this.steps.forEach( (step, i) => {
+      if (step.name === stepName) {
+        stepNr = i;
+      }
+    });
+    return stepNr;
   }
 
   private getStepCount(results: ExerciseResult[]) {
