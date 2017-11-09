@@ -86,8 +86,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       params => {
         if (params['id']) {
           this.courseId = params['id'];
-          // const routeStep = params['step'] || '';
-          // this.setCourseType(routeStep);
           this.getTranslations();
         }
       }

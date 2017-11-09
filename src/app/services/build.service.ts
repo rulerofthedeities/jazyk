@@ -169,7 +169,7 @@ export class BuildService {
   fetchIntro(lessonId: string) {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/build/lesson/intro/' + lessonId, {headers})
+    .get('/api/lesson/intro/' + lessonId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

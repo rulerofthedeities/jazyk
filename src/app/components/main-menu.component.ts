@@ -41,10 +41,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.checkMessages();
     this.setInterfaceLan();
     this.userService.languageChanged.subscribe(
-      newLan => {
-        console.log('NEW LAN');
-        this.getTranslations(newLan);
-      }
+      newLan => this.getTranslations(newLan)
     );
     this.userService.notificationRead.subscribe(
       isAllRead => this.updateNotificationsUnReadCount(isAllRead)
@@ -122,7 +119,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private getNotificationsCount() {
     if (this.isLoggedIn()) {
-      console.log('updating unread count notifications');
       this.userService
       .fetchNotificationsCount()
       .takeWhile(() => this.componentActive)
@@ -135,7 +131,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private getMessagesCount() {
     if (this.isLoggedIn()) {
-      console.log('updating unread count messages');
       this.userService
       .fetchMessagesCount()
       .takeWhile(() => this.componentActive)
