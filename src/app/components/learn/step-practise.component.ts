@@ -24,6 +24,7 @@ interface Map<T> {
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() lessonId: string;
   @Input() learnedLevel: number;
+  @Input() hasStudyTab: boolean;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() lessonCompleted = new EventEmitter();
   @Output() stepBack = new EventEmitter();
@@ -185,12 +186,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           newResults: ExerciseResult[] = [];
 
     console.log('getting words for practise');
-    // Select exercises that have not been learned yet (but have been studied if word)
+    // Select exercises that have not been learned yet
+    // (but have been studied if word unless there is no study tab)
     this.exercises.forEach(exercise => {
       if (nrOfExercises < this.settings.nrOfWordsLearn) {
         exerciseResult = results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
-          || (!exerciseResult && exercise.tpe !== ExerciseType.Word)
+          || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
         ) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);

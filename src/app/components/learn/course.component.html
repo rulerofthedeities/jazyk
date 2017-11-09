@@ -86,6 +86,7 @@
       [lessonId]="this.lesson._id"
       [text]="text"
       [learnedLevel]="isLearnedLevel"
+      [hasStudyTab]="hasStep('study')"
       [settings]="settings"
       [exercisesInterrupted]="exercisesInterrupted"
       (lessonCompleted)="onLessonCompleted()"

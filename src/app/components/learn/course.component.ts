@@ -19,6 +19,7 @@ interface Map<T> {
 interface StepCount {
   nrDone: number;
   nrRemaining: number;
+  step?: string;
 }
 
 interface ResultData {
@@ -250,24 +251,25 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private setDefaultStep(results: number) {
+    let defaultStep = 0;
     if (results > 0) {
       // When pressing button 'continue course'
-      if (this.hasStep('study')) {
-        // TODO: CHECK STEPCOUNT
-        this.currentStep = this.getStepNr('study');
+      if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
+        defaultStep = this.getStepNr('study');
       } else if (this.hasStep('practise')) {
-        this.currentStep = this.getStepNr('practise');
+        defaultStep = this.getStepNr('practise');
       }
     } else {
       // new course: show intro if it exists otherwise show button to start study;
       if (this.hasStep('intro')) {
-        this.currentStep = this.getStepNr('intro');
+        defaultStep = this.getStepNr('intro');
       } else if (this.hasStep('study')) {
-        this.currentStep = this.getStepNr('study');
+        defaultStep = this.getStepNr('study');
       } else if (this.hasStep('practise')) {
-        this.currentStep = this.getStepNr('practise');
+        defaultStep = this.getStepNr('practise');
       }
     }
+    this.currentStep = defaultStep;
   }
 
   private hasStep(stepName: string): boolean {
@@ -284,23 +286,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return stepNr;
   }
 
-  private getStepCount(results: ExerciseResult[]) {
+  private getStepCount(results: StepCount[]) {
     console.log('RESULTS', results);
     this.countPerStep = {};
     let total: number;
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
 
-    console.log('Lesson total', lessonTotal);
-    console.log('Study total', studyTotal);
-    /*
-    if (results && results.length > 0) {
-      results.map(result => result.nrRemaining = Math.max(0, lessonTotal - result.nrDone));
+    // Check how many results have been done per tab
+    if (results.length > 0) {
       results.forEach(result => {
-        this.countPerStep[result.step] = {nrDone: result.nrDone, nrRemaining: result.nrRemaining};
+        total = result.step === 'study' ? studyTotal : lessonTotal;
+        this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: total - result.nrDone || 0};
       });
     }
-    */
     // Fill in step count for the steps without a result
     this.steps.forEach(step => {
       total = step.name === 'study' ? studyTotal : lessonTotal;
