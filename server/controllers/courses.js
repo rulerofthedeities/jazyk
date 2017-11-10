@@ -125,7 +125,7 @@ module.exports = {
           property = req.body,
           key = Object.keys(property)[0];
 
-    if (key === 'isPublic' || key === 'isPublished') {
+    if (key === 'isPublic' || key === 'isPublished' || key === 'isInProgress') {
       Course.findOneAndUpdate(
         {_id: courseId, authorId: userId}, property, function(err, result) {
         response.handleError(err, res, 500, 'Error updating ' + key, function(){

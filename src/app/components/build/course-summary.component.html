@@ -6,8 +6,14 @@
     <div class="course">
       <h3>{{course.name}}
         <span class="icons">
-          <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
-          <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
+          <span class="fa" [ngClass]="{
+            'fa-lock': !course.isPublic,
+            'fa-user':course.isPublic}">
+          </span>
+          <span class="fa" [ngClass]="{
+            'fa-power-off': !course.isPublished,
+            'fa-check': course.isPublished}">
+          </span>
         </span>
       </h3>
       <button class="btn btn-success"

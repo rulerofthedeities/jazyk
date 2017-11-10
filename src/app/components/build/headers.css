@@ -15,7 +15,7 @@
   width: 20px;
   text-align: center;
 }
-.indicators .fa-user, .indicators .fa-check {
+.indicators .fa-user, .indicators .fa-check, .indicators .fa-wifi {
   color: green;
 }
 h2 .btn {

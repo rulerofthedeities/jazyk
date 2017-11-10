@@ -7,15 +7,22 @@
       [ngClass]="{
         'disabled': savingData?.isPublic,
         'fa-lock': !course.isPublic,
-        'fa-user':course.isPublic}"
+        'fa-user': course.isPublic}"
       (click)="onToggle('isPublic')">
     </span>
     <span class="fa"
       [ngClass]="{
         'disabled': savingData?.isPublished,
         'fa-power-off': !course.isPublished,
-        'fa-check':course.isPublished}"
+        'fa-wifi': course.isPublished}"
       (click)="onToggle('isPublished')">
+    </span>
+    <span class="fa"
+      [ngClass]="{
+        'disabled': savingData?.isPublished,
+        'fa-industry': course.isInProgress,
+        'fa-check': !course.isInProgress}"
+      (click)="onToggle('isInProgress')">
     </span>
   </span>
   <button 

@@ -20,7 +20,7 @@ import 'rxjs/add/operator/takeWhile';
       background-color: rgba(239, 239, 239, .9);
       border-radius: 6px;
     }
-    .fa-user, .fa-check {
+    .fa-user, .fa-check, .fa-wifi {
       color: green;
     }
   `]
@@ -105,8 +105,9 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       difficulty: 0,
       isPublic: true,
       isPublished: false,
-      exerciseCount: 0,
-      exercisesDone: 0,
+      isInProgress: true,
+      totalCount: 0,
+      wordCount: 0,
       chapters: [],
       lessons: []
     };

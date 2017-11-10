@@ -26,14 +26,15 @@ var courseSchema = new Schema({
     image: String,
     attendance: Number,
     difficulty: Number,
-    isPublished: Boolean,
-    isPublic: Boolean,
+    isPublished: {type: Boolean, default: false},
+    isPublic: {type: Boolean, default: true},
+    isInProgress: {type: Boolean, default: true},
     chapters: [String],
     lessons: [lessonSchema],
-    totalCount: { type: Number, default: 0 },
-    wordCount: { type: Number, default: 0 },
-    exercisesDone: { type: Number, default: 0 },
-    dtAdded: { type: Date, default: Date.now }
+    totalCount: {type: Number, default: 0},
+    wordCount: {type: Number, default: 0},
+    exercisesDone: {type: Number, default: 0},
+    dtAdded: {type: Date, default: Date.now}
   }, {collection: 'courses'}
 );
 

@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <!-- PUBLIC & PUBLISH -->
+      <!-- PUBLIC & PUBLISH & IN PROGRESS -->
       <div class="form-group form-group-lg" *ngIf="!isNewCourse">
         <label for="status" class="control-label col-xs-2">
           {{text['Status']}}
@@ -45,15 +45,31 @@
             id="status" 
             (click)="onToggle('isPublic')"
             [ngClass]="{'disabled':isSaving}">
-            <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
+            <span class="fa" [ngClass]="{
+              'fa-lock': !course.isPublic,
+              'fa-user': course.isPublic}">
+            </span>
             {{course.isPublic ? text['Public'] : text['Private']}}
           </button>
           <button 
             class="btn btn-default"
             (click)="onToggle('isPublished')"
             [ngClass]="{disabled:isSaving}">
-            <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
+            <span class="fa" [ngClass]="{
+              'fa-power-off': !course.isPublished,
+              'fa-wifi': course.isPublished}">
+            </span>
             {{course.isPublished ? text['Published'] : text['Notpublished'] }}
+          </button>
+          <button 
+            class="btn btn-default"
+            (click)="onToggle('isInProgress')"
+            [ngClass]="{disabled:isSaving}">
+            <span class="fa" [ngClass]="{
+              'fa-industry': course.isInProgress,
+              'fa-check': !course.isInProgress}">
+            </span>
+            {{course.isInProgress ? text['InProgress'] : text['NotInProgress'] }}
           </button>
         </div>
       </div>
