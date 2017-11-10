@@ -142,12 +142,12 @@ export class UtilsService {
       {
         name: 'practise',
         level: Level.Lesson,
-        alwaysShown: false
+        alwaysShown: true
       },
       {
-        name: 'exam',
+        name: 'review',
         level: Level.Course,
-        alwaysShown: false
+        alwaysShown: true
       },
       {
         name: 'difficult',
@@ -155,9 +155,9 @@ export class UtilsService {
         alwaysShown: true
       },
       {
-        name: 'review',
+        name: 'exam',
         level: Level.Course,
-        alwaysShown: true
+        alwaysShown: false
       }
     ];
   }

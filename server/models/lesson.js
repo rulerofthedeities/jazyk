@@ -42,7 +42,6 @@ var ExerciseStepsSchema = new Schema({
   intro: ExerciseStepSchema,
   study: ExerciseStepSchema,
   practise: ExerciseStepSchema,
-  test: ExerciseStepSchema,
   exam: ExerciseStepSchema
 }, {_id: false})
 

@@ -41,20 +41,23 @@
           [ngClass]="{active: !control.value}">
           <span 
             class="fa" 
-            [ngClass]="{'fa-check': control.value, 'fa-times': !control.value}">
+            [ngClass]="{
+            'fa-check': control.value,
+            'fa-times': !control.value}">
           </span>
           <input 
             type="checkbox"
             name="options"
             value="{{value-1}}"
+            [attr.disabled]="i === steps.Practise ? '' : null"
             [formControl]="control">
             {{text[tpeLabels[i]]}}
-          <span *ngIf="i === 2 || i === 4"
+          <span *ngIf="i === steps.Practise"
             (click)="onToggleBidirectional($event, i)"
             [class.sel]="bidirectional[i] && control.value"
             class="fa fa-exchange toggle">
           </span>
-          <span *ngIf="i > 0"
+          <span *ngIf="i === steps.Study || i === steps.Exam"
             (click)="onToggleOrdered($event, i)"
             [class.sel]="ordered[i] && control.value"
             class="fa fa-list-ol toggle">

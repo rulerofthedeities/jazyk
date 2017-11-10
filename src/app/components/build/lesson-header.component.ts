@@ -5,30 +5,12 @@ import {ErrorService} from '../../services/error.service';
 import {Lesson, LanPair} from '../../models/course.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
+enum Steps {Intro, Study, Practise, Exam};
+
 @Component({
   selector: 'km-build-lesson-header',
   templateUrl: 'lesson-header.component.html',
-  styles: [`
-    .btn-group .fa {
-      width: 18px;
-    }
-    .fa-check {
-      color: green;
-    }
-    .fa-times {
-      color: red;
-    }
-    .toggle {
-      color: #ccc;
-      margin-left: 4px;
-    }
-    .toggle:hover {
-      color: #999;
-    }
-    .toggle.sel {
-      color: green;
-    }
-  `]
+  styleUrls: ['lesson-header.component.css']
 })
 
 export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
@@ -42,15 +24,16 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Output() done = new EventEmitter<Lesson>();
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
-  private bidirectional = [false, false, true, false, false];
-  private ordered = [false, false, false, false, false];
-  private active = [false, true, true, true, true];
+  private bidirectional = [false, false, true, false];
+  private ordered = [false, false, false, false];
+  private active = [false, true, true, true];
   lessonForm: FormGroup;
   chapterForm: FormGroup;
   isFormReady = false;
   isNew = true;
   isSubmitted = false;
-  tpeLabels = ['Intro', 'Study', 'Practise', 'Test', 'Exam'];
+  tpeLabels = ['Intro', 'Study', 'Practise', 'Exam'];
+  steps = Steps;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -106,21 +89,18 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       this.lesson.exerciseSteps.intro.bidirectional,
       this.lesson.exerciseSteps.study.bidirectional,
       this.lesson.exerciseSteps.practise.bidirectional,
-      this.lesson.exerciseSteps.test.bidirectional,
       this.lesson.exerciseSteps.exam.bidirectional
     ];
     this.ordered = [
       this.lesson.exerciseSteps.intro.ordered,
       this.lesson.exerciseSteps.study.ordered,
       this.lesson.exerciseSteps.practise.ordered,
-      this.lesson.exerciseSteps.test.ordered,
       this.lesson.exerciseSteps.exam.ordered
     ];
     this.active = [
       this.lesson.exerciseSteps.intro.active,
       this.lesson.exerciseSteps.study.active,
       this.lesson.exerciseSteps.practise.active,
-      this.lesson.exerciseSteps.test.active,
       this.lesson.exerciseSteps.exam.active
       ];
     this.buildForm();
@@ -138,7 +118,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
         intro: {active: false, bidirectional: false, ordered: false},
         study: {active: true, bidirectional: false, ordered: false},
         practise: {active: true, bidirectional: true, ordered: false},
-        test: {active: true, bidirectional: false, ordered: false},
         exam: {active: true, bidirectional: false, ordered: false}
       },
       exercises: [],
@@ -150,7 +129,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     const exerciseStepControls: FormControl[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.tpeLabels.length; i++) {
       exerciseStepControls.push(new FormControl(this.active[i]));
     }
     this.lessonForm = this.formBuilder.group({
@@ -168,8 +147,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       intro: {active: formValues.exerciseSteps[0], bidirectional: this.bidirectional[0], ordered: this.ordered[0]},
       study: {active: formValues.exerciseSteps[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
       practise: {active: formValues.exerciseSteps[2], bidirectional: this.bidirectional[2], ordered: this.ordered[2]},
-      test: {active: formValues.exerciseSteps[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]},
-      exam: {active: formValues.exerciseSteps[4], bidirectional: this.bidirectional[4], ordered: this.ordered[4]}
+      exam: {active: formValues.exerciseSteps[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]}
     };
   }
 
@@ -181,7 +159,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     .subscribe(
       savedLesson => {
         this.lesson = savedLesson;
-        console.log('done', savedLesson);
         this.done.emit(savedLesson);
       },
       error => this.errorService.handleError(error)
@@ -189,15 +166,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateLesson() {
-    console.log('updating', this.lesson);
     this.buildService
     .updateLessonHeader(this.lesson)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      updatedCourse => {
-        console.log('updated lesson', this.lesson);
-        this.done.emit(this.lesson);
-      },
+      updatedCourse => this.done.emit(this.lesson),
       error => this.errorService.handleError(error)
     );
   }

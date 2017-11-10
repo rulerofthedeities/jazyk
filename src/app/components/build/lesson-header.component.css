@@ -1,0 +1,19 @@
+.btn-group .fa {
+  width: 18px;
+}
+.fa-check {
+  color: green;
+}
+.fa-times {
+  color: red;
+}
+.toggle {
+  color: #ccc;
+  margin-left: 4px;
+}
+.toggle:hover {
+  color: #999;
+}
+.toggle.sel {
+  color: green;
+}

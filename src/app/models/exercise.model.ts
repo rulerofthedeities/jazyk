@@ -38,7 +38,6 @@ export interface ExerciseSteps {
   intro: ExerciseStep;
   study: ExerciseStep;
   practise: ExerciseStep;
-  test: ExerciseStep;
   exam: ExerciseStep;
 }
 
