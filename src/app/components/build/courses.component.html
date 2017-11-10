@@ -21,10 +21,11 @@
 <!-- COURSE LIST -->
 <ul class="list-unstyled" *ngIf="courses">
   <li *ngFor="let course of courses">
-    <km-build-course-summary
+    <km-course-summary
       [course]="course"
-      [text]="text">
-    </km-build-course-summary>
+      [text]="text"
+      [tpe]="listType.Teach">
+    </km-course-summary>
   </li>
 </ul>
 <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">

@@ -4,7 +4,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, Translation} from '../../models/course.model';
+import {Course, Language, Translation, CourseListType} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -25,6 +25,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   languages: Language[];
   infoMsg: string;
   multipleLanguages = false;
+  listType = CourseListType;
 
   constructor(
     private router: Router,

@@ -4,7 +4,7 @@ import {Course, CourseListType} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 
 @Component({
-  selector: 'km-learn-course-summary',
+  selector: 'km-course-summary',
   templateUrl: 'course-summary.component.html',
   styleUrls: ['course-summary.component.css']
 })

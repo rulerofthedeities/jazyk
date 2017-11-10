@@ -12,7 +12,6 @@ import {AudioService} from './services/audio.service';
 import {LearnCoursesComponent} from './components/learn/courses.component';
 import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
 import {LearnCourseComponent} from './components/learn/course.component';
-import {LearnCourseSummaryComponent} from './components/learn/course-summary.component';
 import {LearnLessonSelectorComponent} from './components/learn/lesson-selector.component';
 import {LearnIntroComponent} from './components/learn/step-intro.component';
 import {LearnStudyComponent} from './components/learn/step-study.component';
@@ -43,7 +42,6 @@ import {LearnCountdownComponent} from './components/learn/countdown.component';
   declarations: [
     LearnCoursesComponent,
     LearnCoursesUserComponent,
-    LearnCourseSummaryComponent,
     LearnCourseComponent,
     LearnLessonSelectorComponent,
     LearnIntroComponent,
