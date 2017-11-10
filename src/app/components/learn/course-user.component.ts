@@ -22,8 +22,9 @@ export class LearnCourseUserComponent implements OnInit {
 
   ngOnInit() {
     if (this.course.exercisesDone) {
-      this.percDone = Math.floor(this.course.exercisesDone / this.course.exerciseCount);
+      this.percDone = Math.floor(this.course.exercisesDone / this.course.totalCount);
     }
+    this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.setDifficulty();
   }
 

@@ -45,7 +45,9 @@ export interface Course {
   difficulty: number;
   isPublic: boolean;
   isPublished: boolean;
-  exerciseCount: number;
+  totalCount: number;
+  wordCount: number;
+  exercisesCount?: number;
   exercisesDone: number;
   chapters: string[];
   lessons?: LessonId[];

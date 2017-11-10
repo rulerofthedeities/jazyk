@@ -30,7 +30,8 @@ var courseSchema = new Schema({
     isPublic: Boolean,
     chapters: [String],
     lessons: [lessonSchema],
-    exerciseCount: { type: Number, default: 0 },
+    totalCount: { type: Number, default: 0 },
+    wordCount: { type: Number, default: 0 },
     exercisesDone: { type: Number, default: 0 },
     dtAdded: { type: Date, default: Date.now }
   }, {collection: 'courses'}

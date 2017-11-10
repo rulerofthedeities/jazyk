@@ -81,8 +81,8 @@ module.exports = {
     // get courses for profile
     const userId = new mongoose.Types.ObjectId(req.params.userId),
           query = {creatorId: userId, isPublic: true, isPublished: true},
-          projection = {name:1, image:1, exerciseCount: 1, languagePair:1},
-          sort = {sort: {exerciseCount: -1}};
+          projection = {name:1, image:1, totalCount: 1, languagePair:1},
+          sort = {sort: {totalCount: -1}};
     Course.find(query, projection, sort, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching teaching courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched teaching courses');

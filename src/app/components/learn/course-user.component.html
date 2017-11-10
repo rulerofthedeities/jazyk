@@ -7,6 +7,7 @@
       <h3>{{course.name}}</h3>
       <button type="button" class="btn btn-success"
         (click)="onContinueCourse()">
+        <span class="fa fa-arrow-right fa-spacing"></span>
         {{text["continuecourse"]}}
       </button>
        <button type="button" class="btn btn-primary"
@@ -25,7 +26,8 @@
         {{text["takeexam"]}}
       </button>
       <div class="info">
-        <div>{{course.exerciseCount || 0}} {{course.exerciseCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
         <div>
           <div class="difficulty">
             <div *ngFor="let led of leds; let i=index" class="led led-{{i}}">

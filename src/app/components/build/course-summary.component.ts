@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {Course} from '../../models/course.model';
@@ -9,7 +9,7 @@ import {Course} from '../../models/course.model';
   styleUrls: ['course-summary.component.css']
 })
 
-export class BuildCourseSummaryComponent {
+export class BuildCourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() text: Object;
 
@@ -17,6 +17,10 @@ export class BuildCourseSummaryComponent {
     private router: Router,
     private userService: UserService
   ) {}
+
+  ngOnInit() {
+    this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
+  }
 
   onEditCourse() {
     this.router.navigate(['/build/course/' + this.course._id]);

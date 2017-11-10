@@ -20,7 +20,8 @@
         {{text["updatecourse"]}}
       </button>
       <div class="info">
-        <div>{{course.exerciseCount || 0}} {{course.exerciseCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
         <div>
           <div class="difficulty">
             <div *ngFor="let led of leds; let i=index" class="led led-{{i}}">

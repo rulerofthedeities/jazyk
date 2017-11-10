@@ -3,18 +3,27 @@ const response = require('../response'),
       Course = require('../models/course'),
       Lesson = require('../models/lesson');
 
-updateCourseWordCount = function(courseId, total) {
-  console.log('total', courseId, total);
+updateCourseWordCount = function(courseId, totals) {
+  allWordAndExercisesCount = 0;
+  wordOnlyCount = 0;
+  totals.forEach(count => {
+    allWordAndExercisesCount += count.total;
+    if (count._id === 0) {
+      wordOnlyCount = count.total;
+    }
+  })
+  console.log('count', courseId, 'total', allWordAndExercisesCount, 'words', wordOnlyCount);
   Course.findOneAndUpdate(
     {_id: courseId},
     {$set: {
-      exerciseCount: total.total,
-      difficulty: total.scores
+      totalCount: allWordAndExercisesCount,
+      wordCount: wordOnlyCount
     }}, function(err, result) {
       if (err) {
         console.log('ERREXE02: Error updating total # of exercises for course "' + courseId + '"')
       }
-    });
+    }
+  );
 }
 
 getCourseWordCount = function(id) {
@@ -27,15 +36,14 @@ getCourseWordCount = function(id) {
       includeArrayIndex : "arrayIndex",
       preserveNullAndEmptyArrays : false
     }},
-    {$project: {'score': '$exercises.score'}},
-    {$group: {_id: null, 'total': {$sum: 1}, 'scores': {$avg: "$score"}}}
+    {$group: {_id: '$exercises.tpe', 'total': {$sum: 1}}}
   ];
 
   Lesson.aggregate(pipeline, function(err, count) {
     if (!err) {
       if (count[0]) {
-        console.log('TOTAL/SCORE', count[0]);
-        updateCourseWordCount(courseId, count[0]);
+        console.log('TOTAL/SCORE', count);
+        updateCourseWordCount(courseId, count);
       }
     } else {
       console.log('ERREXE01: Error getting total number of exercise for course "' + courseId + '"')

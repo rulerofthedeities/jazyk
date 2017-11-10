@@ -21,6 +21,7 @@ export class LearnCourseSummaryComponent implements OnInit {
 
   ngOnInit() {
     this.setDifficulty();
+    this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
   }
 
   onEditCourse() {
