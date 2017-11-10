@@ -6,29 +6,76 @@
     <div class="course">
       <h3>{{course.name}}
         <span class="icons">
-          <span class="fa" [ngClass]="{'fa-lock': !course.isPublic, 'fa-user':course.isPublic}"></span>
-          <span class="fa" [ngClass]="{'fa-power-off': !course.isPublished, 'fa-check':course.isPublished}"></span>
+          <span 
+            class="fa"
+            [ngClass]="{
+              'fa-lock': !course.isPublic,
+              'fa-user': course.isPublic}">
+          </span>
+          <span 
+            class="fa"
+            [ngClass]="{
+              'fa-power-off': !course.isPublished,
+              'fa-wifi': course.isPublished}">
+          </span>
+          <span 
+            class="fa"
+            [ngClass]="{
+              'fa-industry': course.isInProgress,
+              'fa-check': !course.isInProgress}">
+          </span>
         </span>
       </h3>
-      <button class="btn btn-success"
-        [class.disabled]="!course.isPublished"
-        (click)="onStartCourse()">
-        {{text["startcourse"]}}
-      </button>
-      <button class="btn btn-warning" *ngIf="isAuthor(course.authorId)"
-        (click)="onEditCourse()">
-        {{text["updatecourse"]}}
-      </button>
+      <div *ngIf="tpe===listType.All || tpe===listType.Teach">
+        <button class="btn btn-success"
+          [class.disabled]="!course.isPublished"
+          (click)="onStartCourse()">
+          {{text["startcourse"]}}
+        </button>
+        <button class="btn btn-warning" *ngIf="isAuthor(course.authorId)"
+          (click)="onEditCourse()">
+          {{text["updatecourse"]}}
+        </button>
+      </div>
+      <div  *ngIf="tpe===listType.Learn">
+        <button type="button" class="btn btn-success"
+          (click)="onContinueCourse()">
+          <span class="fa fa-arrow-right fa-spacing"></span>
+          {{text["continuecourse"]}}
+        </button>
+         <button type="button" class="btn btn-primary"
+          (click)="onContinueCourse('review')">
+          <span class="fa fa-repeat fa-spacing"></span>
+          {{text["reviewwords"]}}
+        </button>
+         <button type="button" class="btn btn-warning"
+          (click)="onContinueCourse('difficult')">
+          <span class="fa fa-fire fa-spacing"></span>
+          {{text["difficultwords"]}}
+        </button>
+         <button type="button" class="btn btn-danger"
+          (click)="onContinueCourse('exam')">
+          <span class="fa fa-clock-o fa-spacing"></span>
+          {{text["takeexam"]}}
+        </button>
+      </div>
       <div class="info">
         <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
         <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
-        <div>
-          <div class="difficulty">
-            <div *ngFor="let led of leds; let i=index" class="led led-{{i}}">
-            </div>
-          </div>
-        </div>
       </div>
+      <div class="progress" *ngIf="tpe===listType.Learn">
+        <div 
+          class="progress-bar progress-bar-striped" 
+          role="progressbar" 
+          [attr.aria-valuenow]="course.exercisesDone"
+          aria-valuemin="0"
+          [attr.aria-valuemax]="course.exerciseCount" 
+          [style.width.%]="percDone">
+          <span>
+            {{course.exercisesDone}}/{{course.totalCount}} ({{percDone}}%)
+          </span>
+        </div>
+      </div> 
     </div>
   </div>
 </div>

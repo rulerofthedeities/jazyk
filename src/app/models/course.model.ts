@@ -1,5 +1,7 @@
 import {Exercise, ExerciseSteps} from './exercise.model';
 
+export enum CourseListType {Learn, Teach, All};
+
 export interface Language {
   _id: string;
   name: string;
@@ -48,6 +50,8 @@ export interface Course {
   isInProgress: boolean;
   totalCount: number;
   wordCount: number;
+  exercisesCount?: number;
+  exercisesDone?: number;
   chapters: string[];
   lessons?: LessonId[];
 }

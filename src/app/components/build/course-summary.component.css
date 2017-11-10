@@ -19,7 +19,9 @@ h3 {
   display: inline-block;
   margin-left: 10px;
 }
-.icons .fa-user, .icons .fa-check {
+.icons .fa-user,
+.icons .fa-check,
+.icons .fa-wifi {
   color: green;
 }
 .progress {

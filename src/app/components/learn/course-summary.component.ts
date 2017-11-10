@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course} from '../../models/course.model';
+import {Course, CourseListType} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 
 @Component({
@@ -12,7 +12,9 @@ import {UserService} from '../../services/user.service';
 export class LearnCourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() text: {};
-  leds: number[];
+  @Input() tpe: CourseListType;
+  listType = CourseListType;
+  percDone = 0;
 
   constructor(
     private router: Router,
@@ -20,8 +22,10 @@ export class LearnCourseSummaryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setDifficulty();
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
+    if (this.tpe === CourseListType.Learn && this.course.exercisesDone) {
+      this.percDone = Math.floor(this.course.exercisesDone / this.course.totalCount);
+    }
   }
 
   onEditCourse() {
@@ -35,6 +39,12 @@ export class LearnCourseSummaryComponent implements OnInit {
     }
   }
 
+  onContinueCourse(step: string) {
+    const steproute = step ? '/' + step : '';
+    this.userService.continueCourse(this.course);
+    this.router.navigate(['/learn/course/' + this.course._id + steproute]);
+  }
+
   isAuthor(authorIds: string[]): boolean {
     let isAuthor = false;
     if (authorIds && authorIds.length > 0) {
@@ -44,14 +54,5 @@ export class LearnCourseSummaryComponent implements OnInit {
       }
     }
     return isAuthor;
-  }
-
-  setDifficulty() {
-    let difficulty = 0;
-    const allLeds = Array(10).fill(0);
-    if (this.course.difficulty) {
-      difficulty = Math.round((1000 - this.course.difficulty) / 100);
-    }
-    this.leds = allLeds.slice(0, difficulty);
   }
 }

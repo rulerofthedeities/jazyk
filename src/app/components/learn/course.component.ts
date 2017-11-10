@@ -272,7 +272,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.currentStep = defaultStep;
   }
 
-  private hasStep(stepName: string): boolean {
+  hasStep(stepName: string): boolean {
     return this.steps.find(step => step.name === stepName) ? true : false;
   }
 

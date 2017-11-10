@@ -1,4 +1,3 @@
-
 <!-- LANGUAGE -->
 <div class="form-group form-group-lg" *ngIf="languages && languages.length > 1">
   <div class="col-xs-12 lanselector">
@@ -16,10 +15,11 @@
 <!-- COURSE LIST -->
 <ul class="list-unstyled" *ngIf="courses">
   <li *ngFor="let course of courses">
-    <km-learn-course-user
+    <km-learn-course-summary
       [course]="course"
-      [text]="text">
-    </km-learn-course-user>
+      [text]="text"
+      [tpe]="listType.Learn">
+    </km-learn-course-summary>
   </li>
 </ul>
 
