@@ -37,7 +37,7 @@
           {{text["updatecourse"]}}
         </button>
       </div>
-      <div  *ngIf="tpe===listType.Learn">
+      <div *ngIf="tpe===listType.Learn">
         <button type="button" class="btn btn-success"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right fa-spacing"></span>
@@ -62,6 +62,14 @@
       <div class="info">
         <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
         <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
+      </div>
+      <div class="stop" *ngIf="tpe===listType.Learn">
+        <button type="button" class="btn btn-default pull-right"
+          (click)="onStopLearningCourse()">
+          <span class="fa fa-times-circle fa-spacing"></span>
+          {{text["Stoplearningcourse"]}}
+        </button>
+        <div class="clearfix"></div>
       </div>
       <div class="progress" *ngIf="tpe===listType.Learn">
         <div 

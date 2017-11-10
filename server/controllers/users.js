@@ -262,7 +262,23 @@ module.exports = {
       const query = {userId, courseId: data.courseId},
             update = {$set: {subscribed: true}, $setOnInsert: {userId, courseId: data.courseId}};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 500, 'Error updating user', function(){
+        response.handleError(err, res, 400, 'Error updating user', function(){
+          response.handleSuccess(res, result, 200, 'Updated user');
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200, 'No course data to update');
+    }
+  },
+  unsubscribe: function(req, res) {
+    const userId = req.decoded.user._id,
+          data = req.body;
+
+    if (data && data.courseId) {
+      const query = {userId, courseId: data.courseId},
+            update = {$set: {subscribed: false}, $setOnInsert: {userId, courseId: data.courseId}};
+      UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
+        response.handleError(err, res, 400, 'Error updating user', function(){
           response.handleSuccess(res, result, 200, 'Updated user');
         });
       });

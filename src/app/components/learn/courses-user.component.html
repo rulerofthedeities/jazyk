@@ -18,7 +18,8 @@
     <km-course-summary
       [course]="course"
       [text]="text"
-      [tpe]="listType.Learn">
+      [tpe]="listType.Learn"
+      (unsubscribe)="onUnsubscribe($event)">
     </km-course-summary>
   </li>
 </ul>

@@ -73,6 +73,7 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
+  router.post('/user/unsubscribe', users.unsubscribe);
   router.get('/user', users.getUser);
 
   router.post('/user/follow', follows.followUser);

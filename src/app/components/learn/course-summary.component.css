@@ -8,7 +8,11 @@
   margin-left: 180px;
 }
 .info {
-  height: 107px;
+  margin-top: 4px;
+  height: 64px;
+}
+.stop {
+  margin-bottom: 4px;
 }
 h3 {
   margin-top:0;
@@ -24,6 +28,9 @@ h3 {
 .icons .fa-wifi {
   color: green;
 }
+.fa-times-circle {
+  color: red;
+}
 .progress {
   height: 26px;
   margin-bottom: 0;
@@ -31,4 +38,7 @@ h3 {
 .progress-bar {
   font-size: inherit;
   line-height: 26px;
+}
+.clearfix {
+  height: 34px;
 }

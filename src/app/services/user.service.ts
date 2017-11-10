@@ -38,10 +38,7 @@ export class UserService {
     } else {
       if (this.authService.isLoggedIn()) {
         console.log('logged in, get data from server');
-        const token = this.authService.getToken(),
-              headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('Authorization', 'Bearer ' + token);
+        const headers = this.getTokenHeaders();
         return this.http
         .get('/api/user', {headers})
         .map(response => response.json().obj)
@@ -410,7 +407,7 @@ export class UserService {
       this.updateUserCache(lan);
     }
   }
-  
+
   fetchWelcomeNotification(user: User) {
     let notificationLoaded = false;
     this.subscription = this
@@ -442,10 +439,7 @@ export class UserService {
 
   private updateUserDb(lan: string, courseId: string) {
     // subscribe + set learn language
-    const token = this.authService.getToken(),
-            headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     // Update learning lan
     if (lan && this._user.jazyk.learn.lan !== lan) {
       this.http

@@ -28,10 +28,7 @@ export class LearnService {
   }
 
   fetchUserCourses() {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/courses/learn', {headers})
     .map(response => response.json().obj)
@@ -41,6 +38,14 @@ export class LearnService {
   fetchCourse(id: string) {
     return this.http
     .get('/api/learn/course/' + id)
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  unSubscribeCourse(courseId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .post('/api/user/unsubscribe', JSON.stringify({courseId}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -104,10 +109,7 @@ export class LearnService {
 
   private saveResults(data: string) {
     // must be idempotent
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .post('/api/user/results/add', data, {headers})
     .map(response => response.json().obj)
@@ -116,11 +118,8 @@ export class LearnService {
 
   getPreviousResults(lessonId: string, exerciseIds: string[]) {
     // Get the learn level of the most recent exercises for this lesson
-    const token = this.authService.getToken(),
-          headers = new Headers(),
+    const headers = this.getTokenHeaders(),
           params = new URLSearchParams();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
     exerciseIds.forEach((id, i) => {
       params.set('id' + i.toString(), id);
     });
@@ -132,10 +131,7 @@ export class LearnService {
 
   getLessonResults(lessonId: string, step: string) {
     // Get the learn level of all exercises in this lesson
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/results/lesson/' + step + '/' + lessonId, {headers})
     .map(response => response.json().obj || {})
@@ -143,10 +139,7 @@ export class LearnService {
   }
 
   fetchLessonStepData(lessonId: string) {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/results/lesson/countbystep/' + lessonId, {headers})
     .map(response => response.json().obj || {})
@@ -155,10 +148,7 @@ export class LearnService {
 
   fetchMostRecentLesson(courseId: string) {
     // Get the most recent lesson saved for this course
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+    const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/results/course/currentlesson/' + courseId, {headers})
     .map(response => response.json().obj || {})
@@ -166,11 +156,8 @@ export class LearnService {
   }
 
   fetchToReview(courseId: string, max: number) {
-    const token = this.authService.getToken(),
-          headers = new Headers(),
+    const headers = this.getTokenHeaders(),
           params = new URLSearchParams();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
     params.set('max', max.toString());
     return this.http
     .get('/api/user/results/course/toreview/' + courseId, {headers, search: params})
@@ -298,5 +285,15 @@ export class LearnService {
     .get('/api/config/lan/' + lanCode)
     .map(conn => conn.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  /*** Common ***/
+
+  private getTokenHeaders(): Headers {
+    const token = this.authService.getToken(),
+          headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Bearer ' + token);
+    return headers;
   }
 }

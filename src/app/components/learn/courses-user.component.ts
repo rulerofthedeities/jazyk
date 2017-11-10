@@ -43,6 +43,11 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     this.filterCourses();
   }
 
+  onUnsubscribe(courseId: string) {
+    console.log('unsubscribing', courseId);
+    this.unsubscribeCourse(courseId);
+  }
+
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'CoursesComponent')
@@ -71,6 +76,19 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     } else {
       this.allCourses = [];
     }
+  }
+
+  private unsubscribeCourse(courseId: string) {
+    this.learnService
+    .unSubscribeCourse(courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {
+        this.courses = this.lanCourses[this.selectedLanguage._id].filter(course => course._id !== courseId);
+        this.lanCourses[this.selectedLanguage._id] = this.courses;
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getLanguages() {

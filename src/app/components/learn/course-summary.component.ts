@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Course, CourseListType} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
@@ -13,6 +13,7 @@ export class LearnCourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() text: {};
   @Input() tpe: CourseListType;
+  @Output() unsubscribe = new EventEmitter<string>();
   listType = CourseListType;
   percDone = 0;
 
@@ -43,6 +44,10 @@ export class LearnCourseSummaryComponent implements OnInit {
     const steproute = step ? '/' + step : '';
     this.userService.continueCourse(this.course);
     this.router.navigate(['/learn/course/' + this.course._id + steproute]);
+  }
+
+  onStopLearningCourse() {
+    this.unsubscribe.emit(this.course._id);
   }
 
   isAuthor(authorIds: string[]): boolean {
