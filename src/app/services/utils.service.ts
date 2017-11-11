@@ -73,7 +73,7 @@ export class UtilsService {
         name: 'DE',
         nativeName: 'Deutsch',
         interface: false,
-        active: false
+        active: true
       },
       {
         _id: 'fr',

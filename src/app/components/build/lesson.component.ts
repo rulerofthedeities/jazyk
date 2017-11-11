@@ -203,7 +203,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     if (exerciseSteps) {
       if (exerciseSteps.study.bidirectional ||
           exerciseSteps.practise.bidirectional ||
-          exerciseSteps.test.bidirectional ||
           exerciseSteps.exam.bidirectional) {
         this.isBidirectional = true;
       }

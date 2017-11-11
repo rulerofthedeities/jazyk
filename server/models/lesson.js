@@ -7,17 +7,17 @@ var lanPairSchema = new Schema({
 }, {_id: false});
 
 var wordSchema = new Schema({
-  word: { type: String, required: true, trim: true },
+  word: {type: String, required: true, trim: true},
   annotations: String,
-  hint: { type: String, trim: true },
-  info: { type: String, trim: true },
+  hint: {type: String, trim: true},
+  info: {type: String, trim: true},
   alt: String
 }, {_id: false});
 
 var exerciseSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  local: { type: wordSchema, required: true, trim: true},
-  foreign: { type: wordSchema, required: true, trim: true},
+  _id: {type: Schema.Types.ObjectId, required: true },
+  local: {type: wordSchema, required: true, trim: true},
+  foreign: {type: wordSchema, required: true, trim: true},
   wordDetailId: String,
   wordTpe: String,
   followingCase: String,
@@ -29,7 +29,7 @@ var exerciseSchema = new Schema({
   audio: String,
   options: String,
   tpe: Number,
-  difficulty: { type: Number, default: 0 }
+  difficulty: {type: Number, default: 0}
 })
 
 var ExerciseStepSchema = new Schema({
@@ -46,9 +46,9 @@ var ExerciseStepsSchema = new Schema({
 }, {_id: false})
 
 var lessonSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, required: true },
+  _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
-  languagePair: { type: lanPairSchema, required: true },
+  languagePair: {type: lanPairSchema, required: true},
   name: String,
   chapterName: String,
   exerciseSteps: ExerciseStepsSchema,
@@ -56,7 +56,8 @@ var lessonSchema = new Schema({
   intro: String,
   difficulty: Number,
   isPublished: Boolean,
-  isDeleted: { type: Boolean, default: false }
+  caseSensitive: {type: Boolean, default: false},
+  isDeleted: {type: Boolean, default: false}
 })
 
 module.exports = mongoose.model('Lesson', lessonSchema);

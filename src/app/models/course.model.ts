@@ -38,12 +38,17 @@ export interface LessonId { // for sorting
   lessonIds: string[];
 }
 
+export interface CourseDefaults {
+  caseSensitive: boolean;
+}
+
 export interface Course {
   _id?: string;
   languagePair: LanPair;
   name: string;
   image: string;
   attendance: number;
+  defaults: CourseDefaults;
   difficulty: number;
   isPublic: boolean;
   isPublished: boolean;
@@ -65,6 +70,7 @@ export interface Lesson {
   exerciseSteps: ExerciseSteps;
   exercises: Exercise[];
   difficulty: number;
+  caseSensitive: boolean;
   isPublished: boolean;
 }
 

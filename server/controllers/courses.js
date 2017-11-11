@@ -111,6 +111,7 @@ module.exports = {
       {_id: courseId, authorId: userId},
       {$set: {
         name: course.name,
+        defaults: course.defaults,
         isPublic: course.isPublic,
         isPublished: course.isPublished
       }}, function(err, result) {

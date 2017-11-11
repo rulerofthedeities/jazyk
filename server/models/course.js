@@ -17,6 +17,10 @@ var lessonSchema = new Schema({
   lessonIds: [String]
 }, {_id: false});
 
+var defaultsSchema = new Schema({
+  caseSensitive: {type: Boolean, default: false}
+}, {_id: false});
+
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
     creatorId: {type: Schema.Types.ObjectId, required: true},
@@ -26,6 +30,7 @@ var courseSchema = new Schema({
     image: String,
     attendance: Number,
     difficulty: Number,
+    defaults: defaultsSchema,
     isPublished: {type: Boolean, default: false},
     isPublic: {type: Boolean, default: true},
     isInProgress: {type: Boolean, default: true},

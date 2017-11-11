@@ -18,6 +18,7 @@ import {UserCourseBarComponent} from './components/user/course-bar.component';
 import {MailFieldComponent} from './components/fields/message.component';
 import {GravatarDirective} from './directives/gravatar.directive';
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
+import {ToggleComponent} from './components/fields/toggle.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     UserCourseBarComponent,
     MailFieldComponent,
     GravatarDirective,
-    GetKeyPressDirective
+    GetKeyPressDirective,
+    ToggleComponent
   ],
   providers: [
     UtilsService,
@@ -59,7 +61,8 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
     GetKeyPressDirective,
     CommonModule,
     HttpModule,
-    MarkdownModule
+    MarkdownModule,
+    ToggleComponent
   ]
 })
 export class SharedModule {

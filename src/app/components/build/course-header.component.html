@@ -74,13 +74,27 @@
         </div>
       </div>
 
+      <!-- DEFAULT VALUES -->
+      <div class="form-group form-group-lg" *ngIf="!isNewCourse">
+        <label for="caseSensitive" class="control-label col-xs-2">
+          {{text['Defaults']}} 
+        </label>
+        <div class="col-xs-10">
+          <label for="caseSensitive">{{text['CaseSensitive']}}:</label>
+          <km-toggle id="caseSensitive"
+            [toggle]="courseForm.value.caseSensitive"
+            (toggled)="onSetFlag('caseSensitive', $event)">
+          </km-toggle>
+        </div>
+      </div>
+
       <!-- BUTTONS -->
       <div class="row">
         <div class="col-xs-10 col-xs-offset-2">
           <button
             type="button" 
             class="btn btn-success" 
-            (click)="onSubmit(courseForm.value)"
+            (click)="onSubmit(courseForm)"
             [disabled]="!courseForm.valid || !courseForm.dirty">
             {{isNewCourse ? text['Addcourse'] : text['Update']}}
           </button>

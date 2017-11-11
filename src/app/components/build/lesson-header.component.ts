@@ -2,7 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild} fr
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson, LanPair} from '../../models/course.model';
+import {Lesson, LanPair, CourseDefaults} from '../../models/course.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 enum Steps {Intro, Study, Practise, Exam};
@@ -18,6 +18,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() lesson: Lesson;
   @Input() lessons: Lesson[];
+  @Input() defaults: CourseDefaults;
   @Input() chapters: string[];
   @Input() nr: number;
   @Input() text: Object;
@@ -25,7 +26,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
   private bidirectional = [false, false, true, false];
-  private ordered = [false, false, false, false];
+  private ordered = [false, true, false, true];
   private active = [false, true, true, true];
   lessonForm: FormGroup;
   chapterForm: FormGroup;
@@ -114,11 +115,24 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       languagePair: this.languagePair,
       name: '',
       chapterName: '',
+      caseSensitive: this.defaults.caseSensitive,
       exerciseSteps: {
-        intro: {active: false, bidirectional: false, ordered: false},
-        study: {active: true, bidirectional: false, ordered: false},
-        practise: {active: true, bidirectional: true, ordered: false},
-        exam: {active: true, bidirectional: false, ordered: false}
+        intro: {
+          active: false,
+          bidirectional: false,
+          ordered: false},
+        study: {
+          active: true,
+          bidirectional: false,
+          ordered: false},
+        practise: {
+          active: true,
+          bidirectional: true,
+          ordered: false},
+        exam: {
+          active: true,
+          bidirectional: false,
+          ordered: false}
       },
       exercises: [],
       difficulty: 0,
@@ -134,7 +148,8 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     }
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name],
-      exerciseSteps: new FormArray(exerciseStepControls)
+      exerciseSteps: new FormArray(exerciseStepControls),
+      caseSensitive: [this.lesson.caseSensitive]
     });
     this.isFormReady = true;
   }
@@ -143,11 +158,24 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     const chapterName = this.autocomplete.currentItem ? this.autocomplete.currentItem : '';
     this.lesson.chapterName = chapterName;
     this.lesson.name = formValues.name;
+    this.lesson.caseSensitive = formValues.caseSensitive;
     this.lesson.exerciseSteps = {
-      intro: {active: formValues.exerciseSteps[0], bidirectional: this.bidirectional[0], ordered: this.ordered[0]},
-      study: {active: formValues.exerciseSteps[1], bidirectional: this.bidirectional[1], ordered: this.ordered[1]},
-      practise: {active: formValues.exerciseSteps[2], bidirectional: this.bidirectional[2], ordered: this.ordered[2]},
-      exam: {active: formValues.exerciseSteps[3], bidirectional: this.bidirectional[3], ordered: this.ordered[3]}
+      intro: {
+        active: formValues.exerciseSteps[0],
+        bidirectional: this.bidirectional[0],
+        ordered: this.ordered[0]},
+      study: {
+        active: formValues.exerciseSteps[1],
+        bidirectional: this.bidirectional[1],
+        ordered: this.ordered[1]},
+      practise: {
+        active: formValues.exerciseSteps[2],
+        bidirectional: this.bidirectional[2],
+        ordered: this.ordered[2]},
+      exam: {
+        active: formValues.exerciseSteps[3],
+        bidirectional: this.bidirectional[3],
+        ordered: this.ordered[3]}
     };
   }
 

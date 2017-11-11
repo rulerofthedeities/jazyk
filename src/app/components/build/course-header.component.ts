@@ -23,6 +23,10 @@ import 'rxjs/add/operator/takeWhile';
     .fa-user, .fa-check, .fa-wifi {
       color: green;
     }
+    km-toggle {
+      top: 6px;
+      position: relative;
+    }
   `]
 })
 
@@ -59,12 +63,14 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit(formValues: any) {
-    this.processCourse(formValues);
-    if (this.course._id) {
-      this.updateCourse();
-    } else {
-      this.addCourse();
+  onSubmit(form: any) {
+    if (form.valid) {
+      this.processCourse(form.value);
+      if (this.course._id) {
+        this.updateCourse();
+      } else {
+        this.addCourse();
+      }
     }
   }
 
@@ -78,6 +84,11 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
 
   onToggle(tpe) {
     this.course[tpe] = !this.course[tpe];
+    this.courseForm.markAsDirty();
+  }
+
+  onSetFlag(field: string, status: boolean) {
+    this.courseForm.patchValue({[field]: status});
     this.courseForm.markAsDirty();
   }
 
@@ -103,6 +114,9 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       image: userLan + '-' + this.currentLanguage._id + '-course1.jpg', // temporary
       attendance: 0,
       difficulty: 0,
+      defaults: {
+        caseSensitive: false
+      },
       isPublic: true,
       isPublished: false,
       isInProgress: true,
@@ -117,13 +131,15 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   private buildForm() {
     this.courseForm = this.formBuilder.group({
       languagePair: [this.course.languagePair],
-      name: [this.course.name, Validators.required]
+      name: [this.course.name, Validators.required],
+      caseSensitive: [this.course.defaults.caseSensitive]
     });
     this.isFormReady = true;
   }
 
   private processCourse(formValues: any) {
     this.course.name = formValues.name;
+    this.course.defaults.caseSensitive = formValues.caseSensitive;
   }
 
   private addCourse() {
@@ -140,6 +156,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateCourse() {
+    console.log('updated course', this.course);
     this.buildService
     .updateCourseHeader(this.course)
     .takeWhile(() => this.componentActive)
