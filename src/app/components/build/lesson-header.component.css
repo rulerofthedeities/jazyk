@@ -17,3 +17,7 @@
 .toggle.sel {
   color: green;
 }
+km-toggle {
+  top: 6px;
+  position: relative;
+}

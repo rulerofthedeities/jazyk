@@ -67,6 +67,19 @@
     </div>
   </div>
 
+  <!-- CASE SENSITIVE -->
+  <div class="form-group form-group-lg">
+    <label for="caseSensitive" class="control-label col-xs-2">
+      {{text['CaseSensitive']}}
+    </label>
+    <div class="col-xs-10">
+      <km-toggle id="caseSensitive"
+        [toggle]="lessonForm.value.caseSensitive"
+        (toggled)="onSetFlag('caseSensitive', $event)">
+      </km-toggle>
+    </div>
+  </div>
+
   <!-- BUTTONS -->
   <div class="row">
     <div class="col-xs-10 col-xs-offset-2">

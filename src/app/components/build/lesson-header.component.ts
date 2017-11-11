@@ -81,6 +81,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.ordered[i] = !this.ordered[i];
   }
 
+  onSetFlag(field: string, status: boolean) {
+    this.lessonForm.patchValue({[field]: status});
+    this.lessonForm.markAsDirty();
+  }
+
   private editLesson() {
     console.log('editing lesson', this.lesson);
     this.isNew = false;
