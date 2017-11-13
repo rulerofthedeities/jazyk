@@ -83,8 +83,8 @@ export abstract class Step {
   ) {}
 
   onCountDownFinished() {
-    this.sharedService.changeExerciseMode(true);
     this.isCountDown = false;
+    this.sharedService.changeExerciseMode(true);
   }
 
   onSettingsUpdated(settings: LearnSettings) {

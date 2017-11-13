@@ -2,15 +2,14 @@
   <span class="fa fa-times pull-right" (click)="onExitExercises(confirmexit)"></span>
 </div>
 
-<km-lesson-selector
-  *ngIf="course && !exercisesStarted"
+<km-lesson-selector [style.display]="exercisesStarted ? 'none': 'block'"
+  *ngIf="course"
   [course]="course"
   [courseLevel]="courseLevel"
   [text]="text"
   [nextLesson]="nextLesson"
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
-
 
 <div *ngIf="isStepsReady && !exercisesStarted" class="row">
   <div class="col-xs-7 panel-lesson">

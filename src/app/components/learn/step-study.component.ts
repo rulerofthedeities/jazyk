@@ -62,8 +62,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onCountDownFinished() {
-    this.sharedService.changeExerciseMode(true);
     this.isCountDown = false;
+    this.sharedService.changeExerciseMode(true);
     this.nextWord(1);
   }
 
@@ -78,7 +78,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   onRehearseAll() {
     this.current = -1;
     this.isRehearsal = true;
-    this.isCountDown = true;
+    this.isCountDown = this.settings.countdown;
     this.buildExerciseData(this.exercises);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
