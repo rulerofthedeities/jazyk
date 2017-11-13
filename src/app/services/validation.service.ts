@@ -23,7 +23,6 @@ export class ValidationService {
       'invalidFillInSentence': text['invalidFillInSentence'],
       'matchingPasswords': text['equalPasswords']
       };
-
     return config[validatorName];
   }
 

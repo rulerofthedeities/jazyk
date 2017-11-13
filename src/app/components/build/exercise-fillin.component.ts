@@ -30,13 +30,13 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
     if (!exercise) {
       // New FillIn
       this.exerciseForm = this.formBuilder.group({
-        hint: ['', [Validators.required]],
+        hint: [''],
         sentence: ['', ValidationService.checkFillInSentence]
       });
     } else {
       // Edit FillIn
       this.exerciseForm = this.formBuilder.group({
-        hint: [exercise.foreign.hint, [Validators.required]],
+        hint: [exercise.foreign.hint],
         sentence: [exercise.foreign.word, ValidationService.checkFillInSentence]
       });
     }

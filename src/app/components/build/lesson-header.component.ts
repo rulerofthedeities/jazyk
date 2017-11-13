@@ -152,10 +152,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       exerciseStepControls.push(new FormControl(this.active[i]));
     }
     this.lessonForm = this.formBuilder.group({
-      name: [this.lesson.name],
+      name: [this.lesson.name, [Validators.required]],
       exerciseSteps: new FormArray(exerciseStepControls),
       caseSensitive: [this.lesson.caseSensitive]
     });
+    console.log('LESSON FORM', this.lessonForm);
     this.isFormReady = true;
   }
 

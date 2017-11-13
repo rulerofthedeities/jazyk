@@ -16,7 +16,6 @@
         autocomplete="off"
         spellcheck="false"
         placeholder="{{text['EnterHint']}}"
-        required
         formControlName="hint">
     </div>
   </div>
@@ -38,8 +37,7 @@
         formControlName="sentence">
       <km-field-messages 
         [control]="exerciseForm.controls.sentence"
-        [text]="text"
-        [touchRequired]="true">
+        [text]="text">
       </km-field-messages>
     </div>
   </div>

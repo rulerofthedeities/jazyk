@@ -14,7 +14,12 @@
         id="name" 
         [placeholder]="text['EnterLessonName']"
         (focus)="onFocusName()"
-        [formControlName]="'name'">
+        formControlName="name">
+        <km-field-messages 
+          [control]="lessonForm.controls.name"
+          [label]="'LessonName'"
+          [text]="text">
+        </km-field-messages>
     </div>
   </div>
 

@@ -18,12 +18,10 @@
         placeholder="{{text['EnterSentence']}}"
         required
         formControlName="select">
-
       <km-field-messages 
         [control]="exerciseForm.controls.select"
         [label]="'TheSentence'"
-        [text]="text"
-        [touchRequired]="true">
+        [text]="text">
       </km-field-messages>
     </div>
   </div>
@@ -53,8 +51,7 @@
   <div class="col-xs-11 col-xs-offset-2">
     <km-field-messages 
       [control]="exerciseForm"
-      [text]="text"
-      [touchRequired]="true">
+      [text]="text">
     </km-field-messages>
     <button type="button" class="btn btn-success btn-option"
       (click)="onAddOption()">
