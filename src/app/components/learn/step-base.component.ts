@@ -483,7 +483,10 @@ export abstract class Step {
   }
 
   private filter(word: string): string {
-    let filteredAnswer = word.toLowerCase();
+    let filteredAnswer = word;
+    if (!this.lessonOptions.caseSensitive) {
+      filteredAnswer = word.toLowerCase();
+    }
     filteredAnswer = this.learnService.filterPrefix(filteredAnswer);
     filteredAnswer = filteredAnswer.replace(/ +(?= )/g, ''); // replace all multiple spaces with one space
     filteredAnswer = filteredAnswer.replace(/[\.,\?;:!]/g, ''); // remove .,?;:

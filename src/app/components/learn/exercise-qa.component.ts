@@ -29,7 +29,7 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     console.log('init QA', this.data);
     const exercise = this.data.exercise;
-    this.instruction = exercise.tpe = ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
+    this.instruction = exercise.tpe === ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
     this.getQAData(exercise);
   }
 
