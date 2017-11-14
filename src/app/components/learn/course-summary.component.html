@@ -62,6 +62,9 @@
       <div class="info">
         <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
         <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
+        <div class="dates" *ngIf="tpe === listType.Learn && userData?.dt">
+          {{text["StartedOn"]}}: {{userData?.dt?.dtSubscribed | date:'yyyy-MM-dd'}}
+        </div>
       </div>
       <div class="stop" *ngIf="tpe===listType.Learn">
         <button type="button" class="btn btn-default pull-right"

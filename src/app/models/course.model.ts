@@ -61,6 +61,20 @@ export interface Course {
   lessons?: LessonId[];
 }
 
+interface UserCourseDates {
+  dtLastReSubscribed?: Date;
+  dtLastUnSubscribed?: Date;
+  dtSubscribed?: Date;
+}
+
+export interface UserCourse {
+  _id?: string;
+  courseId: string;
+  userId: string;
+  subscribed: boolean;
+  dt?: UserCourseDates;
+}
+
 export interface LessonOptions {
   caseSensitive: boolean;
 }

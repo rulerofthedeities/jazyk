@@ -27,7 +27,7 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchUserCourses() {
+  fetchSubscribedCourses() {
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/courses/learn', {headers})

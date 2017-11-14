@@ -257,10 +257,12 @@ module.exports = {
   subscribe: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
-
     if (data && data.courseId) {
-      const query = {userId, courseId: data.courseId},
-            update = {$set: {subscribed: true}, $setOnInsert: {userId, courseId: data.courseId}};
+      const courseId = mongoose.Types.ObjectId(data.courseId),
+            query = {userId, courseId},
+            insert = {userId, courseId, 'dt.dtSubscribed': Date.now()},
+            set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
+            update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
         response.handleError(err, res, 400, 'Error updating user', function(){
           response.handleSuccess(res, result, 200, 'Updated user');
@@ -273,10 +275,12 @@ module.exports = {
   unsubscribe: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
-
     if (data && data.courseId) {
-      const query = {userId, courseId: data.courseId},
-            update = {$set: {subscribed: false}, $setOnInsert: {userId, courseId: data.courseId}};
+      const courseId = mongoose.Types.ObjectId(data.courseId),
+            query = {userId, courseId},
+            insert = {userId, courseId},
+            set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
+            update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
         response.handleError(err, res, 400, 'Error updating user', function(){
           response.handleSuccess(res, result, 200, 'Updated user');

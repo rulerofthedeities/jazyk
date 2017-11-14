@@ -13,10 +13,11 @@
 <div class="clearfix"></div>
 
 <!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="courses">
+<ul class="list-unstyled" *ngIf="coursesReady">
   <li *ngFor="let course of courses">
     <km-course-summary
       [course]="course"
+      [userData]="userCourses[course?._id]"
       [text]="text"
       [tpe]="listType.Learn"
       (unsubscribe)="onUnsubscribe($event)">

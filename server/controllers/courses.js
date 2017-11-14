@@ -42,19 +42,19 @@ module.exports = {
   getPublicLanCourses: function(req, res) {
     getCourses(req, res, true);
   },
-  getUserCourses: function(req, res) {
+  getSubscribedCourses: function(req, res) {
     // Get all courses that this user is currently learning
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     // Find all courseIds for this user
-    UserCourse.find({userId, subscribed: true}, {_id: 0, 'courseId': 1}, function(err, courseIds) {
+    UserCourse.find({userId, subscribed: true}, function(err, userCourses) {
       response.handleError(err, res, 500, 'Error fetching user courses', function(){
         const courseIdArr = [];
-        courseIds.forEach(courseId => courseIdArr.push(courseId.courseId));
+        userCourses.forEach(course => courseIdArr.push(course.courseId));
         const query = {_id: {$in: courseIdArr}};
         // Find courses with the courseIds
         Course.find(query, {},  function(err, courses) {
           response.handleError(err, res, 500, 'Error fetching user courses', function(){
-            response.handleSuccess(res, courses, 200, 'Fetched user courses');
+            response.handleSuccess(res, {subscribed: courses, data: userCourses}, 200, 'Fetched user courses');
           });
         });
       });

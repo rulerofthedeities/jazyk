@@ -111,7 +111,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/course/toreview/:courseId', results.getToReview);
   router.post('/user/results/add', results.saveResults);
   
-  router.get('/user/courses/learn', courses.getUserCourses);
+  router.get('/user/courses/learn', courses.getSubscribedCourses);
 
   router.get('/user', users.getUser);
 

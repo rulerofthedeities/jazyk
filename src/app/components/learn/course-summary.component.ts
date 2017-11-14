@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course, CourseListType} from '../../models/course.model';
+import {Course, UserCourse, CourseListType} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 
 @Component({
@@ -11,6 +11,7 @@ import {UserService} from '../../services/user.service';
 
 export class LearnCourseSummaryComponent implements OnInit {
   @Input() course: Course;
+  @Input() userData: UserCourse = null;
   @Input() text: {};
   @Input() tpe: CourseListType;
   @Output() unsubscribe = new EventEmitter<string>();

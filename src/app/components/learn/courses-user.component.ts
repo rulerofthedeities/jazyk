@@ -4,7 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, Translation, CourseListType} from '../../models/course.model';
+import {Course, UserCourse, Language, Translation, CourseListType} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -23,8 +23,10 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private allCourses: Course[];
   private lanCourses: Map<Course[]> = {};
   courses: Course[];
+  userCourses: Map<UserCourse> = {};
   text: Object = {};
   listType = CourseListType;
+  coursesReady = false;
 
   constructor(
     private router: Router,
@@ -44,7 +46,6 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   }
 
   onUnsubscribe(courseId: string) {
-    console.log('unsubscribing', courseId);
     this.unsubscribeCourse(courseId);
   }
 
@@ -64,11 +65,19 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private getCourses() {
     if (this.userService.user) {
       this.learnService
-      .fetchUserCourses()
+      .fetchSubscribedCourses()
       .takeWhile(() => this.componentActive)
       .subscribe(
         courses => {
-          this.allCourses = courses;
+          if (courses) {
+            this.allCourses = courses.subscribed;
+            if (courses.data) {
+              courses.data.forEach((userCourse: UserCourse) => {
+                this.userCourses[userCourse.courseId] = userCourse;
+              });
+            }
+            this.coursesReady = true;
+          }
           this.getLanguages();
         },
         error => this.errorService.handleError(error)
