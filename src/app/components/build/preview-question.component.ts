@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType, Direction} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
-import {LanPair} from '../../models/course.model';
+import {LanPair, LessonOptions} from '../../models/course.model';
 
 @Component({
   selector: 'km-preview-question',
@@ -11,6 +11,7 @@ import {LanPair} from '../../models/course.model';
 
 export class PreviewQuestionComponent implements OnInit {
   @Input() exercise: Exercise;
+  @Input() lessonOptions: LessonOptions;
   @Input() text: Object;
   @Input() lanPair: LanPair;
   exType = ExerciseType;
@@ -25,7 +26,7 @@ export class PreviewQuestionComponent implements OnInit {
     console.log('preview', this.exercise);
     this.exerciseData = {
       exercise: this.exercise,
-      data: {},
+      data: {isCaseSensitive: this.lessonOptions.caseSensitive},
       result: {}
     };
     this.previewService.buildLocalData(this.exerciseData, this.text, this.exercise);

@@ -45,6 +45,10 @@ var ExerciseStepsSchema = new Schema({
   exam: ExerciseStepSchema
 }, {_id: false})
 
+var LessonOptionsSchema = new Schema({
+  caseSensitive: {type: Boolean, default: false}
+}, {_id: false})
+
 var lessonSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
@@ -53,10 +57,10 @@ var lessonSchema = new Schema({
   chapterName: String,
   exerciseSteps: ExerciseStepsSchema,
   exercises: [exerciseSchema],
+  options: {type: LessonOptionsSchema, required: true},
   intro: String,
   difficulty: Number,
   isPublished: Boolean,
-  caseSensitive: {type: Boolean, default: false},
   isDeleted: {type: Boolean, default: false}
 })
 

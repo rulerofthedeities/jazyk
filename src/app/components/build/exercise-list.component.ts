@@ -1,5 +1,5 @@
 import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
-import {LanPair} from '../../models/course.model';
+import {LanPair, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
@@ -16,6 +16,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() exercises: Exercise[];
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
+  @Input() lessonOptions: LessonOptions;
   @Input() text: Object;
   @Input() isBidirectional: boolean;
   @Output() removedExercise = new EventEmitter<number>();

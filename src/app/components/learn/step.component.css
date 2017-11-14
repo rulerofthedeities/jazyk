@@ -64,3 +64,12 @@
 .btn {
   margin-top: 2px;
 }
+.case {
+  border: 1px solid #ff5b00;
+  border-radius: 4px;
+  padding: 0 4px;
+  color: white;
+  background-color: #f0ad4e;
+  font-weight: bold;
+  font-size: 16px;
+}

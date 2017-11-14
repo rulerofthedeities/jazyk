@@ -64,7 +64,7 @@ module.exports = {
         name: lesson.name,
         exerciseSteps: lesson.exerciseSteps,
         chapterName : lesson.chapterName,
-        caseSensitive: lesson.caseSensitive
+        options: {caseSensitive: lesson.options.caseSensitive}
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating lesson header', function(){
         response.handleSuccess(res, result, 200, 'Updated lesson header');

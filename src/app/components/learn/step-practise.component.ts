@@ -210,14 +210,14 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
     this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
-      isBidirectional: this.options.bidirectional,
+      isBidirectional: this.stepOptions.bidirectional,
       direction: Direction.LocalToForeign
-    });
-    if (!this.options.ordered) {
+    }, this.lessonOptions);
+    if (!this.stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     this.setExerciseDataById();
-    this.getChoices('lesson', this.lessonId, this.options.bidirectional);
+    this.getChoices('lesson', this.lessonId, this.stepOptions.bidirectional);
   }
 
   protected soundLearnedLevel(learnLevel: number) {

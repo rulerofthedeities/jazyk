@@ -15,6 +15,7 @@
         </km-bullets>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
+          <div class="pull-right case" *ngIf="currentData?.data?.isCaseSensitive">Aa</div>
           <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
             <!-- IMAGE -->
             <div class="image" *ngIf="currentData.exercise.image">

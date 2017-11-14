@@ -24,7 +24,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() lessonId: string;
-  @Input() options: ExerciseStep;
+  @Input() stepOptions: ExerciseStep;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -220,8 +220,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
-    });
-    if (!this.options.ordered) {
+    }, {caseSensitive: false});
+    if (!this.stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     if (!this.isCountDown) {

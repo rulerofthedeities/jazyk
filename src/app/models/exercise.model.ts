@@ -77,6 +77,7 @@ export interface ExerciseExtraData {
   timeDelta?: number;
   learnLevel?: number;
   isLearned?: boolean;
+  isCaseSensitive?: boolean;
   questionType?: QuestionType;
 }
 

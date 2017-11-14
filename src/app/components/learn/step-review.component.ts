@@ -82,7 +82,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
       isBidirectional: true,
       direction: Direction.LocalToForeign
-    });
+    }, this.lessonOptions);
     this.exerciseData = this.previewService.shuffle(this.exerciseData);
     this.getChoices('course', this.courseId);
     this.setExerciseDataById();

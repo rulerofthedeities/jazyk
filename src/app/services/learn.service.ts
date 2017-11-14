@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Language, Course} from '../models/course.model';
+import {Language, Course, LessonOptions} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseResult} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
@@ -183,7 +183,8 @@ export class LearnService {
     exercises: Exercise[],
     results: ExerciseResult[],
     text: Object,
-    options: ExerciseOptions
+    stepOptions: ExerciseOptions,
+    lessonOptions: LessonOptions
     ): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
     // const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
@@ -193,16 +194,16 @@ export class LearnService {
       if (results) {
         filteredResult = results.filter(result => result && result.exerciseId === exercise._id)[0];
       }
-      if (options.isBidirectional) {
+      if (stepOptions.isBidirectional) {
         direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
       } else {
-        direction = options.direction;
+        direction = stepOptions.direction;
       }
-      exerciseData[j] = this.buildData(options, filteredResult, text, exercise, direction);
+      exerciseData[j] = this.buildData(stepOptions, lessonOptions, filteredResult, text, exercise, direction);
       j++;
       /*
-      if (options.isBidirectional) {
-        exerciseData[j] = this.buildData(options, filteredResult, text, exercise, inverseDirection);
+      if (stepOptions.isBidirectional) {
+        exerciseData[j] = this.buildData(stepOptions, filteredResult, text, exercise, inverseDirection);
         j++;
       }
       */
@@ -211,7 +212,8 @@ export class LearnService {
   }
 
   private buildData(
-    options: ExerciseOptions,
+    stepOptions: ExerciseOptions,
+    lessonOptions: LessonOptions,
     result: ExerciseResult,
     text: Object,
     exercise: Exercise,
@@ -222,16 +224,17 @@ export class LearnService {
         isDone: false,
         isCorrect: false,
         answered: 0,
-        direction: direction
+        direction: direction,
+        isCaseSensitive: lessonOptions.caseSensitive
       },
       exercise,
       result
     };
-    if (options.direction === Direction.ForeignToLocal) {
+    if (stepOptions.direction === Direction.ForeignToLocal) {
       // Add local data
       this.previewService.buildForeignData(newData, text, exercise);
     }
-    if (options.direction === Direction.LocalToForeign) {
+    if (stepOptions.direction === Direction.LocalToForeign) {
       // Add foreign data
       this.previewService.buildLocalData(newData, text, exercise);
     }

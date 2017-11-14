@@ -61,6 +61,10 @@ export interface Course {
   lessons?: LessonId[];
 }
 
+export interface LessonOptions {
+  caseSensitive: boolean;
+}
+
 export interface Lesson {
   _id?: string;
   courseId: string;
@@ -70,7 +74,7 @@ export interface Lesson {
   exerciseSteps: ExerciseSteps;
   exercises: Exercise[];
   difficulty: number;
-  caseSensitive: boolean;
+  options: LessonOptions;
   isPublished: boolean;
 }
 

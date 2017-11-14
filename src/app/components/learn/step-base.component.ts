@@ -4,7 +4,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {LanPair, LanConfig} from '../../models/course.model';
+import {LanPair, LanConfig, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -37,9 +37,10 @@ export abstract class Step {
   @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() settings: LearnSettings;
+  @Input() lessonOptions: LessonOptions;
   @Input() text: Object;
   @Input() lanPair: LanPair;
-  @Input() options: ExerciseStep;
+  @Input() stepOptions: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
@@ -454,7 +455,7 @@ export abstract class Step {
     newExerciseData.data.isAlmostCorrect = false;
     newExerciseData.data.grade = 0;
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
-    if (this.options.bidirectional) {
+    if (this.stepOptions.bidirectional) {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
     }
     const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
@@ -464,7 +465,7 @@ export abstract class Step {
       streak
     };
     this.exerciseData.push(newExerciseData);
-    if (!this.options.ordered) {
+    if (!this.stepOptions.ordered) {
       this.shuffleRemainingExercises();
     }
   }
