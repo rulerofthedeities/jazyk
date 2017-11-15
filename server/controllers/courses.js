@@ -18,7 +18,7 @@ let getCourse = function(req, res, authorOnly) {
     });
   } else {
     //invalid id
-    response.handleSuccess(res, null, 200, 'Invalid course id');
+    response.handleSuccess(res, null, 404, 'Invalid course id');
   }
 }
 

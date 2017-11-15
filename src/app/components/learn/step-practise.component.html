@@ -14,7 +14,7 @@
           [onNextExercise]="nextExercise">
         </km-bullets>
         <!-- EXERCISE -->
-        <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
+        <div *ngIf="!isExercisesDone && isQuestionReady" class="card" [class.preview]="isQuestionType(qType.Preview)">
           <div class="pull-right case" *ngIf="currentData?.data?.isCaseSensitive">Aa</div>
           <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
             <!-- IMAGE -->
@@ -66,6 +66,17 @@
             [text]="text"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-comparison>
+          <div *ngIf="isQuestionType(qType.Preview)" class="answer">
+            <h1 class="word">
+              <span>
+                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+              </span>
+              <span>
+                {{currentData.exercise?.local?.word}}
+                <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
+              </span>
+            </h1>
+          </div>
         </div>
         <!-- NO MORE EXERCISES -->
         <div *ngIf="noMoreExercises">
@@ -131,7 +142,8 @@
         </div>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
-        <km-learnlevel-bar
+        LEVEL BAR {{currentData?.data?.questionType}}
+        <km-learnlevel-bar *ngIf="currentData?.exercise?.tpe === exType.Word && currentData?.data?.questionType !== qType.Preview"
           [levelUpdated]="levelUpdated"
           [maxLevel]="learnedLevel">
         </km-learnlevel-bar>

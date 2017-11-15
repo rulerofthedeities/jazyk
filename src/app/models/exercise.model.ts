@@ -1,7 +1,7 @@
 export enum Direction {LocalToForeign, ForeignToLocal};
 export enum AnsweredType {Correct, Incorrect, AlmostCorrect, Alt};
 export enum ExerciseType {Word, Select, QA, FillIn, Genus, Comparison};
-export enum QuestionType {Choices, Word, Select, FillIn, Comparison};
+export enum QuestionType {Choices, Word, Select, FillIn, Comparison, Preview};
 
 interface ExerciseWord {
   word: string;

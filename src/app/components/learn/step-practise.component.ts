@@ -65,6 +65,14 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return isCorrect;
   }
 
+  getAlts(tpe: string, word: Exercise): string {
+    let altwords = '';
+    if (word && word[tpe] && word[tpe].alt) {
+      altwords = word[tpe].alt.split('|').join(', ');
+    }
+    return altwords;
+  }
+
   protected nextWord() {
     super.nextWord();
   }
@@ -105,6 +113,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
     // Determine if multiple choice or word
+    // If there is no study tab and the word is shown for the first time, question type is a preview
+    if (!this.hasStudyTab && !exercise.result && exercise.data.answered === 0) {
+      return QuestionType.Preview;
+    }
     let qTpe = QuestionType.Choices;
     const tpe = exercise.exercise.tpe || ExerciseType.Word;
     switch (tpe) {
@@ -223,6 +235,23 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   protected soundLearnedLevel(learnLevel: number) {
     if (learnLevel > this.learnedLevel) {
       this.audioService.playSound(this.isMute, this.beep);
+    }
+  }
+
+  protected previewDone() {
+    const currentExercise = this.exerciseData[this.current],
+          points = 2;
+    if (currentExercise) {
+      currentExercise.data.isDone = true;
+      currentExercise.data.isCorrect = true;
+      currentExercise.data.points = points;
+      if (!currentExercise.result) {
+        this.score = this.score + points;
+        currentExercise.data.points = points;
+      }
+      this.pointsEarned.next(points);
+      this.addExercise(null);
+      this.nextWord();
     }
   }
 

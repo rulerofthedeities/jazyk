@@ -7,7 +7,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult, ExerciseType} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseResult, ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
@@ -328,7 +328,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (data && data.length > 0) { // No data for study repeats
       data.forEach( (item, i) => {
         console.log('result', item);
-        streak[item.exercise._id] = this.buildStreak(item.exercise.tpe, streak[item.exercise._id], item.result, item.data.isCorrect);
+        streak[item.exercise._id] = this.buildStreak(item.data.questionType, streak[item.exercise._id], item.result, item.data.isCorrect);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
@@ -367,16 +367,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildStreak(tpe: number, streak: string, result: ExerciseResult, isCorrect: boolean): string {
+  private buildStreak(qTpe: QuestionType, streak: string, result: ExerciseResult, isCorrect: boolean): string {
     let newStreak = '';
 
     if (result) {
       newStreak = streak || result.streak || '';
     }
-    if (isCorrect) {
-      newStreak = newStreak + '1';
-    } else {
-      newStreak = newStreak + '0';
+    if (qTpe !== QuestionType.Preview) {
+      if (isCorrect) {
+        newStreak = newStreak + '1';
+      } else {
+        newStreak = newStreak + '0';
+      }
     }
 
     newStreak = newStreak.slice(0, this.maxStreak);
@@ -416,8 +418,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     console.log('algo - calculating review time for', exercise);
     if (exercise) {
       const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
-            dateLastReviewed = exercise.result.dt,
-            daysBetweenReviews = exercise.result.daysBetweenReviews || 0.25,
+            dateLastReviewed = exercise.result ? exercise.result.dt : new Date(),
+            daysBetweenReviews = exercise.result ? exercise.result.daysBetweenReviews || 0.25 : 0.25,
             performanceRating = exercise.data.grade / 5 || 0.6;
       let difficultyPerc = difficulty / 100 || 0.3,
           percentOverdue = 1,

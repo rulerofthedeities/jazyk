@@ -168,14 +168,18 @@ export abstract class Step {
       case QuestionType.Comparison:
         this.checkIfComparisonAnswer();
       break;
+      case QuestionType.Preview:
+        this.previewDone();
+      break;
     }
   }
 
   getQuestionDir(): string {
     let tpe = 'local';
     if (this.currentData) {
-      if (this.currentData.data.questionType === QuestionType.Choices
-        && this.currentData.data.direction === Direction.ForeignToLocal) {
+      if ((this.currentData.data.questionType === QuestionType.Choices
+        && this.currentData.data.direction === Direction.ForeignToLocal)
+        || this.currentData.data.questionType === QuestionType.Preview) {
         tpe = 'foreign';
       }
     }
@@ -261,6 +265,10 @@ export abstract class Step {
     } else {
       this.nextWord();
     }
+  }
+
+  protected previewDone() {
+    // Only in practise
   }
 
   protected nextWord() {
@@ -449,6 +457,7 @@ export abstract class Step {
       data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
       exercise: this.exerciseData[this.current].exercise
     };
+    let streak = '';
     newExerciseData.data.isCorrect = false;
     newExerciseData.data.isDone = false;
     newExerciseData.data.isAlt = false;
@@ -458,7 +467,9 @@ export abstract class Step {
     if (this.stepOptions.bidirectional) {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
     }
-    const streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
+    if (isCorrect !== null) {
+      streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
+    }
     newExerciseData.result = {
       learnLevel: newExerciseData.data.learnLevel,
       points: 0,
@@ -474,11 +485,21 @@ export abstract class Step {
     const original = this.exercises.length,
           total = this.exerciseData.length,
           nrDone = this.current + 1, // skip next
-          done = this.exerciseData.slice(0, nrDone);
-    if (nrDone > original && total - nrDone > 2) {
-      const todo = this.exerciseData.slice(nrDone, total),
+          done = this.exerciseData.slice(0, nrDone),
+          doShuffle = nrDone > original && total - nrDone > 2;
+    let forceShuffle = false;
+    if (this.exerciseData[this.current]) {
+      forceShuffle = this.exerciseData[this.current].data.questionType === QuestionType.Preview;
+    }
+    if (forceShuffle || doShuffle) {
+      const skipLast = total > 1 ? 1 : 0, // To prevent repeats, do not shuffle last entry
+            last = this.exerciseData.slice(-1),
+            todo = this.exerciseData.slice(nrDone, total - skipLast),
             shuffled = this.previewService.shuffle(todo);
       this.exerciseData = done.concat(shuffled);
+      if (skipLast === 1) {
+        this.exerciseData = this.exerciseData.concat(last);
+      }
     }
   }
 

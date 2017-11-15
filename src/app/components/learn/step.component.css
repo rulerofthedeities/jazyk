@@ -17,6 +17,10 @@
   margin: 20px 0;
   background-color: white;
 }
+.preview {
+  background-color: #fbfaf1;
+  border-color: #dcca53;
+}
 .bullets{
   color: grey;
   font-size: 18px;
@@ -72,4 +76,8 @@
   background-color: #f0ad4e;
   font-weight: bold;
   font-size: 16px;
+}
+.alts {
+  font-size: 20px;
+  margin-left: 42px;
 }
