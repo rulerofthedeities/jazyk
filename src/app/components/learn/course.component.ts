@@ -86,6 +86,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       params => {
         if (params['id']) {
           this.courseId = params['id'];
+          this.courseStep = this.validateCourseStep(params['step']);
           this.getTranslations();
         }
       }
@@ -156,6 +157,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   capitalize(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  private validateCourseStep(step: string): string {
+    if (step === 'review' || step === 'difficult' || step === 'exam') {
+      return step;
+    } else {
+      this.router.navigate(['/learn/course/' + this.courseId]);
+    }
   }
 
   private nextStep() {

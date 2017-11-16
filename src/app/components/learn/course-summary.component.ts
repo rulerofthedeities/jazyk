@@ -44,6 +44,7 @@ export class LearnCourseSummaryComponent implements OnInit {
   onContinueCourse(step: string) {
     const steproute = step ? '/' + step : '';
     this.userService.continueCourse(this.course);
+    console.log('go to course', '/learn/course/' + this.course._id + steproute);
     this.router.navigate(['/learn/course/' + this.course._id + steproute]);
   }
 

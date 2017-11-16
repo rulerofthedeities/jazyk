@@ -13,6 +13,10 @@ export const routes: Routes = [
     component: LearnCourseComponent
   },
   {
+    path: 'course/:id/:step',
+    component: LearnCourseComponent
+  },
+  {
     path: 'courses',
     component: LearnCoursesComponent
   }
