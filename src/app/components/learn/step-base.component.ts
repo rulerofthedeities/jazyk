@@ -33,6 +33,11 @@ interface LearnLevelData {
   almostCorrect: boolean;
 }
 
+interface DlData { //DamerauLevenshteinDistance
+  index: number;
+  dl: number;
+}
+
 export abstract class Step {
   @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
@@ -224,9 +229,9 @@ export abstract class Step {
     }
   }
 
-  protected getChoices(tpe: string, id: string, isBidirectional: boolean = true) {
+  protected getChoices(courseId: string, isBidirectional: boolean = true) {
     this.learnService
-    .fetchChoices(tpe, id, isBidirectional)
+    .fetchCourseChoices(courseId, isBidirectional)
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
@@ -691,8 +696,7 @@ export abstract class Step {
   protected setChoices() {
     // Select random words from choices array
     let choice: string,
-        rand: number,
-        availableChoices: string[];
+        availableChoices: Choice[];
     const learnLevel = this.getCurrentLearnLevel(this.currentData),
           exercise = this.currentData.exercise,
           direction = this.currentData.data.direction,
@@ -700,18 +704,60 @@ export abstract class Step {
           nrOfChoices = this.getNrOfChoices(learnLevel),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
 
-    availableChoices = this.choices.map(c => direction === Direction.ForeignToLocal ? c.local : c.foreign);
+    availableChoices = this.choices.map(c => c);
     choices.push(word);
     console.log('Available choices', availableChoices);
     while (choices.length < nrOfChoices && availableChoices) {
-      rand = Math.floor(Math.random() * availableChoices.length);
-      choice = availableChoices[rand];
-      availableChoices.splice(rand, 1);
+      choice = this.selectChoice(availableChoices, exercise, direction);
       if (!choices.find(choiceItem => choiceItem === choice)) {
         choices.push(choice);
       }
     }
     this.currentChoices = this.previewService.shuffle(choices);
+  }
+
+  private selectChoice(choices: Choice[], exercise: Exercise, direction: Direction): string {
+    let selected: number,
+        selectedChoice: string;
+    // random, sorted by proximity foreign or sorted by proximity local
+      switch (Math.floor(Math.random() * 3)) {
+      case 0:
+        // random
+        selected = Math.floor(Math.random() * choices.length);
+        console.log('random choice', selected);
+        break;
+      case 1:
+        // sorted by proximity foreign
+        selected = this.getNearestChoice('foreign', choices, exercise.foreign.word);
+        console.log('choice by proximity foreign', selected);
+        break;
+      case 2:
+        // sorted by proximity local
+        selected = this.getNearestChoice('local', choices, exercise.local.word);
+        console.log('choice by proximity local', selected);
+        break;
+    }
+    selectedChoice = direction === Direction.ForeignToLocal ? choices[selected].local : choices[selected].foreign;
+    choices.splice(selected, 1);
+    return selectedChoice;
+  }
+
+  private getNearestChoice(dir: string, choices: Choice[], word: string): number {
+    let dl: number;
+    let nearest: DlData;
+    choices.forEach((choice, i) => {
+      if (word !== choice[dir]) {
+        dl = this.previewService.getDamerauLevenshteinDistance(word, choice[dir]);
+        if (!nearest || dl < nearest.dl) {
+          nearest = {index: i, dl};
+        }
+      }
+    });
+    if (nearest.dl > 9) { // no near match, select random anyway
+      return Math.floor(Math.random() * choices.length);
+    } else {
+      return nearest.index || 0;
+    }
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {

@@ -75,6 +75,7 @@ export class LearnService {
 
   /*** Choices ***/
 
+/*
   fetchChoices(tpe: string, id: string, isBidirectional: boolean) {
     if (tpe === 'course') {
       return this.fetchCourseChoices(id, isBidirectional);
@@ -89,8 +90,8 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-
-  private fetchCourseChoices(courseId: string, isBidirectional: boolean) {
+*/
+  fetchCourseChoices(courseId: string, isBidirectional: boolean) {
     return this.http
     .get('/api/choices/course/' + courseId)
     .map(response => response.json().obj)
@@ -277,7 +278,6 @@ export class LearnService {
         filteredWord = filteredWord.trim();
       }
     }
-    console.log('Filtered:', word, filteredWord);
     return filteredWord;
   }
 

@@ -84,7 +84,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
       direction: Direction.LocalToForeign
     }, this.lessonOptions);
     this.exerciseData = this.previewService.shuffle(this.exerciseData);
-    this.getChoices('course', this.courseId);
+    this.getChoices(this.courseId, true);
     this.setExerciseDataById();
   }
 

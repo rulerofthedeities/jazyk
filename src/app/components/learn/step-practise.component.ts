@@ -23,6 +23,7 @@ interface Map<T> {
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() lessonId: string;
+  @Input() courseId: string;
   @Input() learnedLevel: number;
   @Input() hasStudyTab: boolean;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -229,7 +230,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     this.setExerciseDataById();
-    this.getChoices('lesson', this.lessonId, this.stepOptions.bidirectional);
+    this.getChoices(this.courseId, this.stepOptions.bidirectional);
   }
 
   protected soundLearnedLevel(learnLevel: number) {

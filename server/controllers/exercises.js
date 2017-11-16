@@ -152,6 +152,7 @@ module.exports = {
       }
     );
   },
+  /*
   getLessonChoices: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
@@ -168,21 +169,22 @@ module.exports = {
         response.handleSuccess(res, docs, 200, 'Fetched choices');
       });
     });
-  },
+  },*/
   getCourseChoices: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           max = 200,
+          query = {courseId},
           projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
 
+      console.log('Course choices:', query);
     const pipeline = [
-      {$match: {courseId}},
+      {$match: query},
       {$unwind: '$exercises'},
+      {$match: {'exercises.tpe': 0}},
       {$sample: {size: max}},
       {$project: projection}
     ];
-
     Lesson.aggregate(pipeline, function(err, docs) {
-      console.log('Course choices:', docs);
       response.handleError(err, res, 500, 'Error fetching choices', function(){
         response.handleSuccess(res, docs, 200, 'Fetched choices');
       });
