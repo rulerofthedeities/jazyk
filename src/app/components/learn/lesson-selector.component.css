@@ -23,6 +23,7 @@
 }
 .panel-lesson .panel {
   border-top-right-radius: 0;
+  height: 64px;
 }
 .panel-course .panel {
   border-top-left-radius: 0;

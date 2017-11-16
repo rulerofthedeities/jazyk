@@ -4,7 +4,7 @@
       <!-- LESSON SELECTOR READ MODE -->
       <div class="panel panel-default title" *ngIf="!showSelector">
         <div class="panel-body">
-          <div class="btn btn-warning pull-right" *ngIf="!showSelector" (click)="onToggleEdit()">
+          <div class="btn btn-warning pull-right" *ngIf="!showSelector && courseLevel===level.Lesson" (click)="onToggleEdit()">
             {{text['ChangeLesson']}}
           </div>
           <h3>

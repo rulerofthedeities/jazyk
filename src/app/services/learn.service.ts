@@ -75,22 +75,6 @@ export class LearnService {
 
   /*** Choices ***/
 
-/*
-  fetchChoices(tpe: string, id: string, isBidirectional: boolean) {
-    if (tpe === 'course') {
-      return this.fetchCourseChoices(id, isBidirectional);
-    } else {
-      return this.fetchLessonChoices(id, isBidirectional);
-    }
-  }
-
-  private fetchLessonChoices(lessonId: string, isBidirectional: boolean) {
-    return this.http
-    .get('/api/choices/lesson/' + lessonId)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-*/
   fetchCourseChoices(courseId: string, isBidirectional: boolean) {
     return this.http
     .get('/api/choices/course/' + courseId)
@@ -139,19 +123,19 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchLessonStepData(lessonId: string) {
-    const headers = this.getTokenHeaders();
-    return this.http
-    .get('/api/user/results/lesson/countbystep/' + lessonId, {headers})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
-  }
-
   fetchMostRecentLesson(courseId: string) {
     // Get the most recent lesson saved for this course
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/user/results/course/currentlesson/' + courseId, {headers})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchStepData(courseId: string, lessonId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/results/countbystep/' + courseId + '/' + lessonId, {headers})
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }

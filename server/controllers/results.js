@@ -232,16 +232,19 @@ module.exports = {
       });
     })
   },
-  getResultsDone: function(req, res) {
+  getStepCount: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]};
-    console.log('getting results done', userId, lessonId, query);
-    const pipeline = [
-      {$match: query},
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          sort = {dt:-1, sequence: -1},
+          lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
+          difficultQuery = {userId, courseId, isDifficult: true};
+    const lessonPipeline = [
+      {$match: lessonQuery},
+      {$sort: sort},
       {$group: {
         _id: {exerciseId:'$exerciseId', step: '$step'},
-        firstStep: {'$first': '$step'},
+        firstStep: {'$first': '$step'}
       }},
       {$group: {
         _id:'$firstStep',
@@ -253,13 +256,30 @@ module.exports = {
         nrDone: 1
       }}
     ];
+    const difficultPipeline = [
+      {$match: difficultQuery},
+      {$sort: sort},
+      {$group: {
+        _id: {exerciseId:'$exerciseId'}
+      }},
+      {$project: {
+        _id:0,
+        exerciseId: '$_id'
+      }}
+    ];
 
-    Result.aggregate(pipeline, function(err, results) {
-      console.log('resultDone', results);
-      response.handleError(err, res, 500, 'Error fetching done results', function(){
-        response.handleSuccess(res, results, 200, 'Fetched done results');
-      });
+    const getCount = async (userId) => {
+      const lesson = await  Result.aggregate(lessonPipeline);
+      const difficult = await Result.aggregate(difficultPipeline);
+      return {lesson, difficult};
+    };
+
+    getCount().then((results) => {
+      response.handleSuccess(res, results, 200, 'Fetched count steps');
+    }).catch((err) => {
+      response.handleError(err, res, 500, 'Error fetching count steps');
     });
+
   },
   getToReview: function(req, res) {
     const parms = req.query,

@@ -60,7 +60,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   currentStep = 0;
   steps: Step[];
   courseLevel: Level;
-  isReady = false;
   isStepsReady = false;
   exercisesStarted = false;
   maxStreak = 20;
@@ -79,7 +78,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.courseLevel = Level.Lesson;
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
@@ -148,11 +146,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onLessonSelected(lesson: Lesson) {
-    if (lesson) {
+    console.log('LESSON SELECTED');
+    if (lesson && !this.courseStep) {
       this.lesson = lesson;
-      this.getLessonStepData();
     }
-    this.isReady = true;
+    console.log('get course step data');
+    this.getStepData();
   }
 
   capitalize(word: string): string {
@@ -160,10 +159,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private validateCourseStep(step: string): string {
-    if (step === 'review' || step === 'difficult' || step === 'exam') {
-      return step;
+    console.log('validating course step', step);
+    if (step) {
+      if (step === 'review' || step === 'difficult' || step === 'exam') {
+        this.courseLevel = Level.Course;
+        return step;
+      } else {
+        this.router.navigate(['/learn/course/' + this.courseId]);
+      }
     } else {
-      this.router.navigate(['/learn/course/' + this.courseId]);
+      this.courseLevel = Level.Lesson;
     }
   }
 
@@ -217,17 +222,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getLessonStepData() {
+  private getStepData() {
+    this.setSteps();
     this.learnService
-    .fetchLessonStepData(this.lesson._id)
+    .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        this.setSteps();
-        this.getStepCount(results);
-        this.setDefaultStep(results.length);
-
-        console.log('EXERCISES', this.lesson.exercises);
+        if (results) {
+          console.log('difficult results:', results.difficult);
+          this.getLessonStepCount(results.lesson);
+          this.setDefaultLessonStep(results.lesson.length);
+          this.isStepsReady = true;
+        }
       },
       error => this.errorService.handleError(error)
     );
@@ -241,25 +248,28 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.steps.push(step);
       }
     });
-    this.isStepsReady = true;
   }
 
   private showStep(step: Step): boolean {
     if (step.alwaysShown) {
       return true;
     }
-    if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
-      if (step.name === 'study') {
-        // Check if there are words to study
-        const word = this.lesson.exercises.find(exercise => exercise.tpe === ExerciseType.Word);
-        return word ? true : false;
-      } else {
-        return true;
+    if (this.courseLevel === Level.Lesson) {
+      if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
+        if (step.name === 'study') {
+          // Check if there are words to study
+          const word = this.lesson.exercises.find(exercise => exercise.tpe === ExerciseType.Word);
+          return word ? true : false;
+        } else {
+          return true;
+        }
       }
+    } else {
+      return true; // Exam to be defined
     }
   }
 
-  private setDefaultStep(results: number) {
+  private setDefaultLessonStep(results: number) {
     let defaultStep = 0;
     if (results > 0) {
       // When pressing button 'continue course'
@@ -295,7 +305,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return stepNr;
   }
 
-  private getStepCount(results: StepCount[]) {
+  private getLessonStepCount(results: StepCount[]) {
     console.log('RESULTS', results);
     this.countPerStep = {};
     let total: number;

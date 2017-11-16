@@ -145,9 +145,9 @@ export class UtilsService {
         alwaysShown: true
       },
       {
-        name: 'review',
+        name: 'exam',
         level: Level.Course,
-        alwaysShown: true
+        alwaysShown: false
       },
       {
         name: 'difficult',
@@ -155,9 +155,9 @@ export class UtilsService {
         alwaysShown: true
       },
       {
-        name: 'exam',
+        name: 'review',
         level: Level.Course,
-        alwaysShown: false
+        alwaysShown: true
       }
     ];
   }
