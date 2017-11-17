@@ -25,8 +25,8 @@ export class LearnCourseSummaryComponent implements OnInit {
 
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
-    if (this.tpe === CourseListType.Learn && this.course.exercisesDone) {
-      this.percDone = Math.floor(this.course.exercisesDone / this.course.totalCount);
+    if (this.tpe === CourseListType.Learn) {
+      this.percDone = 0; // Todo : get count done
     }
   }
 

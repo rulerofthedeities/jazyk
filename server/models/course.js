@@ -38,7 +38,6 @@ var courseSchema = new Schema({
     lessons: [lessonSchema],
     totalCount: {type: Number, default: 0},
     wordCount: {type: Number, default: 0},
-    exercisesDone: {type: Number, default: 0},
     dtAdded: {type: Date, default: Date.now}
   }, {collection: 'courses'}
 );

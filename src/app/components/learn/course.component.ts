@@ -314,6 +314,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.countPerStep['difficult'].nrRemaining = count.difficult;
+    this.countPerStep['review'].nrRemaining = count.review;
   }
 
   private getLessonStepCount(results: StepCount[]) {

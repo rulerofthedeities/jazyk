@@ -238,7 +238,8 @@ module.exports = {
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           sort = {dt:-1, sequence: -1},
           lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
-          difficultQuery = {userId, courseId, isDifficult: true};
+          difficultQuery = {userId, courseId, isDifficult: true},
+          reviewQuery = {userId, courseId, dtToReview: {$lt: new Date()}};
     const lessonPipeline = [
       {$match: lessonQuery},
       {$sort: sort},
@@ -266,13 +267,25 @@ module.exports = {
         _id:0
       }}
     ];
+    const reviewPipeline = [
+      {$match: reviewQuery},
+      {$sort: sort},
+      {$group: {
+        _id: {exerciseId:'$exerciseId'}
+      }},
+      {$project: {
+        _id:0
+      }}
+    ];
 
     const getCount = async (userId) => {
       const lesson = await  Result.aggregate(lessonPipeline);
       const difficult = await Result.aggregate(difficultPipeline);
+      const review = await Result.aggregate(reviewPipeline);
       return {
         lesson,
-        difficult: difficult.length
+        difficult: difficult.length,
+        review: review.length
       };
     };
 

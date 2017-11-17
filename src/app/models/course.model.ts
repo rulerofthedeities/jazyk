@@ -56,7 +56,6 @@ export interface Course {
   totalCount: number;
   wordCount: number;
   exercisesCount?: number;
-  exercisesDone?: number;
   chapters: string[];
   lessons?: LessonId[];
 }
