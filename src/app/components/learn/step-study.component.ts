@@ -186,7 +186,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('results', results);
+        console.log('study results', results);
         if (results) {
           this.getNewQuestions(results);
         }

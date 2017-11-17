@@ -146,12 +146,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onLessonSelected(lesson: Lesson) {
-    console.log('LESSON SELECTED');
-    if (lesson && !this.courseStep) {
+    console.log('LESSON SELECTED', lesson);
+    if (lesson) {
       this.lesson = lesson;
+      this.getStepData();
     }
-    console.log('get course step data');
-    this.getStepData();
   }
 
   capitalize(word: string): string {
@@ -224,16 +223,21 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getStepData() {
     this.setSteps();
+    console.log('getting step data for ', this.courseId, this.lesson._id);
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
+        console.log('results!:', results);
         if (results) {
-          console.log('difficult results:', results.difficult);
           this.getCourseStepCount(results);
           this.getLessonStepCount(results.lesson);
-          this.setDefaultLessonStep(results.lesson.length);
+          if (this.courseLevel === Level.Lesson) {
+            this.setDefaultLessonStep(results.lesson.length);
+          } else {
+            this.setCourseStep();
+          }
           this.isStepsReady = true;
         }
       },
@@ -255,18 +259,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (step.alwaysShown) {
       return true;
     }
-    if (this.courseLevel === Level.Lesson) {
-      if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
-        if (step.name === 'study') {
-          // Check if there are words to study
-          const word = this.lesson.exercises.find(exercise => exercise.tpe === ExerciseType.Word);
-          return word ? true : false;
-        } else {
-          return true;
-        }
+    if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
+      if (step.name === 'study') {
+        // Check if there are words to study
+        const word = this.lesson.exercises.find(exercise => exercise.tpe === ExerciseType.Word);
+        return word ? true : false;
+      } else if (step.name === 'exam') {
+        return this.learnService.getExamCount(this.course.totalCount) > 0 ? true : false;
+      } else {
+        return true;
       }
-    } else {
-      return true; // Exam to be defined
     }
   }
 
@@ -292,6 +294,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.currentStep = defaultStep;
   }
 
+  private setCourseStep() {
+    const step = this.courseStep;
+    if (this.hasStep(step)) {
+      this.currentStep = this.getStepNr(step);
+    }
+  }
+
   hasStep(stepName: string): boolean {
     return this.steps.find(step => step.name === stepName) ? true : false;
   }
@@ -315,6 +324,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     });
     this.countPerStep['difficult'].nrRemaining = count.difficult;
     this.countPerStep['review'].nrRemaining = count.review;
+    if (this.countPerStep['exam']) {
+      this.countPerStep['exam'].nrRemaining = this.learnService.getExamCount(this.course.totalCount);
+    }
   }
 
   private getLessonStepCount(results: StepCount[]) {

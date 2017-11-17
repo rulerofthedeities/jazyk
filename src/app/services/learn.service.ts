@@ -265,6 +265,19 @@ export class LearnService {
     return filteredWord;
   }
 
+  getExamCount(totalCount: number): number {
+    // Define # of exam exercises depending on total count
+    let examCount = 0;
+    if (totalCount >= 2000) {
+      examCount = 200;
+    } else if (totalCount >= 1000) {
+      examCount = 100;
+    } else if (totalCount >= 500) {
+      examCount = 50;
+    }
+    return examCount;
+  }
+
   /*** Config ***/
 
   fetchLanConfig(lanCode: string) {

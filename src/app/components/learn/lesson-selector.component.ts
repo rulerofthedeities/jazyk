@@ -51,12 +51,12 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
       this.navigateLesson(lessonId, 1);
     });
     this.getCourseChapters();
-    if (this.courseLevel === Level.Lesson) {
+    // if (this.courseLevel === Level.Lesson) {
       this.getLessons();
-    } else {
+    // } else {
       // This is a course level review or exam
       this.currentLesson.emit(null);
-    }
+    // }
   }
 
   onPreviousChapter(chapterName: string) {

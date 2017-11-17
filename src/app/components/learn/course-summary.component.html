@@ -78,12 +78,12 @@
         <div 
           class="progress-bar progress-bar-striped" 
           role="progressbar" 
-          [attr.aria-valuenow]="course.exercisesDone"
+          [attr.aria-valuenow]=""
           aria-valuemin="0"
-          [attr.aria-valuemax]="course.exerciseCount" 
+          [attr.aria-valuemax]="course.totalCount" 
           [style.width.%]="percDone">
           <span>
-            {{course.exercisesDone}}/{{course.totalCount}} ({{percDone}}%)
+            /{{course.totalCount}} ({{percDone}}%)
           </span>
         </div>
       </div> 
