@@ -263,18 +263,21 @@ module.exports = {
         _id: {exerciseId:'$exerciseId'}
       }},
       {$project: {
-        _id:0,
-        exerciseId: '$_id'
+        _id:0
       }}
     ];
 
     const getCount = async (userId) => {
       const lesson = await  Result.aggregate(lessonPipeline);
       const difficult = await Result.aggregate(difficultPipeline);
-      return {lesson, difficult};
+      return {
+        lesson,
+        difficult: difficult.length
+      };
     };
 
     getCount().then((results) => {
+      console.log('COUNT RESULTS', results);
       response.handleSuccess(res, results, 200, 'Fetched count steps');
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching count steps');

@@ -231,6 +231,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       results => {
         if (results) {
           console.log('difficult results:', results.difficult);
+          this.getCourseStepCount(results);
           this.getLessonStepCount(results.lesson);
           this.setDefaultLessonStep(results.lesson.length);
           this.isStepsReady = true;
@@ -305,9 +306,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return stepNr;
   }
 
+  private getCourseStepCount(count: any) {
+    // Fill in default step count
+    this.steps.forEach(step => {
+      if (step.level === Level.Course && !this.countPerStep[step.name]) {
+        this.countPerStep[step.name] = {nrDone: 0, nrRemaining: 0};
+      }
+    });
+    this.countPerStep['difficult'].nrRemaining = count.difficult;
+  }
+
   private getLessonStepCount(results: StepCount[]) {
-    console.log('RESULTS', results);
-    this.countPerStep = {};
+    console.log('Step count', results);
     let total: number;
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;

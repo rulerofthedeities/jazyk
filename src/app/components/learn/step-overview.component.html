@@ -32,13 +32,6 @@
       </span>
     </span>
     <span>
-      <span class="fa fa-bookmark" *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"></span>
-      <span class="fa fa-bookmark-o" *ngIf="exercise.exercise.tpe !== exType.Word"></span>
-    </span>
-    <span>
-      <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
-    </span>
-    <span>
       <span class="fa fa-flag" *ngIf="exercise.result?.isDifficult"></span>
     </span>
   </div>
@@ -61,8 +54,17 @@
     </div>
   </div>
   <div class="col-xs-1 text-center">
-    <div *ngIf="exercise.result && exercise.result.learnLevel !== null && !exercise.result.isLearned">
-      {{exercise.result.learnLevel}} / {{isLearnedLevel}}
+    <div *ngIf="exercise.result && exercise.result.learnLevel !== null">
+      <span>
+        <span class="fa fa-bookmark" *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"></span>
+        <span class="fa fa-bookmark-o" *ngIf="exercise.exercise.tpe !== exType.Word"></span>
+      </span>
+      <span *ngIf="exercise.result.isLearned">
+        <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
+      </span>
+      <span *ngIf="!exercise.result.isLearned" class="learn-progress">
+        {{exercise.result.learnLevel}} / {{isLearnedLevel}}
+      </span>
     </div>
   </div>
   <div class="col-xs-1 text-right">

@@ -40,3 +40,8 @@
 .fa-flag {
   color: DarkOrange;
 }
+.learn-progress {
+  font-size: 12px;
+  position: relative;
+  top: -2px;
+}

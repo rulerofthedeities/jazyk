@@ -5,11 +5,11 @@
   border-bottom-right-radius: 0;
   height: 100%;
 }
-.panel-lesson, .panel-course {
+.panel-lesson .panel, .panel-course .panel {
   height: 64px;
   margin-bottom: 0;
 }
-.panel-lesson.edit, .panel-course.edit {
+.panel-lesson.edit .panel, .panel-course.edit .panel {
   height: 148px;
 }
 .panel-lesson {
@@ -23,7 +23,6 @@
 }
 .panel-lesson .panel {
   border-top-right-radius: 0;
-  height: 64px;
 }
 .panel-course .panel {
   border-top-left-radius: 0;
