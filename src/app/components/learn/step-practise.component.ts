@@ -198,7 +198,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
-    console.log('getting words for practise');
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
     this.exercises.forEach(exercise => {
@@ -217,6 +216,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         }
       }
     });
+    console.log('words for practise', newExercises);
     this.buildExerciseData(newExercises, newResults);
     return leftToStudy;
   }

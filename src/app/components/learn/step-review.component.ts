@@ -55,7 +55,8 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .subscribe(
       results => {
         console.log('results for exercises to review', results);
-        this.loadExercises(results);
+        // GET EXERCISES DIRECTLY FROM BACKEND !!!
+        // this.loadExercises(results);
       },
       error => this.errorService.handleError(error)
     );

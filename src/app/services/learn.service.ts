@@ -184,25 +184,27 @@ export class LearnService {
     const exerciseData: ExerciseData[] = [];
     // const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
     let j = 0, filteredResult: ExerciseResult, direction;
-    exercises.forEach( (exercise) => {
-      filteredResult = null;
-      if (results) {
-        filteredResult = results.filter(result => result && result.exerciseId === exercise._id)[0];
-      }
-      if (stepOptions.isBidirectional) {
-        direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
-      } else {
-        direction = stepOptions.direction;
-      }
-      exerciseData[j] = this.buildData(stepOptions, lessonOptions, filteredResult, text, exercise, direction);
-      j++;
-      /*
-      if (stepOptions.isBidirectional) {
-        exerciseData[j] = this.buildData(stepOptions, filteredResult, text, exercise, inverseDirection);
+    if (exercises) {
+      exercises.forEach( (exercise) => {
+        filteredResult = null;
+        if (results) {
+          filteredResult = results.filter(result => result && result.exerciseId === exercise._id)[0];
+        }
+        if (stepOptions.isBidirectional) {
+          direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
+        } else {
+          direction = stepOptions.direction;
+        }
+        exerciseData[j] = this.buildData(stepOptions, lessonOptions, filteredResult, text, exercise, direction);
         j++;
-      }
-      */
-    });
+        /*
+        if (stepOptions.isBidirectional) {
+          exerciseData[j] = this.buildData(stepOptions, filteredResult, text, exercise, inverseDirection);
+          j++;
+        }
+        */
+      });
+    }
     return exerciseData;
   }
 

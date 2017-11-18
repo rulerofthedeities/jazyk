@@ -95,7 +95,8 @@ getExercises = function(courseId, difficultIds, cb) {
           {$match: {courseId}},
           {$unwind: '$exercises'},
           {$match: query},
-          {$project: {_id: 0, exercise: '$exercises'}}
+          {$project: {_id: 0, exercise: '$exercises'}},
+          {$replaceRoot: {newRoot: "$exercise"}}
         ];
   Lesson.aggregate(pipeline, function(err, exercises) {
     cb(err, exercises || []);
@@ -228,7 +229,6 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      console.log('result OVERVIEW', results);
       response.handleError(err, res, 500, 'Error fetching overview results', function(){
         response.handleSuccess(res, results, 200, 'Fetched overview results');
       });
@@ -236,7 +236,6 @@ module.exports = {
   },
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
-    console.log('getting current lesson');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId);
     Result.findOne({courseId}, {_id: 0, lessonId: 1}, {sort: {dt: -1, sequence: -1}}, function(err, result) {
@@ -304,7 +303,6 @@ module.exports = {
     };
 
     getCount().then((results) => {
-      console.log('COUNT RESULTS', results);
       response.handleSuccess(res, results, 200, 'Fetched count steps');
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching count steps');
@@ -321,16 +319,20 @@ module.exports = {
     const pipeline = [
       {$match: query},
       {$group: {
-        _id: {
-          exerciseId: '$exerciseId',
-          lessonId: '$lessonId'
-        }
+        _id: '$exerciseId',
+        dtToReview: {'$first': '$dtToReview'},
+        dt: {'$first': '$dt'},
+        streak: {'$first': '$streak'},
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
       }},
       {$sample: {size: limit}},
       {$project: {
         _id: 0,
-        exerciseId: '$_id.exerciseId',
-        lessonId: '$_id.lessonId'
+        exerciseId: '$_id',
+        dtToReview: '$dtToReview',
+        dt: '$dt',
+        streak: '$streak',
+        daysBetweenReviews: '$daysBetweenReviews'
       }}
     ];
 
@@ -338,9 +340,7 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
         getExercises(courseId, results, function(err, difficult) {
           response.handleError(err, res, 400, 'Error fetching difficult exercises', function(){
-            console.log('DIFFICULT 2', difficult);
-            const result = difficult.map(exercise => exercise.exercise);
-            response.handleSuccess(res, result, 200, 'Fetched difficult exercises');
+            response.handleSuccess(res, {difficult, results}, 200, 'Fetched difficult exercises');
           });
         });
       });
@@ -376,7 +376,6 @@ module.exports = {
     console.log('getting data for review for course', courseId, 'limit:', limit);
 
     Result.aggregate(pipeline, function(err, results) {
-      console.log('resultsToReview', results);
       response.handleError(err, res, 500, 'Error fetching to review results', function(){
         response.handleSuccess(res, results, 200, 'Fetched to review results');
       });
