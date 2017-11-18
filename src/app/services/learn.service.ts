@@ -162,6 +162,7 @@ export class LearnService {
 
   /*** Exercises ***/
 
+  /*
   fetchExercises(courseId: string, exerciseIds: string[]) {
     const token = this.authService.getToken(),
           params = new URLSearchParams();
@@ -173,6 +174,7 @@ export class LearnService {
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
+  */
 
   buildExerciseData(
     exercises: Exercise[],

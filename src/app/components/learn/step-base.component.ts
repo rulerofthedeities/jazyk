@@ -43,6 +43,7 @@ export abstract class Step {
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() settings: LearnSettings;
   @Input() lessonOptions: LessonOptions;
+  @Input() courseId: string; // only for course level
   @Input() text: Object;
   @Input() lanPair: LanPair;
   @Input() stepOptions: ExerciseStep;
@@ -777,6 +778,16 @@ export abstract class Step {
       learnLevel = lastLevel;
     }
     return learnLevel;
+  }
+
+  protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
+      isBidirectional: true,
+      direction: Direction.LocalToForeign
+    }, this.lessonOptions);
+    this.exerciseData = this.previewService.shuffle(this.exerciseData);
+    this.getChoices(this.courseId, true);
+    this.setExerciseDataById();
   }
 
   protected setExerciseDataById() {

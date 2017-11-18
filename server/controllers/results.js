@@ -88,8 +88,8 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   })
 }
 
-getExercises = function(courseId, difficultIds, cb) {
-  const exerciseIds = difficultIds.map(dId => dId.exerciseId),
+getExercises = function(courseId, data, cb) {
+  const exerciseIds = data.map(item => item.exerciseId),
         query = {'exercises._id': {$in: exerciseIds}},
         pipeline = [
           {$match: {courseId}},
@@ -376,8 +376,12 @@ module.exports = {
     console.log('getting data for review for course', courseId, 'limit:', limit);
 
     Result.aggregate(pipeline, function(err, results) {
-      response.handleError(err, res, 500, 'Error fetching to review results', function(){
-        response.handleSuccess(res, results, 200, 'Fetched to review results');
+      response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
+        getExercises(courseId, results, function(err, toreview) {
+          response.handleError(err, res, 400, 'Error fetching to review exercises', function(){
+            response.handleSuccess(res, {toreview, results}, 200, 'Fetched to review exercises');
+          });
+        });
       });
     });
   }

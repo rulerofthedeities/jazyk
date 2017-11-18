@@ -14,7 +14,6 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
-  @Input() courseId: string;
 
   constructor(
     learnService: LearnService,
@@ -53,44 +52,11 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .fetchToReview(this.courseId, this.settings.nrOfWordsReview)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      results => {
-        console.log('results for exercises to review', results);
-        // GET EXERCISES DIRECTLY FROM BACKEND !!!
-        // this.loadExercises(results);
+      data => {
+        this.buildExerciseData(data.toreview, data.results);
       },
       error => this.errorService.handleError(error)
     );
-  }
-
-  private loadExercises(results: ExerciseResult[]) {
-    if (results.length > 0) {
-      const ids = results.map(result => result.exerciseId);
-      this.learnService
-      .fetchExercises(this.courseId, ids)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        exercisesResult => {
-          const exercises = exercisesResult.map(ex => ex.exercise);
-          console.log('exercises to review', exercises);
-          this.buildExerciseData(exercises, results);
-        },
-        error => this.errorService.handleError(error)
-      );
-    }
-  }
-
-  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
-    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
-      isBidirectional: true,
-      direction: Direction.LocalToForeign
-    }, this.lessonOptions);
-    this.exerciseData = this.previewService.shuffle(this.exerciseData);
-    this.getChoices(this.courseId, true);
-    this.setExerciseDataById();
-  }
-
-  protected fetchResults() {
-    // this.fetchCourseResults();
   }
 
   ngOnDestroy() {
