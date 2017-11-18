@@ -150,6 +150,16 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchDifficult(courseId: string, max: number) {
+    const headers = this.getTokenHeaders(),
+          params = new URLSearchParams();
+    params.set('max', max.toString());
+    return this.http
+    .get('/api/user/results/course/difficult/' + courseId, {headers, search: params})
+    .map(response => response.json().obj || {})
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Exercises ***/
 
   fetchExercises(courseId: string, exerciseIds: string[]) {

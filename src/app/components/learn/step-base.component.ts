@@ -33,7 +33,7 @@ interface LearnLevelData {
   almostCorrect: boolean;
 }
 
-interface DlData { //DamerauLevenshteinDistance
+interface DlData { // DamerauLevenshteinDistance
   index: number;
   dl: number;
 }
@@ -720,22 +720,22 @@ export abstract class Step {
     let selected: number,
         selectedChoice: string;
     // random, sorted by proximity foreign or sorted by proximity local
-      switch (Math.floor(Math.random() * 3)) {
+    switch (Math.floor(Math.random() * 3)) {
       case 0:
         // random
         selected = Math.floor(Math.random() * choices.length);
         console.log('random choice', selected);
-        break;
+      break;
       case 1:
         // sorted by proximity foreign
         selected = this.getNearestChoice('foreign', choices, exercise.foreign.word);
         console.log('choice by proximity foreign', selected);
-        break;
+      break;
       case 2:
         // sorted by proximity local
         selected = this.getNearestChoice('local', choices, exercise.local.word);
         console.log('choice by proximity local', selected);
-        break;
+      break;
     }
     selectedChoice = direction === Direction.ForeignToLocal ? choices[selected].local : choices[selected].foreign;
     choices.splice(selected, 1);

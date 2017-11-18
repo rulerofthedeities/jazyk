@@ -109,6 +109,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/countbystep/:courseId/:lessonId', results.getStepCount);
   router.get('/user/results/course/currentlesson/:courseId', results.getCurrentLesson);
   router.get('/user/results/course/toreview/:courseId', results.getToReview);
+  router.get('/user/results/course/difficult/:courseId', results.getDifficult);
   router.post('/user/results/add', results.saveResults);
   
   router.get('/user/courses/learn', courses.getSubscribedCourses);

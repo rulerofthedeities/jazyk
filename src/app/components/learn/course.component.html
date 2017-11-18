@@ -46,6 +46,11 @@
             'active': currentStep===i,
             'inactive': currentStep!==i
           }">
+          <span class="fa fa-spacing" [ngClass]="{
+            'fa-repeat': step.name==='review', 
+            'fa-fire': step.name==='difficult',
+            'fa-clock-o': step.name==='exam'
+          }"></span>
           {{text[capitalize(step.name)]}} <span class="remaining">({{countPerStep[step.name]?.nrRemaining}})</span>
         </li>
       </ng-template>
@@ -103,6 +108,15 @@
       (stepCompleted)="onStepCompleted('review', $event)"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-review>
+    <km-learn-difficult *ngSwitchCase="'difficult'"
+      [courseId]="courseId"
+      [lanPair]="course.languagePair"
+      [text]="text"
+      [settings]="settings"
+      [exercisesInterrupted]="exercisesInterrupted"
+      (stepCompleted)="onStepCompleted('difficult', $event)"
+      (updatedSettings)="onSettingsUpdated($event)">
+    </km-learn-difficult>
     <km-learn-overview *ngSwitchCase="'overview'"
       [lessonId]="lesson._id"
       [exercises]="lesson.exercises"

@@ -18,6 +18,7 @@ import {LearnStudyComponent} from './components/learn/step-study.component';
 import {LearnPractiseComponent} from './components/learn/step-practise.component';
 import {LearnOverviewComponent} from './components/learn/step-overview.component';
 import {LearnReviewComponent} from './components/learn/step-review.component';
+import {LearnDifficultComponent} from './components/learn/step-difficult.component';
 import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
 import {LearnPointsCompletedComponent} from './components/learn/points-completed.component';
@@ -49,6 +50,7 @@ import {LearnCountdownComponent} from './components/learn/countdown.component';
     LearnPractiseComponent,
     LearnOverviewComponent,
     LearnReviewComponent,
+    LearnDifficultComponent,
     LearnSettingsComponent,
     LearnCompletedListComponent,
     LearnPointsCompletedComponent,

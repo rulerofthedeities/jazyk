@@ -1,6 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Result = require('../models/result');
+      Result = require('../models/result'),
+      Lesson = require('../models/lesson');
 
 saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
@@ -85,6 +86,20 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       response.handleSuccess(res, insertResult, 200, 'Saved results');
     });
   })
+}
+
+getExercises = function(courseId, difficultIds, cb) {
+  const exerciseIds = difficultIds.map(dId => dId.exerciseId),
+        query = {'exercises._id': {$in: exerciseIds}},
+        pipeline = [
+          {$match: {courseId}},
+          {$unwind: '$exercises'},
+          {$match: query},
+          {$project: {_id: 0, exercise: '$exercises'}}
+        ];
+  Lesson.aggregate(pipeline, function(err, exercises) {
+    cb(err, exercises || []);
+  });
 }
 
 module.exports = {
@@ -172,7 +187,6 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      console.log('result LESSON', results);
       response.handleError(err, res, 500, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');
       });
@@ -239,7 +253,7 @@ module.exports = {
           sort = {dt:-1, sequence: -1},
           lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
           difficultQuery = {userId, courseId, isDifficult: true},
-          reviewQuery = {userId, courseId, dtToReview: {$lt: new Date()}};
+          reviewQuery = {userId, courseId, isLearned: true, dtToReview: {$lt: new Date()}};
     const lessonPipeline = [
       {$match: lessonQuery},
       {$sort: sort},
@@ -261,7 +275,7 @@ module.exports = {
       {$match: difficultQuery},
       {$sort: sort},
       {$group: {
-        _id: {exerciseId:'$exerciseId'}
+        _id: '$exerciseId'
       }},
       {$project: {
         _id:0
@@ -271,7 +285,7 @@ module.exports = {
       {$match: reviewQuery},
       {$sort: sort},
       {$group: {
-        _id: {exerciseId:'$exerciseId'}
+        _id: '$exerciseId'
       }},
       {$project: {
         _id:0
@@ -296,6 +310,41 @@ module.exports = {
       response.handleError(err, res, 500, 'Error fetching count steps');
     });
 
+  },
+  getDifficult:  function(req, res) {
+    const parms = req.query,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          limit = parms.max ? parseInt(parms.max) : 10,
+          query = {userId, courseId, isLast: true, isDifficult: true};
+
+    const pipeline = [
+      {$match: query},
+      {$group: {
+        _id: {
+          exerciseId: '$exerciseId',
+          lessonId: '$lessonId'
+        }
+      }},
+      {$sample: {size: limit}},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id.exerciseId',
+        lessonId: '$_id.lessonId'
+      }}
+    ];
+
+    Result.aggregate(pipeline, function(err, results) {
+      response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
+        getExercises(courseId, results, function(err, difficult) {
+          response.handleError(err, res, 400, 'Error fetching difficult exercises', function(){
+            console.log('DIFFICULT 2', difficult);
+            const result = difficult.map(exercise => exercise.exercise);
+            response.handleSuccess(res, result, 200, 'Fetched difficult exercises');
+          });
+        });
+      });
+    });
   },
   getToReview: function(req, res) {
     const parms = req.query,

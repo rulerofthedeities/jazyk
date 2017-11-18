@@ -223,13 +223,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getStepData() {
     this.setSteps();
-    console.log('getting step data for ', this.courseId, this.lesson._id);
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('results!:', results);
+        console.log('step data results:', results);
+        this.countPerStep = {};
         if (results) {
           this.getCourseStepCount(results);
           this.getLessonStepCount(results.lesson);
@@ -330,7 +330,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getLessonStepCount(results: StepCount[]) {
-    console.log('Step count', results);
     let total: number;
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
