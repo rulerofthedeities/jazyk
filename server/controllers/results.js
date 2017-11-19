@@ -373,7 +373,8 @@ module.exports = {
         dtToReview: {'$first': '$dtToReview'},
         dt: {'$first': '$dt'},
         streak: {'$first': '$streak'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+        lessonId: {'$first': '$lessonId'}
       }},
       {$project: {
         _id: 0,
@@ -381,7 +382,8 @@ module.exports = {
         dtToReview: '$dtToReview',
         dt: '$dt',
         streak: '$streak',
-        daysBetweenReviews: '$daysBetweenReviews'
+        daysBetweenReviews: '$daysBetweenReviews',
+        lessonId: '$lessonId'
       }}
     ];
     console.log('getting data for review for course', courseId, 'limit:', limit);

@@ -87,6 +87,10 @@ export class LearnLessonSelectorComponent implements OnInit, OnDestroy {
     this.showSelector = !this.showSelector;
   }
 
+  onContinueCourse() {
+    this.router.navigate(['/learn/course/' + this.course._id]);
+  }
+
   private navigateChapter(chapterName: string, direction: number) {
     const len = this.courseChapters.length;
     if (this.courseChapters && len > 1) {
