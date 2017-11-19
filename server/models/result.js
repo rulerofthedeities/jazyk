@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 
 var resultSchema = new Schema({
   courseId: {type: Schema.Types.ObjectId, required: true},
-  lessonId: {type: Schema.Types.ObjectId},
+  lessonId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   exerciseId: {type: Schema.Types.ObjectId, required: true},
   step: {type: String, required: true},

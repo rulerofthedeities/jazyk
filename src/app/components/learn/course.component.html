@@ -9,7 +9,6 @@
   [nextLesson]="nextLesson"
   (currentLesson)="onLessonSelected($event)">
 </km-lesson-selector>
-
 <div *ngIf="isStepsReady && !exercisesStarted" class="row">
   <div class="col-xs-7 panel-lesson">
     <ul class="list-unstyled list-inline steps"

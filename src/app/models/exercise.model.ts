@@ -45,6 +45,7 @@ export interface ExerciseResult {
   _id?: string;
   userId?: string;
   courseId?: string;
+  lessonId?: string;
   exerciseId?: string;
   tpe?: number;
   points?: number;

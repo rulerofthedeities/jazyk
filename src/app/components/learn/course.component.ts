@@ -24,6 +24,7 @@ interface StepCount {
 
 interface ResultData {
   exerciseId: string;
+  lessonId: string;
   tpe: number;
   done: boolean;
   points: number;
@@ -338,7 +339,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (results.length > 0) {
       results.forEach(result => {
         total = result.step === 'study' ? studyTotal : lessonTotal;
-        this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: total - result.nrDone || 0};
+        if (!this.countPerStep[result.step]) {
+          this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: total - result.nrDone || 0};
+        }
       });
     }
     // Fill in step count for the steps without a result
@@ -362,7 +365,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const allCorrect: Map<boolean> = {}; // Exercise is only correct if all answers for an exercise are correct
     const result = {
       courseId: this.course._id,
-      lessonId: this.lesson ? this.lesson._id : undefined,
+      lessonId: this.courseLevel === Level.Lesson ? this.lesson._id : undefined,
       step,
       data: []
     };
@@ -380,7 +383,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           sequence: i,
           isLast: false,
           isDifficult: false,
-          isCorrect: item.data.isCorrect
+          isCorrect: item.data.isCorrect,
+          lessonId: item.result ? item.result.lessonId : this.lesson._id
         };
         lastResult[item.exercise._id] = newResult;
         allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
@@ -538,7 +542,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         // Studied - Increase practise count
         remaining = this.countPerStep['practise'].nrRemaining + nrOfResults;
         this.countPerStep['practise'].nrRemaining = remaining;
-        break;
+      break;
       case 'practise':
         // Check which results have isLearned flag
         for (const key in lastResult) {
@@ -549,7 +553,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
             }
           }
-        }
+        };
+      break;
+      case 'difficult':
+        // Check which results have isDifficult false
+        for (const key in lastResult) {
+          if (lastResult.hasOwnProperty(key)) {
+            if (lastResult[key].isDifficult === false) {
+              // Not difficult anymore - Decrease difficult count
+              remaining = this.countPerStep['difficult'].nrRemaining - 1;
+              this.countPerStep['difficult'].nrRemaining = Math.max(0, remaining);
+            }
+          }
+        };
       break;
     }
   }

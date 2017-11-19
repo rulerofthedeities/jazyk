@@ -30,8 +30,8 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getDifficult();
     super.init();
+    this.getDifficult();
   }
 
   private getDifficult() {

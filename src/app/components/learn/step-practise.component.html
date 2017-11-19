@@ -142,7 +142,6 @@
         </div>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
-        LEVEL BAR {{currentData?.data?.questionType}}
         <km-learnlevel-bar *ngIf="currentData?.exercise?.tpe === exType.Word && currentData?.data?.questionType !== qType.Preview"
           [levelUpdated]="levelUpdated"
           [maxLevel]="learnedLevel">

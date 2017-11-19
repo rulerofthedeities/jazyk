@@ -44,6 +44,7 @@ export abstract class Step {
   @Input() settings: LearnSettings;
   @Input() lessonOptions: LessonOptions;
   @Input() courseId: string; // only for course level
+  @Input() lessonId: string; // only for lesson level
   @Input() text: Object;
   @Input() lanPair: LanPair;
   @Input() stepOptions: ExerciseStep;

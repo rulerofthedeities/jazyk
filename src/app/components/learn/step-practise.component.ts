@@ -22,8 +22,6 @@ interface Map<T> {
 })
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
-  @Input() lessonId: string;
-  @Input() courseId: string;
   @Input() learnedLevel: number;
   @Input() hasStudyTab: boolean;
   // @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -221,7 +219,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return leftToStudy;
   }
 
-  private buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+  protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
     this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
       isBidirectional: this.stepOptions.bidirectional,
       direction: Direction.LocalToForeign

@@ -30,31 +30,12 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     super.init();
   }
 
-  protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
-    console.log('Determine q type', exercise.result, learnLevel);
-    // Determine if multiple choice or word
-    let qTpe = QuestionType.Choices;
-    if (exercise.result) {
-      // 3 -> 5: random
-      if (learnLevel > 2 && learnLevel < 6) {
-        qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
-      }
-      // 6+ : always word
-      if (learnLevel > 5) {
-        qTpe = QuestionType.Word;
-      }
-    }
-    return qTpe;
-  }
-
   private getToReview() {
     this.learnService
     .fetchToReview(this.courseId, this.settings.nrOfWordsReview)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
-        this.buildExerciseData(data.toreview, data.results);
-      },
+      data => this.buildExerciseData(data.toreview, data.results),
       error => this.errorService.handleError(error)
     );
   }

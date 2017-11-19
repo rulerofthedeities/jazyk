@@ -49,9 +49,11 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   const docs = results.data.map(doc => 
   { 
     exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
+    lessonId = doc.lessonId ? new mongoose.Types.ObjectId(doc.lessonId) : lessonId;
     result = {
       userId,
       courseId,
+      lessonId,
       exerciseId,
       step: results.step,
       tpe: doc.tpe,
@@ -72,9 +74,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       dtToReview += 1000 * 60 * 60 * 24 * parseFloat(doc.daysBetweenReviews);
       result.dtToReview = dtToReview;
     }
-    if (results.step === 'practise') {
-      result.lessonId = lessonId;
-    } else {
+    if (results.step !== 'practise') {
       result.isLearned = true;
     }
     return result;
@@ -107,7 +107,7 @@ module.exports = {
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
-          lessonId = new mongoose.Types.ObjectId(results.lessonId),
+          lessonId = results.lessonId ? new mongoose.Types.ObjectId(results.lessonId) : null,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     if (results.step === 'study') {
       saveStudy(res, results, userId, courseId, lessonId);
@@ -198,7 +198,6 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           query = {userId, lessonId};
-
     const pipeline = [
       {$match: query},
       {$sort: {dt: -1, sequence: -1}},
@@ -237,9 +236,12 @@ module.exports = {
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    Result.findOne({courseId}, {_id: 0, lessonId: 1}, {sort: {dt: -1, sequence: -1}}, function(err, result) {
-    console.log('current lesson', result);
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          query = {userId, courseId, step: {$ne: 'difficult'}},
+          projection = {_id: 0, lessonId: 1},
+          options = {sort: {dt: -1, sequence: -1}};
+    Result.findOne(query, projection, options, function(err, result) {
+      console.log('current lesson', result);
       response.handleError(err, res, 500, 'Error fetching most recent result', function(){
         response.handleSuccess(res, result, 200, 'Fetched most recent result');
       });
@@ -251,7 +253,7 @@ module.exports = {
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           sort = {dt:-1, sequence: -1},
           lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
-          difficultQuery = {userId, courseId, isDifficult: true},
+          difficultQuery = {userId, courseId, isLast: true},
           reviewQuery = {userId, courseId, isLearned: true, dtToReview: {$lt: new Date()}};
     const lessonPipeline = [
       {$match: lessonQuery},
@@ -274,8 +276,10 @@ module.exports = {
       {$match: difficultQuery},
       {$sort: sort},
       {$group: {
-        _id: '$exerciseId'
+        _id: '$exerciseId',
+        difficult: {'$first': '$isDifficult'}
       }},
+      {$match: {difficult: true}},
       {$project: {
         _id:0
       }}
@@ -290,7 +294,6 @@ module.exports = {
         _id:0
       }}
     ];
-
     const getCount = async (userId) => {
       const lesson = await  Result.aggregate(lessonPipeline);
       const difficult = await Result.aggregate(difficultPipeline);
@@ -314,17 +317,23 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
-          query = {userId, courseId, isLast: true, isDifficult: true};
+          sort = {dt:-1, sequence: -1},
+          query = {userId, courseId, isLast: true};
 
     const pipeline = [
       {$match: query},
+      {$sort: sort},
       {$group: {
         _id: '$exerciseId',
         dtToReview: {'$first': '$dtToReview'},
         dt: {'$first': '$dt'},
         streak: {'$first': '$streak'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
+        learnLevel: {'$first': '$learnLevel'},
+        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+        lessonId: {'$first': '$lessonId'},
+        difficult: {'$first': '$isDifficult'}
       }},
+      {$match: {difficult: true}},
       {$sample: {size: limit}},
       {$project: {
         _id: 0,
@@ -332,7 +341,9 @@ module.exports = {
         dtToReview: '$dtToReview',
         dt: '$dt',
         streak: '$streak',
-        daysBetweenReviews: '$daysBetweenReviews'
+        learnLevel: '$learnLevel',
+        daysBetweenReviews: '$daysBetweenReviews',
+        lessonId: '$lessonId'
       }}
     ];
 

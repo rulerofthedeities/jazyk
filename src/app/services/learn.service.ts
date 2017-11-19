@@ -237,7 +237,6 @@ export class LearnService {
       // Add foreign data
       this.previewService.buildLocalData(newData, text, exercise);
     }
-
     return newData;
   }
 
