@@ -373,6 +373,7 @@ module.exports = {
         dtToReview: {'$first': '$dtToReview'},
         dt: {'$first': '$dt'},
         streak: {'$first': '$streak'},
+        learnLevel: {'$first': '$learnLevel'},
         daysBetweenReviews: {'$first': '$daysBetweenReviews'},
         lessonId: {'$first': '$lessonId'}
       }},
@@ -382,6 +383,7 @@ module.exports = {
         dtToReview: '$dtToReview',
         dt: '$dt',
         streak: '$streak',
+        learnLevel: '$learnLevel',
         daysBetweenReviews: '$daysBetweenReviews',
         lessonId: '$lessonId'
       }}

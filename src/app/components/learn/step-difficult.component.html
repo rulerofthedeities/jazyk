@@ -15,9 +15,15 @@
           [onNextExercise]="nextExercise">
         </km-bullets>
         <!-- EXERCISE -->
-        <div *ngIf="!isExercisesDone && isQuestionReady" class="card" [class.preview]="isQuestionType(qType.Preview)">
-          <div class="pull-right case" *ngIf="currentData?.data?.isCaseSensitive">Aa</div>
-          <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
+        <div *ngIf="!isExercisesDone && isQuestionReady" 
+          class="card" 
+          [class.preview]="isQuestionType(qType.Preview)">
+          <div *ngIf="currentData?.data?.isCaseSensitive"
+            class="pull-right case">
+            Aa
+          </div>
+          <div *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)"
+            class="clearfix">
             <!-- IMAGE -->
             <div class="image" *ngIf="currentData.exercise.image">
               <img src="{{currentData.exercise.image}}">
@@ -80,13 +86,13 @@
           </div>
         </div>
         <!-- NO MORE EXERCISES -->
-        <div *ngIf="noMoreExercises">
-          <div class="msg-info">
-            <span class="fa fa-info-circle"></span>{{text['NoMoreExercises']}}
+        <div *ngIf="noMoreExercises && !isExercisesDone">
+          <div class="msg-info nomore">
+            <span class="fa fa-info-circle"></span>{{text['NoMoreDifficultExercises']}}
           </div>
         </div>
         <!-- EXERCISE DONE -->
-        <div *ngIf="isExercisesDone && !noMoreExercises">
+        <div *ngIf="isExercisesDone">
           <h3>{{text["WordsPractised"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"
@@ -95,15 +101,15 @@
           <h3>{{text["PointsEarned"]}}:</h3>
           <km-points-completed [data]="exerciseData">
           </km-points-completed>
-          <button type="button" class="btn btn-success" (click)="onRestart()">
+          <button type="button" class="btn btn-success" (click)="onRestart()" *ngIf="!noMoreExercises">
             <span class="fa fa-step-forward"></span>
-            CONTINUE DIFFICULT {{text["ContinueDifficult"]}}
+            CONTINUE DIFFICULT1 {{text["ContinueDifficult"]}}
           </button>
         </div>
       </div>
     </div>
     <div class="col-xs-4">
-      <km-learn-settings
+      <km-learn-settings *ngIf="!noMoreExercises"
         [step]="'difficult'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
@@ -111,7 +117,7 @@
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
-      <div class="actions">
+      <div class="actions" *ngIf="!noMoreExercises">
         <button 
           type="button"
           *ngIf="!isExercisesDone"
@@ -121,11 +127,11 @@
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
         </button>
-        <div *ngIf="isExercisesDone && !noMoreExercises"
+        <div *ngIf="isExercisesDone"
           class="btn btn-lg btn-success next"
           (click)="onRestart()">
           <span class="fa fa-refresh"></span>
-          CONTINUE DIFFICULT {{text["ContinueDifficult"]}}
+          CONTINUE DIFFICULT2 {{text["ContinueDifficult"]}}
         </div>
       </div>
       <div class="score" *ngIf="!isExercisesDone">

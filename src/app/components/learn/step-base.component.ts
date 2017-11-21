@@ -41,6 +41,7 @@ interface DlData { // DamerauLevenshteinDistance
 export abstract class Step {
   @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
+  @Input() private stepcountzero: Subject<boolean>;
   @Input() settings: LearnSettings;
   @Input() lessonOptions: LessonOptions;
   @Input() courseId: string; // only for course level
@@ -76,6 +77,7 @@ export abstract class Step {
   isCorrect = false; // word
   current = -1; // entry in exerciseData
   isQuestionReady = false;
+  noMoreExercises = false;
   isCountDown: boolean;
   isMute: boolean;
   score = 0;
@@ -226,6 +228,7 @@ export abstract class Step {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.checkExercisesInterrupted();
+    this.checkCountUpdated();
     this.getConfig(this.lanPair.to); // For keyboard keys
     if (!this.isCountDown) {
       this.onCountDownFinished();
@@ -878,4 +881,12 @@ export abstract class Step {
     });
   }
 
+  private checkCountUpdated() {
+    this.stepcountzero
+    .takeWhile(() => this.componentActive)
+    .subscribe( event => {
+      console.log('Nothing left for this step');
+      this.noMoreExercises = true;
+    });
+  }
 }

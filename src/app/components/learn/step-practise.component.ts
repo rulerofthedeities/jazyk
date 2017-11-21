@@ -27,7 +27,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   // @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() lessonCompleted = new EventEmitter();
   @Output() stepBack = new EventEmitter();
-  noMoreExercises = false;
   noMoreToStudy = false;
   beep: any;
 

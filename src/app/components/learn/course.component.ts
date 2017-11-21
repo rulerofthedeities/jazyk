@@ -66,6 +66,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   maxStreak = 20;
   nextLesson: Subject<string> = new Subject();
   exercisesInterrupted: Subject<boolean> = new Subject();
+  stepcountzero: Subject<boolean> = new Subject();
   level = Level;
 
   constructor(
@@ -563,9 +564,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Not difficult anymore - Decrease difficult count
               remaining = this.countPerStep['difficult'].nrRemaining - 1;
               this.countPerStep['difficult'].nrRemaining = Math.max(0, remaining);
+              if (this.countPerStep['difficult'].nrRemaining === 0) {
+                this.stepcountzero.next(true);
+              }
             }
           }
         };
+      break;
+      case 'review':
+        console.log('TODO: Update review results count');
       break;
     }
   }
