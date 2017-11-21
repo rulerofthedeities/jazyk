@@ -25,7 +25,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('courseid', this.courseId);
+    this.currentStep = 'review';
     this.getToReview();
     super.init();
   }

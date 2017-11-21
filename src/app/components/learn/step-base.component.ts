@@ -80,6 +80,7 @@ export abstract class Step {
   isMute: boolean;
   score = 0;
   maxRepeatWord = 4;
+  currentStep: string;
   qType = QuestionType;
   exType = ExerciseType;
 
@@ -455,8 +456,19 @@ export abstract class Step {
     this.pointsEarned.next(points);
   }
 
-  protected doAddExercise(a: AnsweredType, q: QuestionType, learnLevel: number): boolean {
-    return false;
+  protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
+    const nrOfQuestions = this.exerciseData.length;
+    let add = false;
+    if (aType === AnsweredType.Incorrect || aType === AnsweredType.AlmostCorrect) {
+      add = true;
+    }
+    // Only readd exercise to the back if question was answered incorrectly max twice
+    const exercise = this.dataByExercise[this.currentData.exercise._id],
+          countWrong = exercise.countWrong ? exercise.countWrong : 0;
+    if (countWrong > 2) {
+      add = false;
+    }
+    return add;
   }
 
   protected addExercise(isCorrect: boolean) {
@@ -471,7 +483,7 @@ export abstract class Step {
     newExerciseData.data.isAlmostCorrect = false;
     newExerciseData.data.grade = 0;
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
-    if (this.stepOptions.bidirectional) {
+    if (!this.stepOptions || this.stepOptions.bidirectional) {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
     }
     if (isCorrect !== null) {
@@ -483,29 +495,22 @@ export abstract class Step {
       streak
     };
     this.exerciseData.push(newExerciseData);
-    if (!this.stepOptions.ordered) {
+    if (!this.stepOptions || !this.stepOptions.ordered) {
       this.shuffleRemainingExercises();
     }
   }
 
-  private shuffleRemainingExercises() {
-    const original = this.exercises.length,
-          total = this.exerciseData.length,
-          nrDone = this.current + 1, // skip next
-          done = this.exerciseData.slice(0, nrDone),
-          doShuffle = nrDone > original && total - nrDone > 2;
-    let forceShuffle = false;
-    if (this.exerciseData[this.current]) {
-      forceShuffle = this.exerciseData[this.current].data.questionType === QuestionType.Preview;
-    }
-    if (forceShuffle || doShuffle) {
-      const skipLast = total > 1 ? 1 : 0, // To prevent repeats, do not shuffle last entry
-            last = this.exerciseData.slice(-1),
-            todo = this.exerciseData.slice(nrDone, total - skipLast),
-            shuffled = this.previewService.shuffle(todo);
+  protected shuffleRemainingExercises() {
+    const total = this.exerciseData.length,
+          done = this.exerciseData.slice(0, this.current + 1),
+          todo = this.exerciseData.slice(this.current + 1, total);
+    let shuffled = this.previewService.shuffle(todo);
+    if (todo.length > 2) {
       this.exerciseData = done.concat(shuffled);
-      if (skipLast === 1) {
-        this.exerciseData = this.exerciseData.concat(last);
+      // Shuffle again if next exercise is the same as the current exercise
+      if (this.exerciseData[this.current].exercise._id === this.exerciseData[this.current + 1].exercise._id) {
+        shuffled = this.previewService.shuffle(todo);
+        this.exerciseData = done.concat(shuffled);
       }
     }
   }
@@ -763,7 +768,34 @@ export abstract class Step {
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
-    return 0;
+    let qTpe = QuestionType.Choices;
+    const tpe = exercise.exercise.tpe || ExerciseType.Word;
+    switch (tpe) {
+      case ExerciseType.Word:
+        if (exercise.result) {
+          // 4 -> 9: random
+          if (learnLevel > 3 && learnLevel < 10) {
+            qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
+          }
+          // 10+ : always word
+          if (learnLevel > 10) {
+            qTpe = QuestionType.Word;
+          }
+        }
+      break;
+      case ExerciseType.Genus:
+      case ExerciseType.Select:
+        qTpe = QuestionType.Select;
+        break;
+      case ExerciseType.QA:
+      case ExerciseType.FillIn:
+        qTpe = QuestionType.FillIn;
+      break;
+      case ExerciseType.Comparison:
+        qTpe = QuestionType.Comparison;
+      break;
+    }
+    return qTpe;
   }
 
   protected getNrOfChoices(learnLevel?: number): number {

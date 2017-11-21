@@ -42,6 +42,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.currentStep = 'practise';
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.fetchLessonResults();
   }
@@ -108,6 +109,28 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       add = false;
     }
     return add;
+  }
+
+  protected shuffleRemainingExercises() {
+    const original = this.exercises.length,
+          total = this.exerciseData.length,
+          nrDone = this.current + 1, // skip next
+          done = this.exerciseData.slice(0, nrDone),
+          doShuffle = nrDone > original && total - nrDone > 2;
+    let forceShuffle = false;
+    if (this.exerciseData[this.current]) {
+      forceShuffle = this.exerciseData[this.current].data.questionType === QuestionType.Preview;
+    }
+    if (forceShuffle || doShuffle) {
+      const skipLast = total > 1 ? 1 : 0, // To prevent repeats, do not shuffle last entry
+            last = this.exerciseData.slice(-1),
+            todo = this.exerciseData.slice(nrDone, total - skipLast),
+            shuffled = this.previewService.shuffle(todo);
+      this.exerciseData = done.concat(shuffled);
+      if (skipLast === 1) {
+        this.exerciseData = this.exerciseData.concat(last);
+      }
+    }
   }
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
