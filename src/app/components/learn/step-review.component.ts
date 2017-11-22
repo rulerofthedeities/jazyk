@@ -49,6 +49,10 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
+  protected fetchResults() {
+    this.getToReview();
+  }
+
   ngOnDestroy() {
     this.componentActive = false;
   }

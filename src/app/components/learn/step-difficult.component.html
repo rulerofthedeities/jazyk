@@ -103,7 +103,7 @@
           </km-points-completed>
           <button type="button" class="btn btn-success" (click)="onRestart()" *ngIf="!noMoreExercises">
             <span class="fa fa-step-forward"></span>
-            CONTINUE DIFFICULT1 {{text["ContinueDifficult"]}}
+            {{text["ContinueDifficult"]}}
           </button>
         </div>
       </div>
@@ -127,12 +127,6 @@
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
         </button>
-        <div *ngIf="isExercisesDone"
-          class="btn btn-lg btn-success next"
-          (click)="onRestart()">
-          <span class="fa fa-refresh"></span>
-          CONTINUE DIFFICULT2 {{text["ContinueDifficult"]}}
-        </div>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
         <km-points-earned [pointsEarned]="pointsEarned">

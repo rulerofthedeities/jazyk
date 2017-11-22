@@ -54,6 +54,10 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
+  protected fetchResults() {
+    this.getDifficult();
+  }
+
   ngOnDestroy() {
     this.componentActive = false;
   }

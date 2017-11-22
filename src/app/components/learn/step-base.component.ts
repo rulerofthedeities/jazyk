@@ -882,11 +882,10 @@ export abstract class Step {
   }
 
   private checkCountUpdated() {
-    this.stepcountzero
-    .takeWhile(() => this.componentActive)
-    .subscribe( event => {
-      console.log('Nothing left for this step');
-      this.noMoreExercises = true;
-    });
+    if (this.stepcountzero) {
+      this.stepcountzero
+      .takeWhile(() => this.componentActive)
+      .subscribe( event => this.noMoreExercises = true);
+    }
   }
 }
