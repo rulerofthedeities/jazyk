@@ -444,7 +444,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Only use the most recent result per exerciseid to determine isLearned / review time
     for (const key in lastResult) {
       if (lastResult.hasOwnProperty(key)) {
-        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key]);
+        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
         // Check if word is learned
         if (step === 'review' || step === 'difficult' || (lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
           lastResult[key].isLearned = true;
@@ -495,20 +495,22 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkIfDifficult(step: string, result: ResultData): boolean {
+  private checkIfDifficult(step: string, streak: string): boolean {
     // Checks if the word has to be put in the difficult step
     let isDifficult = false;
-    if ((step === 'difficult' || step === 'review') && result.streak) {
+    if ((step !== 'study') && streak) {
       // Check how many incorrect in last 5 results
-      let streak = result.streak.slice(-5);
-      let inCorrectCount = (streak.match(/0/g) || []).length;
-      if (inCorrectCount >= 2) {
+      let tmpStreak = streak.slice(-5);
+      let correctCount = (tmpStreak.match(/1/g) || []).length;
+      let inCorrectCount = tmpStreak.length - correctCount;
+      if (inCorrectCount > 1) {
         isDifficult = true;
       } else {
         // Check how many incorrect in last 10 results
-        streak = result.streak.slice(-10);
-        inCorrectCount = (streak.match(/0/g) || []).length;
-        if (inCorrectCount >= 3) {
+        tmpStreak = streak.slice(-10);
+        correctCount = (tmpStreak.match(/1/g) || []).length;
+        inCorrectCount = tmpStreak.length - correctCount;
+        if (inCorrectCount > 2) {
           isDifficult = true;
         }
       }

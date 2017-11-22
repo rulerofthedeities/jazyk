@@ -15,15 +15,28 @@
           [onNextExercise]="nextExercise">
         </km-bullets>
         <!-- EXERCISE -->
-        <div *ngIf="!isExercisesDone && isQuestionReady" class="card">
-          <km-question
-            [currentData]="currentData"
-            [lanPair]="lanPair"
-            [text]="text"
-            [showAlt]="true"
-            [dir]="getQuestionDir()"
-            [settings]="settings"
-          ></km-question>
+        <div *ngIf="!isExercisesDone && isQuestionReady" 
+          class="card" 
+          [class.preview]="isQuestionType(qType.Preview)">
+          <div *ngIf="currentData?.data?.isCaseSensitive"
+            class="pull-right case">
+            Aa
+          </div>
+          <div *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)"
+            class="clearfix">
+            <!-- IMAGE -->
+            <div class="image" *ngIf="currentData.exercise.image">
+              <img src="{{currentData.exercise.image}}">
+            </div>
+            <km-question
+              [currentData]="currentData"
+              [lanPair]="lanPair"
+              [text]="text"
+              [showAlt]="true"
+              [dir]="getQuestionDir()"
+              [settings]="settings"
+            ></km-question>
+          </div>
           <km-word-choices *ngIf="isQuestionType(qType.Choices)"
             [choices]="currentChoices"
             [correct]="currentData?.data?.isCorrect"
@@ -35,6 +48,7 @@
           </km-word-choices>
           <km-word-field *ngIf="isQuestionType(qType.Word)"
             [lan]="lanPair.to"
+            [prefix]="prefix"
             [disabled]="isAnswered"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
@@ -49,47 +63,70 @@
           </km-select>
           <km-qa *ngIf="isQuestionType(qType.FillIn)"
             [lanPair]="lanPair"
-            [text]="text"
             [data]="currentData"
+            [text]="text"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-qa>
+          <km-comparison *ngIf="isQuestionType(qType.Comparison)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [text]="text"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+          </km-comparison>
+          <div *ngIf="isQuestionType(qType.Preview)" class="answer">
+            <h1 class="word">
+              <span>
+                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+              </span>
+              <span>
+                {{currentData.exercise?.local?.word}}
+                <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
+              </span>
+            </h1>
+          </div>
+        </div>
+        <!-- NO MORE EXERCISES -->
+        <div *ngIf="noMoreExercises && !isExercisesDone">
+          <div class="msg-info nomore">
+            <span class="fa fa-info-circle"></span>{{text['NoMoreReviewExercises']}}
+          </div>
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone">
-          <h3>{{text["WordsReviewed"]}}:</h3>
+          <h3>{{text["Results"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"
             [text]="text">
           </km-completed-list>
-          <div class="btn btn-success" (click)="onRestart()">
+          <h3>{{text["PointsEarned"]}}:</h3>
+          <km-points-completed [data]="exerciseData">
+          </km-points-completed>
+          <button type="button" class="btn btn-success" (click)="onRestart()" *ngIf="!noMoreExercises">
             <span class="fa fa-step-forward"></span>
-            {{text["Restart"]}}
-          </div>
+            {{text["ContinueReview"]}}
+          </button>
         </div>
       </div>
     </div>
     <div class="col-xs-4">
-      <km-learn-settings
-        [step]="'practise'"
+      <km-learn-settings *ngIf="!noMoreExercises"
+        [step]="'review'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
         [isInput]="isQuestionType(qType.Word)"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
-      <div class="actions">
-        <div *ngIf="!isExercisesDone"
+      <div class="actions" *ngIf="!noMoreExercises">
+        <button 
+          type="button"
+          *ngIf="!isExercisesDone"
+          [disabled]="!isAnswered && isSelectionExercise()"
           class="btn btn-lg btn-success next" 
           (click)="onNextWord()">
           <span class="fa fa-step-forward"></span>
-          {{text["Next"]}}
-        </div>
-        <div *ngIf="isExercisesDone"
-          class="btn btn-lg btn-success next"
-          (click)="onRestart()">
-          <span class="fa fa-refresh"></span>
-          {{text["Restart"]}}
-        </div>
+          {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
+        </button>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
         <km-points-earned [pointsEarned]="pointsEarned">
@@ -99,3 +136,4 @@
     <div class="clearfix"></div>
   </section>
 </ng-template>
+

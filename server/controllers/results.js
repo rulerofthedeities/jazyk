@@ -255,7 +255,7 @@ module.exports = {
           sort = {dt:-1, sequence: -1},
           lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
           difficultQuery = {userId, courseId, isLast: true},
-          reviewQuery = {userId, courseId, isLearned: true, dtToReview: {$lt: new Date()}};
+          reviewQuery = {userId, courseId, isLast: true, isLearned: true};
     const lessonPipeline = [
       {$match: lessonQuery},
       {$sort: sort},
@@ -289,8 +289,10 @@ module.exports = {
       {$match: reviewQuery},
       {$sort: sort},
       {$group: {
-        _id: '$exerciseId'
+        _id: '$exerciseId',
+        dtToReview: {'$first': '$dtToReview'},
       }},
+      {$match: {dtToReview:{$lte: new Date()}}},
       {$project: {
         _id:0
       }}
@@ -363,12 +365,12 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
+          sort = {dt:-1, sequence: -1},
           query = {userId, courseId, isLast: true, isLearned: true};
-
+    console.log('date', new Date(), query);
     const pipeline = [
       {$match: query},
-      {$sort: {dtToReview: 1}},
-      {$limit: limit},
+      {$sort: sort},
       {$group: {
         _id: '$exerciseId',
         dtToReview: {'$first': '$dtToReview'},
@@ -378,6 +380,9 @@ module.exports = {
         daysBetweenReviews: {'$first': '$daysBetweenReviews'},
         lessonId: {'$first': '$lessonId'}
       }},
+      {$match: {dtToReview:{$lte: new Date()}}},
+      {$sort: {dtToReview: 1}},
+      {$limit: limit},
       {$project: {
         _id: 0,
         exerciseId: '$_id',
@@ -389,7 +394,6 @@ module.exports = {
         lessonId: '$lessonId'
       }}
     ];
-    console.log('getting data for review for course', courseId, 'limit:', limit);
 
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
