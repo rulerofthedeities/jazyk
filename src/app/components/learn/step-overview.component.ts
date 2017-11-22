@@ -41,6 +41,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
+        console.log('overview results', results);
         this.buildExerciseData(results);
       },
       error => this.errorService.handleError(error)

@@ -43,7 +43,7 @@
     <span *ngFor="let item of exercise.result?.streak?.slice(-10).split(''); let i=index">
       <span
         class="fa fa-square" 
-        [ngClass]="{green: item === '1', red: item !== '1'}"
+        [ngClass]="{green: item === '1', red: item === '0', orange: item === '2'}"
         [style.opacity]="1 - (exercise.result?.streak?.slice(-10).length - i - 1) / 20">
       </span>
     </span>

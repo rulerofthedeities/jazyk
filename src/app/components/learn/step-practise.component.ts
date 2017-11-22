@@ -271,7 +271,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         currentExercise.data.points = points;
       }
       this.pointsEarned.next(points);
-      this.addExercise(null);
+      this.addExercise(null, null);
       this.nextWord();
     }
   }

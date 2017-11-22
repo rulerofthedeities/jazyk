@@ -453,7 +453,7 @@ export abstract class Step {
     this.currentData.data.points = points;
     this.score = this.score + points;
     if (this.doAddExercise(answer, question, learnLevel)) {
-      this.addExercise(this.currentData.data.isCorrect);
+      this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
     this.levelUpdated.next(learnLevel);
     this.pointsEarned.next(points);
@@ -474,7 +474,7 @@ export abstract class Step {
     return add;
   }
 
-  protected addExercise(isCorrect: boolean) {
+  protected addExercise(isCorrect: boolean, isAlmostCorrect: boolean) {
     const newExerciseData: ExerciseData = {
       data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
       exercise: this.exerciseData[this.current].exercise
@@ -490,7 +490,9 @@ export abstract class Step {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
     }
     if (isCorrect !== null) {
-      streak = this.exerciseData[this.current].result ? this.exerciseData[this.current].result.streak : (isCorrect ? '1' : '0');
+      streak = this.exerciseData[this.current].result ?
+        this.exerciseData[this.current].result.streak :
+        (isCorrect ? '1' : isAlmostCorrect ? '2' : '0');
     }
     newExerciseData.result = {
       learnLevel: newExerciseData.data.learnLevel,

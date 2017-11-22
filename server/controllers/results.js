@@ -197,7 +197,8 @@ module.exports = {
     // Get lesson results for overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {userId, lessonId};
+          query = {userId, lessonId, isLast: true};
+    console.log('fetching overview for lesson id', lessonId);
     const pipeline = [
       {$match: query},
       {$sort: {dt: -1, sequence: -1}},

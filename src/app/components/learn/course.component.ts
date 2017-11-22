@@ -373,7 +373,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (data && data.length > 0) { // No data for study repeats
       data.forEach( (item, i) => {
         console.log('result', item);
-        streak[item.exercise._id] = this.buildStreak(item.data.questionType, streak[item.exercise._id], item.result, item.data.isCorrect);
+        streak[item.exercise._id] =
+          this.buildStreak(item.data.questionType, streak[item.exercise._id], item.result, item.data.isCorrect, item.data.isAlmostCorrect);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
@@ -413,18 +414,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildStreak(qTpe: QuestionType, streak: string, result: ExerciseResult, isCorrect: boolean): string {
+  private buildStreak(qTpe: QuestionType, streak: string, result: ExerciseResult, isCorrect: boolean, isAlmostCorrect: boolean): string {
     let newStreak = '';
 
     if (result) {
       newStreak = streak || result.streak || '';
     }
     if (qTpe !== QuestionType.Preview) {
-      if (isCorrect) {
-        newStreak = newStreak + '1';
-      } else {
-        newStreak = newStreak + '0';
-      }
+      newStreak += isCorrect ? '1' : isAlmostCorrect ? '2' : '0';
     }
 
     newStreak = newStreak.slice(0, this.maxStreak);
