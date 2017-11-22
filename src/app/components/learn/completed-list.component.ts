@@ -12,32 +12,8 @@ interface Result {
 
 @Component({
   selector: 'km-completed-list',
-  template: `
-  <div class="list" *ngIf="!noResults">
-    <div *ngFor="let result of results; let i=index">
-      <span 
-        class="fa fa-circle" 
-        [ngClass]="{
-          green: result.isCorrect && !result.isAlt,
-          yellow: result.isCorrect && result.isAlt,
-          orange: !result.isCorrect && result.isAlmostCorrect,
-          red: !result.isCorrect && !result.isAlmostCorrect}">
-      </span> {{result.exercise.exercise.foreign.word}} <span class="local">- {{result.exercise.exercise.local.word}}</span>
-    </div>
-  </div>
-  <div class="list" *ngIf="noResults">
-    {{text["NoWordsLearned"]}}.
-  </div>`,
-  styles: [`
-    .list {
-      margin-left: 12px;
-      margin-bottom: 24px;
-      font-size: 20px;
-      line-height: 32px;
-    }
-    .studiedLocal {
-      color: #999;
-    }`]
+  templateUrl: 'completed-list.component.html',
+  styleUrls: ['step-overview.component.css', 'completed-list.component.css']
 })
 
 export class LearnCompletedListComponent implements OnInit {

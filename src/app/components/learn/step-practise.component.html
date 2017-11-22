@@ -100,7 +100,7 @@
         </div>
         <!-- EXERCISE DONE -->
         <div *ngIf="isExercisesDone && !noMoreExercises">
-          <h3>{{text["WordsPractised"]}}:</h3>
+          <h3>{{text["Results"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"
             [text]="text">
@@ -116,7 +116,7 @@
       </div>
     </div>
     <div class="col-xs-4">
-      <km-learn-settings
+      <km-learn-settings *ngIf="!noMoreExercises"
         [step]="'practise'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
@@ -124,7 +124,7 @@
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
-      <div class="actions">
+      <div class="actions" *ngIf="!noMoreExercises">
         <button 
           type="button"
           *ngIf="!isExercisesDone"
@@ -134,7 +134,7 @@
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
         </button>
-        <div *ngIf="isExercisesDone && !noMoreExercises"
+        <div *ngIf="isExercisesDone"
           class="btn btn-lg btn-success next"
           (click)="onRestart()">
           <span class="fa fa-refresh"></span>

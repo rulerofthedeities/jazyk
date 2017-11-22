@@ -549,6 +549,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Learned - Decrease practise count
               remaining = this.countPerStep['practise'].nrRemaining - 1;
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
+              if (this.countPerStep['practise'].nrRemaining === 0) {
+                this.stepcountzero.next(true);
+              }
             }
           }
         };

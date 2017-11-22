@@ -93,6 +93,7 @@
       [hasStudyTab]="hasStep('study')"
       [settings]="settings"
       [exercisesInterrupted]="exercisesInterrupted"
+      [stepcountzero]="stepcountzero"
       (lessonCompleted)="onLessonCompleted()"
       (stepCompleted)="onStepCompleted('practise', $event)"
       (stepBack)="onStepBack()"
@@ -105,6 +106,7 @@
       [settings]="settings"
       [lessonOptions]="lesson.options"
       [exercisesInterrupted]="exercisesInterrupted"
+      [stepcountzero]="stepcountzero"
       (stepCompleted)="onStepCompleted('review', $event)"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-review>

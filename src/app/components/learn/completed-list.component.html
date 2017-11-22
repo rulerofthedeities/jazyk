@@ -1,0 +1,51 @@
+<div class="list" *ngIf="!noResults; else noresults">
+  <!-- HEADER -->
+  <div class="row header item">
+    <div class="col-xs-1">
+    </div>
+    <div class="col-xs-6">
+      {{text['Exercise']}}
+    </div>
+    <div class="col-xs-3">
+      {{text['Result']}}
+    </div>
+    <div class="col-xs-1 text-right">
+      {{text['Points']}}
+    </div>
+  </div>
+  <!-- TABLE -->
+  <div *ngFor="let result of results; let i=index" class="row item">
+    <div class="col-xs-1">
+      <span 
+        class="fa fa-circle" 
+        [ngClass]="{
+          green: result.isCorrect && !result.isAlt,
+          yellow: result.isCorrect && result.isAlt,
+          orange: !result.isCorrect && result.isAlmostCorrect,
+          red: !result.isCorrect && !result.isAlmostCorrect}">
+      </span>
+    </div>
+    <div class="col-xs-6">
+      <span class="word">{{result.exercise.exercise.foreign.word}}</span>
+      <span class="word local">{{result.exercise.exercise.local.word}}</span>
+    </div>
+    <div class="col-xs-3">
+      <span *ngFor="let item of result.streak?.slice(-10).split(''); let i=index">
+        <span
+          class="fa fa-square" 
+          [ngClass]="{green: item === '1', red: item === '0', orange: item === '2'}"
+          [style.opacity]="1 - (result.streak?.slice(-10).length - i - 1) / 20">
+        </span>
+      </span>
+    </div>
+    <div class="col-xs-1 text-right">
+      {{result.points}}
+    </div>
+  </div>
+</div>
+
+<ng-template #noresults>
+  <div class="list" *ngIf="noResults">
+    {{text["NoWordsLearned"]}}.
+  </div>
+</ng-template>
