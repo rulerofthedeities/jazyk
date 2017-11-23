@@ -574,7 +574,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         };
       break;
       case 'review':
-        console.log('TODO: Update review results count');
+        remaining = this.countPerStep['review'].nrRemaining - nrOfResults;
+        this.countPerStep['review'].nrRemaining = Math.max(0, remaining);
+        if (this.countPerStep['review'].nrRemaining === 0) {
+          this.stepcountzero.next(true);
+        }
       break;
     }
   }
