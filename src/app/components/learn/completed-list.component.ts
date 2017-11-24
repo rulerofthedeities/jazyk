@@ -13,7 +13,7 @@ interface Result {
 @Component({
   selector: 'km-completed-list',
   templateUrl: 'completed-list.component.html',
-  styleUrls: ['step-overview.component.css', 'completed-list.component.css']
+  styleUrls: ['lesson-overview.component.css', 'completed-list.component.css']
 })
 
 export class LearnCompletedListComponent implements OnInit {

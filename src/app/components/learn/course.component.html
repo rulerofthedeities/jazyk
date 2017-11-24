@@ -122,10 +122,9 @@
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-difficult>
     <km-learn-overview *ngSwitchCase="'overview'"
-      [lessonId]="lesson._id"
-      [exercises]="lesson.exercises"
-      [text]="text"
-      [isLearnedLevel]="isLearnedLevel">
+      [course]="course"
+      [currentLessonId]="lesson._id"
+      [text]="text">
     </km-learn-overview>
   </div>
 </div>
