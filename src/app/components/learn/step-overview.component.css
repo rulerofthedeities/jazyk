@@ -3,3 +3,23 @@
   padding: 15px;
   font-size: 20px;
 }
+h2 {
+  cursor: pointer;
+}
+.lesson-title {
+  cursor: pointer;
+}
+.selected {
+  cursor: default;
+}
+.chapters > .list-group-item {
+  margin-bottom: 4px;
+}
+.lesson > .list-group-item {
+  color: black;
+  background-color: #efefef;
+  margin-bottom: 3px;
+}
+.lesson > .selected {
+  background-color: #fefefe;
+}

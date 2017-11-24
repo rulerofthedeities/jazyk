@@ -50,7 +50,12 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   onSelectChapter(chapterName: string) {
-    this.currentChapter = chapterName;
+    if (chapterName !== this.currentChapter) {
+      this.currentChapter = chapterName;
+    } else {
+      this.currentChapter = null;
+      this.currentLessonId = null;
+    }
   }
 
   private getCourseChapters() {
