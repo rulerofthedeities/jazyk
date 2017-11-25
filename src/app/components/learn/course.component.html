@@ -1,6 +1,9 @@
+<div class="closeExercises" *ngIf="exercisesStarted">
+  <span class="fa fa-times pull-right" (click)="onExitExercises(confirmexit)"></span>
+</div>
 <!-- COURSE HEADER -->
 <div *ngIf="isStepsReady"
-  class="panel panel-default">
+  class="panel panel-default panel-header">
   <div class="panel-body">
     <h1>
       <button type="button" 
@@ -11,20 +14,36 @@
       <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
       <span class="course-title">{{course?.name}}</span>
     </h1>
+    <ul class="list-unstyled list-inline steps">
+      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
+        <li 
+          (click)="stepTo(i)" 
+          class="btn btn-lg btn-step"
+          [ngClass]="{
+            'btn-overview': step.name==='overview',
+            'btn-intro': step.name==='intro',
+            'btn-study': step.name==='study',
+            'btn-practise': step.name==='practise',
+            'btn-review': step.name==='review', 
+            'btn-difficult': step.name==='difficult',
+            'btn-exam': step.name==='exam',
+            'active': currentStep===i,
+            'inactive': currentStep!==i,
+            'pull-right': step.level === level.Course
+          }">
+          <span class="fa fa-spacing" [ngClass]="{
+            'fa-repeat': step.name==='review', 
+            'fa-fire': step.name==='difficult',
+            'fa-clock-o': step.name==='exam'
+          }"></span>
+          {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
+        </li>
+      </ng-template>
+    </ul>
   </div>
 </div>
 
-<div class="closeExercises" *ngIf="exercisesStarted">
-  <span class="fa fa-times pull-right" (click)="onExitExercises(confirmexit)"></span>
-</div>
-<km-lesson-selector [style.display]="exercisesStarted ? 'none': 'block'"
-  *ngIf="course"
-  [course]="course"
-  [courseLevel]="courseLevel"
-  [text]="text"
-  [nextLesson]="nextLesson"
-  (currentLesson)="onLessonSelected($event)">
-</km-lesson-selector>
+<!--
 <div *ngIf="isStepsReady && !exercisesStarted" class="row">
   <div class="col-xs-7 panel-lesson">
     <ul class="list-unstyled list-inline steps"
@@ -72,6 +91,7 @@
     </ul>
   </div>
 </div>
+-->
 <div *ngIf="isStepsReady && course">
   <div class="learn-header"
     [ngClass]="steps[currentStep]?.name">
@@ -161,3 +181,13 @@
   <div title>{{text["Warning"]}}</div>
   <div message>{{text["ConfirmExit"]}}</div>
 </km-modal-confirm>
+
+
+<km-lesson-selector [style.display]="exercisesStarted ? 'none': 'block'"
+  *ngIf="course"
+  [course]="course"
+  [courseLevel]="courseLevel"
+  [text]="text"
+  [nextLesson]="nextLesson"
+  (currentLesson)="onLessonSelected($event)">
+</km-lesson-selector>
