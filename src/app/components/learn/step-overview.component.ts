@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson} from '../../models/course.model';
@@ -23,11 +23,14 @@ interface LessonHeader {
 export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() private course: Course;
   @Input() text: Object;
+  @Input() isLearnedLevel: number;
   @Input() currentLessonId: string;
+  @Output() currentLesson = new EventEmitter<Lesson>();
   private componentActive = true;
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
   currentChapter: string;
+  lessonData: Lesson;
   isLessonsReady = false;
 
   constructor(
@@ -38,10 +41,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getCourseChapters();
     this.getLessonHeaders();
-  }
-
-  getLessons(chapterName: string): LessonHeader[] {
-    return this.chapterLessons[chapterName];
   }
 
   onSelectLesson(lessonId: string) {
@@ -56,6 +55,21 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       this.currentChapter = null;
       this.currentLessonId = null;
     }
+  }
+
+  onLessonDataLoaded(lessonData: Lesson) {
+    this.lessonData = lessonData;
+  }
+
+  onContinueLesson() {
+    if (this.lessonData) {
+      console.log('CHILD LESSON', this.lessonData);
+      this.currentLesson.emit(this.lessonData);
+    }
+  }
+
+  getLessons(chapterName: string): LessonHeader[] {
+    return this.chapterLessons[chapterName];
   }
 
   private getCourseChapters() {

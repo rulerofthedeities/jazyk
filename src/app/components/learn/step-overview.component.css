@@ -17,9 +17,9 @@ h2 {
 }
 .lesson > .list-group-item {
   color: black;
-  background-color: #efefef;
+  background-color: #eeeeee;
   margin-bottom: 3px;
 }
 .lesson > .selected {
-  background-color: #fefefe;
+  background-color: #fafafa;
 }

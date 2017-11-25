@@ -1,3 +1,19 @@
+<!-- COURSE HEADER -->
+<div *ngIf="isStepsReady"
+  class="panel panel-default">
+  <div class="panel-body">
+    <h1>
+      <button type="button" 
+        class="btn btn-success pull-right"
+        (click)="onContinueCourse()">
+        <span class="fa fa-arrow-right"></span>{{text["continuecourse"]}}
+      </button>
+      <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
+      <span class="course-title">{{course?.name}}</span>
+    </h1>
+  </div>
+</div>
+
 <div class="closeExercises" *ngIf="exercisesStarted">
   <span class="fa fa-times pull-right" (click)="onExitExercises(confirmexit)"></span>
 </div>
@@ -124,7 +140,9 @@
     <km-learn-overview *ngSwitchCase="'overview'"
       [course]="course"
       [currentLessonId]="lesson._id"
-      [text]="text">
+      [isLearnedLevel]="isLearnedLevel"
+      [text]="text"
+      (currentLesson)="onLessonSelected($event)">
     </km-learn-overview>
   </div>
 </div>

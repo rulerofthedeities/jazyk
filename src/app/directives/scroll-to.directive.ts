@@ -10,6 +10,6 @@ export class ScrollToDirective implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this.elRef.nativeElement.scrollIntoView(true);
+    this.elRef.nativeElement.scrollIntoView({behavior: 'smooth'});
   }
 }

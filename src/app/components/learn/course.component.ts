@@ -155,6 +155,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
+  onContinueCourse() {
+    this.router.navigate(['/learn/course/' + this.course._id]);
+  }
+
   capitalize(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
