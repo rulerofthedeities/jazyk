@@ -148,11 +148,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onLessonSelected(lesson: Lesson) {
-    console.log('LESSON SELECTED', lesson);
-    if (lesson) {
-      this.lesson = lesson;
-      this.getStepData();
-    }
+    this.lessonSelected(lesson);
   }
 
   onContinueCourse() {
@@ -215,6 +211,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
+            this.fetchCurrentLesson();
             console.log('course', course);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
@@ -584,6 +581,58 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.stepcountzero.next(true);
         }
       break;
+    }
+  }
+
+  /* Lesson selector */
+
+  private lessonSelected(lesson: Lesson) {
+    console.log('LESSON SELECTED', lesson);
+    if (lesson) {
+      this.lesson = lesson;
+      this.getStepData();
+    }
+  }
+
+  private fetchCurrentLesson() {
+    // Check where this course was left off
+    this.learnService
+    .fetchMostRecentLesson(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      userResult => {
+        if (userResult && userResult.lessonId) {
+          // set chapter & lesson to the latest result
+          console.log('LESSON to load', userResult.lessonId);
+          this.getLesson(userResult.lessonId);
+        } else {
+          // start from beginning of the course
+          console.log('NO LESSON to load; start from beginning');
+          this.getFirstLesson();
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getLesson(lessonId: string) {
+    // Get data and start lesson
+    this.learnService
+    .fetchLesson(lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      lesson => this.lessonSelected(lesson),
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getFirstLesson() {
+    // Get first lesson from course data
+    const chapterLessons = this.course.lessons.filter(lesson => lesson.lessonIds.length > 0);
+    const chapterLesson = chapterLessons[0];
+    if (chapterLesson) {
+      const lessonId = chapterLesson.lessonIds[0];
+      this.getLesson(lessonId);
     }
   }
 

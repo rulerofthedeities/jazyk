@@ -1,101 +1,54 @@
 <div class="closeExercises" *ngIf="exercisesStarted">
   <span class="fa fa-times pull-right" (click)="onExitExercises(confirmexit)"></span>
 </div>
-<!-- COURSE HEADER -->
-<div *ngIf="isStepsReady"
-  class="panel panel-default panel-header">
-  <div class="panel-body">
-    <h1>
-      <button type="button" 
-        class="btn btn-success pull-right"
-        (click)="onContinueCourse()">
-        <span class="fa fa-arrow-right"></span>{{text["continuecourse"]}}
-      </button>
-      <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
-      <span class="course-title">{{course?.name}}</span>
-    </h1>
-    <ul class="list-unstyled list-inline steps">
-      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
-        <li 
-          (click)="stepTo(i)" 
-          class="btn btn-lg btn-step"
-          [ngClass]="{
-            'btn-overview': step.name==='overview',
-            'btn-intro': step.name==='intro',
-            'btn-study': step.name==='study',
-            'btn-practise': step.name==='practise',
-            'btn-review': step.name==='review', 
-            'btn-difficult': step.name==='difficult',
-            'btn-exam': step.name==='exam',
-            'active': currentStep===i,
-            'inactive': currentStep!==i,
-            'pull-right': step.level === level.Course
-          }">
-          <span class="fa fa-spacing" [ngClass]="{
-            'fa-repeat': step.name==='review', 
-            'fa-fire': step.name==='difficult',
-            'fa-clock-o': step.name==='exam'
-          }"></span>
-          {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
-        </li>
-      </ng-template>
-    </ul>
-  </div>
-</div>
 
-<!--
-<div *ngIf="isStepsReady && !exercisesStarted" class="row">
-  <div class="col-xs-7 panel-lesson">
-    <ul class="list-unstyled list-inline steps"
-      [class.activeLevel]="courseLevel===level.Lesson">
-      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
-        <li 
-          *ngIf="step.level === level.Lesson"
-          (click)="stepTo(i)" 
-          class="btn btn-lg btn-step"
-          [ngClass]="{
-            'btn-overview': step.name==='overview',
-            'btn-intro': step.name==='intro',
-            'btn-study': step.name==='study',
-            'btn-practise': step.name==='practise',
-            'active': currentStep===i,
-            'inactive': currentStep!==i
-          }">
-          {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
-        </li>
-      </ng-template>
-    </ul>
+<!-- COURSE HEADER -->
+<div *ngIf="isStepsReady">
+  <div class="panel panel-default panel-header">
+    <div class="panel-body">
+      <h1>
+        <button type="button" 
+          class="btn btn-success pull-right"
+          (click)="onContinueCourse()">
+          <span class="fa fa-arrow-right"></span>{{text["continuecourse"]}}
+        </button>
+        <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
+        <span class="course-title">{{course?.name}}</span>
+      </h1>
+      <ul class="list-unstyled list-inline steps">
+        <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
+          <li 
+            (click)="stepTo(i)" 
+            class="btn btn-lg btn-step"
+            [ngClass]="{
+              'btn-overview': step.name==='overview',
+              'btn-intro': step.name==='intro',
+              'btn-study': step.name==='study',
+              'btn-practise': step.name==='practise',
+              'btn-review': step.name==='review', 
+              'btn-difficult': step.name==='difficult',
+              'btn-exam': step.name==='exam',
+              'active': currentStep===i,
+              'inactive': currentStep!==i,
+              'pull-right': step.level === level.Course
+            }">
+            <span class="fa fa-spacing" [ngClass]="{
+              'fa-repeat': step.name==='review', 
+              'fa-fire': step.name==='difficult',
+              'fa-clock-o': step.name==='exam'
+            }"></span>
+            {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
   </div>
-  <div class="col-xs-5 panel-course">
-    <ul class="list-unstyled list-inline steps pull-right"
-      [class.activeLevel]="courseLevel===level.Course">
-      <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
-        <li *ngIf="step.level === level.Course"
-          (click)="stepTo(i)" 
-          class="btn btn-lg btn-step"
-          [ngClass]="{
-            'btn-review': step.name==='review', 
-            'btn-difficult': step.name==='difficult',
-            'btn-exam': step.name==='exam',
-            'active': currentStep===i,
-            'inactive': currentStep!==i
-          }">
-          <span class="fa fa-spacing" [ngClass]="{
-            'fa-repeat': step.name==='review', 
-            'fa-fire': step.name==='difficult',
-            'fa-clock-o': step.name==='exam'
-          }"></span>
-          {{text[capitalize(step.name)]}} <span class="remaining">({{countPerStep[step.name]?.nrRemaining}})</span>
-        </li>
-      </ng-template>
-    </ul>
-  </div>
-</div>
--->
-<div *ngIf="isStepsReady && course">
   <div class="learn-header"
     [ngClass]="steps[currentStep]?.name">
   </div>
+</div>
+<!-- COURSE DATA -->
+<div *ngIf="isStepsReady && course">
   <div 
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"
@@ -181,13 +134,3 @@
   <div title>{{text["Warning"]}}</div>
   <div message>{{text["ConfirmExit"]}}</div>
 </km-modal-confirm>
-
-
-<km-lesson-selector [style.display]="exercisesStarted ? 'none': 'block'"
-  *ngIf="course"
-  [course]="course"
-  [courseLevel]="courseLevel"
-  [text]="text"
-  [nextLesson]="nextLesson"
-  (currentLesson)="onLessonSelected($event)">
-</km-lesson-selector>
