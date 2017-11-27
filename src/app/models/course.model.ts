@@ -8,6 +8,7 @@ export interface Language {
   interface: boolean;
   active: boolean;
   nativeName: string;
+  article: boolean;
 }
 
 export interface LanPair {
@@ -40,6 +41,7 @@ export interface LessonId { // for sorting
 
 export interface CourseDefaults {
   caseSensitive: boolean;
+  addArticle: boolean;
 }
 
 export interface Course {
@@ -76,6 +78,7 @@ export interface UserCourse {
 
 export interface LessonOptions {
   caseSensitive: boolean;
+  addArticle: boolean;
 }
 
 export interface Lesson {

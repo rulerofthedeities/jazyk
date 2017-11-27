@@ -18,7 +18,8 @@ var lessonSchema = new Schema({
 }, {_id: false});
 
 var defaultsSchema = new Schema({
-  caseSensitive: {type: Boolean, default: false}
+  caseSensitive: {type: Boolean, default: false},
+  addArticle: {type: Boolean, default: false}
 }, {_id: false});
 
 var courseSchema = new Schema({

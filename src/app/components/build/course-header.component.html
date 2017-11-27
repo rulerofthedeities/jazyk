@@ -87,6 +87,17 @@
           </km-toggle>
         </div>
       </div>
+      <div class="form-group form-group-lg" *ngIf="!isNewCourse && currentLanguage?.article">
+        <label for="addArticle" class="control-label col-xs-2">
+        </label>
+        <div class="col-xs-10">
+          <label for="addArticle">{{text['AddArticle']}}:</label>
+          <km-toggle id="addArticle"
+            [toggle]="courseForm.value.addArticle"
+            (toggled)="onSetFlag('addArticle', $event)">
+          </km-toggle>
+        </div>
+      </div>
 
       <!-- BUTTONS -->
       <div class="row">

@@ -121,7 +121,8 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       name: '',
       chapterName: '',
       options: {
-        caseSensitive: this.defaults.caseSensitive
+        caseSensitive: this.defaults.caseSensitive,
+        addArticle: this.defaults.addArticle
       },
       exerciseSteps: {
         intro: {
@@ -156,7 +157,8 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lessonForm = this.formBuilder.group({
       name: [this.lesson.name, [Validators.required]],
       exerciseSteps: new FormArray(exerciseStepControls),
-      caseSensitive: [this.lesson.options.caseSensitive]
+      caseSensitive: [this.lesson.options.caseSensitive],
+      addArticle: [this.lesson.options.addArticle]
     });
     console.log('LESSON FORM', this.lessonForm);
     this.isFormReady = true;
@@ -166,7 +168,10 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     const chapterName = this.autocomplete.currentItem ? this.autocomplete.currentItem : '';
     this.lesson.chapterName = chapterName;
     this.lesson.name = formValues.name;
-    this.lesson.options = {caseSensitive: formValues.caseSensitive};
+    this.lesson.options = {
+      caseSensitive: formValues.caseSensitive,
+      addArticle: formValues.addArticle
+    };
     this.lesson.exerciseSteps = {
       intro: {
         active: formValues.exerciseSteps[0],

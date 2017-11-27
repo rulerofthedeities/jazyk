@@ -84,6 +84,18 @@
       </km-toggle>
     </div>
   </div>
+  <!-- ADD ARTICLE -->
+  <div class="form-group form-group-lg">
+    <label for="addArticle" class="control-label col-xs-2">
+      {{text['AddArticle']}}
+    </label>
+    <div class="col-xs-10">
+      <km-toggle id="addArticle"
+        [toggle]="lessonForm.value.addArticle"
+        (toggled)="onSetFlag('addArticle', $event)">
+      </km-toggle>
+    </div>
+  </div>
 
   <!-- BUTTONS -->
   <div class="row">

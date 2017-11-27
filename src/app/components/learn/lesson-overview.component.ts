@@ -55,7 +55,6 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
 
   private combineResults(resultsData: ResultsData) {
     // combine total count results with results for last entry
-
     const countResults: ExerciseResult[] = resultsData.count,
           lastResults: ExerciseResult[] = resultsData.last;
     let lastResult: ExerciseResult;
@@ -63,7 +62,6 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
       lastResult = lastResults.find(last => last.exerciseId === countResult.exerciseId);
       Object.assign(countResult, lastResult);
     });
-    console.log('COMBINEDRESULTS', countResults);
     this.buildExerciseData(countResults);
   }
 

@@ -66,35 +66,40 @@ export class UtilsService {
         name: 'EN',
         nativeName: 'English',
         interface: true,
-        active: true
+        active: true,
+        article: false
       },
       {
         _id: 'de',
         name: 'DE',
         nativeName: 'Deutsch',
         interface: false,
-        active: true
+        active: true,
+        article: true
       },
       {
         _id: 'fr',
         name: 'FR',
         nativeName: 'Français',
         interface: true,
-        active: true
+        active: true,
+        article: true
       },
       {
         _id: 'cs',
         name: 'CS',
         nativeName: 'Čeština',
         interface: false,
-        active: true
+        active: true,
+        article: false
       },
       {
         _id: 'nl',
         name: 'NL',
         nativeName: 'Nederlands',
         interface: true,
-        active: false
+        active: false,
+        article: true
       }
     ];
 

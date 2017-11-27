@@ -100,6 +100,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       to: newLanguage._id
     };
     this.courseForm.patchValue({'languagePair.to': newLanguage._id});
+    this.courseForm.patchValue({'addArticle': newLanguage.article});
   }
 
   private createNewCourse() {
@@ -115,7 +116,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       attendance: 0,
       difficulty: 0,
       defaults: {
-        caseSensitive: false
+        caseSensitive: false,
+        addArticle: this.currentLanguage.article
       },
       isPublic: true,
       isPublished: false,
@@ -132,7 +134,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     this.courseForm = this.formBuilder.group({
       languagePair: [this.course.languagePair],
       name: [this.course.name, Validators.required],
-      caseSensitive: [this.course.defaults.caseSensitive]
+      caseSensitive: [this.course.defaults.caseSensitive],
+      addArticle: [this.course.defaults.addArticle]
     });
     this.isFormReady = true;
   }
@@ -140,6 +143,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   private processCourse(formValues: any) {
     this.course.name = formValues.name;
     this.course.defaults.caseSensitive = formValues.caseSensitive;
+    this.course.defaults.addArticle = formValues.addArticle;
   }
 
   private addCourse() {
