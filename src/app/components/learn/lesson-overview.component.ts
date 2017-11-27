@@ -4,6 +4,11 @@ import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
 
+interface ResultsData {
+  last: ExerciseResult[];
+  count: ExerciseResult[];
+}
+
 @Component({
   selector: 'km-lesson-overview',
   templateUrl: 'lesson-overview.component.html',
@@ -43,12 +48,23 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     .getLessonResults(this.lessonId, 'overview')
     .takeWhile(() => this.componentActive)
     .subscribe(
-      results => {
-        console.log('overview results', results);
-        this.buildExerciseData(results);
-      },
+      results => this.combineResults(results),
       error => this.errorService.handleError(error)
     );
+  }
+
+  private combineResults(resultsData: ResultsData) {
+    // combine total count results with results for last entry
+
+    const countResults: ExerciseResult[] = resultsData.count,
+          lastResults: ExerciseResult[] = resultsData.last;
+    let lastResult: ExerciseResult;
+    countResults.forEach(countResult => {
+      lastResult = lastResults.find(last => last.exerciseId === countResult.exerciseId);
+      Object.assign(countResult, lastResult);
+    });
+    console.log('COMBINEDRESULTS', countResults);
+    this.buildExerciseData(countResults);
   }
 
   private buildExerciseData(results: ExerciseResult[]) {

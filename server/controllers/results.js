@@ -197,10 +197,11 @@ module.exports = {
     // Get lesson results for overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {userId, lessonId, isLast: true};
+          lastQuery = {userId, lessonId, isLast: true},
+          countQuery = {userId, lessonId};
     console.log('fetching overview for lesson id', lessonId);
-    const pipeline = [
-      {$match: query},
+    const lastPipeline = [
+      {$match: lastQuery},
       {$sort: {dt: -1, sequence: -1}},
       {$group: {
         _id: '$exerciseId',
@@ -210,9 +211,6 @@ module.exports = {
         streak: {'$first': '$streak'},
         dt: {'$first': '$dt'},
         daysBetweenReviews: {'$first': '$daysBetweenReviews'},
-        totalPoints: {'$sum': '$points'},
-        timesDone: {'$sum': {$cond: [{$eq: [ "$step", "study"]} , 0, 1]}},
-        timesCorrect: {'$sum': {$cond: ["$isCorrect", 1, 0 ]}}
       }},
       {$project: {
         _id: 0,
@@ -222,17 +220,38 @@ module.exports = {
         isDifficult: '$isDifficult',
         dt: '$dt',
         daysBetweenReviews: '$daysBetweenReviews',
-        points: '$totalPoints',
         streak: '$streak',
+      }}
+    ];
+    const countPipeline = [
+      {$match: countQuery},
+      {$group: {
+        _id: '$exerciseId',
+        totalPoints: {'$sum': '$points'},
+        timesDone: {'$sum': {$cond: [{$eq: [ "$step", "study"]} , 0, 1]}},
+        timesCorrect: {'$sum': {$cond: ["$isCorrect", 1, 0 ]}}
+      }},
+      {$project: {
+        _id: 0,
+        exerciseId: '$_id',
+        points: '$totalPoints',
         timesDone: '$timesDone',
         timesCorrect: '$timesCorrect'
       }}
     ];
-    Result.aggregate(pipeline, function(err, results) {
-      response.handleError(err, res, 500, 'Error fetching overview results', function(){
-        response.handleSuccess(res, results, 200, 'Fetched overview results');
-      });
+
+    const getReview = async () => {
+      const last = await  Result.aggregate(lastPipeline);
+      const count = await Result.aggregate(countPipeline);
+      return {last, count};
+    };
+
+    getReview().then((results) => {
+      response.handleSuccess(res, results, 200, 'Fetched overview results');
+    }).catch((err) => {
+      response.handleError(err, res, 400, 'Error fetching overview results');
     });
+
   },
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
@@ -297,7 +316,7 @@ module.exports = {
         _id:0
       }}
     ];
-    const getCount = async (userId) => {
+    const getCount = async () => {
       const lesson = await  Result.aggregate(lessonPipeline);
       const difficult = await Result.aggregate(difficultPipeline);
       const review = await Result.aggregate(reviewPipeline);
