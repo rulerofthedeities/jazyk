@@ -36,24 +36,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.languages = this.utilsService.getActiveLanguages();
-    this.getTranslations();
-    this.route.params
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      params => {
-        if (params['id']) {
-          const courseId = params['id'];
-          if (courseId === 'new') {
-            this.isEditMode = true;
-            this.setDefaultLanguage(params['lan']);
-          } else {
-            this.isEditMode = false;
-            this.getCourse(courseId);
-          }
-        }
-      }
-    );
+    this.getDependables();
   }
 
   onEditCourse() {
@@ -185,15 +168,50 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.text = this.utilsService.getTranslatedText(translations);
   }
 
-  private getTranslations() {
+  private setActiveLanguages(languages: Language[]) {
+    this.languages = languages.filter(language => language.active);
+    console.log('languages', this.languages);
+    this.languages.forEach(language => {
+      language.article = language.articles && language.articles.length > 0;
+    });
+  }
+
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'CourseComponent',
+      getTranslations: true,
+      getLanguages: true
+    };
     this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'CourseComponent')
+    .fetchDependables(options)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      translations => {
-        this.setText(translations);
+      dependables => {
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.setActiveLanguages(dependables.languages);
+        this.getRouteParams();
       },
       error => this.errorService.handleError(error)
+    );
+  }
+
+  private getRouteParams() {
+    this.route.params
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      params => {
+        if (params['id']) {
+          const courseId = params['id'];
+          if (courseId === 'new') {
+            this.isEditMode = true;
+            this.setDefaultLanguage(params['lan']);
+          } else {
+            this.isEditMode = false;
+            this.getCourse(courseId);
+          }
+        }
+      }
     );
   }
 

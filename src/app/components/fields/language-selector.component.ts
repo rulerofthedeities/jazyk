@@ -37,24 +37,24 @@ export class LanguageSelectorComponent implements OnInit {
   onToggleDropdown() {
     if (!this.disabled) {
       this.showDropdown = !this.showDropdown;
-      this.selectedDropdown = this.selectedLanguage._id;
+      this.selectedDropdown = this.selectedLanguage.code;
     }
   }
 
   onSelectLanguage(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
-    this.selectedDropdown = newLanguage._id;
+    this.selectedDropdown = newLanguage.code;
     this.showDropdown = false;
     this.languageSelected.emit(newLanguage);
   }
 
   onHoverLanguage(hoveredLanguage: Language) {
-    this.selectedDropdown = hoveredLanguage._id;
+    this.selectedDropdown = hoveredLanguage.code;
   }
 
   private setSelectedLanguage(currentLanguage: Language) {
     if (this.languages && currentLanguage) {
-      this.selectedLanguage = this.languages.filter( language => language._id === currentLanguage._id)[0];
+      this.selectedLanguage = this.languages.filter( language => language.code === currentLanguage.code)[0];
     }
   }
 }

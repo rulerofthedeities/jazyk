@@ -73,7 +73,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getCourseChapters() {
-    this.courseChapters = this.course.chapters.slice(); // slice for no reference
+    this.courseChapters = JSON.parse(JSON.stringify(this.course.chapters)); // slice for no reference
     console.log('course chapters', this.courseChapters);
   }
 

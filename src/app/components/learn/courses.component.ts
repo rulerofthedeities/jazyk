@@ -18,6 +18,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   courses: Course[];
   text: Object = {};
   listType = CourseListType;
+  isReady = false;
 
   constructor(
     private learnService: LearnService,
@@ -27,8 +28,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
-    this.getLanguages();
+    this.getDependables();
   }
 
   onLanguageSelected(newLanguage: Language) {
@@ -36,31 +36,37 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     this.getCourses();
   }
 
-  private getLanguages() {
-    this.languages = this.utilsService.getActiveLanguages();
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
-  }
-
-  private getTranslations() {
-    this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'CoursesComponent')
+  private getCourses() {
+    this.learnService
+    .fetchPublicCourses(this.selectedLanguage.code)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      translations => {
-        this.getCourses();
-        this.text = this.utilsService.getTranslatedText(translations);
-      },
+      courses => this.courses = courses,
       error => this.errorService.handleError(error)
     );
   }
 
-  private getCourses() {
-    this.learnService
-    .fetchPublicCourses(this.selectedLanguage)
+  private setActiveLanguages(languages: Language[]) {
+    this.languages = languages.filter(language => language.active);
+    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+  }
+
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'CoursesComponent',
+      getTranslations: true,
+      getLanguages: true
+    };
+    this.utilsService
+    .fetchDependables(options)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      courses => {
-        this.courses = courses;
+      dependables => {
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.setActiveLanguages(dependables.languages);
+        this.getCourses();
+        this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );

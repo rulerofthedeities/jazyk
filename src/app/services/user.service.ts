@@ -62,7 +62,7 @@ export class UserService {
     if (this._user.jazyk) {
       // Get language currently learning
       const userLan = this._user.jazyk.learn.lan;
-      learnLan = languages.find(lan => lan._id === userLan);
+      learnLan = languages.find(lan => lan.code === userLan);
     }
     if (!learnLan) {
       // Get default language

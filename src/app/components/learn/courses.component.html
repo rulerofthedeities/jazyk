@@ -1,5 +1,5 @@
 <!-- LANGUAGES -->
-<div class="form-group form-group-lg">
+<div class="form-group form-group-lg" *ngIf="isReady">
   <div class="col-xs-12 lanselector">
     <km-language-selector 
       [languages]="languages"
@@ -12,7 +12,7 @@
 <div class="clearfix"></div>
 
 <!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="courses">
+<ul class="list-unstyled" *ngIf="isReady && courses">
   <li *ngFor="let course of courses">
     <km-course-summary
       [course]="course"
@@ -23,7 +23,7 @@
 </ul>
 
 <!-- No courses found for selected language -->
-<div *ngIf="courses?.length <1">
+<div *ngIf="isReady && courses?.length <1">
   <km-info-msg [msg]="text['Nocourses']">
   </km-info-msg>
   <div class="panel panel-default">

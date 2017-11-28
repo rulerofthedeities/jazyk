@@ -1,6 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Config = require('../models/lanconfig');
+      Config = require('../models/lanconfig'),
+      Translation = require('../models/translation');
 
 module.exports = {
   getLanConfig: function(req, res) {
@@ -22,6 +23,33 @@ module.exports = {
         console.log('welcome message', message);
         response.handleSuccess(res, message, 200, 'Fetched notification message');
       });
+    });
+  },
+  getDependables: function(req, res) {
+    const params = req.query,
+          lan = params.lan,
+          languagesQuery = {tpe:'language'};
+
+    const translationPipeline = [
+      {$match: {components: params.component}},
+      {$project:{_id:0, key:1, txt:'$' + lan}}
+    ];
+
+    const getData = async () => {
+      let translations, languages;
+      if (params.getTranslations === 'true') {
+        translations = await Translation.aggregate(translationPipeline);
+      }
+      if (params.getLanguages === 'true') {
+        languages = await Config.find(languagesQuery);
+      }
+      return {translations, languages};
+    };
+
+    getData().then((results) => {
+      response.handleSuccess(res, results, 200, 'Fetched dependables');
+    }).catch((err) => {
+      response.handleError(err, res, 400, 'Error fetching dependables');
     });
   }
 }

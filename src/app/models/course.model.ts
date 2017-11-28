@@ -5,10 +5,12 @@ export enum CourseListType {Learn, Teach, All};
 export interface Language {
   _id: string;
   name: string;
+  nativeName: string;
+  code: string;
   interface: boolean;
   active: boolean;
-  nativeName: string;
   article: boolean;
+  articles?: string[];
 }
 
 export interface LanPair {

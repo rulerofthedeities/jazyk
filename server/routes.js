@@ -31,6 +31,7 @@ module.exports.initialize = function(app, router) {
   router.get('/config/lan/:lan', config.getLanConfig);
 
   router.get('/translations/:lan/:component', translations.getTranslations);
+  router.get('/dependables', config.getDependables);
 
   router.get('/courses/public/:lan', courses.getPublicLanCourses);
   router.get('/courses/:lan', courses.getLanCourses);

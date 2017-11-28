@@ -22,6 +22,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   courses: Course[];
   text: Object = {};
   selectedLanguage: Language;
+  activeLanguages: Language[];
   languages: Language[];
   infoMsg: string;
   multipleLanguages = false;
@@ -36,7 +37,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getDependables();
   }
 
   onNewCourse() {
@@ -46,19 +47,6 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   onLanguageSelected(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
     this.filterCourses();
-  }
-
-  private getTranslations() {
-    this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'CoursesComponent')
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      translations => {
-        this.getCourses();
-        this.text = this.utilsService.getTranslatedText(translations);
-      },
-      error => this.errorService.handleError(error)
-    );
   }
 
   private getCourses() {
@@ -78,14 +66,14 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     );
   }
   private getLanguages() {
-    const AllLanguages = this.utilsService.getActiveLanguages();
+    const AllLanguages = JSON.parse(JSON.stringify(this.activeLanguages));
     const languages: Language[] = [];
     let courseLan;
     AllLanguages.filter( language => {
-      courseLan = this.courses.filter( course => course.languagePair.to === language._id);
+      courseLan = this.courses.filter( course => course.languagePair.to === language.code);
       if (courseLan.length > 0) {
         languages.push(language);
-        this.lanCourses[language._id] = courseLan;
+        this.lanCourses[language.code] = courseLan;
       }
     });
     this.languages = languages;
@@ -99,15 +87,47 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   private filterCourses() {
     let lan;
     if (this.selectedLanguage) {
-      lan = this.selectedLanguage._id;
+      lan = this.selectedLanguage.code;
     } else {
-      lan = this.utilsService.getDefaultLanguage();
+      lan = this.getDefaultLanguage();
     }
     if (this.lanCourses[lan]) {
       this.courses = this.lanCourses[lan];
     } else {
       this.courses = null;
     }
+  }
+
+  private getDefaultLanguage(): string {
+    let lan = '';
+    if (this.activeLanguages.length > 0) {
+      lan = this.activeLanguages[0].code;
+    }
+    return lan;
+  }
+
+  private setActiveLanguages(languages: Language[]) {
+    this.activeLanguages = languages.filter(language => language.active);
+  }
+
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'CoursesComponent',
+      getTranslations: true,
+      getLanguages: true
+    };
+    this.utilsService
+    .fetchDependables(options)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      dependables => {
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.setActiveLanguages(dependables.languages);
+        this.getCourses();
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

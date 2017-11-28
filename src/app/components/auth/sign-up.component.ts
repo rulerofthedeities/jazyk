@@ -6,6 +6,7 @@ import {UserService} from '../../services/user.service';
 import {AuthService } from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
+import {Language} from '../../models/course.model';
 import {User, Notification} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,7 +19,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private user: User;
   userForm: FormGroup;
+  languages: Language[];
   text: Object = {};
+  isReady = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,7 +33,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getDependables();
     this.buildForm();
   }
 
@@ -49,7 +52,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmitForm(user: User) {
-    const learnLan = this.utilsService.getDefaultLanguage();
+    const learnLan = this.getDefaultLanguage();
     user.main = {
       lan: this.userService.user.main.lan,
       background: true
@@ -92,15 +95,30 @@ export class SignUpComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getTranslations() {
+  private getDefaultLanguage(): string {
+    const languages = this.languages.filter(language => language.active);
+    let lan = '';
+    if (languages.length > 0) {
+      lan = languages[0].code;
+    }
+    return lan;
+  }
+
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'AuthComponent',
+      getTranslations: true,
+      getLanguages: true
+    };
     this.utilsService
-    .fetchTranslations(this.userService.user.main.lan, 'AuthComponent')
+    .fetchDependables(options)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      translations => {
-        if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-        }
+      dependables => {
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.languages = dependables.languages;
+        this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );

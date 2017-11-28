@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Language, LanPair, Step, Level} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
@@ -16,6 +16,23 @@ export class UtilsService {
     private http: Http
   ) {}
 
+  fetchDependables(options: any) {
+    const params = this.objToSearchParams(options);
+    return this.http
+    .get('/api/dependables/', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  private objToSearchParams(obj): URLSearchParams {
+    const params = new URLSearchParams();
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        params.set(key, obj[key]);
+      }
+    }
+    return params;
+ }
   fetchTranslations(lan: string, component: string) {
     return this.http
     .get('/api/translations/' + lan + '/' + component)
@@ -39,12 +56,12 @@ export class UtilsService {
     });
     return text;
   }
-
+/*
   getDefaultLanguage(): string {
     const languages = this.getActiveLanguages();
     let lan = '';
     if (languages.length > 0) {
-      lan = languages[0]._id;
+      lan = languages[0].code;
     }
     return lan;
   }
@@ -53,6 +70,7 @@ export class UtilsService {
     const languages = this.getLanguages();
     return languages.filter(language => language.active);
   }
+  */
 
   getInterfaceLanguages(): Language[] {
     const languages = this.getLanguages();
@@ -63,6 +81,7 @@ export class UtilsService {
     const languages: Language[] = [
       {
         _id: 'en',
+        code: 'en',
         name: 'EN',
         nativeName: 'English',
         interface: true,
@@ -71,6 +90,7 @@ export class UtilsService {
       },
       {
         _id: 'de',
+        code: 'de',
         name: 'DE',
         nativeName: 'Deutsch',
         interface: false,
@@ -79,6 +99,7 @@ export class UtilsService {
       },
       {
         _id: 'fr',
+        code: 'fr',
         name: 'FR',
         nativeName: 'Français',
         interface: true,
@@ -87,6 +108,7 @@ export class UtilsService {
       },
       {
         _id: 'cs',
+        code: 'cs',
         name: 'CS',
         nativeName: 'Čeština',
         interface: false,
@@ -95,6 +117,7 @@ export class UtilsService {
       },
       {
         _id: 'nl',
+        code: 'nl',
         name: 'NL',
         nativeName: 'Nederlands',
         interface: true,
