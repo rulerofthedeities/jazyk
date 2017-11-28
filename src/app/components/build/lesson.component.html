@@ -80,6 +80,7 @@
         [languagePair]="lesson?.languagePair"
         [lessonId]="lesson?._id"
         [text]="text"
+        [options]="lesson?.options"
         (addedExercises)="onExercisesAdded($event)"
         (cancelNew)="onCancelNew()">
       </km-build-exercise>

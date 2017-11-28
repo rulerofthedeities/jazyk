@@ -220,7 +220,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
-    }, {caseSensitive: false});
+    }, {
+      caseSensitive: false,
+      addArticle: false
+    });
     if (!this.stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }

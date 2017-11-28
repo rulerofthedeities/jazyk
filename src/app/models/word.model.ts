@@ -53,6 +53,7 @@ export interface WordDetail {
   case?: string;
   followingCase?: string;
   genus?: string;
+  article?: string;
   plural?: string;
   diminutive?: string;
   comparative?: string;

@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
-import {LanPair, LanConfig} from '../../models/course.model';
+import {LanPair, LanConfig, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
@@ -33,6 +33,7 @@ interface NewExerciseOptions {
   hasGenus?: boolean;
   hasComparison?: boolean;
   lastDoc?: boolean;
+  addArticle?: boolean;
 }
 
 @Component({
@@ -44,6 +45,7 @@ interface NewExerciseOptions {
 export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
+  @Input() options: LessonOptions;
   @Input() exercise: Exercise;
   @Input() text: Object;
   @Input() focus: string;
@@ -156,7 +158,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         hasConjugation: false,
         hasGenus: false,
         hasComparison: false,
-        lastDoc: true
+        lastDoc: true,
+        addArticle: this.options ? this.options.addArticle : false
       });
     }
   }
@@ -350,6 +353,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         formValues.localWord === this.selected[this.lanLocal].word &&
         formValues.foreignWord === this.selected[this.lanForeign].word) {
 
+      const foreign = this.selected[this.lanForeign],
+            local = this.selected[this.lanLocal];
+      if (options.addArticle) {
+        this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
+      }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
         /* Foreign */
       if (!options.hasGenus) {
@@ -461,6 +469,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
     console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
+  }
+
+  private addArticle(exercise: Exercise, foreign: WordDetail, local: WordDetail) {
+    const aForeign = foreign.article || '',
+          aLocal = local.article || '';
+    exercise.foreign.word = (aForeign + ' ' + exercise.foreign.word).trim();
+    exercise.local.word = (aLocal + ' ' + exercise.local.word).trim();
   }
 
   private checkIfValue(field: string): string {
