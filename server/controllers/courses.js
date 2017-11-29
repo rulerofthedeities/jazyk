@@ -24,9 +24,9 @@ let getCourse = function(req, res, authorOnly) {
 
 let getCourses = function(req, res, publishedOnly) {
   const languageId = req.params.lan;
-  let query = {'languagePair.to': languageId};
+  let query = languageId === 'eu' ? {} : {'languagePair.to': languageId};
   if (publishedOnly) {
-    query = {'languagePair.to': languageId, isPublished: true, isPublic: true}
+    query = languageId === 'eu' ? {isPublished: true, isPublic: true} : {'languagePair.to': languageId, isPublished: true, isPublic: true}
   }
   Course.find(query, {}, function(err, courses) {
     response.handleError(err, res, 500, 'Error fetching courses', function(){

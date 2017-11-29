@@ -3,7 +3,6 @@ import {Exercise, ExerciseSteps} from './exercise.model';
 export enum CourseListType {Learn, Teach, All};
 
 export interface Language {
-  _id: string;
   name: string;
   nativeName: string;
   code: string;

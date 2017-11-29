@@ -27,21 +27,35 @@ module.exports = {
   },
   getDependables: function(req, res) {
     const params = req.query,
-          lan = params.lan,
-          languagesQuery = {tpe:'language'};
+          lan = params.lan;
 
     const translationPipeline = [
       {$match: {components: params.component}},
-      {$project:{_id:0, key:1, txt:'$' + lan}}
+      {$project:{
+        _id:0,
+        key:1,
+        txt:'$' + lan
+      }}
     ];
-    console.log('getting dependables', params);
+    const languagesPipeline = [
+      {$match: {tpe: 'language'}},
+      {$project:{
+        _id:0,
+        code: 1,
+        name: 1,
+        nativeName: 1,
+        interface: 1,
+        active: 1,
+        articles: 1
+      }}
+    ];
     const getData = async () => {
       let translations, languages;
       if (params.getTranslations === 'true') {
         translations = await Translation.aggregate(translationPipeline);
       }
       if (params.getLanguages === 'true') {
-        languages = await Config.find(languagesQuery);
+        languages = await Config.aggregate(languagesPipeline);
       }
       return {translations, languages};
     };
