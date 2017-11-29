@@ -196,7 +196,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
         this.setInterfaceLanguages(dependables.languages);
-        console.log('dependables main menu', this.text);
         this.isReady = true;
       },
       error => this.errorService.handleError(error)

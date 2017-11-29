@@ -1,36 +1,44 @@
-<!-- LANGUAGES -->
-<div class="form-group form-group-lg" *ngIf="isReady">
-  <div class="col-xs-12 lanselector">
-    <km-language-selector 
-      [languages]="languages"
-      [currentLanguage]="selectedLanguage"
-      [text]="text"
-      (languageSelected)="onLanguageSelected($event)">
-    </km-language-selector>
-  </div>
-</div>
-<div class="clearfix"></div>
-
-<!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="isReady && courses">
-  <li *ngFor="let course of courses">
-    <km-course-summary
-      [course]="course"
-      [text]="text"
-      [tpe]="listType.All">
-    </km-course-summary>
-  </li>
-</ul>
-
-<!-- No courses found for selected language -->
-<div *ngIf="isReady && courses?.length <1">
-  <km-info-msg [msg]="text['Nocourses']">
-  </km-info-msg>
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <button class="btn btn-primary" (click)="onNewCourse()">
-        {{text["Newcourselg"]}}
-      </button>
+<section *ngIf="isReady">
+  <!-- LANGUAGES -->
+  <div class="form-group form-group-lg">
+    <div class="col-xs-12 lanselector">
+      <km-language-selector 
+        [languages]="languages"
+        [currentLanguage]="selectedLanguage"
+        [text]="text"
+        (languageSelected)="onLanguageSelected($event)">
+      </km-language-selector>
     </div>
   </div>
-</div>
+  <div class="clearfix"></div>
+
+  <!-- COURSE LIST -->
+  <ul class="list-unstyled" *ngIf="courses$ | async else loading">
+    <li *ngFor="let course of courses$ | async">
+      <km-course-summary
+        [course]="course"
+        [text]="text"
+        [tpe]="listType.All">
+      </km-course-summary>
+    </li>
+  </ul>
+
+  <!-- No courses found for selected language -->
+  <div *ngIf="courses$ | async as courses">
+    <div *ngIf="!courses.length">
+      <km-info-msg [msg]="text['Nocourses']">
+      </km-info-msg>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <button class="btn btn-primary" (click)="onNewCourse()">
+            {{text["Newcourselg"]}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #loading>
+  <km-loader></km-loader>
+</ng-template>

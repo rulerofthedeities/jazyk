@@ -5,6 +5,7 @@ import {Language, Course, LessonOptions} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseResult} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
+import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -162,20 +163,6 @@ export class LearnService {
 
   /*** Exercises ***/
 
-  /*
-  fetchExercises(courseId: string, exerciseIds: string[]) {
-    const token = this.authService.getToken(),
-          params = new URLSearchParams();
-    exerciseIds.forEach((id, i) => {
-      params.set('id' + i.toString(), id);
-    });
-    return this.http
-    .get('/api/exercises/course/' + courseId, {search: params})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
-  }
-  */
-
   buildExerciseData(
     exercises: Exercise[],
     results: ExerciseResult[],
@@ -199,12 +186,6 @@ export class LearnService {
         }
         exerciseData[j] = this.buildData(stepOptions, lessonOptions, filteredResult, text, exercise, direction);
         j++;
-        /*
-        if (stepOptions.isBidirectional) {
-          exerciseData[j] = this.buildData(stepOptions, filteredResult, text, exercise, inverseDirection);
-          j++;
-        }
-        */
       });
     }
     return exerciseData;

@@ -4,6 +4,7 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {Course, Language, Translation, CourseListType} from '../../models/course.model';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -15,7 +16,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];
-  courses: Course[];
+  courses$: Observable<Course[]>;
   text: Object = {};
   listType = CourseListType;
   isReady = false;
@@ -37,13 +38,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   }
 
   private getCourses() {
-    this.learnService
-    .fetchPublicCourses(this.selectedLanguage.code)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      courses => this.courses = courses,
-      error => this.errorService.handleError(error)
-    );
+    this.courses$ = this.learnService.fetchPublicCourses(this.selectedLanguage.code);
   }
 
   private setActiveLanguages(languages: Language[]) {
