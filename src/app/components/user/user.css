@@ -12,9 +12,6 @@
 .buttons {
   margin-top: 32px;
 }
-.tiny-control {
-  width: 64px;
-}
 .input-group-addon {
   float: left;
   padding-top: 8px;
@@ -38,4 +35,10 @@ textarea.bio {
   width: 98px;
   white-space: normal;
   margin-top: 1px;
+}
+.ig-fixed .form-control {
+  width: 64px;
+}
+.ig-fixed .input-group-addon {
+  width: inherit;
 }

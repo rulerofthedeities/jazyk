@@ -155,7 +155,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private setDefaultLanguage(languageId: string) {
     let selLan: Language[];
     if (languageId) {
-      selLan = this.languages.filter(lan => lan._id === languageId);
+      selLan = this.languages.filter(lan => lan.code === languageId);
     }
     if (selLan && selLan.length > 0) {
       this.currentLanguage = selLan[0];

@@ -56,22 +56,8 @@ export class UtilsService {
     });
     return text;
   }
+
 /*
-  getDefaultLanguage(): string {
-    const languages = this.getActiveLanguages();
-    let lan = '';
-    if (languages.length > 0) {
-      lan = languages[0].code;
-    }
-    return lan;
-  }
-
-  getActiveLanguages(): Language[] {
-    const languages = this.getLanguages();
-    return languages.filter(language => language.active);
-  }
-  */
-
   getInterfaceLanguages(): Language[] {
     const languages = this.getLanguages();
     return languages.filter(language => language.interface);
@@ -128,7 +114,7 @@ export class UtilsService {
 
     return languages;
   }
-
+*/
   getWordTypes(): string[] {
     return [
       'noun',

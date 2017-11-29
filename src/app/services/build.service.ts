@@ -21,7 +21,7 @@ export class BuildService {
 
   fetchCourses(lan: Language) {
     return this.http
-    .get('/api/courses/' + lan._id)
+    .get('/api/courses/' + lan.code)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

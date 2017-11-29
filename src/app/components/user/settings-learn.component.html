@@ -9,9 +9,9 @@
       {{text["NrOfWords"]}}
     </label>
     <div class="col-xs-8">
-      <div class="input-group">
+      <div class="input-group ig-fixed">
         <select 
-          class="form-control tiny-control" 
+          class="form-control" 
           id="nrOfWordsStudy"
           (change)="onChangeField()"
           formControlName="nrOfWordsStudy">
@@ -25,9 +25,9 @@
           {{text["perStudySession"]}}
         </span>
       </div>
-      <div class="input-group">
+      <div class="input-group ig-fixed">
         <select 
-          class="form-control tiny-control" 
+          class="form-control" 
           id="nrOfWordsLearn"
           (change)="onChangeField()"
           formControlName="nrOfWordsLearn">
@@ -41,9 +41,9 @@
           {{text["perPractiseSession"]}}
         </span>
       </div>
-      <div class="input-group">
+      <div class="input-group ig-fixed">
         <select 
-          class="form-control tiny-control" 
+          class="form-control" 
           id="nrOfWordsReview"
           formControlName="nrOfWordsReview">
           <option 
@@ -122,9 +122,9 @@
       {{text["WordDelay"]}}
     </label>
     <div class="col-xs-8">
-      <div class="input-group">
+      <div class="input-group ig-fixed">
         <select 
-          class="form-control tiny-control" 
+          class="form-control" 
           id="delay"
           formControlName="delay">
           <option 

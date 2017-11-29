@@ -24,6 +24,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   nrOfMessages = 0;
   intLan: Language;
   intLans: Language[];
+  isReady = false;
 
   constructor(
     private router: Router,
@@ -36,10 +37,9 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUrl();
-    this.getTranslations(this.userService.user.main.lan);
+    this.getDependables();
     this.getNotificationsCount();
     this.checkMessages();
-    this.setInterfaceLan();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
@@ -105,16 +105,15 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private setInterfaceLan() {
     const lan = this.userService.user.main.lan;
-    this.intLans = this.utilsService.getInterfaceLanguages();
-    this.intLan = this.intLans.find(lanItem => lanItem._id === lan);
+    this.intLan = this.intLans.find(lanItem => lanItem.code === lan);
   }
 
   private updateInterfaceLan(newLan: Language) {
-    this.userService.user.main.lan = newLan._id;
-    localStorage.setItem('km-jazyk.lan', newLan._id);
+    this.userService.user.main.lan = newLan.code;
+    localStorage.setItem('km-jazyk.lan', newLan.code);
     this.intLan = newLan;
     this.showDropDown = false;
-    this.userService.languageChanged.emit(newLan._id);
+    this.userService.languageChanged.emit(newLan.code);
   }
 
   private getNotificationsCount() {
@@ -174,6 +173,32 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => this.text = this.utilsService.getTranslatedText(translations),
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private setInterfaceLanguages(languages: Language[]) {
+    this.intLans = languages.filter(language => language.interface);
+    this.setInterfaceLan();
+  }
+
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'MainMenuComponent',
+      getTranslations: true,
+      getLanguages: true
+    };
+    this.utilsService
+    .fetchDependables(options)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      dependables => {
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.setInterfaceLanguages(dependables.languages);
+        console.log('dependables main menu', this.text);
+        this.isReady = true;
+      },
       error => this.errorService.handleError(error)
     );
   }

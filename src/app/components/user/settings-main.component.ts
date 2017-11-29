@@ -20,8 +20,9 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   private componentActive = true;
   mainForm: FormGroup;
-  isFormReady = false;
+  isReady = false;
   infoMsg = '';
+  languages: Language[];
   formData: FormData;
 
   constructor(
@@ -32,8 +33,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getDependables();
     this.buildForm();
-    this.setFormData();
   }
 
   onSetFlag(field: string, status: boolean) {
@@ -58,7 +59,6 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
       'lan': [this.userService.user.main.lan],
       'background': [this.userService.user.main.background]
     });
-    this.isFormReady = true;
   }
 
   private updateMainSettings(settings: MainSettings) {
@@ -90,9 +90,31 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   private setFormData() {
     this.formData = {
-      lans: this.utilsService.getInterfaceLanguages()
+      lans: this.languages
     };
   }
+
+  private setInterfaceLanguages(languages: Language[]) {
+    this.languages = languages.filter(language => language.interface);
+  }
+
+  private getDependables() {
+    const options = {
+      getLanguages: true
+    };
+    this.utilsService
+    .fetchDependables(options)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      dependables => {
+        this.setInterfaceLanguages(dependables.languages);
+        this.setFormData();
+        this.isReady = true;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
 
   ngOnDestroy() {
     this.componentActive = false;

@@ -13,7 +13,8 @@ interface FormData {
 
 @Component({
   selector: 'km-user-settings-learn',
-  templateUrl: 'settings-learn.component.html'
+  templateUrl: 'settings-learn.component.html',
+  styleUrls: ['user.css']
 })
 
 export class UserSettingsLearnComponent implements OnInit, OnDestroy {

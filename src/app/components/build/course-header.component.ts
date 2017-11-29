@@ -97,9 +97,9 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     this.currentLanguage = newLanguage;
     this.course.languagePair = {
       from: userLan,
-      to: newLanguage._id
+      to: newLanguage.code
     };
-    this.courseForm.patchValue({'languagePair.to': newLanguage._id});
+    this.courseForm.patchValue({'languagePair.to': newLanguage.code});
     this.courseForm.patchValue({'addArticle': newLanguage.article});
   }
 
@@ -109,10 +109,10 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       _id: '',
       languagePair: {
         from: userLan,
-        to: this.currentLanguage._id
+        to: this.currentLanguage.code
       },
       name: '',
-      image: userLan + '-' + this.currentLanguage._id + '-course1.jpg', // temporary
+      image: userLan + '-' + this.currentLanguage.code + '-course1.jpg', // temporary
       attendance: 0,
       difficulty: 0,
       defaults: {

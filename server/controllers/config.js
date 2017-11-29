@@ -34,7 +34,7 @@ module.exports = {
       {$match: {components: params.component}},
       {$project:{_id:0, key:1, txt:'$' + lan}}
     ];
-
+    console.log('getting dependables', params);
     const getData = async () => {
       let translations, languages;
       if (params.getTranslations === 'true') {

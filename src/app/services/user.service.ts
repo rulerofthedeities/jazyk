@@ -5,7 +5,6 @@ import {config} from '../app.config';
 import {User, LearnSettings, MainSettings, JazykConfig, Profile, Message, PublicProfile, Notification} from '../models/user.model';
 import {Language, Course} from '../models/course.model';
 import {AuthService} from './auth.service';
-import {UtilsService} from './utils.service';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -27,8 +26,7 @@ export class UserService {
 
   constructor(
     private http: Http,
-    private authService: AuthService,
-    private utilsService: UtilsService
+    private authService: AuthService
   ) {}
 
   getUserData() {
@@ -482,13 +480,17 @@ export class UserService {
 
   private validateLan(lan: string): string {
     if (lan) {
-      const interfaceLanguages = this.utilsService.getInterfaceLanguages();
-      const acceptedLanguage = interfaceLanguages.find(language => language._id === lan);
+      const interfaceLanguages = this.getInterfaceLanguages();
+      const acceptedLanguage = interfaceLanguages.find(language => language === lan);
       if (!acceptedLanguage) {
         lan = null;
       }
     }
     return lan;
+  }
+
+  private getInterfaceLanguages() {
+    return ['en', 'fr', 'nl'];
   }
 
   get user() {

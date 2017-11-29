@@ -1,4 +1,4 @@
-<nav class="navbar navbar-earthy navbar-fixed-top">
+<nav class="navbar navbar-earthy navbar-fixed-top" *ngIf="isReady">
   <div class="container">
     <!-- <div style="font-size:10px">user: {{userService?.user|json}}</div> -->
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -86,7 +86,7 @@
           <a 
             class="nav-link dropdown-toggle user-action">
             <img 
-              src="/assets/img/flags/{{intLan._id}}.png"
+              src="/assets/img/flags/{{intLan.code}}.png"
               alt="{{intLan?.nativeName}}" class="flag" />
               {{intLan?.nativeName}}
             <span 
@@ -101,9 +101,9 @@
             <li
               *ngFor="let lan of intLans" 
               (click)="onSelectLanguage(lan)">
-              <a class="dropdown-item" *ngIf="lan._id !== intLan._id">
+              <a class="dropdown-item" *ngIf="lan.code !== intLan.code">
                 <img 
-                  src="/assets/img/flags/{{lan._id}}.png"
+                  src="/assets/img/flags/{{lan.code}}.png"
                   alt="{{lan?.nativeName}}" class="flag" />
                 {{lan.nativeName}}
               </a>
