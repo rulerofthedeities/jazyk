@@ -19,7 +19,7 @@
 </div>
 
 <!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="courses">
+<ul class="list-unstyled" *ngIf="courses else loading">
   <li *ngFor="let course of courses">
     <km-course-summary
       [course]="course"
@@ -28,5 +28,22 @@
     </km-course-summary>
   </li>
 </ul>
-<km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
-</km-info-msg>
+
+<!-- No courses found for selected language -->
+<div *ngIf="courses && !courses.length">
+  <km-info-msg [msg]="text['Nocourses']">
+  </km-info-msg>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <button class="btn btn-primary" (click)="onNewCourse()">
+        {{text["Newcourselg"]}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <km-loader
+    [msg]="text['LoadingCourses']">
+  </km-loader>
+</ng-template>

@@ -1,10 +1,14 @@
 /* spinner */
 /* http://tobiasahlin.com/spinkit/ */
 
-.spinner {
+.loader {
   margin: 100px auto;
-  width: 88px;
   text-align: center;
+}
+
+.spinner {
+  margin: 0 auto;
+  width: 88px;
 }
 
 .spinner > div {

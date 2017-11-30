@@ -58,6 +58,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
       .subscribe(
         courses => {
           if (courses) {
+            console.log('courses loaded', courses);
             this.allCourses = courses.subscribed;
             if (courses.data) {
               courses.data.forEach((userCourse: UserCourse) => {

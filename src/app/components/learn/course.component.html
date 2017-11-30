@@ -83,7 +83,7 @@
       [settings]="settings"
       [exercisesInterrupted]="exercisesInterrupted"
       [stepcountzero]="stepcountzero"
-      (lessonCompleted)="onLessonCompleted()"
+      (lessonCompleted)="onLessonCompleted($event)"
       (stepCompleted)="onStepCompleted('practise', $event)"
       (stepBack)="onStepBack()"
       (updatedSettings)="onSettingsUpdated($event)">

@@ -24,7 +24,6 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   selectedLanguage: Language;
   activeLanguages: Language[];
   languages: Language[];
-  infoMsg: string;
   multipleLanguages = false;
   listType = CourseListType;
 
@@ -56,9 +55,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     .subscribe(
       courses => {
         this.courses = courses;
-        if (courses && courses.length < 1) {
-          this.infoMsg = this.text['NoBuiltCourses'];
-        } else {
+        if (courses && courses.length) {
           this.getLanguages();
         }
       },

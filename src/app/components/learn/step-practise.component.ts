@@ -25,7 +25,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() learnedLevel: number;
   @Input() hasStudyTab: boolean;
   // @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
-  @Output() lessonCompleted = new EventEmitter();
+  @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
   noMoreToStudy = false;
   beep: any;
@@ -51,7 +51,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   onToNextLesson() {
-    this.lessonCompleted.emit();
+    this.lessonCompleted.emit(this.lessonId);
   }
 
   isWordCorrect(): boolean {
@@ -197,6 +197,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
+        console.log('CHECK lesson results', results);
         if  (results) {
           leftToStudy = this.getNewQuestions(results);
         }
@@ -205,6 +206,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         } else {
           this.noMoreExercises = true;
           this.noMoreToStudy = leftToStudy < 1;
+          this.onToNextLesson();
         }
       },
       error => this.errorService.handleError(error)

@@ -13,7 +13,7 @@
 <div class="clearfix"></div>
 
 <!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="coursesReady">
+<ul class="list-unstyled" *ngIf="coursesReady else loading">
   <li *ngFor="let course of courses">
     <km-course-summary
       [course]="course"
@@ -26,7 +26,7 @@
 </ul>
 
 <!-- No courses found for selected language -->
-<div class="panel panel-default" *ngIf="courses?.length <1">
+<div class="panel panel-default" *ngIf="coursesReady && !courses?.length">
   <div class="panel-body">
     <div class="nocourses">{{text["Nocourses"]}}</div>
     <button class="btn btn-primary" (click)="onNewCourse()">
@@ -34,3 +34,9 @@
     </button>
   </div>
 </div>
+
+<ng-template #loading>
+  <km-loader
+    [msg]="text['LoadingCourses']">
+  </km-loader>
+</ng-template>

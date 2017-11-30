@@ -64,7 +64,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   isStepsReady = false;
   exercisesStarted = false;
   maxStreak = 20;
-  nextLesson: Subject<string> = new Subject();
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountzero: Subject<boolean> = new Subject();
   level = Level;
@@ -138,8 +137,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLessonCompleted() {
-    this.nextLesson.next(this.lesson._id);
+  onLessonCompleted(lessonId: string) {
+    this.getNextLesson(lessonId);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -633,6 +632,25 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (chapterLesson) {
       const lessonId = chapterLesson.lessonIds[0];
       this.getLesson(lessonId);
+    }
+  }
+
+  private getNextLesson(currentLessonId: string) {
+    // Go to next lesson
+    let currentFound = false,
+        newLessonId;
+    this.course.lessons.forEach(chapter => {
+      chapter.lessonIds.forEach(lessonId => {
+        if (currentFound && !newLessonId) {
+          newLessonId = lessonId;
+        } else {
+          currentFound = currentLessonId === lessonId;
+        }
+      });
+    });
+    if (newLessonId) {
+      console.log('new lesson id', newLessonId);
+      this.getLesson(newLessonId);
     }
   }
 
