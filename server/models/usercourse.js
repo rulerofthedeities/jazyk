@@ -16,4 +16,7 @@ var userCourseSchema = new Schema({
 
 userCourseSchema.index({userId: 1, courseId: 1}); 
 
-module.exports = mongoose.model('UserCourse', userCourseSchema);
+module.exports = {
+  model: mongoose.model('UserCourse', userCourseSchema),
+  schema: userCourseSchema // for multiple dbs
+};

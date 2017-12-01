@@ -22,7 +22,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   @Output() sorted = new EventEmitter<string[]>();
   private componentActive = true;
   private lessonToRemove: string;
-  // sortedLessonIds: string[];
   lessonDict: Map<Lesson> = {}; // For sorting
   isReady = false;
 
@@ -113,9 +112,8 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       this.lessonDict[lesson1._id] = lesson1;
       // If a lesson is not in sorting array, add id
       lessonId = this.lessonIds.find(id => id === lesson1._id);
-      console.log('lessonId', lessonId, this.lessonIds);
       if (!lessonId) {
-        console.log('id not found for ', lesson1._id);
+        console.log('lesson id not found for ', lesson1._id);
         this.lessonIds.push(lesson1._id);
         this.cdRef.detectChanges();
         saveSortedIds = true;

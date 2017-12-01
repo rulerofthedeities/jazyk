@@ -1,7 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Course = require('../models/course'),
-      UserCourse = require('../models/usercourse');
+      Course = require('../models/course').model,
+      UserCourse = require('../models/usercourse').model;
 
 let getCourse = function(req, res, authorOnly) {
   if (mongoose.Types.ObjectId.isValid(req.params.courseId)) {

@@ -1,6 +1,6 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Result = require('../models/result'),
+      Result = require('../models/result').model,
       Lesson = require('../models/lesson');
 
 saveStudy = function(res, results, userId, courseId, lessonId) {

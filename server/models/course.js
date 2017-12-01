@@ -43,4 +43,7 @@ var courseSchema = new Schema({
   }, {collection: 'courses'}
 );
 
-module.exports = mongoose.model('Course', courseSchema);
+module.exports = {
+  model: mongoose.model('Course', courseSchema),
+  schema: courseSchema // for multiple dbs
+};

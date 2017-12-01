@@ -33,8 +33,11 @@ export class BuildExerciseListComponent implements OnDestroy {
     private errorService: ErrorService
   ) {}
 
+  trackByFn(index: number, item: Exercise) {
+    return item._id;
+  }
+
   onEditExercise(id: string, focus = null) {
-    console.log('editing id', id);
     this.viewId = null;
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
@@ -69,7 +72,6 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   onResorted(event) {
-    console.log('resorted', event);
     this.saveResortedExercises();
   }
 

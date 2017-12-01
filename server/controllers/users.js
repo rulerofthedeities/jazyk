@@ -3,8 +3,8 @@ const response = require('../response'),
       jwt = require('jsonwebtoken'),
       scrypt = require('scrypt'),
       md5 = require('md5'),
-      User = require('../models/user'),
-      UserCourse = require('../models/usercourse');
+      User = require('../models/user').model,
+      UserCourse = require('../models/usercourse').model;
 
 var setEmailHash = (doc) => {
   if (doc) {

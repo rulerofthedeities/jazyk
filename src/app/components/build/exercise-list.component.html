@@ -10,7 +10,7 @@
     class="list-unstyled list list-group"
     dnd-sortable-container
     [sortableData]="exercises">
-    <li *ngFor="let exercise of exercises; let i = index;">
+    <li *ngFor="let exercise of exercises; let i = index;trackBy: trackByFn">
       <div 
         [class.editing]="editingId === exercise._id"
         [class.viewing]="viewId === exercise._id"

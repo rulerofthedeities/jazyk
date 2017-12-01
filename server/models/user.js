@@ -57,4 +57,7 @@ var userSchema = new Schema({
 
 userSchema.plugin(mongooseUniqueValidator);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = {
+  model: mongoose.model('User', userSchema),
+  schema: userSchema // for multiple dbs
+};
