@@ -33,7 +33,10 @@ var addUser = function(body, callback) {
 };
 
 var findUser = function(body, expiresIn, callback) {
-  User.findOne({email: body.email}, {_id: 1, userName: 1, email: 1, password: 1, main: 1, 'jazyk.learn': 1}, function (err, doc) {
+  const query = {email: body.email},
+        projection = {_id: 1, userName: 1, email: 1, password: 1, main: 1, 'jazyk.learn': 1};
+
+  User.findOne(query, projection, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding user')
     }

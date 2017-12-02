@@ -34,8 +34,6 @@ var courseSchema = new Schema({
     languagePair: {type: lanPairSchema, required: true},
     name: String,
     image: String,
-    attendance: Number,
-    difficulty: Number,
     defaults: defaultsSchema,
     isPublished: {type: Boolean, default: false},
     isPublic: {type: Boolean, default: true},

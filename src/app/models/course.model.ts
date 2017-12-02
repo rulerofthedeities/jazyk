@@ -50,9 +50,7 @@ export interface Course {
   languagePair: LanPair;
   name: string;
   image: string;
-  attendance: number;
   defaults: CourseDefaults;
-  difficulty: number;
   isPublic: boolean;
   isPublished: boolean;
   isInProgress: boolean;

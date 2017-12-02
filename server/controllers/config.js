@@ -47,7 +47,8 @@ module.exports = {
         interface: 1,
         active: 1,
         articles: 1
-      }}
+      }},
+      {$sort: {code: 1}}
     ];
     const getData = async () => {
       let translations, languages;

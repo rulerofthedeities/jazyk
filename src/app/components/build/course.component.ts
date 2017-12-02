@@ -141,8 +141,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   private saveResortedLessons() {
-    console.log('saving lesson Ids', this.lessonIds);
-
     this.buildService
     .updateLessonIds(this.course._id, this.lessonIds)
     .takeWhile(() => this.componentActive)
@@ -156,6 +154,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     let selLan: Language[];
     if (languageId) {
       selLan = this.languages.filter(lan => lan.code === languageId);
+    } else {
+      if (this.userService.user.jazyk) {
+        selLan = this.languages.filter(lan => lan.code === this.userService.user.jazyk.learn.lan);
+      }
     }
     if (selLan && selLan.length > 0) {
       this.currentLanguage = selLan[0];

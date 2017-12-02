@@ -99,8 +99,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       from: userLan,
       to: newLanguage.code
     };
-    this.courseForm.patchValue({'languagePair.to': newLanguage.code});
-    this.courseForm.patchValue({'addArticle': newLanguage.article});
+    this.course.image = userLan + '-' + newLanguage.code + '-course1.jpg'; // temporary
+    this.courseForm.patchValue({'addArticle': newLanguage.articles && newLanguage.articles.length});
   }
 
   private createNewCourse() {
@@ -112,12 +112,10 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
         to: this.currentLanguage.code
       },
       name: '',
-      image: userLan + '-' + this.currentLanguage.code + '-course1.jpg', // temporary
-      attendance: 0,
-      difficulty: 0,
+      image: '',
       defaults: {
         caseSensitive: false,
-        addArticle: this.currentLanguage.article
+        addArticle: false
       },
       isPublic: true,
       isPublished: false,
@@ -132,7 +130,6 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.courseForm = this.formBuilder.group({
-      languagePair: [this.course.languagePair],
       name: [this.course.name, Validators.required],
       caseSensitive: [this.course.defaults.caseSensitive],
       addArticle: [this.course.defaults.addArticle]
@@ -160,7 +157,6 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateCourse() {
-    console.log('updated course', this.course);
     this.buildService
     .updateCourseHeader(this.course)
     .takeWhile(() => this.componentActive)
