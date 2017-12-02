@@ -22,6 +22,11 @@ var defaultsSchema = new Schema({
   addArticle: {type: Boolean, default: false}
 }, {_id: false});
 
+var dtSchema = new Schema({
+  created: {type: Date, default: Date.now},
+  published: Date
+}, {_id: false});
+
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
     creatorId: {type: Schema.Types.ObjectId, required: true},
@@ -39,7 +44,7 @@ var courseSchema = new Schema({
     lessons: [lessonSchema],
     totalCount: {type: Number, default: 0},
     wordCount: {type: Number, default: 0},
-    dtAdded: {type: Date, default: Date.now}
+    dt: {type: dtSchema, required: true, default: {}}
   }, {collection: 'courses'}
 );
 

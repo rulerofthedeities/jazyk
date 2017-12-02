@@ -20,13 +20,6 @@ export class BuildService {
 
   /*** COURSES ***/
 
-  fetchCourses(lan: Language) {
-    return this.http
-    .get('/api/courses/' + lan.code)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-
   fetchCourse(courseId: string) {
     const headers = this.getTokenHeaders();
     return this.http
@@ -109,6 +102,12 @@ export class BuildService {
     .put('/api/build/chapters/' + courseId, JSON.stringify(chapters), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
+  }
+
+  getCourseChapters(course: Course): string[] {
+    return course.chapters; /*
+    .filter(el => el.lessonIds.length > 0)
+    .map(el => el.chapter);*/
   }
 
   /*** LESSONS ***/

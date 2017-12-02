@@ -50,30 +50,30 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     this.unsubscribeCourse(courseId);
   }
 
+  onNewCourse() {
+    this.router.navigate(['/build/course/new']);
+  }
+
   private getCourses() {
-    if (this.userService.user) {
-      this.learnService
-      .fetchSubscribedCourses()
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        courses => {
-          if (courses) {
-            console.log('courses loaded', courses);
-            this.allCourses = courses.subscribed;
-            if (courses.data) {
-              courses.data.forEach((userCourse: UserCourse) => {
-                this.userCourses[userCourse.courseId] = userCourse;
-              });
-            }
-            this.coursesReady = true;
+    this.learnService
+    .fetchSubscribedCourses()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      courses => {
+        if (courses) {
+          console.log('courses loaded', courses);
+          this.allCourses = courses.subscribed;
+          if (courses.data) {
+            courses.data.forEach((userCourse: UserCourse) => {
+              this.userCourses[userCourse.courseId] = userCourse;
+            });
           }
+          this.coursesReady = true;
           this.getLanguages();
-        },
-        error => this.errorService.handleError(error)
-      );
-    } else {
-      this.allCourses = [];
-    }
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   private unsubscribeCourse(courseId: string) {

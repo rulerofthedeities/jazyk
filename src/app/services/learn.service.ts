@@ -21,19 +21,26 @@ export class LearnService {
 
   /*** Courses ***/
 
-  fetchPublicCourses(lanCode: string) {
+  fetchPublishedCourses(lanCode: string) {
     return this.http
-    .get('/api/courses/public/' + lanCode)
+    .get('/api/courses/published/' + lanCode)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   fetchSubscribedCourses() {
     const headers = this.getTokenHeaders();
-    return this.http
-    .get('/api/user/courses/learn', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    if (this.authService.isLoggedIn()) {
+      return this.http
+      .get('/api/user/courses/learn', {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error));
+    } else {
+      return this.http
+      .get('/api/courses/demo', {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error));
+    }
   }
 
   fetchCourse(id: string) {

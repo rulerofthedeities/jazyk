@@ -1,4 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -22,6 +23,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   isReady = false;
 
   constructor(
+    private router: Router,
     private learnService: LearnService,
     private errorService: ErrorService,
     private utilsService: UtilsService,
@@ -37,8 +39,12 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     this.getCourses();
   }
 
+  onNewCourse() {
+    this.router.navigate(['/build/course/new']);
+  }
+
   private getCourses() {
-    this.courses$ = this.learnService.fetchPublicCourses(this.selectedLanguage.code);
+    this.courses$ = this.learnService.fetchPublishedCourses(this.selectedLanguage.code);
   }
 
   private setActiveLanguages(languages: Language[]) {

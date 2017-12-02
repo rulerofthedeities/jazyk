@@ -39,7 +39,7 @@ module.exports = {
   getLanCourses: function(req, res) {
     getCourses(req, res, false);
   },
-  getPublicLanCourses: function(req, res) {
+  getPublishedLanCourses: function(req, res) {
     getCourses(req, res, true);
   },
   getSubscribedCourses: function(req, res) {
@@ -66,6 +66,13 @@ module.exports = {
     Course.find({authorId: userId}, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching user created courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched user created courses');
+      });
+    })
+  },
+  getDemoCourses : function(req, res) {
+    Course.find({demo: true}, {}, function(err, courses) {
+      response.handleError(err, res, 500, 'Error fetching demo courses', function(){
+        response.handleSuccess(res, courses, 200, 'Fetched demo courses');
       });
     })
   },

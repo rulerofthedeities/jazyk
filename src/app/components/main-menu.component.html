@@ -32,7 +32,7 @@
             </span>
           </a>
         </li>
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="isLoggedIn()">
           <a routerLink="/learn/courses">
             <span class="fa fa-th-list"></span>
             {{text["Courses"]}}

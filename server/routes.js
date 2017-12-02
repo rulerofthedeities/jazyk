@@ -33,8 +33,7 @@ module.exports.initialize = function(app, router) {
   router.get('/translations/:lan/:component', translations.getTranslations);
   router.get('/dependables', config.getDependables);
 
-  router.get('/courses/public/:lan', courses.getPublicLanCourses);
-  router.get('/courses/:lan', courses.getLanCourses);
+  router.get('/courses/demo', courses.getDemoCourses);
   router.get('/learn/course/:courseId', courses.getCourse);
 
   router.get('/chapters/:id', courses.getChapters);
@@ -113,12 +112,13 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/course/difficult/:courseId', results.getDifficult);
   router.post('/user/results/add', results.saveResults);
   
-  router.get('/user/courses/learn', courses.getSubscribedCourses);
 
   router.get('/user', users.getUser);
 
   /* learn */
 
+  router.get('/courses/published/:lan', courses.getPublishedLanCourses);
+  router.get('/user/courses/learn', courses.getSubscribedCourses);
   router.get('/courses/teaching/:userId', courses.getTeachingCourses);
 
   /* build */
