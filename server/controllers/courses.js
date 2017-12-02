@@ -22,25 +22,22 @@ let getCourse = function(req, res, authorOnly) {
   }
 }
 
-let getCourses = function(req, res, publishedOnly) {
-  const languageId = req.params.lan;
-  let query = languageId === 'eu' ? {} : {'languagePair.to': languageId};
-  if (publishedOnly) {
-    query = languageId === 'eu' ? {isPublished: true, isPublic: true} : {'languagePair.to': languageId, isPublished: true, isPublic: true}
-  }
-  Course.find(query, {}, function(err, courses) {
-    response.handleError(err, res, 500, 'Error fetching courses', function(){
-      response.handleSuccess(res, courses, 200, 'Fetched courses');
-    });
-  });
-}
-
 module.exports = {
-  getLanCourses: function(req, res) {
-    getCourses(req, res, false);
-  },
   getPublishedLanCourses: function(req, res) {
-    getCourses(req, res, true);
+    const languageId = req.params.lan;
+    const query = {
+      isPublished: true,
+      isPublic: true,
+      isInProgress: false
+    }
+    if (languageId !== 'eu') {
+      query['languagePair.to'] = languageId;
+    }
+    Course.find(query, {}, function(err, courses) {
+      response.handleError(err, res, 500, 'Error fetching courses', function(){
+        response.handleSuccess(res, courses, 200, 'Fetched courses');
+      });
+    });
   },
   getSubscribedCourses: function(req, res) {
     // Get all courses that this user is currently learning
@@ -70,7 +67,8 @@ module.exports = {
     })
   },
   getDemoCourses : function(req, res) {
-    Course.find({demo: true}, {}, function(err, courses) {
+    const query = {demo: true, isPublished: true, isInProgress: false};
+    Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching demo courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched demo courses');
       });
@@ -118,10 +116,10 @@ module.exports = {
             name: course.name,
             defaults: course.defaults,
             isPublic: course.isPublic,
-            isPublished: course.isPublished,
             isInProgress: course.isInProgress
           };
     if (course.isPublished) {
+      update.isPublished = true; // you cannot unpublish
       update['dt.published'] = Date.now();
     }
     if (!course.isInProgress) {
@@ -138,10 +136,14 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {_id: courseId, authorId: userId},
           property = req.body,
-          key = Object.keys(property)[0],
           update = property;
-    if (key === 'isPublished' && property.isPublished) {
-      update['dt.published'] = Date.now();
+    let key = Object.keys(property)[0];
+    if (key === 'isPublished') {
+      if (property.isPublished) {
+        update['dt.published'] = Date.now();
+      } else {
+        key = 'ignore'; // you cannot unpublish
+      }
     }
     if (key === 'isInProgress' && !property.isInProgress) {
       update['dt.completed'] = Date.now();

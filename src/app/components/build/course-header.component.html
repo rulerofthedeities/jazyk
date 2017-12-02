@@ -54,7 +54,7 @@
           <button 
             class="btn btn-default"
             (click)="onToggle('isPublished')"
-            [ngClass]="{disabled:isSaving}">
+            [ngClass]="{disabled:isSaving||course.isPublished}">
             <span class="fa" [ngClass]="{
               'fa-power-off': !course.isPublished,
               'fa-wifi': course.isPublished}">

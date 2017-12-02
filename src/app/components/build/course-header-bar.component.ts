@@ -47,8 +47,10 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
 
   onToggle(property: string) {
     if (!this.savingData[property]) {
-      this.course[property] = !this.course[property];
-      this.updateCourseProperty(property);
+      if (property !== 'isPublished' || this.course.isPublished === false) { // you cannot unpublish
+        this.course[property] = !this.course[property];
+        this.updateCourseProperty(property);
+      }
     }
   }
 

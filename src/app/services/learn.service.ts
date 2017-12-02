@@ -22,8 +22,9 @@ export class LearnService {
   /*** Courses ***/
 
   fetchPublishedCourses(lanCode: string) {
+    const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/courses/published/' + lanCode)
+    .get('/api/courses/published/' + lanCode, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

@@ -83,8 +83,10 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   }
 
   onToggle(tpe) {
-    this.course[tpe] = !this.course[tpe];
-    this.courseForm.markAsDirty();
+    if (tpe !== 'isPublished' || this.course.isPublished === false) { // you cannot unpublish
+      this.course[tpe] = !this.course[tpe];
+      this.courseForm.markAsDirty();
+    }
   }
 
   onSetFlag(field: string, status: boolean) {

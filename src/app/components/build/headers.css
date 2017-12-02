@@ -25,6 +25,6 @@ h2 .btn {
 .header a {
   color: black;
 }
-.indicators .fa.disabled {
-  cursor: default;
+.indicators .fa.disabled, .fa-wifi {
+  cursor: default !important;
 }

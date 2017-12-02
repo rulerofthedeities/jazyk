@@ -4,6 +4,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import {AuthService} from '../../services/auth.service';
 import {Course, Lesson, LessonId, Language, Translation} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -32,7 +33,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     private buildService: BuildService,
     private errorService: ErrorService,
     private utilsService: UtilsService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -75,24 +77,28 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   private getCourse(courseId: string) {
-    this.buildService
-    .fetchCourse(courseId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      course => {
-        this.course = course;
-        if (course) {
-          this.chapters = course.chapters;
-          this.lessonIds = course.lessons;
-          this.setDefaultLanguage(course.languagePair.to);
-          this.getLessons(courseId);
-          this.isCourseReady = true;
-        } else {
-          this.infoMsg = this.text['NotAuthorizedEditCourse'];
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
+    if (this.authService.isLoggedIn()) {
+      this.buildService
+      .fetchCourse(courseId)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        course => {
+          this.course = course;
+          if (course) {
+            this.chapters = course.chapters;
+            this.lessonIds = course.lessons;
+            this.setDefaultLanguage(course.languagePair.to);
+            this.getLessons(courseId);
+            this.isCourseReady = true;
+          } else {
+            this.infoMsg = this.text['NotAuthorizedEditCourse'];
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    } else {
+      this.infoMsg = this.text['NotAuthorizedEditCourse'];
+    }
   }
 
   private getLessons(courseId: string) {
