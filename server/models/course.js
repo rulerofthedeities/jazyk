@@ -24,7 +24,8 @@ var defaultsSchema = new Schema({
 
 var dtSchema = new Schema({
   created: {type: Date, default: Date.now},
-  published: Date
+  published: Date,
+  completed: Date
 }, {_id: false});
 
 var courseSchema = new Schema({

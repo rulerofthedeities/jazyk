@@ -112,16 +112,22 @@ module.exports = {
   updateCourseHeader: function(req, res) {
     const course = new Course(req.body),
           courseId = new mongoose.Types.ObjectId(course._id),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id);
-
-    Course.findOneAndUpdate(
-      {_id: courseId, authorId: userId},
-      {$set: {
-        name: course.name,
-        defaults: course.defaults,
-        isPublic: course.isPublic,
-        isPublished: course.isPublished
-      }}, function(err, result) {
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {_id: courseId, authorId: userId},
+          update = {
+            name: course.name,
+            defaults: course.defaults,
+            isPublic: course.isPublic,
+            isPublished: course.isPublished,
+            isInProgress: course.isInProgress
+          };
+    if (course.isPublished) {
+      update['dt.published'] = Date.now();
+    }
+    if (!course.isInProgress) {
+      update['dt.completed'] = Date.now();
+    }
+    Course.findOneAndUpdate(query, {$set: update}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating course', function(){
         response.handleSuccess(res, result, 200, 'Updated course');
       });
@@ -130,12 +136,18 @@ module.exports = {
   updateCourseProperty: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {_id: courseId, authorId: userId},
           property = req.body,
-          key = Object.keys(property)[0];
-
+          key = Object.keys(property)[0],
+          update = property;
+    if (key === 'isPublished' && property.isPublished) {
+      update['dt.published'] = Date.now();
+    }
+    if (key === 'isInProgress' && !property.isInProgress) {
+      update['dt.completed'] = Date.now();
+    }
     if (key === 'isPublic' || key === 'isPublished' || key === 'isInProgress') {
-      Course.findOneAndUpdate(
-        {_id: courseId, authorId: userId}, property, function(err, result) {
+      Course.findOneAndUpdate(query, update, function(err, result) {
         response.handleError(err, res, 500, 'Error updating ' + key, function(){
           response.handleSuccess(res, result, 200, 'Updated ' + key);
         });
