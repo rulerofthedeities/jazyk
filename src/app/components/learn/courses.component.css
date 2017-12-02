@@ -5,3 +5,10 @@
 .nocourses {
   margin-bottom: 12px;
 }
+.login {
+  font-size: 20px;
+}
+.lnk {
+  cursor: pointer;
+  color: blue;
+}

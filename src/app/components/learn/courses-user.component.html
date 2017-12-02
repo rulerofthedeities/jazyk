@@ -31,9 +31,13 @@
   </km-info-msg>
   <div class="panel panel-default">
     <div class="panel-body">
-      <button class="btn btn-primary" (click)="onNewCourse()">
+      <button class="btn btn-primary" (click)="onNewCourse()" *ngIf="isLoggedIn()">
         {{text["Newcourselg"]}}
       </button>
+      <div *ngIf="!isLoggedIn()" class="login">
+        <span class="fa fa-arrow-right"></span>
+        <span class="lnk" (click)="onLogIn()">{{text["LoginImperative"]}}</span> {{text["or"]}} <span class="lnk" (click)="onRegister()">{{text["registerImperative"]}}</span> {{text["toCreateCourse"]}}.
+      </div>
     </div>
   </div>
 </div>

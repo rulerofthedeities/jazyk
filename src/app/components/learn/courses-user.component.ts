@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {AuthService} from '../../services/auth.service';
 import {UserService} from '../../services/user.service';
 import {Course, UserCourse, Language, Translation, CourseListType} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
@@ -34,7 +35,8 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     private learnService: LearnService,
     private errorService: ErrorService,
     private utilsService: UtilsService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -52,6 +54,18 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
 
   onNewCourse() {
     this.router.navigate(['/build/course/new']);
+  }
+
+  onLogIn() {
+    this.router.navigate(['/auth/signin']);
+  }
+
+  onRegister() {
+    this.router.navigate(['/auth/signup']);
+  }
+
+  isLoggedIn() {
+    return this.authService.isLoggedIn();
   }
 
   private getCourses() {
