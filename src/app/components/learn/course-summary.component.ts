@@ -13,6 +13,7 @@ export class LearnCourseSummaryComponent implements OnInit {
   @Input() course: Course;
   @Input() userData: UserCourse = null;
   @Input() text: {};
+  @Input() isDemo = false;
   @Input() tpe: CourseListType;
   @Output() unsubscribe = new EventEmitter<string>();
   listType = CourseListType;

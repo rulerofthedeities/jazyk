@@ -48,7 +48,7 @@ module.exports.initialize = function(app, router) {
   router.get('/exercises/course/:courseId', exercises.getExercises);
 
   //router.get('/choices/lesson/:lessonId', exercises.getLessonChoices);
-  router.get('/choices/course/:courseId', exercises.getCourseChoices);
+  router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
 
 
   router.use('/', function(req, res, next) {

@@ -29,6 +29,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   listType = CourseListType;
   coursesReady = false;
   isReady = false;
+  isDemo = false;
 
   constructor(
     private router: Router,
@@ -75,8 +76,8 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     .subscribe(
       courses => {
         if (courses) {
-          console.log('courses loaded', courses);
           this.allCourses = courses.subscribed;
+          this.isDemo = !!courses.isDemo;
           if (courses.data) {
             courses.data.forEach((userCourse: UserCourse) => {
               this.userCourses[userCourse.courseId] = userCourse;

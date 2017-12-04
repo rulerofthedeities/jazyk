@@ -1,7 +1,8 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Course = require('../models/course'),
-      Lesson = require('../models/lesson');
+      Lesson = require('../models/lesson'),
+      WordPair = require('../models/wordpair');
 
 updateCourseWordCount = function(courseId, totals) {
   allWordAndExercisesCount = 0;
@@ -50,6 +51,28 @@ getCourseWordCount = function(id) {
     }
   });
 }
+
+getChoicesFromWordpairs = function(res, options) {
+  // get choices directly from wordpair collection if there aren't enough words in the course
+  const maxWords = options.max,
+        lanPair = options.lans.split('-'),
+        query = {lanPair, docTpe:'wordpair'},
+        projection = {_id:0, foreign: '$' + lanPair[1] +'.word', local: '$' + lanPair[0] + '.word'};
+
+  const pipeline = [
+    {$match: query},
+    {$sample: {size: maxWords}},
+    {$project: projection}
+  ];
+  console.log(pipeline);
+  WordPair.aggregate(pipeline, function(err, choices) {
+    console.log('choices', choices);
+    response.handleError(err, res, 500, 'Error fetching choices from wordpairs', function(){
+      response.handleSuccess(res, choices, 200, 'Fetched choices from wordpairs');
+    });
+  });
+}
+
 module.exports = {
   getExercises: function(req, res) {
     const parms = req.query,
@@ -63,17 +86,13 @@ module.exports = {
       }
     }
     const query = {'exercises._id': {$in: exerciseIds}};
-
     const pipeline = [
       {$match: {courseId}},
       {$unwind: '$exercises'},
       {$match: query},
       {$project: {_id: 0, exercise: '$exercises'}}
     ];
-
-    console.log('fetching exercises', pipeline);
     Lesson.aggregate(pipeline, function(err, exercises) {
-      console.log('exercises', exercises);
       response.handleError(err, res, 500, 'Error fetching exercises', function(){
         response.handleSuccess(res, exercises, 200, 'Fetched exercises');
       });
@@ -82,11 +101,9 @@ module.exports = {
   addExercises: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           exercises = req.body;
-    console.log('adding exercises', exercises);
     exercises.forEach(exercise => {
       exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
     })
-
     Lesson.findOneAndUpdate(
       {_id: lessonId},
       {$addToSet: {
@@ -152,31 +169,14 @@ module.exports = {
       }
     );
   },
-  /*
-  getLessonChoices: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
-          
-    const pipeline = [
-      {$match: {_id: lessonId}},
-      {$unwind: '$exercises'},
-      {$project: projection}
-    ];
-
-    Lesson.aggregate(pipeline, function(err, docs) {
-      console.log('Lesson choices:', docs);
-      response.handleError(err, res, 500, 'Error fetching choices', function(){
-        response.handleSuccess(res, docs, 200, 'Fetched choices');
-      });
-    });
-  },*/
   getCourseChoices: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          lans = req.params.lans,
           max = 200,
+          minChoices = 20;
           query = {courseId},
           projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
 
-      console.log('Course choices:', query);
     const pipeline = [
       {$match: query},
       {$unwind: '$exercises'},
@@ -184,9 +184,14 @@ module.exports = {
       {$sample: {size: max}},
       {$project: projection}
     ];
-    Lesson.aggregate(pipeline, function(err, docs) {
+    Lesson.aggregate(pipeline, function(err, choices) {
       response.handleError(err, res, 500, 'Error fetching choices', function(){
-        response.handleSuccess(res, docs, 200, 'Fetched choices');
+        if (choices.length >= minChoices || !lans) {
+          response.handleSuccess(res, choices, 200, 'Fetched choices');
+        } else {
+          const options = {max, lans}
+          getChoicesFromWordpairs(res, options);
+        }
       });
     });
   }

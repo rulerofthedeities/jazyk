@@ -67,10 +67,11 @@ module.exports = {
     })
   },
   getDemoCourses : function(req, res) {
-    const query = {demo: true, isPublished: true, isInProgress: false};
+    const query = {isDemo: true, isPublished: true, isInProgress: false};
     Course.find(query, {}, function(err, courses) {
+      console.log('getting demo courses', courses);
       response.handleError(err, res, 500, 'Error fetching demo courses', function(){
-        response.handleSuccess(res, courses, 200, 'Fetched demo courses');
+        response.handleSuccess(res, {subscribed: courses, isDemo: true}, 200, 'Fetched demo courses');
       });
     })
   },

@@ -237,7 +237,7 @@ export abstract class Step {
 
   protected getChoices(courseId: string, isBidirectional: boolean = true) {
     this.learnService
-    .fetchCourseChoices(courseId, isBidirectional)
+    .fetchCourseChoices(courseId, isBidirectional, this.lanPair)
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
@@ -765,10 +765,14 @@ export abstract class Step {
         }
       }
     });
-    if (nearest.dl > 9) { // no near match, select random anyway
+    if (nearest && nearest.dl > 9) { // no near match, select random anyway
       return Math.floor(Math.random() * choices.length);
     } else {
-      return nearest.index || 0;
+      if (nearest) {
+        return nearest.index || 0;
+      } else {
+        return 0;
+      }
     }
   }
 

@@ -7,6 +7,9 @@
 .course {
   margin-left: 180px;
 }
+h3.description {
+  overflow: hidden;
+}
 .info {
   margin-top: 4px;
   height: 64px;

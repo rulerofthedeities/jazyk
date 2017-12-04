@@ -18,6 +18,7 @@
     <km-course-summary
       [course]="course"
       [userData]="userCourses[course?._id]"
+      [isDemo]="isDemo"
       [text]="text"
       [tpe]="listType.Learn"
       (unsubscribe)="onUnsubscribe($event)">

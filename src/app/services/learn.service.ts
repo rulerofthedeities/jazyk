@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Language, Course, LessonOptions} from '../models/course.model';
+import {Language, LanPair, Course, LessonOptions} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseResult} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
@@ -84,9 +84,10 @@ export class LearnService {
 
   /*** Choices ***/
 
-  fetchCourseChoices(courseId: string, isBidirectional: boolean) {
+  fetchCourseChoices(courseId: string, isBidirectional: boolean, lanPair: LanPair) {
+    const lans = lanPair.from + '-' + lanPair.to;
     return this.http
-    .get('/api/choices/course/' + courseId)
+    .get('/api/choices/course/' + courseId + '/' + lans)
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
