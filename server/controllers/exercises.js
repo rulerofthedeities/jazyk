@@ -52,25 +52,32 @@ getCourseWordCount = function(id) {
   });
 }
 
-getChoicesFromWordpairs = function(res, options) {
-  // get choices directly from wordpair collection if there aren't enough words in the course
-  const maxWords = options.max,
+getChoicesFromAllCourses = function(res, options) {
+  // get choices from all courses of the specified language if there aren't enough words in the course
+  const maxWords = options.maxWords,
         lanPair = options.lans.split('-'),
-        query = {lanPair, docTpe:'wordpair'},
+        query = {
+          'languagePair.from': lanPair[0],
+          'languagePair.to': lanPair[1]
+        },
         projection = {
-          _id: 0,
-          foreign: '$' + lanPair[1] +'.word',
-          local: '$' + lanPair[0] + '.word'
+          _id:0,
+          foreign: "$exercises.foreign.word",
+          local: "$exercises.local.word",
+          foreignArticle: "$exercises.foreign.article",
+          localArticle: "$exercises.local.article"
         },
         pipeline = [
           {$match: query},
+          {$unwind: '$exercises'},
+          {$match: {'exercises.tpe': 0}},
           {$sample: {size: maxWords}},
           {$project: projection}
         ];
-  console.log(pipeline);
-  WordPair.aggregate(pipeline, function(err, choices) {
-    response.handleError(err, res, 500, 'Error fetching choices from wordpairs', function(){
-      response.handleSuccess(res, choices, 200, 'Fetched choices from wordpairs');
+  console.log('allcourses', pipeline);
+  Lesson.aggregate(pipeline, function(err, choices) {
+    response.handleError(err, res, 500, 'Error fetching choices from multiple courses', function(){
+      response.handleSuccess(res, choices, 200, 'Fetched choices from multiple courses');
     });
   });
 }
@@ -87,13 +94,13 @@ module.exports = {
         exerciseIds.push(exerciseId);
       }
     }
-    const query = {'exercises._id': {$in: exerciseIds}};
-    const pipeline = [
-      {$match: {courseId}},
-      {$unwind: '$exercises'},
-      {$match: query},
-      {$project: {_id: 0, exercise: '$exercises'}}
-    ];
+    const query = {'exercises._id': {$in: exerciseIds}},
+          pipeline = [
+            {$match: {courseId}},
+            {$unwind: '$exercises'},
+            {$match: query},
+            {$project: {_id: 0, exercise: '$exercises'}}
+          ];
     Lesson.aggregate(pipeline, function(err, exercises) {
       response.handleError(err, res, 500, 'Error fetching exercises', function(){
         response.handleSuccess(res, exercises, 200, 'Fetched exercises');
@@ -119,9 +126,9 @@ module.exports = {
     });
   },
   updateExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    const exercise = req.body;
-    const exerciseId = new mongoose.Types.ObjectId(exercise._id);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          exercise = req.body,
+          exerciseId = new mongoose.Types.ObjectId(exercise._id);
 
     console.log('updating exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
     if (exercise) {
@@ -139,8 +146,8 @@ module.exports = {
     }
   },
   updateExercises: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    const exercises = req.body;
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          exercises = req.body;
 
     console.log('updating all exercises for lesson ' + lessonId);
 
@@ -174,7 +181,7 @@ module.exports = {
   getCourseChoices: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           lans = req.params.lans,
-          max = 200,
+          maxWords = 200,
           minChoices = 8;
           query = {courseId},
           projection = {
@@ -188,7 +195,7 @@ module.exports = {
             {$match: query},
             {$unwind: '$exercises'},
             {$match: {'exercises.tpe': 0}},
-            {$sample: {size: max}},
+            {$sample: {size: maxWords}},
             {$project: projection}
           ];
     Lesson.aggregate(pipeline, function(err, choices) {
@@ -196,9 +203,9 @@ module.exports = {
         if (choices.length >= minChoices || !lans) {
           response.handleSuccess(res, choices, 200, 'Fetched choices');
         } else {
-          console.log('fetching choices from wordpairs');
-          const options = {max, lans}
-          getChoicesFromWordpairs(res, options);
+          console.log('fetching choices from all courses');
+          const options = {maxWords, lans}
+          getChoicesFromAllCourses(res, options);
         }
       });
     });
