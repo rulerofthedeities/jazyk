@@ -98,4 +98,6 @@ export interface ExerciseOptions {
 export interface Choice {
   local: string;
   foreign: string;
+  localArticle?: string;
+  foreignArticle?: string;
 }

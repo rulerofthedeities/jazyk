@@ -57,16 +57,18 @@ getChoicesFromWordpairs = function(res, options) {
   const maxWords = options.max,
         lanPair = options.lans.split('-'),
         query = {lanPair, docTpe:'wordpair'},
-        projection = {_id:0, foreign: '$' + lanPair[1] +'.word', local: '$' + lanPair[0] + '.word'};
-
-  const pipeline = [
-    {$match: query},
-    {$sample: {size: maxWords}},
-    {$project: projection}
-  ];
+        projection = {
+          _id: 0,
+          foreign: '$' + lanPair[1] +'.word',
+          local: '$' + lanPair[0] + '.word'
+        },
+        pipeline = [
+          {$match: query},
+          {$sample: {size: maxWords}},
+          {$project: projection}
+        ];
   console.log(pipeline);
   WordPair.aggregate(pipeline, function(err, choices) {
-    console.log('choices', choices);
     response.handleError(err, res, 500, 'Error fetching choices from wordpairs', function(){
       response.handleSuccess(res, choices, 200, 'Fetched choices from wordpairs');
     });
@@ -153,8 +155,8 @@ module.exports = {
     );
   },
   removeExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    const exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);
 
     console.log('removing exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
 
@@ -173,22 +175,28 @@ module.exports = {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           lans = req.params.lans,
           max = 200,
-          minChoices = 20;
+          minChoices = 8;
           query = {courseId},
-          projection = {_id:0, foreign: "$exercises.foreign.word", local: "$exercises.local.word"};
-
-    const pipeline = [
-      {$match: query},
-      {$unwind: '$exercises'},
-      {$match: {'exercises.tpe': 0}},
-      {$sample: {size: max}},
-      {$project: projection}
-    ];
+          projection = {
+            _id:0,
+            foreign: "$exercises.foreign.word",
+            local: "$exercises.local.word",
+            foreignArticle: "$exercises.foreign.article",
+            localArticle: "$exercises.local.article"
+          },
+          pipeline = [
+            {$match: query},
+            {$unwind: '$exercises'},
+            {$match: {'exercises.tpe': 0}},
+            {$sample: {size: max}},
+            {$project: projection}
+          ];
     Lesson.aggregate(pipeline, function(err, choices) {
       response.handleError(err, res, 500, 'Error fetching choices', function(){
         if (choices.length >= minChoices || !lans) {
           response.handleSuccess(res, choices, 200, 'Fetched choices');
         } else {
+          console.log('fetching choices from wordpairs');
           const options = {max, lans}
           getChoicesFromWordpairs(res, options);
         }
