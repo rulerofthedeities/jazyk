@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 
 var notificationSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
-  title: {type: String, required: true},
+  title: {type: String, required: true, trim: true},
   message: {type: String, required: true},
   read: {type: Boolean, default: false},
   dt: {type: Date, default: Date.now}

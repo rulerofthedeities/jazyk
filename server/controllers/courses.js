@@ -114,6 +114,7 @@ module.exports = {
           query = {_id: courseId, authorId: userId},
           update = {
             name: course.name,
+            description: course.description,
             defaults: course.defaults,
             isPublic: course.isPublic,
             isInProgress: course.isInProgress

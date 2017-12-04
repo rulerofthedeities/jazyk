@@ -26,6 +26,7 @@
           </span>
         </span>
       </h3>
+      <h3><small>{{course.description}}</small></h3>
       <div *ngIf="tpe===listType.All || tpe===listType.Teach">
         <button class="btn btn-success"
           [class.disabled]="!course.isPublished"

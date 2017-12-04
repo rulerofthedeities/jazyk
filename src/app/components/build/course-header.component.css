@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.panel {
+  background-color: rgba(239, 239, 239, .9);
+  border-radius: 6px;
+}
+.fa-user, .fa-check, .fa-wifi {
+  color: green;
+}
+km-toggle {
+  top: 6px;
+  position: relative;
+}

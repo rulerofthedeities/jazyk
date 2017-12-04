@@ -10,24 +10,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-build-course-header',
   templateUrl: 'course-header.component.html',
-  styles: [`
-    :host {
-      display: block;
-      margin-left: -15px;
-      margin-right: -15px;
-    }
-    .panel {
-      background-color: rgba(239, 239, 239, .9);
-      border-radius: 6px;
-    }
-    .fa-user, .fa-check, .fa-wifi {
-      color: green;
-    }
-    km-toggle {
-      top: 6px;
-      position: relative;
-    }
-  `]
+  styleUrls: ['course-header.component.css']
 })
 
 export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
@@ -114,6 +97,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
         to: this.currentLanguage.code
       },
       name: '',
+      description: '',
       image: '',
       defaults: {
         caseSensitive: false,
@@ -122,6 +106,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       isPublic: true,
       isPublished: false,
       isInProgress: true,
+      isDemo: false,
       totalCount: 0,
       wordCount: 0,
       chapters: [],
@@ -133,6 +118,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   private buildForm() {
     this.courseForm = this.formBuilder.group({
       name: [this.course.name, Validators.required],
+      description: [this.course.description],
       caseSensitive: [this.course.defaults.caseSensitive],
       addArticle: [this.course.defaults.addArticle]
     });
@@ -141,6 +127,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
 
   private processCourse(formValues: any) {
     this.course.name = formValues.name;
+    this.course.description = formValues.description;
     this.course.defaults.caseSensitive = formValues.caseSensitive;
     this.course.defaults.addArticle = formValues.addArticle;
   }

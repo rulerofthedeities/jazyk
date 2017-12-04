@@ -29,8 +29,23 @@
             autocomplete="off"
             id="name" 
             maxlength="50" 
-            placeholder="Naam van de cursus"
+            [placeholder]="text['EnterCourseName']"
             formControlName="name">
+        </div>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="form-group form-group-lg">
+        <label for="description" class="control-label col-xs-2">{{text["Description"]}}</label>
+        <div class="col-xs-6">
+          <textarea
+            class="form-control" 
+            id="description" 
+            maxlength="150"
+            [placeholder]="text['EnterCourseDescription']"
+            formControlName="description"
+            rows="3">
+          </textarea>
         </div>
       </div>
 

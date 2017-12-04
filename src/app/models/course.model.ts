@@ -49,11 +49,13 @@ export interface Course {
   _id?: string;
   languagePair: LanPair;
   name: string;
+  description: string;
   image: string;
   defaults: CourseDefaults;
   isPublic: boolean;
   isPublished: boolean;
   isInProgress: boolean;
+  isDemo: boolean;
   totalCount: number;
   wordCount: number;
   exercisesCount?: number;
