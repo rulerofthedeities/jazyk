@@ -782,7 +782,7 @@ export abstract class Step {
   }
 
   private addArticle(word: string, article: string): string {
-    if (article) {
+    if (article && this.lessonOptions.addArticle) {
       return article + ' ' + word;
     } else {
       return word;
@@ -806,6 +806,7 @@ export abstract class Step {
         }
       break;
       case ExerciseType.Genus:
+      case ExerciseType.Article:
       case ExerciseType.Select:
         qTpe = QuestionType.Select;
         break;

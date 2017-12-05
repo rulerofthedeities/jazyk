@@ -45,7 +45,7 @@ interface NewExerciseOptions {
 export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
-  @Input() options: LessonOptions;
+  @Input() lessonOptions: LessonOptions;
   @Input() exercise: Exercise;
   @Input() text: Object;
   @Input() focus: string;
@@ -159,7 +159,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         hasGenus: false,
         hasComparison: false,
         lastDoc: true,
-        addArticle: this.options ? this.options.addArticle : false
+        addArticle: this.lessonOptions ? this.lessonOptions.addArticle : false
       });
     }
   }
@@ -342,7 +342,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const exercise: Exercise = {
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord},
-      tpe: options.hasGenus ? ExerciseType.Genus : (ExerciseType.Word)
+      tpe: options.hasGenus ? (this.lessonOptions.addArticle ? ExerciseType.Article : ExerciseType.Genus) : (ExerciseType.Word)
     };
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];
@@ -397,11 +397,29 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Genus test */
       if (options.hasGenus) {
         // tpe is set at object creation time
-        exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
-        exercise.genus = this.selected[this.lanForeign].genus;
-        exercise.options = this.config.genera.join('|');
-        if (this.selected[this.lanForeign].audios) {
-          exercise.audio = this.selected[this.lanForeign].audios[0].s3;
+        const showArticle = this.config.articles ? true : false;
+        exercise.wordTpe = foreign.wordTpe;
+        if (foreign.audios) {
+          exercise.audio = foreign.audios[0].s3;
+        }
+        if (showArticle) {
+          if (!this.config.useIndefiniteArticles) {
+            // Use article for test
+            exercise.article = foreign.article;
+            exercise.options = this.config.articles.join('|');
+          } else {
+            // Use indefinite article for test
+            const articlePos = this.config.genera.indexOf(foreign.genus);
+            if (articlePos > -1) {
+              exercise.article = this.config.articlesIndefinite[articlePos];
+            }
+            exercise.options = this.config.articlesIndefinite.join('|');
+          }
+          exercise.local.word = this.selected[this.lanLocal].article + ' ' + formValues.localWord;
+        } else {
+          // Use genus for test
+          exercise.genus = foreign.genus;
+          exercise.options = this.config.genera.join('|');
         }
       }
 

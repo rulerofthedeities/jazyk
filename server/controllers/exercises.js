@@ -74,8 +74,8 @@ getChoicesFromAllCourses = function(res, options) {
           {$sample: {size: maxWords}},
           {$project: projection}
         ];
-  console.log('allcourses', pipeline);
   Lesson.aggregate(pipeline, function(err, choices) {
+    console.log('allcourses', choices);
     response.handleError(err, res, 500, 'Error fetching choices from multiple courses', function(){
       response.handleSuccess(res, choices, 200, 'Fetched choices from multiple courses');
     });

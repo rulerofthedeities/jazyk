@@ -15,6 +15,8 @@ import {Exercise, ExerciseType} from '../../models/exercise.model';
 
 export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestroy {
   config: LanConfig;
+  options: string[];
+  articles: string[];
 
   constructor(
     protected buildService: BuildService,
@@ -34,12 +36,17 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
     .fetchLanConfig(lanCode)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      config => this.config = config,
+      config => {
+        this.config = config;
+        this.articles = config.useIndefiniteArticles ? config.articlesIndefinite : config.articles;
+      },
       error => this.errorService.handleError(error)
     );
   }
 
   protected buildForm(exercise: Exercise) {
+    console.log('exercise', this.exercise);
+    this.options = this.exercise.options.split('|');
     this.exerciseForm = this.formBuilder.group({
       localWord: [exercise.local.word, [Validators.required]],
       foreignWord: [exercise.foreign.word, [Validators.required]],

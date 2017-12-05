@@ -35,7 +35,7 @@
       </div>
 
       <!-- DESCRIPTION -->
-      <div class="form-group form-group-lg">
+      <div class="form-group form-group-lg" *ngIf="!isNewCourse">
         <label for="description" class="control-label col-xs-2">{{text["Description"]}}</label>
         <div class="col-xs-6">
           <textarea

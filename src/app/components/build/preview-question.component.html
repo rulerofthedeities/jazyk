@@ -50,6 +50,13 @@
         [data]="exerciseData">
       </km-select>
     </div>
+    <div *ngSwitchCase="exType.Article">
+      <km-select
+        [lanPair]="lanPair"
+        [text]="text"
+        [data]="exerciseData">
+      </km-select>
+    </div>
     <div *ngSwitchCase="exType.Comparison">
       <km-comparison
         [lanPair]="lanPair"

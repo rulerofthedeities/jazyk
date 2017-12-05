@@ -154,6 +154,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         }
       break;
       case ExerciseType.Genus:
+      case ExerciseType.Article:
       case ExerciseType.Select:
         qTpe = QuestionType.Select;
         break;
@@ -165,6 +166,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Comparison;
       break;
     }
+    console.log('QTPE', qTpe);
     return qTpe;
   }
 

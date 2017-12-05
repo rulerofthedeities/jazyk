@@ -52,20 +52,27 @@ export class LearnSelectComponent implements OnInit {
   }
 
   private getSelectData(exercise: Exercise) {
-    this.exerciseTpe = exercise.tpe;
     this.msg = this.text['Expectedanswer'];
     this.options = exercise.options.split('|');
-    if (this.exerciseTpe === ExerciseType.Select) {
-      this.instruction = this.text['instructionSelect'];
-      this.correctOption = this.getCorrectOption(exercise.foreign.word);
-      this.options.push(this.correctOption);
-      // get sentence without []
-      this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
-    } else {
-      this.instruction = this.text['instructionGenus'];
-      this.options = this.options.map(option => this.text[option.toLowerCase()]);
-      this.correctOption = this.text[exercise.genus.toLowerCase()];
-      this.sentence = [exercise.foreign.word, ''];
+    switch (exercise.tpe) {
+      case ExerciseType.Select:
+        this.instruction = this.text['instructionSelect'];
+        this.correctOption = this.getCorrectOption(exercise.foreign.word);
+        this.options.push(this.correctOption);
+        // get sentence without []
+        this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
+        break;
+      case ExerciseType.Genus:
+        this.instruction = this.text['instructionGenus'];
+        this.options = this.options.map(option => this.text[option.toLowerCase()]);
+        this.correctOption = this.text[exercise.genus.toLowerCase()];
+        this.sentence = [exercise.foreign.word, ''];
+        break;
+      case ExerciseType.Article:
+        this.instruction = this.text['instructionArticle'];
+        this.correctOption = exercise.article;
+        this.sentence = ['', exercise.foreign.word];
+        break;
     }
     this.options = this.previewService.shuffle(this.options);
     if (exercise.local) {

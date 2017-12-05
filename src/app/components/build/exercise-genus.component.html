@@ -27,7 +27,7 @@
     </label>
     <div class="col-xs-11">
       <select 
-        *ngIf="exercise.genus"
+        *ngIf="exercise.tpe === exType.Genus"
         class="form-control" 
         id="genus"
         formControlName="genus">
@@ -38,14 +38,14 @@
         </option>
       </select>
       <select 
-        *ngIf="exercise.article"
+        *ngIf="exercise.tpe === exType.Article"
         class="form-control" 
         id="article"
         formControlName="article">
         <option 
-          *ngFor="let article of config.articles"
+          *ngFor="let article of articles"
           [value]="article">
-          {{text[article]}}
+          {{article}}
         </option>
       </select>
     </div>
@@ -77,7 +77,7 @@
         <button type="button" class="btn btn-success btn-lg"
           [disabled] = "isSaving || !exerciseForm.valid"
           (click)="onUpdateExercise(exerciseForm)">
-          {{text["UpdateGenus"]}}
+          {{exercise.tpe === exType.Genus ? text["UpdateGenus"] : text["UpdateArticle"]}}
         </button>
         <button type="button" class="btn btn-warning btn-lg"
           (click)="onCancelEdit()">
