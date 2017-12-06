@@ -398,7 +398,13 @@
         [disabled] = "isSaving ? '' : null"
         (click)="onAddNewGenus(exerciseForm)"
         *ngIf="!currentExercise && exerciseForm.valid && hasGenus">
-        <span class="fa fa-venus-mars fa-spacing"></span>{{config.articles ? text["AddArticleTest"] : text["AddGenusTest"]}}
+        <span class="fa fa-venus-mars fa-spacing"></span>{{text["AddGenusTest"]}}
+      </button>
+      <button type="button" class="btn btn-success btn-lg"
+        [disabled] = "isSaving ? '' : null"
+        (click)="onAddNewArticle(exerciseForm)"
+        *ngIf="!currentExercise && exerciseForm.valid && hasArticle">
+        <span class="fa fa-venus-mars fa-spacing"></span>{{text["AddArticleTest"]}}
       </button>
       <button type="button" class="btn btn-success btn-lg"
         [disabled] = "isSaving ? '' : null"

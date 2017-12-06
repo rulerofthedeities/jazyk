@@ -28,10 +28,11 @@ interface FormData {
 }
 
 interface NewExerciseOptions {
-  hasConjugation?: boolean;
+  isConjugation?: boolean;
   conjugationNr?: number;
-  hasGenus?: boolean;
-  hasComparison?: boolean;
+  isGenus?: boolean;
+  isArticle?: boolean;
+  isComparison?: boolean;
   lastDoc?: boolean;
   addArticle?: boolean;
 }
@@ -75,6 +76,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   audios: File[];
   hasConjugations = false;
   hasGenus = false;
+  hasArticle = false;
   hasComparison = false;
   maxFilterListLength = 8;
 
@@ -123,6 +125,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onFilterChanged(word: string, lan: string) {
     this.hasConjugations = false;
     this.hasGenus = false;
+    this.hasArticle = false;
     this.hasComparison = false;
     // Only show list after user puts focus in field
     if (!this.isSelected) {
@@ -148,6 +151,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     this.hasConjugations = this.checkConjugations(wordpairDetail);
     this.hasGenus = this.checkGenus(wordpairDetail);
+    this.hasArticle = this.checkArticle(wordpairDetail);
     this.hasComparison = this.checkComparison(wordpairDetail);
   }
 
@@ -155,9 +159,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (form.valid) {
       this.isSaving = true;
       this.buildNewExercise(form.value, {
-        hasConjugation: false,
-        hasGenus: false,
-        hasComparison: false,
+        isConjugation: false,
+        isGenus: false,
+        isArticle: false,
+        isComparison: false,
         lastDoc: true,
         addArticle: this.lessonOptions ? this.lessonOptions.addArticle : false
       });
@@ -167,7 +172,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onAddNewConjugations(form: any) {
     if (form.valid) {
       const options: NewExerciseOptions = {
-        hasConjugation: true
+        isConjugation: true
       };
       this.isSaving = true;
       for (let i = 0; i < 6; i++) {
@@ -181,7 +186,18 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onAddNewGenus(form: any) {
     if (form.valid) {
       const options: NewExerciseOptions = {
-        hasGenus: true,
+        isGenus: true,
+        lastDoc: true
+      };
+      this.isSaving = true;
+      this.buildNewExercise(form.value, options);
+    }
+  }
+
+  onAddNewArticle(form: any) {
+    if (form.valid) {
+      const options: NewExerciseOptions = {
+        isArticle: true,
         lastDoc: true
       };
       this.isSaving = true;
@@ -192,7 +208,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onAddNewComparison(form: any) {
     if (form.valid) {
       const options: NewExerciseOptions = {
-        hasComparison: true,
+        isComparison: true,
         lastDoc: true
       };
       this.isSaving = true;
@@ -342,7 +358,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     const exercise: Exercise = {
       local: {word: formValues.localWord},
       foreign: {word: formValues.foreignWord},
-      tpe: options.hasGenus ? (this.lessonOptions.addArticle ? ExerciseType.Article : ExerciseType.Genus) : (ExerciseType.Word)
+      tpe: ExerciseType.Word
     };
     const foreignAnnotations: string[] = [];
     const localAnnotations: string[] = [];
@@ -360,7 +376,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
         /* Foreign */
-      if (!options.hasGenus) {
+      if (!options.isGenus && !options.isArticle) {
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
         exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
         exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
@@ -395,36 +411,30 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
 
       /* Genus test */
-      if (options.hasGenus) {
-        // tpe is set at object creation time
-        const showArticle = this.config.articles ? true : false;
+      if (options.isGenus) {
+        exercise.tpe = ExerciseType.Genus;
         exercise.wordTpe = foreign.wordTpe;
         if (foreign.audios) {
           exercise.audio = foreign.audios[0].s3;
         }
-        if (showArticle) {
-          if (!this.config.useIndefiniteArticles) {
-            // Use article for test
-            exercise.article = foreign.article;
-            exercise.options = this.config.articles.join('|');
-          } else {
-            // Use indefinite article for test
-            const articlePos = this.config.genera.indexOf(foreign.genus);
-            if (articlePos > -1) {
-              exercise.article = this.config.articlesIndefinite[articlePos];
-            }
-            exercise.options = this.config.articlesIndefinite.join('|');
-          }
-          exercise.local.word = this.selected[this.lanLocal].article + ' ' + formValues.localWord;
-        } else {
-          // Use genus for test
-          exercise.genus = foreign.genus;
-          exercise.options = this.config.genera.join('|');
+        exercise.genus = foreign.genus;
+        exercise.options = this.config.genera.join('|');
+      }
+
+      /* Article test */
+      if (options.isArticle) {
+        exercise.tpe = ExerciseType.Article;
+        exercise.wordTpe = foreign.wordTpe;
+        if (foreign.audios) {
+          exercise.audio = foreign.audios[0].s3;
         }
+        exercise.article = foreign.article;
+        exercise.options = this.config.articles.join('|');
+        exercise.local.word = local.article + ' ' + formValues.localWord;
       }
 
       /* Comparison test */
-      if (options.hasComparison) {
+      if (options.isComparison) {
         exercise.tpe = ExerciseType.Comparison;
         if (this.selected[this.lanForeign].comparative) {
           exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative.split(';')[0];
@@ -435,7 +445,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       }
 
       /* Conjugation test */
-      if (options.hasConjugation) {
+      if (options.isConjugation) {
         const nr = options.conjugationNr,
               foreignPronouns = this.config.subjectPronouns;
         // Split conjugation if there are multiple
@@ -636,7 +646,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private checkGenus(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
-    if (detail.wordTpe === 'noun' && detail.genus) {
+    if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.genus) {
+      return true;
+    }
+  }
+
+  private checkArticle(wordpairDetail: WordPairDetail): boolean {
+    const detail = wordpairDetail[this.lanForeign];
+    if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.article) {
       return true;
     }
   }

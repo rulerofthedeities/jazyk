@@ -28,8 +28,6 @@ export interface LanConfig  {
   name: string;
   articles?: string[];
   genera?: string[];
-  useIndefiniteArticles?: boolean;
-  articlesIndefinite?: string[]; // used in article test instead of articles (fr: un, une, instead of le, la, l')
   aspects?: string[];
   cases?: Case[];
   subjectPronouns?: string[];

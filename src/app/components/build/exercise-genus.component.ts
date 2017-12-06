@@ -36,10 +36,7 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
     .fetchLanConfig(lanCode)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      config => {
-        this.config = config;
-        this.articles = config.useIndefiniteArticles ? config.articlesIndefinite : config.articles;
-      },
+      config => this.config = config,
       error => this.errorService.handleError(error)
     );
   }

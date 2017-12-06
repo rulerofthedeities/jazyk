@@ -43,7 +43,7 @@
         id="article"
         formControlName="article">
         <option 
-          *ngFor="let article of articles"
+          *ngFor="let article of config.articles"
           [value]="article">
           {{article}}
         </option>
