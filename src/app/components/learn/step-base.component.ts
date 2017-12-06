@@ -749,11 +749,12 @@ export abstract class Step {
         console.log('choice by proximity local', selected);
       break;
     }
-    if (direction === Direction.ForeignToLocal) {
-      selectedChoice = this.addArticle(choices[selected].local, choices[selected].localArticle);
-
-    } else {
-      selectedChoice = this.addArticle(choices[selected].foreign, choices[selected].foreignArticle);
+    if (choices[selected]) {
+      if (direction === Direction.ForeignToLocal) {
+        selectedChoice = this.addArticle(choices[selected].local, choices[selected].localArticle);
+      } else {
+        selectedChoice = this.addArticle(choices[selected].foreign, choices[selected].foreignArticle);
+      }
     }
     choices.splice(selected, 1);
     return selectedChoice;

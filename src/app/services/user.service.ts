@@ -399,7 +399,7 @@ export class UserService {
 
   subscribeToCourse(course: Course) {
     // Only subscribe if it is a loggedin user
-    if (this.authService.isLoggedIn() && this._user) {
+    if (this.authService.isLoggedIn() && this._user && !course.isDemo) {
       const lan = course.languagePair.to;
       this.updateUserDb(lan, course._id);
       this.updateUserCache(lan);

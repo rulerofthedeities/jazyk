@@ -2,57 +2,8 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'km-keyboard',
-  template: `
-    <div *ngFor="let row of rows; let i=index">
-      <span 
-        class="unselectable"
-        [ngClass]="{key:i===0, skip:i!==0, selected: isUpperCase && i===0}"
-        (click)="i===0 ? onToggleCase() : ''">
-        <span 
-          *ngIf="i===0"
-          class="fa fa-long-arrow-up">
-        </span>
-      </span>
-      <span 
-        *ngFor="let key of row"
-        class="key unselectable"
-        (click)="onClick(key)">
-        {{key}}
-      </span>
-    </div>
-  `,
-  styles: [`
-    :host {
-      margin: 6px 0 0 40px; 
-      display: block;
-    }
-    .key {
-      font-size: 20px;
-      border: 1px solid #666;
-      border-radius: 4px;
-      padding-bottom: 4px;
-      margin: 1px 3px;
-      text-align: center;
-      display: inline-block;
-      width: 36px;
-      height: 28px;
-      cursor: pointer;
-      background-color: white;
-      box-shadow: 3px 2px #ccc;
-    }
-    .key:hover {
-      background-color: #eee;
-    }
-    .selected {
-      background-color: #666;
-      color: white;
-    }
-    .skip {
-      display: inline-block;
-      width: 42px;
-      height: 28px;
-    }
-  `]
+  templateUrl: 'keyboard.component.html',
+  styleUrls: ['keyboard.component.css']
 })
 
 export class LearnKeyboardComponent implements OnInit {
@@ -75,11 +26,22 @@ export class LearnKeyboardComponent implements OnInit {
   }
 
   private setKeys() {
-    this.keys.forEach((keyList, i) => {
-      if (this.isUpperCase) {
-        keyList = keyList.toUpperCase();
-      }
-      this.rows[i] = keyList.split('');
+    if (this.keys) {
+      this.keys.forEach((keyList, i) => {
+        if (this.isUpperCase) {
+          // keyList = keyList.toUpperCase(); // doesn't work for ß
+          keyList = this.myToUpperCase(keyList);
+        }
+        this.rows[i] = keyList.split('');
+      });
+    }
+  }
+
+  private myToUpperCase = function(str) {
+    var uppercase = '';
+    str.split('').forEach((c, i) => {
+      uppercase += String.fromCharCode(str.charCodeAt(i) & 223);
     });
+    return uppercase;
   }
 }

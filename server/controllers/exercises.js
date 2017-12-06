@@ -1,6 +1,6 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Course = require('../models/course'),
+      Course = require('../models/course').model,
       Lesson = require('../models/lesson'),
       WordPair = require('../models/wordpair');
 
@@ -120,6 +120,7 @@ module.exports = {
       }},
     function(err, result) {
       response.handleError(err, res, 500, 'Error adding exercise(s)', function(){
+        console.log('getting coursecount for', result.courseId)
         getCourseWordCount(result.courseId);
         response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
       });

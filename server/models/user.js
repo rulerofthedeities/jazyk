@@ -24,11 +24,11 @@ var jazykLearnSchema = new Schema({
 }, {_id : false});
 
 var JazykProfileSchema = new Schema({
-  realName: String,
+  realName: {type: String, trim: true},
   timeZone: String,
-  location: String,
-  bio: String,
-  nativeLan: String,
+  location: {type: String, trim: true},
+  bio: {type: String, trim: true},
+  nativeLan: {type: String, trim: true}
 }, {_id : false});
 
 var dtSchema = new Schema({
@@ -44,9 +44,9 @@ var jazykSchema = new Schema({
 
 
 var userSchema = new Schema({
-  userName: {type: String, required: true, unique: true},
+  userName: {type: String, required: true, unique: true, trim: true},
   password: {type: String, required: true},
-  email: {type: String, required: true, unique: true},
+  email: {type: String, required: true, unique: true, trim: true},
   main: {type: mainSchema, required: true},
   emailHash: {type: String},
   jazyk: jazykSchema,
