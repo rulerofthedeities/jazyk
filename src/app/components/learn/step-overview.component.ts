@@ -32,6 +32,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   currentChapter: string;
   lessonData: Lesson;
   isLessonsReady = false;
+  hasChapters: boolean;
 
   constructor(
     private learnService: LearnService,
@@ -45,7 +46,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   onSelectLesson(lessonId: string) {
     this.currentLessonId = lessonId;
-    console.log('selected lesson', lessonId);
   }
 
   onSelectChapter(chapterName: string) {
@@ -63,18 +63,25 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   onContinueLesson() {
     if (this.lessonData) {
-      console.log('CHILD LESSON', this.lessonData);
       this.currentLesson.emit(this.lessonData);
     }
   }
 
-  getLessons(chapterName: string): LessonHeader[] {
-    return this.chapterLessons[chapterName];
+  getChapterName(chapterName: string) {
+    if (chapterName === 'NoChapter') {
+      return this.text['NoChapter']
+    } else {
+      return chapterName;
+    }
   }
 
   private getCourseChapters() {
     this.courseChapters = JSON.parse(JSON.stringify(this.course.chapters)); // slice for no reference
-    console.log('course chapters', this.courseChapters);
+    this.hasChapters = !!this.courseChapters.length;
+    const emptyChapter = this.course.lessons.find(lesson => lesson.chapter === '');
+    if (emptyChapter) {
+      this.courseChapters.push('NoChapter');
+    }
   }
 
   private getLessonHeaders() {
@@ -90,16 +97,17 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getChapterLessons(lessonHeaders: LessonHeader[]) {
-      // Group lessons by chapter name
+    // Group lessons by chapter name
+    let filterName;
     this.courseChapters.forEach(chapterName => {
-      this.chapterLessons[chapterName] = lessonHeaders.filter(lesson => lesson.chapterName === chapterName);
+      filterName = chapterName === 'NoChapter' ? '' : chapterName;
+      this.chapterLessons[chapterName] = lessonHeaders.filter(lesson => lesson.chapterName === filterName);
     });
     // Get current chapter
     const currentLesson = lessonHeaders.find(lesson => lesson._id === this.currentLessonId);
     if (currentLesson) {
       this.currentChapter = currentLesson.chapterName;
     }
-    console.log('current chapter', this.currentChapter);
   }
 
   ngOnDestroy() {
