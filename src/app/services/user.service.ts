@@ -91,7 +91,7 @@ export class UserService {
         lan: userLan,
         background: true
       },
-      jazyk: this.getDefaultSettings(userLan)
+      jazyk: this.getDefaultSettings(userLan, true)
     };
     return user;
   }
@@ -121,13 +121,13 @@ export class UserService {
     }
   }
 
-  getDefaultSettings(lan: string): JazykConfig {
+  getDefaultSettings(lan: string, isAnonymous: boolean): JazykConfig {
     return {
       learn: {
         lan: lan,
         countdown: true,
-        nrOfWordsStudy: 5,
-        nrOfWordsLearn: 5,
+        nrOfWordsStudy: isAnonymous ? 10 :5,
+        nrOfWordsLearn: isAnonymous ? 10 :5,
         nrOfWordsReview: 5,
         mute: false,
         delay: 2,

@@ -9,6 +9,7 @@ import {SharedService} from '../../services/shared.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
@@ -24,7 +25,7 @@ interface Map<T> {
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() learnedLevel: number;
   @Input() hasStudyTab: boolean;
-  // @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
+  @Input() isDemo = false;
   @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
   noMoreToStudy = false;
@@ -43,7 +44,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentStep = 'practise';
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
-    this.fetchLessonResults();
+    this.getLessonResults();
   }
 
   onToStudy() {
@@ -191,6 +192,15 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .subscribe(t => this.nextWord());
   }
 
+  private getLessonResults() {
+    if (!this.isDemo) {
+      this.fetchLessonResults();
+    } else {
+      console.log('demo lesson results');
+      this.getDemoQuestions();
+    }
+  }
+
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     let leftToStudy: number;
@@ -204,7 +214,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           leftToStudy = this.getNewQuestions(results);
         }
         if (this.exerciseData.length > 0) {
-          super.init();
+          super.init(); // start countdown
         } else {
           this.noMoreExercises = true;
           this.noMoreToStudy = leftToStudy < 1;
@@ -225,8 +235,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
     this.exercises.forEach(exercise => {
-      if (nrOfExercises < this.settings.nrOfWordsLearn) {
-        exerciseResult = results.find(result => result.exerciseId === exercise._id);
+      if (nrOfExercises <= this.settings.nrOfWordsLearn) {
+        exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
           || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
         ) {
@@ -243,6 +253,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     console.log('words for practise', newExercises);
     this.buildExerciseData(newExercises, newResults);
     return leftToStudy;
+  }
+
+  private getDemoQuestions() {
+    this.buildExerciseData(this.exercises, null);
+    super.init(); // start countdown
   }
 
   protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
@@ -281,7 +296,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   protected fetchResults() {
-    this.fetchLessonResults();
+    this.getLessonResults();
   }
 
   ngOnDestroy() {

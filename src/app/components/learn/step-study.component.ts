@@ -207,10 +207,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private getNewQuestions(results: ExerciseResult[]) {
     let exerciseResult: ExerciseResult;
     const newExercises: Exercise[] = [];
-
+    
     // Select exercises with no result
     this.exercises.forEach(exercise => {
-      if (newExercises.length < this.settings.nrOfWordsReview) {
+      if (newExercises.length <= this.settings.nrOfWordsStudy) {
         exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
         if (!exerciseResult) {
           // study not done yet, add to list of new questions

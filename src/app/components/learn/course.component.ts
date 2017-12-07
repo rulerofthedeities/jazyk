@@ -49,7 +49,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;
-  private defaultNrOfQuestions = 5;
   private settingsUpdated = false;
   private isLearnedLevel = 12; // minimum level before it is considered learned
   private courseStep: string; // Step to start with defined by route
@@ -99,7 +98,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       started => this.exercisesStarted = started
     );
     this.settings = this.userService.user.jazyk.learn;
-    this.settings.nrOfWordsStudy = this.settings.nrOfWordsStudy || this.defaultNrOfQuestions;
+    // this.settings.nrOfWordsStudy = this.settings.nrOfWordsStudy || this.defaultNrOfQuestions;
   }
 
   stepTo(i: number) {
@@ -120,13 +119,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
-    console.log('step completed', step, data);
-    if (step === 'intro') {
-      this.nextStep();
-    } else {
-      this.saveAnswers(step, data);
-      if (this.settingsUpdated) {
-        this.saveSettings();
+    if (!this.isDemo) {
+      if (step === 'intro') {
+        this.nextStep();
+      } else {
+        this.saveAnswers(step, data);
+        if (this.settingsUpdated) {
+          this.saveSettings();
+        }
       }
     }
   }
@@ -376,7 +376,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Practise step must have study finished or tpe != word
     if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
       const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-      this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
+      if (!this.isDemo) {
+        this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
+      }
     }
   }
 
