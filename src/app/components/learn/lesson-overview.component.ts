@@ -19,6 +19,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() isLearnedLevel: number;
   @Input() private lessonId: string;
+  @Input() isDemo = false;
   @Output() currentLesson = new EventEmitter<Lesson>();
   private componentActive = true;
   private exercises: Exercise[];
@@ -39,6 +40,14 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     if (word) {
       word = word.replace(/\|/g, ', ');
       return word.replace(/\[|\]/g, '');
+    }
+  }
+
+  private getLessonResults() {
+    if (!this.isDemo) {
+      this.fetchLessonResults();
+    } else {
+      this.buildExerciseData(null);
     }
   }
 
@@ -69,7 +78,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     let exerciseData: ExerciseData,
         result: ExerciseResult;
     this.lesson.exercises.forEach(exercise => {
-      result = results.find(resultItem => resultItem.exerciseId === exercise._id);
+      result = results && results.find(resultItem => resultItem.exerciseId === exercise._id);
       exerciseData = {
         exercise,
         data: {},
@@ -87,7 +96,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
       (lesson: Lesson) => {
         this.lesson = lesson;
         this.currentLesson.emit(lesson);
-        this.fetchLessonResults();
+        this.getLessonResults();
       },
       error => this.errorService.handleError(error)
     );

@@ -63,7 +63,7 @@
       [lanPair]="course.languagePair"
       [lessonId]="this.lesson._id"
       [text]="text"
-      [isDemo]="this.isDemo"
+      [isDemo]="isDemo"
       [stepOptions]="lesson.exerciseSteps.study"
       [settings]="settings"
       [exercisesInterrupted]="exercisesInterrupted"
@@ -79,7 +79,7 @@
       [lessonId]="lesson._id"
       [courseId]="courseId"
       [text]="text"
-      [isDemo]="this.isDemo"
+      [isDemo]="isDemo"
       [learnedLevel]="isLearnedLevel"
       [hasStudyTab]="hasStep('study')"
       [settings]="settings"
@@ -117,6 +117,7 @@
       [currentLessonId]="lesson._id"
       [isLearnedLevel]="isLearnedLevel"
       [text]="text"
+      [isDemo]="isDemo"
       (currentLesson)="onLessonSelected($event)">
     </km-learn-overview>
   </div>

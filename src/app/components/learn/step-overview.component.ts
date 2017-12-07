@@ -23,6 +23,7 @@ interface LessonHeader {
 export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() private course: Course;
   @Input() text: Object;
+  @Input() isDemo = false;
   @Input() isLearnedLevel: number;
   @Input() currentLessonId: string;
   @Output() currentLesson = new EventEmitter<Lesson>();
