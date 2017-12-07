@@ -4,6 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
+import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
@@ -67,6 +68,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountzero: Subject<boolean> = new Subject();
   level = Level;
+  isDemo: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,11 +76,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     private learnService: LearnService,
     private sharedService: SharedService,
     private utilsService: UtilsService,
+    private authService: AuthService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
 
   ngOnInit() {
+    this.isDemo = !this.authService.isLoggedIn();
+    console.log('DEMO', this.isDemo);
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
@@ -210,7 +215,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            this.fetchCurrentLesson();
+            this.getCurrentLesson();
             console.log('course', course);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
@@ -225,26 +230,42 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getStepData() {
     this.setSteps();
+    if (!this.isDemo) {
+      this.fetchStepData();
+    } else {
+      this.processStepResults(null);
+    }
+  }
+
+  private fetchStepData() {
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
         console.log('step data results:', results);
-        this.countPerStep = {};
-        if (results) {
-          this.getCourseStepCount(results);
-          this.getLessonStepCount(results.lesson);
-          if (this.courseLevel === Level.Lesson) {
-            this.setDefaultLessonStep(results.lesson.length);
-          } else {
-            this.setCourseStep();
-          }
-          this.isStepsReady = true;
-        }
+        this.processStepResults(results);
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private processStepResults(results: any) {
+    this.countPerStep = {};
+    if (results) {
+      this.getCourseStepCount(results);
+      this.getLessonStepCount(results.lesson);
+      if (this.courseLevel === Level.Lesson) {
+        this.setDefaultLessonStep(results.lesson.length);
+      } else {
+        this.setCourseStep();
+      }
+    } else {
+      // No data or not logged in
+      this.getLessonStepCount(null);
+      this.setDefaultLessonStep(null);
+    }
+    this.isStepsReady = true;
   }
 
   private setSteps() {
@@ -337,7 +358,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
 
     // Check how many results have been done per tab
-    if (results.length > 0) {
+    if (results && results.length > 0) {
       results.forEach(result => {
         total = result.step === 'study' ? studyTotal : lessonTotal;
         if (!this.countPerStep[result.step]) {
@@ -593,8 +614,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchCurrentLesson() {
+  private getCurrentLesson() {
     // Check where this course was left off
+    if (!this.isDemo) {
+      this.fetchMostRecentLesson()
+    } else {
+      this.getFirstLesson();
+    }
+    
+  }
+
+  private fetchMostRecentLesson() {
     this.learnService
     .fetchMostRecentLesson(this.course._id)
     .takeWhile(() => this.componentActive)

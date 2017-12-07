@@ -23,6 +23,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Input() isDemo = false;
   @Input() lessonId: string;
   @Input() stepOptions: ExerciseStep;
   @Input() settings: LearnSettings;
@@ -56,7 +57,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.filterExercises();
-    this.fetchLessonResults();
+    this.getLessonResults();
     this.checkExercisesInterrupted();
     this.isMute = this.settings.mute;
   }
@@ -72,7 +73,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onStudyNewWords() {
-    this.fetchLessonResults();
+    this.getLessonResults();
   }
 
   onRehearseAll() {
@@ -179,6 +180,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     console.log('exercises', this.exercises);
   }
 
+  private getLessonResults() {
+    if (!this.isDemo) {
+      this.fetchLessonResults();
+    } else {
+      this.getNewQuestions(null);
+    }
+  }
+
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
@@ -202,7 +211,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     // Select exercises with no result
     this.exercises.forEach(exercise => {
       if (newExercises.length < this.settings.nrOfWordsReview) {
-        exerciseResult = results.find(result => result.exerciseId === exercise._id);
+        exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
         if (!exerciseResult) {
           // study not done yet, add to list of new questions
           newExercises.push(exercise);
