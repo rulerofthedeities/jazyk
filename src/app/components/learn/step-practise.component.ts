@@ -135,8 +135,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected determineQuestionType(exercise: ExerciseData, learnLevel: number): QuestionType {
     // Determine if multiple choice or word
-    // If there is no study tab and the word is shown for the first time, question type is a preview
-    if (!this.hasStudyTab && !exercise.result && exercise.data.answered === 0) {
+    // If there is no study tab and the word is shown for the first time, question type is a preview (only for words)
+    if (!this.hasStudyTab && !exercise.result && exercise.data.answered === 0 && exercise.exercise.tpe === ExerciseType.Word) {
       return QuestionType.Preview;
     }
     let qTpe = QuestionType.Choices;

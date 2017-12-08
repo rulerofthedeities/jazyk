@@ -61,9 +61,7 @@ export class LearnQAComponent implements OnChanges, AfterViewChecked {
   private getQAData(exercise: Exercise) {
     // get answer without []
     this.sentence = exercise.foreign.word.replace(/\[.*\]/, '|').split('|');
-    console.log(this.sentence);
     this.sentence = this.sentence.map(section => section.trim());
-    console.log(this.sentence);
     this.question = exercise.foreign.hint;
     this.correctAnswer = this.getCorrectAnswer(exercise.foreign.word);
   }

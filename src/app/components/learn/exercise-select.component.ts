@@ -1,7 +1,6 @@
 import {Component, Input, Output, OnChanges, EventEmitter} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
-import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'km-select',
