@@ -148,3 +148,9 @@ h1 {
   position: relative;
   top: -2px;
 }
+.register {
+  font-style: italic;
+  font-size: 24px;
+  color: #999;
+  padding: 60px 20px;
+}

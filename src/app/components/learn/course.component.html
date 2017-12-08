@@ -38,7 +38,7 @@
               'fa-fire': step.name==='difficult',
               'fa-clock-o': step.name==='exam'
             }"></span>
-            {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining}})</span>
+            {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining || 0}})</span>
           </li>
         </ng-template>
       </ul>
@@ -91,28 +91,30 @@
       (stepBack)="onStepBack()"
       (updatedSettings)="onSettingsUpdated($event)">
     </km-learn-practise>
-    <km-learn-review *ngSwitchCase="'review'"
-      [courseId]="courseId"
-      [lanPair]="course.languagePair"
-      [text]="text"
-      [settings]="settings"
-      [lessonOptions]="lesson.options"
-      [exercisesInterrupted]="exercisesInterrupted"
-      [stepcountzero]="stepcountzero"
-      (stepCompleted)="onStepCompleted('review', $event)"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-review>
-    <km-learn-difficult *ngSwitchCase="'difficult'"
-      [courseId]="courseId"
-      [lanPair]="course.languagePair"
-      [text]="text"
-      [settings]="settings"
-      [lessonOptions]="lesson.options"
-      [exercisesInterrupted]="exercisesInterrupted"
-      [stepcountzero]="stepcountzero"
-      (stepCompleted)="onStepCompleted('difficult', $event)"
-      (updatedSettings)="onSettingsUpdated($event)">
-    </km-learn-difficult>
+    <div *ngIf="!isDemo">
+      <km-learn-review *ngSwitchCase="'review'"
+        [courseId]="courseId"
+        [lanPair]="course.languagePair"
+        [text]="text"
+        [settings]="settings"
+        [lessonOptions]="lesson.options"
+        [exercisesInterrupted]="exercisesInterrupted"
+        [stepcountzero]="stepcountzero"
+        (stepCompleted)="onStepCompleted('review', $event)"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-review>
+      <km-learn-difficult *ngSwitchCase="'difficult'"
+        [courseId]="courseId"
+        [lanPair]="course.languagePair"
+        [text]="text"
+        [settings]="settings"
+        [lessonOptions]="lesson.options"
+        [exercisesInterrupted]="exercisesInterrupted"
+        [stepcountzero]="stepcountzero"
+        (stepCompleted)="onStepCompleted('difficult', $event)"
+        (updatedSettings)="onSettingsUpdated($event)">
+      </km-learn-difficult>
+    </div>
     <km-learn-overview *ngSwitchCase="'overview'"
       [course]="course"
       [currentLessonId]="lesson._id"
@@ -121,6 +123,14 @@
       [isDemo]="isDemo"
       (currentLesson)="onLessonSelected($event)">
     </km-learn-overview>
+    <div *ngIf="isDemo">
+      <div *ngSwitchCase="'review'" class="register">
+        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseReview"]}}
+      </div>
+      <div *ngSwitchCase="'difficult'" class="register">
+        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseDifficult"]}}
+      </div>
+    </div>
   </div>
 </div>
 
