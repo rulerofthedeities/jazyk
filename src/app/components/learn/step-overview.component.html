@@ -2,8 +2,8 @@
   <ul *ngIf="hasChapters"
     class="list-group chapters">
     <li *ngFor="let chapterName of courseChapters; let i=index"
-      class="list-group-item active">
-      <h2 (click)="onSelectChapter(chapterName)">
+      class="list-group-item">
+      <h2 (click)="onSelectChapter(chapterName)" class="bg-primary">
         {{i + 1}}. {{getChapterName(chapterName)}}
       </h2>
       <ul *ngIf="chapterName === currentChapter"
@@ -12,14 +12,16 @@
           class="list-group-item lesson-title"
           [class.selected]="lesson._id === currentLessonId"
           (click)="onSelectLesson(lesson._id)">
-          <button type="button"
-           *ngIf="lesson._id === currentLessonId && lessonData"
-            class="btn btn-success pull-right"
-            (click)="onContinueLesson(lessonDetail)">
-            <span class="fa fa-arrow-right"></span>
-            {{text["StartLesson"]}}
-          </button>
-          {{j + 1}}. {{lesson.name}}
+          <div class="lesson-title">
+            <button type="button"
+             *ngIf="lesson._id === currentLessonId && lessonData"
+              class="btn btn-success pull-right"
+              (click)="onContinueLesson(lessonDetail)">
+              <span class="fa fa-arrow-right"></span>
+              {{text["StartLesson"]}}
+            </button>
+            {{j + 1}}. {{lesson.name}}
+          </div>
           <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
             [text]="text"
             [isDemo]="isDemo"
@@ -34,17 +36,19 @@
   <ul *ngIf="!hasChapters"
     class="list-group lesson">
     <li *ngFor="let lesson of chapterLessons['NoChapter']; let j=index"
-      class="list-group-item lesson-title"
+      class="list-group-item"
       [class.selected]="lesson._id === currentLessonId"
       (click)="onSelectLesson(lesson._id)">
-      <button type="button"
-       *ngIf="lesson._id === currentLessonId && lessonData"
-        class="btn btn-success pull-right"
-        (click)="onContinueLesson(lessonDetail)">
-        <span class="fa fa-arrow-right"></span>
-        {{text["StartLesson"]}}
-      </button>
-      {{j + 1}}. {{lesson.name}}
+      <div class="lesson-title">
+        <button type="button"
+         *ngIf="lesson._id === currentLessonId && lessonData"
+          class="btn btn-success pull-right"
+          (click)="onContinueLesson(lessonDetail)">
+          <span class="fa fa-arrow-right"></span>
+          {{text["StartLesson"]}}
+        </button>
+        {{j + 1}}. {{lesson.name}}
+      </div>
       <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
         [text]="text"
         [isDemo]="isDemo"

@@ -2,6 +2,8 @@
   display: block;
   padding: 15px;
   font-size: 20px;
+  background-color: #fff;
+  border-radius: 6px;
 }
 .word {
 }
@@ -15,6 +17,7 @@
   border: 1px dotted #999;
   border-top: none;
   padding: 4px 0;
+  margin: 6px;
 }
 .item:hover {
   background-color: white;
