@@ -68,7 +68,7 @@
 .btn {
   margin-top: 2px;
 }
-.case {
+.case, .new {
   border: 1px solid #ff5b00;
   border-radius: 4px;
   padding: 0 4px;
@@ -77,10 +77,17 @@
   font-weight: bold;
   font-size: 16px;
 }
+.new {
+  border: 1px solid darkgreen;
+  background-color: darkseagreen;
+}
 .alts {
   font-size: 20px;
   margin-left: 42px;
 }
 .nomore {
   margin-bottom: 60px;
+}
+.imagepadding {
+  margin-left: 184px;
 }
