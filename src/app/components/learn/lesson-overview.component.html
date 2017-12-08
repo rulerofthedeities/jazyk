@@ -19,7 +19,7 @@
   </div>
 </div>
 <!-- TABLE -->
-<div *ngFor="let exercise of exerciseData" class="row item">
+<div *ngFor="let exercise of exerciseData;let i=index" class="row item">
   <div class="col-xs-1 icons">
     <span>
       <span class="fa" [ngClass]="{
@@ -41,7 +41,7 @@
     <span class="word">{{showWord(exercise.exercise.foreign?.word)}}</span>
     <span class="word local">{{exercise.exercise.local?.word}}</span>
   </div>
-  <div class="col-xs-3">
+  <div class="col-xs-3" *ngIf="!isDemo">
     <span *ngFor="let item of exercise.result?.streak?.slice(-10).split(''); let i=index">
       <span
         class="fa fa-square" 
@@ -50,13 +50,13 @@
       </span>
     </span>
   </div>
-  <div class="col-xs-1 text-center">
+  <div class="col-xs-1 text-center" *ngIf="!isDemo">
     <div *ngIf="exercise.result?.timesDone">
       {{exercise.result?.timesCorrect}} / {{exercise.result?.timesDone}}
     </div>
   </div>
-  <div class="col-xs-1 text-center">
-    <div *ngIf="exercise.result && exercise.result.learnLevel !== null">
+  <div class="col-xs-1 text-center" *ngIf="!isDemo">
+    <div *ngIf="exercise.result">
       <span>
         <span class="fa fa-bookmark" *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"></span>
         <span class="fa fa-bookmark-o" *ngIf="exercise.exercise.tpe !== exType.Word"></span>
@@ -64,12 +64,17 @@
       <span *ngIf="exercise.result.isLearned">
         <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
       </span>
-      <span *ngIf="!exercise.result.isLearned" class="learn-progress">
+      <span *ngIf="!exercise.result.isLearned && exercise.result.learnLevel !== null" class="learn-progress">
         {{exercise.result.learnLevel}} / {{isLearnedLevel}}
       </span>
     </div>
   </div>
-  <div class="col-xs-1 text-right">
+  <div class="col-xs-1 text-right" *ngIf="!isDemo">
     {{exercise.result?.points}}
+  </div>
+  <div class="col-xs-6" *ngIf="isDemo">
+    <div *ngIf="i===0" class="register">
+      <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToSeeResults"]}}
+    </div>
   </div>
 </div>

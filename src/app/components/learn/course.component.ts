@@ -82,7 +82,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isDemo = !this.authService.isLoggedIn();
-    console.log('DEMO', this.isDemo);
     this.route.params
     .takeWhile(() => this.componentActive)
     .subscribe(
@@ -156,7 +155,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onContinueCourse() {
-    this.router.navigate(['/learn/course/' + this.course._id]);
+    this.getCurrentLesson();
   }
 
   capitalize(word: string): string {

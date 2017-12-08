@@ -3,11 +3,12 @@
 </div>
 
 <!-- COURSE HEADER -->
-<div *ngIf="isStepsReady">
+<div *ngIf="isStepsReady && !exercisesStarted">
   <div class="panel panel-default panel-header">
     <div class="panel-body">
       <h1>
         <button type="button" 
+          *ngIf="!isDemo"
           class="btn btn-success pull-right"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right"></span>{{text["continuecourse"]}}

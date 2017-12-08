@@ -45,3 +45,7 @@
   position: relative;
   top: -2px;
 }
+.register {
+  font-style: italic;
+  color: #999;
+}
