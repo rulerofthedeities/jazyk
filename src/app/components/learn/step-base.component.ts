@@ -159,7 +159,6 @@ export abstract class Step {
   }
 
   onNextWord() {
-    console.log('pressed next', this.currentData.data.questionType);
     switch (this.currentData.data.questionType) {
       case QuestionType.Choices:
         if (this.isAnswered) {
@@ -293,6 +292,7 @@ export abstract class Step {
     if (!this.isExercisesDone) {
       this.nextExercise.next(this.current);
       this.currentData = this.exerciseData[this.current];
+      console.log('CURRENT', this.currentData);
       const learnLevel = this.getCurrentLearnLevel(this.currentData);
       this.levelUpdated.next(learnLevel);
       this.currentData.data.questionType = this.determineQuestionType(this.currentData, learnLevel);

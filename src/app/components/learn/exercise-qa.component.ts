@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
@@ -12,7 +12,7 @@ interface Keyboard {
   styleUrls: ['field.css', 'exercise-qa.component.css']
 })
 
-export class LearnQAComponent implements OnInit, AfterViewChecked {
+export class LearnQAComponent implements OnChanges, AfterViewChecked {
   @Input() lanPair: string;
   @Input() text: Object;
   @Input() data: ExerciseData;
@@ -25,12 +25,15 @@ export class LearnQAComponent implements OnInit, AfterViewChecked {
   instruction: string;
   isAnswered = false;
   exType = ExerciseType;
+  currentExerciseId: string;
 
-  ngOnInit() {
-    console.log('init QA', this.data);
-    const exercise = this.data.exercise;
-    this.instruction = exercise.tpe === ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
-    this.getQAData(exercise);
+  ngOnChanges() {
+    if (this.currentExerciseId !== this.data.exercise._id) {
+      const exercise = this.data.exercise;
+      this.currentExerciseId = exercise._id;
+      this.instruction = exercise.tpe === ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
+      this.getQAData(exercise);
+    }
   }
 
   ngAfterViewChecked() {

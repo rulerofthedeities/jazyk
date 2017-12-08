@@ -34,14 +34,17 @@
         </div>
         <div class="items">
           {{i + 1}}. 
-          <span class="item active" [ngSwitch]="exercise.tpe">
-            <span class="fa fa-font" *ngSwitchDefault></span>
-            <span class="fa fa-list-alt" *ngSwitchCase="exType.Select"></span>
-            <span class="fa fa-comments" *ngSwitchCase="exType.QA"></span>
-            <span class="fa fa-terminal" *ngSwitchCase="exType.FillIn"></span>
-            <span class="fa fa-venus-mars" *ngSwitchCase="exType.Genus"></span>
-            <span class="fa fa-venus-mars" *ngSwitchCase="exType.Article"></span>
-            <span class="fa fa-signal" *ngSwitchCase="exType.Comparison"></span>
+          <span class="item active">
+            <span class="fa" [ngClass]="{
+              'fa-font': exercise.tpe === exType.Word,
+              'fa-list-alt': exercise.tpe === exType.Select,
+              'fa-comments': exercise.tpe === exType.QA,
+              'fa-terminal': exercise.tpe === exType.FillIn,
+              'fa-venus-mars': exercise.tpe === exType.Genus || 
+                               exercise.tpe === exType.Article,
+              'fa-signal': exercise.tpe === exType.Comparison
+            }">
+            </span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up"></span>

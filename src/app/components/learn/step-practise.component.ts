@@ -167,7 +167,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Comparison;
       break;
     }
-    console.log('QTPE', qTpe);
     return qTpe;
   }
 
@@ -196,7 +195,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (!this.isDemo) {
       this.fetchLessonResults();
     } else {
-      console.log('demo lesson results');
       this.getDemoQuestions();
     }
   }

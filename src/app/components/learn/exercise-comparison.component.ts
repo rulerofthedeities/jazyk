@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
@@ -17,7 +17,7 @@ interface Answer {
   styleUrls: ['field.css', 'exercise-comparison.component.css']
 })
 
-export class LearnComparisonComponent implements OnInit {
+export class LearnComparisonComponent implements OnInit, OnChanges {
   @Input() lanPair: string;
   @Input() text: Object;
   @Input() data: ExerciseData;
@@ -32,17 +32,22 @@ export class LearnComparisonComponent implements OnInit {
   isAnswered = false;
   isComparativeCorrect = false;
   isSuperlativeCorrect = false;
+  currentExerciseId: string;
 
   ngOnInit() {
-    console.log('init Comparison', this.data);
-    const exercise = this.data.exercise;
     this.instruction = this.text['instructionComparison'];
-    this.getComparisonData(exercise);
+  }
+
+  ngOnChanges() {
+    if (this.currentExerciseId !== this.data.exercise._id) {
+      this.currentExerciseId = this.data.exercise._id;
+      const exercise = this.data.exercise;
+      this.getComparisonData(this.data.exercise);
+    }
   }
 
   onFocus(field: string) {
     this.currentField = field;
-    console.log('Current field', field);
   }
 
   onKeySelected(key: string) {
@@ -54,7 +59,6 @@ export class LearnComparisonComponent implements OnInit {
   }
 
   getData(): string {
-    // return this.answer.nativeElement.value;
     return this.answerComparative.nativeElement.value + '|' + this.answerSuperlative.nativeElement.value;
   }
 
@@ -86,6 +90,5 @@ export class LearnComparisonComponent implements OnInit {
       comparative: comparisonSteps[1],
       superlative: comparisonSteps[2]
     };
-    console.log('correct answer: ', this.correctAnswer);
   }
 }

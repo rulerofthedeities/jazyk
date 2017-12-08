@@ -1,6 +1,7 @@
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnChanges, EventEmitter} from '@angular/core';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'km-select',
@@ -8,7 +9,7 @@ import {PreviewService} from '../../services/preview.service';
   styleUrls: ['exercise-select.component.css']
 })
 
-export class LearnSelectComponent implements OnInit {
+export class LearnSelectComponent implements OnChanges {
   @Input() lanPair: string;
   @Input() text: Object;
   @Input() data: ExerciseData;
@@ -23,15 +24,17 @@ export class LearnSelectComponent implements OnInit {
   isAnswered = false;
   isCorrect: boolean;
   exerciseTpe: ExerciseType;
+  currentExerciseId: string;
 
   constructor(
     private previewService: PreviewService
   ) {}
 
-  ngOnInit() {
-    console.log('SELECT', this.data.exercise);
-    const exercise = this.data.exercise;
-    this.getSelectData(exercise);
+  ngOnChanges() {
+    if (this.currentExerciseId !== this.data.exercise._id) {
+      this.currentExerciseId = this.data.exercise._id;
+      this.getSelectData(this.data.exercise);
+    }
   }
 
   onSelected(selectedOption: string) {

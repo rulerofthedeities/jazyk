@@ -3,23 +3,8 @@ import {LearnService} from '../../services/learn.service';
 
 @Component({
   selector: 'km-word-choices',
-  template: `
-    <div class="answer-instruction" [style.visibility]="answered ? 'hidden' : 'visible'">
-      <span class="fa fa-info-circle"></span>
-      {{instruction}}
-    </div>
-    <div 
-      *ngFor="let choice of choices; let i=index" 
-      class="btn btn-default btn-lg choice"
-      [ngClass]="{
-        'done':isSelected, 
-        'ok':correct && i===answered, 
-        'nok':!correct && i===answered,
-        'correction':!correct && i===answer}"
-      (click)="onSelected(i)">
-      <span class="nr">{{i+1}}.</span> <span>{{filter(choice)}}</span>
-    </div>`,
-    styleUrls: ['exercise-word-choices.component.css']
+  templateUrl: 'exercise-word-choices.component.html',
+  styleUrls: ['exercise-word-choices.component.css']
 })
 
 export class LearnWordChoicesComponent {
