@@ -237,11 +237,12 @@ module.exports = {
   removeChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           userId = req.decoded.user._id,
-          chapter = req.body.name;
+          chapter = req.body.name,
+          query = {_id: courseId, authorId: userId},
+          chapterUpdate = {$pull: {chapters: chapter}, $pull: {lessons: {chapter}}};
 
     Course.findOneAndUpdate(
-      {_id: courseId, authorId: userId},
-      { $pull: { chapters: chapter }}, function(err, result) {
+      query, chapterUpdate, function(err, result) {
       response.handleError(err, res, 500, 'Error removing chapter "' + chapter + '"', function(){
         response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter + '"');
       });
