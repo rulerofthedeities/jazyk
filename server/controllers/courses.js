@@ -8,7 +8,7 @@ let getCourse = function(req, res, authorOnly) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let query = {_id: courseId, isPublished: true, isPublic: true};
     if (authorOnly) {
-      const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+      const userId = req.decoded.user._id;
       query = {_id: courseId, authorId: userId};
     }
     Course.findOne(query, {}, function(err, course) {
@@ -19,6 +19,35 @@ let getCourse = function(req, res, authorOnly) {
   } else {
     //invalid id
     response.handleSuccess(res, null, 404, 'Invalid course id');
+  }
+}
+
+let moveLesson = function(lessons, newChapter, lessonId, query, res, cb) {
+  console.log('moving lesson ' + lessonId + ' to', newChapter);
+  // Check if lessonId is in existing chapters
+  const newLessons = [];
+  let changed = false;
+  let lessonIds, remaining;
+  lessons.forEach(lesson => {
+    lessonIds = lesson.lessonIds;
+    if (lesson.chapter === newChapter.chapterName) {
+      remaining = lessonIds;
+    } else {
+      remaining = lessonIds.filter(id => id !== lessonId.toString());
+    }
+    if (remaining.length !== lessonIds.length) {
+      changed = true;
+    }
+    newLessons.push({lessonIds: remaining, chapter: lesson.chapter});
+  });
+  if (changed && lessons.length === newLessons.length) {
+    //save updated lesson subdocument
+    const update = {$set: {lessons: newLessons}};
+    Course.findOneAndUpdate(query, update, function(err, result) {
+      cb(err, result);
+    });
+  } else {
+    cb(null, null);
   }
 }
 
@@ -41,7 +70,7 @@ module.exports = {
   },
   getSubscribedCourses: function(req, res) {
     // Get all courses that this user is currently learning
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+    const userId = req.decoded.user._id;
     // Find all courseIds for this user
     UserCourse.find({userId, subscribed: true}, function(err, userCourses) {
       response.handleError(err, res, 500, 'Error fetching user courses', function(){
@@ -59,7 +88,7 @@ module.exports = {
   },
   getUserCreatedCourses: function(req, res) {
     // Get all courses that this user has created
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+    const userId = req.decoded.user._id;
     Course.find({authorId: userId}, {}, function(err, courses) {
       response.handleError(err, res, 500, 'Error fetching user created courses', function(){
         response.handleSuccess(res, courses, 200, 'Fetched user created courses');
@@ -85,7 +114,7 @@ module.exports = {
   },
   getTeachingCourses: function(req, res) {
     // get courses for profile
-    const userId = new mongoose.Types.ObjectId(req.params.userId),
+    const userId = req.params.userId,
           query = {creatorId: userId, isPublic: true, isPublished: true},
           projection = {name:1, image:1, totalCount: 1, languagePair:1},
           sort = {sort: {totalCount: -1}};
@@ -97,7 +126,7 @@ module.exports = {
   },
   addCourse: function(req, res) {
     const course = new Course(req.body),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+          userId = req.decoded.user._id;
     course._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
     course.creatorId = userId;
     course.authorId = [userId];
@@ -111,7 +140,7 @@ module.exports = {
   updateCourseHeader: function(req, res) {
     const course = new Course(req.body),
           courseId = new mongoose.Types.ObjectId(course._id),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           query = {_id: courseId, authorId: userId},
           update = {
             name: course.name,
@@ -135,7 +164,7 @@ module.exports = {
   },
   updateCourseProperty: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           query = {_id: courseId, authorId: userId},
           property = req.body,
           update = property;
@@ -160,7 +189,7 @@ module.exports = {
   },
   updateCourseLesson: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           lesson = req.body,
           upd = {
       $addToSet: { 'lessons.$.lessonIds': lesson.lessonId}
@@ -175,17 +204,24 @@ module.exports = {
   },
   addChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          chapter = req.body;
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          userId = req.decoded.user._id,
+          chapter = req.body,
+          query = {_id: courseId, authorId: userId};
 
     Course.findOneAndUpdate(
-      {_id: courseId, authorId: userId},
+      query,
       {$addToSet: {
         chapters: chapter.chapterName,
         lessons: chapter.lesson
       }}, function(err, result) {
       response.handleError(err, res, 500, 'Error adding chapter', function(){
-        response.handleSuccess(res, result, 200, 'Added chapter');
+        // Check if lesson exists in another chapter; if so, remove it.
+        moveLesson(result.lessons, chapter, lessonId, query, res, function(err, result) {
+          response.handleError(err, res, 500, 'Error moving chapter', function(){
+            response.handleSuccess(res, result, 200, 'Moved chapter');
+          });
+        });
       });
     });
   },
@@ -200,7 +236,7 @@ module.exports = {
   },
   removeChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           chapter = req.body.name;
 
     Course.findOneAndUpdate(
@@ -213,7 +249,7 @@ module.exports = {
   },
   updateChapters: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           chapters = req.body;
 
     Course.findOneAndUpdate(
@@ -228,7 +264,7 @@ module.exports = {
   },
   updateLessonIds: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          userId = req.decoded.user._id,
           lessonIds = req.body;
 
     Course.findOneAndUpdate(

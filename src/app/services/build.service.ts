@@ -83,7 +83,7 @@ export class BuildService {
     const headers = this.getTokenHeaders();
     const lesson = {chapter: chapterName, lessonIds: [lessonId]};
     return this.http
-    .post('/api/build/chapter/' + courseId,  JSON.stringify({chapterName, lesson}), {headers})
+    .post('/api/build/chapter/' + courseId + '/' + lessonId,  JSON.stringify({chapterName, lesson}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
