@@ -1,9 +1,9 @@
 <div class="list" *ngIf="!noResults; else noresults">
   <!-- HEADER -->
   <div class="row header item">
-    <div class="col-xs-1">
+    <div class="col-xs-2">
     </div>
-    <div class="col-xs-6">
+    <div class="col-xs-5">
       {{text['Exercise']}}
     </div>
     <div class="col-xs-3">
@@ -25,7 +25,21 @@
           red: !result.isCorrect && !result.isAlmostCorrect}">
       </span>
     </div>
-    <div class="col-xs-6">
+    <div class="col-xs-1 icons">
+      <span>
+        <span class="fa" [ngClass]="{
+          'fa-font': result.tpe === exType.Word,
+          'fa-list-alt': result.tpe === exType.Select,
+          'fa-comments': result.tpe === exType.QA,
+          'fa-terminal': result.tpe === exType.FillIn,
+          'fa-superpowers': result.tpe === exType.Article,
+          'fa-venus-mars': result.tpe === exType.Genus,
+          'fa-signal': result.tpe === exType.Comparison
+        }">
+        </span>
+      </span>
+    </div>
+    <div class="col-xs-5">
       <span class="word">{{result.exercise.exercise.foreign.word}}</span>
       <span class="word local">{{result.exercise.exercise.local.word}}</span>
     </div>

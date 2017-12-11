@@ -40,8 +40,8 @@
               'fa-list-alt': exercise.tpe === exType.Select,
               'fa-comments': exercise.tpe === exType.QA,
               'fa-terminal': exercise.tpe === exType.FillIn,
-              'fa-venus-mars': exercise.tpe === exType.Genus || 
-                               exercise.tpe === exType.Article,
+              'fa-superpowers': exercise.tpe === exType.Article,
+              'fa-venus-mars': exercise.tpe === exType.Genus,
               'fa-signal': exercise.tpe === exType.Comparison
             }">
             </span>
@@ -142,7 +142,7 @@
             <div class="col-xs-4">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
-                  <strong>{{exercise.foreign?.word}}</strong>
+                  <strong>{{exercise.article}} {{exercise.foreign?.word}}</strong>
                 </span> / 
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}

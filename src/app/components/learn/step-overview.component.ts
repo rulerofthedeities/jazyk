@@ -46,7 +46,11 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   onSelectLesson(lessonId: string) {
-    this.currentLessonId = lessonId;
+    if (lessonId !== this.currentLessonId) {
+      this.currentLessonId = lessonId;
+    } else {
+      this.currentLessonId = null;
+    }
   }
 
   onSelectChapter(chapterName: string) {

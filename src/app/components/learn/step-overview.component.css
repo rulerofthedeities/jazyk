@@ -10,8 +10,12 @@ h2 {
   padding: 12px;
   margin-top: 0;
 }
+.deselected h2 {
+  margin-bottom: 0;
+}
 .lesson-title {
   cursor: pointer;
+  padding: 12px;
 }
 .selected .lesson-title {
   margin-bottom: 12px;
@@ -22,13 +26,22 @@ h2 {
 .list-group {
   margin-bottom: 0;
 }
+.list-group-item {
+  padding: 0;
+}
 .chapters > .list-group-item {
-  margin-bottom: 4px;
-  padding-top: 0;
+  margin-bottom: 5px;
+  padding: 0 15px;
+}
+.chapters > .selected {
+  padding: 0 15px 5px;
 }
 .lesson > .list-group-item {
   color: black;
   background-color: #5bc0de;
   border-color: #326999;
   margin-bottom: 3px;
+}
+km-lesson-overview {
+  margin: 8px;
 }

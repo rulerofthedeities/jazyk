@@ -239,10 +239,9 @@ module.exports = {
           userId = req.decoded.user._id,
           chapter = req.body.name,
           query = {_id: courseId, authorId: userId},
-          chapterUpdate = {$pull: {chapters: chapter}, $pull: {lessons: {chapter}}};
+          chapterUpdate = {$pull: {chapters: chapter, lessons: {chapter}}};
 
-    Course.findOneAndUpdate(
-      query, chapterUpdate, function(err, result) {
+    Course.findOneAndUpdate(query, chapterUpdate, function(err, result) {
       response.handleError(err, res, 500, 'Error removing chapter "' + chapter + '"', function(){
         response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter + '"');
       });

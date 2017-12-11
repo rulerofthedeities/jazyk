@@ -112,6 +112,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   private addChapter(chapterName: string, lessonId: string) {
+    console.log('adding chapter', chapterName);
     if (chapterName) {
       this.chapters.push(chapterName);
       this.buildService

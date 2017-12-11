@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExerciseData, Direction} from '../../models/exercise.model';
+import {ExerciseData, ExerciseType, Direction} from '../../models/exercise.model';
 
 interface Result {
   exercise: ExerciseData;
@@ -8,6 +8,7 @@ interface Result {
   isAlmostCorrect?: boolean;
   points: number;
   streak: string;
+  tpe: number;
 }
 
 @Component({
@@ -21,6 +22,7 @@ export class LearnCompletedListComponent implements OnInit {
   @Input() text: Object;
   results: Result[] = [];
   noResults = false;
+  exType = ExerciseType;
 
   ngOnInit() {
     console.log('completed data', this.data);
@@ -37,7 +39,8 @@ export class LearnCompletedListComponent implements OnInit {
             isAlt: exerciseData.data.isAlt,
             isAlmostCorrect: exerciseData.data.isAlmostCorrect,
             points: exerciseData.data.points,
-            streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0'
+            streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
+            tpe: exerciseData.exercise.tpe
           };
           const test = JSON.parse(JSON.stringify(result));
           console.log('adding', test);
@@ -49,6 +52,7 @@ export class LearnCompletedListComponent implements OnInit {
             (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
           result.points += exerciseData.data.points;
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
+          result.tpe = exerciseData.exercise.tpe
           const test = JSON.parse(JSON.stringify(result));
           console.log('updated', test);
         }

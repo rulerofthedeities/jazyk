@@ -47,7 +47,7 @@ export class AutocompleteComponent implements OnInit {
   }
 
   selectItem(i: number) {
-    this.currentItem = this.items[i];
+    this.currentItem = this.showItems[i];
     this.entry = this.currentItem;
     this.showList = false;
   }
