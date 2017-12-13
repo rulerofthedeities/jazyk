@@ -1,4 +1,4 @@
-import {Exercise, ExerciseData} from '../models/exercise.model';
+import {Exercise, ExerciseData, Points, TimeCutoffs} from '../models/exercise.model';
 
 export class PreviewService {
   buildForeignData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
@@ -25,6 +25,7 @@ export class PreviewService {
     exerciseData.data.hint = exercise.foreign.hint;
     exerciseData.data.genus = genus;
     exerciseData.data.suffix = suffix;
+    exerciseData.data.points = this.setDefaultPoints();
   }
 
   buildLocalData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
@@ -36,6 +37,27 @@ export class PreviewService {
     }
     exerciseData.data.annotations = annotations;
     exerciseData.data.hint = exercise.local.hint;
+    exerciseData.data.points = this.setDefaultPoints();
+  }
+
+  setDefaultPoints(): Points {
+    return {
+      base: 0,
+      length: 0,
+      time: 0,
+      streak: 0,
+      new: 0,
+      overall: 0,
+      fixed: function(): number {
+        return this.base + this.length;
+      },
+      bonus: function(): number {
+        return this.time + this.streak + this.new + this.overall;
+      },
+      total: function(): number {
+        return this.fixed() + this.bonus();
+      }
+    };
   }
 
   // https://gist.github.com/IceCreamYou/8396172

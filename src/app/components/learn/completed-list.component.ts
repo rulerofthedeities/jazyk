@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExerciseData, ExerciseType, Direction} from '../../models/exercise.model';
+import {ExerciseData, ExerciseType, Direction, Points} from '../../models/exercise.model';
 
 interface Result {
   exercise: ExerciseData;
@@ -38,7 +38,7 @@ export class LearnCompletedListComponent implements OnInit {
             isCorrect: exerciseData.data.isCorrect,
             isAlt: exerciseData.data.isAlt,
             isAlmostCorrect: exerciseData.data.isAlmostCorrect,
-            points: exerciseData.data.points,
+            points: exerciseData.data.points.fixed(),
             streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
             tpe: exerciseData.exercise.tpe
           };
@@ -50,9 +50,9 @@ export class LearnCompletedListComponent implements OnInit {
           result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
           result.isAlmostCorrect = exerciseData.data.isCorrect ?
             (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
-          result.points += exerciseData.data.points;
+          result.points += exerciseData.data.points.fixed();
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
-          result.tpe = exerciseData.exercise.tpe
+          result.tpe = exerciseData.exercise.tpe;
           const test = JSON.parse(JSON.stringify(result));
           console.log('updated', test);
         }

@@ -6,7 +6,7 @@ import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair, LanConfig, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
-        ExerciseType, AnsweredType, QuestionType, Direction} from '../../models/exercise.model';
+        ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
 import {LearnComparisonComponent} from './exercise-comparison.component';
@@ -63,7 +63,7 @@ export abstract class Step {
   protected dataByExercise: Map<ById> = {}; // Keeps track of data per exercise, not per result
   exerciseData: ExerciseData[]; // main container of exercise data + results
   currentData: ExerciseData; // container for current exercise data + results
-  pointsEarned: Subject<any> = new Subject();
+  pointsEarned: Subject<number> = new Subject();
   nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   isExercisesDone = false;
@@ -80,7 +80,6 @@ export abstract class Step {
   noMoreExercises = false;
   isCountDown: boolean;
   isMute: boolean;
-  score = 0;
   maxRepeatWord = 4;
   currentStep: string;
   qType = QuestionType;
@@ -293,9 +292,11 @@ export abstract class Step {
       this.nextExercise.next(this.current);
       this.currentData = this.exerciseData[this.current];
       console.log('CURRENT', this.currentData);
-      const learnLevel = this.getCurrentLearnLevel(this.currentData);
+      const learnLevel = this.getCurrentLearnLevel(this.currentData),
+            qType = this.determineQuestionType(this.currentData, learnLevel);
       this.levelUpdated.next(learnLevel);
-      this.currentData.data.questionType = this.determineQuestionType(this.currentData, learnLevel);
+      this.currentData.data.questionType = qType;
+      this.currentData.data.timeCutoffs = this.setTimeCutOffs(qType, this.currentData);
       if (this.currentData.data.questionType === QuestionType.Choices) {
         this.setChoices();
       }
@@ -436,7 +437,6 @@ export abstract class Step {
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = 0;
-        this.currentData.data.points = 0;
       break;
     }
     const learnLevelData = {
@@ -445,18 +445,20 @@ export abstract class Step {
       alt: this.currentData.data.isAlmostCorrect,
       almostCorrect: this.currentData.data.isAlmostCorrect
     };
+    const foreignWord = this.currentData.exercise.foreign.word;
     learnLevel = this.calculateLearnLevel(question, learnLevelData);
     this.currentData.data.learnLevel = learnLevel;
     this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
     this.addCount(this.isCorrect, this.currentData.exercise._id);
-    const points = this.calculatePoints(answer, question);
-    this.currentData.data.points = points;
-    this.score = this.score + points;
+    this.currentData.data.points.base = this.calculateBasePoints(answer, question);
+    this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
+    this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
     if (this.doAddExercise(answer, question, learnLevel)) {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
     this.levelUpdated.next(learnLevel);
-    this.pointsEarned.next(points);
+    console.log('POINTS', this.currentData.data.points);
+    this.pointsEarned.next(this.currentData.data.points.fixed());
   }
 
   protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
@@ -485,6 +487,7 @@ export abstract class Step {
     newExerciseData.data.isAlt = false;
     newExerciseData.data.isAlmostCorrect = false;
     newExerciseData.data.grade = 0;
+    newExerciseData.data.points = this.previewService.setDefaultPoints();
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
     if (!this.stepOptions || this.stepOptions.bidirectional) {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
@@ -552,7 +555,7 @@ export abstract class Step {
     return isAltAnswer;
   }
 
-  private calculatePoints(answer: AnsweredType, question: QuestionType): number {
+  private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
     let points = 0;
     switch (question) {
       case QuestionType.Word:
@@ -577,8 +580,47 @@ export abstract class Step {
         }
       break;
     }
-
     return points;
+  }
+
+  private calculateLengthPoints(word: string): number {
+    const points = word.length * 2;
+    return points;
+  }
+
+  private calculateTimePoints(time, data: ExerciseData): number {
+    const cutOffs = data.data.timeCutoffs;
+    console.log('calculate time points', time, data.data.timeCutoffs);
+    if (time > cutOffs.red) {
+      return 0;
+    } else if (time > cutOffs.orange) {
+      return 2;
+    } else if (time > cutOffs.green) {
+      return 5;
+    } else {
+      return 10;
+    }
+  }
+
+  private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {
+    // Cutoffs are in 1/10th of a second
+    console.log('timecutoffs', qType);
+    let cutOffs = {
+      green: 80,
+      orange: 160,
+      red: 240
+    }
+    switch (qType) {
+      case QuestionType.Word:
+        const extra = data.exercise.foreign.word.length * 2;
+        cutOffs = {
+          green: 80 + extra,
+          orange: 160 + extra,
+          red: 240 + extra
+        }
+      break
+    }
+    return cutOffs;
   }
 
   private calculateGrade(question: QuestionType, delta: number, deduction = 0, solution = ''): number {
@@ -906,7 +948,9 @@ export abstract class Step {
     if (this.stepcountzero) {
       this.stepcountzero
       .takeWhile(() => this.componentActive)
-      .subscribe( event => this.noMoreExercises = true);
+      .subscribe( event => {
+        this.noMoreExercises = true;
+      });
     }
   }
 }

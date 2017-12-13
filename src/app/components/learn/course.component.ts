@@ -400,7 +400,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
           done: item.data.isDone || false,
-          points: item.data.points || 0,
+          points: 0,//item.data.points || 0,
           learnLevel: item.data.learnLevel || 0,
           streak: streak[item.exercise._id],
           sequence: i,

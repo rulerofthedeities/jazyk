@@ -5,7 +5,7 @@ import {ExerciseData} from '../../models/exercise.model';
   selector: 'km-points-completed',
   template: `
   <div class="points">
-    {{totalPoints}}
+    TOTAL: {{totalPoints}}
   </div>`,
   styles: [`
     .points {
@@ -24,7 +24,7 @@ export class LearnPointsCompletedComponent implements OnInit {
     // add all points
     this.data.forEach(exerciseData => {
       if (exerciseData.data && exerciseData.data.points) {
-        this.totalPoints += exerciseData.data.points;
+        this.totalPoints += exerciseData.data.points.fixed();
       }
     });
   }

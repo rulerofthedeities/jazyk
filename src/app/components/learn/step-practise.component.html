@@ -86,7 +86,7 @@
           </div>
         </div>
         <!-- NO MORE EXERCISES -->
-        <div *ngIf="noMoreExercises">
+        <div *ngIf="noMoreExercises && !exerciseData?.length">
           <div class="msg-info">
             <span class="fa fa-info-circle"></span>{{text['NoMoreExercises']}}
           </div>
@@ -106,7 +106,7 @@
           </button>
         </div>
         <!-- EXERCISE DONE -->
-        <div *ngIf="isExercisesDone && !noMoreExercises">
+        <div *ngIf="isExercisesDone && exerciseData?.length">
           <h3>{{text["Results"]}}:</h3>
           <km-completed-list
             [data]="exerciseData"

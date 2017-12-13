@@ -41,8 +41,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   subscription: Subscription[] = [];
   showLocal = false;
   dotArr: number[] = [];
-  score = 0;
-  pointsEarned: Subject<any> = new Subject();
+  pointsEarned: Subject<number> = new Subject();
   isCountDown: boolean;
   isMute: boolean;
   isReady = false;
@@ -164,10 +163,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (currentExercise) {
         currentExercise.data.isDone = true;
         currentExercise.data.isCorrect = true;
-        currentExercise.data.points = 0;
+        currentExercise.data.points.base = 0;
         if (!currentExercise.result) {
-          this.score = this.score + points;
-          currentExercise.data.points = points;
+          currentExercise.data.points.base = points;
           this.pointsEarned.next(points);
         }
       }

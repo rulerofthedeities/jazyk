@@ -59,6 +59,24 @@ export interface ExerciseResult {
   streak?: string;
 }
 
+export interface Points {
+  base: number; // fixed score depending on exercise type
+  length: number; // length of word - spaces
+  time: number;
+  streak: number; // correct streak
+  new: number; // new word bonus = 10-streak length
+  overall: number; // bonus for % correct in whole test
+  fixed: Function; // base + length
+  bonus: Function; // time + streak + new + overall
+  total: Function;
+}
+
+export interface TimeCutoffs {
+  green: number;
+  orange: number;
+  red: number;
+}
+
 export interface ExerciseExtraData {
   wordForeign?: string;
   wordLocal?: string;
@@ -74,7 +92,8 @@ export interface ExerciseExtraData {
   answered?: number;
   direction?: Direction;
   grade?: number;
-  points?: number;
+  points?: Points;
+  timeCutoffs?: TimeCutoffs;
   timeDelta?: number;
   learnLevel?: number;
   isLearned?: boolean;
