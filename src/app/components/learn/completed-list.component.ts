@@ -38,7 +38,7 @@ export class LearnCompletedListComponent implements OnInit {
             isCorrect: exerciseData.data.isCorrect,
             isAlt: exerciseData.data.isAlt,
             isAlmostCorrect: exerciseData.data.isAlmostCorrect,
-            points: exerciseData.data.points.fixed(),
+            points: exerciseData.data.points.totalmincorrect(),
             streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
             tpe: exerciseData.exercise.tpe
           };
@@ -50,7 +50,7 @@ export class LearnCompletedListComponent implements OnInit {
           result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
           result.isAlmostCorrect = exerciseData.data.isCorrect ?
             (exerciseData.data.isAlmostCorrect || result.isAlmostCorrect ? true : false) : false;
-          result.points += exerciseData.data.points.fixed();
+          result.points += exerciseData.data.points.totalmincorrect();
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
           result.tpe = exerciseData.exercise.tpe;
           const test = JSON.parse(JSON.stringify(result));

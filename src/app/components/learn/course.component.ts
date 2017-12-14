@@ -8,7 +8,8 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseType, QuestionType} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points, 
+        ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
@@ -392,14 +393,23 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data: []
     };
     if (data && data.length > 0) { // No data for study repeats
+      // calculate bonus for % correct
+      let correctCount = 0;
+      data.forEach((item) => {
+        correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
+      });
+      const correctBonus = this.learnService.getCorrectBonus(correctCount, data.length);
       data.forEach( (item, i) => {
+        item.data.points.correct = correctBonus;
         console.log('result', item);
+        console.log('bonus', correctBonus);
+        console.log('totalpoints', item.data.points.total());
         streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
           done: item.data.isDone || false,
-          points: 0, // item.data.points || 0,
+          points: item.data.points.total() || 0,
           learnLevel: item.data.learnLevel || 0,
           streak: streak[item.exercise._id],
           sequence: i,

@@ -65,9 +65,10 @@ export interface Points {
   time: number;
   streak: number; // correct streak
   new: number; // new word bonus = 10-streak length
-  overall: number; // bonus for % correct in whole test
+  correct: number; // bonus for % correct in whole test
   fixed: Function; // base + length
-  bonus: Function; // time + streak + new + overall
+  bonus: Function; // time + streak + new + correct
+  totalmincorrect: Function; // base + length + time + streak + new
   total: Function;
 }
 

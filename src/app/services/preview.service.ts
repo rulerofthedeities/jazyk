@@ -47,12 +47,15 @@ export class PreviewService {
       time: 0,
       streak: 0,
       new: 0,
-      overall: 0,
+      correct: 0,
       fixed: function(): number {
         return this.base + this.length;
       },
       bonus: function(): number {
-        return this.time + this.streak + this.new + this.overall;
+        return this.time + this.streak + this.new + this.correct;
+      },
+      totalmincorrect: function(): number {
+        return this.fixed() + this.time + this.streak + this.new;
       },
       total: function(): number {
         return this.fixed() + this.bonus();

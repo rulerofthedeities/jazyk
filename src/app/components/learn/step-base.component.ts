@@ -449,16 +449,19 @@ export abstract class Step {
     this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
     this.addCount(this.isCorrect, this.currentData.exercise._id);
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
-    this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
-    this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
-    this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
+    if (answer === AnsweredType.Correct) {
+      this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
+      this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
+      this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
+      this.currentData.data.points.new = this.calculateNewPoints(this.currentData.result);
+    }
     if (this.doAddExercise(answer, question, learnLevel)) {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
     this.levelUpdated.next(learnLevel);
     console.log('DATA', this.currentData);
     console.log('POINTS', this.currentData.data.points);
-    this.pointsEarned.next(this.currentData.data.points.fixed());
+    this.pointsEarned.next(this.currentData.data.points.total());
   }
 
   protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
@@ -613,13 +616,26 @@ export abstract class Step {
         if (streak[i - 1] === '1') {
           accumulator += 5;
           points += accumulator;
-          console.log(accumulator, points);
         } else {
           return points;
         }
       }
     }
     return points;
+  }
+
+  private calculateNewPoints(resultData: ExerciseResult): number {
+    console.log('new points', resultData);
+    const newBonus = 25;
+    if (resultData) {
+      if (!resultData.streak) {
+        return newBonus;
+      } else {
+        return 0;
+      }
+    } else {
+      return newBonus;
+    }
   }
 
   private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {
