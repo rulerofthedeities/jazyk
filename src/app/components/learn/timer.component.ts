@@ -21,10 +21,12 @@ export class LearnTimerComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private startDate: Date;
   private cutOffs: TimeCutoffs;
+  private totalTimeMs: number;
+  private currentTimeMs: number;
+  private isAnswered = false;
+  private timers = {};
   color = 'green';
   barLength = 100;
-  totalTimeMs: number;
-  currentTimeMs: number;
 
   ngOnInit() {
     this.cutOffs = this.data.data.timeCutoffs;
@@ -36,8 +38,17 @@ export class LearnTimerComponent implements OnInit, OnDestroy {
     this.changeBar();
   }
 
+  getTimeDelta(): number {
+    const endDate = new Date();
+    this.isAnswered = true;
+    clearTimeout(this.timers['orange']);
+    clearTimeout(this.timers['red']);
+    clearTimeout(this.timers['blue']);
+    return (endDate.getTime() - this.startDate.getTime()) / 100;
+  }
+
   private changeColor(time: number, color: string) {
-    setTimeout(() => {
+    this.timers[color] = setTimeout(() => {
       console.log('new color', color);
       this.color = color;
       switch (color) {
@@ -59,7 +70,7 @@ export class LearnTimerComponent implements OnInit, OnDestroy {
           timer = TimerObservable.create(0, step);
     let percTogo = 0;
     timer
-    .takeWhile(() => this.componentActive && this.barLength > 0)
+    .takeWhile(() => this.componentActive && this.barLength > 0 && this.isAnswered === false)
     .subscribe(t => {
       this.currentTimeMs -= step;
       percTogo = Math.trunc(this.currentTimeMs / this.totalTimeMs * 1000) / 10;

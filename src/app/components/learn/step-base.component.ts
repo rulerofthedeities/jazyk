@@ -11,6 +11,7 @@ import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
 import {LearnComparisonComponent} from './exercise-comparison.component';
 import {LearnQAComponent} from './exercise-qa.component';
+import {LearnTimerComponent} from './timer.component';
 import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
@@ -55,11 +56,10 @@ export abstract class Step {
   @ViewChild(LearnComparisonComponent) comparisonComponent: LearnComparisonComponent;
   @ViewChild(LearnSelectComponent) sentenceComponent: LearnSelectComponent;
   @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
+  @ViewChild(LearnTimerComponent) timerComponent: LearnTimerComponent;
   protected componentActive = true;
   protected choices: Choice[];
   protected nextWordTimer: Subscription;
-  protected startDate: Date;
-  protected endDate: Date;
   protected dataByExercise: Map<ById> = {}; // Keeps track of data per exercise, not per result
   exerciseData: ExerciseData[]; // main container of exercise data + results
   currentData: ExerciseData; // container for current exercise data + results
@@ -305,8 +305,6 @@ export abstract class Step {
         const word = this.currentData.exercise.foreign.word;
         this.prefix = this.getPrefix(word);
       }
-    this.startDate = new Date();
-    console.log('Start date', this.startDate);
     this.isQuestionReady = true;
     }
   }
@@ -402,8 +400,7 @@ export abstract class Step {
   }
 
   private checkAnswer(answer: AnsweredType, question: QuestionType, solution = '') {
-    this.endDate = new Date();
-    const timeDelta = (this.endDate.getTime() - this.startDate.getTime()) / 100;
+    const timeDelta = this.timerComponent.getTimeDelta();
     let learnLevel = this.getCurrentLearnLevel(this.currentData);
     this.isAnswered = true;
     this.solution = solution;
