@@ -75,6 +75,7 @@ export interface TimeCutoffs {
   green: number;
   orange: number;
   red: number;
+  total: Function;
 }
 
 export interface ExerciseExtraData {

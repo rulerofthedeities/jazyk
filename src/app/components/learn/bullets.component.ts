@@ -6,20 +6,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-bullets',
   templateUrl: 'bullets.component.html',
-  styles: [`
-    .bullets{
-      color: grey;
-      font-size: 18px;
-      margin-top: 8px;
-      height: 26px;
-    }
-    .bullets span {
-      margin: 0 1px;
-    }
-    .bullets span.fix {
-      margin-left: -3px;
-    }
-  `]
+  styleUrls: ['bullets.component.css']
 })
 
 export class LearnBulletsComponent implements OnInit, OnDestroy {

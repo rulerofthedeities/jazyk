@@ -305,8 +305,9 @@ export abstract class Step {
         const word = this.currentData.exercise.foreign.word;
         this.prefix = this.getPrefix(word);
       }
-    this.isQuestionReady = true;
     this.startDate = new Date();
+    console.log('Start date', this.startDate);
+    this.isQuestionReady = true;
     }
   }
 
@@ -605,20 +606,21 @@ export abstract class Step {
   private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {
     // Cutoffs are in 1/10th of a second
     console.log('timecutoffs', qType);
-    let cutOffs = {
+    const cutOffs = {
       green: 80,
       orange: 160,
-      red: 240
-    }
+      red: 240,
+      total: function(): number {
+        return this.green + this.orange + this.red;
+      }
+    };
     switch (qType) {
       case QuestionType.Word:
         const extra = data.exercise.foreign.word.length * 2;
-        cutOffs = {
-          green: 80 + extra,
-          orange: 160 + extra,
-          red: 240 + extra
-        }
-      break
+        cutOffs.green += extra;
+        cutOffs.orange += extra;
+        cutOffs.red += extra;
+      break;
     }
     return cutOffs;
   }

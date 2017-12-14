@@ -13,6 +13,9 @@
           [current]="current"
           [onNextExercise]="nextExercise">
         </km-bullets>
+        <km-timer *ngIf="!isExercisesDone && isQuestionReady"
+          [data]="currentData">
+        </km-timer>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" 
           class="card"

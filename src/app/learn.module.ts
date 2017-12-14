@@ -28,6 +28,7 @@ import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.componen
 import {LearnWordFieldComponent} from './components/learn/exercise-word-field.component';
 import {LearnWordChoicesComponent} from './components/learn/exercise-word-choices.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
+import {LearnTimerComponent} from './components/learn/timer.component';
 import {ScrollToDirective} from './directives/scroll-to.directive';
 
 @NgModule({
@@ -61,6 +62,7 @@ import {ScrollToDirective} from './directives/scroll-to.directive';
     LearnWordFieldComponent,
     LearnWordChoicesComponent,
     LearnCountdownComponent,
+    LearnTimerComponent,
     ScrollToDirective
   ]
 })
