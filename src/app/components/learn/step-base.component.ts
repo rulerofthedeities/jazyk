@@ -451,10 +451,12 @@ export abstract class Step {
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
     this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
     this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
+    this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
     if (this.doAddExercise(answer, question, learnLevel)) {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
     this.levelUpdated.next(learnLevel);
+    console.log('DATA', this.currentData);
     console.log('POINTS', this.currentData.data.points);
     this.pointsEarned.next(this.currentData.data.points.fixed());
   }
@@ -589,9 +591,9 @@ export abstract class Step {
   private calculateTimePoints(time, data: ExerciseData): number {
     const cutOffs = data.data.timeCutoffs;
     console.log('calculate time points', time, data.data.timeCutoffs);
-    if (time > cutOffs.red) {
+    if (time > cutOffs.green + cutOffs.orange + cutOffs.red) {
       return 0;
-    } else if (time > cutOffs.orange) {
+    } else if (time > cutOffs.green + cutOffs.orange) {
       return 2;
     } else if (time > cutOffs.green) {
       return 5;
@@ -600,13 +602,33 @@ export abstract class Step {
     }
   }
 
+  private calculateStreakPoints(resultData: ExerciseResult): number {
+    console.log('calculate streak points', resultData);
+    let points = 0,
+        accumulator = 0;
+    if (resultData && resultData.streak) {
+      const streak = resultData.streak;
+      console.log('streak', streak);
+      for (let i = streak.length; i > 0; i--) {
+        if (streak[i - 1] === '1') {
+          accumulator += 5;
+          points += accumulator;
+          console.log(accumulator, points);
+        } else {
+          return points;
+        }
+      }
+    }
+    return points;
+  }
+
   private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {
     // Cutoffs are in 1/10th of a second
     console.log('timecutoffs', qType);
     const cutOffs = {
       green: 80,
-      orange: 160,
-      red: 240,
+      orange: 70,
+      red: 60,
       total: function(): number {
         return this.green + this.orange + this.red;
       }

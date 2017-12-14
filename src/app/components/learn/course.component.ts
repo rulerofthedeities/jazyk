@@ -8,7 +8,7 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseResult, ExerciseType, QuestionType} from '../../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
@@ -394,13 +394,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (data && data.length > 0) { // No data for study repeats
       data.forEach( (item, i) => {
         console.log('result', item);
-        streak[item.exercise._id] =
-          this.buildStreak(item.data.questionType, streak[item.exercise._id], item.result, item.data.isCorrect, item.data.isAlmostCorrect);
+        streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
           done: item.data.isDone || false,
-          points: 0,//item.data.points || 0,
+          points: 0, // item.data.points || 0,
           learnLevel: item.data.learnLevel || 0,
           streak: streak[item.exercise._id],
           sequence: i,
@@ -435,14 +434,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildStreak(qTpe: QuestionType, streak: string, result: ExerciseResult, isCorrect: boolean, isAlmostCorrect: boolean): string {
+  private buildStreak(streak: string, result: ExerciseResult, data: ExerciseExtraData): string {
     let newStreak = '';
 
     if (result) {
       newStreak = streak || result.streak || '';
     }
-    if (qTpe !== QuestionType.Preview) {
-      newStreak += isCorrect ? '1' : isAlmostCorrect ? '2' : '0';
+    if (data.questionType !== QuestionType.Preview) {
+      newStreak += data.isCorrect ? '1' : data.isAlmostCorrect ? '2' : '0';
     }
 
     newStreak = newStreak.slice(0, this.maxStreak);

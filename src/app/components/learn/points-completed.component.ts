@@ -22,6 +22,7 @@ export class LearnPointsCompletedComponent implements OnInit {
 
   ngOnInit() {
     // add all points
+    console.log('ALL POINTS CALCULATION');
     this.data.forEach(exerciseData => {
       if (exerciseData.data && exerciseData.data.points) {
         this.totalPoints += exerciseData.data.points.fixed();

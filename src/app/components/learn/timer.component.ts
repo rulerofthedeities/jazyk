@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy} from '@angular/core';
 import {ExerciseData, TimeCutoffs} from '../../models/exercise.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
@@ -16,19 +16,23 @@ import 'rxjs/add/operator/takeWhile';
   `]
 })
 
-export class LearnTimerComponent implements OnInit, OnDestroy {
+export class LearnTimerComponent implements OnDestroy, OnChanges {
   @Input() data: ExerciseData;
   private componentActive = true;
   private startDate: Date;
   private cutOffs: TimeCutoffs;
   private totalTimeMs: number;
   private currentTimeMs: number;
-  private isAnswered = false;
-  private timers = {};
-  color = 'green';
-  barLength = 100;
+  private isAnswered: boolean;
+  private timers: Object;
+  color: string;
+  barLength: number;
 
-  ngOnInit() {
+  ngOnChanges() {
+    this.barLength = 100;
+    this.color = 'green';
+    this.isAnswered = false;
+    this.timers = {};
     this.cutOffs = this.data.data.timeCutoffs;
     this.totalTimeMs = this.cutOffs.total() * 100;
     this.currentTimeMs = this.totalTimeMs;
@@ -66,7 +70,7 @@ export class LearnTimerComponent implements OnInit, OnDestroy {
   }
 
   private changeBar() {
-    const step = 100,
+    const step = 50,
           timer = TimerObservable.create(0, step);
     let percTogo = 0;
     timer
