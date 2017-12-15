@@ -149,7 +149,7 @@
               </a>
             </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
-            <li *ngIf="score">
+            <li *ngIf="score" (click)="onGoto('score')">
               <a class="dropdown-item text-right">
                 {{score}}
               </a>

@@ -1,0 +1,13 @@
+.points {
+  font-size: 20px;
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+.nr {
+  background-color: white;
+}
+.total {
+  border: 1px solid black;
+  margin: -8px;
+  padding: 7px;
+}

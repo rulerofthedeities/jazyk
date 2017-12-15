@@ -267,10 +267,18 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchScoreCount() {
+  fetchScoreTotal() {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/score', {headers})
+    .get('/api/user/score/total', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchScoreCourses() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/score/courses', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

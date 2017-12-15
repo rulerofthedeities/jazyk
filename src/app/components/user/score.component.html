@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="fa fa-trophy fa-spacing"></span>{{text["ScoreOverview"]}}
+  </div>
+  <div class="panel-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>{{text["Course"]}}</th>
+          <th class="text-right">{{text["Points"]}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let score of scores; let i = index">
+          <td class="text-right">{{i+1}}.</td>
+          <td>{{score.course}}</td>
+          <td class="text-right nr">{{score.points}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="text-right nr success">
+            <div class="total">
+              {{total}}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

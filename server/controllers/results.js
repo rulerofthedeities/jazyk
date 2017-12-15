@@ -124,6 +124,47 @@ module.exports = {
       });
     })
   },
+  getCourseScores: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          pipeline = [
+            {$match: {userId}},
+            {$group: {
+              _id: '$courseId',
+              totalPoints: {'$sum': '$points'}
+            }},
+            {$lookup: {
+              from: 'courses',
+              localField: '_id',
+              foreignField: '_id',
+              as: 'course'
+            }},
+            {$sort: {'course.name':1}},
+            {$project: {
+              _id: 1,
+              course: 1,
+              points: '$totalPoints'
+            }}
+          ];
+    Result.aggregate(pipeline, function(err, result) {
+      response.handleError(err, res, 400, 'Error fetching score per course', function(){
+        let scores = [];
+        let total = 0;
+        if (result && result.length) {
+          result.forEach(doc => {
+            if (doc.course[0]) {
+              const newDoc = {
+                course: doc.course[0].name,
+                points: doc.points
+              };
+              total += doc.points;
+              scores.push(newDoc);
+            }
+          })
+        }
+        response.handleSuccess(res, {scores, total}, 200, 'Fetched score per course');
+      });
+    })
+  },
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),

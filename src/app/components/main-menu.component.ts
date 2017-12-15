@@ -147,7 +147,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn()) {
       console.log('getting score');
       this.userService
-      .fetchScoreCount()
+      .fetchScoreTotal()
       .takeWhile(() => this.componentActive)
       .subscribe(
         score => this.score = score.toLocaleString('en').replace(/,/g, ' '),

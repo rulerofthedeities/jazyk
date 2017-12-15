@@ -3,6 +3,7 @@ import {UserNotificationsComponent} from './components/user/notifications.compon
 import {UserMessagesComponent} from './components/user/messages.component';
 import {UserProfileComponent} from './components/user/profile.component';
 import {UserSettingsComponent} from './components/user/settings.component';
+import {UserScoreComponent} from './components/user/score.component';
 import {UserComponent} from './components/user/user.component';
 
 export const routes: Routes = [
@@ -15,5 +16,6 @@ export const routes: Routes = [
   {path: 'messages', component: UserMessagesComponent},
   {path: 'profile', component: UserProfileComponent},
   {path: 'settings', component: UserSettingsComponent},
+  {path: 'score', component: UserScoreComponent},
   {path: '/u/*', component: UserComponent}
 ];
