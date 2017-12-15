@@ -938,7 +938,6 @@ export abstract class Step {
 
   private restart() {
     this.isExercisesDone = false;
-    this.sharedService.changeExerciseMode(true);
     this.current = -1;
     this.fetchResults();
   }

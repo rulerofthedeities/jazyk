@@ -281,14 +281,6 @@ export class LearnService {
     return examCount;
   }
 
-  getCorrectBonus(correctCount: number, totalCount: number): number {
-    if (totalCount > 1) {
-      return Math.max(0, Math.trunc(((correctCount / totalCount * 100) - 60) * 0.5));
-    } else {
-      return 0;
-    }
-  }
-
   /*** Config ***/
 
   fetchLanConfig(lanCode: string) {

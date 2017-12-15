@@ -70,7 +70,9 @@
           </km-completed-list>
           <div *ngIf="!isRehearsal">
             <h3>{{text["PointsEarned"]}}:</h3>
-            <km-points-completed [data]="exerciseData">
+            <km-points-completed 
+              [data]="exerciseData"
+              [text]="text">
             </km-points-completed>
             <div class="btn btn-success" (click)="onStudyNewWords()">
               <span class="fa fa-refresh"></span>

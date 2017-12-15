@@ -398,7 +398,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data.forEach((item) => {
         correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
       });
-      const correctBonus = this.learnService.getCorrectBonus(correctCount, data.length);
+      const correctBonus = this.getCorrectBonus(correctCount, data.length);
       data.forEach( (item, i) => {
         item.data.points.correct = correctBonus;
         console.log('result', item);
@@ -456,6 +456,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
     newStreak = newStreak.slice(0, this.maxStreak);
     return newStreak;
+  }
+
+  private getCorrectBonus(correctCount: number, totalCount: number): number {
+    if (totalCount > 1) {
+      return Math.max(0, Math.trunc(((correctCount / totalCount * 100) - 60) * 0.5));
+    } else {
+      return 0;
+    }
   }
 
   private saveSettings() {
