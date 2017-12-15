@@ -41,8 +41,8 @@
           </a>
         </li>
       </ul>
-      <!-- Notifications & Messages -->
       <ul class="nav navbar-nav navbar-right">
+        <!-- Notifications & Messages -->
         <li class="nav-item indicator" 
           (click)="onGoto('notifications')" 
           *ngIf="isLoggedIn()">
@@ -141,6 +141,17 @@
             <li (click)="onGoto('settings')">
               <a class="dropdown-item">
                 <span class="fa fa-sliders"></span> {{text["Settings"]}}
+              </a>
+            </li>
+            <li (click)="onGoto('score')">
+              <a class="dropdown-item">
+                <span class="fa fa-trophy"></span> {{text["Score"]}}
+              </a>
+            </li>
+            <li class="divider dropdown-divider" *ngIf="score"></li>
+            <li *ngIf="score">
+              <a class="dropdown-item text-right">
+                {{score}}
               </a>
             </li>
             <li class="divider dropdown-divider"></li>

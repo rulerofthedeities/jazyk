@@ -22,6 +22,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   showDropDown = false;
   nrOfNotifications = 0;
   nrOfMessages = 0;
+  score: string;
   intLan: Language;
   intLans: Language[];
   isReady = false;
@@ -40,6 +41,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getDependables();
     this.getNotificationsCount();
     this.checkMessages();
+    this.getScoreCount();
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
@@ -59,6 +61,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
           this.setInterfaceLan();
           this.getNotificationsCount();
           this.getMessagesCount();
+          this.getScoreCount();
         } else {
           // reset cached user data
           this.userService.getDefaultUserData(interfaceLan);
@@ -135,6 +138,19 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         count => this.nrOfMessages = count,
+        error => this.errorService.handleError(error)
+      );
+    }
+  }
+
+  private getScoreCount() {
+    if (this.isLoggedIn()) {
+      console.log('getting score');
+      this.userService
+      .fetchScoreCount()
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        score => this.score = score.toLocaleString('en').replace(/,/g, ' '),
         error => this.errorService.handleError(error)
       );
     }

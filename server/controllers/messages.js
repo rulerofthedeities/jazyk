@@ -4,7 +4,7 @@ const response = require('../response'),
 
 module.exports = {
   saveMessage: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           recipient = req.body.recipient,
           sender = req.body.sender,
           msg = req.body.message,
@@ -31,7 +31,7 @@ module.exports = {
   },
   getMessages: function(req, res) {
     const tpe = req.params.tpe,
-          userId = req.decoded.user._id,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           projection = {},
           options = {sort: {dt: -1}};
     let query = null;
@@ -70,7 +70,7 @@ module.exports = {
   },
   getMessage: function(req, res) {
     const messageId = new mongoose.Types.ObjectId(req.params.messageId),
-          userId = req.decoded.user._id,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {_id: messageId, $or: [{'sender.id': userId}, {'recipient.id': userId}]};
     Message.findOne(query, function(err, message) {
         response.handleError(err, res, 500, 'Error fetching message', function(){
@@ -89,7 +89,7 @@ module.exports = {
     });
   },
   setAllMessagesRead: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {'recipient.id': userId, 'recipient.read': false},
           update = {'recipient.read': true};
     Message.updateMany(query, update, function(err, result) {
@@ -99,7 +99,7 @@ module.exports = {
     });
   },
   setMessageDelete: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           messageId = new mongoose.Types.ObjectId(req.body.messageId),
           tpe = req.body.tpe, // recipient or sender
           action = req.body.action, // deleted or trash
@@ -112,7 +112,7 @@ module.exports = {
     });
   },
   setMessagesDelete: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {
             'recipient.id': userId,
             'recipient.read': true,
@@ -127,7 +127,7 @@ module.exports = {
     });
   },
   setEmptyTrash: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {
             'recipient.id': userId,
             'recipient.trash': true,
@@ -141,7 +141,7 @@ module.exports = {
     });
   },
   getMessagesCount: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {
             'recipient.id': userId,
             'recipient.read': false,

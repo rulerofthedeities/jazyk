@@ -5,7 +5,7 @@ const response = require('../response'),
 
 module.exports = {
   followUser: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           userIdToFollow = new mongoose.Types.ObjectId(req.body.userId),
           query = {userId, followId: userIdToFollow},
           update = {follow: true};
@@ -16,7 +16,7 @@ module.exports = {
     });
   },
   unFollowUser: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           userIdToUnFollow = new mongoose.Types.ObjectId(req.body.userId),
           query = {userId, followId: userIdToUnFollow},
           update = {follow: false};
@@ -49,7 +49,7 @@ module.exports = {
   },
   getTwoWayFollowers: function(req, res) {
     // Get users current user can mail to
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           pipeline = [
             {$match: {$or:[{followId: mongoose.Types.ObjectId(userId)}, {userId: mongoose.Types.ObjectId(userId)}], follow: true}},
             {$group: {_id: { a: "$followId", b: "$userId"}}},

@@ -103,7 +103,27 @@ getExercises = function(courseId, data, cb) {
   });
 }
 
-module.exports = {
+module.exports = {  
+  getTotalScore: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          pipeline = [
+            {$match: {userId}},
+            {$group: {
+              _id: null,
+              totalPoints: {'$sum': '$points'}
+            }},
+            {$project: {
+              _id: 0,
+              points: '$totalPoints'
+            }}
+          ];
+    Result.aggregate(pipeline, function(err, result) {
+      response.handleError(err, res, 400, 'Error fetching total score', function(){
+        score = result && result.length ? result[0].points : 0;
+        response.handleSuccess(res, score, 200, 'Fetched total score');
+      });
+    })
+  },
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
@@ -317,9 +337,9 @@ module.exports = {
       }}
     ];
     const getCount = async () => {
-      const lesson = await  Result.aggregate(lessonPipeline);
-      const difficult = await Result.aggregate(difficultPipeline);
-      const review = await Result.aggregate(reviewPipeline);
+      const lesson = await  Result.aggregate(lessonPipeline),
+            difficult = await Result.aggregate(difficultPipeline),
+            review = await Result.aggregate(reviewPipeline);
       return {
         lesson,
         difficult: difficult.length,

@@ -79,7 +79,7 @@ module.exports.initialize = function(app, router) {
   router.put('/user/unfollow', follows.unFollowUser);
   router.get('/user/followers/:userId', follows.getFollowers);
   router.get('/user/recipients', follows.getTwoWayFollowers);
-  
+
   router.put('/user/notification', notifications.saveNotification);
   router.get('/user/notifications', notifications.getNotifications);
   router.delete('/user/notifications', notifications.removeNotifications);
@@ -110,6 +110,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/results/course/toreview/:courseId', results.getToReview);
   router.get('/user/results/course/difficult/:courseId', results.getDifficult);
   router.post('/user/results/add', results.saveResults);
+  router.get('/user/score', results.getTotalScore);
   
 
   router.get('/user', users.getUser);

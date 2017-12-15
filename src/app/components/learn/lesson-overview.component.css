@@ -17,7 +17,7 @@
   border: 1px dotted #999;
   border-top: none;
   padding: 4px 0;
-  margin: 6px;
+  margin: 0;
 }
 .item:hover {
   background-color: white;

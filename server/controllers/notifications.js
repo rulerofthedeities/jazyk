@@ -4,7 +4,7 @@ const response = require('../response'),
       
 module.exports = {
   saveNotification: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           notification = new Notification(req.body);
     notification.save(function(err, result) {
       response.handleError(err, res, 500, 'Error saving notification', function(){
@@ -13,7 +13,7 @@ module.exports = {
     });
   },
   getNotifications: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId},
           projection = {title: 1, read: 1, dt: 1},
           sort = {dt: -1};
@@ -43,7 +43,7 @@ module.exports = {
   },
   removeNotifications: function(req, res) {
     // Remove all read notifications for this user
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, read: true};
     Notification.remove(query, {}, {multi: true}, function(err, result) {
       response.handleError(err, res, 500, 'Error removing notifications', function(){
@@ -62,7 +62,7 @@ module.exports = {
     });
   },
   setAllNotificationsRead: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, read: false},
           update = {read: true};
     Notification.updateMany(query, update, function(err, result) {
@@ -72,7 +72,7 @@ module.exports = {
     });
   },
   getNotificationsCount: function(req, res) {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, read: false};
     Notification.count(query, function(err, count) {
       response.handleError(err, res, 500, 'Error fetching notifications count', function(){

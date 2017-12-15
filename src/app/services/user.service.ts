@@ -267,6 +267,14 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchScoreCount() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/score', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   followUser(userId: string) {
     const headers = this.getTokenHeaders();
     return this.http
