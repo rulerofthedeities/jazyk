@@ -37,6 +37,9 @@ body {
 .fa-spacing {
   margin-right: 6px;
 }
+.fa-spacing-title {
+  margin-right: 12px;
+}
 
 /* ng2-dnd */
 

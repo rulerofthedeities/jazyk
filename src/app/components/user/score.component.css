@@ -1,0 +1,8 @@
+:host {
+  font-size: 20px;
+}
+.total {
+  border: 1px solid black;
+  margin: -8px;
+  padding: 7px;
+}

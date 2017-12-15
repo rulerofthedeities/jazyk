@@ -22,7 +22,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   showDropDown = false;
   nrOfNotifications = 0;
   nrOfMessages = 0;
-  score: string;
+  score: number;
   intLan: Language;
   intLans: Language[];
   isReady = false;
@@ -145,12 +145,11 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private getScoreCount() {
     if (this.isLoggedIn()) {
-      console.log('getting score');
       this.userService
       .fetchScoreTotal()
       .takeWhile(() => this.componentActive)
       .subscribe(
-        score => this.score = score.toLocaleString('en').replace(/,/g, ' '),
+        score => this.score = score,
         error => this.errorService.handleError(error)
       );
     }

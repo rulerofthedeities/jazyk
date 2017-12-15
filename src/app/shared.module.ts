@@ -21,6 +21,8 @@ import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {ToggleComponent} from './components/fields/toggle.component';
 import {LoaderComponent} from './components/loader.component';
 
+import {ScorePipe} from './pipes/score.pipe'
+
 @NgModule({
   imports: [
     CommonModule,
@@ -42,7 +44,8 @@ import {LoaderComponent} from './components/loader.component';
     GravatarDirective,
     GetKeyPressDirective,
     ToggleComponent,
-    LoaderComponent
+    LoaderComponent,
+    ScorePipe
   ],
   providers: [
     UtilsService,
@@ -65,7 +68,8 @@ import {LoaderComponent} from './components/loader.component';
     HttpModule,
     MarkdownModule,
     ToggleComponent,
-    LoaderComponent
+    LoaderComponent,
+    ScorePipe
   ]
 })
 export class SharedModule {

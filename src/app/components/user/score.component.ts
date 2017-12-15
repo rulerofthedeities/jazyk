@@ -11,17 +11,7 @@ interface Score {
 
 @Component({
   templateUrl: 'score.component.html',
-  styleUrls: ['user.css'],
-  styles: [`
-    :host {
-      font-size: 20px;
-    }
-    .total {
-      border: 1px solid black;
-      margin: -8px;
-      padding: 7px;
-    }
-  `]
+  styleUrls: ['score.component.css', 'user.css']
 })
 
 export class UserScoreComponent implements OnInit, OnDestroy {

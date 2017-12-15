@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="fa fa-spacing"
+    <span class="fa fa-spacing-title"
       [ngClass]="{'fa-envelope-open-o': currentMessage || showNewMessage, 'fa-envelope-o': !(currentMessage || showNewMessage)}"></span>
     {{currentMessage ? text["Message"] : (showNewMessage ? text["NewMessage"] : text["PrivateMessages"])}}
     <!-- Action Buttons -->
