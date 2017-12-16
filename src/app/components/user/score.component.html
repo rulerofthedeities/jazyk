@@ -1,7 +1,8 @@
 <!-- RANK -->
 <div class="panel panel-default rank">
   <div class="panel-body">
-    {{rank}} {{total | score}}
+    <img src="/assets/img/ranks/{{rank}}.png" class="img">
+    <span class="name">{{text['rank' + rank + gender]}}</span> ({{total | score}})
   </div>
 </div>
 

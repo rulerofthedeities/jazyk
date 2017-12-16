@@ -21,6 +21,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   scores: Score[] = [];
   total: number;
   rank: number;
+  gender: string;
 
   constructor(
     private utilsService: UtilsService,
@@ -41,7 +42,9 @@ export class UserScoreComponent implements OnInit, OnDestroy {
       data => {
         this.scores = data.scores;
         this.total = data.total || 0;
+        this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.utilsService.getRank(this.total);
+        console.log(this.userService.user);
       },
       error => this.errorService.handleError(error)
     );

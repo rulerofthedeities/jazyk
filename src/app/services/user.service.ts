@@ -89,7 +89,8 @@ export class UserService {
       userName: 'anonymous',
       main: {
         lan: userLan,
-        background: true
+        background: true,
+        gender: ''
       },
       jazyk: this.getDefaultSettings(userLan, true)
     };

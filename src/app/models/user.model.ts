@@ -5,6 +5,7 @@ export interface UserApp {
 export interface MainSettings {
   lan: string;
   background: boolean;
+  gender: string;
 }
 
 export interface LearnSettings {

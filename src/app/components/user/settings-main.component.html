@@ -36,6 +36,24 @@
       </km-toggle>
     </div>
   </div>
+  <!-- Gender -->
+  <div class="form-group">
+    <label 
+      for="background" 
+      class="control-label col-xs-4">
+      {{text["RankGender"]}}
+    </label>
+    <div class="col-xs-8">
+      <span class="fa fa-male fa-spacing-title gender"
+        (click)="onSetGender('m')"
+        [class.gen-selected]="mainForm.value.gender === 'm'">    
+      </span>
+      <span class="fa fa-female gender"
+        (click)="onSetGender('f')"
+        [class.gen-selected]="mainForm.value.gender === 'f'">
+      </span>
+    </div>
+  </div>
   <!-- Button -->
   <div class="form-group buttons">
     <div class="col-xs-9 col-xs-offset-3">

@@ -13,7 +13,17 @@ interface FormData {
 
 @Component({
   selector: 'km-user-settings-main',
-  templateUrl: 'settings-main.component.html'
+  templateUrl: 'settings-main.component.html',
+  styles: [`
+    .gender {
+      font-size: 24px;
+      color: grey;
+      cursor: pointer;
+    }
+    .gen-selected {
+      color: green;
+    }
+  `]  
 })
 
 export class UserSettingsMainComponent implements OnInit, OnDestroy {
@@ -38,9 +48,11 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   }
 
   onSetFlag(field: string, status: boolean) {
-    this.mainForm.patchValue({[field]: status});
-    this.mainForm.markAsDirty();
-    this.infoMsg = '';
+    this.setFlag(field, status);
+  }
+
+  onSetGender(gender: string) {
+    this.setFlag('gender', gender);
   }
 
   onChangeField() {
@@ -54,10 +66,17 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setFlag(field: string, status: any) {
+    this.mainForm.patchValue({[field]: status});
+    this.mainForm.markAsDirty();
+    this.infoMsg = '';
+  }
+
   private buildForm() {
     this.mainForm = this.formBuilder.group({
       'lan': [this.userService.user.main.lan],
-      'background': [this.userService.user.main.background]
+      'background': [this.userService.user.main.background],
+      'gender': [this.userService.user.main.gender]
     });
   }
 
@@ -84,7 +103,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   private buildSettings(formValues: any): MainSettings {
     return {
       lan: formValues['lan'],
-      background: formValues['background']
+      background: formValues['background'],
+      gender: formValues['gender']
     };
   }
 

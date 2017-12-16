@@ -8,7 +8,8 @@ var appSchema = new Schema({
 
 var mainSchema = new Schema({
   lan: {type: String, required: true},
-  background: {type: Boolean, default: true}
+  background: {type: Boolean, default: true},
+  gender: String
 }, {_id : false});
 
 var jazykLearnSchema = new Schema({
@@ -41,7 +42,6 @@ var jazykSchema = new Schema({
   profile: {type: JazykProfileSchema, required: true},
   dt: dtSchema
 }, {_id : false});
-
 
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true, trim: true},
