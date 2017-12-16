@@ -23,6 +23,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   nrOfNotifications = 0;
   nrOfMessages = 0;
   score: number;
+  rank: number;
   intLan: Language;
   intLans: Language[];
   isReady = false;
@@ -149,7 +150,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       .fetchScoreTotal()
       .takeWhile(() => this.componentActive)
       .subscribe(
-        score => this.score = score,
+        score => {
+          this.score = score || 0;
+          this.rank = this.utilsService.getRank(this.score);
+        },
         error => this.errorService.handleError(error)
       );
     }

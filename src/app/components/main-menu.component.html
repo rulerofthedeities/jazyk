@@ -150,8 +150,8 @@
             </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
             <li *ngIf="score" (click)="onGoto('score')">
-              <a class="dropdown-item text-right">
-                {{score | score}}
+              <a class="dropdown-item">
+                <img src="/assets/img/ranks/rank{{rank}}_s.png" class="img"> {{score | score}}
               </a>
             </li>
             <li class="divider dropdown-divider"></li>

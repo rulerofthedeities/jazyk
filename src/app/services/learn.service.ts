@@ -170,6 +170,14 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchScoreTotal() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/score/total', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Exercises ***/
 
   buildExerciseData(

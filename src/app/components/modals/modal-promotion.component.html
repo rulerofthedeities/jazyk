@@ -1,0 +1,20 @@
+<div class="modal" tabindex="-1" role="dialog" 
+  [ngStyle]="{'display': showModal ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="text-center jumbotron">
+        <div class="closeModal" (click)="onClose()">
+          <span class="fa fa-times pull-right"></span>
+        </div>
+          <h1>Congratulations!</h1>
+          <h1>You have been promoted to:</h1>
+          <div class="newrank">
+            <img src="/assets/img/ranks/rank{{rankNr}}.png" class="img">
+            Impératrice déifiée{{rank}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

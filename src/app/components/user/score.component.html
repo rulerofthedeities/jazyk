@@ -1,8 +1,11 @@
 <!-- RANK -->
 <div class="panel panel-default rank">
   <div class="panel-body">
-    <img src="/assets/img/ranks/{{rank}}.png" class="img">
-    <span class="name">{{text['rank' + rank + gender]}}</span> ({{total | score}})
+    <img src="/assets/img/ranks/rank{{rank}}.png" class="img">
+    <span class="text">
+      <span class="name">{{text['rank' + rank + gender]}}</span>
+      <span class="score">{{total | score}}</span>
+    </span>
   </div>
 </div>
 
@@ -13,7 +16,9 @@
     <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
   </div>
   <div class="panel-body">
-    Trophies
+    <div *ngIf="!trophies.length">
+      {{text["NoTrophies"]}}
+    </div>
   </div>
 </div>
 

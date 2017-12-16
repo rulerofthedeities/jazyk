@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
@@ -7,6 +7,7 @@ import {UserService} from '../../services/user.service';
 import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
+import {ModalPromotionComponent} from '../modals/modal-promotion.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points, 
         ExerciseType, QuestionType} from '../../models/exercise.model';
@@ -47,6 +48,7 @@ interface ResultData {
 })
 
 export class LearnCourseComponent implements OnInit, OnDestroy {
+  @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   private courseId: string;
   private settings: LearnSettings;
@@ -69,6 +71,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   stepcountzero: Subject<boolean> = new Subject();
   level = Level;
   isDemo: boolean;
+  rankKey: string;
+  rankNr: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -383,15 +387,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private saveAnswers(step: string, data: ExerciseData[]) {
     console.log('saving answers', step, data);
-    const lastResult: Map<ResultData> = {}; // Get most recent result per exercise (for isLearned && reviewTime)
-    const streak: Map<string> = {}; // Get streaks for exercise
-    const allCorrect: Map<boolean> = {}; // Exercise is only correct if all answers for an exercise are correct
-    const result = {
-      courseId: this.course._id,
-      lessonId: this.courseLevel === Level.Lesson ? this.lesson._id : undefined,
-      step,
-      data: []
-    };
+    const lastResult: Map<ResultData> = {}, // Get most recent result per exercise (for isLearned && reviewTime)
+          streak: Map<string> = {}, // Get streaks for exercise
+          allCorrect: Map<boolean> = {}, // Exercise is only correct if all answers for an exercise are correct
+          result = {
+            courseId: this.course._id,
+            lessonId: this.courseLevel === Level.Lesson ? this.lesson._id : undefined,
+            step,
+            data: []
+          };
+    let pointsEarned = 0;
     if (data && data.length > 0) { // No data for study repeats
       // calculate bonus for % correct
       let correctCount = 0;
@@ -404,6 +409,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         console.log('result', item);
         console.log('bonus', correctBonus);
         console.log('totalpoints', item.data.points.total());
+        pointsEarned += item.data.points.total();
         streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
@@ -426,21 +432,36 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.checkLastResult(step, lastResult, allCorrect, data);
       this.updateStepCount(step, lastResult);
       console.log('Saving result', result);
+      console.log('Total Points', pointsEarned);
       this.learnService
       .saveUserResults(JSON.stringify(result))
       .takeWhile(() => this.componentActive)
       .subscribe(
-        userResult => {
-          console.log('saved result', userResult);
-          if (userResult) {
+        totalScore => {
+          console.log('saved result -> total score:', totalScore);
+          if (totalScore) {
             // add results to data object
             result.data.forEach((resultItem, i) => {
               data[i].result = resultItem;
             });
+            this.checkNewRank(totalScore, pointsEarned);
           }
         },
         error => this.errorService.handleError(error)
       );
+    }
+  }
+
+  private checkNewRank(currentScore: number, newPoints: number) {
+    const currentRank = this.utilsService.getRank(currentScore),
+          oldRank = this.utilsService.getRank(currentScore - newPoints);
+    if (currentRank > oldRank) {
+      if (this.promotionComponent) {
+        // Show promotion modal
+        this.rankNr = currentRank || 0;
+        this.rankKey = "rank" + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
+        this.promotionComponent.doShowModal();
+      }
     }
   }
 

@@ -1,0 +1,33 @@
+.jumbotron {
+  margin-bottom: 0;
+  background-image: url("/assets/img/ranks/promoted.jpg");
+  color: white;
+}
+.modal-body {
+  padding: 0;
+}
+h1 {
+  text-shadow: 4px 1px #000;
+}
+.newrank {
+  border: 1px dotted black;
+  border-radius: 5px;
+  padding: 12px;
+  margin: 36px 12px;
+  font-size: 36px;
+  color: black;
+  background-color: white;
+}
+.newrank .img {
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
+}
+.closeModal {
+  height: 36px;
+  font-size: 36px;
+  color: white;
+  margin: -26px -26px;
+  text-shadow: 1px 1px 1px #333;
+  cursor: pointer;
+}

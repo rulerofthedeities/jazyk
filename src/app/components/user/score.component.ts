@@ -22,6 +22,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   total: number;
   rank: number;
   gender: string;
+  trophies: string[] = [];
 
   constructor(
     private utilsService: UtilsService,

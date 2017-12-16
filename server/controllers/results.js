@@ -83,7 +83,12 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 
   Result.insertMany(docs, function(err, insertResult) {
     response.handleError(err, res, 500, 'Error saving results', function(){
-      response.handleSuccess(res, insertResult, 200, 'Saved results');
+      this.getTotal(userId, (err, result) => {
+        score = result && result.length ? result[0].points : 0;
+        response.handleError(err, res, 500, 'Error getting total', function(){
+          response.handleSuccess(res, score, 200, 'Saved results & got total');
+        });
+      });
     });
   })
 }
@@ -103,21 +108,27 @@ getExercises = function(courseId, data, cb) {
   });
 }
 
+getTotal = function(userId, cb) {
+  const pipeline = [
+          {$match: {userId}},
+          {$group: {
+            _id: null,
+            totalPoints: {'$sum': '$points'}
+          }},
+          {$project: {
+            _id: 0,
+            points: '$totalPoints'
+          }}
+        ];
+  Result.aggregate(pipeline, function(err, result) {
+    cb(err, result);
+  });
+}
+
 module.exports = {  
   getTotalScore: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          pipeline = [
-            {$match: {userId}},
-            {$group: {
-              _id: null,
-              totalPoints: {'$sum': '$points'}
-            }},
-            {$project: {
-              _id: 0,
-              points: '$totalPoints'
-            }}
-          ];
-    Result.aggregate(pipeline, function(err, result) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
+    this.getTotal(userId, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching total score', function(){
         score = result && result.length ? result[0].points : 0;
         response.handleSuccess(res, score, 200, 'Fetched total score');

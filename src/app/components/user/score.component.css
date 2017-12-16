@@ -13,8 +13,20 @@
   font-size: 24px;
   margin-bottom: 30px !important;
 }
+.rank .panel-body {
+  padding-top: 0;
+}
+.rank .text {
+  position: relative;
+  top: 12px;
+}
 .rank .name {
-  font-size: 32px;
+  font-size: 48px;
+  padding: 0 12px;
+}
+.rank .score {
+  color: #666;
+  font-style: italic;
 }
 .rank .img {
   width: 60px;
