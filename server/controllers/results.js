@@ -138,7 +138,7 @@ module.exports = {
               foreignField: '_id',
               as: 'course'
             }},
-            {$sort: {'course.name':1}},
+            {$sort: {'points':1}},
             {$project: {
               _id: 1,
               course: 1,
@@ -154,6 +154,7 @@ module.exports = {
             if (doc.course[0]) {
               const newDoc = {
                 course: doc.course[0].name,
+                lan: doc.course[0].languagePair.to,
                 points: doc.points
               };
               total += doc.points;

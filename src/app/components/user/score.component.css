@@ -6,3 +6,10 @@
   margin: -8px;
   padding: 7px;
 }
+.trophies {
+  margin-bottom: 30px !important;
+}
+.rank {
+  font-size: 24px;
+  margin-bottom: 30px !important;
+}

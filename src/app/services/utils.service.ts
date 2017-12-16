@@ -10,6 +10,10 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class UtilsService {
+  private rankScores = [
+    0, 500, 5000, 30000, 120000, 360000, 720000, 1296000, 2073500, 3317500, 4976250, 7464250,
+    11196250, 15674750, 21944500, 30722250, 46083250, 69124750, 110599500, 199079000, 398158000
+  ];
   countDownFinishedEvent = new EventEmitter();
 
   constructor(
@@ -57,64 +61,12 @@ export class UtilsService {
     return text;
   }
 
-/*
-  getInterfaceLanguages(): Language[] {
-    const languages = this.getLanguages();
-    return languages.filter(language => language.interface);
+  getRank(score: number): number {
+    let i;
+    for(i = 0; i < this.rankScores.length && score >= this.rankScores[i]; i++) {}
+    return i - 1;
   }
 
-  private getLanguages() {
-    const languages: Language[] = [
-      {
-        _id: 'en',
-        code: 'en',
-        name: 'EN',
-        nativeName: 'English',
-        interface: true,
-        active: true,
-        article: false
-      },
-      {
-        _id: 'de',
-        code: 'de',
-        name: 'DE',
-        nativeName: 'Deutsch',
-        interface: false,
-        active: true,
-        article: true
-      },
-      {
-        _id: 'fr',
-        code: 'fr',
-        name: 'FR',
-        nativeName: 'Français',
-        interface: true,
-        active: true,
-        article: true
-      },
-      {
-        _id: 'cs',
-        code: 'cs',
-        name: 'CS',
-        nativeName: 'Čeština',
-        interface: false,
-        active: true,
-        article: false
-      },
-      {
-        _id: 'nl',
-        code: 'nl',
-        name: 'NL',
-        nativeName: 'Nederlands',
-        interface: true,
-        active: false,
-        article: true
-      }
-    ];
-
-    return languages;
-  }
-*/
   getWordTypes(): string[] {
     return [
       'noun',

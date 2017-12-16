@@ -1,11 +1,31 @@
+<!-- RANK -->
+<div class="panel panel-default rank">
+  <div class="panel-body">
+    {{rank}} {{total | score}}
+  </div>
+</div>
+
+
+<!-- TROPHIES -->
+<div class="panel panel-default trophies">
+  <div class="panel-heading">
+    <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
+  </div>
+  <div class="panel-body">
+    Trophies
+  </div>
+</div>
+
+<!-- SCORE -->
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="fa fa-trophy fa-spacing-title"></span>{{text["ScoreOverview"]}}
+    <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverview"]}}
   </div>
   <div class="panel-body">
     <table class="table table-hover">
       <thead>
         <tr>
+          <th></th>
           <th></th>
           <th>{{text["Course"]}}</th>
           <th class="text-right">{{text["Points"]}}</th>
@@ -14,10 +34,12 @@
       <tbody>
         <tr *ngFor="let score of scores; let i = index">
           <td class="text-right">{{i+1}}.</td>
+          <td class="text-center"><img src="/assets/img/flags/{{score.lan}}.png" class="flag" /></td>
           <td>{{score.course}}</td>
           <td class="text-right nr">{{score.points | score}}</td>
         </tr>
         <tr>
+          <td></td>
           <td></td>
           <td></td>
           <td class="text-right nr success">

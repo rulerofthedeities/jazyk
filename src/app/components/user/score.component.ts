@@ -6,6 +6,7 @@ import 'rxjs/add/operator/takeWhile';
 
 interface Score {
   course: string,
+  lan: string,
   points: number
 }
 
@@ -19,6 +20,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   text: Object = {};
   scores: Score[] = [];
   total: number;
+  rank: number;
 
   constructor(
     private utilsService: UtilsService,
@@ -38,7 +40,8 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     .subscribe(
       data => {
         this.scores = data.scores;
-        this.total = data.total;
+        this.total = data.total || 0;
+        this.rank = this.utilsService.getRank(this.total);
       },
       error => this.errorService.handleError(error)
     );
