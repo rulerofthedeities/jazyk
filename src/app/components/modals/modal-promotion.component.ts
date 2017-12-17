@@ -9,6 +9,8 @@ import {Component, Input} from '@angular/core';
 export class ModalPromotionComponent {
   @Input() rankNr: number;
   @Input() rankName: string;
+  @Input() gender: string;
+  @Input() text: Object;
   showModal = false;
   cheer: any;
 

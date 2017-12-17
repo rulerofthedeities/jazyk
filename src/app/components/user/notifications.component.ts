@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, HostListener, ElementRef} from '@angular/core';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -17,6 +17,15 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   currentNotification: Notification;
   infoMsg: string;
   showActions = false;
+
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.showActions = false;
+    }
+  }
 
   constructor(
     private utilsService: UtilsService,

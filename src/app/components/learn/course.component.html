@@ -151,5 +151,7 @@
 
 <km-modal-promotion #promotion
   [rankNr]="rankNr"
-  [rankName]="text[rankKey]">
+  [rankName]="text[rankKey]"
+  [text]="text"
+  [gender]="userService.user.main.gender || 'm'">
 </km-modal-promotion>
