@@ -10,6 +10,7 @@ import {UserResolver} from './resolves/user.resolver';
 import {AppComponent} from './components/app.component';
 import {BaseComponent} from './components/base.component';
 import {MainMenuComponent} from './components/main-menu.component';
+import {FooterComponent} from './components/footer.component';
 import {HomeComponent} from './components/home.component';
 import {PageNotFoundComponent} from './components/not-found.component';
 
@@ -27,6 +28,7 @@ import {PageNotFoundComponent} from './components/not-found.component';
     AppComponent,
     BaseComponent,
     MainMenuComponent,
+    FooterComponent,
     HomeComponent,
     PageNotFoundComponent
   ],

@@ -15,6 +15,7 @@ import 'rxjs/add/operator/takeWhile';
     <div class="main" [class.margin]="!exercisesStarted">
       <router-outlet></router-outlet>
     </div>
+    <km-footer *ngIf="!exercisesStarted"></km-footer>
   </div>
   `,
   styleUrls: ['base.component.css']

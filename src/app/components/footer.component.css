@@ -1,0 +1,22 @@
+.footer {
+  text-align: center;
+  font-size: 10px;
+  padding: 2px;
+  margin: 36px auto 0 auto;
+  background: #41474b;
+  border-color: #333;
+  color: #ccc;
+  height: 20px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+a:link, a:visited {
+  color: #ccc;
+  text-decoration: none;
+}
+a:hover, a:active {
+  color: white;
+  text-decoration: underline;
+}
