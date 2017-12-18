@@ -17,7 +17,7 @@ import 'rxjs/add/operator/takeWhile';
 export class SignInComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private user: User;
-  private isSubmitted = false;
+  isSubmitted = false;
   userForm: FormGroup;
   text: Object = {};
 
@@ -73,7 +73,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       'password': ['', Validators.required]
     });
   }
-  
+
   private getTranslations(lan: string) {
     this.utilsService
     .fetchTranslations(lan, 'AuthComponent')

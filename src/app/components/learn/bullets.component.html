@@ -9,10 +9,5 @@
       'yellow': exercise.data.isDone && exercise.data.isCorrect && exercise.data.isAlt,
       'orange': exercise.data.isDone && !exercise.data.isCorrect && exercise.data.isAlmostCorrect,
       'red': exercise.data.isDone && !exercise.data.isCorrect && !exercise.data.isAlmostCorrect}">
- </span>
- <span
-   *ngFor="let bullet of emptyBullets; let i=index"
-   class="fa fa-square-o green"
-   [class.fix]="i===0">
- </span>
+  </span>
 </div>

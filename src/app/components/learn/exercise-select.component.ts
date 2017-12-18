@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnChanges, EventEmitter} from '@angular/core';
+import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {PreviewService} from '../../services/preview.service';
 
@@ -9,7 +10,7 @@ import {PreviewService} from '../../services/preview.service';
 })
 
 export class LearnSelectComponent implements OnChanges {
-  @Input() lanPair: string;
+  @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Output() answered = new EventEmitter<boolean>();

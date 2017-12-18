@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
@@ -18,7 +19,7 @@ interface Answer {
 })
 
 export class LearnComparisonComponent implements OnInit, OnChanges {
-  @Input() lanPair: string;
+  @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;

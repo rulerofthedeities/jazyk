@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnChanges, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 
 interface Keyboard {
@@ -13,7 +14,7 @@ interface Keyboard {
 })
 
 export class LearnQAComponent implements OnChanges, AfterViewChecked {
-  @Input() lanPair: string;
+  @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;

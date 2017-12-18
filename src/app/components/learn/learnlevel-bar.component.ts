@@ -24,7 +24,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnLevelBarComponent implements OnInit, OnDestroy {
   @Input() private levelUpdated: BehaviorSubject<number>;
-  @Input() private maxLevel: number;
+  @Input() maxLevel: number;
   private componentActive = true;
   percentage: string;
   level: string;

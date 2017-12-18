@@ -18,6 +18,7 @@ export class MailFieldComponent {
   @ViewChild('msg') msg: ElementRef;
   minLength = 5;
   maxLength = 140;
+  message: string;
 
   onSendMessage(msg: string) {
     const message = msg.trim();

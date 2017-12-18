@@ -109,6 +109,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.courseLevel = this.steps[i].level;
   }
 
+  getGender() {
+    return this.userService.user.main.gender || 'm';
+  }
+
   onSkipStep() {
     this.nextStep();
   }

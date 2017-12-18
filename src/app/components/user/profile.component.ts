@@ -49,6 +49,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.router.navigate(['/u/' + user]);
   }
 
+  getHash() {
+    return this.userService.user ? this.userService.user.emailHash : '';
+  }
+
   private fetchProfile() {
     this.userService
     .getProfile()

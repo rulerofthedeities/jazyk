@@ -1,0 +1,11 @@
+.panel {
+  background-color: rgba(255, 255, 255, .9);
+  width: 75%;
+  margin: 0 auto;
+}
+.panel-heading {
+  background-color: rgb(189, 208, 156);
+  border-color: #505d66;
+  color: rgb(78, 97, 114);
+  font-size: 24px;
+}

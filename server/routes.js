@@ -12,6 +12,7 @@ var path = require("path"),
     messages = require("./controllers/messages"),
     follows = require("./controllers/follows"),
     results = require("./controllers/results"),
+    info = require("./controllers/info"),
     response = require("./response");
 
 module.exports.initialize = function(app, router) {
@@ -49,6 +50,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
 
+  router.get('/info/:page/:lan', info.getPage);
 
   router.use('/', function(req, res, next) {
     jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {

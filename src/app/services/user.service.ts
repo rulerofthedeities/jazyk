@@ -188,10 +188,10 @@ export class UserService {
 
   getPublicProfile(user: string) {
     const headers = this.getTokenHeaders();
-    user = user.slice(0, 25);
-    console.log('Fetching public profile for user', user);
+    const filteredUser = user.slice(0, 25);
+    console.log('Fetching public profile for user', filteredUser);
     return this.http
-    .get('/api/user/profile/' + user, {headers})
+    .get('/api/user/profile/' + filteredUser, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
