@@ -19,15 +19,16 @@ interface Map<T> {
 
 export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  selectedLanguage: Language;
-  languages: Language[];
   private allCourses: Course[];
   private lanCourses: Map<Course[]> = {};
+  selectedLanguage: Language;
+  languages: Language[];
   courses: Course[];
   userCourses: Map<UserCourse> = {};
   text: Object = {};
   listType = CourseListType;
   coursesReady = false;
+  isError = false;
   isReady = false;
   isDemo = false;
 
@@ -46,6 +47,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
 
   onLanguageSelected(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
+    this.coursesReady = false;
     this.filterCourses();
   }
 
@@ -87,7 +89,10 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
           this.getLanguages();
         }
       },
-      error => this.errorService.handleError(error)
+      error => {
+        this.errorService.handleError(error);
+        this.isError = true;
+      }
     );
   }
 

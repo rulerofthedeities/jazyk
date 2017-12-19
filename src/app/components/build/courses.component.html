@@ -19,31 +19,38 @@
 </div>
 
 <!-- COURSE LIST -->
-<ul class="list-unstyled" *ngIf="courses else loading">
-  <li *ngFor="let course of courses">
-    <km-course-summary
-      [course]="course"
-      [text]="text"
-      [tpe]="listType.Teach">
-    </km-course-summary>
-  </li>
-</ul>
+<div *ngIf="coursesReady else loading">
+  <ul class="list-unstyled" *ngIf="courses?.length">
+    <li *ngFor="let course of courses">
+      <km-course-summary
+        [course]="course"
+        [text]="text"
+        [tpe]="listType.Teach">
+      </km-course-summary>
+    </li>
+  </ul>
 
-<!-- No courses found for selected language -->
-<div *ngIf="courses && !courses.length">
-  <km-info-msg [msg]="text['Nocourses']">
-  </km-info-msg>
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <button class="btn btn-primary" (click)="onNewCourse()">
-        {{text["Newcourselg"]}}
-      </button>
+  <!-- No courses found for selected language -->
+  <div *ngIf="!courses.length">
+    <km-info-msg [msg]="text['Nocourses']">
+    </km-info-msg>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <button class="btn btn-primary" (click)="onNewCourse()">
+          {{text["Newcourselg"]}}
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <ng-template #loading>
-  <km-loader
+  <km-loader *ngIf="!isError"
     [msg]="text['LoadingCourses']">
   </km-loader>
 </ng-template>
+
+<km-error-msg
+  [msg]="Error"
+  [text]="text">
+</km-error-msg>

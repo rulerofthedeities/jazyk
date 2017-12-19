@@ -26,6 +26,8 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   languages: Language[];
   multipleLanguages = false;
   listType = CourseListType;
+  coursesReady = false;
+  isError = false;
 
   constructor(
     private router: Router,
@@ -58,8 +60,12 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
         if (courses && courses.length) {
           this.getLanguages();
         }
+        this.coursesReady = true;
       },
-      error => this.errorService.handleError(error)
+      error => {
+        this.errorService.handleError(error);
+        this.isError = true;
+      }
     );
   }
   private getLanguages() {

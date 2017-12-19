@@ -17,10 +17,12 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];
-  courses$: Observable<Course[]>;
+  courses: Course[];
   text: Object = {};
   listType = CourseListType;
+  isError = false;
   isReady = false;
+  coursesReady = false;
 
   constructor(
     private router: Router,
@@ -36,7 +38,16 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
 
   onLanguageSelected(newLanguage: Language) {
     this.selectedLanguage = newLanguage;
+    this.coursesReady = false;
     this.getCourses();
+  }
+
+  onError(error) {
+    console.log('e', error);
+  }
+
+  onCompleted() {
+    console.log('completed');
   }
 
   onNewCourse() {
@@ -44,7 +55,19 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   }
 
   private getCourses() {
-    this.courses$ = this.learnService.fetchPublishedCourses(this.selectedLanguage.code);
+    this.learnService
+    .fetchPublishedCourses(this.selectedLanguage.code)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      courses => {
+        this.courses = courses;
+        this.coursesReady = true;
+      },
+      error => {
+        this.errorService.handleError(error);
+        this.isError = true;
+      }
+    );
   }
 
   private setActiveLanguages(languages: Language[]) {
