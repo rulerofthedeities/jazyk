@@ -55,7 +55,7 @@ export class AuthService {
       userName: decoded.user.userName
     };
     this.storeUserData(userStorage);
-    this.router.navigateByUrl('/learn');
+    this.router.navigateByUrl('/home');
   }
 
   logout() {

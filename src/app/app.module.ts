@@ -6,12 +6,15 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {routes} from './app.routes';
 import {UserResolver} from './resolves/user.resolver';
+import {DashboardService} from './services/dashboard.service';
 
 import {AppComponent} from './components/app.component';
 import {BaseComponent} from './components/base.component';
 import {MainMenuComponent} from './components/main-menu.component';
 import {FooterComponent} from './components/footer.component';
-import {HomeComponent} from './components/home.component';
+import {HomeComponent} from './components/home/home.component';
+import {DefaultHomeComponent} from './components/home/default-home.component';
+import {DashboardComponent} from './components/home/dashboard.component';
 import {PageNotFoundComponent} from './components/not-found.component';
 
 @NgModule({
@@ -22,7 +25,8 @@ import {PageNotFoundComponent} from './components/not-found.component';
     CoreModule.forRoot()
   ],
   providers: [
-    UserResolver
+    UserResolver,
+    DashboardService
   ],
   declarations: [
     AppComponent,
@@ -30,6 +34,8 @@ import {PageNotFoundComponent} from './components/not-found.component';
     MainMenuComponent,
     FooterComponent,
     HomeComponent,
+    DefaultHomeComponent,
+    DashboardComponent,
     PageNotFoundComponent
   ],
   bootstrap: [AppComponent]

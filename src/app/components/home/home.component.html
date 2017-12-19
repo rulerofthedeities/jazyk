@@ -1,0 +1,9 @@
+<km-home-default *ngIf="!isLoggedIn() else loggedIn"
+  [text]="text">
+</km-home-default>
+
+<ng-template #loggedIn>
+  <km-dashboard
+    [text]="text">
+  </km-dashboard>
+</ng-template>

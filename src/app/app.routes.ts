@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {BaseComponent} from './components/base.component';
-import {HomeComponent} from './components/home.component';
+import {HomeComponent} from './components/home/home.component';
 import {UserComponent} from './components/user/user.component';
 import {InfoComponent} from './components/info/info.component';
 import {PageNotFoundComponent} from './components/not-found.component';

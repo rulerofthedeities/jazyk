@@ -13,6 +13,7 @@ var path = require("path"),
     follows = require("./controllers/follows"),
     results = require("./controllers/results"),
     info = require("./controllers/info"),
+    dashboard = require("./controllers/dashboard"),
     response = require("./response");
 
 module.exports.initialize = function(app, router) {
@@ -62,6 +63,10 @@ module.exports.initialize = function(app, router) {
   });
 
   /*** authenticated ***/
+
+  /* dashboard */
+  router.get('/dashboard/count', dashboard.getCount);
+
 
   /* user */
   router.put('/user/settings/learn', users.saveLearnSettings);

@@ -5,6 +5,7 @@ import {UserService} from '../services/user.service';
 import {SharedService} from '../services/shared.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
+import {User} from '../models/user.model';
 import {Translation, Language} from '../models/course.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
@@ -17,7 +18,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class MainMenuComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  url: string;
+  url = '/home';
   text: Object = {};
   showDropDown = false;
   nrOfNotifications = 0;
@@ -92,6 +93,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.userService.clearUser();
   }
 
+  getUser(): User {
+    return this.userService.user;
+  }
+
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
@@ -101,6 +106,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe((route: NavigationEnd) => {
       this.url = route.url;
+      console.log('new route', this.url);
       if (this.url === '/') {
         this.url = '/home';
       }

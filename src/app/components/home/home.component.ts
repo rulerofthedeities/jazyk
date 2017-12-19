@@ -1,7 +1,8 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ErrorService} from '../services/error.service';
-import {UtilsService} from '../services/utils.service';
-import {UserService} from '../services/user.service';
+import {ErrorService} from '../../services/error.service';
+import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
+import {AuthService} from '../../services/auth.service';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -16,7 +17,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private utilsService: UtilsService,
     private userService: UserService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -24,6 +26,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.userService.languageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 
   private getTranslations(lan) {
