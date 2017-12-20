@@ -1,0 +1,23 @@
+.panel {
+  background-color: rgba(255, 255, 255, .9);
+  width: 96%;
+  margin: 0 auto;
+}
+.panel-heading {
+  background-color: #60727e;
+  border-color: #505d66;
+  color: snow;
+  font-size: 24px;
+}
+.rank-name {
+  font-size: 26px;
+}
+.score {
+  font-size: 20px;
+}
+.panel-summary{
+  font-size: 18px;
+}
+.info {
+  margin: 6px 0;
+}

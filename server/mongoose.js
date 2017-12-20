@@ -10,6 +10,7 @@ var mongoose = require('mongoose'),
       poolSize: 10,
       promiseLibrary: global.Promise
     };
+mongoose.Promise = global.Promise;
 mongoose.connect(db_url, options);
 
 module.exports = {mongoose};

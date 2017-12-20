@@ -1,29 +1,35 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {UtilsService} from '../../services/utils.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {DashboardService} from '../../services/dashboard.service';
 
 interface Learning {
   subscribed: number;
-  notSubscribed: number;
+  unsubscribed: number;
+  total: number;
 }
 
-interface CountData {
+interface SummaryData {
   score: number;
   coursesLearning: Learning;
 }
 
 @Component({
   selector: 'km-dashboard',
-  template: `Dashboard`
+  templateUrl: 'dashboard.component.html',
+  styleUrls: ['dashboard.component.css']
 })
 
 export class DashboardComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   private componentActive = true;
-  countData: CountData;
+  summaryData: SummaryData;
 
   constructor(
     private dashboardService: DashboardService,
+    private utilsService: UtilsService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -33,12 +39,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getNotificationsAndMessages();
   }
 
+  getRank(): number {
+    return this.utilsService.getRank(this.getTotal());
+  }
+
+  getRankName(): string {
+    const gender = this.userService.user.main.gender || 'm';
+    return this.text['rank' + this.getRank() + gender];
+  }
+
+  private getTotal(): number {
+    if (this.summaryData) {
+      return this.summaryData.score || 0;
+    } else {
+      return 0;
+    }
+  }
+
   private getCounts() {
     this.dashboardService
     .fetchCounts()
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {this.countData = data; console.log('count data', data)},
+      data => this.summaryData = data,
       error => this.errorService.handleError(error)
     );
   }

@@ -29,16 +29,21 @@ module.exports = {
     const getCount = async () => {
       const score = await Result.aggregate(scorePipeline),
             coursesLearning = await UserCourse.aggregate(coursesLearningPipeline),
-            subscribed = coursesLearning[0] ? coursesLearning[0].countSubscribed : 0,
-            notSubscribed = coursesLearning[0] ? coursesLearning[0].countNotSubscribed : 0,
-            points = score[0] ? score[0].points : 0;
+            subscribed = coursesLearning[0] ? coursesLearning[0].countSubscribed || 0 : 0,
+            unsubscribed = coursesLearning[0] ? coursesLearning[0].countNotSubscribed || 0 : 0,
+            points = score[0] ? score[0].points || 0 : 0;
       return {
         score: points,
-        coursesLearning: {subscribed, notSubscribed}
+        coursesLearning: {
+          subscribed,
+          unsubscribed,
+          total: subscribed + unsubscribed
+        }
       };
     };
 
     getCount().then((results) => {
+      console.log(results);
       response.handleSuccess(res, results, 200, 'Fetched dashboard count data');
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');

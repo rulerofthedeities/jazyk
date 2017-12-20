@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-xs-6">
+    <div class="panel panel-default status">
+      <div class="panel-heading">
+        <span class="fa fa-file-o fa-spacing-title"></span>{{text["Summary"]}}
+      </div>
+      <div class="panel-body panel-summary">
+        <div *ngIf="summaryData">
+          <div class="rank info">
+            <img src="/assets/img/ranks/rank{{getRank()}}_s.png" class="img">
+            <span class="rank-name">{{getRankName()}}</span>
+          </div>
+          <div class="score info">
+            {{summaryData.score | score}} {{text["points"]}}
+          </div>
+          <div class="learning info">
+            {{summaryData.coursesLearning.total}} {{text["coursesStarted"]}}<br>
+            {{summaryData.coursesLearning.subscribed}} {{text["coursesLearning"]}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6">
+    <div class="panel panel-default notifications">
+      <div class="panel-heading">
+        <span class="fa fa-envelope-open-o fa-spacing-title"></span>{{text["Communication"]}}
+      </div>
+      <div class="panel-body">
+        Messages
+        Notifications
+      </div>
+    </div>
+  </div>
+</div>
