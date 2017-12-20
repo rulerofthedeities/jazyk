@@ -1,7 +1,9 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Result = require('../models/result'),
-      UserCourse = require('../models/usercourse').model;
+      UserCourse = require('../models/usercourse').model,
+      Message = require('../models/message'),
+      Notification = require('../models/notification');
 
 module.exports = {
   getCount: function(req, res) {
@@ -43,10 +45,32 @@ module.exports = {
     };
 
     getCount().then((results) => {
-      console.log(results);
       response.handleSuccess(res, results, 200, 'Fetched dashboard count data');
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
+    });
+  },
+  getCommunication: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          options = {limit: 5, sort: {dt: -1}},
+          messageQuery = {
+            'recipient.id': userId,
+            'recipient.trash': false,
+            'recipient.deleted': false
+          },
+          notificationQuery = {userId},
+          notificationProjection = {title: 1, read: 1, dt: 1};
+    const getCommunication = async () => {
+      const messages = await Message.find(messageQuery, {}, options),
+            notifications = await Notification.find(notificationQuery, notificationProjection, options);
+      return {messages, notifications};
+    };
+
+    getCommunication().then((results) => {
+      console.log(results);
+      response.handleSuccess(res, results, 200, 'Fetched dashboard communications data');
+    }).catch((err) => {
+      response.handleError(err, res, 500, 'Error fetching dashboard communications data');
     });
   }
 }

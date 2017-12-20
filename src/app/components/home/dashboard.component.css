@@ -9,6 +9,9 @@
   color: snow;
   font-size: 24px;
 }
+.notifications, .status {
+  height: 270px;
+}
 .rank-name {
   font-size: 26px;
 }
@@ -20,4 +23,30 @@
 }
 .info {
   margin: 6px 0;
+}
+.unread {
+  font-weight: bold;
+}
+.fa-circle {
+  color: red;
+}
+.truncate {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 5px;
+}
+.user.truncate {
+  width: 100px;
+}
+.content.truncate {
+  width: 200px;
+}
+.icon {
+  margin-right: 3px;
+}
+.list-group-item {
+  cursor: pointer;
 }

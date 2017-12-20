@@ -28,8 +28,37 @@
         <span class="fa fa-envelope-open-o fa-spacing-title"></span>{{text["Communication"]}}
       </div>
       <div class="panel-body">
-        Messages
-        Notifications
+        <div class="list-group">
+          <a class="list-group-item"
+            *ngFor="let message of communications; let i=index" 
+            (click)="onSelectMessage(i)">
+            <span class="fa icon"  
+              [ngClass]="{
+                'fa-envelope-o': message.tpe==='message',
+                'fa-bell-o': message.tpe==='notification'
+              }">
+            </span>
+            <span class="fa"  
+              [ngClass]="{
+                'fa-circle': !message.read,
+                'fa-circle-o': message.read,
+                'fa-envelope-o': message.tpe==='message',
+                'fa-bell-o': message.tpe==='notification'
+              }">
+            </span>
+            <span class="user truncate">
+              {{message.from}}
+            </span>
+            <span
+              class="content truncate"
+              [class.unread]="!message.read">
+              {{message.message}}
+            </span>
+            <span class="badge">
+              {{getFromNow(message.dt)}}
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   </div>

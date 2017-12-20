@@ -66,6 +66,7 @@ module.exports.initialize = function(app, router) {
 
   /* dashboard */
   router.get('/dashboard/count', dashboard.getCount);
+  router.get('/dashboard/communication', dashboard.getCommunication);
 
 
   /* user */

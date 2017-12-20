@@ -106,7 +106,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe((route: NavigationEnd) => {
       this.url = route.url;
-      console.log('new route', this.url);
       if (this.url === '/') {
         this.url = '/home';
       }

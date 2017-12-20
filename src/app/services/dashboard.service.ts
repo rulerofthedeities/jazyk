@@ -22,6 +22,14 @@ export class DashboardService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchCommunication() {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/dashboard/communication', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Common ***/
 
   private getTokenHeaders(): Headers {
