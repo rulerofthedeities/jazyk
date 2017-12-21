@@ -66,8 +66,8 @@ module.exports.initialize = function(app, router) {
 
   /* dashboard */
   router.get('/dashboard/count', dashboard.getCount);
-  router.get('/dashboard/communication', dashboard.getCommunication);
-
+  router.get('/dashboard/communication/:max', dashboard.getCommunication);
+  router.get('/dashboard/courses/:max', dashboard.recentCourses);
 
   /* user */
   router.put('/user/settings/learn', users.saveLearnSettings);

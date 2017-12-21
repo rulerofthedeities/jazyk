@@ -5,6 +5,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {Message, Notification} from '../../models/user.model';
+import {Course, CourseListType} from '../../models/course.model';
 import * as moment from 'moment';
 
 interface Learning {
@@ -31,6 +32,11 @@ interface Communication {
   read: boolean;
 }
 
+interface RecentCourse {
+  dt: Date,
+  course: Course
+}
+
 @Component({
   selector: 'km-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -42,6 +48,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private componentActive = true;
   summaryData: SummaryData;
   communications: Communication[];
+  courses: RecentCourse[];
+  coursesReady = false;
+  listType = CourseListType;
 
   constructor(
     private router: Router,
@@ -112,7 +121,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private getRecentCourses() {
-
+    this.dashboardService
+    .fetchRecentCourses()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => this.processCourses(data),
+      error => this.errorService.handleError(error)
+    );
   }
 
   private getNotificationsAndMessages() {
@@ -125,8 +140,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  private processCourses(data: RecentCourse[]) {
+    // Sort courses
+    this.courses = data.sort(function(a, b){
+      var dtA = new Date(a.dt),
+          dtB = new Date(b.dt);
+      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0)
+    });
+    this.coursesReady = true;
+  }
+
   private processCommunication(data: CommunicationData) {
     const communications = [];
+    // Combine messages and notifcations
     data.messages.forEach(message => {
       communications.push({
         tpe: 'message',
@@ -145,6 +171,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         read: notification.read
       });
     });
+    // Sort communications
     this.communications = communications.sort(function(a, b){
       var dtA = new Date(a.dt),
           dtB = new Date(b.dt);

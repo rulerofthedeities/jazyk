@@ -20,6 +20,7 @@ import {GravatarDirective} from './directives/gravatar.directive';
 import {GetKeyPressDirective} from './directives/get-key-pressed.directive';
 import {ToggleComponent} from './components/fields/toggle.component';
 import {LoaderComponent} from './components/loader.component';
+import {LearnCourseSummaryComponent} from './components/learn/course-summary.component';
 
 import {ScorePipe} from './pipes/score.pipe';
 
@@ -46,7 +47,8 @@ import {ScorePipe} from './pipes/score.pipe';
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    ScorePipe
+    ScorePipe,
+    LearnCourseSummaryComponent
   ],
   providers: [
     UtilsService,
@@ -70,7 +72,8 @@ import {ScorePipe} from './pipes/score.pipe';
     MarkdownModule,
     ToggleComponent,
     LoaderComponent,
-    ScorePipe
+    ScorePipe,
+    LearnCourseSummaryComponent
   ]
 })
 export class SharedModule {

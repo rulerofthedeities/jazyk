@@ -38,7 +38,7 @@
           {{text["updatecourse"]}}
         </button>
       </div>
-      <div *ngIf="tpe===listType.Learn && !isDemo">
+      <div *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo">
         <button type="button" class="btn btn-success"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right fa-spacing"></span>
@@ -72,6 +72,9 @@
         <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
         <div class="dates" *ngIf="tpe === listType.Learn && userData?.dt">
           {{text["StartedOn"]}}: {{userData?.dt?.dtSubscribed | date:'yyyy-MM-dd'}}
+        </div>
+        <div class="dates" *ngIf="tpe === listType.Home">
+          {{text["LastActivity"]}}: {{lastDt | date:'yyyy-MM-dd'}}
         </div>
       </div>
       <div class="stop" *ngIf="tpe===listType.Learn && !isDemo">

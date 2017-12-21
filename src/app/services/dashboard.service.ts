@@ -25,7 +25,16 @@ export class DashboardService {
   fetchCommunication() {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/dashboard/communication', {headers})
+    .get('/api/dashboard/communication/5', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchRecentCourses() {
+    console.log('fetching recent courses');
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/dashboard/courses/3', {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

@@ -1,16 +1,24 @@
 .panel {
   background-color: rgba(255, 255, 255, .9);
-  width: 96%;
   margin: 0 auto;
 }
 .panel-heading {
-  background-color: #60727e;
+  background-color: rgb(242, 196, 15);
   border-color: #505d66;
   color: snow;
   font-size: 24px;
 }
+.status .panel-heading {
+  background-color: rgb(232, 76, 61);
+}
+.courses .panel-heading {
+  background-color: rgb(243, 156, 17);
+}
 .notifications, .status {
   height: 270px;
+}
+.courses {
+  margin-top: 15px;
 }
 .rank-name {
   font-size: 26px;

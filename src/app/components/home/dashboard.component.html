@@ -1,8 +1,10 @@
 <div class="row">
+  <!-- Summary -->
   <div class="col-xs-6">
     <div class="panel panel-default status">
       <div class="panel-heading">
-        <span class="fa fa-file-o fa-spacing-title"></span>{{text["Summary"]}}
+        <span class="fa fa-file-o fa-spacing-title"></span>
+        {{text["Summary"]}}
       </div>
       <div class="panel-body panel-summary">
         <div *ngIf="summaryData">
@@ -21,11 +23,12 @@
       </div>
     </div>
   </div>
-
+  <!-- Notification -->
   <div class="col-xs-6">
     <div class="panel panel-default notifications">
       <div class="panel-heading">
-        <span class="fa fa-envelope-open-o fa-spacing-title"></span>{{text["Communication"]}}
+        <span class="fa fa-envelope-open-o fa-spacing-title"></span>
+        {{text["Communication"]}}
       </div>
       <div class="panel-body">
         <div class="list-group">
@@ -63,3 +66,34 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <!-- Recent courses -->
+  <div class="col-xs-12">
+    <div class="panel panel-default courses">
+      <div class="panel-heading">
+        <span class="fa fa-envelope-open-o fa-spacing-title"></span>
+        {{text["RecentCourses"]}}
+      </div>
+      <div class="panel-body">
+        <div *ngIf="coursesReady else loading">
+          <ul class="list-unstyled" *ngIf="courses?.length">
+            <li *ngFor="let course of courses">
+              <km-course-summary
+                [course]="course.course"
+                [lastDt]="course.dt"
+                [text]="text"
+                [tpe]="listType.Home">
+              </km-course-summary>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingCourses']">
+  </km-loader>
+</ng-template>

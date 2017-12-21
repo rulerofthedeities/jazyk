@@ -1,6 +1,6 @@
 import {Exercise, ExerciseSteps} from './exercise.model';
 
-export enum CourseListType {Learn, Teach, All};
+export enum CourseListType {Learn, Teach, All, Home};
 
 export interface Language {
   name: string;
