@@ -1,4 +1,5 @@
 import {Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
@@ -20,6 +21,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   showReply = false;
   showNewMessage = false;
   showActions = false;
+  isFromDashboard = false;
   tab = 'inbox';
   infoMsg = '';
   recipients: CompactProfile[] = [];
@@ -35,6 +37,8 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService
@@ -56,19 +60,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   onSelectMessage(i: number) {
-    this.parentMessage = null;
-    this.infoMsg = '';
-    this.showReply = false;
-    this.currentMessage = this.messages[i];
-    if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
-      this.setMessageAsRead(i);
-      if (this.tab === 'inbox') {
-        this.userService.updateUnreadMessagesCount(false);
-      }
-    }
-    if (this.currentMessage.parentId) {
-      this.fetchParentMessage(this.currentMessage.parentId);
-    }
+    this.selectMessage(this.messages[i]._id, i);
   }
 
   onCreateReply(replyField: any) {
@@ -160,10 +152,47 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private closeMessage() {
+    if (this.isFromDashboard) {
+      this.router.navigate(['/home']);
+    } else {
+      this.infoMsg = '';
+      this.currentMessage = null;
+      this.showActions = false;
+      this.showNewMessage = false;
+    }      
+  }
+
+  private getCurrentMessage() {
+    this.route.params
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      params => {
+        if (params['messageId']) {
+          this.isFromDashboard = true;
+          const i = this.messages.findIndex(message => message._id === params['messageId']);
+          console.log('id', params['messageId'], i);
+          this.selectMessage(params['messageId'], i);
+        }
+      }
+    );
+  }
+
+  private selectMessage(id: string, i: number) {
+    this.parentMessage = null;
     this.infoMsg = '';
-    this.currentMessage = null;
-    this.showActions = false;
-    this.showNewMessage = false;
+    this.showReply = false;
+    if (!isNaN(i)) {
+      this.currentMessage = this.messages[i];
+      if (!this.currentMessage.recipient.read && this.isRecipient(this.currentMessage)) {
+        this.setMessageAsRead(i);
+        if (this.tab === 'inbox') {
+          this.userService.updateUnreadMessagesCount(false);
+        }
+      }
+      if (this.currentMessage.parentId) {
+        this.fetchParentMessage(this.currentMessage.parentId);
+      }
+    }
   }
 
   private sendReplyMessage(message: Message, content: string) {
@@ -286,7 +315,12 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .fetchMessages(this.tab)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      messages => this.messages = messages,
+      messages => {
+        this.messages = messages
+        if (messages) {
+          this.getCurrentMessage();
+        }
+      },
       error => this.errorService.handleError(error)
     );
   }

@@ -24,13 +24,17 @@ module.exports = {
     });
   },
   getNotification: function(req, res) {
-    const notificationId = new mongoose.Types.ObjectId(req.params.notificationId),
-          query = {_id: notificationId};
-    Notification.findOne(query, function(err, notification) {
-      response.handleError(err, res, 500, 'Error fetching notification', function(){
-        response.handleSuccess(res, notification, 200, 'Fetched notification');
+    if (mongoose.Types.ObjectId.isValid(req.params.notificationId)) {
+      const notificationId = new mongoose.Types.ObjectId(req.params.notificationId),
+            query = {_id: notificationId};
+      Notification.findOne(query, function(err, notification) {
+        response.handleError(err, res, 500, 'Error fetching notification', function(){
+          response.handleSuccess(res, notification, 200, 'Fetched notification');
+        });
       });
-    });
+    } else {
+      response.handleSuccess(res, null, 200, 'Invalid notification id');
+    }
   },
   removeNotification: function(req, res) {
     const notificationId = new mongoose.Types.ObjectId(req.params.notificationId),

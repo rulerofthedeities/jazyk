@@ -69,14 +69,18 @@ module.exports = {
     }
   },
   getMessage: function(req, res) {
-    const messageId = new mongoose.Types.ObjectId(req.params.messageId),
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {_id: messageId, $or: [{'sender.id': userId}, {'recipient.id': userId}]};
-    Message.findOne(query, function(err, message) {
-        response.handleError(err, res, 500, 'Error fetching message', function(){
-          response.handleSuccess(res, message, 200, 'Fetched message');
+    if (mongoose.Types.ObjectId.isValid(req.params.messageId)) {
+      const messageId = new mongoose.Types.ObjectId(req.params.messageId),
+            userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+            query = {_id: messageId, $or: [{'sender.id': userId}, {'recipient.id': userId}]};
+      Message.findOne(query, function(err, message) {
+          response.handleError(err, res, 500, 'Error fetching message', function(){
+            response.handleSuccess(res, message, 200, 'Fetched message');
+          });
         });
-      });
+    } else {
+      response.handleSuccess(res, null, 200, 'Invalid message id');
+    }
   },
   setMessageRead: function(req, res) {
     const messageId = new mongoose.Types.ObjectId(req.body.messageId),

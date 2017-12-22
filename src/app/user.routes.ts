@@ -13,7 +13,9 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {path: 'notifications', component: UserNotificationsComponent},
+  {path: 'notifications/:notificationId', component: UserNotificationsComponent},
   {path: 'messages', component: UserMessagesComponent},
+  {path: 'messages/:messageId', component: UserMessagesComponent},
   {path: 'profile', component: UserProfileComponent},
   {path: 'settings', component: UserSettingsComponent},
   {path: 'score', component: UserScoreComponent},

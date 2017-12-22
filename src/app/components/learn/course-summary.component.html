@@ -74,7 +74,7 @@
           {{text["StartedOn"]}}: {{userData?.dt?.dtSubscribed | date:'yyyy-MM-dd'}}
         </div>
         <div class="dates" *ngIf="tpe === listType.Home">
-          {{text["LastActivity"]}}: {{lastDt | date:'yyyy-MM-dd'}}
+          {{text["LastActivity"]}}: {{lastActivity}}
         </div>
       </div>
       <div class="stop" *ngIf="tpe===listType.Learn && !isDemo">

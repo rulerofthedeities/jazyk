@@ -15,7 +15,7 @@ export class LearnCourseSummaryComponent implements OnInit {
   @Input() text: {};
   @Input() isDemo = false;
   @Input() tpe: CourseListType;
-  @Input() lastDt: Date; // last activity (only for dashboard)
+  @Input() lastActivity: string; // only for dashboard
   @Output() unsubscribe = new EventEmitter<string>();
   listType = CourseListType;
   percDone = 0;

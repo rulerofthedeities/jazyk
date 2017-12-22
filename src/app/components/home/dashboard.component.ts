@@ -25,6 +25,7 @@ interface CommunicationData {
 }
 
 interface Communication {
+  id: string;
   tpe: string;
   from: string;
   message: string;
@@ -68,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onSelectMessage(i: number) {
     const tpe = this.communications[i].tpe;
-    this.router.navigate(['/user/' + tpe + 's']);
+    this.router.navigate(['/user/' + tpe + 's' + '/' + this.communications[i].id]);
   }
 
   getRank(): number {
@@ -155,6 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Combine messages and notifcations
     data.messages.forEach(message => {
       communications.push({
+        id: message._id,
         tpe: 'message',
         from: message.sender.userName,
         message: message.message,
@@ -164,6 +166,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     data.notifications.forEach(notification => {
       communications.push({
+        id: notification._id,
         tpe: 'notification',
         from: 'jazyk',
         message: notification.title,

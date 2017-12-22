@@ -1,4 +1,5 @@
 import {Component, OnInit, OnDestroy, ViewChild, HostListener, ElementRef} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -17,6 +18,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   currentNotification: Notification;
   infoMsg: string;
   showActions = false;
+  isFromDashboard = false;
 
   @ViewChild('dropdown') el: ElementRef;
   @HostListener('document:click', ['$event'])
@@ -28,6 +30,8 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService
@@ -36,6 +40,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getTranslations();
     this.fetchNotifications();
+    this.getCurrentNotification();
   }
 
   onOpenActions() {
@@ -46,7 +51,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.infoMsg = '';
     this.currentNotification = this.notifications[i];
     if (!this.currentNotification.message) {
-      this.fetchNotification(i);
+      this.fetchNotification(this.notifications[i]._id, i);
     }
   }
 
@@ -64,7 +69,11 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   onCloseNotification() {
-    this.closeNotification();
+    if (this.isFromDashboard) {
+      this.router.navigate(['/home']);
+    } else {
+      this.closeNotification();
+    }
   }
 
   onMarkAllRead() {
@@ -90,6 +99,20 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.showActions = false;
   }
 
+  private getCurrentNotification() {
+    this.route.params
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      params => {
+        if (params['notificationId']) {
+          console.log('id', params['notificationId']);
+          this.isFromDashboard = true;
+          this.fetchNotification(params['notificationId'], null);
+        }
+      }
+    );
+  }
+
   private fetchNotifications() {
     this.userService
     .fetchNotifications()
@@ -100,19 +123,25 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fetchNotification(i: number) {
+  private fetchNotification(id: string, i: number) {
     this.userService
-    .fetchNotification(this.notifications[i]._id)
+    .fetchNotification(id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       notification => {
         if (notification) {
+          if (i === null) {
+            // look for current notification in array
+            i = this.notifications.findIndex(notification => notification._id === id);
+          }
           if (!notification.read) {
             this.setNotificationAsRead(i);
             this.userService.updateUnreadNotificationsCount(false);
           }
           notification.read = true;
-          this.notifications[i] = notification;
+          if (!isNaN(i)) {
+            this.notifications[i] = notification;
+          }
           this.currentNotification = notification;
         }
       },
@@ -145,13 +174,15 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private setNotificationAsRead(i: number) {
-    this.userService
-    .setNotificationAsRead(this.notifications[i]._id)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      read => {},
-      error => this.errorService.handleError(error)
-    );
+    if (! isNaN(i)) {
+      this.userService
+      .setNotificationAsRead(this.notifications[i]._id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        read => {},
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private setAllNotificationsAsRead() {

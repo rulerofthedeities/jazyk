@@ -80,7 +80,7 @@
             <li *ngFor="let course of courses">
               <km-course-summary
                 [course]="course.course"
-                [lastDt]="course.dt"
+                [lastActivity]="getFromNow(course.dt)"
                 [text]="text"
                 [tpe]="listType.Home">
               </km-course-summary>
