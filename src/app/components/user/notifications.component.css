@@ -32,3 +32,6 @@
 .dropdown-menu li {
   cursor: pointer;
 }
+.buttons {
+  padding-left: 15px;
+}

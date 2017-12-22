@@ -59,6 +59,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.infoMsg = '';
     this.notifications = this.notifications.filter(notification => notification._id !== notificationId);
     this.deleteNotification(notificationId);
+    this.closeNotification(); // In case it was deleted from inside the message
   }
 
   onDeleteAllRead() {
@@ -69,11 +70,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   onCloseNotification() {
-    if (this.isFromDashboard) {
-      this.router.navigate(['/home']);
-    } else {
-      this.closeNotification();
-    }
+    this.closeNotification();
   }
 
   onMarkAllRead() {
@@ -95,8 +92,12 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private closeNotification() {
-    this.currentNotification = null;
-    this.showActions = false;
+    if (this.isFromDashboard) {
+      this.router.navigate(['/home']);
+    } else {
+      this.currentNotification = null;
+      this.showActions = false;
+    }
   }
 
   private getCurrentNotification() {

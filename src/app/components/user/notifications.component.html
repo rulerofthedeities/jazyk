@@ -80,4 +80,11 @@
   <div class="badge pull-right">
     {{currentNotification.dt | date: "yyyy-MM-dd HH:mm"}}
   </div>
+  <!-- BUTTONS -->
+  <div class="row buttons">
+    <button type="button"
+      class="btn btn-danger" (click)="onDeleteNotification(currentNotification._id)">
+      <span class="fa fa-trash"></span> {{text["Delete"]}}
+    </button>
+  </div>
 </ng-template>
