@@ -44,20 +44,26 @@
           <span class="fa fa-arrow-right fa-spacing"></span>
           {{text["continuecourse"]}}
         </button>
-         <button type="button" class="btn btn-primary"
+        <button type="button" class="btn btn-primary btn-badge"
           (click)="onContinueCourse('review')">
           <span class="fa fa-repeat fa-spacing"></span>
           {{text["reviewwords"]}}
+          <br>
+          <div class="badge" *ngIf="badgeData.review">{{badgeData.review}}</div>
         </button>
-         <button type="button" class="btn btn-warning"
+        <button type="button" class="btn btn-warning"
           (click)="onContinueCourse('difficult')">
           <span class="fa fa-fire fa-spacing"></span>
           {{text["difficultwords"]}}
+          <br>
+          <div class="badge" *ngIf="badgeData.difficult">{{badgeData.difficult}}</div>
         </button>
-         <button type="button" class="btn btn-danger"
+        <button type="button" class="btn btn-danger"
           (click)="onContinueCourse('exam')">
           <span class="fa fa-clock-o fa-spacing"></span>
           {{text["takeexam"]}}
+          <br>
+          <div class="badge" *ngIf="badgeData.exam">{{badgeData.exam}}</div>
         </button>
       </div>
       <div *ngIf="tpe===listType.Learn && isDemo">

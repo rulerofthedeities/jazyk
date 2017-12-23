@@ -369,7 +369,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       results.forEach(result => {
         total = result.step === 'study' ? studyTotal : lessonTotal;
         if (!this.countPerStep[result.step]) {
-          this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: total - result.nrDone || 0};
+          this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: Math.max(0, total - result.nrDone || 0)};
         }
       });
     }
@@ -377,7 +377,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.steps.forEach(step => {
       total = step.name === 'study' ? studyTotal : lessonTotal;
       if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
-        this.countPerStep[step.name] = {nrDone: 0, nrRemaining: total};
+        this.countPerStep[step.name] = {nrDone: 0, nrRemaining: Math.max(0, total)};
       }
     });
     // Practise step must have study finished or tpe != word
@@ -604,7 +604,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep[step] = {nrDone: done, nrRemaining: remaining};
         // Studied - Increase practise count
         remaining = this.countPerStep['practise'].nrRemaining + nrOfResults;
-        this.countPerStep['practise'].nrRemaining = remaining;
+        this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
       break;
       case 'practise':
         // Check which results have isLearned flag

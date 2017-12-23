@@ -31,10 +31,17 @@ export class DashboardService {
   }
 
   fetchRecentCourses() {
-    console.log('fetching recent courses');
     const headers = this.getTokenHeaders();
     return this.http
     .get('/api/dashboard/courses/3', {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchCourseSteps(courseId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/results/course/summary/' + courseId, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

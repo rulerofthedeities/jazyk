@@ -34,7 +34,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
     })
     console.log('results', results, docs);
     Result.collection.bulkWrite(docs, function(err, bulkResult) {
-      response.handleError(err, res, 500, 'Error saving user results for study', function(){
+      response.handleError(err, res, 400, 'Error saving user results for study', function(){
         response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
       });
     })
@@ -82,10 +82,10 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   console.log('results', docs);
 
   Result.insertMany(docs, function(err, insertResult) {
-    response.handleError(err, res, 500, 'Error saving results', function(){
+    response.handleError(err, res, 400, 'Error saving results', function(){
       this.getTotal(userId, (err, result) => {
         score = result && result.length ? result[0].points : 0;
-        response.handleError(err, res, 500, 'Error getting total', function(){
+        response.handleError(err, res, 400, 'Error getting total', function(){
           response.handleSuccess(res, score, 200, 'Saved results & got total');
         });
       });
@@ -124,6 +124,66 @@ getTotal = function(userId, cb) {
     cb(err, result);
   });
 }
+
+getStepCounts = async (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          sort = {dt:-1, sequence: -1},
+          lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
+          difficultQuery = {userId, courseId, isLast: true},
+          reviewQuery = {userId, courseId, isLast: true, isLearned: true};
+    const lessonPipeline = [
+      {$match: lessonQuery},
+      {$sort: sort},
+      {$group: {
+        _id: {exerciseId:'$exerciseId', step: '$step'},
+        firstStep: {'$first': '$step'}
+      }},
+      {$group: {
+        _id:'$firstStep',
+        nrDone:{'$sum':1}
+      }},
+      {$project: {
+        _id:0,
+        step: '$_id',
+        nrDone: 1
+      }}
+    ];
+    const difficultPipeline = [
+      {$match: difficultQuery},
+      {$sort: sort},
+      {$group: {
+        _id: '$exerciseId',
+        difficult: {'$first': '$isDifficult'}
+      }},
+      {$match: {difficult: true}},
+      {$project: {
+        _id:0
+      }}
+    ];
+    const reviewPipeline = [
+      {$match: reviewQuery},
+      {$sort: sort},
+      {$group: {
+        _id: '$exerciseId',
+        dtToReview: {'$first': '$dtToReview'},
+      }},
+      {$match: {dtToReview:{$lte: new Date()}}},
+      {$project: {
+        _id:0
+      }}
+    ];
+
+  const lesson = req.params.lessonId ? await Result.aggregate(lessonPipeline) : '',
+        difficult = await Result.aggregate(difficultPipeline),
+        review = await Result.aggregate(reviewPipeline);
+  return {
+    lesson,
+    difficult: difficult.length,
+    review: review.length
+  };
+};
 
 module.exports = {  
   getTotalScore: function(req, res) {
@@ -222,7 +282,7 @@ module.exports = {
 
     Result.aggregate(pipeline, function(err, results) {
       console.log('resultLast', results);
-      response.handleError(err, res, 500, 'Error fetching results', function(){
+      response.handleError(err, res, 400, 'Error fetching results', function(){
         response.handleSuccess(res, results, 200, 'Fetched results');
       });
     });
@@ -261,7 +321,7 @@ module.exports = {
       }}
     ];
     Result.aggregate(pipeline, function(err, results) {
-      response.handleError(err, res, 500, 'Error fetching all results', function(){
+      response.handleError(err, res, 400, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');
       });
     });
@@ -335,77 +395,17 @@ module.exports = {
           options = {sort: {dt: -1, sequence: -1}};
     Result.findOne(query, projection, options, function(err, result) {
       console.log('current lesson', result);
-      response.handleError(err, res, 500, 'Error fetching most recent result', function(){
+      response.handleError(err, res, 400, 'Error fetching most recent result', function(){
         response.handleSuccess(res, result, 200, 'Fetched most recent result');
       });
     })
   },
   getStepCount: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          sort = {dt:-1, sequence: -1},
-          lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
-          difficultQuery = {userId, courseId, isLast: true},
-          reviewQuery = {userId, courseId, isLast: true, isLearned: true};
-    const lessonPipeline = [
-      {$match: lessonQuery},
-      {$sort: sort},
-      {$group: {
-        _id: {exerciseId:'$exerciseId', step: '$step'},
-        firstStep: {'$first': '$step'}
-      }},
-      {$group: {
-        _id:'$firstStep',
-        nrDone:{'$sum':1}
-      }},
-      {$project: {
-        _id:0,
-        step: '$_id',
-        nrDone: 1
-      }}
-    ];
-    const difficultPipeline = [
-      {$match: difficultQuery},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        difficult: {'$first': '$isDifficult'}
-      }},
-      {$match: {difficult: true}},
-      {$project: {
-        _id:0
-      }}
-    ];
-    const reviewPipeline = [
-      {$match: reviewQuery},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        dtToReview: {'$first': '$dtToReview'},
-      }},
-      {$match: {dtToReview:{$lte: new Date()}}},
-      {$project: {
-        _id:0
-      }}
-    ];
-    const getCount = async () => {
-      const lesson = await  Result.aggregate(lessonPipeline),
-            difficult = await Result.aggregate(difficultPipeline),
-            review = await Result.aggregate(reviewPipeline);
-      return {
-        lesson,
-        difficult: difficult.length,
-        review: review.length
-      };
-    };
-
-    getCount().then((results) => {
+    getStepCounts(req, res).then((results) => {
       response.handleSuccess(res, results, 200, 'Fetched count steps');
     }).catch((err) => {
-      response.handleError(err, res, 500, 'Error fetching count steps');
+      response.handleError(err, res, 400, 'Error fetching count steps');
     });
-
   },
   getDifficult:  function(req, res) {
     const parms = req.query,
@@ -459,7 +459,6 @@ module.exports = {
           limit = parms.max ? parseInt(parms.max) : 10,
           sort = {dt:-1, sequence: -1},
           query = {userId, courseId, isLast: true, isLearned: true};
-    console.log('date', new Date(), query);
     const pipeline = [
       {$match: query},
       {$sort: sort},
@@ -495,6 +494,13 @@ module.exports = {
           });
         });
       });
+    });
+  },
+  getCourseSummary: function(req, res) {
+    getStepCounts(req, res).then((results) => {
+      response.handleSuccess(res, results, 200, 'Fetched count steps');
+    }).catch((err) => {
+      response.handleError(err, res, 400, 'Error fetching count steps');
     });
   }
 }

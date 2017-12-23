@@ -1,7 +1,15 @@
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Course, UserCourse, CourseListType} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
+import {DashboardService} from '../../services/dashboard.service';
+import {ErrorService} from '../../services/error.service';
+
+interface BadgeData {
+  review?: number;
+  difficult?: number;
+  exam?: number;
+}
 
 @Component({
   selector: 'km-course-summary',
@@ -9,7 +17,8 @@ import {UserService} from '../../services/user.service';
   styleUrls: ['course-summary.component.css']
 })
 
-export class LearnCourseSummaryComponent implements OnInit {
+export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
+  private componentActive = true;
   @Input() course: Course;
   @Input() userData: UserCourse = null;
   @Input() text: {};
@@ -19,10 +28,13 @@ export class LearnCourseSummaryComponent implements OnInit {
   @Output() unsubscribe = new EventEmitter<string>();
   listType = CourseListType;
   percDone = 0;
+  badgeData: BadgeData = {};
 
   constructor(
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private dashboardService: DashboardService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -30,6 +42,7 @@ export class LearnCourseSummaryComponent implements OnInit {
     if (this.tpe === CourseListType.Learn) {
       this.percDone = 0; // Todo : get count done
     }
+    this.getCourseData();
   }
 
   onEditCourse() {
@@ -63,5 +76,25 @@ export class LearnCourseSummaryComponent implements OnInit {
       }
     }
     return isAuthor;
+  }
+
+  private getCourseData() {
+    // Stepcount + % done for words + exercises
+    this.dashboardService
+    .fetchCourseSteps(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => {
+        if (data) {
+          this.badgeData.review = data.review;
+          this.badgeData.difficult = data.difficult;
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

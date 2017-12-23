@@ -75,7 +75,6 @@ module.exports = {
     });
   },
   recentCourses: function(req, res) {
-    console.log('getting recent courses');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = req.params.max || '3',
           resultsPipeline = [
@@ -92,24 +91,20 @@ module.exports = {
               dt: '$firstDate'
             }}
           ];
-    console.log('pipeline 1', resultsPipeline);
     Result.aggregate(resultsPipeline, function(err, idResults) {
       response.handleError(err, res, 500, 'Error fetching recent courseIds from results', function() {
-        console.log('results 1', idResults);
         if (idResults) {
           const courseIdArr = [];
           idResults.forEach(result => {
             courseIdArr.push(new mongoose.Types.ObjectId(result.courseId));
           })
           const query = {_id: {$in: courseIdArr}};
-          console.log('q 2', query, courseIdArr);
           Course.find(query, function(err, courseResults) {
             response.handleError(err, res, 500, 'Error fetching recent courses', function() {
               const recentCourses = [];
               // Add date last result for each course
               courseResults.forEach((course, i, courses) => {
                 id = idResults.find(result => result.courseId.toString() === course._id.toString());
-                console.log('id', course._id);
                 if (id) {
                   recentCourses.push({dt: id.dt, course})
                 }

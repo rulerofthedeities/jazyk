@@ -199,19 +199,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.getDemoQuestions();
     }
   }
-/*
-  private getScoreCount() {
-    this.learnService
-    .fetchScoreTotal()
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      score => {
-        this.score = score || 0;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-*/
+  
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     let leftToStudy: number;
