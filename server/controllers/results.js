@@ -502,5 +502,44 @@ module.exports = {
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching count steps');
     });
+  },
+  getCourseCount: function(req, res) {
+    const learnLevel = 12,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          query = {
+            userId,
+            courseId,
+            step: 'practise',
+            isLearned: true,
+            isDeleted: false
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$exerciseId',
+              tpe: {$first: {$cond: [{$eq: [ "$tpe", 0]} , 0, 1]}}, // word or exercise
+            }},
+            {$group: {
+              _id: '$tpe',
+              cnt: {'$sum': 1},
+            }},
+            {$project: {
+              _id: 0,
+              tpe: '$_id',
+              cnt: '$cnt'
+            }}
+          ];
+    Result.aggregate(pipeline, function(err, results) {
+      response.handleError(err, res, 400, 'Error fetching course count', function() {
+        console.log(results);
+        countPerTpe = [0, 0];
+        results.forEach(result => {
+          countPerTpe[result.tpe] = result.cnt || 0;
+          console.log('result', result.tpe, result.cnt, countPerTpe);
+        })
+        response.handleSuccess(res, countPerTpe, 200, 'Fetched course count');
+      });
+    });
   }
 }

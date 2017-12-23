@@ -26,7 +26,7 @@
           </span>
         </span>
       </h3>
-      <h3 class="description"><small>{{course.description}}</small></h3>
+      <div class="description">{{course.description}}</div>
       <div *ngIf="tpe===listType.All || tpe===listType.Teach">
         <button class="btn btn-success"
           [class.disabled]="!course.isPublished"
@@ -47,14 +47,14 @@
         <button type="button" class="btn btn-primary btn-badge"
           (click)="onContinueCourse('review')">
           <span class="fa fa-repeat fa-spacing"></span>
-          {{text["reviewwords"]}}
+          {{text["Review"]}}
           <br>
           <div class="badge" *ngIf="badgeData.review">{{badgeData.review}}</div>
         </button>
         <button type="button" class="btn btn-warning"
           (click)="onContinueCourse('difficult')">
           <span class="fa fa-fire fa-spacing"></span>
-          {{text["difficultwords"]}}
+          {{text["Difficult"]}}
           <br>
           <div class="badge" *ngIf="badgeData.difficult">{{badgeData.difficult}}</div>
         </button>
@@ -74,8 +74,8 @@
         </button>
       </div>
       <div class="info">
-        <div>{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
-        <div>{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
+        <div>{{doneData.words}} / {{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{doneData.exercises}} / {{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
         <div class="dates" *ngIf="tpe === listType.Learn && userData?.dt">
           {{text["StartedOn"]}}: {{userData?.dt?.dtSubscribed | date:'yyyy-MM-dd'}}
         </div>
@@ -91,16 +91,16 @@
         </button>
         <div class="clearfix"></div>
       </div>
-      <div class="progress" *ngIf="tpe===listType.Learn && !isDemo">
+      <div class="progress" *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo">
         <div 
-          class="progress-bar progress-bar-striped" 
+          class="progress-bar progress-bar-success progress-bar-striped" 
           role="progressbar" 
-          [attr.aria-valuenow]=""
+          [attr.aria-valuenow]="doneData.total"
           aria-valuemin="0"
           [attr.aria-valuemax]="course.totalCount" 
           [style.width.%]="percDone">
           <span>
-            /{{course.totalCount}} ({{percDone}}%)
+            {{doneData.total}}/{{course.totalCount}} ({{percDone}}%)
           </span>
         </div>
       </div> 

@@ -19,7 +19,8 @@ var resultSchema = new Schema({
   sequence: Number, // To find the last saved doc for docs with same save time
   isLast: Boolean, // True if it is the last doc of a learn session
   isDifficult: Boolean, // These are selected for the difficult step
-  isCorrect: Boolean 
+  isCorrect: Boolean,
+  isDeleted: {type: Boolean, default: false} // The exercise has been deleted but the result is still there
 });
 
 resultSchema.index({userId: 1, courseId: 1, lessonId: 1, exerciseId: 1}); 

@@ -46,6 +46,14 @@ export class DashboardService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchCourseDone(courseId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/results/course/count/' + courseId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Common ***/
 
   private getTokenHeaders(): Headers {

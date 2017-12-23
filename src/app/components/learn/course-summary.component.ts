@@ -11,6 +11,12 @@ interface BadgeData {
   exam?: number;
 }
 
+interface DoneData {
+  words?: number,
+  exercises?: number,
+  total?: number
+}
+
 @Component({
   selector: 'km-course-summary',
   templateUrl: 'course-summary.component.html',
@@ -29,6 +35,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   listType = CourseListType;
   percDone = 0;
   badgeData: BadgeData = {};
+  doneData: DoneData = {};
 
   constructor(
     private router: Router,
@@ -79,7 +86,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   }
 
   private getCourseData() {
-    // Stepcount + % done for words + exercises
+    // Stepcount 
     this.dashboardService
     .fetchCourseSteps(this.course._id)
     .takeWhile(() => this.componentActive)
@@ -92,6 +99,27 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+    // Count words done
+    this.dashboardService
+    .fetchCourseDone(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => {
+        if (data) {
+          console.log('data count', data);
+          this.doneData.words = data[0];
+          this.doneData.exercises = data[1];
+          this.doneData.total = data[0] + data[1];
+          if (this.doneData.total > 0) {
+            this.percDone = 100 - Math.min(100, Math.max(0, Math.ceil((this.course.totalCount - this.doneData.total) / this.course.totalCount * 100)));
+          } else {
+            this.percDone = 0;
+          }
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+
   }
 
   ngOnDestroy() {

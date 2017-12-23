@@ -7,18 +7,25 @@
 .course {
   margin-left: 180px;
 }
-h3.description {
+.description {
   overflow: hidden;
+  font-size: 16px;
+  height: 26px;
+  color: #aaa;
+  font-style: italic;
+  margin-left: 6px;
 }
 .info {
-  margin-top: 4px;
+  margin: 10px 0 10px 6px;
   height: 64px;
+  color: #333;
 }
 .stop {
   margin-bottom: 4px;
 }
 h3 {
-  margin-top:0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .icons {
   font-size: 16px;
