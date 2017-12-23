@@ -24,7 +24,7 @@ module.exports = {
             parentId
           });
     message.save(function(err, result) {
-      response.handleError(err, res, 500, 'Error saving message', function(){
+      response.handleError(err, res, 400, 'Error saving message', function(){
         response.handleSuccess(res, result, 200, 'Saved message');
       });
     });
@@ -60,7 +60,7 @@ module.exports = {
     }
     if (query) {
       Message.find(query, projection, options, function(err, messages) {
-        response.handleError(err, res, 500, 'Error fetching messages', function(){
+        response.handleError(err, res, 400, 'Error fetching messages', function(){
           response.handleSuccess(res, messages, 200, 'Fetched messages');
         });
       });
@@ -74,7 +74,7 @@ module.exports = {
             userId = new mongoose.Types.ObjectId(req.decoded.user._id),
             query = {_id: messageId, $or: [{'sender.id': userId}, {'recipient.id': userId}]};
       Message.findOne(query, function(err, message) {
-          response.handleError(err, res, 500, 'Error fetching message', function(){
+          response.handleError(err, res, 400, 'Error fetching message', function(){
             response.handleSuccess(res, message, 200, 'Fetched message');
           });
         });
@@ -87,7 +87,7 @@ module.exports = {
           query = {_id: messageId},
           update = {'recipient.read': true};
     Message.findOneAndUpdate(query, update, function(err, result) {
-      response.handleError(err, res, 500, 'Error setting message as read', function(){
+      response.handleError(err, res, 400, 'Error setting message as read', function(){
         response.handleSuccess(res, true, 200, 'Read message');
       });
     });
@@ -97,7 +97,7 @@ module.exports = {
           query = {'recipient.id': userId, 'recipient.read': false},
           update = {'recipient.read': true};
     Message.updateMany(query, update, function(err, result) {
-      response.handleError(err, res, 500, 'Error marking all messages unread', function(){
+      response.handleError(err, res, 400, 'Error marking all messages unread', function(){
         response.handleSuccess(res, result, 200, 'Marked all messages unread');
       });
     });
@@ -110,7 +110,7 @@ module.exports = {
           query = {_id: messageId, [tpe + '.id']: userId},
           update = {[tpe + '.' + action]: true};
     Message.findOneAndUpdate(query, update, function(err, result) {
-      response.handleError(err, res, 500, 'Error setting message to ' + action, function(){
+      response.handleError(err, res, 400, 'Error setting message to ' + action, function(){
         response.handleSuccess(res, result, 200, 'Set message to ' + action);
       });
     });
@@ -125,7 +125,7 @@ module.exports = {
           },
           update = {'recipient.trash': true};
     Message.updateMany(query, update, function(err, result) {
-      response.handleError(err, res, 500, 'Error setting messages to trash', function(){
+      response.handleError(err, res, 400, 'Error setting messages to trash', function(){
         response.handleSuccess(res, result, 200, 'Set messages to trash');
       });
     });
@@ -139,7 +139,7 @@ module.exports = {
           },
           update = {'recipient.deleted': true};
     Message.updateMany(query, update, function(err, result) {
-      response.handleError(err, res, 500, 'Error setting messages to deleted', function(){
+      response.handleError(err, res, 400, 'Error setting messages to deleted', function(){
         response.handleSuccess(res, result, 200, 'Set messages to deleted');
       });
     });
@@ -153,7 +153,7 @@ module.exports = {
             'recipient.deleted': false
           };
     Message.count(query, function(err, count) {
-      response.handleError(err, res, 500, 'Error fetching messages count', function(){
+      response.handleError(err, res, 400, 'Error fetching messages count', function(){
         response.handleSuccess(res, count, 200, 'Fetched messages count');
       });
     });

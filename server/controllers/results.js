@@ -25,6 +25,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
             $setOnInsert: {
               points: doc.points,
               isLast: true,
+              isDeleted: false,
               dt: new Date()
             }
           },
@@ -66,6 +67,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       isLast: doc.isLast,
       isCorrect: doc.isCorrect,
       isDifficult: doc.isDifficult,
+      isDeleted: false,
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };

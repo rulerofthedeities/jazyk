@@ -76,7 +76,7 @@ module.exports = {
   },
   recentCourses: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          max = req.params.max || '3',
+          max = 4,//req.params.max || '3',
           resultsPipeline = [
             {$match: {userId}},
             {$sort: {dt: -1, sequence: -1}},
@@ -84,6 +84,7 @@ module.exports = {
               _id: '$courseId',
               firstDate: {'$first': '$dt'},
             }},
+            {$sort: {firstDate: 1}},
             {$limit: parseInt(max, 10)},
             {$project: {
               _id: 0,
@@ -92,6 +93,7 @@ module.exports = {
             }}
           ];
     Result.aggregate(resultsPipeline, function(err, idResults) {
+      console.log('recent courses', idResults);
       response.handleError(err, res, 500, 'Error fetching recent courseIds from results', function() {
         if (idResults) {
           const courseIdArr = [];

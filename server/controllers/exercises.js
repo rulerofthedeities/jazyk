@@ -2,6 +2,7 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       Course = require('../models/course').model,
       Lesson = require('../models/lesson'),
+      Result = require('../models/result'),
       WordPair = require('../models/wordpair');
 
 updateCourseWordCount = function(courseId, totals) {
@@ -12,8 +13,7 @@ updateCourseWordCount = function(courseId, totals) {
     if (count._id === 0) {
       wordOnlyCount = count.total;
     }
-  })
-  console.log('count', courseId, 'total', allWordAndExercisesCount, 'words', wordOnlyCount);
+  });
   Course.findOneAndUpdate(
     {_id: courseId},
     {$set: {
@@ -43,11 +43,21 @@ getCourseWordCount = function(id) {
   Lesson.aggregate(pipeline, function(err, count) {
     if (!err) {
       if (count[0]) {
-        console.log('TOTAL/SCORE', count);
         updateCourseWordCount(courseId, count);
       }
     } else {
       console.log('ERREXE01: Error getting total number of exercise for course "' + courseId + '"')
+    }
+  });
+}
+
+setResultExercisesAsDeleted = function(userId, lessonId, exerciseId) {
+  // update the results for the exercise that has been deleted
+  const query = {lessonId, exerciseId, userId},
+        update = {isDeleted: true};
+  Result.updateMany(query, update, function(err, result) {
+    if (err) {
+      console.log('ERREXE03: Error setting delete flag for exercise "' + exerciseId + '"')
     }
   });
 }
@@ -119,8 +129,7 @@ module.exports = {
         exercises: {$each: exercises}
       }},
     function(err, result) {
-      response.handleError(err, res, 500, 'Error adding exercise(s)', function(){
-        console.log('getting coursecount for', result.courseId)
+      response.handleError(err, res, 500, 'Error adding exercise(s)', function() {
         getCourseWordCount(result.courseId);
         response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
       });
@@ -163,7 +172,8 @@ module.exports = {
     );
   },
   removeExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);
 
     console.log('removing exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
@@ -175,6 +185,7 @@ module.exports = {
         response.handleError(err, res, 500, 'Error removing exercise', function(){
           getCourseWordCount(result.courseId);
           response.handleSuccess(res, null, 200, 'Removed exercise');
+          setResultExercisesAsDeleted(userId, lessonId, exerciseId);
         });
       }
     );
