@@ -4,7 +4,9 @@
       <img src="/assets/img/courses/{{course.image}}">
     </div>
     <div class="course">
-      <h3>{{course.name}}
+      <h3>
+        <img src="/assets/img/flags/{{course?.languagePair.from}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
+        {{course.name}}
         <span class="icons" *ngIf="tpe !== listType.Learn">
           <span 
             class="fa"

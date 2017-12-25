@@ -15,7 +15,9 @@
         </button>
         <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
         <span class="course-title">{{course?.name}}</span>
-        <span class="lesson-title" *ngIf="showLessonName()">{{lesson?.name}}</span>
+        <div class="lesson-title" [style.visibility]="showLessonName() ? 'visible' : 'hidden'">
+          {{lesson?.name}}
+        </div>
       </h1>
       <ul class="list-unstyled list-inline steps">
         <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
