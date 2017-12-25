@@ -59,17 +59,6 @@ h3 {
 .btn-badge {
   height: 38px;
 }
-/* override bootstrap */
-.badge {
-  top: -38px;
-  left: 9px;
-  background-color: red;
-  color: white;
-}
-.btn {
-  text-align: right;
-  padding: 7px 12px;
-}
 .flags {
   border: 1px solid #333;
   border-radius: 3px;
@@ -88,3 +77,55 @@ img.from {
   top: -3px;
   color: #666;
 }
+/* override bootstrap */
+.badge {
+  top: -38px;
+  left: 9px;
+  background-color: red;
+  color: white;
+}
+.btn {
+  text-align: right;
+  padding: 7px 12px;
+}
+/* btn-review */
+.btn-review { 
+  color: #ffffff; 
+  background-color: #F2C40F; 
+  border-color: #E2B500; 
+} 
+ 
+.btn-review:hover, 
+.btn-review:focus, 
+.btn-review:active, 
+.btn-review.active, 
+.open .dropdown-toggle.btn-review { 
+  color: #ffffff; 
+  background-color: #e8ba00; 
+  border-color: #E2B500; 
+} 
+ 
+.btn-review:active, 
+.btn-review.active, 
+.open .dropdown-toggle.btn-review { 
+  background-image: none; 
+} 
+ 
+.btn-review.disabled, 
+.btn-review[disabled], 
+fieldset[disabled] .btn-review, 
+.btn-review.disabled:hover, 
+.btn-review[disabled]:hover, 
+fieldset[disabled] .btn-review:hover, 
+.btn-review.disabled:focus, 
+.btn-review[disabled]:focus, 
+fieldset[disabled] .btn-review:focus, 
+.btn-review.disabled:active, 
+.btn-review[disabled]:active, 
+fieldset[disabled] .btn-review:active, 
+.btn-review.disabled.active, 
+.btn-review[disabled].active, 
+fieldset[disabled] .btn-review.active { 
+  background-color: #F2C40F; 
+  border-color: #E2B500; 
+} 

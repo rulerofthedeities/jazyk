@@ -106,7 +106,6 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     .subscribe(
       data => {
         if (data) {
-          console.log('data count', data);
           this.doneData.words = data[0];
           this.doneData.exercises = data[1];
           this.doneData.total = data[0] + data[1];
