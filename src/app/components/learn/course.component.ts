@@ -166,6 +166,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.getCurrentLesson();
   }
 
+  showLessonName(): boolean {
+    if (this.steps[this.currentStep]) {
+      const step = this.steps[this.currentStep].name;
+      if (step === 'study' || step === 'practise') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   capitalize(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
@@ -374,12 +387,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
     }
     // Fill in step count for the steps without a result
+    /*
     this.steps.forEach(step => {
       total = step.name === 'study' ? studyTotal : lessonTotal;
       if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
+      console.log('STEPS', step.name, studyTotal, lessonTotal);
         this.countPerStep[step.name] = {nrDone: 0, nrRemaining: Math.max(0, total)};
       }
     });
+    */
     // Practise step must have study finished or tpe != word
     if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
       const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;

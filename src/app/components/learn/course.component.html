@@ -15,6 +15,7 @@
         </button>
         <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
         <span class="course-title">{{course?.name}}</span>
+        <span class="lesson-title" *ngIf="showLessonName()">{{lesson?.name}}</span>
       </h1>
       <ul class="list-unstyled list-inline steps">
         <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
@@ -38,7 +39,12 @@
               'fa-fire': step.name==='difficult',
               'fa-clock-o': step.name==='exam'
             }"></span>
-            {{text[capitalize(step.name)]}} <span class="remaining" *ngIf="step.name !== 'intro'">({{countPerStep[step.name]?.nrRemaining || 0}})</span>
+            {{text[capitalize(step.name)]}}
+            <div class="badge"
+              *ngIf="step.name !== 'intro' && step.name !== 'overview'"
+              [class.remaining]="countPerStep[step.name]?.nrRemaining > 0">
+              {{countPerStep[step.name]?.nrRemaining || 0}}
+            </div>
           </li>
         </ng-template>
       </ul>
@@ -62,7 +68,7 @@
     <km-learn-study  *ngSwitchCase="'study'"
       [exercises]="lesson.exercises"
       [lanPair]="course.languagePair"
-      [lessonId]="this.lesson._id"
+      [lessonId]="lesson._id"
       [text]="text"
       [isDemo]="isDemo"
       [stepOptions]="lesson.exerciseSteps.study"

@@ -40,6 +40,7 @@ h1 {
   top: 4px;
   margin-top: 0 !important;
   height: 51px;
+  color: white;
 }
 .inactive {
   border-bottom-width: 3px;
@@ -143,14 +144,21 @@ h1 {
   text-shadow: 1px 1px 1px #333;
   cursor: pointer;
 }
-.remaining {
-  font-size: 12px;
-  position: relative;
-  top: -2px;
-}
 .register {
   font-style: italic;
   font-size: 24px;
   color: #999;
   padding: 60px 20px;
+}
+.badge {
+  background-color: #ccc;
+}
+.remaining {
+  background-color: red;
+  color: white;
+}
+.lesson-title {
+  font-size: 20px;
+  font-style: italic;
+  color: #666;
 }

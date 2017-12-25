@@ -76,7 +76,7 @@ module.exports = {
   },
   recentCourses: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          max = 4,//req.params.max || '3',
+          max = req.params.max || '3',
           resultsPipeline = [
             {$match: {userId}},
             {$sort: {dt: -1, sequence: -1}},
@@ -84,7 +84,7 @@ module.exports = {
               _id: '$courseId',
               firstDate: {'$first': '$dt'},
             }},
-            {$sort: {firstDate: 1}},
+            {$sort: {firstDate: -1}},
             {$limit: parseInt(max, 10)},
             {$project: {
               _id: 0,
@@ -94,7 +94,7 @@ module.exports = {
           ];
     Result.aggregate(resultsPipeline, function(err, idResults) {
       console.log('recent courses', idResults);
-      response.handleError(err, res, 500, 'Error fetching recent courseIds from results', function() {
+      response.handleError(err, res, 400, 'Error fetching recent courseIds from results', function() {
         if (idResults) {
           const courseIdArr = [];
           idResults.forEach(result => {
@@ -102,7 +102,7 @@ module.exports = {
           })
           const query = {_id: {$in: courseIdArr}};
           Course.find(query, function(err, courseResults) {
-            response.handleError(err, res, 500, 'Error fetching recent courses', function() {
+            response.handleError(err, res, 400, 'Error fetching recent courses', function() {
               const recentCourses = [];
               // Add date last result for each course
               courseResults.forEach((course, i, courses) => {

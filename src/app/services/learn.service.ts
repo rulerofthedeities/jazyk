@@ -110,7 +110,7 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-
+/*
   getPreviousResults(lessonId: string, exerciseIds: string[]) {
     // Get the learn level of the most recent exercises for this lesson
     const headers = this.getTokenHeaders(),
@@ -123,7 +123,7 @@ export class LearnService {
     .map(response => response.json().obj || {})
     .catch(error => Observable.throw(error));
   }
-
+*/
   getLessonResults(lessonId: string, step: string) {
     // Get the learn level of all exercises in this lesson
     const headers = this.getTokenHeaders();

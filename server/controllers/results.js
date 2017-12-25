@@ -85,7 +85,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 
   Result.insertMany(docs, function(err, insertResult) {
     response.handleError(err, res, 400, 'Error saving results', function(){
-      this.getTotal(userId, (err, result) => {
+      this.getTotalPoints(userId, (err, result) => {
         score = result && result.length ? result[0].points : 0;
         response.handleError(err, res, 400, 'Error getting total', function(){
           response.handleSuccess(res, score, 200, 'Saved results & got total');
@@ -110,7 +110,7 @@ getExercises = function(courseId, data, cb) {
   });
 }
 
-getTotal = function(userId, cb) {
+getTotalPoints = function(userId, cb) {
   const pipeline = [
           {$match: {userId}},
           {$group: {
@@ -131,51 +131,67 @@ getStepCounts = async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          sort = {dt:-1, sequence: -1},
-          lessonQuery = {userId, lessonId, $or: [{isLearned: true}, {step: 'study'}]},
-          difficultQuery = {userId, courseId, isLast: true},
-          reviewQuery = {userId, courseId, isLast: true, isLearned: true};
-    const lessonPipeline = [
-      {$match: lessonQuery},
-      {$sort: sort},
-      {$group: {
-        _id: {exerciseId:'$exerciseId', step: '$step'},
-        firstStep: {'$first': '$step'}
-      }},
-      {$group: {
-        _id:'$firstStep',
-        nrDone:{'$sum':1}
-      }},
-      {$project: {
-        _id:0,
-        step: '$_id',
-        nrDone: 1
-      }}
-    ];
-    const difficultPipeline = [
-      {$match: difficultQuery},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        difficult: {'$first': '$isDifficult'}
-      }},
-      {$match: {difficult: true}},
-      {$project: {
-        _id:0
-      }}
-    ];
-    const reviewPipeline = [
-      {$match: reviewQuery},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        dtToReview: {'$first': '$dtToReview'},
-      }},
-      {$match: {dtToReview:{$lte: new Date()}}},
-      {$project: {
-        _id:0
-      }}
-    ];
+          sort = {dt: -1, sequence: -1},
+          lessonQuery = {
+            userId,
+            lessonId,
+            isDeleted: false,
+            $or: [{isLearned: true}, {step: 'study'}]
+          },
+          difficultQuery = {
+            userId,
+            courseId,
+            isLast: true,
+            isDeleted: false
+          },
+          reviewQuery = {
+            userId,
+            courseId,
+            isLast: true,
+            isLearned: true,
+            isDeleted: false
+          },
+          lessonPipeline = [
+            {$match: lessonQuery},
+            {$sort: sort},
+            {$group: {
+              _id: {exerciseId:'$exerciseId', step: '$step'},
+              firstStep: {'$first': '$step'}
+            }},
+            {$group: {
+              _id:'$firstStep',
+              nrDone:{'$sum':1}
+            }},
+            {$project: {
+              _id:0,
+              step: '$_id',
+              nrDone: 1
+            }}
+          ],
+          difficultPipeline = [
+            {$match: difficultQuery},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              difficult: {'$first': '$isDifficult'}
+            }},
+            {$match: {difficult: true}},
+            {$project: {
+              _id:0
+            }}
+          ],
+          reviewPipeline = [
+            {$match: reviewQuery},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              dtToReview: {'$first': '$dtToReview'},
+            }},
+            {$match: {dtToReview:{$lte: new Date()}}},
+            {$project: {
+              _id:0
+            }}
+          ];
 
   const lesson = req.params.lessonId ? await Result.aggregate(lessonPipeline) : '',
         difficult = await Result.aggregate(difficultPipeline),
@@ -190,7 +206,7 @@ getStepCounts = async (req, res) => {
 module.exports = {  
   getTotalScore: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
-    this.getTotal(userId, (err, result) => {
+    this.getTotalPoints(userId, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching total score', function(){
         score = result && result.length ? result[0].points : 0;
         response.handleSuccess(res, score, 200, 'Fetched total score');
@@ -250,6 +266,7 @@ module.exports = {
       saveStep(res, results, userId, courseId, lessonId);
     }
   },
+  /*
   getLastResults: function(req, res) {
     // Get the learn level of the most recent exercises for this lesson
     const parms = req.query,
@@ -263,24 +280,27 @@ module.exports = {
         exerciseIds.push(exerciseId);
       }
     }
-    console.log('ids', userId, lessonId, exerciseIds);
-    const query = {userId, lessonId, step: {$ne:'study'}, exerciseId: {$in: exerciseIds}};
-
-    const pipeline = [
-      {$match: query},
-      {$sort: {dt: -1, sequence: -1}},
-      {$group: {
-        _id: '$exerciseId',
-        firstLevel: {'$first': '$learnLevel'},
-        totalPoints: {'$sum': '$points'}
-      }},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        learnLevel: '$firstLevel',
-        points: '$totalPoints'
-      }}
-    ];
+    const query = {
+            userId,
+            lessonId,
+            step: {$ne:'study'},
+            exerciseId: {$in: exerciseIds}
+          },
+          pipeline = [
+            {$match: query},
+            {$sort: {dt: -1, sequence: -1}},
+            {$group: {
+              _id: '$exerciseId',
+              firstLevel: {'$first': '$learnLevel'},
+              totalPoints: {'$sum': '$points'}
+            }},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              learnLevel: '$firstLevel',
+              points: '$totalPoints'
+            }}
+          ];
 
     Result.aggregate(pipeline, function(err, results) {
       console.log('resultLast', results);
@@ -288,40 +308,44 @@ module.exports = {
         response.handleSuccess(res, results, 200, 'Fetched results');
       });
     });
-  },
+  },*/
   getLessonResults: function(req, res) {
     // Get the results for all the exercises for this lesson
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           step = req.params.step,
-          query = {userId, lessonId, isLast: true};
-
+          query = {
+            userId,
+            lessonId,
+            isLast: true,
+            isDeleted: false
+          };
     if (step === 'practise') {
       query['$or'] = [{step:'study'}, {step:'practise'}];
     } else {
       query.step = step;
     }
     const pipeline = [
-      {$match: query},
-      {$sort: {dt: -1, sequence: -1}},
-      {$group: {
-        _id: '$exerciseId',
-        firstLevel: {'$first': '$learnLevel'},
-        isLearned: {'$first': '$isLearned'},
-        streak: {'$first': '$streak'},
-        dt: {'$first': '$dt'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'}
-      }},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        learnLevel: '$firstLevel',
-        isLearned: '$isLearned',
-        dt: '$dt',
-        daysBetweenReviews: '$daysBetweenReviews',
-        streak: '$streak'
-      }}
-    ];
+            {$match: query},
+            {$sort: {dt: -1, sequence: -1}},
+            {$group: {
+              _id: '$exerciseId',
+              firstLevel: {'$first': '$learnLevel'},
+              isLearned: {'$first': '$isLearned'},
+              streak: {'$first': '$streak'},
+              dt: {'$first': '$dt'},
+              daysBetweenReviews: {'$first': '$daysBetweenReviews'}
+            }},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              learnLevel: '$firstLevel',
+              isLearned: '$isLearned',
+              dt: '$dt',
+              daysBetweenReviews: '$daysBetweenReviews',
+              streak: '$streak'
+            }}
+          ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching all results', function(){
         response.handleSuccess(res, results, 200, 'Fetched all results');
@@ -332,48 +356,52 @@ module.exports = {
     // Get lesson results for overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          lastQuery = {userId, lessonId, isLast: true},
-          countQuery = {userId, lessonId};
-    console.log('fetching overview for lesson id', lessonId);
-    const lastPipeline = [
-      {$match: lastQuery},
-      {$sort: {dt: -1, sequence: -1}},
-      {$group: {
-        _id: '$exerciseId',
-        firstLevel: {'$first': '$learnLevel'},
-        isLearned: {'$first': '$isLearned'},
-        isDifficult: {'$first': '$isDifficult'},
-        streak: {'$first': '$streak'},
-        dt: {'$first': '$dt'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
-      }},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        isLearned: '$isLearned',
-        learnLevel: '$firstLevel',
-        isDifficult: '$isDifficult',
-        dt: '$dt',
-        daysBetweenReviews: '$daysBetweenReviews',
-        streak: '$streak',
-      }}
-    ];
-    const countPipeline = [
-      {$match: countQuery},
-      {$group: {
-        _id: '$exerciseId',
-        totalPoints: {'$sum': '$points'},
-        timesDone: {'$sum': {$cond: [{$eq: [ "$step", "study"]} , 0, 1]}},
-        timesCorrect: {'$sum': {$cond: ["$isCorrect", 1, 0 ]}}
-      }},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        points: '$totalPoints',
-        timesDone: '$timesDone',
-        timesCorrect: '$timesCorrect'
-      }}
-    ];
+          lastQuery = {
+            userId,
+            lessonId,
+            isLast: true,
+            isDeleted: false
+          },
+          countQuery = {userId, lessonId},
+          lastPipeline = [
+            {$match: lastQuery},
+            {$sort: {dt: -1, sequence: -1}},
+            {$group: {
+              _id: '$exerciseId',
+              firstLevel: {'$first': '$learnLevel'},
+              isLearned: {'$first': '$isLearned'},
+              isDifficult: {'$first': '$isDifficult'},
+              streak: {'$first': '$streak'},
+              dt: {'$first': '$dt'},
+              daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+            }},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              isLearned: '$isLearned',
+              learnLevel: '$firstLevel',
+              isDifficult: '$isDifficult',
+              dt: '$dt',
+              daysBetweenReviews: '$daysBetweenReviews',
+              streak: '$streak',
+            }}
+          ],
+          countPipeline = [
+            {$match: countQuery},
+            {$group: {
+              _id: '$exerciseId',
+              totalPoints: {'$sum': '$points'},
+              timesDone: {'$sum': {$cond: [{$eq: [ "$step", "study"]} , 0, 1]}},
+              timesCorrect: {'$sum': {$cond: ["$isCorrect", 1, 0 ]}}
+            }},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              points: '$totalPoints',
+              timesDone: '$timesDone',
+              timesCorrect: '$timesCorrect'
+            }}
+          ];
 
     const getReview = async () => {
       const last = await  Result.aggregate(lastPipeline);
@@ -392,7 +420,11 @@ module.exports = {
     // Get the lesson from the most recent result for a course
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          query = {userId, courseId, step: {$ne: 'difficult'}},
+          query = {
+            userId,
+            courseId,
+            step: {$ne: 'difficult'}
+          },
           projection = {_id: 0, lessonId: 1},
           options = {sort: {dt: -1, sequence: -1}};
     Result.findOne(query, projection, options, function(err, result) {
@@ -414,36 +446,39 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
-          sort = {dt:-1, sequence: -1},
-          query = {userId, courseId, isLast: true};
-
-    const pipeline = [
-      {$match: query},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        dtToReview: {'$first': '$dtToReview'},
-        dt: {'$first': '$dt'},
-        streak: {'$first': '$streak'},
-        learnLevel: {'$first': '$learnLevel'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
-        lessonId: {'$first': '$lessonId'},
-        difficult: {'$first': '$isDifficult'}
-      }},
-      {$match: {difficult: true}},
-      {$sample: {size: limit}},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        dtToReview: '$dtToReview',
-        dt: '$dt',
-        streak: '$streak',
-        learnLevel: '$learnLevel',
-        daysBetweenReviews: '$daysBetweenReviews',
-        lessonId: '$lessonId'
-      }}
-    ];
-
+          sort = {dt: -1, sequence: -1},
+          query = {
+            userId,
+            courseId,
+            isLast: true,
+            isDeleted: false
+          },
+          pipeline = [
+            {$match: query},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              dtToReview: {'$first': '$dtToReview'},
+              dt: {'$first': '$dt'},
+              streak: {'$first': '$streak'},
+              learnLevel: {'$first': '$learnLevel'},
+              daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+              lessonId: {'$first': '$lessonId'},
+              difficult: {'$first': '$isDifficult'}
+            }},
+            {$match: {difficult: true}},
+            {$sample: {size: limit}},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              dtToReview: '$dtToReview',
+              dt: '$dt',
+              streak: '$streak',
+              learnLevel: '$learnLevel',
+              daysBetweenReviews: '$daysBetweenReviews',
+              lessonId: '$lessonId'
+            }}
+          ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
         getExercises(courseId, results, function(err, difficult) {
@@ -459,35 +494,40 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
-          sort = {dt:-1, sequence: -1},
-          query = {userId, courseId, isLast: true, isLearned: true};
-    const pipeline = [
-      {$match: query},
-      {$sort: sort},
-      {$group: {
-        _id: '$exerciseId',
-        dtToReview: {'$first': '$dtToReview'},
-        dt: {'$first': '$dt'},
-        streak: {'$first': '$streak'},
-        learnLevel: {'$first': '$learnLevel'},
-        daysBetweenReviews: {'$first': '$daysBetweenReviews'},
-        lessonId: {'$first': '$lessonId'}
-      }},
-      {$match: {dtToReview:{$lte: new Date()}}},
-      {$sort: {dtToReview: 1}},
-      {$limit: limit},
-      {$project: {
-        _id: 0,
-        exerciseId: '$_id',
-        dtToReview: '$dtToReview',
-        dt: '$dt',
-        streak: '$streak',
-        learnLevel: '$learnLevel',
-        daysBetweenReviews: '$daysBetweenReviews',
-        lessonId: '$lessonId'
-      }}
-    ];
-
+          sort = {dt: -1, sequence: -1},
+          query = {
+            userId,
+            courseId,
+            isLast: true,
+            isLearned: true, 
+            isDeleted: false
+          },
+          pipeline = [
+            {$match: query},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              dtToReview: {'$first': '$dtToReview'},
+              dt: {'$first': '$dt'},
+              streak: {'$first': '$streak'},
+              learnLevel: {'$first': '$learnLevel'},
+              daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+              lessonId: {'$first': '$lessonId'}
+            }},
+            {$match: {dtToReview:{$lte: new Date()}}},
+            {$sort: {dtToReview: 1}},
+            {$limit: limit},
+            {$project: {
+              _id: 0,
+              exerciseId: '$_id',
+              dtToReview: '$dtToReview',
+              dt: '$dt',
+              streak: '$streak',
+              learnLevel: '$learnLevel',
+              daysBetweenReviews: '$daysBetweenReviews',
+              lessonId: '$lessonId'
+            }}
+          ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
         getExercises(courseId, results, function(err, toreview) {

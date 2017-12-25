@@ -109,7 +109,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   
-  router.get('/user/results/lesson/lastperexercise/:lessonId', results.getLastResults);
+  // router.get('/user/results/lesson/lastperexercise/:lessonId', results.getLastResults);
   router.get('/user/results/lesson/overview/:lessonId', results.getLessonOverviewResults);
   router.get('/user/results/lesson/:step/:lessonId', results.getLessonResults);
 
