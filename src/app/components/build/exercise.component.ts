@@ -375,8 +375,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
-        /* Foreign */
+      this.addRegions(exercise, this.selected, 'foreign');
+      this.addRegions(exercise, this.selected, 'local');
       if (!options.isGenus && !options.isArticle) {
+        /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
         exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
         exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
@@ -484,10 +486,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     exercise.foreign.word = this.exerciseForm.value['foreignWord'];
     exercise.wordTpe = this.exerciseForm.value['wordTpe'];
     exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
+    exercise.foreign.region = this.checkIfValue(exercise.foreign.region);
     exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
     exercise.foreign.info = this.checkIfValue(this.exerciseForm.value['info']);
     exercise.foreign.hint = this.checkIfValue(this.exerciseForm.value['foreignHint']);
     exercise.local.annotations = this.checkIfValue(exercise.local.annotations);
+    exercise.local.region = this.checkIfValue(exercise.local.region);
     exercise.local.alt = this.checkIfValue(exercise.local.alt);
     exercise.local.hint = this.checkIfValue(this.exerciseForm.value['localHint']);
     exercise.genus = this.checkIfValue(this.exerciseForm.value['genus']);
@@ -515,13 +519,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     return value;
   }
 
-  private addAnnotations(annotations: string[], word: WordPairDetail, tpe: string) {
-    let detail: WordDetail;
-    if (tpe === 'foreign') {
-      detail = word[this.lanForeign];
-    } else {
-      detail = word[this.lanLocal];
+  private addRegions(exercise: Exercise, word: WordPairDetail, tpe) {
+    const detail: WordDetail = tpe === 'foreign' ? word[this.lanForeign] : word[this.lanLocal];
+
+    if (detail.region && detail.region !== this.lanLocal) {
+      exercise[tpe].region = detail.region;
     }
+  }
+
+  private addAnnotations(annotations: string[], word: WordPairDetail, tpe: string) {
+    const detail: WordDetail = tpe === 'foreign' ? word[this.lanForeign] : word[this.lanLocal];
 
     if (tpe === 'local') {
       // add expected foreign wordtype to local annotations
@@ -535,8 +542,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         annotations.push(this.text[word[this.lanForeign].motion]);
       }
     }
-    if (tpe === 'foreign' && (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective' || detail.wordTpe === 'preposition')) {
-      annotations.push(this.text[detail.wordTpe]);
+
+    if (tpe === 'foreign') {
+      // Wordtpe
+      if (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective' || detail.wordTpe === 'preposition') {
+        annotations.push(this.text[detail.wordTpe]);
+      }
     }
 
     // If verb has aspect or motion, add to annotations

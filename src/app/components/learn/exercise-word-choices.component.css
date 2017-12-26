@@ -2,9 +2,11 @@
   display: block;
   margin-top: 32px;
   text-align: center;
+  margin-left: -32px;
+  margin-right: -32px;
 }
 .choice {
-  width: 320px;
+  width: 332px;
   margin: 4px 8px;
   font-size: 28px;
   text-align: left;
@@ -35,4 +37,8 @@
   font-size: 16px;
   font-style: italic;
   color: #bbb;
+}
+.region-flag{
+  margin-left: 16px;
+  margin-right: 12px;
 }

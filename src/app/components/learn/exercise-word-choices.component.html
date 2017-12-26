@@ -1,6 +1,11 @@
-<div class="answer-instruction" [style.visibility]="answered ? 'hidden' : 'visible'">
-  <span class="fa fa-info-circle"></span>
-  {{instruction}}
+<div class="answer-instruction">
+  <km-region-flag class="region-flag"
+    [lan]="lan"
+    [word]="flagWord">
+  </km-region-flag>
+  <span [style.visibility]="answered ? 'hidden' : 'visible'">
+    <span class="fa fa-info-circle fa-spacing"></span>{{instruction}}
+  </span>
 </div>
 <div 
   *ngFor="let choice of choices; let i=index" 

@@ -87,6 +87,7 @@ img.from {
 .btn {
   text-align: right;
   padding: 7px 12px;
+  height: 40px;
 }
 /* btn-review */
 .btn-review { 

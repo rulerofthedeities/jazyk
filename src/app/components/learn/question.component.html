@@ -3,7 +3,10 @@
   <div class="local" *ngIf="dir==='local'">
     <h1>
       <span>
-        <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+        <km-region-flag
+          [lan]="lanPair.from"
+          [word]="currentData.exercise?.local">
+        </km-region-flag>
       </span>
       <span class="word">
         {{currentData.exercise.local.word}}
@@ -25,7 +28,10 @@
   <div class="foreign" *ngIf="dir==='foreign'">
     <h1>
       <span>
-        <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
+        <km-region-flag
+          [lan]="lanPair.to"
+          [word]="currentData.exercise?.foreign">
+        </km-region-flag>
       </span>
       <span 
         class="word" 
@@ -47,10 +53,8 @@
     </h1>
     <div class="wordinfo">
       <div class="alts">{{getAlts('foreign', currentData.exercise)}}</div>
-      <div
-        class="label label-annotation"
-        *ngFor="let annotation of currentData.data.annotations">
-        {{annotation}}
+      <div *ngFor="let annotation of currentData.data.annotations">
+        <span class="label label-annotation">{{annotation}}</span>
       </div>
       <div class="hint" *ngIf="currentData.exercise.foreign?.hint">
         {{text["hint"]}}: {{currentData.exercise.foreign?.hint}}

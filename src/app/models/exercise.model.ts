@@ -3,12 +3,13 @@ export enum AnsweredType {Correct, Incorrect, AlmostCorrect, Alt};
 export enum ExerciseType {Word, Select, QA, FillIn, Genus, Article, Comparison};
 export enum QuestionType {Choices, Word, Select, FillIn, Comparison, Preview};
 
-interface ExerciseWord {
+export interface ExerciseWord {
   word: string;
   annotations?: string;
   hint?: string;
   info?: string;
   alt?: string;
+  region?: string;
 }
 
 export interface Exercise {

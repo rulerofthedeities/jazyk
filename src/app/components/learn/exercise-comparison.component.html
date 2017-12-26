@@ -12,9 +12,11 @@
 
 <!-- COMPARATIVE -->
 <div class="form-group">
-  <div 
-    class="control-label col-xs-1">
-    <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag steps-flag">
+  <div class="control-label col-xs-1">
+    <km-region-flag
+      [lan]="lanPair.to"
+      [word]="data.exercise.foreign">
+    </km-region-flag>
   </div>
   <div class="col-xs-4">
     <label for="answerComparative" class="step pull-right">

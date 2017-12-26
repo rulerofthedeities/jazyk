@@ -11,6 +11,7 @@ import {LearnSelectComponent} from './components/learn/exercise-select.component
 import {LearnQAComponent} from './components/learn/exercise-qa.component';
 import {LearnComparisonComponent} from './components/learn/exercise-comparison.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
+import {RegionFlagComponent} from './components/fields/region-flag.component';
 import {WordColorDirective} from './directives/word-color.directive';
 
 @NgModule({
@@ -27,6 +28,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
+    RegionFlagComponent,
     WordColorDirective
   ],
   providers: [
@@ -39,6 +41,7 @@ import {WordColorDirective} from './directives/word-color.directive';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
+    RegionFlagComponent,
     WordColorDirective
   ]
 })

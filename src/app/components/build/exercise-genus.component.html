@@ -7,7 +7,10 @@
     <label 
       for="foreignWord" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+      <km-region-flag
+        [lan]="languagePair.to"
+        [word]="currentExercise?.foreign">
+      </km-region-flag>
     </label>
     <div class="col-xs-11">
       <input 
@@ -56,7 +59,10 @@
     <label 
       for="localWord" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{this.languagePair.from}}.png" class="flag">
+      <km-region-flag
+        [lan]="languagePair.from"
+        [word]="currentExercise?.local">
+      </km-region-flag>
     </label>
     <div class="col-xs-11">
       <input 

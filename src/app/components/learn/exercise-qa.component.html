@@ -14,9 +14,11 @@
   {{text["hint"]}}: <span class="hint">{{question}}</span>
 </div>
 <div class="form-group">
-  <label 
-    class="control-label col-xs-1">
-    <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
+  <label class="control-label col-xs-1">
+    <km-region-flag
+      [lan]="lanPair.to"
+      [word]="data.exercise.foreign">
+    </km-region-flag>
   </label>
   <div class="col-xs-11">
     <div class="input-group answer">

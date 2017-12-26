@@ -8,6 +8,10 @@ h1 {
   color: #333;
   margin-right: 3px;
   border-radius: 6px;
+  float: left;
+}
+.region {
+  margin-right: 3px;
 }
 .wordinfo {
   margin-left: 42px;

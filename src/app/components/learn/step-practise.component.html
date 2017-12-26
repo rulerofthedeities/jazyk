@@ -39,8 +39,9 @@
             ></km-question>
           </div>
           <km-word-choices *ngIf="isQuestionType(qType.Choices)"
+            [lanPair]="lanPair"
             [choices]="currentChoices"
-            [correct]="currentData?.data?.isCorrect"
+            [data]="currentData"
             [answer]="answer"
             [answered]="answered"
             [isSelected]="isAnswered"
@@ -54,7 +55,7 @@
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
             [solution]="{solution: solution, msg: text['Expectedanswer']}"
             [instruction]="text['instructionWordfield']"
-            [data]="currentData?.data">
+            [data]="currentData">
           </km-word-field>
           <km-select *ngIf="isQuestionType(qType.Select)"
             [lanPair]="lanPair"

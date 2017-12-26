@@ -7,7 +7,10 @@
     <label 
       for="question" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+      <km-region-flag
+        [lan]="languagePair.to"
+        [word]="currentExercise?.foreign">
+      </km-region-flag>
     </label>
     <div class="col-xs-11">
       <input 
@@ -26,7 +29,10 @@
     <label 
       for="answer" 
       class="control-label col-xs-1">
-      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+      <km-region-flag
+        [lan]="languagePair.to"
+        [word]="currentExercise?.foreign">
+      </km-region-flag>
     </label>
     <div class="col-xs-11">
       <input 

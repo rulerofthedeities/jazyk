@@ -28,6 +28,14 @@ export class LearnQuestionComponent {
     return altwords;
   }
 
+  getRegion(tpe: string) {
+    if (this.currentData.exercise[tpe].region) {
+      return this.currentData.exercise[tpe].region;
+    } else {
+      return tpe === 'foreign' ? this.lanPair.to : this.lanPair.from;
+    }
+  }
+
   showGenusColor(): boolean {
     let showGenus = false;
     if (!this.hideGenus) {

@@ -5,7 +5,10 @@
 <div class="form-group">
   <label 
     class="control-label col-xs-1">
-    <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag">
+    <km-region-flag
+      [lan]="lanPair.to"
+      [word]="data.exercise.foreign">
+    </km-region-flag>
   </label>
   <div class="col-xs-11">
     <div class="input-group input-lg">
@@ -34,7 +37,10 @@
 <div class="form-group translation" *ngIf="isAnswered && translation">
   <label 
     class="control-label col-xs-1">
-    <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+    <km-region-flag
+      [lan]="lanPair.from"
+      [word]="data.exercise.local">
+    </km-region-flag>
   </label>
   <div class="col-xs-11">
     <div class="input-group input-lg">

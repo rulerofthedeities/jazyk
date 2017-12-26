@@ -11,7 +11,8 @@ var wordSchema = new Schema({
   annotations: String,
   hint: {type: String, trim: true},
   info: {type: String, trim: true},
-  alt: String
+  alt: String,
+  region: String
 }, {_id: false});
 
 var exerciseSchema = new Schema({
