@@ -1,0 +1,18 @@
+<div class="flags" (mouseout)='onLeave()'>
+  <ul class="region-list list-unstyled">
+    <li (click)="onToggle()" [class.clickable]="!!regions">
+      <img src="/assets/img/flags/{{getRegion()}}.png" class="flag">
+    </li>
+    <ng-template [ngIf]="showDropdown">
+      <li 
+        *ngFor="let r of regions; let i:index"
+        (click)="onSelectRegion(r)"
+        (mouseover)="onHoverRegion(i)"
+        >
+        <img src="/assets/img/flags/{{r}}.png" class="flag"
+        *ngIf="r!==region"
+        [class.hover]='hover===i'>
+      </li>
+    </ng-template>
+  </ul>
+</div>

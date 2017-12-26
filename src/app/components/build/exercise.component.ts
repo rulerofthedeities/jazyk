@@ -25,6 +25,8 @@ interface WordTpe {
 
 interface FormData {
   wordTpes: WordTpe[];
+  foreignRegions?: string[];
+  localRegions?: string[];
 }
 
 interface NewExerciseOptions {
@@ -105,7 +107,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       audios: false
     };
     this.setFormData();
-    this.getConfig(this.lanForeign);
+    this.getConfigs(this.languagePair);
   }
 
   ngAfterViewInit() {
@@ -272,6 +274,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.currentExercise.audio = this.audios[i].s3 === this.currentExercise.audio ? undefined : this.audios[i].s3;
   }
 
+  onUpdateRegion(newRegion: string, tpe: string) {
+    this.currentExercise[tpe].region = newRegion;
+    console.log('updated region', newRegion);
+  }
+
   getDynamicFieldLabel(): string {
     let label = '';
     this.customField = '';
@@ -312,15 +319,17 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     return label;
   }
 
-  private getConfig(lanCode: string) {
+  private getConfigs(lanPair: LanPair) {
     this.buildService
-    .fetchLanConfig(lanCode)
+    .fetchLanConfigs(lanPair)
     .takeWhile(() => this.componentActive)
     .subscribe(
       config => {
         if (config) {
           console.log('config', config);
-          this.config = config;
+          this.config = config.foreign;
+          this.formData.foreignRegions = config.foreign.regions
+          this.formData.localRegions = config.local.regions
           this.buildForm(this.currentExercise);
         }
       },

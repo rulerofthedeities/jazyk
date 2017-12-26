@@ -251,6 +251,13 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchLanConfigs(lanPair: LanPair) {
+    return this.http
+    .get('/api/config/lanpair/' + lanPair.from + '/' + lanPair.to)
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Common ***/
 
   private getTokenHeaders(): Headers {

@@ -1,0 +1,12 @@
+.flags {
+  position: relative;
+}
+.region-list {
+  position: absolute;
+}
+.hover {
+  border-color: red;
+}
+.clickable {
+  cursor: pointer;
+}

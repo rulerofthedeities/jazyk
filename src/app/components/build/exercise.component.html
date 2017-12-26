@@ -7,10 +7,12 @@
     <label 
       for="foreignWord" 
       class="control-label col-xs-1">
-      <km-region-flag
+      <km-region-flag-selector
         [lan]="languagePair.to"
-        [word]="currentExercise?.foreign">
-      </km-region-flag>
+        [region]="currentExercise?.foreign.region"
+        [regions]="formData.foreignRegions"
+        (newRegion)="onUpdateRegion($event,'foreign')">
+      </km-region-flag-selector>
     </label>
     <div class="col-xs-11">
       <input 
@@ -258,10 +260,12 @@
     <label 
       for="localWord" 
       class="control-label col-xs-1">
-      <km-region-flag
+      <km-region-flag-selector
         [lan]="languagePair.from"
-        [word]="currentExercise?.local">
-      </km-region-flag>
+        [region]="currentExercise?.local.region"
+        [regions]="formData.localRegions"
+        (newRegion)="onUpdateRegion($event,'local')">
+      </km-region-flag-selector>
     </label>
     <div class="col-xs-11">
       <input 

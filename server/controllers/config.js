@@ -13,6 +13,24 @@ module.exports = {
       });
     });
   },
+  getLanPairConfig: function(req, res) {
+    const lanLocal = req.params.lanLocal,
+          lanForeign = req.params.lanForeign,
+          queryLocal = {tpe:'language', code: lanLocal},
+          queryForeign = {tpe:'language', code: lanForeign};
+
+    const getConfigs = async () => {
+      const local = await Config.findOne(queryLocal);
+      const foreign = await Config.findOne(queryForeign);
+      return {local, foreign};
+    };
+
+    getConfigs().then((results) => {
+      response.handleSuccess(res, results, 200, 'Fetched configs');
+    }).catch((err) => {
+      response.handleError(err, res, 400, 'Error fetching configs');
+    });
+  },
   getWelcomeMessage: function(req, res) {
     const lanCode = req.params.lan,
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
