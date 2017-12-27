@@ -1,16 +1,12 @@
 <form *ngIf="isFormReady"
   [formGroup]="exerciseForm"
   class="form-horizontal">
-
+  
   <!-- QUESTION-->
   <div class="form-group">
     <label 
       for="question" 
       class="control-label col-xs-1">
-      <km-region-flag
-        [lan]="languagePair.to"
-        [word]="currentExercise?.foreign">
-      </km-region-flag>
     </label>
     <div class="col-xs-11">
       <input 
@@ -29,10 +25,12 @@
     <label 
       for="answer" 
       class="control-label col-xs-1">
-      <km-region-flag
+      <km-region-flag-selector
         [lan]="languagePair.to"
-        [word]="currentExercise?.foreign">
-      </km-region-flag>
+        [region]="currentExercise?.foreign.region"
+        [regions]="formData.foreignRegions"
+        (newRegion)="onUpdateRegion($event,'foreign')">
+      </km-region-flag-selector>
     </label>
     <div class="col-xs-11">
       <input 

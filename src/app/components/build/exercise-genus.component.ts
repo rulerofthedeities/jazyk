@@ -47,6 +47,8 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
     this.exerciseForm = this.formBuilder.group({
       localWord: [exercise.local.word, [Validators.required]],
       foreignWord: [exercise.foreign.word, [Validators.required]],
+      localRegion: [exercise.local.region],
+      foreignRegion: [exercise.foreign.region],
       genus: [exercise.genus],
       article: [exercise.article]
     });

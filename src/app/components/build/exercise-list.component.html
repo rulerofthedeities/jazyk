@@ -184,6 +184,7 @@
         <div [ngSwitch]="exercise.tpe">
           <km-build-exercise *ngSwitchCase="exType.Word"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -194,6 +195,7 @@
           </km-build-exercise>
           <km-build-select *ngSwitchCase="exType.Select"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -202,6 +204,7 @@
           </km-build-select>
           <km-build-qa *ngSwitchCase="exType.QA"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -210,6 +213,7 @@
           </km-build-qa>
           <km-build-fillin *ngSwitchCase="exType.FillIn"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -218,6 +222,7 @@
           </km-build-fillin>
           <km-build-genus *ngSwitchCase="exType.Genus"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -226,6 +231,7 @@
           </km-build-genus>
           <km-build-genus *ngSwitchCase="exType.Article"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"
@@ -234,6 +240,7 @@
           </km-build-genus>
           <km-build-comparison *ngSwitchCase="exType.Comparison"
             [languagePair]="languagePair"
+            [configs]="configs"
             [lessonId]="lessonId"
             [exercise]="exercise"
             [text]="text"

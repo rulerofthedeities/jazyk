@@ -29,6 +29,8 @@ export class BuildComparisonComponent extends ExerciseBase implements OnInit, On
   protected buildForm(exercise: Exercise) {
     const words = exercise.foreign.word.split('|');
     this.exerciseForm = this.formBuilder.group({
+      localRegion: [this.formData.localRegions[0] || this.languagePair.from],
+      foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
       localWord: [exercise.local.word, [Validators.required]],
       foreignWord: [words[0], [Validators.required]],
       foreignComparative: [words[1], [Validators.required]],

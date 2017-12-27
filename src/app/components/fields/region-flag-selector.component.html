@@ -1,7 +1,7 @@
 <div class="flags" (mouseout)='onLeave()'>
   <ul class="region-list list-unstyled">
     <li (click)="onToggle()" [class.clickable]="!!regions">
-      <img src="/assets/img/flags/{{getRegion()}}.png" class="flag">
+      <img src="/assets/img/flags/{{region}}.png" alt="{{region}}" class="flag">
     </li>
     <ng-template [ngIf]="showDropdown">
       <li 

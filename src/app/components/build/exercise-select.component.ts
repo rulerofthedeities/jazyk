@@ -50,6 +50,8 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
       const optionControls: FormControl[] = [];
       optionControls.push(new FormControl(''));
       this.exerciseForm = this.formBuilder.group({
+        localRegion: [this.formData.localRegions[0] || this.languagePair.from],
+        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
         select: ['', [Validators.required, ValidationService.checkSelect]],
         selectLocal: [''],
         options: new FormArray(optionControls)
@@ -65,6 +67,8 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
         optionControls.push(new FormControl(option))
       );
       this.exerciseForm = this.formBuilder.group({
+        localRegion: [exercise.local.region],
+        foreignRegion: [exercise.foreign.region],
         select: [exercise.foreign.word, [Validators.required, ValidationService.checkSelect]],
         selectLocal: [exercise.local.word],
         options: new FormArray(optionControls)
@@ -80,8 +84,14 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
     const options = formValues.options.filter(option => option);
     console.log('filtered options', options);
     const exercise: Exercise = {
-      foreign: {word: formValues.select},
-      local: {word: formValues.selectLocal},
+      foreign: {
+        word: formValues.select,
+        region: formValues.foreignRegion
+      },
+      local: {
+        word: formValues.selectLocal,
+        region: formValues.localRegion
+      },
       options: options.join('|'),
       tpe: ExerciseType.Select,
       difficulty: 0

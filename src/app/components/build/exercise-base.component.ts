@@ -2,12 +2,18 @@ import {Input, Output, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {LanPair} from '../../models/course.model';
+import {LanPair, LanConfigs} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
+interface FormData {
+  foreignRegions?: string[];
+  localRegions?: string[];
+}
+
 export abstract class ExerciseBase {
   @Input() languagePair: LanPair;
+  @Input() configs: LanConfigs;
   @Input() protected exercise: Exercise;
   @Input() text: Object;
   @Input() lessonId: string;
@@ -21,6 +27,7 @@ export abstract class ExerciseBase {
   isFormReady = false;
   isSaving = false;
   exType = ExerciseType;
+  formData: FormData;
 
   constructor(
     protected buildService: BuildService,
@@ -31,6 +38,10 @@ export abstract class ExerciseBase {
   init() {
     if (this.exercise) {
       this.currentExercise = JSON.parse(JSON.stringify(this.exercise));
+    }
+    this.formData = {
+      localRegions: this.configs.local.regions,
+      foreignRegions: this.configs.foreign.regions
     }
     this.buildForm(this.currentExercise);
   }
@@ -46,6 +57,15 @@ export abstract class ExerciseBase {
     if (form.valid) {
       this.isSaving = true;
       this.buildExistingExercise(form.value);
+    }
+  }
+
+  onUpdateRegion(newRegion: string, tpe: string) {
+    if (this.currentExercise) {
+      this.currentExercise[tpe].region = newRegion;
+    } else {
+      console.log('updating regon', tpe);
+      this.exerciseForm.patchValue({[tpe + 'Region']: newRegion});
     }
   }
 

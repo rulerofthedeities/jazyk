@@ -84,7 +84,8 @@ export class UtilsService {
       'determiner',
       'phrase',
       'abbreviation',
-      'wordpart'
+      'wordpart',
+      'article'
     ];
   }
 

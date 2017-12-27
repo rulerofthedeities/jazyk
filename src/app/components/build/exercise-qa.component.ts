@@ -30,12 +30,14 @@ export class BuildQAComponent extends ExerciseBase implements OnInit, OnDestroy 
     if (!exercise) {
       // New QA
       this.exerciseForm = this.formBuilder.group({
+        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
         question: ['', [Validators.required]],
         answer: ['', ValidationService.checkQAnswer]
       });
     } else {
       // Edit QA
       this.exerciseForm = this.formBuilder.group({
+        foreignRegion: [exercise.foreign.region],
         question: [exercise.foreign.hint, [Validators.required]],
         answer: [exercise.foreign.word, ValidationService.checkQAnswer]
       });
@@ -47,8 +49,12 @@ export class BuildQAComponent extends ExerciseBase implements OnInit, OnDestroy 
     const exercise: Exercise = {
       foreign: {
         hint: formValues.question,
-        word: formValues.answer},
-      local: {word: ''},
+        word: formValues.answer,
+        region: formValues.foreignRegion
+      },
+      local: {
+        word: ''
+      },
       tpe: ExerciseType.QA,
       difficulty: 0
     };

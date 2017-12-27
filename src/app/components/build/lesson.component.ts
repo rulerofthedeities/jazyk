@@ -4,7 +4,7 @@ import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {UserService} from '../../services/user.service';
-import {Course, Lesson, Translation} from '../../models/course.model';
+import {Course, Lesson, Translation, LanPair, LanConfigs} from '../../models/course.model';
 import {Filter, WordPairDetail} from '../../models/word.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
@@ -32,6 +32,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   tpe: ExerciseType;
   exType = ExerciseType;
   showDropDown = false;
+  configs: LanConfigs;
 
   @ViewChild('dropdown') el: ElementRef;
   @HostListener('document:click', ['$event'])
@@ -144,6 +145,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
           this.lanForeign = lesson.languagePair.to;
           this.getCourse(); // for header & chapters
           this.setBidirectional();
+          this.getConfigs(lesson.languagePair);
         } else {
           console.log(this.text);
           this.infoMsg = this.text['LessonIdInvalid'];
@@ -194,6 +196,16 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
         this.setText(translations);
         this.getLesson(lessonId);
       },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getConfigs(lanPair: LanPair) {
+    this.buildService
+    .fetchLanConfigs(lanPair)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      configs => this.configs = configs,
       error => this.errorService.handleError(error)
     );
   }

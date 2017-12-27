@@ -30,12 +30,14 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
     if (!exercise) {
       // New FillIn
       this.exerciseForm = this.formBuilder.group({
+        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
         hint: [''],
         sentence: ['', ValidationService.checkFillInSentence]
       });
     } else {
       // Edit FillIn
       this.exerciseForm = this.formBuilder.group({
+        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
         hint: [exercise.foreign.hint],
         sentence: [exercise.foreign.word, ValidationService.checkFillInSentence]
       });
@@ -47,7 +49,9 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
     const exercise: Exercise = {
       foreign: {
         hint: formValues.hint,
-        word: formValues.sentence},
+        word: formValues.sentence,
+        region: formValues.foreignRegion
+      },
       local: {word: ''},
       tpe: ExerciseType.FillIn,
       difficulty: 0

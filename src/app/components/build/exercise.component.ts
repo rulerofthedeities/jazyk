@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
-import {LanPair, LanConfig, LessonOptions} from '../../models/course.model';
+import {LanPair, LanConfig, LanConfigs, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
@@ -47,6 +47,7 @@ interface NewExerciseOptions {
 
 export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() languagePair: LanPair;
+  @Input() configs: LanConfigs;
   @Input() lessonId: string;
   @Input() lessonOptions: LessonOptions;
   @Input() exercise: Exercise;
@@ -106,8 +107,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       images: false,
       audios: false
     };
-    this.setFormData();
-    this.getConfigs(this.languagePair);
+    this.setFormData(this.configs);
+    //this.getConfigs(this.languagePair);
+    this.config = this.configs.foreign;
+    this.buildForm(this.currentExercise);
   }
 
   ngAfterViewInit() {
@@ -158,6 +161,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onAddNewWord(form: any) {
+    console.log('adding', form.values);
     if (form.valid) {
       this.isSaving = true;
       this.buildNewExercise(form.value, {
@@ -275,8 +279,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onUpdateRegion(newRegion: string, tpe: string) {
-    this.currentExercise[tpe].region = newRegion;
-    console.log('updated region', newRegion);
+    if (this.currentExercise) {
+      this.currentExercise[tpe].region = newRegion;
+    } else {
+      this.exerciseForm.patchValue({[tpe + 'Region']: newRegion});
+    }
   }
 
   getDynamicFieldLabel(): string {
@@ -318,7 +325,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     return label;
   }
-
+/*
   private getConfigs(lanPair: LanPair) {
     this.buildService
     .fetchLanConfigs(lanPair)
@@ -328,14 +335,15 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         if (config) {
           console.log('config', config);
           this.config = config.foreign;
-          this.formData.foreignRegions = config.foreign.regions
-          this.formData.localRegions = config.local.regions
+          this.formData.foreignRegions = config.foreign.regions;
+          this.formData.localRegions = config.local.regions;
           this.buildForm(this.currentExercise);
         }
       },
       error => this.errorService.handleError(error)
     );
   }
+  */
 
   private loadMedia() {
     if (!this.isMediaLoaded && this.currentExercise.wordDetailId) {
@@ -355,9 +363,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
-  private setFormData() {
+  private setFormData(configs: LanConfigs) {
     const tpes: string[] = this.utilsService.getWordTypes();
-    this.formData = {wordTpes: []};
+    this.formData = {
+      wordTpes: [],
+      localRegions: this.configs.local.regions || [],
+      foreignRegions: this.configs.foreign.regions || []
+    };
     tpes.forEach(tpe => {
       this.formData.wordTpes.push({name: tpe, nameLocal: this.text[tpe]});
     });
@@ -365,8 +377,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private buildNewExercise(formValues: any, options: NewExerciseOptions) {
     const exercise: Exercise = {
-      local: {word: formValues.localWord},
-      foreign: {word: formValues.foreignWord},
+      local: {
+        word: formValues.localWord,
+        region: formValues.localRegion
+      },
+      foreign: {
+        word: formValues.foreignWord,
+        region: formValues.foreignRegion
+      },
       tpe: ExerciseType.Word
     };
     const foreignAnnotations: string[] = [];
@@ -384,8 +402,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
-      this.addRegions(exercise, this.selected, 'foreign');
-      this.addRegions(exercise, this.selected, 'local');
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
@@ -528,14 +544,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     return value;
   }
 
-  private addRegions(exercise: Exercise, word: WordPairDetail, tpe) {
-    const detail: WordDetail = tpe === 'foreign' ? word[this.lanForeign] : word[this.lanLocal];
-
-    if (detail.region && detail.region !== this.lanLocal) {
-      exercise[tpe].region = detail.region;
-    }
-  }
-
   private addAnnotations(annotations: string[], word: WordPairDetail, tpe: string) {
     const detail: WordDetail = tpe === 'foreign' ? word[this.lanForeign] : word[this.lanLocal];
 
@@ -624,7 +632,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       // New exercise
       this.exerciseForm = this.formBuilder.group({
         localWord: ['', [Validators.required]],
-        foreignWord: ['', [Validators.required]]
+        foreignWord: ['', [Validators.required]],
+        localRegion: [this.formData.localRegions[0] || this.languagePair.from],
+        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to]
       });
     } else {
       // Edit exercise
@@ -633,6 +643,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         foreignWord: [exercise.foreign.word, [Validators.required]],
         localHint: [exercise.local.hint],
         foreignHint: [exercise.foreign.hint],
+        localRegion: [exercise.local.region],
+        foreignRegion: [exercise.foreign.region],
         info: [exercise.foreign.info],
         wordTpe: [exercise.wordTpe],
         genus: [exercise.genus],

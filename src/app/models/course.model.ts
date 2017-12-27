@@ -35,6 +35,11 @@ export interface LanConfig  {
   keys?: string[];
 }
 
+export interface LanConfigs {
+  foreign: LanConfig;
+  local: LanConfig;
+}
+
 export interface LessonId { // for sorting
   chapter: string;
   lessonIds: string[];

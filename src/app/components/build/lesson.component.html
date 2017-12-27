@@ -33,6 +33,7 @@
     <km-exercise-list 
       *ngIf="lesson"
       [languagePair]="lesson?.languagePair"
+      [configs]="configs"
       [lessonId]="lesson?._id"
       [lessonOptions]="lesson?.options"
       [text]="text"
@@ -78,6 +79,7 @@
       <km-build-exercise
         *ngIf="tpe===exType.Word"
         [languagePair]="lesson?.languagePair"
+        [configs]="configs"
         [lessonId]="lesson?._id"
         [text]="text"
         [lessonOptions]="lesson?.options"
@@ -86,6 +88,7 @@
       </km-build-exercise>
       <km-build-select *ngIf="tpe===exType.Select"
         [languagePair]="lesson?.languagePair"
+        [configs]="configs"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"
@@ -93,6 +96,7 @@
       </km-build-select>
       <km-build-qa *ngIf="tpe===exType.QA"
         [languagePair]="lesson?.languagePair"
+        [configs]="configs"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"
@@ -100,6 +104,7 @@
       </km-build-qa>
       <km-build-fillin *ngIf="tpe===exType.FillIn"
         [languagePair]="lesson?.languagePair"
+        [configs]="configs"
         [lessonId]="lesson?._id"
         [text]="text"
         (addedExercises)="onExercisesAdded($event)"

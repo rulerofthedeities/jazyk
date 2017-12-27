@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'km-region-flag-selector',
@@ -6,7 +6,7 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
   styleUrls: ['region-flag-selector.component.css']
 })
 
-export class RegionFlagSelectorComponent {
+export class RegionFlagSelectorComponent implements OnInit {
   @Input() lan: string; // default lan for flag
   @Input() region: string; // currently selected region
   @Input() regions: string[];
@@ -14,16 +14,14 @@ export class RegionFlagSelectorComponent {
   showDropdown = false;
   hover: number;
 
-  getRegion() {
-    if (this.region) {
-      return this.region;
-    } else {
-      return this.lan;
+  ngOnInit() {
+    if (!this.region) {
+      this.region = this.regions.length ? this.regions[0] : this.lan;
     }
   }
 
   onToggle() {
-    if (this.regions) {
+    if (this.regions.length) {
       this.showDropdown = !this.showDropdown;
     }
   }
