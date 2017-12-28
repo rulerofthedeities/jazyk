@@ -20,6 +20,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() lessons: Lesson[];
   @Input() defaults: CourseDefaults;
   @Input() chapters: string[];
+  @Input() regions: string[] = [];
   @Input() nr: number;
   @Input() text: Object;
   @Output() done = new EventEmitter<Lesson>();
@@ -86,6 +87,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lessonForm.markAsDirty();
   }
 
+  onSetRegion(newRegion: string) {
+    this.lessonForm.patchValue({'region': newRegion});
+    this.lessonForm.markAsDirty();
+  }
+
   private editLesson() {
     console.log('editing lesson', this.lesson);
     this.isNew = false;
@@ -122,7 +128,8 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       chapterName: '',
       options: {
         caseSensitive: this.defaults.caseSensitive,
-        addArticle: this.defaults.addArticle
+        addArticle: this.defaults.addArticle,
+        region: this.defaults.region
       },
       exerciseSteps: {
         intro: {
@@ -158,9 +165,9 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       name: [this.lesson.name, [Validators.required]],
       exerciseSteps: new FormArray(exerciseStepControls),
       caseSensitive: [this.lesson.options.caseSensitive],
-      addArticle: [this.lesson.options.addArticle]
+      addArticle: [this.lesson.options.addArticle],
+      region: [this.lesson.options.region]
     });
-    console.log('LESSON FORM', this.lessonForm);
     this.isFormReady = true;
   }
 
@@ -170,7 +177,8 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lesson.name = formValues.name;
     this.lesson.options = {
       caseSensitive: formValues.caseSensitive,
-      addArticle: formValues.addArticle
+      addArticle: formValues.addArticle,
+      region: formValues.region
     };
     this.lesson.exerciseSteps = {
       intro: {

@@ -10,6 +10,7 @@ export interface Language {
   active: boolean;
   article: boolean;
   articles?: string[];
+  regions?: string[];
 }
 
 export interface LanPair {
@@ -86,6 +87,7 @@ export interface UserCourse {
 export interface LessonOptions {
   caseSensitive: boolean;
   addArticle: boolean;
+  region: string;
 }
 
 export interface Lesson {

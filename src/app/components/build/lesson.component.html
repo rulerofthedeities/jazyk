@@ -16,6 +16,7 @@
 
   <km-build-lesson-header *ngIf="isEditMode" class="header"
     [lesson]="lesson"
+    [regions]="configs?.foreign.regions"
     [defaults]="course.defaults"
     [text]="text"
     [chapters]="chapters"

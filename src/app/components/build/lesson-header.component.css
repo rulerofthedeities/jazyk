@@ -21,3 +21,7 @@ km-toggle {
   top: 6px;
   position: relative;
 }
+#region {
+  position: relative;
+  top: 12px;
+}

@@ -48,7 +48,8 @@ var ExerciseStepsSchema = new Schema({
 
 var LessonOptionsSchema = new Schema({
   caseSensitive: {type: Boolean, default: false},
-  addArticle: {type: Boolean, default: false}
+  addArticle: {type: Boolean, default: false},
+  region: String
 }, {_id: false})
 
 var lessonSchema = new Schema({

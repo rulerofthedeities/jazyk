@@ -10,7 +10,6 @@ import {Exercise, ExerciseType} from '../../models/exercise.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  selector: 'km-build-lesson',
   templateUrl: 'lesson.component.html',
   styleUrls: ['headers.css', 'lesson.component.css']
 })

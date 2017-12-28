@@ -96,6 +96,20 @@
       </km-toggle>
     </div>
   </div>
+  <!-- REGION -->
+  <div class="form-group form-group-lg" *ngIf="regions.length > 0">
+    <label for="region" class="control-label col-xs-2">
+      {{text['Region']}}
+    </label>
+    <div class="col-xs-10">
+      <km-region-flag-selector id="region"
+        [lan]="languagePair.to"
+        [region]="lessonForm.value.region"
+        [regions]="regions"
+        (newRegion)="onSetRegion($event)">
+      </km-region-flag-selector>
+    </div>
+  </div>
 
   <!-- BUTTONS -->
   <div class="row">
