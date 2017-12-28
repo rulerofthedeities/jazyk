@@ -3,12 +3,19 @@
   margin-left: -15px;
   margin-right: -15px;
 }
+.language-flag {
+  position: relative;
+  top: 12px;
+}
 .panel {
   background-color: rgba(239, 239, 239, .9);
   border-radius: 6px;
 }
 .fa-user, .fa-check, .fa-wifi {
   color: green;
+}
+.lb-sm {
+  font-size: 14px !important;
 }
 km-toggle {
   top: 6px;

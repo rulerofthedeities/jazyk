@@ -58,9 +58,19 @@
           <div *ngSwitchCase="exType.Word">
             <div class="col-xs-4">
               <div class="words">
+                <km-region-flag
+                  [lan]="languagePair.to"
+                  [word]="exercise.foreign"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}
                 </span>
@@ -81,9 +91,19 @@
           <div *ngSwitchCase="exType.Select">
             <div class="col-xs-6">
               <div class="words">
+                <km-region-flag
+                  [lan]="languagePair.to"
+                  [word]="exercise.foreign"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}
                 </span>
@@ -99,6 +119,11 @@
               <div class="words">
                 <span 
                   (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> <span *ngIf="exercise.foreign?.word">/</span>
                 <span (dblclick)="onEditExercise(exercise._id)">
@@ -113,6 +138,11 @@
               <div class="words">
                 <span 
                   (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> <span *ngIf="exercise.foreign?.word">/</span>
                 <span (dblclick)="onEditExercise(exercise._id)">
@@ -126,8 +156,18 @@
             <div class="col-xs-4">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}
                 </span>
@@ -142,8 +182,18 @@
             <div class="col-xs-4">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
                   <strong>{{exercise.article}} {{exercise.foreign?.word}}</strong>
                 </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}
                 </span>
@@ -158,8 +208,18 @@
             <div class="col-xs-4">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
                   <strong>{{getComparisons(exercise)}}</strong>
                 </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
                   {{exercise.local?.word}}
                 </span>

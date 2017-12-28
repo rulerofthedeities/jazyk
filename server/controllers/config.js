@@ -64,7 +64,8 @@ module.exports = {
         nativeName: 1,
         interface: 1,
         active: 1,
-        articles: 1
+        articles: 1,
+        regions: 1
       }},
       {$sort: {code: 1}}
     ];

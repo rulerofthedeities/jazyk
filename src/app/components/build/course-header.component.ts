@@ -77,6 +77,12 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     this.courseForm.markAsDirty();
   }
 
+  onSetRegion(newRegion: string) {
+    this.courseForm.patchValue({'region': newRegion});
+    this.courseForm.markAsDirty();
+    this.course.defaults.region = newRegion;
+  }
+
   onLanguageSelected(newLanguage: Language) {
     const userLan = this.userService.user.main.lan;
     this.currentLanguage = newLanguage;
@@ -85,7 +91,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       to: newLanguage.code
     };
     this.course.image = userLan + '-' + newLanguage.code + '-course1.jpg'; // temporary
-    this.courseForm.patchValue({'addArticle': newLanguage.articles && newLanguage.articles.length});
+    this.courseForm.patchValue({'addArticle': newLanguage.articles.length > 1});
+    this.courseForm.patchValue({'region': null});
   }
 
   private createNewCourse() {
@@ -101,7 +108,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       image: '',
       defaults: {
         caseSensitive: false,
-        addArticle: false
+        addArticle: false,
+        region: null
       },
       isPublic: true,
       isPublished: false,
@@ -120,7 +128,8 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       name: [this.course.name, Validators.required],
       description: [this.course.description],
       caseSensitive: [this.course.defaults.caseSensitive],
-      addArticle: [this.course.defaults.addArticle]
+      addArticle: [this.course.defaults.addArticle],
+      region: [this.course.defaults.region]
     });
     this.isFormReady = true;
   }
@@ -130,6 +139,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
     this.course.description = formValues.description;
     this.course.defaults.caseSensitive = formValues.caseSensitive;
     this.course.defaults.addArticle = formValues.addArticle;
+    this.course.defaults.region = formValues.region;
   }
 
   private addCourse() {

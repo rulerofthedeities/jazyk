@@ -48,6 +48,7 @@ export interface LessonId { // for sorting
 export interface CourseDefaults {
   caseSensitive: boolean;
   addArticle: boolean;
+  region: string;
 }
 
 export interface Course {

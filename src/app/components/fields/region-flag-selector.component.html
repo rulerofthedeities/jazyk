@@ -1,4 +1,4 @@
-<div class="flags" (mouseout)='onLeave()'>
+<div class="flags" (mouseout)="onLeave()">
   <ul class="region-list list-unstyled">
     <li (click)="onToggle()" [class.clickable]="!!regions">
       <img src="/assets/img/flags/{{region}}.png" alt="{{region}}" class="flag">

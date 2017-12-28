@@ -179,10 +179,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private setActiveLanguages(languages: Language[]) {
     this.languages = languages.filter(language => language.active);
-    console.log('languages', this.languages);
-    this.languages.forEach(language => {
-      language.article = language.articles && language.articles.length > 0;
-    });
   }
 
   private getDependables() {

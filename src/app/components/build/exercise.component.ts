@@ -685,7 +685,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private checkArticle(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
-    if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.article) {
+    if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.article && this.configs.foreign.articles.length > 1) {
       return true;
     }
   }

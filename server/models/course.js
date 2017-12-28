@@ -19,7 +19,8 @@ var lessonSchema = new Schema({
 
 var defaultsSchema = new Schema({
   caseSensitive: {type: Boolean, default: false},
-  addArticle: {type: Boolean, default: false}
+  addArticle: {type: Boolean, default: false},
+  region: String,
 }, {_id: false});
 
 var dtSchema = new Schema({

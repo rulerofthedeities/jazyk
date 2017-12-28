@@ -9,13 +9,17 @@
       <div class="form-group form-group-lg" *ngIf="languages">
         <label for="language" class="control-label col-xs-2">{{text["Language"]}}</label>
         <div class="col-xs-10">
-          <km-language-selector
+          <km-language-selector *ngIf="isNewCourse"
             [languages]="languages"
             [currentLanguage]="currentLanguage"
             [disabled]="!isNewCourse"
             [text]="text"
             (languageSelected)="onLanguageSelected($event)">
           </km-language-selector>
+          <km-region-flag *ngIf="!isNewCourse" class="language-flag"
+            [lan]="course?.languagePair.to"
+            [word]="course?.defaults">
+          </km-region-flag>
         </div>
       </div>
 
@@ -90,27 +94,48 @@
       </div>
 
       <!-- DEFAULT VALUES -->
-      <div class="form-group form-group-lg" *ngIf="!isNewCourse">
-        <label for="caseSensitive" class="control-label col-xs-2">
-          {{text['Defaults']}} 
-        </label>
-        <div class="col-xs-10">
-          <label for="caseSensitive">{{text['CaseSensitive']}}:</label>
-          <km-toggle id="caseSensitive"
-            [toggle]="courseForm.value.caseSensitive"
-            (toggled)="onSetFlag('caseSensitive', $event)">
-          </km-toggle>
+      <div *ngIf="!isNewCourse">
+        <div class="form-group form-group-lg">
+          <label class="control-label col-xs-2">
+            {{text['Defaults']}}
+          </label>
+          <div class="col-xs-10">
+          </div>
         </div>
-      </div>
-      <div class="form-group form-group-lg" *ngIf="!isNewCourse && currentLanguage?.article">
-        <label for="addArticle" class="control-label col-xs-2">
-        </label>
-        <div class="col-xs-10">
-          <label for="addArticle">{{text['AddArticle']}}:</label>
-          <km-toggle id="addArticle"
-            [toggle]="courseForm.value.addArticle"
-            (toggled)="onSetFlag('addArticle', $event)">
-          </km-toggle>
+        <div class="form-group form-group-lg">
+          <label for="caseSensitive" class="control-label col-xs-2 lb-sm">
+            {{text['CaseSensitive']}}:
+          </label>
+          <div class="col-xs-10">
+            <km-toggle id="caseSensitive"
+              [toggle]="courseForm.value.caseSensitive"
+              (toggled)="onSetFlag('caseSensitive', $event)">
+            </km-toggle>
+          </div>
+        </div>
+        <div class="form-group form-group-lg" *ngIf="currentLanguage?.articles.length > 1">
+          <label for="addArticle" class="control-label col-xs-2 lb-sm">
+            {{text['AddArticle']}}:
+          </label>
+          <div class="col-xs-10">
+            <km-toggle id="addArticle"
+              [toggle]="courseForm.value.addArticle"
+              (toggled)="onSetFlag('addArticle', $event)">
+            </km-toggle>
+          </div>
+        </div>
+        <div class="form-group form-group-lg" *ngIf="currentLanguage?.regions.length > 1">
+          <label for="region" class="control-label col-xs-2 lb-sm">
+            {{text['Region']}}:
+          </label>
+          <div class="col-xs-10 control-label">
+            <km-region-flag-selector
+              [lan]="currentLanguage.code"
+              [region]="course.defaults.region"
+              [regions]="currentLanguage.regions"
+              (newRegion)="onSetRegion($event)">
+            </km-region-flag-selector>
+          </div>
         </div>
       </div>
 
