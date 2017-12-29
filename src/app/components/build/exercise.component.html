@@ -1,7 +1,6 @@
 <form *ngIf="isFormReady"
   [formGroup]="exerciseForm"
   class="form-horizontal">
-
   <!-- FOREIGN WORD -->
   <div class="form-group">
     <label 
@@ -9,7 +8,7 @@
       class="control-label col-xs-1 text-center">
       <km-region-flag-selector
         [lan]="languagePair.to"
-        [region]="currentExercise?.foreign.region"
+        [region]="exerciseForm.value.foreignRegion"
         [regions]="formData.foreignRegions"
         (newRegion)="onUpdateRegion($event,'foreign')">
       </km-region-flag-selector>

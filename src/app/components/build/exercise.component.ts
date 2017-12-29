@@ -108,7 +108,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       audios: false
     };
     this.setFormData(this.configs);
-    //this.getConfigs(this.languagePair);
     this.config = this.configs.foreign;
     this.buildForm(this.currentExercise);
   }
@@ -402,6 +401,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
+      exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
@@ -634,7 +634,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         localWord: ['', [Validators.required]],
         foreignWord: ['', [Validators.required]],
         localRegion: [this.formData.localRegions[0] || this.languagePair.from],
-        foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to]
+        foreignRegion: [this.lessonOptions.region || this.formData.foreignRegions[0] || this.languagePair.to]
       });
     } else {
       // Edit exercise
@@ -653,7 +653,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         aspect: [exercise.aspect]
       });
     }
-
     this.setupFilterEvent();
     this.isFormReady = true;
   }
