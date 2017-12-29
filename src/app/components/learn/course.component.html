@@ -69,6 +69,7 @@
     </km-learn-intro>
     <km-learn-study  *ngSwitchCase="'study'"
       [exercises]="lesson.exercises"
+      [lessonOptions]="lesson.options"
       [lanPair]="course.languagePair"
       [lessonId]="lesson._id"
       [text]="text"

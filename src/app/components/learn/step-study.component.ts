@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
-import {LanPair} from '../../models/course.model';
+import {LanPair, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -21,6 +21,7 @@ import 'rxjs/add/operator/takeWhile';
 export class LearnStudyComponent implements OnInit, OnDestroy {
   @Input() private exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
+  @Input() private lessonOptions: LessonOptions;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() isDemo = false;
@@ -227,10 +228,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
-    }, {
-      caseSensitive: false,
-      addArticle: false
-    });
+    }, this.lessonOptions);
     if (!this.stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }

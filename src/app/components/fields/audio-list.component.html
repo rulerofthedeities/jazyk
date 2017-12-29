@@ -1,0 +1,13 @@
+<ul class="list-group files">
+  <li *ngFor="let audio of audios; let i=index" (click)="onClick(i)" class="list-group-item audio">
+    <km-audio-file
+      [regionAudio]="getRegionAudio(audio)">
+    </km-audio-file>
+    <span class="name">{{getLocalName(i)}}</span>
+    <span class="marks">
+      <span class="fa fa-check" *ngIf="isSelected(i)"></span>
+      <span class="fa fa-times" *ngIf="!isSelected(i)"></span>
+    </span>
+  </li>
+</ul>
+<div class="clearfix"></div>

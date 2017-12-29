@@ -1,24 +1,10 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {File} from '../../models/word.model';
-
+import {RegionAudio} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-audio-list',
-  template: `
-    <ul class="list-group files">
-      <li *ngFor="let audio of audios; let i=index" (click)="onClick(i)" class="list-group-item audio">
-        <km-audio-file
-          [fileName]="audio.s3">
-        </km-audio-file>
-        <span class="name">{{getLocalName(i)}}</span>
-        <span class="marks">
-          <span class="fa fa-check" *ngIf="isSelected(i)"></span>
-          <span class="fa fa-times" *ngIf="!isSelected(i)"></span>
-        </span>
-      </li>
-    </ul>
-    <div class="clearfix"></div>
-  `,
+  templateUrl: 'audio-list.component.html',
   styleUrls: ['files.css']
 })
 export class AudioListComponent {
@@ -32,6 +18,13 @@ export class AudioListComponent {
 
   isSelected(i: number): boolean {
     return this.audios[i].s3 === this.selected ? true : false;
+  }
+
+  getRegionAudio(audio: File): RegionAudio {
+    return {
+      s3: audio.s3,
+      region: audio.local.substr(0, 2)
+    };
   }
 
   getLocalName(i: number): string {

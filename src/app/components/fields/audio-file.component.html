@@ -1,0 +1,14 @@
+<span *ngIf="regionAudio && regionAudio.s3"
+  (click)="onPlay()"
+  class="audio fa fa-play-circle"
+  [ngClass]="{
+    'fa-play-circle': !audio || audio.ended ? true : false,
+    'fa-pause-circle': audio && !audio.ended ? true : false,
+    inactive: !active
+  }">
+  <km-region-flag
+    [lan]="regionAudio.region"
+    [word]="null"
+    [thumb]="true">
+  </km-region-flag>
+</span>

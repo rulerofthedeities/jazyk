@@ -7,7 +7,7 @@ import {ExerciseWord} from '../../models/exercise.model';
     <img
       src="/assets/img/flags/{{getRegion()}}.png"
       class="flag"
-      [class.thumb]="thumb">
+      [class.thumb]="thumb" *ngIf="lan">
   `,
   styles: [`
     .thumb {

@@ -15,10 +15,15 @@ var wordSchema = new Schema({
   region: String
 }, {_id: false});
 
+var regionAudioSchema = new Schema({
+  s3: {type: String, required: true},
+  region: String
+}, {_id: false});
+
 var exerciseSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true },
-  local: {type: wordSchema, required: true, trim: true},
-  foreign: {type: wordSchema, required: true, trim: true},
+  local: {type: wordSchema, required: true},
+  foreign: {type: wordSchema, required: true},
   wordDetailId: String,
   wordTpe: String,
   followingCase: String,
@@ -27,7 +32,7 @@ var exerciseSchema = new Schema({
   aspect: String,
   motion: String,
   image: String,
-  audio: String,
+  audio: regionAudioSchema,
   options: String,
   tpe: Number,
   difficulty: {type: Number, default: 0}

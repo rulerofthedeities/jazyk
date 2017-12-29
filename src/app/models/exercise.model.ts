@@ -12,6 +12,11 @@ export interface ExerciseWord {
   region?: string;
 }
 
+export interface RegionAudio {
+  s3: string;
+  region?: string;
+}
+
 export interface Exercise {
   _id?: string;
   wordDetailId?: string;
@@ -23,7 +28,7 @@ export interface Exercise {
   article?: string;
   aspect?: string;
   image?: string;
-  audio?: string;
+  audio?: RegionAudio;
   options?: string;
   tpe?: ExerciseType;
   difficulty?: number; // 0-100

@@ -6,7 +6,7 @@ import {BuildService} from '../../services/build.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig, LanConfigs, LessonOptions} from '../../models/course.model';
-import {Exercise, ExerciseType} from '../../models/exercise.model';
+import {Exercise, ExerciseType, RegionAudio} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
 import 'rxjs/add/operator/debounceTime';
@@ -274,7 +274,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onClickAudio(i: number) {
-    this.currentExercise.audio = this.audios[i].s3 === this.currentExercise.audio ? undefined : this.audios[i].s3;
+    if (this.currentExercise.audio && this.audios[i].s3 === this.currentExercise.audio.s3) {
+      this.currentExercise.audio = undefined; // unselected audio
+    } else {
+      this.currentExercise.audio = {
+        s3: this.audios[i].s3,
+        region: this.audios[i].local.substr(0, 2)
+      }
+    }
   }
 
   onUpdateRegion(newRegion: string, tpe: string) {
@@ -401,7 +408,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
-      exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
+      if (this.selected[this.lanForeign].region) {
+        exercise.foreign.region = this.selected[this.lanForeign].region // Override region for words selected from database !
+      }
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
@@ -420,9 +429,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
           exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
         }
         exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
-        if (this.selected[this.lanForeign].audios) {
-          exercise.audio = this.selected[this.lanForeign].audios[0].s3;
-        }
+        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
         if (this.selected[this.lanForeign].images) {
           exercise.image = this.selected[this.lanForeign].images[0].s3;
         }
@@ -585,6 +592,29 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     if (detail.isSuperlative) {
       annotations.push(this.text['superlative']);
+    }
+  }
+
+  private selectAudio(audios: File[], region: string): RegionAudio {
+
+    const getRegionAudio = (audio: File): RegionAudio => {
+      return {
+        s3: audio.s3,
+        region: audio.local.substr(0, 2)
+      };
+    }
+
+    if (audios && audios.length > 0) {
+      if (audios.length === 1) {
+        return getRegionAudio(audios[0]);
+      } else {
+        //check if there is a region for the region of the exercise
+        const searchRegion = region ? region : this.lanForeign,
+              filteredAudios = audios.filter(audio => audio.local.substr(0, 2) === searchRegion);
+        if (filteredAudios.length > 0) {
+          return getRegionAudio(filteredAudios[0])
+        } else return getRegionAudio(audios[0]);
+      }
     }
   }
 

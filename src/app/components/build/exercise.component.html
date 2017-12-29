@@ -241,12 +241,13 @@
         <div class="audio" 
           *ngIf="!addFields['audios']">
           <km-audio-file
-            [fileName]="currentExercise.audio">
+            [regionAudio]="currentExercise.audio">
           </km-audio-file>
         </div>
+        <pre>{{audios|json}}</pre>
         <km-audio-list *ngIf="addFields['audios']" 
           [audios]="audios"
-          [selected]="currentExercise.audio"
+          [selected]="currentExercise.audio?.s3"
           (clickedAudio)=onClickAudio($event)>
         </km-audio-list>
       </div>

@@ -10,7 +10,6 @@ import {ErrorMessageComponent} from './components/msg/error-message.component';
 import {InfoMessageComponent} from './components/msg/info-message.component';
 import {LanguageSelectorComponent} from './components/fields/language-selector.component';
 import {ModalConfirmComponent} from './components/modals/modal-confirm.component';
-import {AudioFileComponent} from './components/fields/audio-file.component';
 import {FieldMessagesComponent} from './components/msg/field-messages.component';
 import {UserComponent} from './components/user/user.component';
 import {UserCompactProfileComponent} from './components/user/compact-profile.component';
@@ -37,7 +36,6 @@ import {ScorePipe} from './pipes/score.pipe';
     InfoMessageComponent,
     LanguageSelectorComponent,
     ModalConfirmComponent,
-    AudioFileComponent,
     FieldMessagesComponent,
     UserComponent,
     UserCompactProfileComponent,
@@ -47,8 +45,8 @@ import {ScorePipe} from './pipes/score.pipe';
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    ScorePipe,
-    LearnCourseSummaryComponent
+    LearnCourseSummaryComponent,
+    ScorePipe
   ],
   providers: [
     UtilsService,
@@ -59,7 +57,6 @@ import {ScorePipe} from './pipes/score.pipe';
     InfoMessageComponent,
     LanguageSelectorComponent,
     ModalConfirmComponent,
-    AudioFileComponent,
     FieldMessagesComponent,
     UserComponent,
     UserCompactProfileComponent,
@@ -72,8 +69,8 @@ import {ScorePipe} from './pipes/score.pipe';
     MarkdownModule,
     ToggleComponent,
     LoaderComponent,
-    ScorePipe,
-    LearnCourseSummaryComponent
+    LearnCourseSummaryComponent,
+    ScorePipe
   ]
 })
 export class SharedModule {
