@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course, UserCourse, CourseListType} from '../../models/course.model';
+import {Course, UserCourse, CourseListType, AccessLevel, UserAccess} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {ErrorService} from '../../services/error.service';
@@ -29,6 +29,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   @Input() userData: UserCourse = null;
   @Input() text: {};
   @Input() isDemo = false;
+  @Input() showAccess = false;
   @Input() tpe: CourseListType;
   @Input() lastActivity: string; // only for dashboard
   @Output() unsubscribe = new EventEmitter<string>();
@@ -46,10 +47,10 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
+    this.percDone = 0;
     if (this.tpe === CourseListType.Learn) {
-      this.percDone = 0; // Todo : get count done
+      this.getCourseData();
     }
-    this.getCourseData();
   }
 
   onEditCourse() {
@@ -74,15 +75,22 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     this.unsubscribe.emit(this.course._id);
   }
 
-  isAuthor(authorIds: string[]): boolean {
-    let isAuthor = false;
-    if (authorIds && authorIds.length > 0) {
-      const userId = this.userService.user._id;
-      if (authorIds.find(authId => authId === userId)) {
-        isAuthor = true;
-      }
+  isAuthor(): boolean {
+    const access = this.course.access,
+          userId = this.userService.user._id,
+          userAccess = access.find(accessItem => accessItem.userId === userId);
+    return userAccess && userAccess.level >= AccessLevel.Author;
+  }
+
+  getAccessLevel(): string {
+    let level = 0;
+    const access = this.course.access,
+          userId = this.userService.user._id,
+          userAccess = access.find(accessItem => accessItem.userId === userId);
+    if (userAccess) {
+      level = userAccess.level;
     }
-    return isAuthor;
+    return this.text[AccessLevel[level]];
   }
 
   private getCourseData() {

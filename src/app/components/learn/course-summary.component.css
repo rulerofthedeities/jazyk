@@ -20,6 +20,9 @@
   height: 64px;
   color: #333;
 }
+.access {
+  margin-top: 6px
+}
 .stop {
   margin-bottom: 4px;
 }

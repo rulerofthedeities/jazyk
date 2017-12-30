@@ -1,5 +1,5 @@
 <!-- NEW COURSE -->
-<button class="btn btn-success" (click)="onNewCourse()">
+<button class="btn btn-success btn-new-course" (click)="onNewCourse()">
   {{text["newcourse"]}}
 </button>
 
@@ -25,6 +25,7 @@
       <km-course-summary
         [course]="course"
         [text]="text"
+        [showAccess]="true"
         [tpe]="listType.Teach">
       </km-course-summary>
     </li>

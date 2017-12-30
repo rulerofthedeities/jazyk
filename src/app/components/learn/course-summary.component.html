@@ -35,7 +35,7 @@
           (click)="onStartCourse()">
           {{text["startcourse"]}}
         </button>
-        <button class="btn btn-warning" *ngIf="isAuthor(course.authorId)"
+        <button class="btn btn-warning" *ngIf="isAuthor()"
           (click)="onEditCourse()">
           {{text["updatecourse"]}}
         </button>
@@ -76,13 +76,16 @@
         </button>
       </div>
       <div class="info">
-        <div>{{doneData.words}} / {{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
-        <div>{{doneData.exercises}} / {{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
+        <div>{{doneData.words}}{{doneData.words === undefined ? '' : ' / '}}{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
+        <div>{{doneData.exercises}}{{doneData.exercises === undefined ? '' : ' / '}}{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
         <div class="dates" *ngIf="tpe === listType.Learn && userData?.dt">
           {{text["StartedOn"]}}: {{userData?.dt?.dtSubscribed | date:'yyyy-MM-dd'}}
         </div>
         <div class="dates" *ngIf="tpe === listType.Home">
           {{text["LastActivity"]}}: {{lastActivity}}
+        </div>
+        <div class="access">
+          <span class="fa fa-key fa-spacing"></span>{{getAccessLevel()}}
         </div>
       </div>
       <div class="stop" *ngIf="tpe===listType.Learn && !isDemo">

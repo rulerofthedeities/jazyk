@@ -101,11 +101,11 @@ module.exports = {
       });
     });
   },
-  getUserCreatedCourses: function(req, res) {
-    // Get all courses that this user has created
+  getAuthorCourses: function(req, res) {
+    // Get all courses that this user has author access to
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {
-            access: access.checkAccess(userId, 5) // Must be at least owner;
+            access: access.checkAccess(userId, 2) // Must be at least author;
           }
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching user created courses', function(){
@@ -138,7 +138,7 @@ module.exports = {
     // get courses for profile
     const userId = req.params.userId,
           query = {
-            access: access.checkAccess(userId, 4) // Must be at least manager
+            access: access.checkAccess(userId, 4), // Must be at least manager
             isPublic: true,
             isPublished: true
           },

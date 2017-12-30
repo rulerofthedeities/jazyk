@@ -56,6 +56,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       courses => {
+        console.log('build courses', courses);
         this.courses = courses;
         if (courses && courses.length) {
           this.getLanguages();

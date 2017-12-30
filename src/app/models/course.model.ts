@@ -53,6 +53,11 @@ export interface CourseDefaults {
   region: string;
 }
 
+export interface UserAccess {
+  userId: string;
+  level: number;
+}
+
 export interface Course {
   _id?: string;
   languagePair: LanPair;
@@ -69,6 +74,7 @@ export interface Course {
   exercisesCount?: number;
   chapters: string[];
   lessons?: LessonId[];
+  access?: UserAccess[];
 }
 
 interface UserCourseDates {

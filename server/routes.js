@@ -133,7 +133,7 @@ module.exports.initialize = function(app, router) {
   router.get('/courses/teaching/:userId', courses.getTeachingCourses);
 
   /* build */
-  router.get('/build/courses', courses.getUserCreatedCourses);
+  router.get('/build/courses', courses.getAuthorCourses);
   router.get('/build/course/:courseId', courses.getAuthorCourse);
   router.post('/build/course', courses.addCourse);
   router.put('/build/course/header', courses.updateCourseHeader);
