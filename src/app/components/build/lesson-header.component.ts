@@ -219,7 +219,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     .updateLessonHeader(this.lesson)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      updatedCourse => this.done.emit(this.lesson),
+      updatedLesson => this.done.emit(this.lesson),
       error => this.errorService.handleError(error)
     );
   }

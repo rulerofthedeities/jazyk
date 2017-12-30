@@ -1,5 +1,6 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
+      access = require('./access'),
       Lesson = require('../models/lesson'),
       Course = require('../models/course').model;
 
@@ -50,38 +51,60 @@ module.exports = {
     }
   },
   addLesson: function(req, res) {
-    const lesson = new Lesson(req.body),
-          courseQuery = {_id: lesson.courseId};
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lesson = new Lesson(req.body),
+          courseQuery = {
+            _id: lesson.courseId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          };
     lesson._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
 
     // First get access levels for course and add these to lesson
     Course.findOne(courseQuery, function(err, courseResult) {
       response.handleError(err, res, 400, 'Error getting course (adding lesson)', function(){
-        lesson.access = courseResult.access;
-        lesson.save(function(err, result) {
-          response.handleError(err, res, 400, 'Error adding lesson', function(){
-            response.handleSuccess(res, result, 200, 'Added lesson');
+        if (courseResult) {
+          lesson.access = courseResult.access;
+          lesson.save(function(err, result) {
+            response.handleError(err, res, 400, 'Error adding lesson', function(){
+              response.handleSuccess(res, result, 200, 'Added lesson');
+            });
           });
-        });
+        } else {
+          err = 'Not authorized';
+          response.handleError(err, res, 401, 'Not authorized to add lesson');
+        }
       });
     });
   },
   removeLesson: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {_id: lessonId},
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
           update = {$set: {
             isDeleted: true
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      response.handleError(err, res, 400, 'Error removing lesson', function(){
-        response.handleSuccess(res, result, 200, 'Removed lesson');
-      });
+      if (result) {
+        response.handleError(err, res, 400, 'Error removing lesson', function(){
+          response.handleSuccess(res, result, 200, 'Removed lesson');
+        });
+      } else {
+        err = 'Not authorized';
+        response.handleError(err, res, 401, 'Not authorized to remove lesson');
+      }
     });
   },
   updateLessonHeader: function(req, res) {
-    const lesson = new Lesson(req.body),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lesson = new Lesson(req.body),
           lessonId = new mongoose.Types.ObjectId(lesson._id),
-          query = {_id: lessonId},
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
           update = {$set: {
             name: lesson.name,
             exerciseSteps: lesson.exerciseSteps,
@@ -89,23 +112,36 @@ module.exports = {
             options: lesson.options
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating lesson header', function(){
-        response.handleSuccess(res, result, 200, 'Updated lesson header');
-      });
+      if (result) {
+        response.handleError(err, res, 400, 'Error updating lesson header', function(){
+          response.handleSuccess(res, result, 200, 'Updated lesson header');
+        });
+      } else {
+        err = 'Not authorized';
+        response.handleError(err, res, 401, 'Not authorized to update lesson');
+      }
     });
   },
   updateIntro: function(req, res) {
     const intro = req.body.intro,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          query = {_id: lessonId}, // userId
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
           update = {$set: {
             intro: intro
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating lesson intro', function(){
-        response.handleSuccess(res, result, 200, 'Updated lesson intro');
-      });
+      if (result) {
+        response.handleError(err, res, 400, 'Error updating lesson intro', function(){
+          response.handleSuccess(res, result, 200, 'Updated lesson intro');
+        });
+      } else {
+        err = 'Not authorized';
+        response.handleError(err, res, 401, 'Not authorized to update lesson intro');
+      }
     });
   },
   getIntro: function(req, res) {
