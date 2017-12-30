@@ -27,7 +27,7 @@ let getCourse = function(req, res, authorOnly) {
   } else {
     //invalid id
     err = 'Invalid course id';
-    response.handleError(err, res, 401, err);
+    response.handleError(err, res, 400, err);
   }
 }
 

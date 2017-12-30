@@ -47,7 +47,8 @@ module.exports = {
       });
     } else {
       //invalid id
-      response.handleSuccess(res, null, 200, 'Invalid lesson id');
+      err = 'Invalid lesson id';
+      response.handleError(err, res, 400, err);
     }
   },
   addLesson: function(req, res) {

@@ -1,30 +1,31 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
+      access = require('./access'),
       Course = require('../models/course').model,
       Lesson = require('../models/lesson'),
       Result = require('../models/result'),
       WordPair = require('../models/wordpair');
 
 updateCourseWordCount = function(courseId, totals) {
-  allWordAndExercisesCount = 0;
-  wordOnlyCount = 0;
+  let allWordAndExercisesCount = 0,
+      wordOnlyCount = 0;
   totals.forEach(count => {
     allWordAndExercisesCount += count.total;
     if (count._id === 0) {
       wordOnlyCount = count.total;
     }
   });
-  Course.findOneAndUpdate(
-    {_id: courseId},
-    {$set: {
-      totalCount: allWordAndExercisesCount,
-      wordCount: wordOnlyCount
-    }}, function(err, result) {
-      if (err) {
-        console.log('ERREXE02: Error updating total # of exercises for course "' + courseId + '"')
-      }
+
+  const query = {_id: courseId},
+        update = {$set: {
+          totalCount: allWordAndExercisesCount,
+          wordCount: wordOnlyCount
+        }};
+  Course.findOneAndUpdate(query, update, function(err, result) {
+    if (err) {
+      console.log('ERREXE02: Error updating total # of exercises for course "' + courseId + '"')
     }
-  );
+  });
 }
 
 getCourseWordCount = function(id) {
@@ -85,8 +86,7 @@ getChoicesFromAllCourses = function(res, options) {
           {$project: projection}
         ];
   Lesson.aggregate(pipeline, function(err, choices) {
-    console.log('allcourses', choices);
-    response.handleError(err, res, 500, 'Error fetching choices from multiple courses', function(){
+    response.handleError(err, res, 400, 'Error fetching choices from multiple courses', function(){
       response.handleSuccess(res, choices, 200, 'Fetched choices from multiple courses');
     });
   });
@@ -112,83 +112,114 @@ module.exports = {
             {$project: {_id: 0, exercise: '$exercises'}}
           ];
     Lesson.aggregate(pipeline, function(err, exercises) {
-      response.handleError(err, res, 500, 'Error fetching exercises', function(){
+      response.handleError(err, res, 400, 'Error fetching exercises', function(){
         response.handleSuccess(res, exercises, 200, 'Fetched exercises');
       });
     });
   },
   addExercises: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           exercises = req.body;
     exercises.forEach(exercise => {
       exercise._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
     })
-    Lesson.findOneAndUpdate(
-      {_id: lessonId},
-      {$addToSet: {
-        exercises: {$each: exercises}
-      }},
-    function(err, result) {
-      response.handleError(err, res, 500, 'Error adding exercise(s)', function() {
-        getCourseWordCount(result.courseId);
-        response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
-      });
+    const query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
+          update = {$addToSet: {
+            exercises: {$each: exercises}
+          }};
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      if (result) {
+        response.handleError(err, res, 400, 'Error adding exercise(s)', function() {
+          getCourseWordCount(result.courseId);
+          response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
+        });
+      } else {
+        err = 'Not authorized to add exercise';
+        response.handleError(err, res, 401, err);
+      }
     });
   },
   updateExercise: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           exercise = req.body,
-          exerciseId = new mongoose.Types.ObjectId(exercise._id);
+          exerciseId = new mongoose.Types.ObjectId(exercise._id),
+          query = {
+            _id: lessonId,
+            'exercises._id': exerciseId,
+            access: access.checkAccess(userId, 2) // Must be at least author
+          };
 
     console.log('updating exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
     if (exercise) {
-      Lesson.findOneAndUpdate(
-        {_id: lessonId, 'exercises._id': exerciseId},
-        { $set: { 'exercises.$': exercise}},
-        function(err, result) {
-          response.handleError(err, res, 500, 'Error updating exercise', function(){
+      const update = { $set: { 'exercises.$': exercise}}
+      Lesson.findOneAndUpdate(query, update, function(err, result) {
+        if (result) {
+          response.handleError(err, res, 400, 'Error updating exercise', function(){
             response.handleSuccess(res, null, 200, 'Updated exercise');
           });
+        } else {
+          err = 'Not authorized to update exercise';
+          response.handleError(err, res, 401, err);
         }
-      );
+      });
     } else {
-      response.handleSuccess(res, null, 304, 'No exercise to update');
+      err = 'No exercise to update';
+      response.handleError(err, res, 304, 'No exercise to update');
     }
   },
   updateExercises: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          exercises = req.body;
+          exercises = req.body
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
+          update = {$set: { 'exercises': exercises}};
 
     console.log('updating all exercises for lesson ' + lessonId);
 
-    Lesson.findOneAndUpdate(
-      {_id: lessonId},
-      { $set: { 'exercises': exercises}},
-      function(err, result) {
-        response.handleError(err, res, 500, 'Error updating exercises in lesson ' + lessonId, function(){
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      if (result) {
+        response.handleError(err, res, 400, 'Error updating exercises in lesson ' + lessonId, function(){
           response.handleSuccess(res, null, 200, 'Updated exercises in lesson ' + lessonId);
         });
+      } else {
+        err = 'Not authorized to update exercises';
+        response.handleError(err, res, 401, err);
       }
-    );
+    });
   },
   removeExercise: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
-          exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId);
+          exerciseId = new mongoose.Types.ObjectId(req.params.exerciseId),
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
+          update = {
+            $pull: { exercises: {_id : exerciseId }}
+          };
 
     console.log('removing exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
 
-    Lesson.findOneAndUpdate(
-      {_id: lessonId},
-      { $pull: { exercises: {_id : exerciseId }}},
-      function(err, result) {
-        response.handleError(err, res, 500, 'Error removing exercise', function(){
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      if (result) {
+        response.handleError(err, res, 400, 'Error removing exercise', function(){
           getCourseWordCount(result.courseId);
           response.handleSuccess(res, null, 200, 'Removed exercise');
           setResultExercisesAsDeleted(userId, lessonId, exerciseId);
         });
+      } else {
+        err = 'Not authorized to remove exercise';
+        response.handleError(err, res, 401, err);
       }
-    );
+    });
   },
   getCourseChoices: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
@@ -211,7 +242,7 @@ module.exports = {
             {$project: projection}
           ];
     Lesson.aggregate(pipeline, function(err, choices) {
-      response.handleError(err, res, 500, 'Error fetching choices', function(){
+      response.handleError(err, res, 400, 'Error fetching choices', function(){
         if (choices.length >= minChoices || !lans) {
           response.handleSuccess(res, choices, 200, 'Fetched choices');
         } else {
