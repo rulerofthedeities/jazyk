@@ -3,7 +3,7 @@ import {Http, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
 import {User, LearnSettings, MainSettings, JazykConfig, Profile, Message, PublicProfile, Notification} from '../models/user.model';
-import {Language, Course} from '../models/course.model';
+import {Language, Course, UserAccess, AccessLevel} from '../models/course.model';
 import {AuthService} from './auth.service';
 import {Subscription} from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -96,6 +96,26 @@ export class UserService {
     };
     return user;
   }
+
+  // ACCESS LEVELS
+
+  isAuthor(access: UserAccess[]): boolean {
+    const userId = this.user._id,
+          userAccess = access.find(accessItem => accessItem.userId === userId);
+    return userAccess && userAccess.level >= AccessLevel.Author;
+  }
+
+  getAccessLevel(access: UserAccess[]): number {
+    let level = 0;
+    const userId = this.user._id,
+          userAccess = access.find(accessItem => accessItem.userId === userId);
+    if (userAccess) {
+      level = userAccess.level;
+    }
+    return level;
+  }
+
+  // EVENTS
 
   interfaceLanChanged(newLan: string) {
     localStorage.setItem('km-jazyk.lan', newLan); // Set current logged in lan also as default lan for when logged out

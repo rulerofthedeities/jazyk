@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course, UserCourse, CourseListType, AccessLevel, UserAccess} from '../../models/course.model';
+import {Course, UserCourse, CourseListType, AccessLevel} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {ErrorService} from '../../services/error.service';
@@ -76,20 +76,11 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   }
 
   isAuthor(): boolean {
-    const access = this.course.access,
-          userId = this.userService.user._id,
-          userAccess = access.find(accessItem => accessItem.userId === userId);
-    return userAccess && userAccess.level >= AccessLevel.Author;
+    return this.userService.isAuthor(this.course.access);
   }
 
   getAccessLevel(): string {
-    let level = 0;
-    const access = this.course.access,
-          userId = this.userService.user._id,
-          userAccess = access.find(accessItem => accessItem.userId === userId);
-    if (userAccess) {
-      level = userAccess.level;
-    }
+    const level = this.userService.getAccessLevel(this.course.access);
     return this.text[AccessLevel[level]];
   }
 

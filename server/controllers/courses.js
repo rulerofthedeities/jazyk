@@ -6,12 +6,12 @@ const response = require('../response'),
 
 let getCourse = function(req, res, authorOnly) {
   if (mongoose.Types.ObjectId.isValid(req.params.courseId)) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          query = {
-            _id: courseId,
-            isPublished: true,
-            isPublic: true
-          };
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
+    let query = {
+          _id: courseId,
+          isPublished: true,
+          isPublic: true
+        };
     if (authorOnly) {
       const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
       query = {

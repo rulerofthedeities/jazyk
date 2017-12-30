@@ -57,6 +57,11 @@ var LessonOptionsSchema = new Schema({
   region: String
 }, {_id: false})
 
+var accessSchema = new Schema({
+  userId: {type: Schema.Types.ObjectId, required: true},
+  level: {type: Number, default: 0} // AccessLevel {None, Reader, Author, Editor, Manager, Owner};
+}, {_id: false});
+
 var lessonSchema = new Schema({
   _id: {type: Schema.Types.ObjectId, required: true},
   courseId: Schema.Types.ObjectId,
@@ -69,6 +74,7 @@ var lessonSchema = new Schema({
   intro: String,
   difficulty: Number,
   isPublished: Boolean,
+  access: {type: [accessSchema], required: true},
   isDeleted: {type: Boolean, default: false}
 })
 

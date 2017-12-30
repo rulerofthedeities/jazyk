@@ -38,7 +38,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
       (errorData: Error) => {
         console.log('ERROR:', errorData);
         if (errorData.msg) {
-          const translatedMsg = this.text[errorData.msg] ? this.text[errorData.msg] : errorData.msg;
+          const translatedMsg = this.text && this.text[errorData.msg] ? this.text[errorData.msg] : errorData.msg;
           this.msg = translatedMsg;
         } else {
           this.msg = '';

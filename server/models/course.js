@@ -49,7 +49,7 @@ var courseSchema = new Schema({
     lessons: [lessonSchema],
     totalCount: {type: Number, default: 0},
     wordCount: {type: Number, default: 0},
-    access: [accessSchema],
+    access: {type: [accessSchema], required: true},
     dt: {type: dtSchema, required: true, default: {}}
   }, {collection: 'courses'}
 );

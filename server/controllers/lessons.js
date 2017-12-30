@@ -1,30 +1,46 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Lesson = require('../models/lesson'),
-      Course = require('../models/course');
+      Course = require('../models/course').model;
 
 module.exports = {
   getLessons: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.id);
-    Lesson.find({courseId, isDeleted: false}, {}, {sort: {nr: 1}}, function(err, lessons) {
-      response.handleError(err, res, 500, 'Error fetching lessons', function(){
+    const courseId = new mongoose.Types.ObjectId(req.params.id),
+          query = {
+            courseId,
+            isDeleted: false
+          },
+          options = {
+            sort: {nr: 1}
+          };
+    Lesson.find(query, {}, options, function(err, lessons) {
+      response.handleError(err, res, 400, 'Error fetching lessons', function(){
         response.handleSuccess(res, lessons, 200, 'Fetched lessons');
       });
     });
   },
   getLessonHeaders: function(req, res) {
-    const courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    Lesson.find({courseId, isDeleted: false}, {name: 1, chapterName: 1}, function(err, lessons) {
-      response.handleError(err, res, 500, 'Error fetching lesson headers', function(){
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          query = {
+            courseId,
+            isDeleted: false
+          },
+          projection = {
+            name: 1,
+            chapterName: 1
+          };
+    Lesson.find(query, projection, function(err, lessons) {
+      response.handleError(err, res, 400, 'Error fetching lesson headers', function(){
         response.handleSuccess(res, lessons, 200, 'Fetched lesson headers');
       });
     });
   },
   getLesson: function(req, res) {
     if (mongoose.Types.ObjectId.isValid(req.params.lessonId)) {
-      const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-      Lesson.findOne({_id: lessonId}, {}, function(err, lesson) {
-        response.handleError(err, res, 500, 'Error fetching lesson', function(){
+      const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+            query = {_id: lessonId};
+      Lesson.findOne(query, {}, function(err, lesson) {
+        response.handleError(err, res, 400, 'Error fetching lesson', function(){
           response.handleSuccess(res, lesson, 200, 'Fetched lesson');
         });
       });
@@ -34,39 +50,46 @@ module.exports = {
     }
   },
   addLesson: function(req, res) {
-    const lesson = new Lesson(req.body);
+    const lesson = new Lesson(req.body),
+          courseQuery = {_id: lesson.courseId};
     lesson._id = new mongoose.Types.ObjectId(); // Mongoose fails to create ID
 
-    lesson.save(function(err, result) {
-      response.handleError(err, res, 500, 'Error adding lesson', function(){
-        response.handleSuccess(res, result, 200, 'Added lesson');
+    // First get access levels for course and add these to lesson
+    Course.findOne(courseQuery, function(err, courseResult) {
+      response.handleError(err, res, 400, 'Error getting course (adding lesson)', function(){
+        lesson.access = courseResult.access;
+        lesson.save(function(err, result) {
+          response.handleError(err, res, 400, 'Error adding lesson', function(){
+            response.handleSuccess(res, result, 200, 'Added lesson');
+          });
+        });
       });
     });
   },
   removeLesson: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    Lesson.findOneAndUpdate(
-      {_id: lessonId},
-      {$set: {
-        isDeleted: true
-      }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error removing lesson', function(){
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {_id: lessonId},
+          update = {$set: {
+            isDeleted: true
+          }};
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error removing lesson', function(){
         response.handleSuccess(res, result, 200, 'Removed lesson');
       });
     });
   },
   updateLessonHeader: function(req, res) {
-    const lesson = new Lesson(req.body);
-    const lessonId = new mongoose.Types.ObjectId(lesson._id);
-    Lesson.findOneAndUpdate(
-      {_id: lessonId},
-      {$set: {
-        name: lesson.name,
-        exerciseSteps: lesson.exerciseSteps,
-        chapterName : lesson.chapterName,
-        options: lesson.options
-      }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating lesson header', function(){
+    const lesson = new Lesson(req.body),
+          lessonId = new mongoose.Types.ObjectId(lesson._id),
+          query = {_id: lessonId},
+          update = {$set: {
+            name: lesson.name,
+            exerciseSteps: lesson.exerciseSteps,
+            chapterName : lesson.chapterName,
+            options: lesson.options
+          }};
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating lesson header', function(){
         response.handleSuccess(res, result, 200, 'Updated lesson header');
       });
     });
@@ -74,23 +97,25 @@ module.exports = {
   updateIntro: function(req, res) {
     const intro = req.body.intro,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    Lesson.findOneAndUpdate(
-      {_id: lessonId}, // userId
-      {$set: {
-        intro: intro
-      }}, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating lesson intro', function(){
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {_id: lessonId}, // userId
+          update = {$set: {
+            intro: intro
+          }};
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating lesson intro', function(){
         response.handleSuccess(res, result, 200, 'Updated lesson intro');
       });
     });
   },
   getIntro: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    Lesson.findOne({_id: lessonId}, {_id: 0, intro: 1}, function(err, intro) {
-      response.handleError(err, res, 500, 'Error fetching intro', function(){
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {_id: lessonId},
+          projection = {_id: 0, intro: 1};
+    Lesson.findOne(query, projection, function(err, intro) {
+      response.handleError(err, res, 400, 'Error fetching intro', function(){
         response.handleSuccess(res, intro, 200, 'Fetched intro from lesson');
       });
     });
-  },
+  }
 }
