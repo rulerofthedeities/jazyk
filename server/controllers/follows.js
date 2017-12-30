@@ -20,7 +20,6 @@ module.exports = {
           userIdToUnFollow = new mongoose.Types.ObjectId(req.body.userId),
           query = {userId, followId: userIdToUnFollow},
           update = {follow: false};
-    console.log('unfollowing', query);
     Follow.findOneAndUpdate(query, update, (err, result) => {
       response.handleError(err, res, 500, 'Error unfollowing user', () => {
         response.handleSuccess(res, false, 200, 'Unfollowed user');

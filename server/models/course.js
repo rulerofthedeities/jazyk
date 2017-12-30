@@ -29,10 +29,14 @@ var dtSchema = new Schema({
   completed: Date
 }, {_id: false});
 
+var accessSchema = new Schema({
+  userId: {type: Schema.Types.ObjectId, required: true},
+  level: {type: Number, default: 0} // AccessLevel {None, Reader, Author, Editor, Manager, Owner};
+}, {_id: false});
+
 var courseSchema = new Schema({
     _id: {type: Schema.Types.ObjectId, required: true},
     creatorId: {type: Schema.Types.ObjectId, required: true},
-    authorId: {type: [Schema.Types.ObjectId]},
     languagePair: {type: lanPairSchema, required: true},
     name: {type: String, trim: true},
     description: {type: String, trim: true},
@@ -45,6 +49,7 @@ var courseSchema = new Schema({
     lessons: [lessonSchema],
     totalCount: {type: Number, default: 0},
     wordCount: {type: Number, default: 0},
+    access: [accessSchema],
     dt: {type: dtSchema, required: true, default: {}}
   }, {collection: 'courses'}
 );
