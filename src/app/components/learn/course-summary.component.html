@@ -33,11 +33,11 @@
         <button class="btn btn-success"
           [class.disabled]="!course.isPublished"
           (click)="onStartCourse()">
-          {{text["startcourse"]}}
+          <span class="fa fa-arrow-right fa-spacing"></span>{{text["startcourse"]}}
         </button>
         <button class="btn btn-warning" *ngIf="isAuthor()"
           (click)="onEditCourse()">
-          {{text["updatecourse"]}}
+          <span class="fa fa-pencil fa-spacing"></span>{{text["updatecourse"]}}
         </button>
       </div>
       <div *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo">

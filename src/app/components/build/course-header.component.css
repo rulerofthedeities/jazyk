@@ -11,7 +11,9 @@
   background-color: rgba(239, 239, 239, .9);
   border-radius: 6px;
 }
-.fa-user, .fa-check, .fa-wifi {
+.form-group .fa-user,
+.form-group .fa-check,
+.form-group .fa-wifi {
   color: green;
 }
 .lb-sm {

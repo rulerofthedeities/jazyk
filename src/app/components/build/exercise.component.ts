@@ -331,25 +331,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
     return label;
   }
-/*
-  private getConfigs(lanPair: LanPair) {
-    this.buildService
-    .fetchLanConfigs(lanPair)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      config => {
-        if (config) {
-          console.log('config', config);
-          this.config = config.foreign;
-          this.formData.foreignRegions = config.foreign.regions;
-          this.formData.localRegions = config.local.regions;
-          this.buildForm(this.currentExercise);
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-  */
 
   private loadMedia() {
     if (!this.isMediaLoaded && this.currentExercise.wordDetailId) {
@@ -752,6 +733,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private changeFilter(word: string, lan: string) {
+    // clear button flags
+    this.hasConjugations = false;
+    this.hasGenus = false;
+    this.hasArticle = false;
+    this.hasComparison = false;
+    // setup filter
     const filter: Filter = {
       isExact: false,
       isFromStart: false,

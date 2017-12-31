@@ -1,10 +1,10 @@
 .btn-group .fa {
   width: 18px;
 }
-.fa-check {
+.btn-group .fa-check {
   color: green;
 }
-.fa-times {
+.btn-group .fa-times {
   color: red;
 }
 .toggle {

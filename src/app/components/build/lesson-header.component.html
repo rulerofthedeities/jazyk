@@ -119,20 +119,20 @@
         type="button"
         class="btn btn-success" 
         [disabled]="!lessonForm.valid">
-        {{isNew ? text['Addlesson'] : text['Update']}}
+        <span class="fa fa-check fa-spacing"></span>{{isNew ? text['Addlesson'] : text['Update']}}
       </button>
       <button *ngIf="isNew"
         (click)="onSubmit(lessonForm.value, true)"
         type="button"
         class="btn btn-success" 
         [disabled]="!lessonForm.valid">
-        {{text['AddLessonAndGo']}}
+        <span class="fa fa-check fa-spacing"></span>{{text['AddLessonAndGo']}}
       </button>
       <button 
         class="btn btn-warning"
         type="button"
         (click)="onCancel()">
-        {{text["cancel"]}}
+        <span class="fa fa-times fa-spacing"></span>{{text["cancel"]}}
       </button>
     </div>
   </div>
