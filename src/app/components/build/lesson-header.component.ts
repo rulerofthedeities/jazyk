@@ -24,6 +24,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Input() nr: number;
   @Input() text: Object;
   @Output() done = new EventEmitter<Lesson>();
+  @Output() doneandgo = new EventEmitter<Lesson>();
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
   private bidirectional = [false, false, true, false];
@@ -55,13 +56,13 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.done.emit(null);
   }
 
-  onSubmit(formValues: any) {
+  onSubmit(formValues: any, goToLesson: false) {
     this.processLesson(formValues);
 
     if (this.lesson._id) {
       this.updateLesson();
     } else {
-      this.addLesson();
+      this.addLesson(goToLesson);
     }
     this.isSubmitted = true;
   }
@@ -200,7 +201,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     };
   }
 
-  private addLesson() {
+  private addLesson(goToLesson: boolean) {
     this.lesson.languagePair = this.languagePair;
     this.buildService
     .addLesson(this.lesson)
@@ -208,7 +209,11 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     .subscribe(
       savedLesson => {
         this.lesson = savedLesson;
-        this.done.emit(savedLesson);
+        if (goToLesson) {
+          this.doneandgo.emit(savedLesson);
+        } else {
+          this.done.emit(savedLesson);
+        }
       },
       error => this.errorService.handleError(error)
     );

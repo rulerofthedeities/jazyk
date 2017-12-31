@@ -128,9 +128,9 @@ module.exports = {
             _id: lessonId,
             access: access.checkAccess(userId, 3) // Must be at least editor
           },
-          update = {$addToSet: {
-            exercises: {$each: exercises}
-          }};
+          update = {
+            $addToSet: {exercises: {$each: exercises}}
+          };
     Lesson.findOneAndUpdate(query, update, function(err, result) {
       if (result) {
         response.handleError(err, res, 400, 'Error adding exercise(s)', function() {

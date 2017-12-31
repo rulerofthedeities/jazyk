@@ -69,10 +69,17 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       // Check if new chapter was added
       if (this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
         this.addChapter(lessonAdded.chapterName, lessonAdded._id);
-      } else {
         // Add lessonId to chapter in course
         this.addLessonId(lessonAdded.chapterName, lessonAdded._id);
       }
+    }
+  }
+
+  onLessonDoneAndGo(lessonAdded: Lesson) {
+    this.isNewLesson = false;
+    console.log('added Lesson and go', lessonAdded);
+    if (lessonAdded) {
+      this.router.navigate(['/build/lesson/' + lessonAdded._id]);
     }
   }
 
