@@ -26,7 +26,8 @@
     </div>
   </div>
 
-  <div class="form-group" *ngIf="lanList===lanForeign && !currentExercise">
+  <div class="form-group"
+       *ngIf="lanList===lanForeign && !currentExercise && wordpairs?.length > 0">
     <div class="col-xs-11 col-xs-offset-1">
       <km-filter-list
         [wordpairs]="wordpairs"
@@ -116,7 +117,7 @@
       </div>
     </div>
     <!-- Foreign Alt words -->
-    <div class="form-group">
+    <div class="form-group" style="background-color: blue">
       <label 
         class="control-label col-xs-1">
       </label>
