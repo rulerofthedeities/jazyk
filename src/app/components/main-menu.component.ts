@@ -102,6 +102,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getUrl() {
+    this.url = this.router.url;
     this.router.events
     .takeWhile(() => this.componentActive)
     .subscribe((route: NavigationEnd) => {

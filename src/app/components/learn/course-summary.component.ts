@@ -48,7 +48,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
-    if (this.tpe === CourseListType.Learn) {
+    if (this.tpe === CourseListType.Learn && !this.course.isDemo) {
       this.getCourseData();
     }
   }
