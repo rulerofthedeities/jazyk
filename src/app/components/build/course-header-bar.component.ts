@@ -1,8 +1,9 @@
-import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
-import {Course} from '../../models/course.model';
+import {Course, AccessLevel} from '../../models/course.model';
 
 interface SavingData {
   isPublic: boolean;
@@ -15,7 +16,7 @@ interface SavingData {
   styleUrls: ['headers.css']
 })
 
-export class BuildCourseHeaderBarComponent implements OnDestroy {
+export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
   @Input() course: Course;
   @Input() text: Object;
   @Input() canEditCourse = false;
@@ -30,8 +31,15 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
   constructor(
     private router: Router,
     private buildService: BuildService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
+
+  ngOnInit() {
+    if (this.userService.getAccessLevel(this.course.access) < 4) {
+      this.canEditCourse = false;
+    }
+  }
 
   onEditCourse() {
     if (this.canEditCourse) {
@@ -43,6 +51,11 @@ export class BuildCourseHeaderBarComponent implements OnDestroy {
     if (this.course.isPublished) {
       this.router.navigate(['/learn/course/' + this.course._id]);
     }
+  }
+
+  getAccess(): string {
+    const level = this.userService.getAccessLevel(this.course.access);
+    return this.text[AccessLevel[level]] || '?';
   }
 
   onToggle(property: string) {

@@ -19,7 +19,7 @@
         [sortableIndex]="i"
         (onDropSuccess)="onResorted($event)">
         <div class="pull-right">
-          <span 
+          <span *ngIf="isEditor()"
             class="btn btn-danger fa fa-trash-o"
             (click)="onRemoveExercise(confirm, exercise._id)">
           </span>

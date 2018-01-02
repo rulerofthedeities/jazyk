@@ -1,7 +1,8 @@
 import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
-import {LanPair, LessonOptions, LanConfigs} from '../../models/course.model';
+import {LanPair, LessonOptions, LanConfigs, UserAccess, AccessLevel} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
+import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import 'rxjs/add/operator/takeWhile';
@@ -16,6 +17,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() exercises: Exercise[];
   @Input() languagePair: LanPair;
   @Input() configs: LanConfigs;
+  @Input() access: UserAccess[];
   @Input() lessonId: string;
   @Input() lessonOptions: LessonOptions;
   @Input() text: Object;
@@ -31,6 +33,7 @@ export class BuildExerciseListComponent implements OnDestroy {
 
   constructor(
     private buildService: BuildService,
+    private userService: UserService,
     private errorService: ErrorService
   ) {}
 
@@ -176,6 +179,10 @@ export class BuildExerciseListComponent implements OnDestroy {
         return comparisons.join(', ');
       }
     }
+  }
+
+  isEditor(): boolean {
+    return this.userService.hasAccessLevel(this.access, AccessLevel.Editor);
   }
 
   private removeCurrentExercise() {

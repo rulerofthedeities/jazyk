@@ -28,3 +28,7 @@ h2 .btn {
 .indicators .fa.disabled, .fa-wifi {
   cursor: default !important;
 }
+.access {
+  font-size: 18px;
+  line-height: 36px;
+}

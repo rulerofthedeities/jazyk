@@ -76,7 +76,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   }
 
   isAuthor(): boolean {
-    return this.userService.isAuthor(this.course.access);
+    return this.userService.hasAccessLevel(this.course.access, AccessLevel.Author);
   }
 
   getAccessLevel(): string {

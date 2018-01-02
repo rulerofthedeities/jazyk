@@ -18,7 +18,7 @@ import 'rxjs/add/operator/takeWhile';
 
 export class MainMenuComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  url = '/home';
+  url: string;
   text: Object = {};
   showDropDown = false;
   nrOfNotifications = 0;

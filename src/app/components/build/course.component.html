@@ -31,9 +31,9 @@
 
 <!-- NEW LESSON -->
 
-<div class="footer" *ngIf="course">
+<div class="footer" *ngIf="course && isEditor()">
   <div *ngIf="!isNewLesson; else addLesson">
-    <div class="btn btn-success btn-lg"(click)="onNewLesson()">
+    <div class="btn btn-success btn-lg" (click)="onNewLesson()">
       <span class="fa fa-file fa-spacing"></span>{{text["NewLesson"]}}
     </div>
   </div>

@@ -5,7 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../services/auth.service';
-import {Course, Lesson, LessonId, Language, Translation} from '../../models/course.model';
+import {Course, Lesson, LessonId, Language, Translation, AccessLevel} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -81,6 +81,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     if (lessonAdded) {
       this.router.navigate(['/build/lesson/' + lessonAdded._id]);
     }
+  }
+
+  isEditor(): boolean {
+    return this.userService.hasAccessLevel(this.course.access, AccessLevel.Editor);
   }
 
   private getCourse(courseId: string) {

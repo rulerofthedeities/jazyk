@@ -99,10 +99,10 @@ export class UserService {
 
   // ACCESS LEVELS
 
-  isAuthor(access: UserAccess[]): boolean {
+  hasAccessLevel(access: UserAccess[], level: AccessLevel): boolean {
     const userId = this.user._id,
           userAccess = access.find(accessItem => accessItem.userId === userId);
-    return userAccess && userAccess.level >= AccessLevel.Author;
+    return userAccess && userAccess.level >= level;
   }
 
   getAccessLevel(access: UserAccess[]): number {
