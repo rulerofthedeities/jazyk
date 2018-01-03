@@ -11,9 +11,11 @@
 .indicators .fa {
   font-size: 24px;
   color: #ccc;
-  cursor: pointer;
   width: 20px;
   text-align: center;
+}
+.indicators.edit .fa {
+  cursor: pointer;
 }
 .indicators .fa-user, .indicators .fa-check, .indicators .fa-wifi {
   color: green;

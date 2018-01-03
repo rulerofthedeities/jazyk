@@ -12,7 +12,8 @@
   <span *ngIf="!showLink">
     {{course.name}}
   </span>
-  <span class="indicators">
+  <span class="indicators"
+    [class.edit]="canEditCourse">
     <span class="fa"
       [ngClass]="{
         'disabled': savingData?.isPublic,
