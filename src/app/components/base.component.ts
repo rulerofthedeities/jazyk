@@ -7,17 +7,7 @@ import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  template: `
-  <div class="corner-ribbon top-right sticky red shadow" *ngIf="!exercisesStarted">alpha version</div>
-  <img src="/assets/img/backgrounds/{{this.month}}.jpg" *ngIf="showBackground">
-  <div class="container">
-    <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
-    <div class="main" [class.margin]="!exercisesStarted">
-      <router-outlet></router-outlet>
-    </div>
-    <km-footer *ngIf="!exercisesStarted"></km-footer>
-  </div>
-  `,
+  templateUrl: 'base.component.html',
   styleUrls: ['base.component.css']
 })
 
@@ -26,7 +16,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   month: string;
   exercisesStarted = false;
   showBackground: Boolean;
-
+  awsPath = "s3.eu-central-1.amazonaws.com/jazyk/images/bg/";
+  
   constructor (
     private authService: AuthService,
     private userService: UserService,
