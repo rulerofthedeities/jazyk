@@ -25,11 +25,21 @@ export class ModalRanksComponent implements OnInit{
     this.gender = this.userService.user.main.gender || 'm';
   }
 
+  onKeyPressed(key: string) {
+    if (key === 'Escape') {
+      this.close();
+    }
+  }
+
+  onClose() {
+    this.close()
+  }
+
   getRankName(rank: number): string {
     return this.text['rank' + rank + this.gender];
   }
 
-  onClose() {
+  private close() {
     this.showModal = false;
   }
 }

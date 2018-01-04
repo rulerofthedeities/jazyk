@@ -18,8 +18,14 @@ export class ModalPromotionComponent implements OnInit {
     this.cheer = this.loadAudio('/assets/audio/cheer.ogg');
   }
 
+  onKeyPressed(key: string) {
+    if (key === 'Escape') {
+      this.close();
+    }
+  }
+
   onClose() {
-    this.showModal = false;
+    this.close();
   }
 
   doShowModal() {
@@ -39,4 +45,7 @@ export class ModalPromotionComponent implements OnInit {
     return audio;
   }
 
+  private close() {
+    this.showModal = false;
+  }
 }
