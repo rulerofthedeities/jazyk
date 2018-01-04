@@ -9,7 +9,7 @@
       <div class="panel-body panel-summary">
         <div *ngIf="summaryData">
           <div class="rank info">
-            <img src="/assets/img/ranks/rank{{getRank()}}_s.png" class="img">
+            <img src="/assets/img/ranks/rank{{getRank()}}_64.png" class="img">
             <span class="rank-name">{{getRankName()}}</span>
           </div>
           <div class="score info">
@@ -86,6 +86,9 @@
               </km-course-summary>
             </li>
           </ul>
+          <div *ngIf="!courses?.length">
+            {{text["NoRecentCourses"]}}
+          </div>
         </div>
       </div>
     </div>

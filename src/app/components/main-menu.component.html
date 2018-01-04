@@ -150,8 +150,10 @@
             </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
             <li *ngIf="score" (click)="onGoto('score')">
-              <a class="dropdown-item">
-                <img src="/assets/img/ranks/rank{{rank}}_s.png" class="img"> {{score | score}}
+              <a class="dropdown-item"
+                (mouseover)="onChangeRankColor($event)"
+                (mouseout)="onChangeRankColor($event)">
+                <img src="/assets/img/ranks/rank{{rank}}_32{{getRankColor()}}.png" class="img"> {{score | score}}
               </a>
             </li>
             <li class="divider dropdown-divider"></li>

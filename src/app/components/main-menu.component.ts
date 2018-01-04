@@ -28,6 +28,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   intLan: Language;
   intLans: Language[];
   isReady = false;
+  rankColor = 'w';
 
   constructor(
     private router: Router,
@@ -99,6 +100,14 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  onChangeRankColor(event: any) {
+    this.rankColor = event.type == 'mouseover' ? 'b' : 'w';
+  }
+
+  getRankColor(): string {
+    return this.rank < 5 ? this.rankColor : '';
   }
 
   private getUrl() {

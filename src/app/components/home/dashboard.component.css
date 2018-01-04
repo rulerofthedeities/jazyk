@@ -58,3 +58,7 @@
 .list-group-item {
   cursor: pointer;
 }
+.rank .img {
+  width: 64px;
+  height: 64px;
+}
