@@ -6,6 +6,7 @@ import {ErrorService} from '../../services/error.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {Message, Notification} from '../../models/user.model';
 import {Course, CourseListType} from '../../models/course.model';
+import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import * as moment from 'moment';
 
 interface Learning {
@@ -70,6 +71,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onSelectMessage(i: number) {
     const tpe = this.communications[i].tpe;
     this.router.navigate(['/user/' + tpe + 's' + '/' + this.communications[i].id]);
+  }
+
+  onShowRankings(rankings: ModalRanksComponent) {
+    rankings.showModal = true;
   }
 
   getRank(): number {

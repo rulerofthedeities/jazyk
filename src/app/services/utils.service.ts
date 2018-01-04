@@ -11,8 +11,27 @@ import 'rxjs/add/observable/throw';
 @Injectable()
 export class UtilsService {
   private rankScores = [
-    0, 500, 5000, 30000, 120000, 360000, 720000, 1296000, 2073500, 3317500, 4976250, 7464250,
-    11196250, 15674750, 21944500, 30722250, 46083250, 69124750, 110599500, 199079000, 398158000
+    0,
+    500,
+    5000,
+    30000,
+    120000,
+    360000,
+    720000,
+    1300000,
+    2100000,
+    3300000,
+    5000000,
+    7500000,
+    11200000,
+    15500000,
+    22000000,
+    31000000,
+    46000000,
+    70000000,
+    111000000,
+    200000000,
+    400000000
   ];
   countDownFinishedEvent = new EventEmitter();
 
@@ -65,6 +84,10 @@ export class UtilsService {
     let i;
     for(i = 0; i < this.rankScores.length && score >= this.rankScores[i]; i++) {}
     return i - 1;
+  }
+
+  getRankScores(): number[] {
+    return this.rankScores;
   }
 
   getWordTypes(): string[] {

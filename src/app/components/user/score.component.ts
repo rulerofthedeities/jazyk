@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import 'rxjs/add/operator/takeWhile';
 
 interface Score {
@@ -33,6 +34,10 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getTranslations();
     this.fetchScores();
+  }
+
+  onShowRankings(rankings: ModalRanksComponent) {
+    rankings.showModal = true;
   }
 
   private fetchScores() {

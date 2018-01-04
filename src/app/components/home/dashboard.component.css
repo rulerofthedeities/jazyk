@@ -20,8 +20,15 @@
 .courses {
   margin-top: 15px;
 }
+.rank {
+  cursor: pointer;
+}
 .rank-name {
   font-size: 26px;
+}
+.rank .img {
+  width: 64px;
+  height: 64px;
 }
 .score {
   font-size: 20px;
@@ -57,8 +64,4 @@
 }
 .list-group-item {
   cursor: pointer;
-}
-.rank .img {
-  width: 64px;
-  height: 64px;
 }

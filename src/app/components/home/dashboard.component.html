@@ -8,7 +8,7 @@
       </div>
       <div class="panel-body panel-summary">
         <div *ngIf="summaryData">
-          <div class="rank info">
+          <div class="rank info" (click)="onShowRankings(ranks)">
             <img src="/assets/img/ranks/rank{{getRank()}}_64.png" class="img">
             <span class="rank-name">{{getRankName()}}</span>
           </div>
@@ -100,3 +100,8 @@
     [msg]="text['LoadingCourses']">
   </km-loader>
 </ng-template>
+
+<km-modal-ranks #ranks
+  [rank]="getRank()"
+  [text]="text">
+</km-modal-ranks>

@@ -15,6 +15,7 @@
 }
 .rank .panel-body {
   padding-top: 0;
+  cursor: pointer;
 }
 .rank .text {
   position: relative;

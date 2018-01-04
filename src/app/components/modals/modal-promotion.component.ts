@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'km-modal-promotion',
@@ -6,7 +6,7 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['modal-promotion.component.css']
 })
 
-export class ModalPromotionComponent {
+export class ModalPromotionComponent implements OnInit {
   @Input() rankNr: number;
   @Input() rankName: string;
   @Input() gender: string;

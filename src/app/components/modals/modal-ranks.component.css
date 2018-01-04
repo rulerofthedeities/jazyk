@@ -1,0 +1,15 @@
+.list-group {
+  max-height: calc(100vh - 225px);
+  overflow-y: scroll;
+}
+.closeModal {
+  cursor: pointer;
+  font-size: 24px;
+  margin-bottom: 32px;
+}
+.rank-name {
+  font-size: 32px;
+  margin-left: 8px;
+  position: relative;
+  top: 8px;
+}
