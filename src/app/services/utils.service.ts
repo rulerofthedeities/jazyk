@@ -10,7 +10,7 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class UtilsService {
-  private rankScores = [
+  private _rankScores = [
     0,
     500,
     5000,
@@ -33,6 +33,7 @@ export class UtilsService {
     200000000,
     400000000
   ];
+  private _awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
   countDownFinishedEvent = new EventEmitter();
 
   constructor(
@@ -82,12 +83,16 @@ export class UtilsService {
 
   getRank(score: number): number {
     let i;
-    for(i = 0; i < this.rankScores.length && score >= this.rankScores[i]; i++) {}
+    for (i = 0; i < this._rankScores.length && score >= this._rankScores[i]; i++) {}
     return i - 1;
   }
 
-  getRankScores(): number[] {
-    return this.rankScores;
+  get rankScores(): number[] {
+    return this._rankScores;
+  }
+
+  get awsPath(): string {
+    return this._awsPath;
   }
 
   getWordTypes(): string[] {

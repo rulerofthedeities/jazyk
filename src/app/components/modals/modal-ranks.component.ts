@@ -8,7 +8,7 @@ import {UserService} from '../../services/user.service';
   styleUrls: ['modal-ranks.component.css']
 })
 
-export class ModalRanksComponent implements OnInit{
+export class ModalRanksComponent implements OnInit {
   @Input() rank: number;
   @Input() text: Object;
   rankScores: number[];
@@ -21,7 +21,7 @@ export class ModalRanksComponent implements OnInit{
   ) {}
 
   ngOnInit() {
-    this.rankScores = this.utilsService.getRankScores();
+    this.rankScores = this.utilsService.rankScores;
     this.gender = this.userService.user.main.gender || 'm';
   }
 
@@ -32,7 +32,7 @@ export class ModalRanksComponent implements OnInit{
   }
 
   onClose() {
-    this.close()
+    this.close();
   }
 
   getRankName(rank: number): string {

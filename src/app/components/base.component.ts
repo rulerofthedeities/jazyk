@@ -16,7 +16,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   month: string;
   exercisesStarted = false;
   showBackground: Boolean;
-  awsPath = 's3.eu-central-1.amazonaws.com/jazyk/images/bg/';
+  awsPath: string;
 
   constructor (
     private authService: AuthService,
@@ -26,6 +26,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.awsPath = this.utilsService.awsPath + 'images/bg/';
     this.showBackground = this.userService.user.main.background;
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
