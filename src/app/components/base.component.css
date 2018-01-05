@@ -14,7 +14,6 @@ img {
   height: auto;
   width: auto;
 }
-
 .main {
   margin-top: 12px;
   margin-bottom: 32px;
@@ -22,7 +21,10 @@ img {
 .main.margin {
   margin-top: 72px;
 }
-
+.background {
+  background-color: #41474b;
+  height: 100%;
+}
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */
 .corner-ribbon{

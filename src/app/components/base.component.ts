@@ -16,8 +16,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   month: string;
   exercisesStarted = false;
   showBackground: Boolean;
-  awsPath = "s3.eu-central-1.amazonaws.com/jazyk/images/bg/";
-  
+  awsPath = 's3.eu-central-1.amazonaws.com/jazyk/images/bg/';
+
   constructor (
     private authService: AuthService,
     private userService: UserService,
