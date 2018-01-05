@@ -131,6 +131,22 @@ module.exports = {
     // Get course in learn mode
     getCourse(req, res, false);
   },
+  checkCourseFollowed: function(req, res) {
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId, courseId},
+          projection = {_id: 0, subscribed: 1};
+    console.log('check if courseId is followed', courseId);
+    UserCourse.findOne(query, projection, function(err, course) {
+      response.handleError(err, res, 400, 'Error checking if course is followed', function(){
+        let result = false;
+        if (course && course.subscribed) {
+          result = true;
+        }
+        response.handleSuccess(res, result, 200, 'Checked if course is followed');
+      });
+    })
+  },
   getAuthorCourse: function(req, res) {
     // get course in author mode
     getCourse(req, res, true);

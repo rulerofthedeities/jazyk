@@ -12,9 +12,9 @@ interface BadgeData {
 }
 
 interface DoneData {
-  words?: number,
-  exercises?: number,
-  total?: number
+  words?: number;
+  exercises?: number;
+  total?: number;
 }
 
 @Component({
@@ -35,6 +35,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   @Output() unsubscribe = new EventEmitter<string>();
   listType = CourseListType;
   percDone = 0;
+  isSubscribed = false;
   badgeData: BadgeData = {};
   doneData: DoneData = {};
 
@@ -48,8 +49,13 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
-    if (this.tpe === CourseListType.Learn && !this.course.isDemo) {
-      this.getCourseData();
+    if (!this.course.isDemo) {
+      if (this.tpe === CourseListType.Learn) {
+        this.getCourseData();
+      }
+      if (this.tpe === CourseListType.All) {
+        this.checkIfCourseIsFollowed();
+      }
     }
   }
 
@@ -85,7 +91,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   }
 
   private getCourseData() {
-    // Stepcount 
+    // Stepcount
     this.dashboardService
     .fetchCourseSteps(this.course._id)
     .takeWhile(() => this.componentActive)
@@ -109,7 +115,8 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
           this.doneData.exercises = data[1];
           this.doneData.total = data[0] + data[1];
           if (this.doneData.total > 0) {
-            this.percDone = 100 - Math.min(100, Math.max(0, Math.ceil((this.course.totalCount - this.doneData.total) / this.course.totalCount * 100)));
+            const percDone = Math.ceil((this.course.totalCount - this.doneData.total) / this.course.totalCount * 100);
+            this.percDone = 100 - Math.min(100, Math.max(0, percDone));
           } else {
             this.percDone = 0;
           }
@@ -117,7 +124,18 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
 
+  private checkIfCourseIsFollowed() {
+    this.dashboardService
+    .checkCourseFollowed(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      isSubscribed => {
+        this.isSubscribed = !!isSubscribed;
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

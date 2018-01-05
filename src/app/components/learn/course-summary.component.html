@@ -33,7 +33,8 @@
         <button class="btn btn-success"
           [class.disabled]="!course.isPublished"
           (click)="onStartCourse()">
-          <span class="fa fa-arrow-right fa-spacing"></span>{{text["startcourse"]}}
+          <span class="fa fa-arrow-right fa-spacing"></span>
+          {{isSubscribed ? text["continuecourse"] : text["startcourse"]}}
         </button>
         <button class="btn btn-warning" *ngIf="isAuthor()"
           (click)="onEditCourse()">
@@ -75,6 +76,13 @@
           {{text["TestCourse"]}}
         </button>
       </div>
+      <div class="stop pull-right" *ngIf="tpe===listType.Learn && !isDemo">
+        <button type="button" class="btn btn-default"
+          (click)="onStopLearningCourse()">
+          <span class="fa fa-times-circle fa-spacing"></span>
+          {{text["Stoplearningcourse"]}}
+        </button>
+      </div>
       <div class="info">
         <div>{{doneData.words}}{{doneData.words === undefined ? '' : ' / '}}{{course.wordCount || 0}} {{course.wordCount === 1 ? text["word"] : text["words"]}}</div>
         <div>{{doneData.exercises}}{{doneData.exercises === undefined ? '' : ' / '}}{{course.exercisesCount || 0}} {{course.exercisesCount === 1 ? text["exercise"] : text["exercises"]}}</div>
@@ -84,17 +92,9 @@
         <div class="dates" *ngIf="tpe === listType.Home">
           {{text["LastActivity"]}}: {{lastActivity}}
         </div>
-        <div class="access">
+        <div class="access" *ngIf="tpe === listType.Teach">
           <span class="fa fa-key fa-spacing"></span>{{getAccessLevel()}}
         </div>
-      </div>
-      <div class="stop" *ngIf="tpe===listType.Learn && !isDemo">
-        <button type="button" class="btn btn-default pull-right"
-          (click)="onStopLearningCourse()">
-          <span class="fa fa-times-circle fa-spacing"></span>
-          {{text["Stoplearningcourse"]}}
-        </button>
-        <div class="clearfix"></div>
       </div>
       <div class="progress" *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo">
         <div 

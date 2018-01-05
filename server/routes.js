@@ -131,6 +131,7 @@ module.exports.initialize = function(app, router) {
   router.get('/courses/published/:lan', courses.getPublishedLanCourses);
   router.get('/user/courses/learn', courses.getSubscribedCourses);
   router.get('/courses/teaching/:userId', courses.getTeachingCourses);
+  router.get('/user/courseFollowed/:courseId', courses.checkCourseFollowed);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

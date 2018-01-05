@@ -54,6 +54,14 @@ export class DashboardService {
     .catch(error => Observable.throw(error));
   }
 
+  checkCourseFollowed(courseId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/courseFollowed/' + courseId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Common ***/
 
   private getTokenHeaders(): Headers {
