@@ -38,6 +38,8 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   isSubscribed = false;
   badgeData: BadgeData = {};
   doneData: DoneData = {};
+  defaultImage = '';
+  regionTo = '';
 
   constructor(
     private router: Router,
@@ -49,6 +51,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
+    this.defaultImage = this.getDefaultImage();
     if (!this.course.isDemo) {
       if (this.tpe === CourseListType.Learn) {
         this.getCourseData();
@@ -136,6 +139,12 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private getDefaultImage(): string {
+    const from = this.course.languagePair.from;
+    this.regionTo = this.course.defaults.region || this.course.languagePair.to;
+    return from + '-' + this.regionTo + '-course.jpg';
   }
 
   ngOnDestroy() {

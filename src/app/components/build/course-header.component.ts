@@ -90,7 +90,6 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
       from: userLan,
       to: newLanguage.code
     };
-    this.course.image = userLan + '-' + newLanguage.code + '-course1.jpg'; // temporary
     this.courseForm.patchValue({'addArticle': newLanguage.articles.length > 1});
     this.courseForm.patchValue({'region': null});
   }
