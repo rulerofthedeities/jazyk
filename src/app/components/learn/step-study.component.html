@@ -6,88 +6,89 @@
 <ng-template #study>
   <section kmPressed 
     (onKeyPressed)="onKeyPressed($event)">
-    <div class="col-xs-8">
-      <div class="panel centerpanel">
-        <km-bullets *ngIf="isReady && !isStudyDone"
-          [exercises]="exerciseData"
-          [current]="current">
-        </km-bullets>
-        <div *ngIf="!isStudyDone" class="card">
-          <!-- IMAGE -->
-          <div class="image" *ngIf="showLocal && currentData.exercise.image">
-            <img src="{{currentData.exercise.image}}">
-          </div>
-          <div class="qa">
-            <km-question
-              [currentData]="currentData"
-              [lanPair]="lanPair"
-              [text]="text"
-              [dir]="'foreign'"
-              [settings]="settings"
-              [showAlt]="true"
-            ></km-question>
-            <div class="answer">
-              <h1 class="word">
-                <span>
-                  <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-                </span>
-                <span *ngIf="showLocal else loading">
-                  {{currentData.exercise?.local?.word}}
-                  <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
-                </span>
-              </h1>
-            </div>
-          </div>
-          <div class="clearfix"></div>
+    <div [ngClass]="isStudyDone ? 'col-xs-12' : 'col-xs-8'">
+      <km-bullets *ngIf="isReady && !isStudyDone"
+        [exercises]="exerciseData"
+        [current]="current">
+      </km-bullets>
+      <div *ngIf="!isStudyDone" class="card">
+        <!-- IMAGE -->
+        <div class="image" *ngIf="showLocal && currentData.exercise.image">
+          <img src="{{currentData.exercise.image}}">
         </div>
-        <!-- NOTHING MORE TO STUDY -->
-        <div *ngIf="exerciseData?.length < 1">
-          <div class="msg-info">
-            <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
-          </div>
-          <button 
-            type="button"
-            class="btn btn-success"
-            (click)="onToPractise()">
-            <span class="fa fa-arrow-right"></span>
-            {{text["PractiseStudy"]}}
-          </button>
-          <br>
-          <button 
-            type="button"
-            class="btn btn-success"
-            (click)="onRehearseAll()">
-            <span class="fa fa-repeat"></span>
-            {{text["RehearseStudy"]}}
-          </button>
-        </div>
-        <!-- STUDY DONE -->
-        <div *ngIf="isStudyDone && exerciseData?.length > 0">
-          <h3>{{text["Wordslearned"]}}:</h3>
-          <km-completed-list 
-            [data]="exerciseData"
-            [text]="text">
-          </km-completed-list>
-          <div *ngIf="!isRehearsal">
-            <h3>{{text["PointsEarned"]}}:</h3>
-            <km-points-completed 
-              [data]="exerciseData"
-              [text]="text">
-            </km-points-completed>
-            <div class="btn btn-success" (click)="onStudyNewWords()">
-              <span class="fa fa-refresh"></span>
-              {{text["ContinueStudy"]}}
-            </div>
-          </div>
-          <div class="btn btn-warning" (click)="onToPractise()">
-            <span class="fa fa-fast-forward"></span>
-            {{text["PractiseStudy"]}}
+        <div class="qa">
+          <km-question
+            [currentData]="currentData"
+            [lanPair]="lanPair"
+            [text]="text"
+            [dir]="'foreign'"
+            [settings]="settings"
+            [showAlt]="true"
+          ></km-question>
+          <div class="answer">
+            <h1 class="word">
+              <span>
+                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+              </span>
+              <span *ngIf="showLocal else loading">
+                {{currentData.exercise?.local?.word}}
+                <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
+              </span>
+            </h1>
           </div>
         </div>
+        <div class="clearfix"></div>
+      </div>
+      <!-- NOTHING MORE TO STUDY -->
+      <div *ngIf="exerciseData?.length < 1">
+        <div class="msg-info">
+          <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
+        </div>
+        <button 
+          type="button"
+          class="btn btn-success"
+          (click)="onToPractise()">
+          <span class="fa fa-arrow-right"></span>
+          {{text["PractiseStudy"]}}
+        </button>
+        <br>
+        <button 
+          type="button"
+          class="btn btn-success"
+          (click)="onRehearseAll()">
+          <span class="fa fa-repeat"></span>
+          {{text["RehearseStudy"]}}
+        </button>
+      </div>
+      <!-- STUDY DONE -->
+      <div *ngIf="isStudyDone && exerciseData?.length > 0">
+        <km-completed-list 
+          [data]="exerciseData"
+          [title]="text['Wordslearned']"
+          [text]="text">
+        </km-completed-list>
+        <km-points-completed *ngIf="!isRehearsal"
+          [data]="exerciseData"
+          [text]="text">
+        </km-points-completed>
+        <button type="button"
+          class="btn btn-success"
+          (click)="onStudyNewWords()">
+          <span class="fa fa-refresh fa-spacing">
+          </span>
+          {{text["ContinueStudy"]}}
+        </button>
+        <button type="button"
+          class="btn btn-warning"
+          (click)="onToPractise()">
+          <span class="fa fa-fast-forward fa-spacing">
+          </span>
+          {{text["PractiseStudy"]}}
+        </button>
       </div>
     </div>
-    <div class="col-xs-4">
-      <km-learn-settings *ngIf="!isStudyDone"
+    <div class="col-xs-4" *ngIf="!isStudyDone">
+      <km-learn-settings
         [step]="'study'"
         [hasGenus]="!!currentData?.exercise?.genus"
         [settings]="settings"
@@ -100,10 +101,11 @@
           class="btn btn-success btn-lg"
           (click)="onNextWord(1)">
           <span class="fa" [ngClass]="{'fa-step-forward': !isStudyDone, 'fa-refresh': isStudyDone}"></span>
-          {{isStudyDone ? text["Restart"] : (showLocal ? text["Next"] : text["ShowTranslation"])}}
+          {{showLocal ? text["Next"] : text["ShowTranslation"]}}
         </button>
       </div>
-      <km-points-earned [pointsEarned]="pointsEarned" *ngIf="!isStudyDone">
+      <km-points-earned
+        [pointsEarned]="pointsEarned" *ngIf="!isStudyDone">
       </km-points-earned>
     </div>
     <div class="clearfix"></div>

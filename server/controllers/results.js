@@ -221,13 +221,13 @@ module.exports = {
               _id: '$courseId',
               totalPoints: {'$sum': '$points'}
             }},
+            {$sort: {'totalPoints': -1}},
             {$lookup: {
               from: 'courses',
               localField: '_id',
               foreignField: '_id',
               as: 'course'
             }},
-            {$sort: {'points':1}},
             {$project: {
               _id: 1,
               course: 1,

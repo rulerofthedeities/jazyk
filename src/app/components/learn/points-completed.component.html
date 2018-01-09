@@ -1,22 +1,31 @@
-<div class="points">
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td>{{text["Words"]}}</td>
-        <td class="text-right nr">{{points}}</td>
-      </tr>
-      <tr>
-        <td>{{text["Bonus"]}}</td>
-        <td class="text-right nr">{{correct}}</td>
-      </tr>
-      <tr class="success">
-        <td>{{text["Total"]}}</td>
-        <td class="text-right nr">
-          <div class="total">
-            {{total}}
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title ">
+      {{text["PointsEarned"]}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="points col-xs-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td>{{text["Words"]}}</td>
+            <td class="text-right nr">{{points}}</td>
+          </tr>
+          <tr>
+            <td>{{text["Bonus"]}}</td>
+            <td class="text-right nr">{{correct}}</td>
+          </tr>
+          <tr class="success">
+            <td>{{text["Total"]}}</td>
+            <td class="text-right nr">
+              <div class="total">
+                {{total}}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

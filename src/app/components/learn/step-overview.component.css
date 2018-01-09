@@ -44,4 +44,9 @@ h2 {
 }
 km-lesson-overview {
   margin: 8px;
+  display: block;
+  padding: 15px;
+  font-size: 20px;
+  background-color: #fff;
+  border-radius: 6px;
 }

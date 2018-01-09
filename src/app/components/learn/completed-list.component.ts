@@ -20,6 +20,7 @@ interface Result {
 export class LearnCompletedListComponent implements OnInit {
   @Input() private data: ExerciseData[];
   @Input() text: Object;
+  @Input() title: string;
   results: Result[] = [];
   noResults = false;
   exType = ExerciseType;
