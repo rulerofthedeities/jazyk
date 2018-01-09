@@ -2,6 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angula
 import {Router} from '@angular/router';
 import {Course, UserCourse, CourseListType, AccessLevel} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
+import {UtilsService} from '../../services/utils.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {ErrorService} from '../../services/error.service';
 
@@ -38,20 +39,22 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   isSubscribed = false;
   badgeData: BadgeData = {};
   doneData: DoneData = {};
-  defaultImage = '';
-  regionTo = '';
+  defaultImage: string;
+  regionTo: string;
+  awsPath: string;
 
   constructor(
     private router: Router,
     private userService: UserService,
     private dashboardService: DashboardService,
+    private utilsService: UtilsService,
     private errorService: ErrorService
   ) {}
 
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
-    this.defaultImage = this.getDefaultImage();
+    this.defaultImage = this.getDefaultImagePath();
     if (!this.course.isDemo) {
       if (this.tpe === CourseListType.Learn) {
         this.getCourseData();
@@ -141,10 +144,11 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getDefaultImage(): string {
-    const from = this.course.languagePair.from;
+  private getDefaultImagePath(): string {
+    const from = this.course.languagePair.from,
+          path = this.utilsService.awsPath + 'images/courses/default/';
     this.regionTo = this.course.defaults.region || this.course.languagePair.to;
-    return from + '-' + this.regionTo + '-course.jpg';
+    return 'https://' + path + from + '-' + this.regionTo + '-course.jpg';
   }
 
   ngOnDestroy() {

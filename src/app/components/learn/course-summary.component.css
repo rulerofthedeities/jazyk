@@ -45,6 +45,10 @@ h3 {
 .fa-times-circle {
   color: red;
 }
+.course-img {
+  width: 160px;
+  height: 200px;
+}
 .progress {
   height: 26px;
   margin-bottom: 0;
