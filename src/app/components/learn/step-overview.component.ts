@@ -14,6 +14,12 @@ interface LessonHeader {
   chapterName: string;
 }
 
+interface LessonResult {
+  _id: string;
+  studied: number;
+  learned: number;
+}
+
 @Component({
   selector: 'km-learn-overview',
   templateUrl: 'step-overview.component.html',
@@ -30,6 +36,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   private componentActive = true;
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
+  resultsByLesson: Map<LessonResult[]> = {};
   currentChapter: string;
   lessonData: Lesson;
   isLessonsReady = false;
@@ -43,6 +50,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getCourseChapters();
     this.getLessonHeaders();
+    this.getLessonResults();
   }
 
   onSelectLesson(lessonId: string) {
@@ -113,6 +121,22 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     if (currentLesson) {
       this.currentChapter = currentLesson.chapterName;
     }
+  }
+
+  private getLessonResults() {
+    // Get results grouped by lesson id
+    this.learnService
+    .fetchLessonResults(this.course._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      results => {
+        results.forEach(result => {
+          this.resultsByLesson[result._id] = result;
+        })
+        console.log('results by lesson', this.resultsByLesson);
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   ngOnDestroy() {

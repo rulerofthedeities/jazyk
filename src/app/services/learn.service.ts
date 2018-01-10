@@ -82,6 +82,14 @@ export class LearnService {
     .catch(error => Observable.throw(error));
   }
 
+  fetchLessonResults(courseId: string) {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get('/api/user/results/lessons/' + courseId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   /*** Choices ***/
 
   fetchCourseChoices(courseId: string, isBidirectional: boolean, lanPair: LanPair) {
@@ -110,20 +118,7 @@ export class LearnService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-/*
-  getPreviousResults(lessonId: string, exerciseIds: string[]) {
-    // Get the learn level of the most recent exercises for this lesson
-    const headers = this.getTokenHeaders(),
-          params = new URLSearchParams();
-    exerciseIds.forEach((id, i) => {
-      params.set('id' + i.toString(), id);
-    });
-    return this.http
-    .get('/api/user/results/lesson/lastperexercise/' + lessonId, {headers, search: params})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
-  }
-*/
+
   getLessonResults(lessonId: string, step: string) {
     // Get the learn level of all exercises in this lesson
     const headers = this.getTokenHeaders();

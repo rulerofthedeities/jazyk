@@ -266,49 +266,6 @@ module.exports = {
       saveStep(res, results, userId, courseId, lessonId);
     }
   },
-  /*
-  getLastResults: function(req, res) {
-    // Get the learn level of the most recent exercises for this lesson
-    const parms = req.query,
-          exerciseIds = [],
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    let exerciseId;
-    for (var key in parms) {
-      if (parms[key]) {
-        exerciseId = new mongoose.Types.ObjectId(parms[key]);
-        exerciseIds.push(exerciseId);
-      }
-    }
-    const query = {
-            userId,
-            lessonId,
-            step: {$ne:'study'},
-            exerciseId: {$in: exerciseIds}
-          },
-          pipeline = [
-            {$match: query},
-            {$sort: {dt: -1, sequence: -1}},
-            {$group: {
-              _id: '$exerciseId',
-              firstLevel: {'$first': '$learnLevel'},
-              totalPoints: {'$sum': '$points'}
-            }},
-            {$project: {
-              _id: 0,
-              exerciseId: '$_id',
-              learnLevel: '$firstLevel',
-              points: '$totalPoints'
-            }}
-          ];
-
-    Result.aggregate(pipeline, function(err, results) {
-      console.log('resultLast', results);
-      response.handleError(err, res, 400, 'Error fetching results', function(){
-        response.handleSuccess(res, results, 200, 'Fetched results');
-      });
-    });
-  },*/
   getLessonResults: function(req, res) {
     // Get the results for all the exercises for this lesson
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -353,7 +310,7 @@ module.exports = {
     });
   },
   getLessonOverviewResults: function(req, res) {
-    // Get lesson results for overview page
+    // Get lesson results for single lesson in overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           lastQuery = {
@@ -415,6 +372,31 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching overview results');
     });
 
+  },
+  getResultsByLesson: function(req, res) {
+    // Get results by lesson for overview page
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          query = {
+            userId,
+            courseId,
+            isLast: true,
+            isDeleted: false
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$lessonId',
+              studied: {'$sum': 1},
+              learned: {'$sum': {$cond: ["$isLearned", 1, 0 ]}},
+            }}
+          ];
+    console.log(pipeline);
+    Result.aggregate(pipeline, function(err, results) {
+      response.handleError(err, res, 400, 'Error fetching results by lesson', function(){
+        response.handleSuccess(res, results, 200, 'Fetched all results by lesson');
+      });
+    });
   },
   getCurrentLesson: function(req, res) {
     // Get the lesson from the most recent result for a course
