@@ -80,7 +80,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   onContinueLesson(lessonId: string) {
     event.stopPropagation();
     console.log('continue lesson', lessonId);
-    console.log(this.lessonData);
     if (this.lessonData._id === lessonId) {
       this.currentLesson.emit(this.lessonData);
     } else {

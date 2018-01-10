@@ -109,7 +109,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.courseLevel = this.steps[i].level;
   }
 
-  getGender() {
+  getGender(): string {
     return this.userService.user.main.gender || 'm';
   }
 
@@ -713,8 +713,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getFirstLesson() {
     // Get first lesson from course data
-    const chapterLessons = this.course.lessons.filter(lesson => lesson.lessonIds.length > 0);
-    const chapterLesson = chapterLessons[0];
+    const chapterLessons = this.course.lessons.filter(lesson => lesson.lessonIds.length > 0),
+          chapterLesson = chapterLessons[0];
+    console.log('first lesson', this.course.lessons);
     if (chapterLesson) {
       const lessonId = chapterLesson.lessonIds[0];
       this.getLesson(lessonId);
