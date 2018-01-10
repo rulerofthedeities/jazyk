@@ -42,6 +42,14 @@ h2 {
   border-color: #326999;
   margin-bottom: 3px;
 }
+.lesson-title .fa-check {
+  color: green;
+  font-size: 28px;
+}
+.count {
+  font-size: 16px;
+  color: #333;
+}
 km-lesson-overview {
   margin: 8px;
   display: block;

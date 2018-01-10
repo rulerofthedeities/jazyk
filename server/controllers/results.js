@@ -361,8 +361,8 @@ module.exports = {
           ];
 
     const getReview = async () => {
-      const last = await  Result.aggregate(lastPipeline);
-      const count = await Result.aggregate(countPipeline);
+      const last = await  Result.aggregate(lastPipeline),
+            count = await Result.aggregate(countPipeline);
       return {last, count};
     };
 
@@ -374,28 +374,57 @@ module.exports = {
 
   },
   getResultsByLesson: function(req, res) {
-    // Get results by lesson for overview page
+    // Get results + exercise count by lesson for overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
-          query = {
+          resultsQuery = {
             userId,
             courseId,
             isLast: true,
             isDeleted: false
           },
-          pipeline = [
-            {$match: query},
+          countQuery = {
+            courseId
+          },
+          resultsPipeline = [
+            {$match: resultsQuery},
             {$group: {
               _id: '$lessonId',
               studied: {'$sum': 1},
               learned: {'$sum': {$cond: ["$isLearned", 1, 0 ]}},
             }}
+          ],
+          countPipeline = [
+            {$match: countQuery},
+            {$group: {
+              _id: '$_id',
+              exercises: {'$sum': {$size: '$exercises'}}
+            }},
+            {$project: {
+              _id: 1,
+              total: '$exercises'
+            }}
           ];
-    console.log(pipeline);
-    Result.aggregate(pipeline, function(err, results) {
-      response.handleError(err, res, 400, 'Error fetching results by lesson', function(){
-        response.handleSuccess(res, results, 200, 'Fetched all results by lesson');
-      });
+
+    const getByLesson = async () => {
+      const results = await  Result.aggregate(resultsPipeline),
+            count = await Lesson.aggregate(countPipeline);
+      return {results, count};
+    };
+
+    getByLesson().then((data) => {
+      data.count.forEach(lesson => {
+        console.log('lesson', lesson);
+        resultData = data.results.find(result => lesson._id.toString() === result._id.toString());
+        console.log('result', resultData);
+        if (resultData) {
+          lesson.studied = resultData.studied;
+          lesson.learned = resultData.learned;
+        }
+      })
+      response.handleSuccess(res, data.count, 200, 'Fetched all results by lesson');
+    }).catch((err) => {
+      response.handleError(err, res, 400, 'Error fetching results by lesson');
     });
   },
   getCurrentLesson: function(req, res) {

@@ -18,6 +18,9 @@ interface LessonResult {
   _id: string;
   studied: number;
   learned: number;
+  total: number;
+  started?: boolean;
+  completed?: boolean;
 }
 
 @Component({
@@ -36,7 +39,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   private componentActive = true;
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
-  resultsByLesson: Map<LessonResult[]> = {};
+  resultsByLesson: Map<LessonResult> = {};
   currentChapter: string;
   lessonData: Lesson;
   isLessonsReady = false;
@@ -74,10 +77,20 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     this.lessonData = lessonData;
   }
 
-  onContinueLesson() {
-    if (this.lessonData) {
+  onContinueLesson(lessonId: string) {
+    event.stopPropagation();
+    console.log('continue lesson', lessonId);
+    console.log(this.lessonData);
+    if (this.lessonData._id === lessonId) {
       this.currentLesson.emit(this.lessonData);
+    } else {
+      this.fetchLesson(lessonId);
     }
+  }
+
+  onRehearseLesson(lessonId: string) {
+    event.stopPropagation();
+    console.log('rehearse lesson', lessonId);
   }
 
   getChapterName(chapterName: string) {
@@ -103,7 +116,10 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     .fetchLessonHeaders(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      headers => this.getChapterLessons(headers),
+      headers => {
+        this.getChapterLessons(headers);
+        this.setDefaultResultData(headers);
+      },
       error => this.errorService.handleError(error)
     );
     this.isLessonsReady = true;
@@ -123,17 +139,45 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setDefaultResultData(lessonHeaders: LessonHeader[]) {
+    // Set default result data if there are no results (yet)
+    lessonHeaders.forEach(header => {
+      this.resultsByLesson[header._id] = {
+        _id: header._id,
+        studied: 0,
+        learned: 0,
+        total: null,
+        started: false,
+        completed: false
+      };
+    })
+  }
+
   private getLessonResults() {
     // Get results grouped by lesson id
     this.learnService
     .fetchLessonResults(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      results => {
+      (results: LessonResult[]) => {
         results.forEach(result => {
           this.resultsByLesson[result._id] = result;
+          this.resultsByLesson[result._id].started = !!(result.learned || result.studied);
+          this.resultsByLesson[result._id].completed = result.learned >= result.total;
         })
         console.log('results by lesson', this.resultsByLesson);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private fetchLesson(lessonId: string) {
+    this.learnService
+    .fetchLesson(lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (lesson: Lesson) => {
+        this.currentLesson.emit(lesson);
       },
       error => this.errorService.handleError(error)
     );
