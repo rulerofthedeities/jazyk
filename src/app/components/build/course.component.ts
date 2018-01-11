@@ -61,30 +61,26 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     this.saveResortedLessons();
   }
 
-  onLessonDone(lessonAdded: Lesson) {
+  onLessonDone(lessonAdded: Lesson, go: false) {
     this.isNewLesson = false;
-    console.log('added Lesson', lessonAdded);
+    console.log('added Lesson', lessonAdded, go);
     if (lessonAdded) {
-      this.lessons.push(lessonAdded);
-      // Check if new chapter was added
-      if (this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
-        this.addChapter(lessonAdded.chapterName, lessonAdded._id);
-        // Add lessonId to chapter in course
-        this.addLessonId(lessonAdded.chapterName, lessonAdded._id);
-      }
-    }
-  }
-
-  onLessonDoneAndGo(lessonAdded: Lesson) {
-    this.isNewLesson = false;
-    console.log('added Lesson and go', lessonAdded);
-    if (lessonAdded) {
-      this.router.navigate(['/build/lesson/' + lessonAdded._id]);
+      this.addedLesson(lessonAdded, go);
     }
   }
 
   isEditor(): boolean {
     return this.userService.hasAccessLevel(this.course.access, AccessLevel.Editor);
+  }
+
+  private addedLesson(lessonAdded: Lesson, go: boolean) {
+    this.lessons.push(lessonAdded);
+    // Check if new chapter was added
+    if (this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
+      this.addChapter(lessonAdded.chapterName, lessonAdded._id, go);
+      // Add lessonId to chapter in course
+      // this.addLessonId(lessonAdded.chapterName, lessonAdded._id);
+    }
   }
 
   private getCourse(courseId: string) {
@@ -122,7 +118,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addChapter(chapterName: string, lessonId: string) {
+  private addChapter(chapterName: string, lessonId: string, go: boolean) {
     console.log('adding chapter', chapterName);
     if (chapterName) {
       this.chapters.push(chapterName);
@@ -130,22 +126,26 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       .addChapter(this.course._id, chapterName, lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        savedChapter => {},
+        savedChapter => {
+        if (go) {
+          this.router.navigate(['/build/lesson/' + lessonId]);
+        }
+      },
         error => this.errorService.handleError(error)
       );
     }
   }
-
+/*
   private addLessonId(chapterName: string, lessonId: string) {
     this.buildService
     .updateCourseLesson(this.course._id, chapterName, lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      savedChapter => {},
+      savedLessonId => {},
       error => this.errorService.handleError(error)
     );
   }
-
+*/
   private setLessonIds(updatedLessonId: LessonId) {
     const chapterName = updatedLessonId.chapter;
     const lessonIdItems = updatedLessonId.lessonIds;

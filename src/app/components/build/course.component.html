@@ -52,8 +52,8 @@
           [languagePair]="course.languagePair"
           [nr]="lessons.length"
           [text]="text"
-          (doneandgo)="onLessonDoneAndGo($event)"
-          (done)="onLessonDone($event)">
+          (doneandgo)="onLessonDone($event, true)"
+          (done)="onLessonDone($event, false)">
         </km-build-lesson-header>
       </div>
     </div>
