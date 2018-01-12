@@ -43,6 +43,7 @@ export abstract class Step {
   @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() private stepcountzero: Subject<boolean>;
+  @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
   @Input() lessonOptions: LessonOptions;
   @Input() courseId: string; // only for course level
@@ -437,18 +438,30 @@ export abstract class Step {
         this.currentData.data.grade = 0;
       break;
     }
-    const learnLevelData = {
-      level: learnLevel,
-      correct: this.currentData.data.isCorrect,
-      alt: this.currentData.data.isAlmostCorrect,
-      almostCorrect: this.currentData.data.isAlmostCorrect
-    };
-    const foreignWord = this.currentData.exercise.foreign.word;
-    learnLevel = this.calculateLearnLevel(question, learnLevelData);
+    // Learnlevel
+      console.log('learn level changed?');
+    if (question === QuestionType.Word || question === QuestionType.Choices) {
+      // Set level for words
+      const learnLevelData = {
+        level: learnLevel,
+        correct: this.currentData.data.isCorrect,
+        alt: this.currentData.data.isAlmostCorrect,
+        almostCorrect: this.currentData.data.isAlmostCorrect
+      };
+      learnLevel = this.calculateLearnLevel(question, learnLevelData);
+    } else {
+      console.log('setting level?');
+      // For exercises, set learnlevel immediately if answered correctly
+      if (answer === AnsweredType.Correct) {
+        learnLevel = this.learnedLevel;
+        console.log('set level to', this.learnedLevel);
+      }
+    }
     this.currentData.data.learnLevel = learnLevel;
     this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
     this.addCount(this.isCorrect, this.currentData.exercise._id);
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
+    const foreignWord = this.currentData.exercise.foreign.word;
     if (answer === AnsweredType.Correct) {
       this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
       this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
@@ -560,15 +573,16 @@ export abstract class Step {
 
   private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
     let points = 0;
+    // Points dependon Question type
     switch (question) {
       case QuestionType.Word:
       case QuestionType.FillIn:
         if (this.currentData.data.isCorrect) {
-          points = 100;
+          points = 50;
         } else if (this.currentData.data.isAlt) {
-          points = 80;
+          points = 40;
         }else if (this.currentData.data.isAlmostCorrect) {
-          points = 20;
+          points = 10;
         }
       break;
       case QuestionType.Choices:
@@ -582,7 +596,28 @@ export abstract class Step {
           points = 2 + Math.min(20, optionsArr.length * 4);
         }
       break;
+      case QuestionType.Comparison:
+        if (this.currentData.data.isCorrect) {
+          points = 60;
+        }
+      break;
     }
+    // Exercise type bonuses
+    switch (this.currentData.exercise.tpe) {
+      case ExerciseType.Word:
+      break;
+      case ExerciseType.Article:
+      case ExerciseType.Comparison:
+      case ExerciseType.FillIn:
+      case ExerciseType.Genus:
+      case ExerciseType.QA:
+      case ExerciseType.Select:
+        if (this.currentData.data.isCorrect) {
+          points += 15;
+        }
+      break;
+    }
+
     return points;
   }
 

@@ -23,7 +23,6 @@ interface Map<T> {
 })
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
-  @Input() learnedLevel: number;
   @Input() hasStudyTab: boolean;
   @Input() isDemo = false;
   @Output() lessonCompleted = new EventEmitter<string>();

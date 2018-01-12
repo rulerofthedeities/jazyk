@@ -135,17 +135,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       );
     }
   }
-/*
-  private addLessonId(chapterName: string, lessonId: string) {
-    this.buildService
-    .updateCourseLesson(this.course._id, chapterName, lessonId)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      savedLessonId => {},
-      error => this.errorService.handleError(error)
-    );
-  }
-*/
+  
   private setLessonIds(updatedLessonId: LessonId) {
     const chapterName = updatedLessonId.chapter;
     const lessonIdItems = updatedLessonId.lessonIds;
