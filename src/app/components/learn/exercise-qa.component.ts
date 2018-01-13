@@ -1,6 +1,7 @@
 import {Component, Input, Output, OnChanges, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
+import {UtilsService} from '../../services/utils.service';
 
 interface Keyboard {
   showKeyboard: boolean;
@@ -28,6 +29,10 @@ export class LearnQAComponent implements OnChanges, AfterViewChecked {
   exType = ExerciseType;
   currentExerciseId: string;
 
+  constructor(
+    private utilsService: UtilsService
+  ) {}
+
   ngOnChanges() {
     if (this.currentExerciseId !== this.data.exercise._id) {
       const exercise = this.data.exercise;
@@ -42,7 +47,7 @@ export class LearnQAComponent implements OnChanges, AfterViewChecked {
   }
 
   onKeySelected(key: string) {
-    this.answer.nativeElement.value += key;
+    this.utilsService.insertKey(this.answer.nativeElement, key);
   }
 
   getData(): string {

@@ -27,24 +27,6 @@ module.exports = {
           search = query.isExact === 'true' || forceExact ? query.word : {$regex: word, $options:'i'},
           q = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], [key]:search};
 
-/*
-    const match = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], $text: {$search: query.word}};
-    const pipeline = [
-      {$match: match},
-      {$group: {_id: {$meta: "textScore"}}},
-      {$project: {_id: 0, score: {$meta: "textScore"}}},
-      {$match: {score: {$gt : 1.0}}},
-      {$sort: {score: -1}}
-    ];
-
-    WordPair.aggregate(pipeline, function(err, docs) {
-      response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
-        response.handleSuccess(res, docs, 200, 'Fetched wordpairs');
-      });
-    });
-
-    */
-
     WordPair.find(q, {}, {limit}, function(err, wordpairs) {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function() {
         // Count workaround until v3.4 (aggregate)

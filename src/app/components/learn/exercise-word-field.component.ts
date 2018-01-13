@@ -1,5 +1,6 @@
-import {Component, Input, ViewChild, Renderer2, ElementRef, OnInit, AfterViewChecked} from '@angular/core';
+import {Component, Input, ViewChild, ElementRef, OnInit, AfterViewChecked} from '@angular/core';
 import {ExerciseData, ExerciseExtraData} from '../../models/exercise.model';
+import {UtilsService} from '../../services/utils.service';
 
 interface Keyboard {
   showKeyboard: boolean;
@@ -29,7 +30,7 @@ export class LearnWordFieldComponent implements OnInit, AfterViewChecked {
   exData: ExerciseExtraData;
 
   constructor(
-    public renderer: Renderer2
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
@@ -41,7 +42,7 @@ export class LearnWordFieldComponent implements OnInit, AfterViewChecked {
   }
 
   onKeySelected(key: string) {
-    this.answer.nativeElement.value += key;
+    this.utilsService.insertKey(this.answer.nativeElement, key);
   }
 
   getData(): string {

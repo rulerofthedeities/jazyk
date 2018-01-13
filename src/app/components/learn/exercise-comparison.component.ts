@@ -1,6 +1,7 @@
 import {Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
+import {UtilsService} from '../../services/utils.service';
 
 interface Keyboard {
   showKeyboard: boolean;
@@ -35,6 +36,10 @@ export class LearnComparisonComponent implements OnInit, OnChanges {
   isSuperlativeCorrect = false;
   currentExerciseId: string;
 
+  constructor(
+    private utilsService: UtilsService
+  ) {}
+
   ngOnInit() {
     this.instruction = this.text['instructionComparison'];
   }
@@ -53,9 +58,9 @@ export class LearnComparisonComponent implements OnInit, OnChanges {
 
   onKeySelected(key: string) {
     if (this.currentField === 'superlative') {
-      this.answerSuperlative.nativeElement.value += key;
+      this.utilsService.insertKey(this.answerSuperlative.nativeElement, key);
     } else {
-      this.answerComparative.nativeElement.value += key;
+      this.utilsService.insertKey(this.answerComparative.nativeElement, key);
     }
   }
 

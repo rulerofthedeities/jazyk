@@ -574,6 +574,7 @@ export abstract class Step {
   private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
     let points = 0;
     // Points dependon Question type
+      console.log('qt', question, QuestionType.Comparison);
     switch (question) {
       case QuestionType.Word:
       case QuestionType.FillIn:
