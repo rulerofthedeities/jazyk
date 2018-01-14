@@ -13,6 +13,42 @@
   bottom: 0;
   z-index: 10;
 }
+.event-messages {
+  float: left;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+  cursor: pointer;
+}
+.log {
+  background: #41474b;
+  font-size: 14px;
+  text-align: left;
+  color: white;
+  border: 1px solid #333;
+  width: 80%;
+  position: fixed;
+  left: 0;
+  bottom: 20px;
+  padding: 6px 15px;
+}
+.log .time {
+  margin-right: 8px;
+}
+.log .even {
+  background-color: #404040;
+}
+.log .row {
+  cursor: default;
+}
+.log .row:hover {
+  background-color: #333;
+}
+.close-log {
+  cursor: pointer;
+  margin-bottom: 6px;
+}
 a:link, a:visited {
   color: #ccc;
   text-decoration: none;

@@ -237,6 +237,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             this.course = course;
             this.getCurrentLesson();
             console.log('course', course);
+            this.log('loaded course ' + courseId);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
@@ -673,7 +674,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getCurrentLesson() {
     // Check where this course was left off
     if (!this.isDemo) {
-      this.fetchMostRecentLesson()
+      this.fetchMostRecentLesson();
     } else {
       this.getFirstLesson();
     }
@@ -739,6 +740,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       console.log('new lesson id', newLessonId);
       this.getLesson(newLessonId);
     }
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'LearnCourseComponent'
+    });
   }
 
   ngOnDestroy() {

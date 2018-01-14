@@ -198,7 +198,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.getDemoQuestions();
     }
   }
-  
+ 
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     let leftToStudy: number;

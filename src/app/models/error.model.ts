@@ -10,3 +10,9 @@ export interface UserError {
   module?: string;
 }
 
+export interface EventMessage {
+  message: string;
+  source: string;
+  dt?: Date;
+}
+

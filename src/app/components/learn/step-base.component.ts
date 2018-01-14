@@ -96,6 +96,7 @@ export abstract class Step {
   onCountDownFinished() {
     this.isCountDown = false;
     this.sharedService.changeExerciseMode(true);
+    this.log('Start exercises step ' + this.currentStep);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -1024,5 +1025,12 @@ export abstract class Step {
         this.noMoreExercises = true;
       });
     }
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'Abstract class Step'
+    });
   }
 }
