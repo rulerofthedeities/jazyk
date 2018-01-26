@@ -99,7 +99,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     );
     this.sharedService.exerciseModeChanged.subscribe(
-      started => this.exercisesStarted = started
+      started => {
+        this.exercisesStarted = started;
+        if (started) {
+          this.log(`Starting lesson '${this.lesson.name}'`);
+        }
+      }
     );
     this.settings = this.userService.user.jazyk.learn;
   }
@@ -146,6 +151,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (exitOk) {
       this.sharedService.changeExerciseMode(false);
       this.exercisesInterrupted.next(true);
+      this.log('User aborted exercises');
     }
   }
 
@@ -236,8 +242,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           if (course.isPublished) {
             this.course = course;
             this.getCurrentLesson();
-            console.log('course', course);
-            this.log('loaded course ' + courseId);
+            this.log(`Loaded course '${this.course.name}'`);
           } else {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
@@ -457,6 +462,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         totalScore => {
+          this.log('Saved exercise answers');
           console.log('saved result -> total score:', totalScore);
           if (totalScore) {
             // add results to data object
@@ -664,7 +670,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   /* Lesson selector */
 
   private lessonSelected(lesson: Lesson) {
-    console.log('LESSON SELECTED', lesson);
+    console.log('Selected lesson ' + lesson.name);
     if (lesson) {
       this.lesson = lesson;
       this.getStepData();
@@ -689,11 +695,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       userResult => {
         if (userResult && userResult.lessonId) {
           // set chapter & lesson to the latest result
-          console.log('LESSON to load', userResult.lessonId);
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
-          console.log('NO LESSON to load; start from beginning');
+          this.log('No lesson to load; start from beginning.');
           this.getFirstLesson();
         }
       },
@@ -716,7 +721,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Get first lesson from course data
     const chapterLessons = this.course.lessons.filter(lesson => lesson.lessonIds.length > 0),
           chapterLesson = chapterLessons[0];
-    console.log('first lesson', this.course.lessons);
     if (chapterLesson) {
       const lessonId = chapterLesson.lessonIds[0];
       this.getLesson(lessonId);

@@ -45,7 +45,7 @@
 .log .row:hover {
   background-color: #333;
 }
-.close-log {
+.close-log .fa-times {
   cursor: pointer;
   margin-bottom: 6px;
 }

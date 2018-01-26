@@ -64,4 +64,9 @@ export class LearnCompletedListComponent implements OnInit {
     }
     console.log('completed data results', this.results);
   }
+
+  getForeignWord(result: Result): string {
+    const word = result.exercise.exercise.foreign.word;
+    return word.replace(/\|/g,', ');
+  }
 }

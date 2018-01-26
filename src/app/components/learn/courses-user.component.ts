@@ -134,11 +134,13 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     } else {
       lan = this.getDefaultLanguage();
     }
+    console.log('filtering courses', lan, this.lanCourses[lan]);
     if (this.lanCourses[lan]) {
       this.courses = this.lanCourses[lan];
     } else {
       this.courses = null;
     }
+    this.coursesReady = true;
   }
 
   private getDefaultLanguage(): string {

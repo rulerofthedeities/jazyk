@@ -96,7 +96,7 @@ export abstract class Step {
   onCountDownFinished() {
     this.isCountDown = false;
     this.sharedService.changeExerciseMode(true);
-    this.log('Start exercises step ' + this.currentStep);
+    this.log(`Starting exercises (${this.currentStep})`);
   }
 
   onSettingsUpdated(settings: LearnSettings) {
@@ -298,10 +298,10 @@ export abstract class Step {
             qType = this.determineQuestionType(this.currentData, learnLevel);
       this.levelUpdated.next(learnLevel);
       this.currentData.data.questionType = qType;
-      this.currentData.data.timeCutoffs = this.setTimeCutOffs(qType, this.currentData);
       if (this.currentData.data.questionType === QuestionType.Choices) {
         this.setChoices();
       }
+      this.currentData.data.timeCutoffs = this.setTimeCutOffs(qType, this.currentData);
       if (this.currentData.data.questionType === QuestionType.Word) {
         // Get prefix from word, pass on to answer field
         const word = this.currentData.exercise.foreign.word;
@@ -602,6 +602,7 @@ export abstract class Step {
         if (this.currentData.data.isCorrect) {
           points = 60;
         }
+        console.log('>Points Comparison', points);
       break;
     }
     // Exercise type bonuses
@@ -679,21 +680,48 @@ export abstract class Step {
     // Cutoffs are in 1/10th of a second
     console.log('timecutoffs', qType);
     const cutOffs = {
-      green: 80,
-      orange: 70,
-      red: 60,
+      green: 70, // 7 secs
+      orange: 60,
+      red: 50,
       total: function(): number {
         return this.green + this.orange + this.red;
       }
     };
+    let extra = 0,
+        multiplier = 1;
+    console.log('time cutoff for ', qType);
     switch (qType) {
+      case QuestionType.Choices:
+        console.log('>Choices', this.currentChoices);
+        const nrOfChoices = this.currentChoices.length;
+        extra = -Math.max(0, 8 - nrOfChoices) * 5;
+        // Default
+      break;
       case QuestionType.Word:
-        const extra = data.exercise.foreign.word.length * 2;
-        cutOffs.green += extra;
-        cutOffs.orange += extra;
-        cutOffs.red += extra;
+        console.log('>Word', data);
+        extra = data.exercise.foreign.word.length * 5;
+      break;
+      case QuestionType.Select:
+        const nrOfOptions = data.exercise.options.split('|').length;
+        extra = -Math.max(0, 12 - nrOfOptions);
+        extra += Math.trunc(data.exercise.options.length / 2);
+        console.log('>Select', data, nrOfOptions);
+      break;
+      case QuestionType.FillIn:
+        console.log('>FillIn', data);
+        extra = data.exercise.foreign.word.length * 5;
+      break;
+      case QuestionType.Comparison:
+        console.log(data.exercise.foreign.word);
+        extra = data.exercise.foreign.word.length;
+        multiplier = 1.2;
+        console.log('>Comparison', data);
       break;
     }
+    cutOffs.green = (cutOffs.green + extra) * multiplier;
+    cutOffs.orange = (cutOffs.orange + extra) * multiplier;
+    cutOffs.red = (cutOffs.red + extra) * multiplier;
+    console.log('time cutoff:', extra, cutOffs);
     return cutOffs;
   }
 

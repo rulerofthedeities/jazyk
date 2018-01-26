@@ -53,6 +53,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.isSubmitted = true;
     this.errorService.clearError();
     if (this.userForm.valid) {
+      this.log('Logging in');
       this.authService
       .signin(user)
       .takeWhile(() => this.componentActive)
@@ -61,6 +62,7 @@ export class SignInComponent implements OnInit, OnDestroy {
           this.authService.signedIn(data);
           this.userService.user = data.user;
           this.sharedService.userJustLoggedIn();
+          this.log(`Logged in as ${data.user.userName}`);
         },
         error => this.errorService.handleError(error)
       );
@@ -86,6 +88,13 @@ export class SignInComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'SignInComponent'
+    });
   }
 
   ngOnDestroy() {

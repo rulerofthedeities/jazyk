@@ -85,11 +85,13 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   onSelectLanguage(newInterfaceLan: Language) {
+    this.log(`Change interface language to ${newInterfaceLan.name}`);
     this.updateInterfaceLan(newInterfaceLan);
   }
 
   onLogOut() {
     event.preventDefault();
+    this.log('Logging out');
     this.authService.logout();
     this.userService.clearUser();
   }
@@ -234,6 +236,13 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'MainMenuComponent'
+    });
   }
 
   ngOnDestroy() {
