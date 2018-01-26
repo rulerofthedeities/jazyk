@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
-import {LanPair, LessonOptions} from '../../models/course.model';
+import {LanPair, Lesson, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -19,14 +19,16 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
-  @Input() private exercises: Exercise[];
+  // @Input() private exercises: Exercise[];
+  @Input() private lesson: Lesson;
   @Input() private exercisesInterrupted: Subject<boolean>;
-  @Input() private lessonOptions: LessonOptions;
+  @Input() private lessonChanged: Subject<Lesson>;
+  // @Input() private lessonOptions: LessonOptions;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() isDemo = false;
-  @Input() lessonId: string;
-  @Input() stepOptions: ExerciseStep;
+  // @Input() lessonId: string;
+  // @Input() stepOptions: ExerciseStep;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -56,9 +58,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.filterExercises();
-    this.getLessonResults();
+    this.init()
     this.checkExercisesInterrupted();
+    this.checkLessonChanged();
     this.isMute = this.settings.mute;
   }
 
@@ -80,7 +82,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.current = -1;
     this.isRehearsal = true;
     this.isCountDown = this.settings.countdown;
-    this.buildExerciseData(this.exercises);
+    this.buildExerciseData(this.lesson.exercises);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 
@@ -115,6 +117,22 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       altwords = word[tpe].alt.split('|').join(', ');
     }
     return altwords;
+  }
+
+  private init() {
+    this.filterExercises();
+    this.getLessonResults();
+  }
+
+  private checkLessonChanged() {
+    console.log('subscribing to lesson changes');
+    this.lessonChanged
+    .takeWhile(() => this.componentActive)
+    .subscribe((event: Lesson) => {
+      console.log('LESSON CHANGED in study TO ', event.name);
+      this.lesson = event;
+      this.init();
+    });
   }
 
   private nextWord(delta: number) {
@@ -175,8 +193,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private filterExercises() {
     // Only the exercises of type word are shown in study
-    this.exercises = this.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
-    console.log('exercises', this.exercises);
+    this.lesson.exercises = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
+    console.log('exercises', this.lesson.exercises);
   }
 
   private getLessonResults() {
@@ -190,7 +208,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
-    .getLessonResults(this.lessonId, 'study')
+    .getLessonResults(this.lesson._id, 'study')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
@@ -206,9 +224,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private getNewQuestions(results: ExerciseResult[]) {
     let exerciseResult: ExerciseResult;
     const newExercises: Exercise[] = [];
-    
+
     // Select exercises with no result
-    this.exercises.forEach(exercise => {
+    this.lesson.exercises.forEach(exercise => {
       if (newExercises.length <= this.settings.nrOfWordsStudy) {
         exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
         if (!exerciseResult) {
@@ -228,8 +246,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       isForeign: true,
       isBidirectional: false,
       direction: Direction.ForeignToLocal
-    }, this.lessonOptions);
-    if (!this.stepOptions.ordered) {
+    }, this.lesson.options);
+    if (!this.lesson.exerciseSteps.study.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     if (!this.isCountDown) {

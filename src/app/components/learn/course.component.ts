@@ -9,7 +9,7 @@ import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
 import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points, 
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
@@ -69,6 +69,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   maxStreak = 20;
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountzero: Subject<boolean> = new Subject();
+  lessonChanged: Subject<Lesson> = new Subject();
   level = Level;
   isDemo: boolean;
   rankKey: string;
@@ -291,6 +292,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.getLessonStepCount(null);
       this.setDefaultLessonStep(null);
     }
+    console.log('steps ready', this.lesson.name);
     this.isStepsReady = true;
   }
 
@@ -380,6 +382,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getLessonStepCount(results: StepCount[]) {
     let total: number;
+    console.log('LESSON STEP COUNT', this.lesson.name);
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
 
@@ -670,9 +673,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   /* Lesson selector */
 
   private lessonSelected(lesson: Lesson) {
-    console.log('Selected lesson ' + lesson.name);
     if (lesson) {
       this.lesson = lesson;
+      console.log('LESSON CHANGED in course TO ', lesson.name);
+      this.lessonChanged.next(lesson);
       this.getStepData();
     }
   }
@@ -684,7 +688,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     } else {
       this.getFirstLesson();
     }
-    
   }
 
   private fetchMostRecentLesson() {

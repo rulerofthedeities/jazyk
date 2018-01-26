@@ -4,7 +4,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {LanPair, LanConfig, LessonOptions} from '../../models/course.model';
+import {LanPair, LanConfig, Lesson, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -40,17 +40,18 @@ interface DlData { // DamerauLevenshteinDistance
 }
 
 export abstract class Step {
-  @Input() protected exercises: Exercise[];
+  // @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() private stepcountzero: Subject<boolean>;
+  @Input() protected lesson: Lesson;
   @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
-  @Input() lessonOptions: LessonOptions;
+  // @Input() lessonOptions: LessonOptions;
   @Input() courseId: string; // only for course level
-  @Input() lessonId: string; // only for lesson level
+  // @Input() lessonId: string; // only for lesson level
   @Input() text: Object;
   @Input() lanPair: LanPair;
-  @Input() stepOptions: ExerciseStep;
+  // @Input() stepOptions: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
@@ -495,9 +496,10 @@ export abstract class Step {
 
   protected addExercise(isCorrect: boolean, isAlmostCorrect: boolean) {
     const newExerciseData: ExerciseData = {
-      data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
-      exercise: this.exerciseData[this.current].exercise
-    };
+            data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
+            exercise: this.exerciseData[this.current].exercise
+          },
+          stepOptions = this.lesson.exerciseSteps.practise;
     let streak = '';
     newExerciseData.data.isCorrect = false;
     newExerciseData.data.isDone = false;
@@ -506,7 +508,7 @@ export abstract class Step {
     newExerciseData.data.grade = 0;
     newExerciseData.data.points = this.previewService.setDefaultPoints();
     newExerciseData.data.answered = newExerciseData.data.answered + 1;
-    if (!this.stepOptions || this.stepOptions.bidirectional) {
+    if (!stepOptions || stepOptions.bidirectional) {
       newExerciseData.data.direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;
     }
     if (isCorrect !== null) {
@@ -520,7 +522,7 @@ export abstract class Step {
       streak
     };
     this.exerciseData.push(newExerciseData);
-    if (!this.stepOptions || !this.stepOptions.ordered) {
+    if (!stepOptions || !stepOptions.ordered) {
       this.shuffleRemainingExercises();
     }
   }
@@ -542,7 +544,7 @@ export abstract class Step {
 
   private filter(word: string): string {
     let filteredAnswer = word;
-    if (!this.lessonOptions.caseSensitive) {
+    if (!this.lesson.options.caseSensitive) {
       filteredAnswer = word.toLowerCase();
     }
     filteredAnswer = this.learnService.filterPrefix(filteredAnswer);
@@ -689,33 +691,26 @@ export abstract class Step {
     };
     let extra = 0,
         multiplier = 1;
-    console.log('time cutoff for ', qType);
     switch (qType) {
       case QuestionType.Choices:
-        console.log('>Choices', this.currentChoices);
         const nrOfChoices = this.currentChoices.length;
         extra = -Math.max(0, 8 - nrOfChoices) * 5;
         // Default
       break;
       case QuestionType.Word:
-        console.log('>Word', data);
         extra = data.exercise.foreign.word.length * 5;
       break;
       case QuestionType.Select:
         const nrOfOptions = data.exercise.options.split('|').length;
         extra = -Math.max(0, 12 - nrOfOptions);
         extra += Math.trunc(data.exercise.options.length / 2);
-        console.log('>Select', data, nrOfOptions);
       break;
       case QuestionType.FillIn:
-        console.log('>FillIn', data);
         extra = data.exercise.foreign.word.length * 5;
       break;
       case QuestionType.Comparison:
-        console.log(data.exercise.foreign.word);
         extra = data.exercise.foreign.word.length;
         multiplier = 1.2;
-        console.log('>Comparison', data);
       break;
     }
     cutOffs.green = (cutOffs.green + extra) * multiplier;
@@ -927,7 +922,7 @@ export abstract class Step {
   }
 
   private addArticle(word: string, article: string): string {
-    if (article && this.lessonOptions.addArticle) {
+    if (article && this.lesson.options.addArticle) {
       return article + ' ' + word;
     } else {
       return word;
@@ -985,7 +980,7 @@ export abstract class Step {
     this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
       isBidirectional: true,
       direction: Direction.LocalToForeign
-    }, this.lessonOptions);
+    }, this.lesson.options);
     this.exerciseData = this.previewService.shuffle(this.exerciseData);
     this.getChoices(this.courseId, true);
     this.setExerciseDataById();
@@ -1028,7 +1023,7 @@ export abstract class Step {
   private checkExercisesInterrupted() {
     this.exercisesInterrupted
     .takeWhile(() => this.componentActive)
-    .subscribe( event => {
+    .subscribe(event => {
       let nrDone = this.current;
       if (this.currentData.data.isDone) {
         nrDone++;

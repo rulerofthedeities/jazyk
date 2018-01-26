@@ -2,6 +2,8 @@ import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angula
 import {MarkdownService} from 'angular2-markdown';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
+import {Lesson} from '../../models/course.model';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -17,7 +19,8 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnIntroComponent implements OnInit, OnDestroy {
-  @Input() lessonId: string;
+  @Input() private lesson: Lesson;
+  @Input() private lessonChanged: Subject<Lesson>;
   @Input() text: Object;
   @Output() stepCompleted = new EventEmitter();
   private componentActive = true;
@@ -30,17 +33,33 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadIntro();
-    this.customizeMarkdown();
+    this.init();
+    this.checkLessonChanged();
   }
 
   onStartStudy() {
     this.stepCompleted.emit();
   }
 
+  private init() {
+    this.loadIntro();
+    this.customizeMarkdown();
+  }
+
+  private checkLessonChanged() {
+    console.log('subscribing to lesson changes');
+    this.lessonChanged
+    .takeWhile(() => this.componentActive)
+    .subscribe((event: Lesson) => {
+      console.log('LESSON CHANGED in intro TO ', event.name);
+      this.lesson = event;
+      this.init();
+    });
+  }
+
   private loadIntro() {
     this.learnService
-    .fetchIntro(this.lessonId)
+    .fetchIntro(this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       intro => {

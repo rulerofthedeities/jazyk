@@ -2,6 +2,7 @@ import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angula
 import {Step} from './step-base.component';
 import {Exercise, ExerciseData, ExerciseOptions, Direction,
         ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
+import {Lesson} from '../../models/course.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
@@ -23,6 +24,7 @@ interface Map<T> {
 })
 
 export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
+  @Input() private lessonChanged: Subject<Lesson>;
   @Input() hasStudyTab: boolean;
   @Input() isDemo = false;
   @Output() lessonCompleted = new EventEmitter<string>();
@@ -41,8 +43,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('PRACTISE', this.lesson._id);
     this.currentStep = 'practise';
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
+    this.checkLessonChanged();
     this.getLessonResults();
   }
 
@@ -51,7 +55,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   onToNextLesson() {
-    this.lessonCompleted.emit(this.lessonId);
+    this.lessonCompleted.emit(this.lesson._id);
   }
 
   isWordCorrect(): boolean {
@@ -111,7 +115,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   protected shuffleRemainingExercises() {
-    const original = this.exercises.length,
+    const original = this.lesson.exercises.length,
           total = this.exerciseData.length,
           nrDone = this.current + 1, // skip next
           done = this.exerciseData.slice(0, nrDone),
@@ -198,12 +202,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.getDemoQuestions();
     }
   }
- 
+
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
+    console.log('fetching results for ', this.lesson._id);
     let leftToStudy: number;
     this.learnService
-    .getLessonResults(this.lessonId, 'practise')
+    .getLessonResults(this.lesson._id, 'practise')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
@@ -232,7 +237,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
-    this.exercises.forEach(exercise => {
+    this.lesson.exercises.forEach(exercise => {
       if (nrOfExercises <= this.settings.nrOfWordsLearn) {
         exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
         if ((exerciseResult && !exerciseResult.isLearned)
@@ -254,20 +259,21 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getDemoQuestions() {
-    this.buildExerciseData(this.exercises, null);
+    this.buildExerciseData(this.lesson.exercises, null);
     super.init(); // start countdown
   }
 
   protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+    const stepOptions = this.lesson.exerciseSteps.practise;
     this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
-      isBidirectional: this.stepOptions.bidirectional,
+      isBidirectional: stepOptions.bidirectional,
       direction: Direction.LocalToForeign
-    }, this.lessonOptions);
-    if (!this.stepOptions.ordered) {
+    }, this.lesson.options);
+    if (!stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
     this.setExerciseDataById();
-    this.getChoices(this.courseId, this.stepOptions.bidirectional);
+    this.getChoices(this.courseId, stepOptions.bidirectional);
   }
 
   protected soundLearnedLevel(learnLevel: number) {
@@ -294,6 +300,19 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected fetchResults() {
     this.getLessonResults();
+  }
+
+  private checkLessonChanged() {
+    console.log('subscribing to lesson changes');
+    this.lessonChanged
+    .takeWhile(() => this.componentActive)
+    .subscribe((event: Lesson) => {
+      console.log('LESSON CHANGED in practise TO ', event.name);
+      this.lesson = event;
+      this.noMoreExercises = false;
+      this.isExercisesDone = false;
+      this.getLessonResults();
+    });
   }
 
   ngOnDestroy() {
