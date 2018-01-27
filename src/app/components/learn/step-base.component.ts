@@ -40,18 +40,14 @@ interface DlData { // DamerauLevenshteinDistance
 }
 
 export abstract class Step {
-  // @Input() protected exercises: Exercise[];
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() private stepcountzero: Subject<boolean>;
   @Input() protected lesson: Lesson;
   @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
-  // @Input() lessonOptions: LessonOptions;
   @Input() courseId: string; // only for course level
-  // @Input() lessonId: string; // only for lesson level
   @Input() text: Object;
   @Input() lanPair: LanPair;
-  // @Input() stepOptions: ExerciseStep;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
@@ -619,6 +615,12 @@ export abstract class Step {
           // points += 15;
         }
       break;
+    }
+    // If this is a practise repeat, halve the nr of base points
+    if (this.currentStep === 'practise') {
+      if (this.currentData.result && this.currentData.result.isLearned === true) {
+        points = Math.round(points / 2);
+      }
     }
 
     return points;
