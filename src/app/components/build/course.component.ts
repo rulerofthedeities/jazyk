@@ -76,10 +76,12 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private addedLesson(lessonAdded: Lesson, go: boolean) {
     this.lessons.push(lessonAdded);
     // Check if new chapter was added
-    if (this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
+    if (lessonAdded.chapterName && this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
       this.addChapter(lessonAdded.chapterName, lessonAdded._id, go);
       // Add lessonId to chapter in course
       // this.addLessonId(lessonAdded.chapterName, lessonAdded._id);
+    } else if (go) {
+      this.router.navigate(['/build/lesson/' + lessonAdded._id]);
     }
   }
 
@@ -133,6 +135,8 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       },
         error => this.errorService.handleError(error)
       );
+    } else if (go) {
+      this.router.navigate(['/build/lesson/' + lessonId]);
     }
   }
   

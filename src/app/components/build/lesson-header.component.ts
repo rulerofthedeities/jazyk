@@ -210,6 +210,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       savedLesson => {
         this.lesson = savedLesson;
         if (goToLesson) {
+          console.log('emit done and go');
           this.doneandgo.emit(savedLesson);
         } else {
           this.done.emit(savedLesson);
