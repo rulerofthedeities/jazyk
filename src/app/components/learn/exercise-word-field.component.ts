@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ElementRef, OnInit, AfterViewChecked} from '@angular/core';
+import {Component, Input, ViewChild, ElementRef, OnChanges, AfterViewChecked} from '@angular/core';
 import {ExerciseData, ExerciseExtraData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
 
@@ -18,7 +18,7 @@ interface Solution {
   styleUrls: ['field.css', 'exercise-word-field.component.css']
 })
 
-export class LearnWordFieldComponent implements OnInit, AfterViewChecked {
+export class LearnWordFieldComponent implements OnChanges, AfterViewChecked {
   @Input() lan: string;
   @Input() prefix: string;
   @Input() disabled: boolean;
@@ -33,7 +33,7 @@ export class LearnWordFieldComponent implements OnInit, AfterViewChecked {
     private utilsService: UtilsService
   ) {}
 
-  ngOnInit() {
+  ngOnChanges() {
     this.exData = this.data.data;
   }
 

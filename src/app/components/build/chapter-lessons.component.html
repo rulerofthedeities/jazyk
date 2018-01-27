@@ -23,7 +23,7 @@
           <button
             class="btn btn-danger pull-right"
             (click)="onRemoveLesson(lessonId, confirmlesson)"
-            *ngIf="lessonDict[lessonId].exercises?.length === 0">
+            *ngIf="lessonDict[lessonId]?.exercises?.length === 0">
             <span class="fa fa-trash"></span>
           </button>
         </div>

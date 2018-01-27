@@ -262,7 +262,7 @@ export abstract class Step {
   private checkIfFillInAnswer() {
     if (!this.isAnswered) {
       if (this.qaComponent && this.qaComponent.getData()) {
-        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect());
+        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect(), QuestionType.FillIn);
       }
     } else {
       this.nextWord();
@@ -272,7 +272,7 @@ export abstract class Step {
   private checkIfComparisonAnswer() {
     if (!this.isAnswered) {
       if (this.comparisonComponent && this.comparisonComponent.getData()) {
-        this.checkFillInAnswer(this.comparisonComponent.getData(), this.comparisonComponent.getCorrect());
+        this.checkFillInAnswer(this.comparisonComponent.getData(), this.comparisonComponent.getCorrect(), QuestionType.Comparison);
       }
     } else {
       this.nextWord();
@@ -385,19 +385,19 @@ export abstract class Step {
     }
   }
 
-  protected checkFillInAnswer(answer: string, solution: string) {
+  protected checkFillInAnswer(answer: string, solution: string, question: QuestionType) {
     const filteredAnswer = this.filter(answer);
     if (filteredAnswer) {
       const filteredSolution = this.filter(solution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer
-        this.checkAnswer(AnsweredType.Correct, QuestionType.FillIn, solution);
+        this.checkAnswer(AnsweredType.Correct, question, solution);
       } else if (this.learnService.isAlmostCorrect(filteredAnswer, filteredSolution)) {
         // Almost correct answer
-        this.checkAnswer(AnsweredType.AlmostCorrect, QuestionType.FillIn, solution);
+        this.checkAnswer(AnsweredType.AlmostCorrect, question, solution);
       } else {
         // Incorrect answer
-        this.checkAnswer(AnsweredType.Incorrect, QuestionType.FillIn, solution);
+        this.checkAnswer(AnsweredType.Incorrect, question, solution);
       }
     }
   }
@@ -441,7 +441,7 @@ export abstract class Step {
       break;
     }
     // Learnlevel
-      console.log('learn level changed?');
+    console.log('learn level changed?');
     if (question === QuestionType.Word || question === QuestionType.Choices) {
       // Set level for words
       const learnLevelData = {
@@ -577,7 +577,6 @@ export abstract class Step {
   private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
     let points = 0;
     // Points dependon Question type
-      console.log('qt', question, QuestionType.Comparison);
     switch (question) {
       case QuestionType.Word:
       case QuestionType.FillIn:
@@ -602,9 +601,8 @@ export abstract class Step {
       break;
       case QuestionType.Comparison:
         if (this.currentData.data.isCorrect) {
-          points = 60;
+          points = 70;
         }
-        console.log('>Points Comparison', points);
       break;
     }
     // Exercise type bonuses
@@ -618,7 +616,7 @@ export abstract class Step {
       case ExerciseType.QA:
       case ExerciseType.Select:
         if (this.currentData.data.isCorrect) {
-          points += 15;
+          // points += 15;
         }
       break;
     }
