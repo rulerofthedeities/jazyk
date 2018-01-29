@@ -384,25 +384,38 @@ module.exports = {
             isDeleted: false
           },
           countQuery = {
-            courseId
+            courseId,
+            isDeleted: false
           },
           resultsPipeline = [
             {$match: resultsQuery},
             {$group: {
-              _id: '$lessonId',
-              studied: {'$sum': 1},
-              learned: {'$sum': {$cond: ["$isLearned", 1, 0 ]}},
-            }}
+               _id: '$lessonId',
+               studied: {'$sum': {$cond: [{$eq: [ "$tpe", 0], $eq: [ "$step", 'study']}, 1, 0]}},
+               learned: {'$sum': {$cond: ["$isLearned", 1, 0 ]}}
+             }}
           ],
           countPipeline = [
             {$match: countQuery},
+            {$project: {
+              words: {
+                $filter: {
+                  input: '$exercises',
+                  as: 'words',
+                  cond: {$eq: ['$$words.tpe', 0]}
+                }
+              },
+               exercises: 1
+            }},
             {$group: {
               _id: '$_id',
-              exercises: {'$sum': {$size: '$exercises'}}
+              allcnt: {'$sum': {$size: '$exercises'}},
+              wordcnt: {'$sum': {$size: '$words'}}
             }},
             {$project: {
               _id: 1,
-              total: '$exercises'
+              total: '$allcnt',
+              totalwords: '$wordcnt'
             }}
           ];
 
@@ -414,12 +427,11 @@ module.exports = {
 
     getByLesson().then((data) => {
       data.count.forEach(lesson => {
-        console.log('lesson', lesson);
         resultData = data.results.find(result => lesson._id.toString() === result._id.toString());
-        console.log('result', resultData);
-        if (resultData) {
+        if (resultData && lesson.total) {
           lesson.studied = resultData.studied;
           lesson.learned = resultData.learned;
+          console.log(lesson);
         }
       })
       response.handleSuccess(res, data.count, 200, 'Fetched all results by lesson');

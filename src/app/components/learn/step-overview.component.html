@@ -48,33 +48,48 @@
   <div class="lesson-title" (click)="onSelectLesson(lesson._id)">
     <div class="header-data" *ngIf="resultsByLesson[lesson._id]">
       <button type="button"
-        *ngIf="!resultsByLesson[lesson._id].started"
+        *ngIf="!resultsByLesson[lesson._id].hasStarted"
         (click)="onContinueLesson(lesson._id)"
         class="btn btn-success pull-right">
         <span class="fa fa-arrow-right fa-spacing"></span>
         {{text["StartLesson"]}}
       </button>
       <button type="button"
-        *ngIf="resultsByLesson[lesson._id].started && !resultsByLesson[lesson._id].completed"
+        *ngIf="resultsByLesson[lesson._id].hasStarted && !resultsByLesson[lesson._id].hasCompleted"
         (click)="onContinueLesson(lesson._id)"
         class="btn btn-success pull-right">
         <span class="fa fa-arrow-right fa-spacing"></span>
         {{text["ContinueLesson"]}}
       </button>
-      <button type="button"
-        *ngIf="resultsByLesson[lesson._id].completed"
-        (click)="onRehearseLesson(lesson._id)"
-        class="btn btn-success pull-right">
-        <span class="fa fa-repeat fa-spacing"></span>
-        {{text["RehearseLesson"]}}
-      </button>
+      <div *ngIf="resultsByLesson[lesson._id].hasCompleted"
+        class="btn-group pull-right"
+        on-mouseover="onOpenDropDown(lesson._id)"
+        on-mouseout="onCloseDropDown()">
+        <button type="button" data-toggle="dropdown" class="btn btn-success dropdown-toggle">
+          <span class="fa fa-repeat fa-spacing"></span>
+          {{text["RehearseLesson"]}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" [style.display]="dropDown === lesson._id ? 'block' : 'none'">
+          <li>
+            <a href="#" (click)="onRehearseLesson(lesson._id, 'study')">
+              {{text["Study"]}} ({{resultsByLesson[lesson._id]?.totalwords}})
+            </a>
+          </li>
+          <li>
+            <a href="#" (click)="onRehearseLesson(lesson._id, 'practise')">
+              {{text["Practise"]}} ({{resultsByLesson[lesson._id]?.total}})
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
     {{i + 1}}. {{lesson.name}}
     <span *ngIf="resultsByLesson[lesson._id]">
       <span class="count">
         ({{resultsByLesson[lesson._id].learned || 0}} / {{resultsByLesson[lesson._id].total || 0}})
       </span>
-      <span class="fa fa-check" *ngIf="resultsByLesson[lesson._id].completed"></span>
+      <span class="fa fa-check" *ngIf="resultsByLesson[lesson._id].hasCompleted"></span>
+      {{lesson._id}}
     </span>
   </div>
 </ng-template>

@@ -18,9 +18,10 @@ interface LessonResult {
   _id: string;
   studied: number;
   learned: number;
-  total: number;
-  started?: boolean;
-  completed?: boolean;
+  total: number; // total nr of exercises in the lesson
+  totalwords: number; // nr of exercises op tpe 0 (words) for study count
+  hasStarted?: boolean;
+  hasCompleted?: boolean;
 }
 
 @Component({
@@ -36,6 +37,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() isLearnedLevel: number;
   @Input() currentLessonId: string;
   @Output() currentLesson = new EventEmitter<Lesson>();
+  @Output() rehearseLesson = new EventEmitter<Lesson>();
   private componentActive = true;
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
@@ -44,6 +46,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   lessonData: Lesson;
   isLessonsReady = false;
   hasChapters: boolean;
+  dropDown: string;
 
   constructor(
     private learnService: LearnService,
@@ -87,9 +90,23 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRehearseLesson(lessonId: string) {
+  onRehearseLesson(lessonId: string, step: string) {
     event.stopPropagation();
-    console.log('rehearse lesson', lessonId);
+    console.log('rehearse lesson', lessonId, step);
+    if (this.lessonData._id === lessonId) {
+      this.rehearseLesson.emit(this.lessonData);
+    } else {
+      this.fetchLesson(lessonId, true);
+    }
+  }
+
+  onOpenDropDown(lessonId: string) {
+    this.dropDown = lessonId;
+  }
+
+  onCloseDropDown() {
+    console.log('close');
+    this.dropDown = null;
   }
 
   getChapterName(chapterName: string) {
@@ -146,8 +163,9 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
         studied: 0,
         learned: 0,
         total: null,
-        started: false,
-        completed: false
+        totalwords: null,
+        hasStarted: false,
+        hasCompleted: false
       };
     })
   }
@@ -160,9 +178,10 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     .subscribe(
       (results: LessonResult[]) => {
         results.forEach(result => {
+          console.log('overview results', result)
           this.resultsByLesson[result._id] = result;
-          this.resultsByLesson[result._id].started = !!(result.learned || result.studied);
-          this.resultsByLesson[result._id].completed = result.learned >= result.total;
+          this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+          this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
         })
         console.log('results by lesson', this.resultsByLesson);
       },
@@ -170,13 +189,17 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fetchLesson(lessonId: string) {
+  private fetchLesson(lessonId: string, rehearse = false) {
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (lesson: Lesson) => {
-        this.currentLesson.emit(lesson);
+        if (rehearse) {
+          this.rehearseLesson.emit(lesson);
+        } else {
+          this.currentLesson.emit(lesson);
+        }
       },
       error => this.errorService.handleError(error)
     );

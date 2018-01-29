@@ -50,6 +50,9 @@ h2 {
   font-size: 16px;
   color: #333;
 }
+.dropdown-menu {
+  top: 32px;
+}
 km-lesson-overview {
   margin: 8px;
   display: block;

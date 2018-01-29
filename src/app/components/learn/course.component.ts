@@ -169,6 +169,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.lessonSelected(lesson);
   }
 
+  onRehearseLesson(lesson: Lesson) {
+    console.log('course - rehearse lesson', lesson.name);
+    console.log('current step', this.steps[this.currentStep]);
+    this.lessonSelected(lesson, true);
+  }
+
   onContinueCourse() {
     this.getCurrentLesson();
   }
@@ -382,7 +388,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getLessonStepCount(results: StepCount[]) {
     let total: number;
-    console.log('LESSON STEP COUNT', this.lesson.name);
+    console.log('LESSON STEP COUNT', this.lesson);
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
 
@@ -672,7 +678,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   /* Lesson selector */
 
-  private lessonSelected(lesson: Lesson) {
+  private lessonSelected(lesson: Lesson, isRepeat = false) {
     if (lesson) {
       this.lesson = lesson;
       console.log('LESSON CHANGED in course TO ', lesson.name);

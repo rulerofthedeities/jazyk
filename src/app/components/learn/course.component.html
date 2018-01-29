@@ -125,6 +125,7 @@
       [isLearnedLevel]="isLearnedLevel"
       [text]="text"
       [isDemo]="isDemo"
+      (rehearseLesson)="onRehearseLesson($event)"
       (currentLesson)="onLessonSelected($event)">
     </km-learn-overview>
     <div *ngIf="isDemo">
