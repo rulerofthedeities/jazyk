@@ -178,19 +178,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.getCurrentLesson();
   }
 
-  showLessonName(): boolean {
-    if (this.steps[this.currentStep]) {
-      const step = this.steps[this.currentStep].name;
-      if (step === 'study' || step === 'practise') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
   capitalize(word: string): string {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
@@ -470,7 +457,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
       console.log('Checking last result', result);
       this.checkLastResult(step, lastResult, allCorrect, data);
-      this.updateStepCount(step, lastResult);
+      if (!this.lesson.rehearseStep) {
+        this.updateStepCount(step, lastResult);
+      }
       console.log('Saving result', result);
       console.log('Total Points', pointsEarned);
       this.learnService
@@ -633,6 +622,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     let done: number,
         remaining: number;
     const nrOfResults = Object.keys(lastResult).length;
+
     switch (step) {
       case 'study':
         // Studied - Decrease study count
