@@ -55,7 +55,9 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   onToNextLesson() {
-    this.lessonCompleted.emit(this.lesson._id);
+    if (!this.lesson.rehearseStep) {
+      this.lessonCompleted.emit(this.lesson._id);
+    }
   }
 
   isWordCorrect(): boolean {
@@ -195,6 +197,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getLessonResults() {
+    console.log('>demo', this.isDemo);
     if (!this.isDemo) {
       // this.getScoreCount();
       this.fetchLessonResults();
@@ -307,11 +310,16 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.lessonChanged
     .takeWhile(() => this.componentActive)
     .subscribe((event: Lesson) => {
-      console.log('LESSON CHANGED in practise TO ', event.name);
+      console.log('> LESSON CHANGED in practise TO ', event.name);
       this.lesson = event;
-      this.noMoreExercises = false;
-      this.isExercisesDone = false;
-      this.getLessonResults();
+      if (this.lesson.rehearseStep) {
+        // This is a repeat
+        console.log('> THIS IS A REPEAT', this.lesson.rehearseStep);
+      } else {
+        this.noMoreExercises = false;
+        this.isExercisesDone = false;
+        this.getLessonResults();
+      }
     });
   }
 

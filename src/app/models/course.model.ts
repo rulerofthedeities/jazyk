@@ -108,6 +108,7 @@ export interface Lesson {
   difficulty: number;
   options: LessonOptions;
   isPublished: boolean;
+  rehearseStep?: string; // For repeats
 }
 
 export interface Translation {

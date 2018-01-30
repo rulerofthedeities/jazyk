@@ -65,19 +65,19 @@
         class="btn-group pull-right"
         on-mouseover="onOpenDropDown(lesson._id)"
         on-mouseout="onCloseDropDown()">
-        <button type="button" data-toggle="dropdown" class="btn btn-success dropdown-toggle">
+        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
           <span class="fa fa-repeat fa-spacing"></span>
           {{text["RehearseLesson"]}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" [style.display]="dropDown === lesson._id ? 'block' : 'none'">
-          <li>
-            <a href="#" (click)="onRehearseLesson(lesson._id, 'study')">
-              {{text["Study"]}} ({{resultsByLesson[lesson._id]?.totalwords}})
+          <li *ngIf="resultsByLesson[lesson._id].totalwords > 0">
+            <a (click)="onRehearseLesson(lesson._id, 'study', resultsByLesson[lesson._id].totalwords)">
+              {{text["Study"]}} ({{resultsByLesson[lesson._id].totalwords}})
             </a>
           </li>
           <li>
-            <a href="#" (click)="onRehearseLesson(lesson._id, 'practise')">
-              {{text["Practise"]}} ({{resultsByLesson[lesson._id]?.total}})
+            <a (click)="onRehearseLesson(lesson._id, 'practise', resultsByLesson[lesson._id].total)">
+              {{text["Practise"]}} ({{resultsByLesson[lesson._id].total}})
             </a>
           </li>
         </ul>

@@ -90,13 +90,16 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRehearseLesson(lessonId: string, step: string) {
+  onRehearseLesson(lessonId: string, step: string, cnt: number) {
     event.stopPropagation();
-    console.log('rehearse lesson', lessonId, step);
-    if (this.lessonData._id === lessonId) {
-      this.rehearseLesson.emit(this.lessonData);
-    } else {
-      this.fetchLesson(lessonId, true);
+    console.log('rehearse lesson', lessonId, step, cnt);
+    if (cnt > 0) {
+      this.lessonData.rehearseStep = step;
+      if (this.lessonData._id === lessonId) {
+        this.rehearseLesson.emit(this.lessonData);
+      } else {
+        this.fetchLesson(lessonId, step);
+      }
     }
   }
 
@@ -105,13 +108,12 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   onCloseDropDown() {
-    console.log('close');
     this.dropDown = null;
   }
 
   getChapterName(chapterName: string) {
     if (chapterName === 'NoChapter') {
-      return this.text['NoChapter']
+      return this.text['NoChapter'];
     } else {
       return chapterName;
     }
@@ -167,7 +169,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
         hasStarted: false,
         hasCompleted: false
       };
-    })
+    });
   }
 
   private getLessonResults() {
@@ -178,24 +180,25 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     .subscribe(
       (results: LessonResult[]) => {
         results.forEach(result => {
-          console.log('overview results', result)
+          console.log('overview results', result);
           this.resultsByLesson[result._id] = result;
           this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
           this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-        })
+        });
         console.log('results by lesson', this.resultsByLesson);
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private fetchLesson(lessonId: string, rehearse = false) {
+  private fetchLesson(lessonId: string, rehearse: string = null) {
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (lesson: Lesson) => {
         if (rehearse) {
+          lesson.rehearseStep = rehearse;
           this.rehearseLesson.emit(lesson);
         } else {
           this.currentLesson.emit(lesson);

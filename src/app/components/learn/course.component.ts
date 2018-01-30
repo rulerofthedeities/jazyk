@@ -170,9 +170,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onRehearseLesson(lesson: Lesson) {
-    console.log('course - rehearse lesson', lesson.name);
-    console.log('current step', this.steps[this.currentStep]);
-    this.lessonSelected(lesson, true);
+    console.log('> lesson rehearse', lesson, this.steps);
+    this.lessonSelected(lesson);
   }
 
   onContinueCourse() {
@@ -316,6 +315,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (step.alwaysShown) {
       return true;
     }
+    if (this.lesson.rehearseStep === step.name) {
+      return true;
+    }
     if (this.lesson.exerciseSteps[step.name] && this.lesson.exerciseSteps[step.name].active) {
       if (step.name === 'study') {
         // Check if there are words to study
@@ -331,24 +333,29 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private setDefaultLessonStep(results: number) {
     let defaultStep = 0;
-    if (results > 0) {
-      // When pressing button 'continue course'
-      if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
-        defaultStep = this.getStepNr('study');
-      } else if (this.hasStep('practise')) {
-        defaultStep = this.getStepNr('practise');
-      }
+    console.log('set default lesson step', this.lesson.rehearseStep);
+    if (this.lesson.rehearseStep) {
+      this.currentStep = this.getStepNr(this.lesson.rehearseStep);
     } else {
-      // new course: show intro if it exists otherwise show button to start study;
-      if (this.hasStep('intro')) {
-        defaultStep = this.getStepNr('intro');
-      } else if (this.hasStep('study')) {
-        defaultStep = this.getStepNr('study');
-      } else if (this.hasStep('practise')) {
-        defaultStep = this.getStepNr('practise');
+      if (results > 0) {
+        // When pressing button 'continue course'
+        if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
+          defaultStep = this.getStepNr('study');
+        } else if (this.hasStep('practise')) {
+          defaultStep = this.getStepNr('practise');
+        }
+      } else {
+        // new course: show intro if it exists otherwise show button to start study;
+        if (this.hasStep('intro')) {
+          defaultStep = this.getStepNr('intro');
+        } else if (this.hasStep('study')) {
+          defaultStep = this.getStepNr('study');
+        } else if (this.hasStep('practise')) {
+          defaultStep = this.getStepNr('practise');
+        }
       }
+      this.currentStep = defaultStep;
     }
-    this.currentStep = defaultStep;
   }
 
   private setCourseStep() {
@@ -678,12 +685,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   /* Lesson selector */
 
-  private lessonSelected(lesson: Lesson, isRepeat = false) {
+  private lessonSelected(lesson: Lesson) {
     if (lesson) {
       this.lesson = lesson;
+      this.getStepData();
       console.log('LESSON CHANGED in course TO ', lesson.name);
       this.lessonChanged.next(lesson);
-      this.getStepData();
     }
   }
 

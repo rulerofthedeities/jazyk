@@ -58,7 +58,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.init()
+    this.init();
     this.checkExercisesInterrupted();
     this.checkLessonChanged();
     this.isMute = this.settings.mute;
@@ -79,11 +79,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onRehearseAll() {
-    this.current = -1;
-    this.isRehearsal = true;
-    this.isCountDown = this.settings.countdown;
-    this.buildExerciseData(this.lesson.exercises);
-    this.exerciseData.map(exercise => exercise.data.isDone = false);
+    this.rehearseAll();
   }
 
   onSkipConfirmed(skipOk: boolean) {
@@ -120,8 +116,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    this.filterExercises();
-    this.getLessonResults();
+    if (this.lesson.rehearseStep === 'study') {
+      this.rehearseAll();
+    } else {
+      this.filterExercises();
+      this.getLessonResults();
+    }
   }
 
   private checkLessonChanged() {
@@ -260,6 +260,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private skip() {
     this.skipStep.emit();
+  }
+
+  private rehearseAll() {
+    this.current = -1;
+    this.isRehearsal = true;
+    this.isCountDown = this.settings.countdown;
+    this.buildExerciseData(this.lesson.exercises);
+    this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 
   private restart() {
