@@ -61,6 +61,7 @@
   <div 
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"
+    [class.rehearse]="exercisesStarted && !!lesson?.rehearseStep"
     [ngClass]="steps[currentStep]?.name">
     <km-learn-intro *ngSwitchCase="'intro'"
       [lesson]="lesson"

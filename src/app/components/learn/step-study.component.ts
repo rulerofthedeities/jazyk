@@ -119,6 +119,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (this.lesson.rehearseStep === 'study') {
       this.rehearseAll();
     } else {
+      this.isRehearsal = false;
       this.filterExercises();
       this.getLessonResults();
     }

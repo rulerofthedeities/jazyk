@@ -25,3 +25,6 @@
   font-size: 20px;
   margin-left: 42px;
 }
+.study-card {
+  background: linear-gradient(90deg, #efefef , #fff);
+}
