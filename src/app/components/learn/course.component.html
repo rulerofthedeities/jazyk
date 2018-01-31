@@ -52,12 +52,12 @@
       </ul>
     </div>
   </div>
-  <div class="learn-header"
+  <div class="learn-header" *ngIf="isLessonReady"
     [ngClass]="steps[currentStep]?.name">
   </div>
 </div>
 <!-- COURSE DATA -->
-<div *ngIf="isLessonReady && course">
+<div *ngIf="isLessonReady else loading">
   <div 
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"
@@ -161,3 +161,9 @@
   [text]="text"
   [gender]="getGender()">
 </km-modal-promotion>
+
+<ng-template #loading>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingCourse']">
+  </km-loader>
+</ng-template>

@@ -63,8 +63,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   onCountDownFinished() {
     this.isCountDown = false;
-    this.sharedService.changeExerciseMode(true);
-    this.nextWord(1);
+    this.finishCountDown();
   }
 
   onNextWord(delta: number) {
@@ -113,6 +112,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private init() {
+    this.isCountDown = false;
     if (this.lesson.rehearseStep === 'study') {
       this.rehearseAll();
     } else {
@@ -120,6 +120,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.filterExercises();
       this.getLessonResults();
     }
+  }
+
+  private finishCountDown() {
+    this.sharedService.changeExerciseMode(true);
+    this.nextWord(1);
   }
 
   private checkLessonChanged() {
@@ -234,9 +239,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       }
     });
     if (newExercises.length > 0) {
-      this.isCountDown = this.settings.countdown;
+      this.buildExerciseData(newExercises);
     }
-    this.buildExerciseData(newExercises);
   }
 
   private buildExerciseData(newExercises: Exercise[]) {
@@ -248,9 +252,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (!this.lesson.exerciseSteps.study.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }
+    this.isCountDown = this.settings.countdown;
     if (!this.isCountDown) {
-      this.onCountDownFinished();
-      this.nextWord(1);
+      this.finishCountDown();
     }
     this.isReady = true;
     console.log('>> study ready - exercisedata', this.exerciseData);
@@ -263,7 +267,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private rehearseAll() {
     this.current = -1;
     this.isRehearsal = true;
-    this.isCountDown = this.settings.countdown;
+    this.isCountDown = false;
     this.buildExerciseData(this.lesson.exercises);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }

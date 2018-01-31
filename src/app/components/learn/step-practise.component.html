@@ -1,11 +1,11 @@
 <km-countdown 
-  *ngIf="isCountDown; else exercise"
+  *ngIf="isCountDown else exercise"
   [mute]="isMute"
   (countedDown)="onCountDownFinished()">
 </km-countdown>
 <ng-template #exercise>
-  <section kmPressed class="main-card"
-    (onKeyPressed)="onKeyPressed($event)" *ngIf="isReady else loading">
+  <section kmPressed class="main-card" *ngIf="isReady else loading"
+    (onKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isExercisesDone ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
@@ -161,12 +161,9 @@
 </ng-template>
 
 <ng-template #loading>
-  <span class="loading">
-    <span *ngFor="let dot of dotArr">
-      <span class="fa fa-circle">
-      </span>
-    </span>
-  </span>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingLesson']">
+  </km-loader>
 </ng-template>
 
 
