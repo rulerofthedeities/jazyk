@@ -222,6 +222,7 @@ export abstract class Step {
   }
 
   protected init() {
+    console.log('>> base init');
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.checkExercisesInterrupted();

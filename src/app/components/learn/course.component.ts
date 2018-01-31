@@ -64,7 +64,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   currentStep = 0;
   steps: Step[];
   courseLevel: Level;
-  isStepsReady = false;
+  isLessonReady = false;
   exercisesStarted = false;
   maxStreak = 20;
   exercisesInterrupted: Subject<boolean> = new Subject();
@@ -87,27 +87,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('>>> init countdown');
     this.isDemo = !this.authService.isLoggedIn();
-    this.route.params
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      params => {
-        if (params['id']) {
-          this.courseId = params['id'];
-          this.courseStep = this.validateCourseStep(params['step']);
-          this.getTranslations();
-        }
-      }
-    );
-    this.sharedService.exerciseModeChanged.subscribe(
-      started => {
-        this.exercisesStarted = started;
-        if (started) {
-          this.log(`Starting lesson '${this.lesson.name}'`);
-        }
-      }
-    );
     this.settings = this.userService.user.jazyk.learn;
+    this.subscribe();
   }
 
   stepTo(i: number) {
@@ -218,6 +201,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
+        console.log('>>> getting course');
         this.getCourse(translations, this.courseId);
         this.setText(translations);
       },
@@ -234,6 +218,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
+            console.log('>>> loaded course, go to current lesson');
             this.getCurrentLesson();
             this.log(`Loaded course '${this.course.name}'`);
           } else {
@@ -248,6 +233,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getStepData() {
+    console.log('>>> getting step data');
     this.setSteps();
     if (!this.isDemo) {
       this.fetchStepData();
@@ -257,12 +243,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private fetchStepData() {
+    console.log('>>> fetching step data');
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('step data results:', results);
+        console.log('>>> step data results:', results);
         this.processStepResults(results);
       },
       error => this.errorService.handleError(error)
@@ -270,6 +257,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private processStepResults(results: any) {
+    console.log('>>> procesing step results:', results);
     this.countPerStep = {};
     if (results) {
       this.getCourseStepCount(results);
@@ -284,8 +272,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.getLessonStepCount(null);
       this.setDefaultLessonStep(null);
     }
-    console.log('steps ready', this.lesson.name);
-    this.isStepsReady = true;
   }
 
   private setSteps() {
@@ -319,8 +305,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private setDefaultLessonStep(results: number) {
-    let defaultStep = 0;
-    console.log('set default lesson step', this.lesson.rehearseStep);
+    let defaultStep: number = null;
+    console.log('>>> set default lesson step', this.countPerStep, this.lesson.rehearseStep);
     if (this.lesson.rehearseStep) {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
     } else {
@@ -328,11 +314,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         // When pressing button 'continue course'
         if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
           defaultStep = this.getStepNr('study');
+          this.currentStep = defaultStep;
         } else if (this.hasStep('practise')) {
-          defaultStep = this.getStepNr('practise');
+          if (this.countPerStep['practise'].nrRemaining > 0) {
+            defaultStep = this.getStepNr('practise');
+          } else {
+            // No exercises left in lesson -> go to next lesson
+            console.log('>>> No exercises left, go to next lesson');
+            this.getNextLesson(this.lesson._id);
+          }
         }
       } else {
-        // new course: show intro if it exists otherwise show button to start study;
+        // new course: show intro if it exists otherwise start study;
         if (this.hasStep('intro')) {
           defaultStep = this.getStepNr('intro');
         } else if (this.hasStep('study')) {
@@ -341,7 +334,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           defaultStep = this.getStepNr('practise');
         }
       }
-      this.currentStep = defaultStep;
+      if (defaultStep) {
+        this.currentStep = defaultStep;
+        console.log('>>> Lesson ready', this.lesson.name);
+        this.isLessonReady = true;
+        this.lessonChanged.next(this.lesson);
+      }
     }
   }
 
@@ -489,7 +487,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       if (this.promotionComponent) {
         // Show promotion modal
         this.rankNr = currentRank || 0;
-        this.rankKey = "rank" + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
+        this.rankKey = 'rank' + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
         this.promotionComponent.doShowModal();
       }
     }
@@ -679,14 +677,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     if (lesson) {
       this.lesson = lesson;
       this.getStepData();
-      console.log('LESSON CHANGED in course TO ', lesson.name);
-      this.lessonChanged.next(lesson);
     }
   }
 
   private getCurrentLesson() {
     // Check where this course was left off
     if (!this.isDemo) {
+      console.log('>>> fetching most recent lesson');
       this.fetchMostRecentLesson();
     } else {
       this.getFirstLesson();
@@ -701,10 +698,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       userResult => {
         if (userResult && userResult.lessonId) {
           // set chapter & lesson to the latest result
+          console.log('>>> fetching lesson');
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
-          this.log('No lesson to load; start from beginning.');
+          this.log('>>> No lesson to load; start from beginning.');
           this.getFirstLesson();
         }
       },
@@ -718,7 +716,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      lesson => this.lessonSelected(lesson),
+      (lesson: Lesson) => {
+        console.log('>>> fetched lesson', lesson.name);
+        this.lessonSelected(lesson);
+      },
       error => this.errorService.handleError(error)
     );
   }
@@ -750,6 +751,31 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       console.log('new lesson id', newLessonId);
       this.getLesson(newLessonId);
     }
+  }
+
+  private subscribe() {
+    this.route.params
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      params => {
+        if (params['id']) {
+          this.courseId = params['id'];
+          this.courseStep = this.validateCourseStep(params['step']);
+          this.getTranslations();
+          console.log('>>> route coursestep', this.courseStep);
+        }
+      }
+    );
+    this.sharedService.exerciseModeChanged
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (started: boolean) => {
+        this.exercisesStarted = started;
+        if (started) {
+          this.log(`Starting lesson '${this.lesson.name}'`);
+        }
+      }
+    );
   }
 
   private log(message: string) {

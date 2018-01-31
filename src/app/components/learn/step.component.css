@@ -95,3 +95,6 @@ km-completed-list {
   display: block;
   margin-top: 15px;
 }
+.main-card {
+  background: linear-gradient(90deg, #efefef , #fff);
+}

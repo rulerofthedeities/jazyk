@@ -3,7 +3,7 @@
 </div>
 
 <!-- COURSE HEADER -->
-<div *ngIf="isStepsReady && !exercisesStarted">
+<div *ngIf="!exercisesStarted">
   <div class="panel panel-default panel-header">
     <div class="panel-body">
       <h1>
@@ -21,7 +21,7 @@
       </h1>
       <ul class="list-unstyled list-inline steps">
         <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
-          <li 
+          <li *ngIf="isLessonReady || step.level === level.Course"
             (click)="stepTo(i)" 
             class="btn btn-lg btn-step"
             [ngClass]="{
@@ -57,7 +57,7 @@
   </div>
 </div>
 <!-- COURSE DATA -->
-<div *ngIf="isStepsReady && course">
+<div *ngIf="isLessonReady && course">
   <div 
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"

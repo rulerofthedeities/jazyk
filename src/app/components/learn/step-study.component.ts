@@ -19,16 +19,12 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnStudyComponent implements OnInit, OnDestroy {
-  // @Input() private exercises: Exercise[];
   @Input() private lesson: Lesson;
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() private lessonChanged: Subject<Lesson>;
-  // @Input() private lessonOptions: LessonOptions;
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() isDemo = false;
-  // @Input() lessonId: string;
-  // @Input() stepOptions: ExerciseStep;
   @Input() settings: LearnSettings;
   @Output() skipStep = new EventEmitter();
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -58,6 +54,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('>> init study', this.lesson.name);
     this.init();
     this.checkExercisesInterrupted();
     this.checkLessonChanged();
@@ -256,7 +253,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.nextWord(1);
     }
     this.isReady = true;
-    console.log('exercisedata', this.exerciseData);
+    console.log('>> study ready - exercisedata', this.exerciseData);
   }
 
   private skip() {

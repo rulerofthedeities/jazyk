@@ -46,7 +46,8 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
   beep2: any;
 
   ngOnInit() {
-    this.Initialize();
+    console.log('>> init countdown');
+    this.initialize();
     this.startCountDown();
   }
 
@@ -58,7 +59,7 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  private Initialize() {
+  private initialize() {
     // Audio
     if (!this.mute) {
       this.beep1 = this.loadAudio('/assets/audio/countdown.ogg');

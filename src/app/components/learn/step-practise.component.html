@@ -4,8 +4,8 @@
   (countedDown)="onCountDownFinished()">
 </km-countdown>
 <ng-template #exercise>
-  <section kmPressed 
-    (onKeyPressed)="onKeyPressed($event)">
+  <section kmPressed class="main-card"
+    (onKeyPressed)="onKeyPressed($event)" *ngIf="isReady else loading">
     <div [ngClass]="isExercisesDone ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
