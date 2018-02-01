@@ -30,6 +30,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
   noMoreToStudy = false;
+  isRehearsal = false;
   isReady = false;
   beep: any;
 
@@ -44,6 +45,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('>> init practise', this.lesson.name);
     this.currentStep = 'practise';
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.checkLessonChanged();
@@ -197,10 +199,16 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getLessonResults() {
-    if (!this.isDemo) {
-      this.fetchLessonResults();
+    if (this.lesson.rehearseStep === 'practise') {
+      this.isRehearsal = true;
+      this.getRepeatQuestions();
     } else {
-      this.getDemoQuestions();
+      this.isRehearsal = false;
+      if (!this.isDemo) {
+        this.fetchLessonResults();
+      } else {
+        this.getDemoQuestions();
+      }
     }
   }
 
@@ -213,12 +221,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('CHECK lesson results', results);
+        console.log('>> CHECK lesson results', results);
         if  (results) {
           leftToStudy = this.getNewQuestions(results);
         }
+        this.isReady = true;
         if (this.exerciseData.length > 0) {
-          this.isReady = true;
           super.init(); // start countdown
         } else {
           this.noMoreExercises = true;
@@ -255,13 +263,20 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         }
       }
     });
-    console.log('words for practise', newExercises);
+    console.log('>> words for practise', newExercises);
     this.buildExerciseData(newExercises, newResults);
     return leftToStudy;
   }
 
   private getDemoQuestions() {
     this.buildExerciseData(this.lesson.exercises, null);
+    this.isReady = true;
+    super.init(); // start countdown
+  }
+
+  private getRepeatQuestions() {
+    this.buildExerciseData(this.lesson.exercises, null);
+    this.isReady = true;
     super.init(); // start countdown
   }
 

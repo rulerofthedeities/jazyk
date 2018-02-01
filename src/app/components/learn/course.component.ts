@@ -318,9 +318,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         } else if (this.hasStep('practise')) {
           if (this.countPerStep['practise'].nrRemaining > 0) {
             defaultStep = this.getStepNr('practise');
+            console.log('>>> This lesson', this.lesson.name, this.countPerStep['practise']);
           } else {
             // No exercises left in lesson -> go to next lesson
-            console.log('>>> No exercises left, go to next lesson');
+            console.log('>>> No exercises left, go to next lesson', this.lesson.name, this.countPerStep['practise']);
             this.getNextLesson(this.lesson._id);
           }
         }
@@ -336,7 +337,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
       if (defaultStep) {
         this.currentStep = defaultStep;
-        console.log('>>> Lesson ready', this.lesson.name);
+        console.log('>>> Lesson ready', this.currentStep, this.lesson.name);
         this.isLessonReady = true;
         this.lessonChanged.next(this.lesson);
       }
