@@ -24,6 +24,8 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
             $set: filterObj,
             $setOnInsert: {
               points: doc.points,
+              timeDelta: doc.timeDelta,
+              isRepeat: doc.isRepeat,
               isLast: true,
               isDeleted: false,
               dt: new Date()
@@ -61,12 +63,14 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       points: doc.points,
       learnLevel: doc.learnLevel,
       isLearned: doc.isLearned,
+      timeDelta: doc.timeDelta,
       daysBetweenReviews: doc.daysBetweenReviews,
       percentOverdue: doc.percentOverdue,
       streak: doc.streak,
       isLast: doc.isLast,
       isCorrect: doc.isCorrect,
       isDifficult: doc.isDifficult,
+      isRepeat: doc.isRepeat,
       isDeleted: false,
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
@@ -136,12 +140,14 @@ getStepCounts = async (req, res) => {
             userId,
             lessonId,
             isDeleted: false,
+            isRepeat: false,
             $or: [{isLearned: true}, {step: 'study'}]
           },
           difficultQuery = {
             userId,
             courseId,
             isLast: true,
+            isRepeat: false,
             isDeleted: false
           },
           reviewQuery = {
@@ -149,6 +155,7 @@ getStepCounts = async (req, res) => {
             courseId,
             isLast: true,
             isLearned: true,
+            isRepeat: false,
             isDeleted: false
           },
           lessonPipeline = [
@@ -275,6 +282,7 @@ module.exports = {
             userId,
             lessonId,
             isLast: true,
+            isRepeat: false,
             isDeleted: false
           };
     if (step === 'practise') {
@@ -317,6 +325,7 @@ module.exports = {
             userId,
             lessonId,
             isLast: true,
+            isRepeat: false,
             isDeleted: false
           },
           countQuery = {userId, lessonId},
@@ -381,6 +390,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
+            isRepeat: false,
             isDeleted: false
           },
           countQuery = {
@@ -446,6 +456,7 @@ module.exports = {
           query = {
             userId,
             courseId,
+            isRepeat: false,
             step: {$ne: 'difficult'}
           },
           projection = {_id: 0, lessonId: 1},
@@ -474,6 +485,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
+            isRepeat: false,
             isDeleted: false
           },
           pipeline = [
@@ -523,6 +535,7 @@ module.exports = {
             courseId,
             isLast: true,
             isLearned: true, 
+            isRepeat: false,
             isDeleted: false
           },
           pipeline = [
@@ -577,6 +590,7 @@ module.exports = {
             courseId,
             step: 'practise',
             isLearned: true,
+            isRepeat: false,
             isDeleted: false
           },
           pipeline = [

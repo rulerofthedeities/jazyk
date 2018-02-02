@@ -34,11 +34,13 @@ interface ResultData {
   learnLevel: number;
   sequence: number; // To find the last saved doc for docs with same save time
   isLearned?: boolean;
+  timeDelta?: number;
   daysBetweenReviews?: number;
   percentOverdue?: number;
   streak: string;
   isLast: boolean;
   isDifficult: boolean;
+  isRepeat: boolean;
   isCorrect: boolean;
 }
 
@@ -416,6 +418,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const lastResult: Map<ResultData> = {}, // Get most recent result per exercise (for isLearned && reviewTime)
           streak: Map<string> = {}, // Get streaks for exercise
           allCorrect: Map<boolean> = {}, // Exercise is only correct if all answers for an exercise are correct
+          isRepeat = !!this.lesson.rehearseStep,
           result = {
             courseId: this.course._id,
             lessonId: this.courseLevel === Level.Lesson ? this.lesson._id : undefined,
@@ -429,7 +432,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data.forEach((item) => {
         correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
       });
-      const correctBonus = this.getCorrectBonus(correctCount, data.length);
+      const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat);
       data.forEach( (item, i) => {
         item.data.points.correct = correctBonus;
         console.log('result', item);
@@ -440,13 +443,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         const newResult: ResultData = {
           exerciseId: item.exercise._id,
           tpe: item.exercise.tpe,
+          timeDelta: item.data.timeDelta,
           done: item.data.isDone || false,
           points: item.data.points.total() || 0,
-          learnLevel: item.data.learnLevel || 0,
-          streak: streak[item.exercise._id],
+          learnLevel: isRepeat ? 0 : (item.data.learnLevel || 0),
+          streak: isRepeat ? '' : streak[item.exercise._id],
           sequence: i,
           isLast: false,
           isDifficult: false,
+          isRepeat,
           isCorrect: item.data.isCorrect,
           lessonId: item.result ? item.result.lessonId : this.lesson._id
         };
@@ -508,8 +513,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return newStreak;
   }
 
-  private getCorrectBonus(correctCount: number, totalCount: number): number {
-    if (totalCount > 1) {
+  private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean): number {
+    if (totalCount > 1 && !isRepeat) {
       return Math.max(0, Math.trunc(((correctCount / totalCount * 100) - 60) * 0.5));
     } else {
       return 0;

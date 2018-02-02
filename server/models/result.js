@@ -11,6 +11,7 @@ var resultSchema = new Schema({
   points: Number,
   learnLevel: Number,
   isLearned: Boolean,
+  timeDelta: Number,
   dt: {type: Date, default: Date.now},
   dtToReview: Date,
   daysBetweenReviews: Number,
@@ -20,6 +21,7 @@ var resultSchema = new Schema({
   isLast: Boolean, // True if it is the last doc of a learn session
   isDifficult: Boolean, // These are selected for the difficult step
   isCorrect: Boolean,
+  isRepeat: {type: Boolean, default: false, required: true},
   isDeleted: {type: Boolean, default: false, required: true} // The exercise has been deleted but the result is still there
 });
 

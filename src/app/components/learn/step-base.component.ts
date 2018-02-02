@@ -461,7 +461,7 @@ export abstract class Step {
     this.addCount(this.isCorrect, this.currentData.exercise._id);
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
     const foreignWord = this.currentData.exercise.foreign.word;
-    if (answer === AnsweredType.Correct) {
+    if (answer === AnsweredType.Correct && !this.lesson.rehearseStep) {
       this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
       this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
       this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
@@ -572,7 +572,7 @@ export abstract class Step {
   }
 
   private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
-    let points = 0;
+    let points = 10;
     // Points dependon Question type
     switch (question) {
       case QuestionType.Word:
@@ -617,11 +617,9 @@ export abstract class Step {
         }
       break;
     }
-    // If this is a practise repeat, halve the nr of base points
-    if (this.currentStep === 'practise') {
-      if (this.currentData.result && this.currentData.result.isLearned === true) {
-        points = Math.round(points / 2);
-      }
+    // If this is a practise repeat, drastically reduce points
+    if (this.lesson.rehearseStep) {
+      points = Math.round(points / 10);
     }
 
     return points;
