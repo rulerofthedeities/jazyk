@@ -57,6 +57,7 @@ export interface ExerciseResult {
   points?: number;
   learnLevel?: number;
   isLearned?: boolean;
+  isRepeat?: boolean;
   sequence?: number; // To find the last saved doc for docs with same save time
   dt?: Date;
   dtToReview?: Date;

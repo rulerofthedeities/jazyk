@@ -21,12 +21,14 @@ export class LearnCompletedListComponent implements OnInit {
   @Input() private data: ExerciseData[];
   @Input() text: Object;
   @Input() title: string;
+  @Input() isRepeat = false;
   results: Result[] = [];
   noResults = false;
   exType = ExerciseType;
 
   ngOnInit() {
-    console.log('completed data', this.data);
+    const test = JSON.parse(JSON.stringify(this.data));
+    console.log('completed data', test);
     // show only 1 result per word
     let result: Result;
     this.data.forEach(exerciseData => {
@@ -43,8 +45,6 @@ export class LearnCompletedListComponent implements OnInit {
             streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
             tpe: exerciseData.exercise.tpe
           };
-          const test = JSON.parse(JSON.stringify(result));
-          console.log('adding', test);
           this.results.push(result);
         } else {
           result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
@@ -54,8 +54,6 @@ export class LearnCompletedListComponent implements OnInit {
           result.points += exerciseData.data.points.totalmincorrect();
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
           result.tpe = exerciseData.exercise.tpe;
-          const test = JSON.parse(JSON.stringify(result));
-          console.log('updated', test);
         }
       }
     });

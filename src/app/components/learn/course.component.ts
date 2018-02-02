@@ -203,7 +203,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
-        console.log('>>> getting course');
         this.getCourse(translations, this.courseId);
         this.setText(translations);
       },

@@ -64,6 +64,7 @@
       <div *ngIf="isStudyDone && exerciseData?.length > 0">
         <km-completed-list 
           [data]="exerciseData"
+          [isRepeat]="isRehearsal"
           [title]="text['Wordslearned']"
           [text]="text">
         </km-completed-list>
