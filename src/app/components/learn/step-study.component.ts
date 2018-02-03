@@ -244,11 +244,17 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private buildExerciseData(newExercises: Exercise[]) {
-    this.exerciseData = this.learnService.buildExerciseData(newExercises, null, this.text, {
-      isForeign: true,
-      isBidirectional: false,
-      direction: Direction.ForeignToLocal
-    }, this.lesson.options);
+    this.exerciseData = this.learnService.buildExerciseData(
+      newExercises,
+      null,
+      this.text, {
+        isForeign: true,
+        isBidirectional: false,
+        direction: Direction.ForeignToLocal
+      },
+      this.lesson.options,
+      null
+    );
     if (!this.lesson.exerciseSteps.study.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
     }

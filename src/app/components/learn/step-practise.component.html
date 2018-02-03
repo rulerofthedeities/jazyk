@@ -3,6 +3,7 @@
   [mute]="isMute"
   (countedDown)="onCountDownFinished()">
 </km-countdown>
+
 <ng-template #exercise>
   <section kmPressed class="main-card" *ngIf="isReady else loading"
     (onKeyPressed)="onKeyPressed($event)">
@@ -13,6 +14,7 @@
           [current]="current"
           [onNextExercise]="nextExercise">
         </km-bullets>
+        <!-- TIMER -->
         <km-timer *ngIf="!isExercisesDone && isQuestionReady"
           [data]="currentData">
         </km-timer>
@@ -166,5 +168,3 @@
     [msg]="text['LoadingLesson']">
   </km-loader>
 </ng-template>
-
-

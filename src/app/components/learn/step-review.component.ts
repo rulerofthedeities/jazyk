@@ -14,6 +14,7 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
+  isReady = false;
 
   constructor(
     learnService: LearnService,
@@ -27,12 +28,12 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentStep = 'review';
     this.getToReview();
-    super.init();
   }
 
   private getToReview() {
+    console.log('review course', this.course);
     this.learnService
-    .fetchToReview(this.courseId, this.settings.nrOfWordsReview)
+    .fetchToReview(this.course._id, this.settings.nrOfWordsReview)
     .takeWhile(() => this.componentActive)
     .subscribe(
       data => this.setExercises(data.toreview, data.results),
@@ -43,6 +44,9 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   private setExercises(newExercises: Exercise[], results: ExerciseResult[]) {
     if (newExercises.length > 0) {
       this.buildExerciseData(newExercises, results);
+      this.noMoreExercises = false;
+      this.isReady = true;
+      super.init();
     } else {
       this.noMoreExercises = true;
       this.isCountDown = false;

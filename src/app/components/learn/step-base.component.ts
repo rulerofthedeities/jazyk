@@ -4,7 +4,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {LanPair, LanConfig, Lesson, LessonOptions} from '../../models/course.model';
+import {Course, LanPair, LanConfig, Lesson, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -45,7 +45,7 @@ export abstract class Step {
   @Input() protected lesson: Lesson;
   @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
-  @Input() courseId: string; // only for course level
+  @Input() course: Course;
   @Input() text: Object;
   @Input() lanPair: LanPair;
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
@@ -976,12 +976,18 @@ export abstract class Step {
   }
 
   protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
-    this.exerciseData = this.learnService.buildExerciseData(newExercises, results, this.text, {
-      isBidirectional: true,
-      direction: Direction.LocalToForeign
-    }, this.lesson.options);
+    this.exerciseData = this.learnService.buildExerciseData(
+      newExercises,
+      results,
+      this.text, {
+        isBidirectional: true,
+        direction: Direction.LocalToForeign
+      },
+      this.lesson ? this.lesson.options : null,
+      this.course ? this.course.defaults : null
+    );
     this.exerciseData = this.previewService.shuffle(this.exerciseData);
-    this.getChoices(this.courseId, true);
+    this.getChoices(this.course._id, true);
     this.setExerciseDataById();
   }
 

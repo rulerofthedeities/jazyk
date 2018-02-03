@@ -16,7 +16,7 @@
         <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
         <span class="course-title">{{course?.name}}</span>
         <div class="lesson-title">
-          {{lesson?.name}}
+          {{text["CurrentLesson"]}}: {{lesson?.name}}
         </div>
       </h1>
       <ul class="list-unstyled list-inline steps">
@@ -83,7 +83,7 @@
     </km-learn-study>
     <km-learn-practise *ngSwitchCase="'practise'"
       [lanPair]="course.languagePair"
-      [courseId]="courseId"
+      [course]="course"
       [lesson]="lesson"
       [text]="text"
       [isDemo]="isDemo"
@@ -100,7 +100,7 @@
     </km-learn-practise>
     <div *ngIf="!isDemo">
       <km-learn-review *ngSwitchCase="'review'"
-        [courseId]="courseId"
+        [course]="course"
         [lanPair]="course.languagePair"
         [text]="text"
         [settings]="settings"
@@ -110,7 +110,7 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-review>
       <km-learn-difficult *ngSwitchCase="'difficult'"
-        [courseId]="courseId"
+        [course]="course"
         [lanPair]="course.languagePair"
         [text]="text"
         [settings]="settings"
