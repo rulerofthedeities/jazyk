@@ -1,48 +1,50 @@
-<div *ngIf="isLessonsReady">
-  <ul *ngIf="hasChapters"
-    class="list-group chapters">
-    <li *ngFor="let chapterName of courseChapters; let i=index"
-      [ngClass]="{
-        selected: chapterName === currentChapter,
-        deselected: chapterName !== currentChapter
-      }"
-      class="list-group-item">
-      <h2 (click)="onSelectChapter(chapterName)" class="bg-primary">
-        {{i + 1}}. {{getChapterName(chapterName)}}
-      </h2>
-      <ul *ngIf="chapterName === currentChapter"
-        class="list-group lesson">
-        <li *ngFor="let lesson of chapterLessons[chapterName]; let j=index"
-          class="list-group-item lesson-title"
-          [class.selected]="lesson._id === currentLessonId">
-          <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
-          <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
-            [text]="text"
-            [isDemo]="isDemo"
-            [isLearnedLevel]="isLearnedLevel"
-            [lessonId]="currentLessonId"
-            (currentLesson)="onLessonDataLoaded($event)">
-          </km-lesson-overview>
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <ul *ngIf="!hasChapters"
-    class="list-group lesson">
-    <li *ngFor="let lesson of chapterLessons['NoChapter']; let j=index"
-      class="list-group-item"
-      [class.selected]="lesson._id === currentLessonId">
-      <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
-      <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
-        [text]="text"
-        [isDemo]="isDemo"
-        [isLearnedLevel]="isLearnedLevel"
-        [lessonId]="currentLessonId"
-        (currentLesson)="onLessonDataLoaded($event)">
-      </km-lesson-overview>
-    </li>
-  </ul>
-</div>
+<section class="overview">
+  <div *ngIf="isLessonsReady">
+    <ul *ngIf="hasChapters"
+      class="list-group chapters">
+      <li *ngFor="let chapterName of courseChapters; let i=index"
+        [ngClass]="{
+          selected: chapterName === currentChapter,
+          deselected: chapterName !== currentChapter
+        }"
+        class="list-group-item">
+        <h2 (click)="onSelectChapter(chapterName)" class="bg-primary">
+          {{i + 1}}. {{getChapterName(chapterName)}}
+        </h2>
+        <ul *ngIf="chapterName === currentChapter"
+          class="list-group lesson">
+          <li *ngFor="let lesson of chapterLessons[chapterName]; let j=index"
+            class="list-group-item lesson-title"
+            [class.selected]="lesson._id === currentLessonId">
+            <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
+            <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
+              [text]="text"
+              [isDemo]="isDemo"
+              [isLearnedLevel]="isLearnedLevel"
+              [lessonId]="currentLessonId"
+              (currentLesson)="onLessonDataLoaded($event)">
+            </km-lesson-overview>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul *ngIf="!hasChapters"
+      class="list-group lesson">
+      <li *ngFor="let lesson of chapterLessons['NoChapter']; let j=index"
+        class="list-group-item"
+        [class.selected]="lesson._id === currentLessonId">
+        <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
+        <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
+          [text]="text"
+          [isDemo]="isDemo"
+          [isLearnedLevel]="isLearnedLevel"
+          [lessonId]="currentLessonId"
+          (currentLesson)="onLessonDataLoaded($event)">
+        </km-lesson-overview>
+      </li>
+    </ul>
+  </div>
+</section>
 
 <ng-template #titleTemplate let-lesson=lesson let-i=nr>
   <div class="lesson-title" (click)="onSelectLesson(lesson._id)">

@@ -162,6 +162,21 @@ h1 {
   font-style: italic;
   color: #666;
 }
+.overview {
+  background: #7f95a5;
+}
+.study {
+  background: #adc888;
+}
+.practise {
+  background: #dcca53;
+}
+.review {
+  background: #f2c40f;
+}
+.difficult {
+  background: #f39c11;
+}
 .rehearse {
   background: #428bca;
 }

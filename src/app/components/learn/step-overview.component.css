@@ -1,7 +1,13 @@
 :host {
   display: block;
-  padding: 15px;
+  padding: 4px;
   font-size: 20px;
+}
+section.overview {
+  background: white;
+  border-radius: 4px;
+  padding: 2px;
+  padding-bottom: 1px;
 }
 h2 {
   cursor: pointer;
