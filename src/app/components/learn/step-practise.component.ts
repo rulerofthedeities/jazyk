@@ -62,6 +62,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
+  onRehearseAll() {
+    this.rehearseAll();
+  }
+
   isWordCorrect(): boolean {
     let isCorrect = false;
     let data: ExerciseData;
@@ -201,8 +205,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 */
   private getLessonResults() {
     if (this.lesson.rehearseStep === 'practise') {
-      this.isRehearsal = true;
-      this.getRepeatQuestions();
+      this.rehearseAll();
     } else {
       this.isRehearsal = false;
       if (!this.isDemo) {
@@ -275,7 +278,15 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     super.init(); // start countdown
   }
 
-  private getRepeatQuestions() {
+  private rehearseAll() {
+    this.current = -1;
+    this.isRehearsal = true;
+    this.noMoreToStudy = false;
+    this.isExercisesDone = false;
+    this.getRepeatQuestions();
+  }
+
+  private getRepeatQuestions() {  
     this.buildExerciseData(this.lesson.exercises, null);
     this.isReady = true;
     super.init(); // start countdown
