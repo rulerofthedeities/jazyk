@@ -42,7 +42,7 @@
         <div class="clearfix"></div>
       </div>
       <!-- NOTHING MORE TO STUDY -->
-      <div *ngIf="exerciseData?.length < 1" class="nothingleft">
+      <div *ngIf="exerciseData?.length < 1" class="frame">
         <div class="msg-info">
           <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
         </div>
@@ -55,7 +55,7 @@
         </button>
       </div>
       <!-- STUDY DONE -->
-      <div *ngIf="isStudyDone && exerciseData?.length > 0">
+      <div *ngIf="isStudyDone && exerciseData?.length > 0" class="frame">
         <km-completed-list 
           [data]="exerciseData"
           [isRepeat]="isRehearsal"
@@ -67,14 +67,21 @@
           [data]="exerciseData"
           [text]="text">
         </km-points-completed>
-        <button type="button"
+        <button type="button" *ngIf="!isRehearsal"
           class="btn btn-success"
           (click)="onStudyNewWords()">
           <span class="fa fa-refresh fa-spacing">
           </span>
           {{text["ContinueStudy"]}}
         </button>
-        <button type="button"
+        <button type="button" *ngIf="isRehearsal"
+          class="btn btn-success"
+          (click)="onRehearseAll()">
+          <span class="fa fa-refresh fa-spacing">
+          </span>
+          {{text["RehearseAgain"]}}
+        </button>
+        <button type="button" *ngIf="!isRehearsal"
           class="btn btn-warning"
           (click)="onToPractise()">
           <span class="fa fa-fast-forward fa-spacing">

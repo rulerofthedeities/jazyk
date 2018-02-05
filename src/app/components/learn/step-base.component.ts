@@ -101,12 +101,6 @@ export abstract class Step {
     this.updatedSettings.emit(settings);
   }
 
-  onRestart() {
-    if (this.isExercisesDone) {
-      this.restart();
-    }
-  }
-
   onKeyPressed(key: string) {
     if (!this.isExercisesDone && this.currentData) {
       switch (this.currentData.data.questionType) {
@@ -999,12 +993,6 @@ export abstract class Step {
         levels: null
       };
     });
-  }
-
-  private restart() {
-    this.isExercisesDone = false;
-    this.current = -1;
-    this.fetchResults();
   }
 
   protected fetchResults() {

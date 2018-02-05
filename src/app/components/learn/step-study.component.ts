@@ -44,7 +44,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   isCountDown: boolean;
   isMute: boolean;
   isReady = false;
-  isRestart = false;
 
   constructor(
     private learnService: LearnService,
@@ -143,9 +142,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     if (!this.showLocal && this.current > -1) {
       this.wordDone();
     } else {
-      if (this.isStudyDone) {
-        this.restart();
-      } else {
+      if (!this.isStudyDone) {
         this.showNextWord(delta);
       }
     }
@@ -160,8 +157,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (this.current >= this.exerciseData.length) {
         this.isStudyDone = true;
         this.sharedService.changeExerciseMode(false);
-        if (this.isRestart) {
-          this.stepCompleted.emit(null); // don't update step counter
+        if (this.lesson.rehearseStep === 'study') {
+          this.stepCompleted.emit(null);
         } else {
           this.stepCompleted.emit(this.exerciseData);
         }
@@ -275,19 +272,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private rehearseAll() {
     this.current = -1;
+    this.isStudyDone = false;
     this.isRehearsal = true;
     this.isCountDown = false;
     this.buildExerciseData(this.lesson.exercises);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
-  }
-
-  private restart() {
-    this.isRestart = true;
-    this.current = -1;
-    this.exerciseData = this.previewService.shuffle(this.exerciseData);
-    this.isStudyDone = false;
-    this.sharedService.changeExerciseMode(true);
-    this.nextWord(1);
   }
 
   private timeDelay() {
