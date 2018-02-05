@@ -20,6 +20,7 @@ interface Result {
 export class LearnCompletedListComponent implements OnInit {
   @Input() private data: ExerciseData[];
   @Input() text: Object;
+  @Input() step: string;
   @Input() title: string;
   @Input() isRepeat = false;
   results: Result[] = [];
@@ -61,6 +62,14 @@ export class LearnCompletedListComponent implements OnInit {
       this.noResults = true;
     }
     console.log('completed data results', this.results);
+  }
+
+  showStep(): string {
+    if (this.step === 'Study') {
+      return '';
+    } else {
+      return ' - ' + this.text[this.step];
+    }
   }
 
   getForeignWord(result: Result): string {

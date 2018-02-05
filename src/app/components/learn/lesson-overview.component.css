@@ -37,8 +37,8 @@
 .fa-check, .fa-bookmark, .fa-bookmark-o {
   color: green;
 }
-.fa-flag {
-  color: DarkOrange;
+.fa-fire {
+  color: #f39c11;
 }
 .learn-progress {
   font-size: 12px;

@@ -1,7 +1,7 @@
 <div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">
-      {{title}} <span *ngIf="isRepeat">({{text["Repeat"]}})</span>
+      {{title}} {{showStep()}} <span *ngIf="isRepeat">({{text["Repeat"]}})</span>
     </h3>
   </div>
   <div class="panel-body">
