@@ -431,7 +431,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       data.forEach((item) => {
         correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
       });
-      const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat);
+      const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
       data.forEach( (item, i) => {
         item.data.points.correct = correctBonus;
         console.log('result', item);
@@ -512,8 +512,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return newStreak;
   }
 
-  private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean): number {
-    if (totalCount > 1 && !isRepeat) {
+  private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean, step: string): number {
+    if (totalCount > 1 && !isRepeat && step !== 'study') {
       return Math.max(0, Math.trunc(((correctCount / totalCount * 100) - 60) * 0.5));
     } else {
       return 0;

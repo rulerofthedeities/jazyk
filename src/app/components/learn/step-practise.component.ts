@@ -346,7 +346,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.lesson = event;
       if (this.lesson.rehearseStep) {
         // This is a repeat
-        console.log('> THIS IS A REPEAT', this.lesson.rehearseStep);
+        console.log('This is a repeat');
       } else {
         this.noMoreExercises = false;
         this.isExercisesDone = false;

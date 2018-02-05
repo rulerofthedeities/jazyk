@@ -33,8 +33,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
+  private toStudy = 0;
   isRehearsal = false; // all words have been studied before
   isStudyDone = false; // toggles with every replay
+  hasMoreToStudy = false; // to show button to continue studying
   exerciseData: ExerciseData[];
   currentData: ExerciseData;
   subscription: Subscription[] = [];
@@ -155,7 +157,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.current += delta;
     if (delta > 0) {
       if (this.current >= this.exerciseData.length) {
-        this.isStudyDone = true;
+        this.studyDone(this.exerciseData.length);
         this.sharedService.changeExerciseMode(false);
         if (this.lesson.rehearseStep === 'study') {
           this.stepCompleted.emit(null);
@@ -192,6 +194,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
   }
 
+  private studyDone(nrDone: number) {
+    console.log('More to study?', this.toStudy, nrDone);
+    this.hasMoreToStudy = this.toStudy - nrDone > 0;
+    this.isStudyDone = true;
+  }
+
   private filterExercises() {
     // Only the exercises of type word are shown in study
     this.lesson.exercises = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
@@ -226,12 +234,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     let exerciseResult: ExerciseResult;
     const newExercises: Exercise[] = [];
 
+    this.toStudy = 0;
     // Select exercises with no result
     this.lesson.exercises.forEach(exercise => {
-      if (newExercises.length <= this.settings.nrOfWordsStudy) {
-        exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
-        if (!exerciseResult) {
-          // study not done yet, add to list of new questions
+      exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
+      if (!exerciseResult) {
+        this.toStudy++;
+        // study not done yet, add to list of new questions
+        if (newExercises.length <= this.settings.nrOfWordsStudy) {
           newExercises.push(exercise);
         }
       }
@@ -273,6 +283,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private rehearseAll() {
     this.current = -1;
     this.isStudyDone = false;
+    this.hasMoreToStudy = false;
     this.isRehearsal = true;
     this.isCountDown = false;
     this.buildExerciseData(this.lesson.exercises);
@@ -309,13 +320,13 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.exercisesInterrupted
     .takeWhile(() => this.componentActive)
     .subscribe( event => {
-      this.isStudyDone = true;
       let nrDone = 0;
       if (!this.isRehearsal) { // Don't save if this is a rehearsal
         nrDone = this.current;
         if (this.currentData.data.isDone) {
           nrDone++;
         }
+        this.studyDone(nrDone);
       }
       if (nrDone > 0) {
         // Show results page

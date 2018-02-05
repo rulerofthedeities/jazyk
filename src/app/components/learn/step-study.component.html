@@ -67,12 +67,19 @@
           [data]="exerciseData"
           [text]="text">
         </km-points-completed>
-        <button type="button" *ngIf="!isRehearsal"
+        <button type="button" *ngIf="!isRehearsal && hasMoreToStudy"
           class="btn btn-success"
           (click)="onStudyNewWords()">
-          <span class="fa fa-refresh fa-spacing">
+          <span class="fa fa-arrow-right fa-spacing">
           </span>
           {{text["ContinueStudy"]}}
+        </button>
+        <button type="button" *ngIf="!isRehearsal && !hasMoreToStudy"
+          class="btn btn-warning"
+          (click)="onToPractise()">
+          <span class="fa fa-fast-forward fa-spacing">
+          </span>
+          {{text["PractiseStudy"]}}
         </button>
         <button type="button" *ngIf="isRehearsal"
           class="btn btn-success"
@@ -80,13 +87,6 @@
           <span class="fa fa-refresh fa-spacing">
           </span>
           {{text["RehearseAgain"]}}
-        </button>
-        <button type="button" *ngIf="!isRehearsal"
-          class="btn btn-warning"
-          (click)="onToPractise()">
-          <span class="fa fa-fast-forward fa-spacing">
-          </span>
-          {{text["PractiseStudy"]}}
         </button>
       </div>
     </div>

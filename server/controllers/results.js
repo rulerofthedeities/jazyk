@@ -8,6 +8,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
   if (results.data.length > 0) {
     const docs = results.data.map(doc => 
     { 
+    console.log('study', doc);
       exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
       filterObj = {
         userId,
@@ -24,7 +25,6 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
             $set: filterObj,
             $setOnInsert: {
               points: doc.points,
-              timeDelta: doc.timeDelta,
               isRepeat: doc.isRepeat,
               isLast: true,
               isDeleted: false,
@@ -35,7 +35,7 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
         }
       }
     })
-    console.log('results', results, docs);
+    console.log('results study', docs);
     Result.collection.bulkWrite(docs, function(err, bulkResult) {
       response.handleError(err, res, 400, 'Error saving user results for study', function(){
         response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
