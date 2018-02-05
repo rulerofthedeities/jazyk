@@ -5,25 +5,28 @@
 </km-countdown>
 
 <ng-template #exercise>
-  <section kmPressed 
+  <section kmPressed class="main-card" *ngIf="isReady else loading"
     (onKeyPressed)="onKeyPressed($event)">
-    <div class="col-xs-8">
+    <div [ngClass]="isExercisesDone ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
           [exercises]="exerciseData"
           [current]="current"
           [onNextExercise]="nextExercise">
         </km-bullets>
+        <!-- TIMER -->
+        <km-timer *ngIf="!isExercisesDone && isQuestionReady"
+          [data]="currentData">
+        </km-timer>
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" 
           class="card" 
           [class.preview]="isQuestionType(qType.Preview)">
-          <div *ngIf="currentData?.data?.isCaseSensitive"
-            class="pull-right case">
-            Aa
+          <div class="pull-right">
+            <span class="new" *ngIf="isQuestionType(qType.Preview)">{{text["NewWord"]}}!</span>
+            <span class="case" *ngIf="currentData?.data?.isCaseSensitive">Aa</span>
           </div>
-          <div *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)"
-            class="clearfix">
+          <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
             <!-- IMAGE -->
             <div class="image" *ngIf="currentData.exercise.image">
               <img src="{{currentData.exercise.image}}">
@@ -74,7 +77,9 @@
             [text]="text"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-comparison>
-          <div *ngIf="isQuestionType(qType.Preview)" class="answer">
+          <div *ngIf="isQuestionType(qType.Preview)"
+            class="answer"
+            [class.imagepadding]="!!currentData.exercise?.image">
             <h1 class="word">
               <span>
                 <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
@@ -87,20 +92,21 @@
           </div>
         </div>
         <!-- NO MORE EXERCISES -->
-        <div *ngIf="noMoreExercises && !isExercisesDone">
-          <div class="msg-info nomore">
+        <div *ngIf="noMoreExercises && !exerciseData?.length">
+          <div class="msg-info">
             <span class="fa fa-info-circle"></span>{{text['NoMoreDifficultExercises']}}
           </div>
         </div>
         <!-- EXERCISE DONE -->
-        <div *ngIf="isExercisesDone">
-          <h3>{{text["Results"]}}:</h3>
+        <div *ngIf="isExercisesDone && exerciseData?.length">
           <km-completed-list
             [data]="exerciseData"
+            [title]="text['Results']"
             [text]="text">
           </km-completed-list>
-          <h3>{{text["PointsEarned"]}}:</h3>
-          <km-points-completed [data]="exerciseData">
+          <km-points-completed
+            [data]="exerciseData"
+            [text]="text">
           </km-points-completed>
           <button type="button" class="btn btn-success" (click)="onRestart()" *ngIf="!noMoreExercises">
             <span class="fa fa-step-forward"></span>
@@ -109,12 +115,12 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-4" *ngIf="!isExercisesDone">
       <km-learn-settings *ngIf="!noMoreExercises"
         [step]="'difficult'"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
-        [isInput]="isQuestionType(qType.Word)"
+        [isInput]="isQuestionType(qType.Word) || isQuestionType(qType.FillIn)"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
@@ -130,6 +136,10 @@
         </button>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
+        <km-learnlevel-bar *ngIf="currentData?.exercise?.tpe === exType.Word && currentData?.data?.questionType !== qType.Preview"
+          [levelUpdated]="levelUpdated"
+          [maxLevel]="learnedLevel">
+        </km-learnlevel-bar>
         <km-points-earned [pointsEarned]="pointsEarned">
         </km-points-earned>
       </div>
@@ -138,3 +148,8 @@
   </section>
 </ng-template>
 
+<ng-template #loading>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingLesson']">
+  </km-loader>
+</ng-template>

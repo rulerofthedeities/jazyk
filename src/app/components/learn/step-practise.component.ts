@@ -9,7 +9,7 @@ import {PreviewService} from '../../services/preview.service';
 import {SharedService} from '../../services/shared.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
+// import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
@@ -190,6 +190,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return nrOfChoices;
   }
 
+/*
   private timeNext(secs: number) {
     // Timer to show the next word
     const timer = TimerObservable.create(secs * 1000);
@@ -197,7 +198,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(t => this.nextWord());
   }
-
+*/
   private getLessonResults() {
     if (this.lesson.rehearseStep === 'practise') {
       this.isRehearsal = true;

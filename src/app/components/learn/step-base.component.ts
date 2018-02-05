@@ -461,7 +461,7 @@ export abstract class Step {
     this.addCount(this.isCorrect, this.currentData.exercise._id);
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
     const foreignWord = this.currentData.exercise.foreign.word;
-    if (answer === AnsweredType.Correct && !this.lesson.rehearseStep) {
+    if (answer === AnsweredType.Correct && !this.isRehearse()) {
       this.currentData.data.points.length = this.calculateLengthPoints(foreignWord);
       this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
       this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
@@ -541,7 +541,7 @@ export abstract class Step {
 
   private filter(word: string): string {
     let filteredAnswer = word;
-    if (!this.lesson.options.caseSensitive) {
+    if (!this.isCaseSensitive()) {
       filteredAnswer = word.toLowerCase();
     }
     filteredAnswer = this.learnService.filterPrefix(filteredAnswer);
@@ -618,7 +618,7 @@ export abstract class Step {
       break;
     }
     // If this is a practise repeat, drastically reduce points
-    if (this.lesson.rehearseStep) {
+    if (this.lesson && this.isRehearse()) {
       points = Math.round(points / 10);
     }
 
@@ -921,7 +921,7 @@ export abstract class Step {
   }
 
   private addArticle(word: string, article: string): string {
-    if (article && this.lesson.options.addArticle) {
+    if (article && this.isAddArticle()) {
       return article + ' ' + word;
     } else {
       return word;
@@ -1053,6 +1053,37 @@ export abstract class Step {
         this.noMoreExercises = true;
       });
     }
+  }
+
+  private isCaseSensitive(): boolean {
+    let isCaseSensitive: boolean;
+    if (this.currentStep === 'study' || this.currentStep === 'practise') {
+      isCaseSensitive = this.lesson ? this.lesson.options.caseSensitive : false;
+    } else {
+      isCaseSensitive = this.course ? this.course.defaults.caseSensitive : false;
+    }
+    return isCaseSensitive;
+  }
+
+  private isAddArticle(): boolean {
+    let isAddArticle: boolean;
+    if (this.currentStep === 'study' || this.currentStep === 'practise') {
+      isAddArticle = this.lesson ? this.lesson.options.addArticle : false;
+    } else {
+      isAddArticle = this.course ? this.course.defaults.addArticle : false;
+    }
+    return isAddArticle;
+  }
+
+  private isRehearse(): boolean {
+    let isRehearse: boolean;
+    if (this.currentStep === 'study' || this.currentStep === 'practise') {
+      isRehearse = this.lesson && this.lesson.rehearseStep ? true : false;
+    } else {
+      isRehearse = false;
+    }
+
+    return isRehearse;
   }
 
   private log(message: string) {

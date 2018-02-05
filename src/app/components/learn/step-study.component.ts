@@ -75,6 +75,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onRehearseAll() {
+    this.lesson.rehearseStep = 'study';
     this.rehearseAll();
   }
 
@@ -240,6 +241,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     });
     if (newExercises.length > 0) {
       this.buildExerciseData(newExercises);
+    } else {
+      this.isReady = true;
     }
   }
 

@@ -7,51 +7,45 @@
   <section kmPressed class="main-card" *ngIf="isReady else loading"
     (onKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isStudyDone ? 'col-xs-12' : 'col-xs-8'">
-      <km-bullets *ngIf="!isStudyDone"
-        [exercises]="exerciseData"
-        [current]="current">
-      </km-bullets>
-      <div *ngIf="!isStudyDone" class="card">
-        <!-- IMAGE -->
-        <div class="image" *ngIf="showLocal && currentData.exercise.image">
-          <img src="{{currentData.exercise.image}}">
-        </div>
-        <div class="qa">
-          <km-question
-            [currentData]="currentData"
-            [lanPair]="lanPair"
-            [text]="text"
-            [dir]="'foreign'"
-            [settings]="settings"
-            [showAlt]="true"
-          ></km-question>
-          <div class="answer">
-            <h1 class="word">
-              <span>
-                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-              </span>
-              <span *ngIf="showLocal else loadingword">
-                {{currentData.exercise?.local?.word}}
-                <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
-              </span>
-            </h1>
+      <div *ngIf="exerciseData?.length > 0">
+        <km-bullets *ngIf="!isStudyDone"
+          [exercises]="exerciseData"
+          [current]="current">
+        </km-bullets>
+        <div *ngIf="!isStudyDone" class="card">
+          <!-- IMAGE -->
+          <div class="image" *ngIf="showLocal && currentData.exercise.image">
+            <img src="{{currentData.exercise.image}}">
+          </div>
+          <div class="qa">
+            <km-question
+              [currentData]="currentData"
+              [lanPair]="lanPair"
+              [text]="text"
+              [dir]="'foreign'"
+              [settings]="settings"
+              [showAlt]="true"
+            ></km-question>
+            <div class="answer">
+              <h1 class="word">
+                <span>
+                  <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+                </span>
+                <span *ngIf="showLocal else loadingword">
+                  {{currentData.exercise?.local?.word}}
+                  <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
+                </span>
+              </h1>
+            </div>
           </div>
         </div>
         <div class="clearfix"></div>
       </div>
       <!-- NOTHING MORE TO STUDY -->
-      <div *ngIf="exerciseData?.length < 1">
+      <div *ngIf="exerciseData?.length < 1" class="nothingleft">
         <div class="msg-info">
           <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
         </div>
-        <button 
-          type="button"
-          class="btn btn-success"
-          (click)="onToPractise()">
-          <span class="fa fa-arrow-right"></span>
-          {{text["PractiseStudy"]}}
-        </button>
-        <br>
         <button 
           type="button"
           class="btn btn-success"
@@ -88,7 +82,7 @@
         </button>
       </div>
     </div>
-    <div class="col-xs-4" *ngIf="!isStudyDone">
+    <div class="col-xs-4" *ngIf="!isStudyDone && exerciseData?.length > 0">
       <km-learn-settings
         [step]="'study'"
         [hasGenus]="!!currentData?.exercise?.genus"
