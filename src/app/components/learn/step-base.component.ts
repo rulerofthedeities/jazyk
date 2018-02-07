@@ -278,7 +278,7 @@ export abstract class Step {
     this.clearData();
     this.current++;
     if (this.current >= this.exerciseData.length) {
-      this.isExercisesDone = true;
+      this.practiseDone(this.exerciseData);
       this.stepCompleted.emit(this.exerciseData);
       this.sharedService.changeExerciseMode(false);
     }
@@ -999,6 +999,10 @@ export abstract class Step {
 
   }
 
+  protected practiseDone(exercisesDone: ExerciseData[]) {
+    this.isExercisesDone = true;
+  }
+
   private getConfig(lanCode: string) {
     this.learnService
     .fetchLanConfig(lanCode)
@@ -1018,16 +1022,19 @@ export abstract class Step {
     .takeWhile(() => this.componentActive)
     .subscribe(event => {
       let nrDone = this.current;
+      console.log('DONE 1', nrDone);
       if (this.currentData.data.isDone) {
         nrDone++;
       }
-      this.isExercisesDone = true;
+      console.log('DONE 2', nrDone);
       if (nrDone > 0) {
         // Show results page
         this.exerciseData = this.exerciseData.slice(0, nrDone);
+        this.practiseDone(this.exerciseData);
         this.stepCompleted.emit(this.exerciseData);
       } else {
         // No words were done
+        this.practiseDone(null);
         this.stepCompleted.emit(null);
       }
     });

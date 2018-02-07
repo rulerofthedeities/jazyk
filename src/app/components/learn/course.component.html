@@ -7,8 +7,9 @@
   <div class="panel panel-default panel-header">
     <div class="panel-body">
       <h1>
+        step{{currentStep}}
         <button type="button" 
-          *ngIf="!isDemo"
+          *ngIf="!isDemo && currentStep===getStepNr('overview')"
           class="btn btn-success pull-right"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right"></span>{{text["continuecourse"]}}

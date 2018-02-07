@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {Exercise, ExerciseData, ExerciseOptions, Direction,
+import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseExtraData,
         ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
 import {Lesson} from '../../models/course.model';
 import {LearnSettings} from '../../models/user.model';
@@ -30,6 +30,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
   noMoreToStudy = false;
+  toPractise = 0;
+  hasMoreToPractise = false;
   isRehearsal = false;
   isReady = false;
   beep: any;
@@ -54,6 +56,16 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   onToStudy() {
     this.stepBack.emit();
+  }
+
+  onContinuePractise() {
+    this.isReady = false;
+    this.current = -1;
+    this.isQuestionReady = false;
+    this.isExercisesDone = false;
+    this.noMoreExercises = false;
+    console.log('!!>> continue practise');
+    this.fetchLessonResults();
   }
 
   onToNextLesson() {
@@ -251,20 +263,22 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
+    this.toPractise = 0;
     this.lesson.exercises.forEach(exercise => {
-      if (nrOfExercises <= this.settings.nrOfWordsLearn) {
-        exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
-        if ((exerciseResult && !exerciseResult.isLearned)
-          || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
-        ) {
+      exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
+      if ((exerciseResult && !exerciseResult.isLearned)
+        || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
+      ) {
+        this.toPractise++;
+        if (nrOfExercises <= this.settings.nrOfWordsLearn) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);
           newResults.push(exerciseResult);
           nrOfExercises = newExercises.length;
-        } else {
-          // word is not studied yet
-          leftToStudy++;
         }
+      } else {
+        // word is not studied yet
+        leftToStudy++;
       }
     });
     console.log('>> words for practise', newExercises);
@@ -335,6 +349,28 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected fetchResults() {
     this.getLessonResults();
+  }
+
+  protected practiseDone(exercisesDone: ExerciseData[]) {
+    const lastExercises: Map<ExerciseExtraData> = {}; 
+    
+    this.isExercisesDone = true;
+    let practised = 0;
+    // Get most recent result per exercise (for isLearned)
+    if (exercisesDone && exercisesDone.length) {
+      exercisesDone.forEach( item => {
+        lastExercises[item.exercise._id] = item.data;
+      })
+    }
+    // Count words that have been learned
+    for (const key in lastExercises) {
+      if (lastExercises.hasOwnProperty(key)) {
+        if (lastExercises[key].learnLevel >= this.learnedLevel) {
+          practised++;
+        }
+      }
+    }
+    this.hasMoreToPractise = this.toPractise - practised > 0;
   }
 
   private checkLessonChanged() {

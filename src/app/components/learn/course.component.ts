@@ -358,11 +358,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getStepNr(stepName: string): number {
     let stepNr = -1;
-    this.steps.forEach( (step, i) => {
-      if (step.name === stepName) {
-        stepNr = i;
-      }
-    });
+    if (this.steps) {
+      this.steps.forEach( (step, i) => {
+        if (step.name === stepName) {
+          stepNr = i;
+        }
+      });
+    }
     return stepNr;
   }
 
