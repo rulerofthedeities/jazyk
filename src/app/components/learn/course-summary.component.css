@@ -66,6 +66,9 @@ h3 {
 .btn-badge {
   height: 38px;
 }
+.btn-overview {
+  margin-left: 8px;
+}
 .flags {
   border: 1px solid #333;
   border-radius: 3px;

@@ -68,6 +68,12 @@
           <br>
           <div class="badge" *ngIf="badgeData.exam">{{badgeData.exam}}</div>
         </button>
+        <button type="button" class="btn btn-info btn-overview"
+          (click)="onContinueCourse('overview')">
+          <span class="fa fa-th-list fa-spacing"></span>
+          {{text["Overview"]}}
+          <br>
+        </button>
       </div>
       <div *ngIf="tpe===listType.Learn && isDemo">
         <button type="button" class="btn btn-success"

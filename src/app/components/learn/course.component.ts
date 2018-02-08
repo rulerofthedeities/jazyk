@@ -76,6 +76,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   isDemo: boolean;
   rankKey: string;
   rankNr: number;
+  routeStep: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -169,15 +170,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private validateCourseStep(step: string): string {
     console.log('validating course step', step);
-    if (step) {
+    if (step && step !== 'overview') {
       if (step === 'review' || step === 'difficult' || step === 'exam') {
         this.courseLevel = Level.Course;
+        this.routeStep = step;
         return step;
       } else {
         this.router.navigate(['/learn/course/' + this.courseId]);
       }
     } else {
       this.courseLevel = Level.Lesson;
+      if (step === 'overview') {
+        this.routeStep = step;
+        this.currentStep = 0;
+      }
     }
   }
 
@@ -307,11 +313,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private setDefaultLessonStep(results: number) {
     let defaultStep: number = null;
-    console.log('>>> set default lesson step', this.countPerStep, this.lesson.rehearseStep);
+    console.log('>>> set default lesson step', results);
     if (this.lesson.rehearseStep) {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
     } else {
-      if (results > 0) {
+      if (this.routeStep === 'overview') {
+        defaultStep = 0;
+      } else if (results > 0) {
         // When pressing button 'continue course'
         if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
           defaultStep = this.getStepNr('study');
@@ -336,7 +344,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           defaultStep = this.getStepNr('practise');
         }
       }
-      if (defaultStep) {
+      console.log('>>> defaultstep', defaultStep);
+      if (defaultStep !== null) {
         this.currentStep = defaultStep;
         console.log('>>> Lesson ready', this.currentStep, this.lesson.name);
         this.isLessonReady = true;
@@ -705,11 +714,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       userResult => {
         if (userResult && userResult.lessonId) {
           // set chapter & lesson to the latest result
-          console.log('>>> fetching lesson');
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
-          this.log('>>> No lesson to load; start from beginning.');
+          this.log('No lesson to load; start from beginning.');
           this.getFirstLesson();
         }
       },
@@ -719,6 +727,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getLesson(lessonId: string) {
     // Get data and start lesson
+    this.log('Fetching lesson data.');
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
@@ -769,7 +778,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.courseId = params['id'];
           this.courseStep = this.validateCourseStep(params['step']);
           this.getTranslations();
-          console.log('>>> route coursestep', this.courseStep);
         }
       }
     );
