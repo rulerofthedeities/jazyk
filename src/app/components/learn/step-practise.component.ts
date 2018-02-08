@@ -47,7 +47,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('>> init practise', this.lesson.name);
     this.currentStep = 'practise';
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.checkLessonChanged();
@@ -64,7 +63,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.isQuestionReady = false;
     this.isExercisesDone = false;
     this.noMoreExercises = false;
-    console.log('!!>> continue practise');
     this.fetchLessonResults();
   }
 
@@ -237,7 +235,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('>> CHECK lesson results', results);
+        console.log('CHECK lesson results', results);
         if  (results) {
           leftToStudy = this.getNewQuestions(results);
         }
@@ -281,7 +279,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         leftToStudy++;
       }
     });
-    console.log('>> words for practise', newExercises);
+    console.log('words for practise', newExercises);
     this.buildExerciseData(newExercises, newResults);
     return leftToStudy;
   }

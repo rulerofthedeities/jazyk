@@ -55,7 +55,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('>> init study', this.lesson.name);
     this.init();
     this.checkExercisesInterrupted();
     this.checkLessonChanged();
@@ -273,7 +272,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.finishCountDown();
     }
     this.isReady = true;
-    console.log('>> study ready - exercisedata', this.exerciseData);
   }
 
   private skip() {

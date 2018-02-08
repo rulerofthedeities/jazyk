@@ -46,7 +46,6 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
   beep2: any;
 
   ngOnInit() {
-    console.log('>> init countdown');
     this.initialize();
     this.startCountDown();
   }

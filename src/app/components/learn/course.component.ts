@@ -8,7 +8,7 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
-import {Course, Lesson, Language, Translation, Step, Level} from '../../models/course.model';
+import {Course, Lesson, Language, Translation, Step, Level, LessonId} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
@@ -90,7 +90,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('>>> init countdown');
     this.isDemo = !this.authService.isLoggedIn();
     this.settings = this.userService.user.jazyk.learn;
     this.subscribe();
@@ -717,7 +716,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
-          this.log('No lesson to load; start from beginning.');
+          console.log('>>> No lesson to load; start from beginning.');
+          this.log('No results yet; start from beginning.');
           this.getFirstLesson();
         }
       },
@@ -742,7 +742,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getFirstLesson() {
     // Get first lesson from course data
-    const chapterLessons = this.course.lessons.filter(lesson => lesson.lessonIds.length > 0),
+    const chapterLessons = this.sortChapters().filter(lesson => lesson.lessonIds.length > 0),
           chapterLesson = chapterLessons[0];
     if (chapterLesson) {
       const lessonId = chapterLesson.lessonIds[0];
@@ -767,6 +767,20 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       console.log('new lesson id', newLessonId);
       this.getLesson(newLessonId);
     }
+  }
+
+  private sortChapters(): LessonId[] {
+    // Move empty chapter to the back
+    let sortedChapters = this.course.lessons;
+    if (sortedChapters && sortedChapters.length) {
+      const firstChapter = sortedChapters[0];
+      if (firstChapter.chapter === '') {
+        // Chapter is empty; move to the back
+        sortedChapters.shift();
+        sortedChapters.push(firstChapter);
+      }
+    }
+    return sortedChapters;
   }
 
   private subscribe() {
