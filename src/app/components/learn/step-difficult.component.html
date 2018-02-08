@@ -7,7 +7,7 @@
 <ng-template #exercise>
   <section kmPressed class="main-card" *ngIf="isReady else loading"
     (onKeyPressed)="onKeyPressed($event)">
-    <div [ngClass]="isExercisesDone ? 'col-xs-12' : 'col-xs-8'">
+    <div [ngClass]="isExercisesDone || (noMoreExercises && !exerciseData?.length) ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
           [exercises]="exerciseData"

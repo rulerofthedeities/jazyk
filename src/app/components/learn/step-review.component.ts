@@ -50,6 +50,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     } else {
       this.noMoreExercises = true;
       this.isCountDown = false;
+      this.isReady = true;
     }
   }
 
