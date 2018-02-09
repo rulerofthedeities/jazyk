@@ -45,6 +45,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   currentChapter: string;
   lessonData: Lesson;
   isLessonsReady = false;
+  isCourseComplete = false;
   hasChapters: boolean;
   dropDown: string;
 
@@ -174,23 +175,45 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   private getLessonResults() {
     // Get results grouped by lesson id
+    console.log('getting Lesson Results');
+    let cntCompleted = 0;
     this.learnService
     .fetchLessonResults(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (results: LessonResult[]) => {
         if (results) {
+          const activeLessonIds: string[] = this.getActiveLessonIds();
           results.forEach(result => {
             console.log('overview results', result);
-            this.resultsByLesson[result._id] = result;
-            this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-            this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+            console.log('lessonIdss', activeLessonIds.length);
+            if (activeLessonIds.find(id => id === result._id)) {
+              this.resultsByLesson[result._id] = result;
+              this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+              this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+              cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+            }
           });
+          console.log('Course complete?', cntCompleted, activeLessonIds.length);
+          if (cntCompleted === activeLessonIds.length) {
+            console.log('Course complete!!');
+            this.isCourseComplete = true;
+          }
           console.log('results by lesson', this.resultsByLesson);
         }
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private getActiveLessonIds(): string[] {
+    const lessonIds = [];
+    this.course.lessons.forEach(chapter => {
+      chapter.lessonIds.forEach(lessonId => {
+        lessonIds.push(lessonId);
+      })
+    })
+    return lessonIds;
   }
 
   private fetchLesson(lessonId: string, rehearse: string = null) {

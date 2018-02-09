@@ -149,6 +149,7 @@ h1 {
   font-size: 24px;
   color: #999;
   padding: 60px 20px;
+  background-color: white;
 }
 .badge {
   background-color: #ccc;
@@ -160,6 +161,7 @@ h1 {
 .lesson-title {
   font-size: 20px;
   font-style: italic;
+  height: 22px;
   color: #666;
 }
 .overview {

@@ -16,7 +16,7 @@
         <img src="/assets/img/flags/{{course?.languagePair.to}}.png" class="flag">
         <span class="course-title">{{course?.name}}</span>
         <div class="lesson-title">
-          {{text["CurrentLesson"]}}: {{lesson?.name}}
+          <span *ngIf="!isCourseDone">{{text["CurrentLesson"]}}: {{lesson?.name}}</span>
         </div>
       </h1>
       <ul class="list-unstyled list-inline steps">
@@ -131,10 +131,10 @@
     </km-learn-overview>
     <div *ngIf="isDemo">
       <div *ngSwitchCase="'review'" class="register">
-        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseReview"]}}
+        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseReview"]}}.
       </div>
       <div *ngSwitchCase="'difficult'" class="register">
-        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseDifficult"]}}
+        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseDifficult"]}}.
       </div>
     </div>
   </div>

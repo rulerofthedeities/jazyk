@@ -9,7 +9,7 @@ section.overview {
   padding: 2px;
   padding-bottom: 1px;
 }
-h2 {
+li > h2 {
   cursor: pointer;
   margin-left: -15px;
   margin-right: -15px;
@@ -18,6 +18,10 @@ h2 {
 }
 .deselected h2 {
   margin-bottom: 0;
+}
+h2.completed {
+  color: #449d44;
+  padding: 0 0 8px 8px;
 }
 .lesson-title {
   cursor: pointer;

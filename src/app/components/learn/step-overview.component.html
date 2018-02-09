@@ -1,4 +1,7 @@
 <section class="overview">
+  <h2 class="completed" *ngIf="isCourseComplete">
+    <span class="fa fa-check fa-spacing"></span>{{text["CourseCompleted"]}}
+  </h2>
   <div *ngIf="isLessonsReady">
     <ul *ngIf="hasChapters"
       class="list-group chapters">

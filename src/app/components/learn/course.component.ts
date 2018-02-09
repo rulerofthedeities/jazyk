@@ -77,6 +77,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   rankKey: string;
   rankNr: number;
   routeStep: string;
+  isCourseDone = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -349,6 +350,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         console.log('>>> Lesson ready', this.currentStep, this.lesson.name);
         this.isLessonReady = true;
         this.lessonChanged.next(this.lesson);
+      } else {
+        // Course is done
+        console.log('>>> course done');
+        this.isCourseDone = true;
+        this.currentStep = 0;
+        this.isLessonReady = true;
       }
     }
   }
