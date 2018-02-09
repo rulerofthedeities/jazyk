@@ -46,6 +46,14 @@
           </div>
         </div>
         <div class="clearfix">
+          <label for="published" class="control-label col-xs-2">
+            {{text["PublishedOn"]}}:
+          </label>
+          <div class="col-xs-10">
+            {{course.dt.published | date:'yyyy-MM-dd'}}
+          </div>
+        </div>
+        <div class="clearfix" *ngIf="isUser()">
           <label for="author" class="control-label col-xs-2">
             {{text["Author"]}}:
           </label>

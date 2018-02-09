@@ -727,13 +727,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getLesson(lessonId: string) {
     // Get data and start lesson
-    this.log('Fetching lesson data.');
+    this.log('Fetching lesson data');
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (lesson: Lesson) => {
-        console.log('>>> fetched lesson', lesson.name);
+        this.log(`Fetched lesson data for lesson '${lesson.name}'`);
         this.lessonSelected(lesson);
       },
       error => this.errorService.handleError(error)

@@ -4,6 +4,7 @@ import {Course, UserCourse, CourseListType, AccessLevel} from '../../models/cour
 import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
 import {DashboardService} from '../../services/dashboard.service';
+import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 
 interface BadgeData {
@@ -49,6 +50,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private dashboardService: DashboardService,
     private utilsService: UtilsService,
+    private sharedService: SharedService,
     private errorService: ErrorService
   ) {}
 
@@ -73,6 +75,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   onStartCourse() {
     if (this.course.isPublished) {
       this.userService.subscribeToCourse(this.course);
+      this.log(`Start course '${this.course.name}'`);
       this.router.navigate(['/learn/course/' + this.course._id]);
     }
   }
@@ -80,7 +83,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   onContinueCourse(step: string) {
     const steproute = step ? '/' + step : '';
     this.userService.continueCourse(this.course);
-    console.log('go to course', '/learn/course/' + this.course._id + steproute);
+    this.log(`Go to course '${this.course.name}' (${step})`);
     this.router.navigate(['/learn/course/' + this.course._id + steproute]);
   }
 
@@ -90,6 +93,10 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
 
   onToggleDetails() {
     this.showCourseDetails = !this.showCourseDetails;
+  }
+
+  isUser(): boolean {
+    return !!this.userService.user.email;
   }
 
   isAuthor(): boolean {
@@ -154,6 +161,13 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
           path = this.utilsService.awsPath + 'images/courses/default/';
     this.regionTo = this.course.defaults.region || this.course.languagePair.to;
     return 'https://' + path + from + '-' + this.regionTo + '-course.jpg';
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'CourseSummaryComponent'
+    });
   }
 
   ngOnDestroy() {

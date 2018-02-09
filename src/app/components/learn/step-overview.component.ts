@@ -179,13 +179,15 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (results: LessonResult[]) => {
-        results.forEach(result => {
-          console.log('overview results', result);
-          this.resultsByLesson[result._id] = result;
-          this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-          this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-        });
-        console.log('results by lesson', this.resultsByLesson);
+        if (results) {
+          results.forEach(result => {
+            console.log('overview results', result);
+            this.resultsByLesson[result._id] = result;
+            this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+            this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+          });
+          console.log('results by lesson', this.resultsByLesson);
+        }
       },
       error => this.errorService.handleError(error)
     );

@@ -83,11 +83,15 @@ export class LearnService {
   }
 
   fetchLessonResults(courseId: string) {
-    const headers = this.getTokenHeaders();
-    return this.http
-    .get('/api/user/results/lessons/' + courseId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    if (this.authService.isLoggedIn()) {
+      const headers = this.getTokenHeaders();
+      return this.http
+      .get('/api/user/results/lessons/' + courseId, {headers})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error));
+    } else {
+      return Observable.of(null);
+    }
   }
 
   /*** Choices ***/
