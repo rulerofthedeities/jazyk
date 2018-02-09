@@ -43,6 +43,8 @@ export interface CompactProfile {
   emailHash?: string;
   isFollower?: boolean;
   isFollow?: boolean;
+  userOnly?: boolean; // show only user name and icon
+  loadData?: boolean; // load profile data in the profile
 }
 
 interface AppDates {

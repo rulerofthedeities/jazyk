@@ -245,7 +245,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         } else {
           this.noMoreExercises = true;
           this.noMoreToStudy = leftToStudy < 1;
-          this.onToNextLesson();
+          // this.onToNextLesson();
         }
       },
       error => this.errorService.handleError(error)

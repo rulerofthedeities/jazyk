@@ -16,7 +16,7 @@
   margin-left: 6px;
 }
 .info {
-  margin: 8px 0 8px 6px;
+  margin: 14px 0 8px 6px;
   height: 64px;
   color: #333;
 }
@@ -28,7 +28,7 @@
 }
 h3 {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   font-size: 28px;
 }
 .icons {
@@ -37,6 +37,9 @@ h3 {
   display: inline-block;
   margin-left: 10px;
 }
+.buttons {
+  margin: 17px 0;
+}
 .icons .fa-user,
 .icons .fa-check,
 .icons .fa-wifi {
@@ -44,6 +47,10 @@ h3 {
 }
 .fa-times-circle {
   color: red;
+}
+.fa-info-circle {
+  cursor: pointer;
+  font-size: 20px;
 }
 .course-img {
   width: 160px;

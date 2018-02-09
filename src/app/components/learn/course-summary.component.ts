@@ -37,6 +37,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   listType = CourseListType;
   percDone = 0;
   isSubscribed = false;
+  showCourseDetails = false;
   badgeData: BadgeData = {};
   doneData: DoneData = {};
   defaultImage: string;
@@ -85,6 +86,10 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
 
   onStopLearningCourse() {
     this.unsubscribe.emit(this.course._id);
+  }
+
+  onToggleDetails() {
+    this.showCourseDetails = !this.showCourseDetails;
   }
 
   isAuthor(): boolean {

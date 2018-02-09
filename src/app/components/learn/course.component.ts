@@ -754,7 +754,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Go to next lesson
     let currentFound = false,
         newLessonId;
-    this.course.lessons.forEach(chapter => {
+    this.sortChapters().forEach(chapter => {
       chapter.lessonIds.forEach(lessonId => {
         if (currentFound && !newLessonId) {
           newLessonId = lessonId;

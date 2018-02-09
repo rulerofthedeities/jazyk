@@ -216,6 +216,15 @@ export class UserService {
     .catch(error => Observable.throw(error));
   }
 
+  getPublicProfileById(userId: string) {
+    const headers = this.getTokenHeaders();
+    console.log('Fetching public profile for user', userId);
+    return this.http
+    .get('/api/user/profileId/' + userId, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
   saveNotification(notification: Notification) {
     const headers = this.getTokenHeaders();
     return this.http

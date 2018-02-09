@@ -27,9 +27,37 @@
               'fa-check': !course.isInProgress}">
           </span>
         </span>
+        <span class="fa fa-info-circle"
+          (click)="onToggleDetails()"
+          [ngClass]="{
+            selected:showCourseDetails,
+            'text-muted':!showCourseDetails,
+            'text-success': showCourseDetails
+          }">
+        </span>
       </h3>
-      <div class="description">{{course.description}}</div>
-      <div *ngIf="tpe===listType.All || tpe===listType.Teach">
+      <div class="course-details" *ngIf="showCourseDetails">
+        <div class="clearfix">
+          <label for="description" class="control-label col-xs-2">
+            {{text["Description"]}}:
+          </label>
+          <div class="col-xs-10">
+            {{course.description}}
+          </div>
+        </div>
+        <div class="clearfix">
+          <label for="author" class="control-label col-xs-2">
+            {{text["Author"]}}:
+          </label>
+          <div class="col-xs-10">
+            <km-compact-profile
+              [profile]="{_id:course.authorId[0], loadData: true, userOnly: true}"
+              [text]="text">
+            </km-compact-profile>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tpe===listType.All || tpe===listType.Teach" class="buttons">
         <button class="btn btn-success"
           [class.disabled]="!course.isPublished"
           (click)="onStartCourse()">
@@ -41,7 +69,7 @@
           <span class="fa fa-pencil fa-spacing"></span>{{text["updatecourse"]}}
         </button>
       </div>
-      <div *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo">
+      <div *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo" class="buttons">
         <button type="button" class="btn btn-success"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right fa-spacing"></span>

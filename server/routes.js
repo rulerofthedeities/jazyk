@@ -75,6 +75,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/settings/learn', users.getLearnSettings);
   router.put('/user/settings/main', users.saveMainSettings);
   router.get('/user/profile/:userName', users.getPublicProfile);
+  router.get('/user/profileId/:userId', users.getPublicProfileById);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
   router.patch('/user/lan', users.updateLan);

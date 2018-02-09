@@ -1,6 +1,7 @@
 .profile {
   display: inline-block;
   width: 248px;
+  margin-bottom: 8px;
 }
 .gravatar {
   margin-right: 8px;
@@ -37,4 +38,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.button{
+  cursor: pointer;
 }

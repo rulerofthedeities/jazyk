@@ -118,6 +118,26 @@ var updateLastLoginDate = function(user, res) {
   });
 }
 
+var getPublicProfile = function(query, res) {
+  const projection = {'jazyk.profile': 1, 'jazyk.courses': 1, 'jazyk.dt': 1, userName: 1, email: 1}
+  User.findOne(query, projection, (err, result) => {
+    let errCode = 500;
+    if (!result) {
+      err = {msg: '404 not found'};
+      errCode = 404;
+    }
+    response.handleError(err, res, errCode, 'Error fetching public profile', () => {
+      const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
+      publicProfile.userName = result.userName;
+      publicProfile.dtJoined = result.jazyk.dt.joined;
+      publicProfile._id = result._id;
+      publicProfile.email = result.email;
+      setEmailHash(publicProfile);
+      response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
+    });
+  });
+}
+
 module.exports = {
   signup: function(req, res) {
     addUser(req.body, function(err, doc) {
@@ -224,24 +244,18 @@ module.exports = {
   },
   getPublicProfile: function(req, res) {
     const userName = req.params.userName,
-          query = {userName},
-          projection = {'jazyk.profile': 1, 'jazyk.courses': 1, 'jazyk.dt': 1, userName: 1, email: 1};
-    User.findOne(query, projection, (err, result) => {
-        let errCode = 500;
-        if (!result) {
-          err = {msg: '404 not found'};
-          errCode = 404;
-        }
-        response.handleError(err, res, errCode, 'Error fetching public profile', () => {
-        const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
-        publicProfile.userName = result.userName;
-        publicProfile.dtJoined = result.jazyk.dt.joined;
-        publicProfile._id = result._id;
-        publicProfile.email = result.email;
-        setEmailHash(publicProfile);
-        response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
-      });
-    });
+          query = {userName};
+    getPublicProfile(query, res);
+  },
+  getPublicProfileById: function(req, res) {
+    console.log('getting profile by id');
+    if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
+      const query = {_id: req.params.userId};
+      getPublicProfile(query, res);
+    } else {
+      err = 'Invalid user id';
+      response.handleError(err, res, 400, err);
+    }
   },
   updateLan: function(req, res) {
     const userId = req.decoded.user._id,
