@@ -78,6 +78,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   rankNr: number;
   routeStep: string;
   isCourseDone = false;
+  loopCount = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -161,7 +162,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onContinueCourse() {
-    this.getCurrentLesson();
+    this.router.navigate(['/learn/course/' + this.courseId]);
   }
 
   capitalize(word: string): string {
@@ -318,7 +319,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
     } else {
       if (this.routeStep === 'overview') {
-        defaultStep = 0;
+        // defaultStep = 0;
       } else if (results > 0) {
         // When pressing button 'continue course'
         if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
@@ -351,11 +352,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.isLessonReady = true;
         this.lessonChanged.next(this.lesson);
       } else {
-        // Course is done
-        console.log('>>> course done');
-        this.isCourseDone = true;
-        this.currentStep = 0;
-        this.isLessonReady = true;
+        if (this.loopCount < 1) {
+          // Course is at the end
+          // Start again from the beginning in case not all exercises were done
+          console.log('>>> course at the end, restart from beginning');
+          this.loopCount++ // to prevent infinite loop
+          this.getFirstLesson();
+        } else {
+          // Course is done
+          console.log('>>> course done');
+          this.isCourseDone = !this.loopCount;
+          this.currentStep = 0;
+          this.isLessonReady = true;
+        }
       }
     }
   }
