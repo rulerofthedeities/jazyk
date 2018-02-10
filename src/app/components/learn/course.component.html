@@ -127,7 +127,8 @@
       [text]="text"
       [isDemo]="isDemo"
       (rehearseLesson)="onRehearseLesson($event)"
-      (currentLesson)="onLessonSelected($event)">
+      (currentLesson)="onLessonSelected($event)"
+      (courseCompleted)="onCourseCompleted($event)">
     </km-learn-overview>
     <div *ngIf="isDemo">
       <div *ngSwitchCase="'review'" class="register">

@@ -59,7 +59,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     this.percDone = 0;
     this.defaultImage = this.getDefaultImagePath();
     if (!this.course.isDemo) {
-      if (this.tpe === CourseListType.Learn) {
+      if (this.tpe === CourseListType.Learn || this.tpe === CourseListType.Home) {
         this.getCourseData();
       }
       if (this.tpe === CourseListType.All) {

@@ -38,6 +38,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() currentLessonId: string;
   @Output() currentLesson = new EventEmitter<Lesson>();
   @Output() rehearseLesson = new EventEmitter<Lesson>();
+  @Output() courseCompleted = new EventEmitter<boolean>();
   private componentActive = true;
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
@@ -229,6 +230,9 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     console.log('Course complete?', cntCompleted, activeLessonIds.length);
     if (cntCompleted === activeLessonIds.length) {
       this.isCourseComplete = true;
+      this.currentChapter = null;
+      this.currentLessonId = null;
+      this.courseCompleted.emit(true);
     }
   }
 
@@ -237,8 +241,8 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     this.course.lessons.forEach(chapter => {
       chapter.lessonIds.forEach(lessonId => {
         lessonIds.push(lessonId);
-      })
-    })
+      });
+    });
     return lessonIds;
   }
 

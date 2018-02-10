@@ -162,6 +162,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.lessonSelected(lesson);
   }
 
+  onCourseCompleted(isCompleted: boolean) {
+    if (isCompleted) {
+      this.isCourseDone = true;
+    }
+  }
+
   onContinueCourse() {
     this.router.navigate(['/learn/course/' + this.courseId]);
   }
@@ -357,13 +363,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           // Course is at the end
           // Start again from the beginning in case not all exercises were done
           console.log('>>> course at the end, restart from beginning');
-          this.isCourseDone = false;
-          this.loopCount++ // to prevent infinite loop
+          this.loopCount++; // to prevent infinite loop
           this.getFirstLesson();
         } else {
           // Course is done
-          console.log('>>> course done', this.loopCount);
-          this.isCourseDone = this.loopCount < 1;
           this.currentStep = 0;
           this.isLessonReady = true;
         }
