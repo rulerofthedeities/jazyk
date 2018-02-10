@@ -39,7 +39,11 @@
       <tbody>
         <tr *ngFor="let score of scores; let i = index">
           <td class="text-right">{{i+1}}.</td>
-          <td class="text-center"><img src="/assets/img/flags/{{score.lan}}.png" class="flag" /></td>
+          <td class="text-center">
+            <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
+            <span class="fa fa-arrow-right flag-from"></span>
+            <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
+          </td>
           <td>{{score.course}}</td>
           <td class="text-right nr">{{score.points | score}}</td>
         </tr>

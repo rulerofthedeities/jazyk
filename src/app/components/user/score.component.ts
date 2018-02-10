@@ -3,11 +3,12 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
+import {LanPair} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Score {
   course: string,
-  lan: string,
+  lan: LanPair,
   points: number
 }
 

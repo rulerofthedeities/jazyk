@@ -250,7 +250,7 @@ module.exports = {
             if (doc.course[0]) {
               const newDoc = {
                 course: doc.course[0].name,
-                lan: doc.course[0].languagePair.to,
+                lan: doc.course[0].languagePair,
                 points: doc.points
               };
               total += doc.points;

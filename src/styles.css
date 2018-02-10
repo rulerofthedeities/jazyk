@@ -8,6 +8,13 @@ body {
   width: 30px;
   height: 20px;
 }
+.flag-from {
+  font-size: 10px;
+  margin: 2px;
+  position: relative;
+  top: -3px;
+  color: #666;
+}
 .green {
   color: green;
 }
