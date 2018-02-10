@@ -6,20 +6,12 @@ const response = require('../response'),
       Result = require('../models/result'),
       WordPair = require('../models/wordpair');
 
-updateCourseWordCount = function(courseId, totals) {
-  let allWordAndExercisesCount = 0,
-      wordOnlyCount = 0;
-  totals.forEach(count => {
-    allWordAndExercisesCount += count.total;
-    if (count._id === 0) {
-      wordOnlyCount = count.total;
-    }
-  });
+updateCourseWordCount = function(courseId, count) {
 
   const query = {_id: courseId},
         update = {$set: {
-          totalCount: allWordAndExercisesCount,
-          wordCount: wordOnlyCount
+          totalCount: count.total,
+          wordCount: count.words
         }};
   Course.findOneAndUpdate(query, update, function(err, result) {
     if (err) {
@@ -28,11 +20,58 @@ updateCourseWordCount = function(courseId, totals) {
   });
 }
 
+getActiveLessonIds = function(lessons) {
+  const lessonIds = [];
+  lessons.forEach(chapter => {
+    chapter.lessonIds.forEach(lessonId => {
+      lessonIds.push(lessonId);
+    })
+  })
+  return lessonIds;
+}
+
 getCourseWordCount = function(id) {
-  const courseId = new mongoose.Types.ObjectId(id);
-  //get # of words and avg score for all exercises in lessons
+  // get # of words and avg score for all exercises in lessons
+  const courseId = new mongoose.Types.ObjectId(id),
+        courseQuery = {_id: courseId},
+        courseProjection = {lessons: 1},
+        lessonQuery = {courseId, isDeleted: false},
+        lessonProjection = {exercises: 1};
+  // First get all lessons for this course from Lesson collection with their exercise counts
+  // Next get the course from the Course collection
+  // Next get lesson Ids for this course from course.lessons
+  // Next filter only lessons that are in this array
+
+  const getCounts = async () => {
+    const course = await Course.findOne(courseQuery, courseProjection),
+          lessons = await Lesson.find(lessonQuery, lessonProjection);
+    return {course, lessons};
+  };
+
+  getCounts().then((results) => {
+    let wordCount = 0,
+        totalCount = 0,
+        wordExercises = [];
+    const lessonIds = getActiveLessonIds(results.course.lessons);
+    results.lessons.forEach(lesson => {
+      if (lessonIds.find(id => id === lesson._id.toString())) {
+        // lesson is active, add to count
+        totalCount += lesson.exercises.length;
+        wordExercises = lesson.exercises.filter(exercise => exercise.tpe === 0);
+        wordCount += wordExercises.length;
+      }
+    });
+    console.log('Count:', totalCount, wordCount);
+    updateCourseWordCount(courseId, {total: totalCount, words: wordCount})
+
+  }).catch((err) => {
+    console.log(`ERREXE01: Error getting total number of exercises for course '${courseId}'`)
+    console.log(err);
+  });
+
+  /*
   const pipeline = [
-    {$match: {courseId}},
+    {$match: {courseId, isDeleted: false}},
     {$unwind: {
       path : "$exercises",
       includeArrayIndex : "arrayIndex",
@@ -50,6 +89,7 @@ getCourseWordCount = function(id) {
       console.log('ERREXE01: Error getting total number of exercise for course "' + courseId + '"')
     }
   });
+  */
 }
 
 setResultExercisesAsDeleted = function(userId, lessonId, exerciseId) {
@@ -173,7 +213,8 @@ module.exports = {
     }
   },
   updateExercises: function(req, res) {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           exercises = req.body
           query = {
             _id: lessonId,
