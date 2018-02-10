@@ -23,6 +23,9 @@ h2.completed {
   color: #449d44;
   padding: 0 0 8px 8px;
 }
+h2 > .count {
+  color: white;
+}
 .lesson-title {
   cursor: pointer;
   padding: 12px;
@@ -55,6 +58,13 @@ h2.completed {
 .lesson-title .fa-check {
   color: green;
   font-size: 28px;
+}
+H2 > .fa-check {
+  font-size: 36px;
+}
+H2.chapter > .fa-check {
+  font-size: 28px;
+  color: white;
 }
 .count {
   font-size: 16px;

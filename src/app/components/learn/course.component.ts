@@ -153,6 +153,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onLessonSelected(lesson: Lesson) {
+    this.routeStep = '';
     this.lessonSelected(lesson);
   }
 
@@ -356,12 +357,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           // Course is at the end
           // Start again from the beginning in case not all exercises were done
           console.log('>>> course at the end, restart from beginning');
+          this.isCourseDone = false;
           this.loopCount++ // to prevent infinite loop
           this.getFirstLesson();
         } else {
           // Course is done
-          console.log('>>> course done');
-          this.isCourseDone = !this.loopCount;
+          console.log('>>> course done', this.loopCount);
+          this.isCourseDone = this.loopCount < 1;
           this.currentStep = 0;
           this.isLessonReady = true;
         }
@@ -707,6 +709,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private lessonSelected(lesson: Lesson) {
     if (lesson) {
       this.lesson = lesson;
+      console.log('>>>Lesson selected', lesson);
       this.getStepData();
     }
   }

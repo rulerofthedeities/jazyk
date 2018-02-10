@@ -42,6 +42,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
   resultsByLesson: Map<LessonResult> = {};
+  resultsByChapter: Map<LessonResult> = {};
   currentChapter: string;
   lessonData: Lesson;
   isLessonsReady = false;
@@ -171,39 +172,64 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
         hasCompleted: false
       };
     });
+    this.courseChapters.forEach(chapterName => {
+      this.resultsByChapter[chapterName] = {
+        _id: null,
+        studied: 0,
+        learned: 0,
+        total: null,
+        totalwords: null,
+        hasStarted: false,
+        hasCompleted: false
+      };
+    });
   }
 
   private getLessonResults() {
     // Get results grouped by lesson id
     console.log('getting Lesson Results');
-    let cntCompleted = 0;
     this.learnService
     .fetchLessonResults(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (results: LessonResult[]) => {
         if (results) {
-          const activeLessonIds: string[] = this.getActiveLessonIds();
-          results.forEach(result => {
-            console.log('overview results', result);
-            console.log('lessonIdss', activeLessonIds.length);
-            if (activeLessonIds.find(id => id === result._id)) {
-              this.resultsByLesson[result._id] = result;
-              this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-              this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-              cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
-            }
-          });
-          console.log('Course complete?', cntCompleted, activeLessonIds.length);
-          if (cntCompleted === activeLessonIds.length) {
-            console.log('Course complete!!');
-            this.isCourseComplete = true;
-          }
-          console.log('results by lesson', this.resultsByLesson);
+          this.countTotals(results);
         }
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private countTotals(results: LessonResult[]) {
+    const activeLessonIds: string[] = this.getActiveLessonIds();
+    let cntCompleted = 0;
+    // Count totals per lesson
+    results.forEach(result => {
+      if (activeLessonIds.find(id => id === result._id)) {
+        this.resultsByLesson[result._id] = result;
+        this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+        this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+        cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+      }
+    });
+    // Check if chapter is complete
+    this.courseChapters.forEach(chapter => {
+      if (this.chapterLessons[chapter]) {
+        this.chapterLessons[chapter].forEach(lesson => {
+          if (this.resultsByLesson[lesson._id]) {
+            this.resultsByChapter[chapter].learned += this.resultsByLesson[lesson._id].learned;
+            this.resultsByChapter[chapter].total += this.resultsByLesson[lesson._id].total;
+          }
+        });
+        this.resultsByChapter[chapter].hasCompleted = this.resultsByChapter[chapter].learned >= this.resultsByChapter[chapter].total;
+      }
+    });
+    // Check if course is complete
+    console.log('Course complete?', cntCompleted, activeLessonIds.length);
+    if (cntCompleted === activeLessonIds.length) {
+      this.isCourseComplete = true;
+    }
   }
 
   private getActiveLessonIds(): string[] {

@@ -11,9 +11,15 @@
           deselected: chapterName !== currentChapter
         }"
         class="list-group-item">
-        <h2 (click)="onSelectChapter(chapterName)" class="bg-primary">
+        <h2 (click)="onSelectChapter(chapterName)" class="chapter bg-primary">
           {{i + 1}}. {{getChapterName(chapterName)}}
+          <span class="count">
+            ({{resultsByChapter[chapterName]?.learned || 0}} / {{resultsByChapter[chapterName]?.total || 0}})
+          </span>
+          <span class="fa fa-check" *ngIf="resultsByChapter[chapterName]?.hasCompleted">
+          </span>
         </h2>
+        
         <ul *ngIf="chapterName === currentChapter"
           class="list-group lesson">
           <li *ngFor="let lesson of chapterLessons[chapterName]; let j=index"
