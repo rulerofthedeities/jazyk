@@ -140,7 +140,7 @@ module.exports.initialize = function(app, router) {
   router.post('/build/course', courses.addCourse);
   router.put('/build/course/header', courses.updateCourseHeader);
   router.patch('/build/course/property/:courseId', courses.updateCourseProperty);
-  // router.patch('/build/course/lesson/:courseId', courses.updateCourseLesson);
+  router.patch('/build/course/lesson/:courseId', courses.updateCourseLesson);
   router.put('/build/lessonIds/:courseId', courses.updateLessonIds);
 
   router.post('/build/chapter/:courseId/:lessonId', courses.addChapter);

@@ -53,8 +53,6 @@ export class BuildService {
     .catch(error => Observable.throw(error));
   }
 
-/*
-// Done in chapter update
   updateCourseLesson(courseId: string, chapterName: string, lessonId: string) {
     const headers = this.getTokenHeaders();
     const data = {chapterName, lessonId};
@@ -63,7 +61,7 @@ export class BuildService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
-*/
+  
   fetchAuthorCourses() {
     const headers = this.getTokenHeaders();
     return this.http

@@ -203,7 +203,6 @@ module.exports = {
     const userId = req.decoded.user._id,
           settings = req.body,
           updateObj = {$set: {'main': settings}};
-    console.log('saving main settings', updateObj);
     User.findOneAndUpdate(
       {_id: userId}, updateObj, function(err, result) {
       response.handleError(err, res, 500, 'Error updating main settings', function(){
@@ -248,7 +247,6 @@ module.exports = {
     getPublicProfile(query, res);
   },
   getPublicProfileById: function(req, res) {
-    console.log('getting profile by id');
     if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
       const query = {_id: req.params.userId};
       getPublicProfile(query, res);
@@ -333,15 +331,12 @@ module.exports = {
     if (recipients.length > 0) {
       recipients = recipients.slice(0, 1000); // max 1000 ids
       recipientIds = recipients.map(recipient => recipient.recipient);
-      console.log(recipientIds);
       const query = {'_id': {$in: recipientIds}},
             projection = {userName: 1, email: 1},
             options = {sort: {userName: 1}};
       User.find(query, projection, options, function(err, docs) {
         response.handleError(err, res, 500, 'Error getting mail data for recipients', function(){
-          console.log(docs);
           docs.forEach(doc => setEmailHash(doc));
-          console.log(docs);
           response.handleSuccess(res, docs, 200, 'Fetched recipients mail data');
         });
       })

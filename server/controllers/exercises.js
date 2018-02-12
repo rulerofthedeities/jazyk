@@ -7,7 +7,6 @@ const response = require('../response'),
       WordPair = require('../models/wordpair');
 
 updateCourseWordCount = function(courseId, count) {
-
   const query = {_id: courseId},
         update = {$set: {
           totalCount: count.total,
@@ -54,14 +53,15 @@ getCourseWordCount = function(id) {
         wordExercises = [];
     const lessonIds = getActiveLessonIds(results.course.lessons);
     results.lessons.forEach(lesson => {
+      console.log('Is lesson active', lesson._id, lessonIds);
       if (lessonIds.find(id => id === lesson._id.toString())) {
         // lesson is active, add to count
+        console.log('> yes');
         totalCount += lesson.exercises.length;
         wordExercises = lesson.exercises.filter(exercise => exercise.tpe === 0);
         wordCount += wordExercises.length;
       }
     });
-    console.log('Count:', totalCount, wordCount);
     updateCourseWordCount(courseId, {total: totalCount, words: wordCount})
 
   }).catch((err) => {
@@ -193,8 +193,6 @@ module.exports = {
             'exercises._id': exerciseId,
             access: access.checkAccess(userId, 2) // Must be at least author
           };
-
-    console.log('updating exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
     if (exercise) {
       const update = { $set: { 'exercises.$': exercise}}
       Lesson.findOneAndUpdate(query, update, function(err, result) {
@@ -222,8 +220,6 @@ module.exports = {
           },
           update = {$set: { 'exercises': exercises}};
 
-    console.log('updating all exercises for lesson ' + lessonId);
-
     Lesson.findOneAndUpdate(query, update, function(err, result) {
       if (result) {
         response.handleError(err, res, 400, 'Error updating exercises in lesson ' + lessonId, function(){
@@ -246,8 +242,6 @@ module.exports = {
           update = {
             $pull: { exercises: {_id : exerciseId }}
           };
-
-    console.log('removing exercise with _id ' + exerciseId + ' from lesson ' + lessonId);
 
     Lesson.findOneAndUpdate(query, update, function(err, result) {
       if (result) {
@@ -287,7 +281,6 @@ module.exports = {
         if (choices.length >= minChoices || !lans) {
           response.handleSuccess(res, choices, 200, 'Fetched choices');
         } else {
-          console.log('fetching choices from all courses');
           const options = {maxWords, lans}
           getChoicesFromAllCourses(res, options);
         }

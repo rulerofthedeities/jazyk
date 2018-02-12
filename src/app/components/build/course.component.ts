@@ -78,10 +78,9 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     // Check if new chapter was added
     if (lessonAdded.chapterName && this.chapters.filter(chapter => chapter === lessonAdded.chapterName).length < 1) {
       this.addChapter(lessonAdded.chapterName, lessonAdded._id, go);
+    } else {
       // Add lessonId to chapter in course
-      // this.addLessonId(lessonAdded.chapterName, lessonAdded._id);
-    } else if (go) {
-      this.router.navigate(['/build/lesson/' + lessonAdded._id]);
+      this.addLessonId(lessonAdded.chapterName, lessonAdded._id, go);
     }
   }
 
@@ -121,7 +120,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   }
 
   private addChapter(chapterName: string, lessonId: string, go: boolean) {
-    console.log('adding chapter', chapterName);
     if (chapterName) {
       this.chapters.push(chapterName);
       this.buildService
@@ -138,6 +136,20 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     } else if (go) {
       this.router.navigate(['/build/lesson/' + lessonId]);
     }
+  }
+
+  private addLessonId(chapterName: string, lessonId: string, go: boolean) {
+    this.buildService
+    .updateCourseLesson(this.course._id, chapterName, lessonId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      savedLessonId => {
+        if (go) {
+          this.router.navigate(['/build/lesson/' + lessonId]);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
   }
   
   private setLessonIds(updatedLessonId: LessonId) {

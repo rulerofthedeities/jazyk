@@ -8,7 +8,6 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
   if (results.data.length > 0) {
     const docs = results.data.map(doc => 
     { 
-    console.log('study', doc);
       exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
       filterObj = {
         userId,
@@ -35,7 +34,6 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
         }
       }
     })
-    console.log('results study', docs);
     Result.collection.bulkWrite(docs, function(err, bulkResult) {
       response.handleError(err, res, 400, 'Error saving user results for study', function(){
         response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
@@ -48,7 +46,6 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
 
 saveStep = function(res, results, userId, courseId, lessonId) {
   let exerciseId, result, dtToReview;
-  console.log('saving results', results);
   const docs = results.data.map(doc => 
   { 
     exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
@@ -85,7 +82,6 @@ saveStep = function(res, results, userId, courseId, lessonId) {
     }
     return result;
   });
-  console.log('results', docs);
 
   Result.insertMany(docs, function(err, insertResult) {
     response.handleError(err, res, 400, 'Error saving results', function(){
@@ -441,7 +437,6 @@ module.exports = {
         if (resultData && lesson.total) {
           lesson.studied = resultData.studied;
           lesson.learned = resultData.learned;
-          console.log(lesson);
         }
       })
       response.handleSuccess(res, data.count, 200, 'Fetched all results by lesson');
@@ -462,7 +457,6 @@ module.exports = {
           projection = {_id: 0, lessonId: 1},
           options = {sort: {dt: -1, sequence: -1}};
     Result.findOne(query, projection, options, function(err, result) {
-      console.log('current lesson', result);
       response.handleError(err, res, 400, 'Error fetching most recent result', function(){
         response.handleSuccess(res, result, 200, 'Fetched most recent result');
       });
@@ -611,11 +605,9 @@ module.exports = {
           ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching course count', function() {
-        console.log(results);
         countPerTpe = [0, 0];
         results.forEach(result => {
           countPerTpe[result.tpe] = result.cnt || 0;
-          console.log('result', result.tpe, result.cnt, countPerTpe);
         })
         response.handleSuccess(res, countPerTpe, 200, 'Fetched course count');
       });

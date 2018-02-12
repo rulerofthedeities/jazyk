@@ -7,10 +7,8 @@ module.exports = {
     const page = req.params.page,
           lan = req.params.lan,
           query = {name:page};
-    console.log('getting page', page, lan);
     Info.findOne(query, function(err, result) {
       response.handleError(err, res, 400, 'Error getting info page "' + page +'"', function() {
-        console.log('page', result);
         if (result && result[lan]) {
           response.handleSuccess(res, result[lan], 200, 'Fetched info page');
         } else {

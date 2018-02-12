@@ -32,7 +32,6 @@ let getCourse = function(req, res, authorOnly) {
 }
 
 let moveLesson = function(lessons, newChapter, lessonId, query, res, cb) {
-  console.log('moving lesson ' + lessonId + ' to', newChapter);
   // Check if lessonId is in existing chapters
   const newLessons = [];
   let changed = false,
@@ -121,7 +120,6 @@ module.exports = {
       isInProgress: false
     };
     Course.find(query, {}, function(err, courses) {
-      console.log('getting demo courses', courses);
       response.handleError(err, res, 400, 'Error fetching demo courses', function(){
         response.handleSuccess(res, {subscribed: courses, isDemo: true}, 200, 'Fetched demo courses');
       });
@@ -136,7 +134,6 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, courseId},
           projection = {_id: 0, subscribed: 1};
-    console.log('check if courseId is followed', courseId);
     UserCourse.findOne(query, projection, function(err, course) {
       response.handleError(err, res, 400, 'Error checking if course is followed', function(){
         let result = false;

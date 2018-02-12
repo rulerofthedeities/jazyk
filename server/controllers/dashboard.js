@@ -93,7 +93,6 @@ module.exports = {
             }}
           ];
     Result.aggregate(resultsPipeline, function(err, idResults) {
-      console.log('recent courses', idResults);
       response.handleError(err, res, 400, 'Error fetching recent courseIds from results', function() {
         if (idResults) {
           const courseIdArr = [];

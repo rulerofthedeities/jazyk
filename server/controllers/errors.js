@@ -6,7 +6,6 @@ const response = require('../response'),
 module.exports = {
   addError: function(req, res) {
     const error = new ErrorModel(req.body);
-    console.log('error', error);
 
     error.save(function(err, result) {
       response.handleError(err, res, 500, 'Error adding error', function(){
