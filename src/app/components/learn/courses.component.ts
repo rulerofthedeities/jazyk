@@ -37,17 +37,10 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   }
 
   onLanguageSelected(newLanguage: Language) {
+    this.errorService.clearError();
     this.selectedLanguage = newLanguage;
     this.coursesReady = false;
     this.getCourses();
-  }
-
-  onError(error) {
-    console.log('e', error);
-  }
-
-  onCompleted() {
-    console.log('completed');
   }
 
   onNewCourse() {

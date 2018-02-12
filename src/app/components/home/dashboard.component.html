@@ -16,8 +16,8 @@
             {{summaryData.score | score}} {{text["points"]}}
           </div>
           <div class="learning info">
-            {{summaryData.coursesLearning.total}} {{text["coursesStarted"]}}<br>
-            {{summaryData.coursesLearning.subscribed}} {{text["coursesLearning"]}}
+            {{summaryData.coursesLearning.total}} {{summaryData.coursesLearning.total === 1 ? text["courseStarted"] : text["coursesStarted"]}}<br>
+            {{summaryData.coursesLearning.subscribed}} {{summaryData.coursesLearning.subscribed === 1 ? text["courseLearning"] : text["coursesLearning"]}}
           </div>
         </div>
       </div>

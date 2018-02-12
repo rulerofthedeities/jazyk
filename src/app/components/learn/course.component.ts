@@ -98,6 +98,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   stepTo(i: number) {
+    this.errorService.clearError();
     this.currentStep = i;
     this.courseLevel = this.steps[i].level;
   }
