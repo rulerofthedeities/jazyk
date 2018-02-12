@@ -63,7 +63,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   onLessonDone(lessonAdded: Lesson, go: false) {
     this.isNewLesson = false;
-    console.log('added Lesson', lessonAdded, go);
     if (lessonAdded) {
       this.addedLesson(lessonAdded, go);
     }

@@ -756,8 +756,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (lesson: Lesson) => {
-        this.log(`Fetched lesson data for lesson '${lesson.name}'`);
-        this.lessonSelected(lesson);
+        if (lesson) {
+          this.log(`Fetched lesson data for lesson '${lesson.name}'`);
+          this.lessonSelected(lesson);
+        } else {
+          // Lesson does not exist, start from beginning
+          this.getFirstLesson();
+           console.log('Lesson id', lessonId, 'not found');
+        }
       },
       error => this.errorService.handleError(error)
     );
