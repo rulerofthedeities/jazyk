@@ -285,7 +285,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getDemoQuestions() {
+    console.log('Getting demo questions');
     this.buildExerciseData(this.lesson.exercises, null);
+    console.log('Demo questions', this.exerciseData);
+    this.current = -1;
+    this.isQuestionReady = false;
+    this.isExercisesDone = false;
+    this.noMoreExercises = false;
     this.isReady = true;
     super.init(); // start countdown
   }
@@ -298,7 +304,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     this.getRepeatQuestions();
   }
 
-  private getRepeatQuestions() {  
+  private getRepeatQuestions() {
     this.buildExerciseData(this.lesson.exercises, null);
     this.isReady = true;
     super.init(); // start countdown
@@ -350,15 +356,14 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   protected practiseDone(exercisesDone: ExerciseData[]) {
-    const lastExercises: Map<ExerciseExtraData> = {}; 
-    
+    const lastExercises: Map<ExerciseExtraData> = {};
     this.isExercisesDone = true;
     let practised = 0;
     // Get most recent result per exercise (for isLearned)
     if (exercisesDone && exercisesDone.length) {
       exercisesDone.forEach( item => {
         lastExercises[item.exercise._id] = item.data;
-      })
+      });
     }
     // Count words that have been learned
     for (const key in lastExercises) {
