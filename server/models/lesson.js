@@ -73,7 +73,6 @@ var lessonSchema = new Schema({
   options: {type: LessonOptionsSchema, required: true},
   intro: String,
   difficulty: Number,
-  isPublished: Boolean,
   access: {type: [accessSchema], required: true},
   isDeleted: {type: Boolean, default: false}
 })

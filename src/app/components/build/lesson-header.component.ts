@@ -151,8 +151,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
           ordered: false}
       },
       exercises: [],
-      difficulty: 0,
-      isPublished: false
+      difficulty: 0
     };
     this.buildForm();
   }

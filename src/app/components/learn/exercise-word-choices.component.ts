@@ -40,6 +40,7 @@ export class LearnWordChoicesComponent implements OnChanges {
   }
 
   filter(choice: string): string {
-    return this.learnService.filterPrefix(choice);
+    return choice;
+    // return this.learnService.filterPrefix(choice);
   }
 }

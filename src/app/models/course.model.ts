@@ -107,7 +107,6 @@ export interface Lesson {
   exercises: Exercise[];
   difficulty: number;
   options: LessonOptions;
-  isPublished: boolean;
   rehearseStep?: string; // For repeats
 }
 
