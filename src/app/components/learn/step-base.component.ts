@@ -284,7 +284,6 @@ export abstract class Step {
     if (!this.isExercisesDone) {
       this.nextExercise.next(this.current);
       this.currentData = this.exerciseData[this.current];
-      console.log('CURRENT', this.currentData);
       const learnLevel = this.getCurrentLearnLevel(this.currentData),
             qType = this.determineQuestionType(this.currentData, learnLevel);
       this.levelUpdated.next(learnLevel);

@@ -12,10 +12,10 @@ export class ErrorService {
   ) {}
 
   handleError(error: any) {
-    console.log('error', error);
     let msg = 'unknown error message',
         title = 'error';
     if (error) {
+      console.error('error', error);
       title = error.title || title;
       if (error._body) {
         const body = JSON.parse(error._body);
@@ -26,22 +26,24 @@ export class ErrorService {
           msg = error.error.error || error.error.message || msg;
         }
       }
+      this.errorOccurred.emit({title, msg});
     }
-    this.errorOccurred.emit({title, msg});
   }
 
   clearError() {
-    this.errorOccurred.emit({title: null, msg: null});
+    this.errorOccurred.emit(null);
   }
 
   userError(error: UserError): string {
-    switch (error.code) {
-      case 'learn01':
-        error.msg = this.getErrorMessage(error.code).replace(/%s/g, error.src);
-        break;
+    if (error) {
+      switch (error.code) {
+        case 'learn01':
+          error.msg = this.getErrorMessage(error.code).replace(/%s/g, error.src);
+          break;
+      }
+      this.logError(error).subscribe({ error: e => console.error(e) });
+      return error.msg;
     }
-    this.logError(error).subscribe({ error: e => console.error(e) });
-    return error.msg;
   }
 
   private getErrorMessage(errorCode: string): string {

@@ -793,14 +793,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
     });
     if (newLessonId) {
-      console.log('new lesson id', newLessonId);
       this.getLesson(newLessonId);
+    } else {
+      // There is no new lesson; course is done
+      this.currentStep = 0;
+      this.isLessonReady = true;
     }
   }
 
   private sortChapters(): LessonId[] {
     // Move empty chapter to the back
-    let sortedChapters = this.course.lessons;
+    const sortedChapters = this.course.lessons;
     if (sortedChapters && sortedChapters.length) {
       const firstChapter = sortedChapters[0];
       if (firstChapter.chapter === '') {

@@ -281,7 +281,7 @@ module.exports = {
         if (choices.length >= minChoices || !lans) {
           response.handleSuccess(res, choices, 200, 'Fetched choices');
         } else {
-          const options = {maxWords, lans}
+          const options = {maxWords, lans};
           getChoicesFromAllCourses(res, options);
         }
       });
