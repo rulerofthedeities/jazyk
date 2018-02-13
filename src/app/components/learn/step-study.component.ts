@@ -118,7 +118,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       this.rehearseAll();
     } else {
       this.isRehearsal = false;
-      this.filterExercises();
       this.getLessonResults();
     }
   }
@@ -199,10 +198,9 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.isStudyDone = true;
   }
 
-  private filterExercises() {
+  private filterExercises(): Exercise[] {
     // Only the exercises of type word are shown in study
-    this.lesson.exercises = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
-    console.log('exercises', this.lesson.exercises);
+    return this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
   }
 
   private getLessonResults() {
@@ -235,7 +233,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
     this.toStudy = 0;
     // Select exercises with no result
-    this.lesson.exercises.forEach(exercise => {
+    this.filterExercises().forEach(exercise => {
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
       if (!exerciseResult) {
         this.toStudy++;
@@ -284,7 +282,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.hasMoreToStudy = false;
     this.isRehearsal = true;
     this.isCountDown = false;
-    this.buildExerciseData(this.lesson.exercises);
+    this.buildExerciseData(this.filterExercises());
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 

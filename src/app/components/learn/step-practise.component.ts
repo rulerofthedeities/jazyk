@@ -261,14 +261,20 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
+
+      console.log('>= lesson exercises', this.lesson.exercises);
     this.toPractise = 0;
     this.lesson.exercises.forEach(exercise => {
+      console.log('>= exercise', exercise);
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
+      console.log('>= exercise result', exerciseResult);
       if ((exerciseResult && !exerciseResult.isLearned)
         || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
       ) {
+        console.log('>= adding', nrOfExercises, this.settings.nrOfWordsLearn);
         this.toPractise++;
         if (nrOfExercises <= this.settings.nrOfWordsLearn) {
+          console.log('>= adding');
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);
           newResults.push(exerciseResult);
