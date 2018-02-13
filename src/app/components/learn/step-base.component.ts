@@ -232,7 +232,6 @@ export abstract class Step {
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
-        console.log('>= fetched choices', choices);
         this.choices = choices;
         this.nextWord();
       },

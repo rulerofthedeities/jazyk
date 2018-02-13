@@ -6,13 +6,11 @@
   <span class="access pull-right">
     <span class="fa fa-key fa-spacing"></span>{{getAccess()}}
   </span>
-  <a routerLink="/build/course/{{course._id}}" *ngIf="showLink">
-    {{course.name}}
-  </a>
+  <a routerLink="/build/course/{{course._id}}" *ngIf="showLink">{{course.name}}</a>
   <span *ngIf="!showLink">
     {{course.name}}
   </span>
-  <span class="indicators"
+  <span class="indicators" *ngIf="!showLink"
     [class.edit]="canEditCourse">
     <span class="fa"
       [ngClass]="{
