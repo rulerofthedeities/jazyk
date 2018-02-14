@@ -7,7 +7,7 @@
       <h3>
         <img src="/assets/img/flags/{{course?.languagePair.from}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{this.regionTo}}.png" class="flag">
         {{course.name}}
-        <span class="icons" *ngIf="tpe !== listType.Learn">
+        <span class="icons" *ngIf="tpe === listType.Teach">
           <span 
             class="fa"
             [ngClass]="{
@@ -26,6 +26,9 @@
               'fa-industry': course.isInProgress,
               'fa-check': !course.isInProgress}">
           </span>
+        </span>
+        <span *ngIf="course.isInProgress && tpe !== listType.Teach"
+          class="fa fa-industry fa-industry-large">
         </span>
         <span class="fa fa-info-circle"
           (click)="onToggleDetails()"

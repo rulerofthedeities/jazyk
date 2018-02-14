@@ -764,7 +764,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         wordpairs => {
           let word, score;
           const filteredList = [];
-          console.log(wordpairs.length);
           wordpairs.forEach(wp => {
             word = wp[filter.languageId].word;
             score = this.previewService.getDamerauLevenshteinDistance(word, filter.word); // For sorting

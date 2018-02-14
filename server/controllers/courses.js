@@ -65,8 +65,7 @@ module.exports = {
     const languageId = req.params.lan,
           query = {
             isPublished: true,
-            isPublic: true,
-            isInProgress: false
+            isPublic: true
           }
     if (languageId !== 'eu') {
       query['languagePair.to'] = languageId;
