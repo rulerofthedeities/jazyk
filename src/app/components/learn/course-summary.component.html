@@ -78,7 +78,7 @@
         </button>
       </div>
       <div *ngIf="(tpe===listType.Learn || tpe===listType.Home) && !isDemo" class="buttons">
-        <button type="button" class="btn btn-success"
+        <button type="button" class="btn btn-success" *ngIf="percDone < 100"
           (click)="onContinueCourse()">
           <span class="fa fa-arrow-right fa-spacing"></span>
           {{text["continuecourse"]}}
