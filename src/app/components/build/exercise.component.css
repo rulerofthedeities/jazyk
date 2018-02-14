@@ -30,6 +30,21 @@
   font-size: 20px;
   font-weight: bold;
 }
+.fa-exchange {
+  transform: rotate(90deg);
+  color: black;
+  font-weight: bold;
+  margin-left: 3px;
+}
+.fa-long-arrow-up {
+  margin-left: 3px;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+}
+.fa-exchange:hover, .fa-long-arrow-up:hover {
+  color: green;
+}
 .txt {
   line-height: 32px;
 }
@@ -59,9 +74,4 @@
 }
 .form-horizontal .control-label {
   padding-top: 0;
-}
-.fa-exchange {
-  transform: rotate(90deg);
-  color: green;
-  font-weight: bold;
 }

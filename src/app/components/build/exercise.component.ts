@@ -257,12 +257,20 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onReplace(fld: string, tpe: string, i: number) {
-    const items: string[] = this.currentExercise[tpe][fld].split('|');
-    const newWord = items[i];
-    const formName = tpe + 'Word';
+    const items: string[] = this.currentExercise[tpe][fld].split('|'),
+          newWord = items[i],
+          formName = tpe + 'Word';
     items[i] = this.exerciseForm.value[formName];
     this.currentExercise[tpe][fld] = items.join('|');
     this.exerciseForm.patchValue({[formName]: newWord});
+  }
+
+  onMoveToHint(i: number) {
+    const items: string[] = this.currentExercise['local']['alt'].split('|'),
+          movedWord = items[i],
+          hint = this.exerciseForm.value['localHint'] || '';
+    this.currentExercise['local']['alt'] = items.filter((item, itemi) => itemi !== i).join('|');
+    this.exerciseForm.patchValue({'localHint': hint + movedWord});
   }
 
   onActivateField(field: string) {
