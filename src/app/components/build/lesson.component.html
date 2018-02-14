@@ -78,40 +78,41 @@
     </div>
 
     <ng-template #addExercise>
-      <km-build-exercise
-        *ngIf="tpe===exType.Word"
-        [languagePair]="lesson?.languagePair"
-        [configs]="configs"
-        [lessonId]="lesson?._id"
-        [text]="text"
-        [lessonOptions]="lesson?.options"
-        (addedExercises)="onExercisesAdded($event)"
-        (cancelNew)="onCancelNew()">
-      </km-build-exercise>
-      <km-build-select *ngIf="tpe===exType.Select"
-        [languagePair]="lesson?.languagePair"
-        [configs]="configs"
-        [lessonId]="lesson?._id"
-        [text]="text"
-        (addedExercises)="onExercisesAdded($event)"
-        (cancelNew)="onCancelNew()">
-      </km-build-select>
-      <km-build-qa *ngIf="tpe===exType.QA"
-        [languagePair]="lesson?.languagePair"
-        [configs]="configs"
-        [lessonId]="lesson?._id"
-        [text]="text"
-        (addedExercises)="onExercisesAdded($event)"
-        (cancelNew)="onCancelNew()">
-      </km-build-qa>
-      <km-build-fillin *ngIf="tpe===exType.FillIn"
-        [languagePair]="lesson?.languagePair"
-        [configs]="configs"
-        [lessonId]="lesson?._id"
-        [text]="text"
-        (addedExercises)="onExercisesAdded($event)"
-        (cancelNew)="onCancelNew()">
-      </km-build-fillin>
+      <div [ngSwitch]="tpe">
+        <km-build-exercise *ngSwitchCase="exType.Word"
+          [languagePair]="lesson?.languagePair"
+          [configs]="configs"
+          [lessonId]="lesson?._id"
+          [text]="text"
+          [lessonOptions]="lesson?.options"
+          (addedExercises)="onExercisesAdded($event)"
+          (cancelNew)="onCancelNew()">
+        </km-build-exercise>
+        <km-build-select *ngSwitchCase="exType.Select"
+          [languagePair]="lesson?.languagePair"
+          [configs]="configs"
+          [lessonId]="lesson?._id"
+          [text]="text"
+          (addedExercises)="onExercisesAdded($event)"
+          (cancelNew)="onCancelNew()">
+        </km-build-select>
+        <km-build-qa *ngSwitchCase="exType.QA"
+          [languagePair]="lesson?.languagePair"
+          [configs]="configs"
+          [lessonId]="lesson?._id"
+          [text]="text"
+          (addedExercises)="onExercisesAdded($event)"
+          (cancelNew)="onCancelNew()">
+        </km-build-qa>
+        <km-build-fillin *ngSwitchCase="exType.FillIn"
+          [languagePair]="lesson?.languagePair"
+          [configs]="configs"
+          [lessonId]="lesson?._id"
+          [text]="text"
+          (addedExercises)="onExercisesAdded($event)"
+          (cancelNew)="onCancelNew()">
+        </km-build-fillin>
+      </div>
     </ng-template>
   </div>
 

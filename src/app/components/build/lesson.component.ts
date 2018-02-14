@@ -150,7 +150,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
           this.setBidirectional();
           this.getConfigs(lesson.languagePair);
         } else {
-          console.log(this.text);
           this.infoMsg = this.text['LessonIdInvalid'];
         }
       },

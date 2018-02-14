@@ -16,18 +16,21 @@ getDetail= function(word, callback) {
 
 module.exports = {
   getWordPairs: function(req, res) {
-    const query = req.query,
-          getTotal = query.getTotal === 'true' ? true : false;
-          limit = parseInt(query.limit, 10) > 0 ? parseInt(query.limit, 10) : 50,
-          forceFromStart = query.word.length < 4 ? true : false,
-          word = query.isFromStart === 'true' || forceFromStart ? "^" + query.word : query.word,
-          lanpair = query.languagePair.split(';'),
-          key =  query.languageId + '.word',
-          forceExact = query.word.length < 3 ? true : false,
-          search = query.isExact === 'true' || forceExact ? query.word : {$regex: word, $options:'i'},
-          q = {docTpe:'wordpair', $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}], [key]:search};
-
-    WordPair.find(q, {}, {limit}, function(err, wordpairs) {
+    const params = req.query,
+          getTotal = params.getTotal === 'true' ? true : false;
+          limit = parseInt(params.limit, 10) > 0 ? parseInt(params.limit, 10) : 250,
+          forceFromStart = params.word.length < 4 ? true : false,
+          word = params.isFromStart === 'true' || forceFromStart ? "^" + params.word : params.word,
+          lanpair = params.languagePair.split(';'),
+          key =  params.languageId + '.word',
+          forceExact = params.word.length < 3 ? true : false,
+          search = params.isExact === 'true' || forceExact ? params.word : {$regex: word, $options:'i'},
+          query = {
+            docTpe:'wordpair',
+            $and:[{lanPair: lanpair[0]}, {lanPair: lanpair[1]}],
+            [key]:search
+          };
+    WordPair.find(query, {}, {limit}, function(err, wordpairs) {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function() {
         // Count workaround until v3.4 (aggregate)
         if (query.getTotal === 'true') {

@@ -744,7 +744,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       isFromStart: false,
       getTotal: false,
       languageId: lan,
-      limit: 12,
+      limit: 250,
       word
     };
     if (this.lanList !== lan) {
@@ -755,6 +755,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private getWordList(filter: Filter) {
+    const displayLimit = 6;
     if (filter.word) {
       this.buildService
       .fetchFilterWordPairs(filter, this.languagePair)
@@ -763,13 +764,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         wordpairs => {
           let word, score;
           const filteredList = [];
+          console.log(wordpairs.length);
           wordpairs.forEach(wp => {
             word = wp[filter.languageId].word;
-            score = this.previewService.getDamerauLevenshteinDistance(word, filter.word);
+            score = this.previewService.getDamerauLevenshteinDistance(word, filter.word); // For sorting
             filteredList.push({wordpair: wp, score});
           });
           filteredList.sort((a, b) => a.score - b.score);
-          this.wordpairs = filteredList.map(item => item.wordpair).slice(0, this.maxFilterListLength);
+          this.wordpairs = filteredList.slice(0, displayLimit).map(item => item.wordpair);
         },
         error => this.errorService.handleError(error)
       );
