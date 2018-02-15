@@ -268,9 +268,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onMoveToHint(i: number) {
     const items: string[] = this.currentExercise['local']['alt'].split('|'),
           movedWord = items[i],
-          hint = this.exerciseForm.value['localHint'] || '';
+          hint = this.exerciseForm.value['localHint'] ? [this.exerciseForm.value['localHint']] : [];
     this.currentExercise['local']['alt'] = items.filter((item, itemi) => itemi !== i).join('|');
-    this.exerciseForm.patchValue({'localHint': hint + movedWord});
+    hint.push(movedWord);
+    this.exerciseForm.patchValue({'localHint': hint.join(', ')});
   }
 
   onActivateField(field: string) {
