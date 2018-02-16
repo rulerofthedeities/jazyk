@@ -6,6 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
+import {TooltipModule} from "ngx-tooltip";
 
 interface BadgeData {
   review?: number;

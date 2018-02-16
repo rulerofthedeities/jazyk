@@ -12,31 +12,41 @@
             class="fa"
             [ngClass]="{
               'fa-lock': !course.isPublic,
-              'fa-user': course.isPublic}">
+              'fa-user': course.isPublic}"
+            [tooltip]="text[course.isPublished ? 'iCoursePublic': 'iCourseNotPublic']"
+            [tooltipPlacement]="'top'">
           </span>
           <span 
             class="fa"
             [ngClass]="{
               'fa-power-off': !course.isPublished,
-              'fa-wifi': course.isPublished}">
+              'fa-wifi': course.isPublished}"
+            [tooltip]="text[course.isPublished ? 'iCoursePublished': 'iCourseNotPublished']"
+            [tooltipPlacement]="'top'">
           </span>
           <span 
             class="fa"
             [ngClass]="{
               'fa-industry': course.isInProgress,
-              'fa-check': !course.isInProgress}">
+              'fa-check': !course.isInProgress}"
+            [tooltip]="text[course.isInProgress ? 'iCourseInProgress': 'iCourseComplete']"
+            [tooltipPlacement]="'top'">
           </span>
         </span>
         <span *ngIf="course.isInProgress && tpe !== listType.Teach"
-          class="fa fa-industry fa-industry-large">
+          class="fa fa-industry fa-industry-large"
+          [tooltip]="text[course.isInProgress ? 'iCourseInProgress': 'iCourseComplete']"
+          [tooltipPlacement]="'top'">
         </span>
         <span class="fa fa-info-circle"
           (click)="onToggleDetails()"
           [ngClass]="{
-            selected:showCourseDetails,
-            'text-muted':!showCourseDetails,
+            selected: showCourseDetails,
+            'text-muted': !showCourseDetails,
             'text-success': showCourseDetails
-          }">
+          }"
+          [tooltip]="text['iCourseDetails']"
+          [tooltipPlacement]="'top'">
         </span>
       </h3>
       <div class="course-details" *ngIf="showCourseDetails">

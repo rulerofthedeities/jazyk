@@ -3,6 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {CommonModule} from '@angular/common';
 import {MarkdownModule} from 'angular2-markdown';
+import {TooltipModule} from "ngx-tooltip";
 import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
 
@@ -30,6 +31,7 @@ import {ScorePipe} from './pipes/score.pipe';
     CommonModule,
     HttpModule,
     FormsModule,
+    TooltipModule,
     MarkdownModule.forRoot()
   ],
   declarations: [
@@ -68,6 +70,7 @@ import {ScorePipe} from './pipes/score.pipe';
     GetKeyPressDirective,
     CommonModule,
     HttpModule,
+    TooltipModule,
     MarkdownModule,
     ToggleComponent,
     LoaderComponent,
