@@ -17,6 +17,8 @@
         'disabled': savingData?.isPublic,
         'fa-lock': !course.isPublic,
         'fa-user': course.isPublic}"
+      [tooltip]="getToolTip('isPublic')"
+      [tooltipPlacement]="'top'"
       (click)="onToggle('isPublic')">
     </span>
     <span class="fa"
@@ -24,6 +26,8 @@
         'disabled': savingData?.isPublished,
         'fa-power-off': !course.isPublished,
         'fa-wifi': course.isPublished}"
+        [tooltip]="getToolTip('isPublished')"
+        [tooltipPlacement]="'top'"
       (click)="onToggle('isPublished')">
     </span>
     <span class="fa"
@@ -31,6 +35,8 @@
         'disabled': savingData?.isPublished,
         'fa-industry': course.isInProgress,
         'fa-check': !course.isInProgress}"
+        [tooltip]="text[course.isInProgress ? 'iCourseInProgress': 'iCourseComplete']"
+        [tooltipPlacement]="'top'"
       (click)="onToggle('isInProgress')">
     </span>
   </span>
@@ -39,12 +45,14 @@
     class="btn btn-warning" 
     *ngIf="canEditCourse" 
     (click)="onEditCourse()">
-    <span class="fa fa-pencil"></span> {{text["Edit"]}}
+    <span class="fa fa-pencil fa-spacing"></span>
+    {{text["Edit"]}}
   </button>
   <button *ngIf="course.isPublished"
     type="button"
     class="btn btn-success"
     (click)="onStartCourse()">
+    <span class="fa fa-arrow-right fa-spacing"></span>
     {{text["startcourse"]}}
   </button>
 </h1>

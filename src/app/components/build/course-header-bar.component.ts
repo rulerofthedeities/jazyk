@@ -53,11 +53,6 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
     }
   }
 
-  getAccess(): string {
-    const level = this.userService.getAccessLevel(this.course.access);
-    return this.text[AccessLevel[level]] || '?';
-  }
-
   onToggle(property: string) {
     if (this.canEditCourse && !this.savingData[property]) {
       if (property !== 'isPublished' || this.course.isPublished === false) { // you cannot unpublish
@@ -65,6 +60,28 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
         this.updateCourseProperty(property);
       }
     }
+  }
+
+  getAccess(): string {
+    const level = this.userService.getAccessLevel(this.course.access);
+    return this.text[AccessLevel[level]] || '?';
+  }
+
+  getToolTip(property: string): string {
+    let toolTip: string;
+    const isProperty = this.course[property];
+    switch (property) {
+      case 'isPublic':
+        toolTip = isProperty ? 'iCoursePublic' : 'iCourseNotPublic';
+      break;
+      case 'isPublished':
+        toolTip = isProperty ? 'iCoursePublished': 'iCourseNotPublished';
+      break;
+      case 'isInProgress':
+        toolTip = isProperty ? 'iCourseInProgress': 'iCourseComplete';
+       break
+    }
+    return toolTip ? this.text[toolTip] : '';
   }
 
   private updateCourseProperty(property: string) {
