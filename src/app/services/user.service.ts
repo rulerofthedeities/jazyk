@@ -147,9 +147,9 @@ export class UserService {
       learn: {
         lan: lan,
         countdown: true,
-        nrOfWordsStudy: isAnonymous ? 10 :5,
-        nrOfWordsLearn: isAnonymous ? 10 :5,
-        nrOfWordsReview: 5,
+        nrOfWordsStudy: 5,
+        nrOfWordsLearn: 5,
+        nrOfWordsReview: 10,
         mute: false,
         delay: 2,
         color: true,

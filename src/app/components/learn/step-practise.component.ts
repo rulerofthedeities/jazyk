@@ -165,12 +165,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     switch (tpe) {
       case ExerciseType.Word:
         if (exercise.result) {
-          // 3 -> 5: random
-          if (learnLevel > 2 && learnLevel < 6) {
+          // 6 -> 9: random
+          if (learnLevel > 5 && learnLevel < 10) {
             qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
           }
-          // 6+ : always word
-          if (learnLevel > 5) {
+          // 10+ : always word
+          if (learnLevel > 9) {
             qTpe = QuestionType.Word;
           }
         }
@@ -188,6 +188,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Comparison;
       break;
     }
+    console.log('!>> Question type', qTpe, learnLevel);
     return qTpe;
   }
 
@@ -265,16 +266,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       console.log('>= lesson exercises', this.lesson.exercises);
     this.toPractise = 0;
     this.lesson.exercises.forEach(exercise => {
-      console.log('>= exercise', exercise);
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
-      console.log('>= exercise result', exerciseResult);
       if ((exerciseResult && !exerciseResult.isLearned)
         || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
       ) {
-        console.log('>= adding', nrOfExercises, this.settings.nrOfWordsLearn);
         this.toPractise++;
-        if (nrOfExercises <= this.settings.nrOfWordsLearn) {
-          console.log('>= adding');
+        if (nrOfExercises < this.settings.nrOfWordsLearn) {
           // word is not learned yet; add to list of new questions
           newExercises.push(exercise);
           newResults.push(exerciseResult);

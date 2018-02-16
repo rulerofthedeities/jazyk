@@ -78,7 +78,7 @@ export abstract class Step {
   noMoreExercises = false;
   isCountDown: boolean;
   isMute: boolean;
-  maxRepeatWord = 4;
+  maxRepeatWord = 5;
   currentStep: string;
   qType = QuestionType;
   exType = ExerciseType;
@@ -469,6 +469,7 @@ export abstract class Step {
   }
 
   protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
+    // overridden in Practice step
     const nrOfQuestions = this.exerciseData.length;
     let add = false;
     if (aType === AnsweredType.Incorrect || aType === AnsweredType.AlmostCorrect) {
@@ -776,22 +777,17 @@ export abstract class Step {
     if (learnLevelData.correct) {
       this.soundLearnedLevel(level);
     }
+    console.log('!>> level changed to', level);
 
     return level;
   }
 
   private calculateWordLearnLevel(learnLevelData: LearnLevelData): number {
     let level = learnLevelData.level;
-    if (learnLevelData.correct) {
+    if (learnLevelData.correct || learnLevelData.alt) {
       level += 5;
     } else {
-      if (level > 0) {
-        if (learnLevelData.almostCorrect) {
-          level -= 2;
-        } else if (!learnLevelData.alt) {
-          level -= 3;
-        }
-      }
+      level -= learnLevelData.almostCorrect ? 2 : 3;
     }
     level = Math.max(level, 0);
     return level;
@@ -800,16 +796,12 @@ export abstract class Step {
   private calculateChoicesLearnLevel(learnLevelData: LearnLevelData): number {
     let level = learnLevelData.level;
     if (learnLevelData.correct) {
-      if (this.currentData.exercise.tpe === ExerciseType.Select) {
-        level += 6;
-      } else {
-        level += 3;
-      }
+      //Make sure a word must always be typed in before it is set as learned
+      level += level < 9 ? 3 : this.learnedLevel - level - 1; 
     } else {
-      if (level > 0) {
-        level -= 1;
-      }
+      level -= 1;
     }
+    level = Math.max(level, 0);
     return level;
   }
 
@@ -926,12 +918,12 @@ export abstract class Step {
     switch (tpe) {
       case ExerciseType.Word:
         if (exercise.result) {
-          // 4 -> 9: random
-          if (learnLevel > 3 && learnLevel < 10) {
+          // 6 -> 9: random
+          if (learnLevel > 5 && learnLevel < 10) {
             qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
           }
           // 10+ : always word
-          if (learnLevel > 10) {
+          if (learnLevel > 9) {
             qTpe = QuestionType.Word;
           }
         }
@@ -1020,11 +1012,9 @@ export abstract class Step {
     .takeWhile(() => this.componentActive)
     .subscribe(event => {
       let nrDone = this.current;
-      console.log('DONE 1', nrDone);
       if (this.currentData.data.isDone) {
         nrDone++;
       }
-      console.log('DONE 2', nrDone);
       if (nrDone > 0) {
         // Show results page
         this.exerciseData = this.exerciseData.slice(0, nrDone);

@@ -240,7 +240,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
       if (!exerciseResult) {
         this.toStudy++;
         // study not done yet, add to list of new questions
-        if (newExercises.length <= this.settings.nrOfWordsStudy) {
+        if (newExercises.length < this.settings.nrOfWordsStudy) {
           newExercises.push(exercise);
         }
       }
