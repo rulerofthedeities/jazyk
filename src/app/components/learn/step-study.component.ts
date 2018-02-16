@@ -71,6 +71,8 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   onStudyNewWords() {
+    this.current = -1;
+    this.isStudyDone = false;
     this.getLessonResults();
   }
 

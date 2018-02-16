@@ -35,7 +35,7 @@
         'disabled': savingData?.isPublished,
         'fa-industry': course.isInProgress,
         'fa-check': !course.isInProgress}"
-        [tooltip]="text[course.isInProgress ? 'iCourseInProgress': 'iCourseComplete']"
+        [tooltip]="getToolTip('isPublished')"
         [tooltipPlacement]="'top'"
       (click)="onToggle('isInProgress')">
     </span>

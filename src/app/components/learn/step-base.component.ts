@@ -564,7 +564,7 @@ export abstract class Step {
   }
 
   private calculateBasePoints(answer: AnsweredType, question: QuestionType): number {
-    let points = 10;
+    let points = 0;
     // Points dependon Question type
     switch (question) {
       case QuestionType.Word:

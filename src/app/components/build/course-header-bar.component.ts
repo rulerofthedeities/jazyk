@@ -79,7 +79,7 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
       break;
       case 'isInProgress':
         toolTip = isProperty ? 'iCourseInProgress': 'iCourseComplete';
-       break
+      break;
     }
     return toolTip ? this.text[toolTip] : '';
   }
