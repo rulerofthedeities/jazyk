@@ -329,14 +329,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       if (this.routeStep === 'overview') {
         // defaultStep = 0;
       } else if (results > 0) {
-        // When pressing button 'continue course'
-        if (this.hasStep('study') && this.countPerStep['study'].nrRemaining > 0) {
-          defaultStep = this.getStepNr('study');
+        // When pressing button 'continue course' go to exercises; if none, go to study; if none, go to next lesson
+        if (this.hasStep('practise') && this.countPerStep['practise'].nrRemaining > 0) {
+          defaultStep = this.getStepNr('practise');
           this.currentStep = defaultStep;
-        } else if (this.hasStep('practise')) {
-          if (this.countPerStep['practise'].nrRemaining > 0) {
-            defaultStep = this.getStepNr('practise');
-            console.log('>>> This lesson', this.lesson.name, this.countPerStep['practise']);
+        } else if (this.hasStep('study')) {
+          if (this.countPerStep['study'].nrRemaining > 0) {
+            defaultStep = this.getStepNr('study');
+            console.log('>>> This lesson', this.lesson.name, this.countPerStep['study']);
           } else {
             // No exercises left in lesson -> go to next lesson
             console.log('>>> No exercises left, go to next lesson', this.lesson.name, this.countPerStep['practise']);

@@ -78,7 +78,7 @@ export abstract class Step {
   noMoreExercises = false;
   isCountDown: boolean;
   isMute: boolean;
-  maxRepeatWord = 5;
+  maxRepeatWord = 4;
   currentStep: string;
   qType = QuestionType;
   exType = ExerciseType;

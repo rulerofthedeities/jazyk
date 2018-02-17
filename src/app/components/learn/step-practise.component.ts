@@ -113,8 +113,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
             add = true;
           }
         break;
-        case QuestionType.Select:
-        case QuestionType.FillIn:
+        default:
           add = false;
         break;
       }
@@ -126,7 +125,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           countWrong = exercise.countWrong ? exercise.countWrong : 0,
           correct = aType === AnsweredType.Correct  || aType === AnsweredType.Alt,
           countRight = exercise.countRight ? exercise.countRight : 0;
-    if (!(correct && countRight <= 2 || !correct && countWrong <= 3)) {
+    if (!(correct && countRight <= 4 || !correct && countWrong <= 3)) {
       add = false;
     }
     return add;
