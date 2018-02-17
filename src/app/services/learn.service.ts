@@ -153,7 +153,6 @@ export class LearnService {
     const headers = this.getTokenHeaders(),
           params = new URLSearchParams();
     params.set('max', max.toString());
-    console.log('fetch to review', courseId, max);
     return this.http
     .get('/api/user/results/course/toreview/' + courseId, {headers, search: params})
     .map(response => response.json().obj || {})
@@ -185,8 +184,7 @@ export class LearnService {
     results: ExerciseResult[],
     text: Object,
     stepOptions: ExerciseOptions,
-    lessonOptions: LessonOptions,
-    courseOptions: CourseDefaults
+    lessonOptions: LessonOptions
     ): ExerciseData[] {
     const exerciseData: ExerciseData[] = [];
     // const inverseDirection = options.direction === Direction.LocalToForeign ? Direction.ForeignToLocal : Direction.LocalToForeign;
@@ -202,7 +200,7 @@ export class LearnService {
         } else {
           direction = stepOptions.direction;
         }
-        exerciseData[j] = this.buildData(stepOptions, lessonOptions, courseOptions, filteredResult, text, exercise, direction);
+        exerciseData[j] = this.buildData(stepOptions, lessonOptions, filteredResult, text, exercise, direction);
         j++;
       });
     }
@@ -212,7 +210,6 @@ export class LearnService {
   private buildData(
     stepOptions: ExerciseOptions,
     lessonOptions: LessonOptions,
-    courseOptions: CourseDefaults,
     result: ExerciseResult,
     text: Object,
     exercise: Exercise,
@@ -224,7 +221,7 @@ export class LearnService {
         isCorrect: false,
         answered: 0,
         direction: direction,
-        isCaseSensitive: lessonOptions ? lessonOptions.caseSensitive : (courseOptions ? courseOptions.caseSensitive : null)
+        isCaseSensitive: lessonOptions ? lessonOptions.caseSensitive : null
       },
       exercise,
       result

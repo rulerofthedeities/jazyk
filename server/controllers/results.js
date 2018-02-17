@@ -95,15 +95,15 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   })
 }
 
-getExercises = function(courseId, data, cb) {
+getCourseExercises = function(courseId, data, cb) {
+  // piggyback lesson options with exercise for course reviews
   const exerciseIds = data.map(item => item.exerciseId),
         query = {'exercises._id': {$in: exerciseIds}},
         pipeline = [
           {$match: {courseId}},
           {$unwind: '$exercises'},
           {$match: query},
-          {$project: {_id: 0, exercise: '$exercises'}},
-          {$replaceRoot: {newRoot: "$exercise"}}
+          {$project: {_id: 0, exercise: '$exercises', 'options': '$options'}}
         ];
   Lesson.aggregate(pipeline, function(err, exercises) {
     cb(err, exercises || []);
@@ -510,7 +510,7 @@ module.exports = {
           ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
-        getExercises(courseId, results, function(err, difficult) {
+        getCourseExercises(courseId, results, function(err, difficult) {
           response.handleError(err, res, 400, 'Error fetching difficult exercises', function(){
             response.handleSuccess(res, {difficult, results}, 200, 'Fetched difficult exercises');
           });
@@ -560,7 +560,7 @@ module.exports = {
           ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
-        getExercises(courseId, results, function(err, toreview) {
+        getCourseExercises(courseId, results, function(err, toreview) {
           response.handleError(err, res, 400, 'Error fetching to review exercises', function(){
             response.handleSuccess(res, {toreview, results}, 200, 'Fetched to review exercises');
           });

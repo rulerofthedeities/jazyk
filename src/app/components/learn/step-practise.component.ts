@@ -321,8 +321,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         isBidirectional: stepOptions.bidirectional,
         direction: Direction.LocalToForeign
       },
-      this.lesson ? this.lesson.options : null,
-      this.course ? this.course.defaults : null
+      this.lesson ? this.lesson.options : null
     );
     if (!stepOptions.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);

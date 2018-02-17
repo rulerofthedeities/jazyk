@@ -959,7 +959,7 @@ export abstract class Step {
     return learnLevel;
   }
 
-  protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[]) {
+  protected buildExerciseData(newExercises: Exercise[], results: ExerciseResult[], options: LessonOptions = null) {
     this.exerciseData = this.learnService.buildExerciseData(
       newExercises,
       results,
@@ -967,8 +967,7 @@ export abstract class Step {
         isBidirectional: true,
         direction: Direction.LocalToForeign
       },
-      this.lesson ? this.lesson.options : null,
-      this.course ? this.course.defaults : null
+      this.lesson ? this.lesson.options : options
     );
     this.exerciseData = this.previewService.shuffle(this.exerciseData);
     this.getChoices(this.course._id, true);

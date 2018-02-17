@@ -261,8 +261,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         isBidirectional: false,
         direction: Direction.ForeignToLocal
       },
-      this.lesson.options,
-      null
+      this.lesson.options
     );
     if (!this.lesson.exerciseSteps.study.ordered) {
       this.exerciseData = this.previewService.shuffle(this.exerciseData);
