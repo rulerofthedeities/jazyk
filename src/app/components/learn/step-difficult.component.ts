@@ -6,10 +6,17 @@ import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {LearnSettings} from '../../models/user.model';
 import {Exercise, ExerciseData, ExerciseResult, Direction} from '../../models/exercise.model';
+import {LessonOptions} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
   [K: string]: T;
+}
+
+// piggyback lesson options with exercise for course reviews
+interface ExercisePlusOptions {
+  exercise: Exercise;
+  options: LessonOptions;
 }
 
 @Component({
@@ -45,9 +52,12 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
     );
   }
 
-  private setExercises(newExercises: Exercise[], results: ExerciseResult[]) {
+  private setExercises(newExercises: ExercisePlusOptions[], results: ExerciseResult[]) {
+    const exercises = newExercises.map(exercise => exercise.exercise),
+          options = newExercises.map(exercise => exercise.options);
+
     if (newExercises.length > 0) {
-      this.buildExerciseData(newExercises, results);
+      this.buildExerciseData(exercises, results, options[0]);
       this.noMoreExercises = false;
       this.isReady = true;
       super.init();

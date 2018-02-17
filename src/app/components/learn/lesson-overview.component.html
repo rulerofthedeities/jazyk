@@ -30,11 +30,16 @@
         'fa-superpowers': exercise.exercise.tpe === exType.Article,
         'fa-venus-mars': exercise.exercise.tpe === exType.Genus,
         'fa-signal': exercise.exercise.tpe === exType.Comparison
-      }">
+      }"
+        [tooltip]="text['iExerciseType']">
       </span>
     </span>
     <span>
-      <span class="fa fa-fire" *ngIf="exercise.result?.isDifficult"></span>
+      <span
+        *ngIf="exercise.result?.isDifficult"
+        class="fa fa-fire"
+        [tooltip]="text['iIsDifficult']">
+      </span>
     </span>
   </div>
   <div class="col-xs-5">
@@ -58,11 +63,20 @@
   <div class="col-xs-1 text-center" *ngIf="!isDemo">
     <div *ngIf="exercise.result">
       <span>
-        <span class="fa fa-bookmark" *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"></span>
-        <span class="fa fa-bookmark-o" *ngIf="exercise.exercise.tpe !== exType.Word"></span>
+        <span *ngIf="exercise.result && exercise.exercise.tpe === exType.Word"
+          class="fa fa-bookmark"
+          [tooltip]="text['iWordStudied']">
+        </span>
+        <span 
+          *ngIf="exercise.exercise.tpe !== exType.Word"
+          class="fa fa-bookmark-o">
+        </span>
       </span>
       <span *ngIf="exercise.result.isLearned">
-        <span class="fa fa-check" *ngIf="exercise.result?.isLearned"></span>
+        <span *ngIf="exercise.result?.isLearned"
+          class="fa fa-check"
+          [tooltip]="text['iWordLearned']">
+        </span>
       </span>
       <span *ngIf="!exercise.result.isLearned && exercise.result.learnLevel !== null" class="learn-progress">
         {{exercise.result.learnLevel}} / {{isLearnedLevel}}
