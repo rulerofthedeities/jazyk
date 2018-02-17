@@ -9,6 +9,7 @@ import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
@@ -34,6 +35,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private timerActive: boolean;
   private dotLength = 0;
   private toStudy = 0;
+  nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   isRehearsal = false; // all words have been studied before
   isStudyDone = false; // toggles with every replay
   hasMoreToStudy = false; // to show button to continue studying
@@ -192,6 +194,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.nextExercise.next(this.current);
   }
 
   private studyDone(nrDone: number) {

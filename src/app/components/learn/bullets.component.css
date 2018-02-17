@@ -10,3 +10,8 @@
 .bullets span.fix {
   margin-left: -3px;
 }
+.togo {
+  font-size: 16px;
+  top: -1px;
+  position: relative;
+}

@@ -10,4 +10,7 @@
       'orange': exercise.data.isDone && !exercise.data.isCorrect && exercise.data.isAlmostCorrect,
       'red': exercise.data.isDone && !exercise.data.isCorrect && !exercise.data.isAlmostCorrect}">
   </span>
+  <span class="togo">
+    {{toGo}} <span *ngIf="toGo > 0">{{text["toGo"]}}</span>
+  </span>
 </div>

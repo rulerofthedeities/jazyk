@@ -10,7 +10,10 @@
       <div *ngIf="exerciseData?.length > 0">
         <km-bullets *ngIf="!isStudyDone"
           [exercises]="exerciseData"
-          [current]="current">
+          [current]="current"
+          [text]="text"
+          [onNextExercise]="nextExercise"
+          [slice]="false">
         </km-bullets>
         <div *ngIf="!isStudyDone" class="card">
           <!-- IMAGE -->
