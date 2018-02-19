@@ -96,6 +96,7 @@
     <div class="col-xs-4" *ngIf="!isStudyDone && exerciseData?.length > 0">
       <km-learn-settings
         [step]="'study'"
+        [text]="text"
         [hasGenus]="!!currentData?.exercise?.genus"
         [settings]="settings"
         (updatedSettings)="onSettingsUpdated($event)">

@@ -116,6 +116,7 @@
     <div class="col-xs-4" *ngIf="!isExercisesDone">
       <km-learn-settings *ngIf="!noMoreExercises"
         [step]="'difficult'"
+        [text]="text"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
         [isInput]="isQuestionType(qType.Word) || isQuestionType(qType.FillIn)"

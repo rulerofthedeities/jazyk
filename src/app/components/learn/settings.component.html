@@ -6,20 +6,24 @@
         'fa-volume-off': settings.mute,
         'on': !settings.mute
         }"
+      [tooltip]="text['iMute']"
       (click)="onToggleAudio()">
     </span>
     <span class="fa fa-tint"
       (click)="onToggleColor()"
       [class.on] = "settings.color"
+      [tooltip]="text['iGenusColor']"
       [class.inactive]="!hasGenus">
     </span>
     <span *ngIf="step === 'study'"
       (click)="onNextDelay()"
+      [tooltip]="text['iSecsTranslation']"
       [class.on] = "settings.delay">
       {{settings.delay}}s
     </span>
     <span class="fa fa-keyboard-o"
       (click)="onToggleKeyboard()"
+      [tooltip]="text['iVirtualKeyboard']"
       [class.on] = "settings.keyboard"
       [class.inactive]="!isInput">
     </span>

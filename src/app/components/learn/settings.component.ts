@@ -9,6 +9,7 @@ import {LearnSettings} from '../../models/user.model';
 
 export class LearnSettingsComponent {
   @Input() step: string;
+  @Input() text: Object;
   @Input() hasGenus = false;
   @Input() isInput = false;
   @Input() settings: LearnSettings;
