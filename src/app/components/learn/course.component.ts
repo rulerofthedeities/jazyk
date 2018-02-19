@@ -234,7 +234,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            console.log('>>> loaded course, go to current lesson');
+            console.log('>>> loaded course, go to current lesson', this.courseLevel);
             this.getCurrentLesson();
             this.log(`Loaded course '${this.course.name}'`);
           } else {
@@ -273,14 +273,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private processStepResults(results: any) {
-    console.log('>>> procesing step results:', results);
+    console.log('>>> processing step results:', results);
     this.countPerStep = {};
     if (results) {
       this.getCourseStepCount(results);
       this.getLessonStepCount(results.lesson);
+      console.log('SETTING COURSE STEP', this.courseLevel, Level.Course);
       if (this.courseLevel === Level.Lesson) {
         this.setDefaultLessonStep(results.lesson.length);
       } else {
+        console.log('COURSE LEVEL');
         this.setCourseStep();
       }
     } else {
@@ -379,6 +381,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const step = this.courseStep;
     if (this.hasStep(step)) {
       this.currentStep = this.getStepNr(step);
+      this.isLessonReady = true;
     }
   }
 
@@ -414,7 +417,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getLessonStepCount(results: StepCount[]) {
     let total: number;
-    console.log('LESSON STEP COUNT', this.lesson);
     const lessonTotal = this.lesson.exercises.length,
           studyTotal = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
 
@@ -570,7 +572,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       if (lastResult.hasOwnProperty(key)) {
         lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
         // Check if word is learned
-        if (step === 'review' || step === 'difficult' || (lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
+        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
           lastResult[key].isLearned = true;
           // Calculate review time
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);

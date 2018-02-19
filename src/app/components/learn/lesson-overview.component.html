@@ -19,9 +19,10 @@
   </div>
 </div>
 <!-- TABLE -->
-<div *ngFor="let exercise of exerciseData;let i=index" class="row item">
+<div *ngFor="let exercise of exerciseData;let i=index" class="row item data-row">
   <div class="col-xs-1 icons">
     <span>
+      <span class="index">{{i+1}}.</span>
       <span class="fa" [ngClass]="{
         'fa-font': exercise.exercise.tpe === exType.Word,
         'fa-list-alt': exercise.exercise.tpe === exType.Select,

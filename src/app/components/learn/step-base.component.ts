@@ -282,7 +282,6 @@ export abstract class Step {
       this.sharedService.changeExerciseMode(false);
     }
     if (!this.isExercisesDone) {
-      this.nextExercise.next(this.current);
       this.currentData = this.exerciseData[this.current];
       const learnLevel = this.getCurrentLearnLevel(this.currentData),
             qType = this.determineQuestionType(this.currentData, learnLevel);
@@ -466,10 +465,11 @@ export abstract class Step {
     console.log('DATA', this.currentData);
     console.log('POINTS', this.currentData.data.points);
     this.pointsEarned.next(this.currentData.data.points.total());
+    this.nextExercise.next(this.current); // For bullets update
   }
 
   protected doAddExercise(aType: AnsweredType, qType: QuestionType, learnLevel: number): boolean {
-    // overridden in Practice step
+    // overridden in Practice step (used in review & difficult)
     const nrOfQuestions = this.exerciseData.length;
     let add = false;
     if (aType === AnsweredType.Incorrect || aType === AnsweredType.AlmostCorrect) {
@@ -481,6 +481,7 @@ export abstract class Step {
     if (countWrong > 2) {
       add = false;
     }
+    console.log('ADDING', countWrong, add);
     return add;
   }
 
@@ -489,7 +490,7 @@ export abstract class Step {
             data: JSON.parse(JSON.stringify(this.exerciseData[this.current].data)),
             exercise: this.exerciseData[this.current].exercise
           },
-          stepOptions = this.lesson.exerciseSteps.practise;
+          stepOptions = this.lesson ? this.lesson.exerciseSteps.practise : null;
     let streak = '';
     newExerciseData.data.isCorrect = false;
     newExerciseData.data.isDone = false;

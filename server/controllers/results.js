@@ -152,7 +152,8 @@ getStepCounts = async (req, res) => {
             isLast: true,
             isLearned: true,
             isRepeat: false,
-            isDeleted: false
+            isDeleted: false,
+            daysBetweenReviews: {$gt: 0}
           },
           lessonPipeline = [
             {$match: lessonQuery},
@@ -530,7 +531,8 @@ module.exports = {
             isLast: true,
             isLearned: true, 
             isRepeat: false,
-            isDeleted: false
+            isDeleted: false,
+            daysBetweenReviews: {$gt: 0}
           },
           pipeline = [
             {$match: query},

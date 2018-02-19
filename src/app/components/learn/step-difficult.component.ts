@@ -38,6 +38,7 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('init difficult');
     this.currentStep = 'difficult';
     this.getDifficult();
   }
@@ -56,7 +57,7 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
     const exercises = newExercises.map(exercise => exercise.exercise),
           options = newExercises.map(exercise => exercise.options);
 
-    if (newExercises.length > 0) {
+    if (exercises.length > 0) {
       this.buildExerciseData(exercises, results, options[0]);
       this.noMoreExercises = false;
       this.isReady = true;
