@@ -97,8 +97,8 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     console.log('rehearse lesson', lessonId, step, cnt);
     if (cnt > 0) {
-      this.lessonData.rehearseStep = step;
-      if (this.lessonData._id === lessonId) {
+      if (this.lessonData && this.lessonData._id === lessonId) {
+        this.lessonData.rehearseStep = step;
         this.rehearseLesson.emit(this.lessonData);
       } else {
         this.fetchLesson(lessonId, step);
