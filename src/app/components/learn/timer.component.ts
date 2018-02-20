@@ -53,7 +53,6 @@ export class LearnTimerComponent implements OnDestroy, OnChanges {
 
   private changeColor(time: number, color: string) {
     this.timers[color] = setTimeout(() => {
-      console.log('new color', color);
       this.color = color;
       switch (color) {
         case 'orange':

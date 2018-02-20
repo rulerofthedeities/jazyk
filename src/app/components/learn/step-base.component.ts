@@ -52,7 +52,7 @@ export abstract class Step {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
   @ViewChild(LearnComparisonComponent) comparisonComponent: LearnComparisonComponent;
-  @ViewChild(LearnSelectComponent) sentenceComponent: LearnSelectComponent;
+  @ViewChild(LearnSelectComponent) selectComponent: LearnSelectComponent;
   @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
   @ViewChild(LearnTimerComponent) timerComponent: LearnTimerComponent;
   protected componentActive = true;
@@ -150,21 +150,29 @@ export abstract class Step {
     }
   }
 
-  onNextWord() {
+  onNextWord(giveAnswer = false) {
+    console.log('>>+', giveAnswer, this.currentData.data.questionType);
     switch (this.currentData.data.questionType) {
       case QuestionType.Choices:
-        if (this.isAnswered) {
+        if (giveAnswer) {
+          this.checkChoicesAnswer(null);
+        } else if (this.isAnswered) {
           this.nextWord();
         }
       break;
       case QuestionType.Word:
-        this.checkIfWordAnswer();
+        this.checkIfWordAnswer(giveAnswer);
       break;
       case QuestionType.Select:
-        this.nextWord();
+        if (giveAnswer) {
+          this.selectComponent.onSelected(null);
+          this.checkSelectAnswer(false);
+        } else {
+          this.nextWord();
+        }
       break;
       case QuestionType.FillIn:
-        this.checkIfFillInAnswer();
+        this.checkIfFillInAnswer(giveAnswer);
       break;
       case QuestionType.Comparison:
         this.checkIfComparisonAnswer();
@@ -239,21 +247,21 @@ export abstract class Step {
     );
   }
 
-  private checkIfWordAnswer() {
+  private checkIfWordAnswer(giveAnswer = false) {
     if (!this.isAnswered) {
       if (this.answerComponent) {
-        this.checkWordAnswer(this.answerComponent.getData());
+        this.checkWordAnswer(this.answerComponent.getData(), giveAnswer);
       }
     } else {
       this.nextWord();
     }
   }
 
-  private checkIfFillInAnswer() {
-    if (!this.isAnswered) {
-      if (this.qaComponent && this.qaComponent.getData()) {
-        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect(), QuestionType.FillIn);
-      }
+  private checkIfFillInAnswer(giveAnswer = false) {
+    if (!this.isAnswered || giveAnswer) {
+      if (this.qaComponent && (this.qaComponent.getData() || giveAnswer)) {
+        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect(), QuestionType.FillIn, giveAnswer);
+        }
     } else {
       this.nextWord();
     }
@@ -310,8 +318,8 @@ export abstract class Step {
     if (this.answerComponent) {
       this.answerComponent.clearData();
     }
-    if (this.sentenceComponent) {
-      this.sentenceComponent.clearData();
+    if (this.selectComponent) {
+      this.selectComponent.clearData();
     }
     if (this.qaComponent) {
       this.qaComponent.clearData();
@@ -324,9 +332,9 @@ export abstract class Step {
     }
   }
 
-  protected checkWordAnswer(answer: string) {
+  protected checkWordAnswer(answer: string, giveAnswer = false) {
     const filteredAnswer = this.filter(answer);
-    if (filteredAnswer) {
+    if (filteredAnswer || giveAnswer) {
       const solution = this.currentData.exercise.foreign.word,
             filteredSolution = this.filter(solution);
       if (filteredAnswer === filteredSolution) {
@@ -351,7 +359,7 @@ export abstract class Step {
     const choice = this.currentChoices[i],
           direction = this.currentData.data.direction,
           word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
-
+    console.log('>>+ check choices answer', i);
     if (choice === word) {
       this.checkAnswer(AnsweredType.Correct, QuestionType.Choices);
     } else {
@@ -367,15 +375,16 @@ export abstract class Step {
 
   protected checkSelectAnswer(isCorrect: boolean) {
     if (isCorrect) {
+      console.log('>> check select incorrect');
       this.checkAnswer(AnsweredType.Correct, QuestionType.Select);
     } else {
       this.checkAnswer(AnsweredType.Incorrect, QuestionType.Select);
     }
   }
 
-  protected checkFillInAnswer(answer: string, solution: string, question: QuestionType) {
+  protected checkFillInAnswer(answer: string, solution: string, question: QuestionType, giveAnswer = false) {
     const filteredAnswer = this.filter(answer);
-    if (filteredAnswer) {
+    if (filteredAnswer || giveAnswer) {
       const filteredSolution = this.filter(solution);
       if (filteredAnswer === filteredSolution) {
         // Correct answer

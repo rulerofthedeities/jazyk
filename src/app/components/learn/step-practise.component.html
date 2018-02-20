@@ -165,7 +165,7 @@
           *ngIf="!isExercisesDone"
           [disabled]="!isAnswered && isSelectionExercise()"
           class="btn btn-lg btn-success next" 
-          (click)="onNextWord()">
+          (click)="onNextWord(false)">
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
         </button>
@@ -177,6 +177,16 @@
         </km-learnlevel-bar>
         <km-points-earned [pointsEarned]="pointsEarned">
         </km-points-earned>
+      </div>
+      <div class="actions" *ngIf="!noMoreExercises && !isAnswered">
+        <button 
+          type="button"
+          *ngIf="!isExercisesDone"
+          class="btn btn-lg btn-warning next" 
+          (click)="onNextWord(true)">
+          <span class="fa fa-step-forward"></span>
+          {{text["GiveAnswer"]}}
+        </button>
       </div>
     </div>
     <div class="clearfix"></div>
