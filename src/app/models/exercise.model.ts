@@ -71,6 +71,7 @@ export interface Points {
   length: number; // length of word - spaces
   time: number;
   streak: number; // correct streak
+  age: number; // bonus for time between current and last test
   new: number; // new word bonus = 10-streak length
   correct: number; // bonus for % correct in whole test
   fixed: Function; // base + length

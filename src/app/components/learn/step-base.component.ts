@@ -466,6 +466,7 @@ export abstract class Step {
       this.currentData.data.points.time = this.calculateTimePoints(timeDelta, this.currentData);
       this.currentData.data.points.streak = this.calculateStreakPoints(this.currentData.result);
       this.currentData.data.points.new = this.calculateNewPoints(this.currentData.result);
+      this.currentData.data.points.age = this.calculateAgePoints(this.currentData);
     }
     if (this.doAddExercise(answer, question, learnLevel)) {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
@@ -635,7 +636,6 @@ export abstract class Step {
 
   private calculateTimePoints(time, data: ExerciseData): number {
     const cutOffs = data.data.timeCutoffs;
-    console.log('calculate time points', time, data.data.timeCutoffs);
     if (time > cutOffs.green + cutOffs.orange + cutOffs.red) {
       return 0;
     } else if (time > cutOffs.green + cutOffs.orange) {
@@ -648,7 +648,6 @@ export abstract class Step {
   }
 
   private calculateStreakPoints(resultData: ExerciseResult): number {
-    console.log('calculate streak points', resultData);
     let points = 0,
         accumulator = 0;
     if (resultData && resultData.streak) {
@@ -667,7 +666,6 @@ export abstract class Step {
   }
 
   private calculateNewPoints(resultData: ExerciseResult): number {
-    console.log('new points', resultData);
     const newBonus = 25;
     if (resultData) {
       if (!resultData.streak) {
@@ -678,6 +676,38 @@ export abstract class Step {
     } else {
       return newBonus;
     }
+  }
+
+  protected calculateAgePoints(resultData: ExerciseData): number {
+    // Only for review & difficult
+    // The longer it has been since the last review, the more points
+    let agePoints = 0;
+    if (resultData.result.dt) {
+      const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(resultData.result.dt), new Date()),
+            days = Math.min(daysSinceLastReview, 365), // max a year
+            multiplicator = this.getMultiplicator(resultData.exercise.tpe);
+      agePoints = days > 2 ? Math.trunc(Math.log(days) * multiplicator) : 0;
+    }
+
+    return agePoints;
+  }
+
+  private getMultiplicator(tpe: ExerciseType): number {
+    // set multiplactor for age score depending on exercise type
+    let multiplicator = 2;
+
+    switch (tpe) {
+      case ExerciseType.FillIn:
+      case ExerciseType.Word:
+        multiplicator = 20;
+      break;
+      case ExerciseType.QA:
+      case ExerciseType.Comparison:
+        multiplicator = 10;
+      break;
+    }
+
+    return multiplicator;
   }
 
   private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {

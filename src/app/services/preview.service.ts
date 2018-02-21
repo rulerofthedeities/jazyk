@@ -44,12 +44,13 @@ export class PreviewService {
     return {
       base: 0,
       length: 0,
+      age: 0,
       time: 0,
       streak: 0,
       new: 0,
       correct: 0,
       fixed: function(): number {
-        return this.base + this.length;
+        return this.base + this.length + this.age;
       },
       bonus: function(): number {
         return this.time + this.streak + this.new + this.correct;

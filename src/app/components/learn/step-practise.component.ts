@@ -395,6 +395,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     });
   }
 
+  protected calculateAgePoints(resultData: ExerciseResult): number {
+    // Only for review & difficult
+    return 0;
+  }
+
   ngOnDestroy() {
     this.componentActive = false;
   }

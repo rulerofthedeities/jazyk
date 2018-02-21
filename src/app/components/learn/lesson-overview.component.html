@@ -32,7 +32,7 @@
         'fa-venus-mars': exercise.exercise.tpe === exType.Genus,
         'fa-signal': exercise.exercise.tpe === exType.Comparison
       }"
-        [tooltip]="text['iExerciseType']">
+        [tooltip]="getTypeText(exercise)">
       </span>
     </span>
     <span>
