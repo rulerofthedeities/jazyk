@@ -1,5 +1,5 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
-import {LearnService} from '../../services/learn.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
@@ -44,7 +44,6 @@ export abstract class Step {
   @Input() private stepcountzero: Subject<boolean>;
   @Input() private stepcountUpdated: BehaviorSubject<Map<StepCount>>;
   @Input() protected lesson: Lesson;
-  @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
   @Input() course: Course;
   @Input() text: Object;
@@ -463,8 +462,8 @@ export abstract class Step {
       console.log('setting level?');
       // For exercises, set learnlevel immediately if answered correctly
       if (answer === AnsweredType.Correct) {
-        learnLevel = this.learnedLevel;
-        console.log('set level to', this.learnedLevel);
+        learnLevel = isLearnedLevel;
+        console.log('set level to', isLearnedLevel);
       }
     }
     this.currentData.data.learnLevel = learnLevel;
@@ -848,7 +847,7 @@ export abstract class Step {
     let level = learnLevelData.level;
     if (learnLevelData.correct) {
       // Make sure a word must always be typed in before it is set as learned
-      level += level < 9 ? 3 : this.learnedLevel - level - 1;
+      level += level < 9 ? 3 : isLearnedLevel - level - 1;
     } else {
       level -= 1;
     }

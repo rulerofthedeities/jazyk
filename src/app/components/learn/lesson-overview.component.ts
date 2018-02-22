@@ -1,5 +1,5 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {LearnService} from '../../services/learn.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
@@ -17,7 +17,6 @@ interface ResultsData {
 
 export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   @Input() text: Object;
-  @Input() isLearnedLevel: number;
   @Input() private lessonId: string;
   @Input() isDemo = false;
   @Output() currentLesson = new EventEmitter<Lesson>();
@@ -26,6 +25,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   lesson: Lesson;
   exerciseData: ExerciseData[] = [];
   exType = ExerciseType;
+  isLearnedLevel: number;
 
   constructor(
     private learnService: LearnService,
@@ -33,6 +33,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLearnedLevel = isLearnedLevel; // for view
     this.fetchLesson();
   }
 

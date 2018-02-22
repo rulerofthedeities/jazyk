@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
-import {LearnService} from '../../services/learn.service';
+import {maxLearnLevel, maxStreak, isLearnedLevel, LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
@@ -50,7 +50,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private courseId: string;
   private settings: LearnSettings;
   private settingsUpdated = false;
-  private isLearnedLevel = 12; // minimum level before it is considered learned
   private courseStep: string; // Step to start with defined by route
   lesson: Lesson;
   errorMsg: string;
@@ -63,7 +62,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   courseLevel: Level;
   isLessonReady = false;
   exercisesStarted = false;
-  maxStreak = 20;
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountzero: Subject<boolean> = new Subject();
   stepcountUpdated: BehaviorSubject<Map<StepCount>> = new BehaviorSubject<Map<StepCount>>({});
@@ -476,7 +474,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           timeDelta: item.data.timeDelta,
           done: item.data.isDone || false,
           points: item.data.points.total() || 0,
-          learnLevel: isRepeat ? 0 : (item.data.learnLevel || 0),
+          learnLevel: isRepeat ? 0 : (Math.min(maxLearnLevel, item.data.learnLevel || 0)),
           streak: isRepeat ? '' : streak[item.exercise._id],
           sequence: i,
           isLast: false,
@@ -541,7 +539,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       newStreak += data.isCorrect ? '1' : data.isAlmostCorrect ? '2' : '0';
     }
 
-    return newStreak.slice(-this.maxStreak);
+    return newStreak.slice(-maxStreak);
   }
 
   private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean, step: string): number {
@@ -570,7 +568,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       if (lastResult.hasOwnProperty(key)) {
         lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
         // Check if word is learned
-        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= this.isLearnedLevel) {
+        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= isLearnedLevel) {
           lastResult[key].isLearned = true;
           // Calculate review time
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);

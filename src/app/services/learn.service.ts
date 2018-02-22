@@ -10,6 +10,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
+export const maxLearnLevel = 20; // maximum learn level
+export const maxStreak = 20; // maximum length of the streak
+export const isLearnedLevel = 12; // minimum level before it is considered learned
+
 @Injectable()
 export class LearnService {
 

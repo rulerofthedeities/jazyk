@@ -1,5 +1,5 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {LearnService} from '../../services/learn.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
@@ -34,7 +34,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Input() private course: Course;
   @Input() text: Object;
   @Input() isDemo = false;
-  @Input() isLearnedLevel: number;
   @Input() currentLessonId: string;
   @Output() currentLesson = new EventEmitter<Lesson>();
   @Output() rehearseLesson = new EventEmitter<Lesson>();

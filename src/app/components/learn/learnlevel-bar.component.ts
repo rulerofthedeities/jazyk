@@ -1,5 +1,6 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {isLearnedLevel} from '../../services/learn.service';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -24,7 +25,6 @@ import 'rxjs/add/operator/takeWhile';
 
 export class LearnLevelBarComponent implements OnInit, OnDestroy {
   @Input() private levelUpdated: BehaviorSubject<number>;
-  @Input() maxLevel: number;
   private componentActive = true;
   percentage: string;
   level: string;
@@ -38,9 +38,9 @@ export class LearnLevelBarComponent implements OnInit, OnDestroy {
   }
 
   private updateLevel(newLevel: number) {
-    const level = Math.max(0, Math.min(newLevel, this.maxLevel));
+    const level = Math.max(0, Math.min(newLevel, isLearnedLevel));
     this.level = level.toString();
-    this.percentage = Math.round(level / this.maxLevel * 100).toString();
+    this.percentage = Math.round(level / isLearnedLevel * 100).toString();
   }
 
   ngOnDestroy() {

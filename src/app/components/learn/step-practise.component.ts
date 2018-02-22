@@ -4,7 +4,7 @@ import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseExtraData,
         ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
 import {Lesson} from '../../models/course.model';
 import {LearnSettings} from '../../models/user.model';
-import {LearnService} from '../../services/learn.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {SharedService} from '../../services/shared.service';
 import {AudioService} from '../../services/audio.service';
@@ -46,6 +46,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentStep = 'practise';
+    this.learnedLevel = isLearnedLevel; // for view
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.checkLessonChanged();
     this.getLessonResults();
@@ -98,12 +99,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     if (aType === AnsweredType.Correct || aType === AnsweredType.Alt) {
       switch (qType) {
         case QuestionType.Choices:
-          if (nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord && learnLevel < this.learnedLevel) {
+          if (nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord && learnLevel < isLearnedLevel) {
             add = true;
           }
         break;
         case QuestionType.Word:
-          if ((nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord || learnLevel < 3) && learnLevel < this.learnedLevel) {
+          if ((nrOfQuestions < this.settings.nrOfWordsLearn * this.maxRepeatWord || learnLevel < 3) && learnLevel < isLearnedLevel) {
             add = true;
           }
         break;
@@ -325,7 +326,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   protected soundLearnedLevel(learnLevel: number) {
-    if (learnLevel > this.learnedLevel) {
+    if (learnLevel > isLearnedLevel) {
       this.audioService.playSound(this.isMute, this.beep);
     }
   }
@@ -363,7 +364,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // Count words that have been learned
     for (const key in lastExercises) {
       if (lastExercises.hasOwnProperty(key)) {
-        if (lastExercises[key].learnLevel >= this.learnedLevel) {
+        if (lastExercises[key].learnLevel >= isLearnedLevel) {
           practised++;
         }
       }

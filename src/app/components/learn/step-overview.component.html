@@ -29,7 +29,6 @@
             <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
               [text]="text"
               [isDemo]="isDemo"
-              [isLearnedLevel]="isLearnedLevel"
               [lessonId]="currentLessonId"
               (currentLesson)="onLessonDataLoaded($event)">
             </km-lesson-overview>
@@ -46,7 +45,6 @@
         <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
           [text]="text"
           [isDemo]="isDemo"
-          [isLearnedLevel]="isLearnedLevel"
           [lessonId]="currentLessonId"
           (currentLesson)="onLessonDataLoaded($event)">
         </km-lesson-overview>
