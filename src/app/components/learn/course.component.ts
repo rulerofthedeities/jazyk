@@ -408,6 +408,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep[step.name] = {nrDone: 0, nrRemaining: 0};
       }
     });
+    console.log('getting course stepcounts', count);
     this.countPerStep['difficult'].nrRemaining = count.difficult;
     this.countPerStep['review'].nrRemaining = count.review;
     if (this.countPerStep['exam']) {
@@ -660,6 +661,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         remaining: number;
     const nrOfResults = Object.keys(lastResult).length;
 
+    console.log('Update step count', step);
     switch (step) {
       case 'study':
         // Studied - Decrease study count

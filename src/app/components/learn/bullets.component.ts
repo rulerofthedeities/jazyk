@@ -40,7 +40,9 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
   }
 
   private countDifferentExercises() {
-    this.toGo = this.exercises.filter(exercise => exercise.data.isDone === false).length;
+    if (this.exercises) {
+      this.toGo = this.exercises.filter(exercise => exercise.data.isDone === false).length;
+    }
     console.log('Bullet exercises to go', this.toGo);
   }
 

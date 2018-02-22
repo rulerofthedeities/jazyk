@@ -383,6 +383,7 @@ module.exports = {
     // Get results + exercise count by lesson for overview page
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          sort = {dt: -1, sequence: -1},
           resultsQuery = {
             userId,
             courseId,
@@ -396,11 +397,19 @@ module.exports = {
           },
           resultsPipeline = [
             {$match: resultsQuery},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              lessonId: {'$first': '$lessonId'},
+              firstStep: {'$first': '$step'},
+              firstTpe: {'$first': '$tpe'},
+              firstIsLearned: {'$first': '$isLearned'}
+            }},
             {$group: {
                _id: '$lessonId',
-               studied: {'$sum': {$cond: [{$eq: [ "$tpe", 0], $eq: [ "$step", 'study']}, 1, 0]}},
-               learned: {'$sum': {$cond: ["$isLearned", 1, 0 ]}}
-             }}
+               studied: {'$sum': {$cond: [{$eq: [ "$firstTpe", 0], $eq: [ "$firstStep", 'study']}, 1, 0]}},
+               learned: {'$sum': {$cond: ["$firstIsLearned", 1, 0 ]}}
+            }}
           ],
           countPipeline = [
             {$match: countQuery},
@@ -425,7 +434,6 @@ module.exports = {
               totalwords: '$wordcnt'
             }}
           ];
-
     const getByLesson = async () => {
       const results = await  Result.aggregate(resultsPipeline),
             count = await Lesson.aggregate(countPipeline);

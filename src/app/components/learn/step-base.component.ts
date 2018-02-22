@@ -682,7 +682,7 @@ export abstract class Step {
     // Only for review & difficult
     // The longer it has been since the last review, the more points
     let agePoints = 0;
-    if (resultData.result.dt) {
+    if (!this.isRehearse() && resultData.result.dt) {
       const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(resultData.result.dt), new Date()),
             days = Math.min(daysSinceLastReview, 365), // max a year
             multiplicator = this.getMultiplicator(resultData.exercise.tpe);
