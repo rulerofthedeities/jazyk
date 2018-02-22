@@ -78,6 +78,7 @@ export abstract class Step {
   current = -1; // entry in exerciseData
   isQuestionReady = false;
   noMoreExercises = false;
+  isReady = false;
   isCountDown: boolean;
   isMute: boolean;
   maxRepeatWord = 5;
@@ -234,6 +235,14 @@ export abstract class Step {
     if (!this.isCountDown) {
       this.onCountDownFinished();
     }
+  }
+
+  protected clearToContinue() {
+    this.isReady = false;
+    this.current = -1;
+    this.isQuestionReady = false;
+    this.isExercisesDone = false;
+    this.noMoreExercises = false;
   }
 
   protected getChoices(courseId: string, isBidirectional: boolean = true) {
@@ -838,8 +847,8 @@ export abstract class Step {
   private calculateChoicesLearnLevel(learnLevelData: LearnLevelData): number {
     let level = learnLevelData.level;
     if (learnLevelData.correct) {
-      //Make sure a word must always be typed in before it is set as learned
-      level += level < 9 ? 3 : this.learnedLevel - level - 1; 
+      // Make sure a word must always be typed in before it is set as learned
+      level += level < 9 ? 3 : this.learnedLevel - level - 1;
     } else {
       level -= 1;
     }
@@ -1070,13 +1079,6 @@ export abstract class Step {
   }
 
   private checkCountUpdated() {
-    if (this.stepcountzero) {
-      this.stepcountzero
-      .takeWhile(() => this.componentActive)
-      .subscribe( event => {
-        this.noMoreExercises = true;
-      });
-    }
     if (this.stepcountUpdated) {
       this.stepcountUpdated
       .takeWhile(() => this.componentActive)

@@ -110,6 +110,13 @@
             [data]="exerciseData"
             [text]="text">
           </km-points-completed>
+          <button type="button" *ngIf="countPerStep['difficult']?.nrRemaining > 0"
+            class="btn btn-success"
+            (click)="onContinueDifficult()">
+            <span class="fa fa-arrow-right fa-spacing">
+            </span>
+            {{text["ContinueDifficult"]}}
+          </button>
         </div>
       </div>
     </div>

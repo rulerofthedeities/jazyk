@@ -26,7 +26,6 @@ interface ExercisePlusOptions {
 })
 
 export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
-  isReady = false;
 
   constructor(
     learnService: LearnService,
@@ -40,6 +39,11 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('init difficult');
     this.currentStep = 'difficult';
+    this.getDifficult();
+  }
+
+  onContinueDifficult() {
+    this.clearToContinue();
     this.getDifficult();
   }
 

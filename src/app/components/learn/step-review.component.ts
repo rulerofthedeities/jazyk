@@ -21,7 +21,6 @@ interface ExercisePlusOptions {
 })
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
-  isReady = false;
 
   constructor(
     learnService: LearnService,

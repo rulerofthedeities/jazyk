@@ -32,7 +32,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   noMoreToStudy = false;
   toPractise = 0;
   isRehearsal = false;
-  isReady = false;
   beep: any;
 
   constructor(
@@ -57,11 +56,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   onContinuePractise() {
-    this.isReady = false;
-    this.current = -1;
-    this.isQuestionReady = false;
-    this.isExercisesDone = false;
-    this.noMoreExercises = false;
+    this.clearToContinue();
     this.fetchLessonResults();
   }
 

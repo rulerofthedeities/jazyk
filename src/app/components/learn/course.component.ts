@@ -491,6 +491,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
       console.log('Checking last result', result);
       this.checkLastResult(step, lastResult, allCorrect, data);
+
       if (!this.lesson.rehearseStep) {
         this.updateStepCount(step, lastResult);
       }
@@ -540,8 +541,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       newStreak += data.isCorrect ? '1' : data.isAlmostCorrect ? '2' : '0';
     }
 
-    newStreak = newStreak.slice(0, this.maxStreak);
-    return newStreak;
+    return newStreak.slice(-this.maxStreak);
   }
 
   private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean, step: string): number {
@@ -658,6 +658,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         remaining: number;
     const nrOfResults = Object.keys(lastResult).length;
 
+    // Update count before save
     console.log('Update step count', step);
     switch (step) {
       case 'study':
@@ -677,9 +678,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Learned - Decrease practise count
               remaining = this.countPerStep['practise'].nrRemaining - 1;
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
-              if (this.countPerStep['practise'].nrRemaining === 0) {
-                this.stepcountzero.next(true);
-              }
             }
           }
         };
@@ -692,9 +690,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Not difficult anymore - Decrease difficult count
               remaining = this.countPerStep['difficult'].nrRemaining - 1;
               this.countPerStep['difficult'].nrRemaining = Math.max(0, remaining);
-              if (this.countPerStep['difficult'].nrRemaining === 0) {
-                this.stepcountzero.next(true);
-              }
             }
           }
         };
@@ -702,9 +697,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       case 'review':
         remaining = this.countPerStep['review'].nrRemaining - nrOfResults;
         this.countPerStep['review'].nrRemaining = Math.max(0, remaining);
-        if (this.countPerStep['review'].nrRemaining === 0) {
-          this.stepcountzero.next(true);
-        }
       break;
     }
   }
