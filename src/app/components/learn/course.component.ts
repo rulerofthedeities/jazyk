@@ -8,21 +8,16 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
-import {Course, Lesson, Language, Translation, Step, Level, LessonId} from '../../models/course.model';
+import {Course, Lesson, Language, Translation, Step, Level, LessonId, StepCount} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/takeWhile';
 
 interface Map<T> {
   [K: string]: T;
-}
-
-interface StepCount {
-  nrDone: number;
-  nrRemaining: number;
-  step?: string;
 }
 
 interface ResultData {
@@ -71,6 +66,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   maxStreak = 20;
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountzero: Subject<boolean> = new Subject();
+  stepcountUpdated: BehaviorSubject<Map<StepCount>> = new BehaviorSubject<Map<StepCount>>({});
   lessonChanged: Subject<Lesson> = new Subject();
   level = Level;
   isDemo: boolean;
@@ -512,6 +508,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             result.data.forEach((resultItem, i) => {
               data[i].result = resultItem;
             });
+            this.checkStepCount();
             this.checkNewRank(totalScore, pointsEarned);
           }
         },
@@ -712,8 +709,55 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* Lesson selector */
+  private checkStepCount() {
+    console.log('xx UPDATING STEPCOUNT');
+    // Update stepcount with data from db
+    this.learnService
+    .fetchStepData(this.course._id, this.lesson._id)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      stepCount => {
+        console.log('xx Stepcount from db', stepCount);
+        if (stepCount) {
+          let updated = false;
+          // Difficult
+          if (stepCount.difficult !== this.countPerStep['difficult']) {
+            this.countPerStep['difficult'].nrRemaining = stepCount.difficult;
+            updated = true;
+          }
+          // Review
+          if (stepCount.review !== this.countPerStep['review']) {
+            this.countPerStep['review'].nrRemaining = stepCount.review;
+            updated = true;
+          }
+          if (stepCount.lesson) {
+            const totalWords = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
+            // Study
+            const study = stepCount.lesson.find(count => count.step === 'study');
+            if (study && study.nrDone !== this.countPerStep['study'].nrDone) {
+              this.countPerStep['study'].nrDone = study.nrDone;
+              this.countPerStep['study'].nrRemaining = Math.max(0, totalWords - study.nrDone);
+              updated = true;
+            }
+            // Practise
+            const practise = stepCount.lesson.find(count => count.step === 'practise');
+            if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
+              this.countPerStep['practise'].nrDone = practise.nrDone;
+              this.countPerStep['practise'].nrRemaining = Math.max(0, this.countPerStep['study'].nrRemaining - practise.nrDone);
+              updated = true;
+            }
+          }
+          if (updated) {
+            this.stepcountUpdated.next(this.countPerStep);
+            console.log('xx updated count', this.countPerStep);
+          }
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
 
+  /* Lesson selector */
   private lessonSelected(lesson: Lesson) {
     if (lesson) {
       this.lesson = lesson;

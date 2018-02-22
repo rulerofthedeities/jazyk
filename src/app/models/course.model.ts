@@ -3,6 +3,12 @@ import {Exercise, ExerciseSteps} from './exercise.model';
 export enum CourseListType {Learn, Teach, All, Home};
 export enum AccessLevel {None, Reader, Author, Editor, Manager, Owner};
 
+export interface StepCount {
+  nrDone: number;
+  nrRemaining: number;
+  step?: string;
+}
+
 export interface Language {
   name: string;
   nativeName: string;

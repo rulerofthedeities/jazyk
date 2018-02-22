@@ -92,7 +92,7 @@
       [settings]="settings"
       [lessonChanged]="lessonChanged"
       [exercisesInterrupted]="exercisesInterrupted"
-      [stepcountzero]="stepcountzero"
+      [stepcountUpdated]="stepcountUpdated"
       (lessonCompleted)="onLessonCompleted($event)"
       (stepCompleted)="onStepCompleted('practise', $event)"
       (stepBack)="onStepBack()"
@@ -106,6 +106,7 @@
         [settings]="settings"
         [exercisesInterrupted]="exercisesInterrupted"
         [stepcountzero]="stepcountzero"
+        [stepcountUpdated]="stepcountUpdated"
         (stepCompleted)="onStepCompleted('review', $event)"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-review>
@@ -116,6 +117,7 @@
         [settings]="settings"
         [exercisesInterrupted]="exercisesInterrupted"
         [stepcountzero]="stepcountzero"
+        [stepcountUpdated]="stepcountUpdated"
         (stepCompleted)="onStepCompleted('difficult', $event)"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-difficult>

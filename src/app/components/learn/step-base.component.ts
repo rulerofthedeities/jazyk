@@ -4,7 +4,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {Course, LanPair, LanConfig, Lesson, LessonOptions} from '../../models/course.model';
+import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -42,6 +42,7 @@ interface DlData { // DamerauLevenshteinDistance
 export abstract class Step {
   @Input() private exercisesInterrupted: Subject<boolean>;
   @Input() private stepcountzero: Subject<boolean>;
+  @Input() private stepcountUpdated: BehaviorSubject<Map<StepCount>>;
   @Input() protected lesson: Lesson;
   @Input() learnedLevel: number;
   @Input() settings: LearnSettings;
@@ -64,6 +65,7 @@ export abstract class Step {
   pointsEarned: Subject<number> = new Subject();
   nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  countPerStep: Map<StepCount> = {};
   isExercisesDone = false;
   keys: string[] = []; // keyboard keys
   currentChoices: string[] = []; // choices
@@ -78,7 +80,7 @@ export abstract class Step {
   noMoreExercises = false;
   isCountDown: boolean;
   isMute: boolean;
-  maxRepeatWord = 4;
+  maxRepeatWord = 5;
   currentStep: string;
   qType = QuestionType;
   exType = ExerciseType;
@@ -1073,6 +1075,16 @@ export abstract class Step {
       .takeWhile(() => this.componentActive)
       .subscribe( event => {
         this.noMoreExercises = true;
+      });
+    }
+    if (this.stepcountUpdated) {
+      this.stepcountUpdated
+      .takeWhile(() => this.componentActive)
+      .subscribe( count => {
+        console.log('xx STEP COUNT UPDATED', count, this.currentStep);
+        if (count) {
+          this.countPerStep = count;
+        }
       });
     }
   }

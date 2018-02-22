@@ -31,7 +31,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Output() stepBack = new EventEmitter();
   noMoreToStudy = false;
   toPractise = 0;
-  hasMoreToPractise = false;
   isRehearsal = false;
   isReady = false;
   beep: any;
@@ -355,7 +354,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   protected fetchResults() {
     this.getLessonResults();
   }
-
+/*
   protected practiseDone(exercisesDone: ExerciseData[]) {
     const lastExercises: Map<ExerciseExtraData> = {};
     this.isExercisesDone = true;
@@ -376,6 +375,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
     this.hasMoreToPractise = this.toPractise - practised > 0;
   }
+*/
 
   private checkLessonChanged() {
     console.log('subscribing to lesson changes');
@@ -395,7 +395,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     });
   }
 
-  protected calculateAgePoints(resultData: ExerciseResult): number {
+  protected calculateAgePoints(resultData: ExerciseData): number {
     // Only for review & difficult
     return 0;
   }
