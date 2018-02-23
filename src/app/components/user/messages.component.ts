@@ -78,13 +78,11 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onSendReply(message: Message, content: string) {
     this.infoMsg = '';
-    console.log('sending reply', content);
     this.sendReplyMessage(message, content);
   }
 
   onSendMessage(content: string) {
     this.infoMsg = '';
-    console.log('sending message', content);
     if (this.selectedRecipient) {
       this.sendNewMessage(content);
     }
@@ -170,7 +168,6 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
         if (params['messageId']) {
           this.isFromDashboard = true;
           const i = this.messages.findIndex(message => message._id === params['messageId']);
-          console.log('id', params['messageId'], i);
           this.selectMessage(params['messageId'], i);
         }
       }

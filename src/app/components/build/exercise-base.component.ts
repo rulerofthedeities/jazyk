@@ -64,7 +64,6 @@ export abstract class ExerciseBase {
     if (this.currentExercise) {
       this.currentExercise[tpe].region = newRegion;
     } else {
-      console.log('updating regon', tpe);
       this.exerciseForm.patchValue({[tpe + 'Region']: newRegion});
     }
   }
@@ -92,7 +91,6 @@ export abstract class ExerciseBase {
     .subscribe(
       savedExercises => {
         this.isSaving = false;
-        console.log('saved exercises', savedExercises);
         this.addedExercises.emit(savedExercises);
         this.exerciseForm.reset();
       },
@@ -101,14 +99,12 @@ export abstract class ExerciseBase {
   }
 
   protected saveUpdatedExercise(exercise: Exercise) {
-    console.log('updating exercise ', exercise);
     this.buildService
     .updateExercise(exercise, this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
         this.isSaving = false;
-        console.log('updated exercise ', exercise);
         this.updatedExercise.emit(exercise);
         this.currentExercise = exercise;
         this.exercise = exercise;

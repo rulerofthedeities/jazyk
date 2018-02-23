@@ -180,7 +180,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Comparison;
       break;
     }
-    console.log('!>> Question type', qTpe, learnLevel);
     return qTpe;
   }
 
@@ -221,14 +220,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
-    console.log('fetching results for ', this.lesson._id);
     let leftToStudy: number;
     this.learnService
     .getLessonResults(this.lesson._id, 'practise')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('CHECK lesson results', results);
         if  (results) {
           leftToStudy = this.getNewQuestions(results);
         }
@@ -254,7 +251,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
 
-      console.log('>= lesson exercises', this.lesson.exercises);
     this.toPractise = 0;
     this.lesson.exercises.forEach(exercise => {
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
@@ -273,15 +269,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         leftToStudy++;
       }
     });
-    console.log('words for practise', newExercises);
     this.buildExerciseData(newExercises, newResults);
     return leftToStudy;
   }
 
   private getDemoQuestions() {
-    console.log('Getting demo questions');
     this.buildExerciseData(this.lesson.exercises, null);
-    console.log('Demo questions', this.exerciseData);
     this.current = -1;
     this.isQuestionReady = false;
     this.isExercisesDone = false;
@@ -343,31 +336,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
-/*
-  protected practiseDone(exercisesDone: ExerciseData[]) {
-    const lastExercises: Map<ExerciseExtraData> = {};
-    this.isExercisesDone = true;
-    let practised = 0;
-    // Get most recent result per exercise (for isLearned)
-    if (exercisesDone && exercisesDone.length) {
-      exercisesDone.forEach( item => {
-        lastExercises[item.exercise._id] = item.data;
-      });
-    }
-    // Count words that have been learned
-    for (const key in lastExercises) {
-      if (lastExercises.hasOwnProperty(key)) {
-        if (lastExercises[key].learnLevel >= isLearnedLevel) {
-          practised++;
-        }
-      }
-    }
-    this.hasMoreToPractise = this.toPractise - practised > 0;
-  }
-*/
-
   private checkLessonChanged() {
-    console.log('subscribing to lesson changes');
     this.lessonChanged
     .takeWhile(() => this.componentActive)
     .subscribe((event: Lesson) => {
@@ -375,7 +344,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       this.lesson = event;
       if (this.lesson.rehearseStep) {
         // This is a repeat
-        console.log('This is a repeat');
       } else {
         this.noMoreExercises = false;
         this.isExercisesDone = false;

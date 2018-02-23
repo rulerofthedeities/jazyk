@@ -19,7 +19,7 @@
       <span class="message">{{message.message}}</span>
     </div>
     <div class="col-xs-3">
-      {{message.source}}
+      {{showSource() ? message.source : ''}}
     </div>
   </div>
 </div>

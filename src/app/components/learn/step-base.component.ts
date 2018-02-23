@@ -152,7 +152,6 @@ export abstract class Step {
   }
 
   onNextWord(giveAnswer = false) {
-    console.log('>>+', giveAnswer, this.currentData.data.questionType);
     switch (this.currentData.data.questionType) {
       case QuestionType.Choices:
         if (giveAnswer) {
@@ -368,7 +367,6 @@ export abstract class Step {
     const choice = this.currentChoices[i],
           direction = this.currentData.data.direction,
           word = direction === Direction.ForeignToLocal ? this.currentData.exercise.local.word : this.currentData.exercise.foreign.word;
-    console.log('>>+ check choices answer', i);
     if (choice === word) {
       this.checkAnswer(AnsweredType.Correct, QuestionType.Choices);
     } else {
@@ -384,7 +382,6 @@ export abstract class Step {
 
   protected checkSelectAnswer(isCorrect: boolean) {
     if (isCorrect) {
-      console.log('>> check select incorrect');
       this.checkAnswer(AnsweredType.Correct, QuestionType.Select);
     } else {
       this.checkAnswer(AnsweredType.Incorrect, QuestionType.Select);
@@ -447,7 +444,6 @@ export abstract class Step {
       break;
     }
     // Learnlevel
-    console.log('learn level changed?');
     if (question === QuestionType.Word || question === QuestionType.Choices) {
       // Set level for words
       const learnLevelData = {
@@ -458,11 +454,9 @@ export abstract class Step {
       };
       learnLevel = this.calculateLearnLevel(question, learnLevelData);
     } else {
-      console.log('setting level?');
       // For exercises, set learnlevel immediately if answered correctly
       if (answer === AnsweredType.Correct) {
         learnLevel = isLearnedLevel;
-        console.log('set level to', isLearnedLevel);
       }
     }
     this.currentData.data.learnLevel = learnLevel;
@@ -481,8 +475,6 @@ export abstract class Step {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
     this.levelUpdated.next(learnLevel);
-    console.log('DATA', this.currentData);
-    console.log('POINTS', this.currentData.data.points);
     this.pointsEarned.next(this.currentData.data.points.total());
     this.nextExercise.next(this.current); // For bullets update
   }
@@ -500,7 +492,6 @@ export abstract class Step {
     if (countWrong > 2) {
       add = false;
     }
-    console.log('ADDING', countWrong, add);
     return add;
   }
 
@@ -661,7 +652,6 @@ export abstract class Step {
         accumulator = 0;
     if (resultData && resultData.streak) {
       const streak = resultData.streak;
-      console.log('streak', streak);
       for (let i = streak.length; i > 0; i--) {
         if (streak[i - 1] === '1') {
           accumulator += 5;
@@ -721,7 +711,6 @@ export abstract class Step {
 
   private setTimeCutOffs(qType: QuestionType, data: ExerciseData): TimeCutoffs {
     // Cutoffs are in 1/10th of a second
-    console.log('timecutoffs', qType);
     const cutOffs = {
       green: 70, // 7 secs
       orange: 60,
@@ -757,7 +746,6 @@ export abstract class Step {
     cutOffs.green = (cutOffs.green + extra) * multiplier;
     cutOffs.orange = (cutOffs.orange + extra) * multiplier;
     cutOffs.red = (cutOffs.red + extra) * multiplier;
-    console.log('time cutoff:', extra, cutOffs);
     return cutOffs;
   }
 
@@ -826,7 +814,6 @@ export abstract class Step {
     if (learnLevelData.correct) {
       this.soundLearnedLevel(level);
     }
-    console.log('!>> level changed to', level);
 
     return level;
   }
@@ -889,7 +876,6 @@ export abstract class Step {
 
     availableChoices = this.choices.map(c => c);
     choices.push(word);
-    console.log('Available choices', availableChoices);
     while (choices.length < nrOfChoices && availableChoices) {
       choice = this.selectChoice(availableChoices, exercise, direction);
       if (!choices.find(choiceItem => choiceItem === choice)) {
@@ -907,17 +893,14 @@ export abstract class Step {
       case 0:
         // random
         selected = Math.floor(Math.random() * choices.length);
-        console.log('random choice', selected);
       break;
       case 1:
         // sorted by proximity foreign
         selected = this.getNearestChoice('foreign', choices, exercise.foreign.word);
-        console.log('choice by proximity foreign', selected);
       break;
       case 2:
         // sorted by proximity local
         selected = this.getNearestChoice('local', choices, exercise.local.word);
-        console.log('choice by proximity local', selected);
       break;
     }
     if (choices[selected]) {
@@ -1077,7 +1060,6 @@ export abstract class Step {
       this.stepcountUpdated
       .takeWhile(() => this.componentActive)
       .subscribe( count => {
-        console.log('xx STEP COUNT UPDATED', count, this.currentStep);
         if (count) {
           this.countPerStep = count;
         }

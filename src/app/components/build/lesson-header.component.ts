@@ -94,7 +94,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   private editLesson() {
-    console.log('editing lesson', this.lesson);
     this.isNew = false;
     this.courseId = this.lesson.courseId;
     this.languagePair = this.lesson.languagePair;
@@ -209,7 +208,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       savedLesson => {
         this.lesson = savedLesson;
         if (goToLesson) {
-          console.log('emit done and go');
           this.doneandgo.emit(savedLesson);
         } else {
           this.done.emit(savedLesson);

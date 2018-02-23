@@ -59,7 +59,6 @@ export class LearnCompletedListComponent implements OnInit {
     if (this.results.length === 0) {
       this.noResults = true;
     }
-    console.log('completed data results', this.results);
   }
 
   showStep(): string {

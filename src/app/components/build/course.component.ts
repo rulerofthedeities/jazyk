@@ -168,7 +168,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .updateLessonIds(this.course._id, this.lessonIds)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      () => {console.log('updated sorted lesson ids'); },
+      () => {},
       error => this.errorService.handleError(error)
     );
   }

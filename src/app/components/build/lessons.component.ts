@@ -66,7 +66,6 @@ export class BuildLessonsComponent implements OnDestroy {
   }
 
   onResortedLessons(chapter: string, lessonIdItems: string[]) {
-    console.log('check lessons - lessonIdItems', lessonIdItems);
     this.sorted.emit({chapter, lessonIds: lessonIdItems});
   }
 
@@ -79,13 +78,12 @@ export class BuildLessonsComponent implements OnDestroy {
     .updateChapters(this.courseId, this.chapters)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      () => {console.log('updated sorted chapters'); },
+      () => {},
       error => this.errorService.handleError(error)
     );
   }
 
   private removeChapter(chapterName: string) {
-    console.log('removing chapter ', this.courseId, chapterName);
     this.buildService
     .removeChapter(this.courseId, chapterName)
     .takeWhile(() => this.componentActive)
@@ -107,7 +105,6 @@ export class BuildLessonsComponent implements OnDestroy {
       .subscribe(
         (removed) => {
           if (removed) {
-            console.log('lesson removed', lessonId);
             console.log(this.lessons, this.lessonIds);
             this.lessons = this.lessons.filter(lesson => lesson._id !== lessonId);
             this.lessonIds.forEach(lesson => {

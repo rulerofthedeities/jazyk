@@ -56,7 +56,6 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
       tpe: ExerciseType.FillIn,
       difficulty: 0
     };
-    console.log('exercise', exercise);
     this.saveNewExercise(exercise);
   }
 
@@ -64,7 +63,6 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
     const exercise: Exercise = this.currentExercise;
     exercise.foreign.hint = this.exerciseForm.value['hint'];
     exercise.foreign.word = this.exerciseForm.value['sentence'];
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 

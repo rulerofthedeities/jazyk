@@ -46,7 +46,6 @@ export class BuildComparisonComponent extends ExerciseBase implements OnInit, On
                   + formValues['foreignSuperlative'];
     exercise.local.word = formValues['localWord'];
     exercise.foreign.word = words;
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 

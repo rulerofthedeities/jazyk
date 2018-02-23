@@ -113,7 +113,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       // If a lesson is not in sorting array, add id
       lessonId = this.lessonIds.find(id => id === lesson1._id);
       if (!lessonId) {
-        console.log('lesson id not found for ', lesson1._id);
         this.lessonIds.push(lesson1._id);
         this.cdRef.detectChanges();
         saveSortedIds = true;
@@ -123,7 +122,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
       // if a lesson for an id is not found, remove id
       lesson = this.lessons.find(lesson2 => id === lesson2._id);
       if (!lesson) {
-        console.log('lesson not found for', id);
         this.lessonIds.splice(i, 1);
         this.cdRef.detectChanges();
         saveSortedIds = true;
@@ -131,7 +129,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     });
     this.isReady = true;
     if (saveSortedIds) {
-      console.log('emitting', this.lessonIds);
       this.sorted.emit(this.lessonIds);
     }
   }

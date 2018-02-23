@@ -106,7 +106,6 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         if (params['notificationId']) {
-          console.log('id', params['notificationId']);
           this.isFromDashboard = true;
           this.fetchNotification(params['notificationId'], null);
         }

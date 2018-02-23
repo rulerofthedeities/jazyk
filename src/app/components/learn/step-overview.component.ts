@@ -84,7 +84,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   onContinueLesson(lessonId: string) {
     event.stopPropagation();
-    console.log('continue lesson', lessonId);
     if (this.lessonData._id === lessonId) {
       this.currentLesson.emit(this.lessonData);
     } else {
@@ -94,7 +93,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   onRehearseLesson(lessonId: string, step: string, cnt: number) {
     event.stopPropagation();
-    console.log('rehearse lesson', lessonId, step, cnt);
     if (cnt > 0) {
       if (this.lessonData && this.lessonData._id === lessonId) {
         this.lessonData.rehearseStep = step;
@@ -187,7 +185,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   private getLessonResults() {
     // Get results grouped by lesson id
-    console.log('getting Lesson Results');
     this.learnService
     .fetchLessonResults(this.course._id)
     .takeWhile(() => this.componentActive)
@@ -226,7 +223,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       }
     });
     // Check if course is complete
-    console.log('Course complete?', cntCompleted, activeLessonIds.length);
     if (cntCompleted === activeLessonIds.length) {
       this.isCourseComplete = true;
       this.currentChapter = null;

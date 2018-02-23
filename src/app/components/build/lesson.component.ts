@@ -105,10 +105,8 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.showDropDown = false;
     if (updatedLesson) {
       this.lesson = updatedLesson;
-      console.log('updated lesson');
       // Check if new chapter was added
       if (this.chapters.filter(chapter => chapter === updatedLesson.chapterName).length < 1) {
-        console.log('added chapter');
         this.addChapter(updatedLesson.chapterName, this.lesson._id);
       }
     }
@@ -194,7 +192,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       translations => {
-        console.log(translations);
         this.setText(translations);
         this.getLesson(lessonId);
       },

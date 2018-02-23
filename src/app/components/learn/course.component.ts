@@ -152,7 +152,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onRehearseLesson(lesson: Lesson) {
-    console.log('> lesson rehearse', lesson, this.steps);
     this.lessonSelected(lesson);
   }
 
@@ -171,7 +170,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private validateCourseStep(step: string): string {
-    console.log('validating course step', step);
     if (step && step !== 'overview') {
       if (step === 'review' || step === 'difficult' || step === 'exam') {
         this.courseLevel = Level.Course;
@@ -227,7 +225,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         if (course) {
           if (course.isPublished) {
             this.course = course;
-            console.log('>>> loaded course, go to current lesson', this.courseLevel);
             this.getCurrentLesson();
             this.log(`Loaded course '${this.course.name}'`);
           } else {
@@ -242,7 +239,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getStepData() {
-    console.log('>>> getting step data');
     this.setSteps();
     if (!this.isDemo) {
       this.fetchStepData();
@@ -252,13 +248,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private fetchStepData() {
-    console.log('>>> fetching step data');
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('>>> step data results:', results);
         this.processStepResults(results);
       },
       error => this.errorService.handleError(error)
@@ -266,16 +260,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private processStepResults(results: any) {
-    console.log('>>> processing step results:', results);
     this.countPerStep = {};
     if (results) {
       this.getCourseStepCount(results);
       this.getLessonStepCount(results.lesson);
-      console.log('SETTING COURSE STEP', this.courseLevel, Level.Course);
       if (this.courseLevel === Level.Lesson) {
         this.setDefaultLessonStep(results.lesson.length);
       } else {
-        console.log('COURSE LEVEL');
         this.setCourseStep();
       }
     } else {
@@ -317,7 +308,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private setDefaultLessonStep(results: number) {
     let defaultStep: number = null;
-    console.log('>>> set default lesson step', results);
     if (this.lesson.rehearseStep) {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
     } else {
@@ -331,10 +321,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         } else if (this.hasStep('study')) {
           if (this.countPerStep['study'].nrRemaining > 0) {
             defaultStep = this.getStepNr('study');
-            console.log('>>> This lesson', this.lesson.name, this.countPerStep['study']);
           } else {
             // No exercises left in lesson -> go to next lesson
-            console.log('>>> No exercises left, go to next lesson', this.lesson.name, this.countPerStep['practise']);
             this.getNextLesson(this.lesson._id);
           }
         }
@@ -348,17 +336,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           defaultStep = this.getStepNr('practise');
         }
       }
-      console.log('>>> defaultstep', defaultStep);
       if (defaultStep !== null) {
         this.currentStep = defaultStep;
-        console.log('>>> Lesson ready', this.currentStep, this.lesson.name);
         this.isLessonReady = true;
         this.lessonChanged.next(this.lesson);
       } else {
         if (this.loopCount < 1) {
           // Course is at the end
           // Start again from the beginning in case not all exercises were done
-          console.log('>>> course at the end, restart from beginning');
           this.loopCount++; // to prevent infinite loop
           this.getFirstLesson();
         } else {
@@ -401,7 +386,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep[step.name] = {nrDone: 0, nrRemaining: 0};
       }
     });
-    console.log('getting course stepcounts', count);
     this.countPerStep['difficult'].nrRemaining = count.difficult;
     this.countPerStep['review'].nrRemaining = count.review;
     if (this.countPerStep['exam']) {
@@ -427,7 +411,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.steps.forEach(step => {
       total = step.name === 'study' ? studyTotal : lessonTotal;
       if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
-        console.log('STEPS', step.name, studyTotal, lessonTotal);
         this.countPerStep[step.name] = {nrDone: 0, nrRemaining: Math.max(0, total)};
       }
     });
@@ -441,7 +424,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
-    console.log('saving answers', step, data);
     const lastResult: Map<ResultData> = {}, // Get most recent result per exercise (for isLearned && reviewTime)
           streak: Map<string> = {}, // Get streaks for exercise
           allCorrect: Map<boolean> = {}, // Exercise is only correct if all answers for an exercise are correct
@@ -462,9 +444,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
       data.forEach( (item, i) => {
         item.data.points.correct = correctBonus;
-        console.log('result', item);
-        console.log('bonus', correctBonus);
-        console.log('totalpoints', item.data.points.total());
         pointsEarned += item.data.points.total();
         streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
         const newResult: ResultData = {
@@ -486,21 +465,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
         result.data.push(newResult);
       });
-      console.log('Checking last result', result);
       this.checkLastResult(step, lastResult, allCorrect, data);
 
       if (!this.lesson.rehearseStep) {
         this.updateStepCount(step, lastResult);
       }
-      console.log('Saving result', result);
-      console.log('Total Points', pointsEarned);
+      this.log(`Total points earned: ${pointsEarned}`);
       this.learnService
       .saveUserResults(JSON.stringify(result))
       .takeWhile(() => this.componentActive)
       .subscribe(
         totalScore => {
           this.log('Saved exercise answers');
-          console.log('saved result -> total score:', totalScore);
           if (totalScore) {
             // add results to data object
             result.data.forEach((resultItem, i) => {
@@ -579,7 +555,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private calculateReviewTime(result: ResultData, isCorrect: boolean, exercise: ExerciseData) {
-    console.log('algo - calculating review time for', exercise);
     if (exercise) {
       const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
             dateLastReviewed = exercise.result ? exercise.result.dt : new Date(),
@@ -588,29 +563,19 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       let difficultyPerc = difficulty / 100 || 0.3,
           percentOverdue = 1,
           newDaysBetweenReviews = 1;
-      console.log('algo - CALCULATE REVIEW TIME', exercise.exercise.foreign.word);
-      console.log('algo - difficulty', difficulty);
-      console.log('algo - dateLastReviewed', dateLastReviewed);
-      console.log('algo - daysBetweenReviews', daysBetweenReviews);
-      console.log('algo - performanceRating', performanceRating);
 
       if (isCorrect) {
         const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(dateLastReviewed), new Date());
         percentOverdue = Math.min(2, daysSinceLastReview / daysBetweenReviews);
       }
       const performanceDelta = this.learnService.clamp((8 - 9 * performanceRating) / 17, -1, 1);
-      console.log('algo - performanceDelta', performanceDelta);
       difficultyPerc += percentOverdue * performanceDelta;
       const difficultyWeight = 3 - 1.7 * difficultyPerc;
-      console.log('algo - difficultyWeight', difficultyWeight);
       if (isCorrect) {
         newDaysBetweenReviews = daysBetweenReviews * (1 + (difficultyWeight - 1) * percentOverdue);
       } else {
         newDaysBetweenReviews = daysBetweenReviews * Math.max(0.25, 1 / (Math.pow(difficultyWeight, 2)));
       }
-      console.log('algo - correct', isCorrect);
-      console.log('algo - newDaysBetweenReviews', newDaysBetweenReviews);
-      console.log('algo - percentOverdue', percentOverdue);
       result.daysBetweenReviews = newDaysBetweenReviews;
       result.percentOverdue = percentOverdue;
     }
@@ -646,7 +611,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           lengthScore = Math.min(70, word.length * 3),
           wordScore =  Math.min(10, word.split(' ').length) * 5,
           difficulty = lengthScore + wordScore;
-    console.log('difficulty for', word, difficulty);
     return difficulty;
   }
 
@@ -656,7 +620,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     const nrOfResults = Object.keys(lastResult).length;
 
     // Update count before save
-    console.log('Update step count', step);
     switch (step) {
       case 'study':
         // Studied - Decrease study count
@@ -699,14 +662,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private checkStepCount() {
-    console.log('xx UPDATING STEPCOUNT');
     // Update stepcount with data from db
     this.learnService
     .fetchStepData(this.course._id, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       stepCount => {
-        console.log('xx Stepcount from db', stepCount);
         if (stepCount) {
           let updated = false;
           // Difficult
@@ -738,7 +699,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           }
           if (updated) {
             this.stepcountUpdated.next(this.countPerStep);
-            console.log('xx updated count', this.countPerStep);
           }
         }
       },
@@ -750,7 +710,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private lessonSelected(lesson: Lesson) {
     if (lesson) {
       this.lesson = lesson;
-      console.log('>>>Lesson selected', lesson);
       this.getStepData();
     }
   }
@@ -758,7 +717,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getCurrentLesson() {
     // Check where this course was left off
     if (!this.isDemo) {
-      console.log('>>> fetching most recent lesson');
       this.fetchMostRecentLesson();
     } else {
       this.getFirstLesson();
@@ -776,7 +734,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           this.getLesson(userResult.lessonId);
         } else {
           // start from beginning of the course
-          console.log('>>> No lesson to load; start from beginning.');
           this.log('No results yet; start from beginning.');
           this.getFirstLesson();
         }
@@ -799,7 +756,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         } else {
           // Lesson does not exist, start from beginning
           this.getFirstLesson();
-           console.log('Lesson id', lessonId, 'not found');
         }
       },
       error => this.errorService.handleError(error)

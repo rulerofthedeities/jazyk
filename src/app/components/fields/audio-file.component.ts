@@ -39,14 +39,14 @@ export class AudioFileComponent implements OnInit {
         }
       }
       this.audio.onended = () => {
-        console.log('The audio has ended');
+        // The audio has ended
       };
       this.audio.onloadeddata = () => {
-        console.log('The audio has loaded');
+        // The audio has loaded
         this.audio.play();
       };
       this.audio.onplaying = () => {
-        console.log('The audio is now playing');
+        // The audio is now playing
       };
     }
   }

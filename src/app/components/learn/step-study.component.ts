@@ -132,7 +132,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private checkLessonChanged() {
-    console.log('subscribing to lesson changes');
     this.lessonChanged
     .takeWhile(() => this.componentActive)
     .subscribe((event: Lesson) => {
@@ -198,7 +197,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private studyDone(nrDone: number) {
-    console.log('More to study?', this.toStudy, nrDone);
     this.hasMoreToStudy = this.toStudy - nrDone > 0;
     this.isStudyDone = true;
   }
@@ -223,7 +221,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('study results', results);
         if (results) {
           this.getNewQuestions(results);
         }

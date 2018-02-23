@@ -67,7 +67,7 @@ export class FilterListComponent implements OnInit, OnDestroy {
             data._id = wordPair._id;
             this.selectedWord.emit(data);
           } else {
-            console.log('Error finding data for wordpair id ' + wordPair._id);
+            console.error('Error finding data for wordpair id ' + wordPair._id);
           }
         },
         error => this.errorService.handleError(error)

@@ -51,7 +51,6 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.total = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.utilsService.getRank(this.total);
-        console.log(this.userService.user);
       },
       error => this.errorService.handleError(error)
     );

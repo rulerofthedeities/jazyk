@@ -58,7 +58,6 @@ export class BuildQAComponent extends ExerciseBase implements OnInit, OnDestroy 
       tpe: ExerciseType.QA,
       difficulty: 0
     };
-    console.log('exercise', exercise);
     this.saveNewExercise(exercise);
   }
 
@@ -66,7 +65,6 @@ export class BuildQAComponent extends ExerciseBase implements OnInit, OnDestroy 
     const exercise: Exercise = this.currentExercise;
     exercise.foreign.hint = this.exerciseForm.value['question'];
     exercise.foreign.word = this.exerciseForm.value['answer'];
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 

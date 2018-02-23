@@ -82,7 +82,6 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
 
   protected buildNewExercise(formValues: any) {
     const options = formValues.options.filter(option => option);
-    console.log('filtered options', options);
     const exercise: Exercise = {
       foreign: {
         word: formValues.select,
@@ -105,7 +104,6 @@ export class BuildSelectComponent extends ExerciseBase implements OnInit, OnDest
     exercise.foreign.word = this.exerciseForm.value['select'];
     exercise.local.word = this.exerciseForm.value['selectLocal'];
     exercise.options = options.join('|');
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 

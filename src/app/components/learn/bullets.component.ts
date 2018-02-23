@@ -43,7 +43,6 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
     if (this.exercises) {
       this.toGo = this.exercises.filter(exercise => exercise.data.isDone === false).length;
     }
-    console.log('Bullet exercises to go', this.toGo);
   }
 
   ngOnDestroy() {

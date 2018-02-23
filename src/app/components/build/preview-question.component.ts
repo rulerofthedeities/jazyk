@@ -23,14 +23,12 @@ export class PreviewQuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('preview', this.exercise);
     this.exerciseData = {
       exercise: this.exercise,
       data: {isCaseSensitive: this.lessonOptions.caseSensitive},
       result: {}
     };
     this.previewService.buildLocalData(this.exerciseData, this.text, this.exercise);
-    console.log('exercise Data', this.exerciseData);
   }
 
   onSwitchDirection() {

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
+import {SharedService} from '../../services/shared.service';
 import {PublicProfile, CompactProfile, Message} from '../../models/user.model';
 import {Course} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
@@ -52,7 +53,8 @@ export class UserComponent implements OnInit, OnDestroy {
     private router: Router,
     private utilsService: UtilsService,
     private userService: UserService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -60,7 +62,6 @@ export class UserComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       params => {
-        console.log('route params user profile');
         if (params['name']) {
           this.init();
           this.fetchPublicProfile(params['name'].toLowerCase());
@@ -85,7 +86,6 @@ export class UserComponent implements OnInit, OnDestroy {
         follow => {
           this.isCurrentlyFollowing = true;
           this.network.followed.push({userId: id});
-          console.log('add new user to network', id);
           this.addFollowed({userId: id});
           if (this.networkShown) {
             this.showNetwork();
@@ -159,7 +159,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onSendMessage(msg: string) {
-    console.log('sending message', msg);
     this.sendMessage(this.profile, msg);
   }
 
@@ -196,7 +195,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private showCourses(tpe: string) {
-    console.log('showing courses', tpe, this.courses[tpe]);
     if (tpe === 'teaching') {
       this.showCoursesTeaching = true;
     } else {
@@ -232,7 +230,6 @@ export class UserComponent implements OnInit, OnDestroy {
         this.profile = profile;
         this.fetchFollowers(profile._id);
         this.fetchCourses('teaching');
-        console.log('profile', profile);
       },
       error => {
         if (error.status === 404) {
@@ -341,7 +338,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private sendMessage(profile: PublicProfile, msg: string) {
     this.messageShown = false;
     this.saveMessage(profile, msg);
-    console.log('sending message', msg, 'to', profile._id);
+    this.log(`Sending message to ${profile.userName}`);
   }
 
   private saveMessage(profile: PublicProfile, msg: string) {
@@ -382,6 +379,13 @@ export class UserComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'UserComponent'
+    });
   }
 
   ngOnDestroy() {

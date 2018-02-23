@@ -114,7 +114,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
 
   ngAfterViewInit() {
     const focusElement = this.element.nativeElement.querySelector('#' + this.focus);
-    console.log('focus', this.focus, focusElement);
     if (focusElement) {
       this.renderer.invokeElementMethod(focusElement, 'focus', []);
       this.ref.detectChanges();
@@ -160,7 +159,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onAddNewWord(form: any) {
-    console.log('adding', form.values);
     if (form.valid) {
       this.isSaving = true;
       this.buildNewExercise(form.value, {
@@ -521,7 +519,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     exercise.followingCase = this.checkIfValue(this.exerciseForm.value['followingCase']);
     exercise.aspect = this.checkIfValue(this.exerciseForm.value['aspect']);
 
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 
@@ -613,13 +610,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     exercise.difficulty = 0;
     this.saveExercises.push(exercise);
     if (lastInBatch) {
-      console.log('saving exercises', this.saveExercises);
       this.buildService
       .addExercises(this.saveExercises, this.lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedExercises => {
-          console.log('saved exercises', savedExercises);
           this.addedExercises.emit(savedExercises);
           this.exerciseForm.reset();
           this.isSaving = false;
@@ -631,13 +626,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private saveUpdatedExercise(exercise: Exercise) {
-    console.log('updating exercise ', exercise);
     this.buildService
     .updateExercise(exercise, this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
       saved => {
-        console.log('updated exercise ', exercise);
         this.updatedExercise.emit(exercise);
         this.currentExercise = exercise;
         this.exercise = exercise;

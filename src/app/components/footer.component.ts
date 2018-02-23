@@ -1,4 +1,5 @@
 import {Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild} from '@angular/core';
+import {isDevMode} from '@angular/core';
 import {UserService} from '../services/user.service';
 import {UtilsService} from '../services/utils.service';
 import {ErrorService} from '../services/error.service';
@@ -64,6 +65,10 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   isEven(i: number) {
     return i % 2 === 0;
+  }
+
+  showSource(): boolean {
+    return isDevMode();
   }
 
   private getTranslations(lan) {

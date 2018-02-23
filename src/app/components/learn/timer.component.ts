@@ -37,7 +37,6 @@ export class LearnTimerComponent implements OnDestroy, OnChanges {
     this.totalTimeMs = this.cutOffs.total() * 100;
     this.currentTimeMs = this.totalTimeMs;
     this.startDate = new Date();
-    console.log('start timer', this.startDate);
     this.changeColor(this.cutOffs.green, 'orange');
     this.changeBar();
   }
@@ -62,7 +61,7 @@ export class LearnTimerComponent implements OnDestroy, OnChanges {
           this.changeColor(this.cutOffs.red, 'blue');
           break;
         default:
-          console.log('counter finished');
+          // counter finished
           break;
       }
     }, time * 100);

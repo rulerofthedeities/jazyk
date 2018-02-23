@@ -216,7 +216,7 @@ export class BuildExerciseListComponent implements OnDestroy {
       .updateExercises(this.exercises, this.lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        () => {console.log('updated exercises'); },
+        () => {},
         error => this.errorService.handleError(error)
       );
     }
