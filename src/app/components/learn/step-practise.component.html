@@ -98,14 +98,14 @@
             <span class="fa fa-info-circle"></span>{{text['NoMoreExercises']}}
           </div>
           <button 
-            *ngIf="!noMoreToStudy"
+            *ngIf="countPerStep['study']?.nrRemaining > 0"
             type="button"
             class="btn btn-success"
             (click)="onToStudy()">
             {{text["LearnNewWords"]}}
           </button>
           <button 
-            *ngIf="noMoreToStudy"
+            *ngIf="countPerStep['study'] && countPerStep['study']?.nrRemaining === 0"
             type="button"
             class="btn btn-success"
             (click)="onToNextLesson()">
@@ -125,27 +125,27 @@
             [data]="exerciseData"
             [text]="text">
           </km-points-completed>
-        <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining > 0"
-          class="btn btn-success"
-          (click)="onContinuePractise()">
-          <span class="fa fa-arrow-right fa-spacing">
-          </span>
-          {{text["ContinuePractise"]}}
-        </button>
-        <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining < 1 && countPerStep['study']?.nrRemaining > 0"
-          class="btn btn-success"
-          (click)="onToStudy()">
-          <span class="fa fa-arrow-right fa-spacing">
-          </span>
-          {{text["ContinueStudy"]}}
-        </button>
-        <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining < 1 && countPerStep['study']?.nrRemaining < 1"
-          class="btn btn-warning"
-          (click)="onToNextLesson()">
-          <span class="fa fa-fast-forward fa-spacing">
-          </span>
-          {{text["ToNextLesson"]}}
-        </button>
+          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining > 0"
+            class="btn btn-success"
+            (click)="onContinuePractise()">
+            <span class="fa fa-arrow-right fa-spacing">
+            </span>
+            {{text["ContinuePractise"]}}
+          </button>
+          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining > 0"
+            class="btn btn-success"
+            (click)="onToStudy()">
+            <span class="fa fa-arrow-right fa-spacing">
+            </span>
+            {{text["ContinueStudy"]}}
+          </button>
+          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining === 0"
+            class="btn btn-warning"
+            (click)="onToNextLesson()">
+            <span class="fa fa-fast-forward fa-spacing">
+            </span>
+            {{text["ToNextLesson"]}}
+          </button>
           <button type="button" *ngIf="isRehearsal"
             class="btn btn-success"
             (click)="onRehearseAll()">

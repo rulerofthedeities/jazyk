@@ -2,8 +2,8 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
-import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
+import {ErrorService} from '../../services/error.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
@@ -25,14 +25,19 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   constructor(
     learnService: LearnService,
     previewService: PreviewService,
-    errorService: ErrorService,
-    sharedService: SharedService
+    sharedService: SharedService,
+    errorService: ErrorService
   ) {
     super(learnService, previewService, errorService, sharedService);
   }
 
   ngOnInit() {
     this.currentStep = 'review';
+    this.getToReview();
+  }
+
+  onContinueReview() {
+    this.clearToContinue();
     this.getToReview();
   }
 
@@ -60,10 +65,6 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
       this.isCountDown = false;
       this.isReady = true;
     }
-  }
-
-  protected fetchResults() {
-    this.getToReview();
   }
 
   ngOnDestroy() {

@@ -63,7 +63,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   isLessonReady = false;
   exercisesStarted = false;
   exercisesInterrupted: Subject<boolean> = new Subject();
-  stepcountzero: Subject<boolean> = new Subject();
   stepcountUpdated: BehaviorSubject<Map<StepCount>> = new BehaviorSubject<Map<StepCount>>({});
   lessonChanged: Subject<Lesson> = new Subject();
   level = Level;

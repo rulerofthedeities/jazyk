@@ -28,8 +28,10 @@ export class LearnLevelBarComponent implements OnInit, OnDestroy {
   private componentActive = true;
   percentage: string;
   level: string;
+  maxLevel: string;
 
   ngOnInit() {
+    this.maxLevel = isLearnedLevel.toString();
     this.levelUpdated
     .takeWhile(() => this.componentActive)
     .subscribe(event => {

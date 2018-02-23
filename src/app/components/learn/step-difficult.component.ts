@@ -4,14 +4,9 @@ import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
-import {LearnSettings} from '../../models/user.model';
 import {Exercise, ExerciseData, ExerciseResult, Direction} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 // piggyback lesson options with exercise for course reviews
 interface ExercisePlusOptions {
@@ -37,7 +32,6 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('init difficult');
     this.currentStep = 'difficult';
     this.getDifficult();
   }

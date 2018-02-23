@@ -110,6 +110,13 @@
             [data]="exerciseData"
             [text]="text">
           </km-points-completed>
+          <button type="button" *ngIf="countPerStep['review']?.nrRemaining > 0"
+            class="btn btn-success"
+            (click)="onContinueReview()">
+            <span class="fa fa-arrow-right fa-spacing">
+            </span>
+            {{text["ContinueReview"]}}
+          </button>
         </div>
       </div>
     </div>

@@ -29,7 +29,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Input() isDemo = false;
   @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
-  noMoreToStudy = false;
   toPractise = 0;
   isRehearsal = false;
   beep: any;
@@ -46,7 +45,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentStep = 'practise';
-    this.learnedLevel = isLearnedLevel; // for view
     this.beep = this.audioService.loadAudio('/assets/audio/gluck.ogg');
     this.checkLessonChanged();
     this.getLessonResults();
@@ -239,7 +237,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           super.init(); // start countdown
         } else {
           this.noMoreExercises = true;
-          this.noMoreToStudy = leftToStudy < 1;
           // this.onToNextLesson();
         }
       },
@@ -296,7 +293,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private rehearseAll() {
     this.current = -1;
     this.isRehearsal = true;
-    this.noMoreToStudy = false;
     this.isExercisesDone = false;
     this.getRepeatQuestions();
   }
@@ -347,9 +343,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     }
   }
 
-  protected fetchResults() {
-    this.getLessonResults();
-  }
 /*
   protected practiseDone(exercisesDone: ExerciseData[]) {
     const lastExercises: Map<ExerciseExtraData> = {};

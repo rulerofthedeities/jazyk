@@ -41,7 +41,6 @@ interface DlData { // DamerauLevenshteinDistance
 
 export abstract class Step {
   @Input() private exercisesInterrupted: Subject<boolean>;
-  @Input() private stepcountzero: Subject<boolean>;
   @Input() private stepcountUpdated: BehaviorSubject<Map<StepCount>>;
   @Input() protected lesson: Lesson;
   @Input() settings: LearnSettings;
@@ -1032,10 +1031,6 @@ export abstract class Step {
         levels: null
       };
     });
-  }
-
-  protected fetchResults() {
-
   }
 
   protected practiseDone(exercisesDone: ExerciseData[]) {
