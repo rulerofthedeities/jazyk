@@ -105,12 +105,10 @@ export class BuildLessonsComponent implements OnDestroy {
       .subscribe(
         (removed) => {
           if (removed) {
-            console.log(this.lessons, this.lessonIds);
             this.lessons = this.lessons.filter(lesson => lesson._id !== lessonId);
             this.lessonIds.forEach(lesson => {
               lesson.lessonIds = lesson.lessonIds.filter(id => id !== lessonId);
             });
-            console.log(this.lessons, this.lessonIds);
           }
         },
         error => this.errorService.handleError(error)

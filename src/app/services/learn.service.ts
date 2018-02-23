@@ -257,7 +257,6 @@ export class LearnService {
     if (solution) {
       const DL = this.previewService.getDamerauLevenshteinDistance(answer, solution);
       const errPerc = DL / solution.length * 100;
-      console.log('error percentage', errPerc);
       isCorrect = errPerc > 20 ? false : true;
     }
     return isCorrect;

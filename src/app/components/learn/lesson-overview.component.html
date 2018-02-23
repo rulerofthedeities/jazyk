@@ -41,6 +41,11 @@
         class="fa fa-fire"
         [tooltip]="text['iIsDifficult']">
       </span>
+      <span
+        *ngIf="isToReview(exercise.result)"
+        class="fa fa-repeat"
+        [tooltip]="text['iIsToReview']">
+      </span>
     </span>
   </div>
   <div class="col-xs-5">

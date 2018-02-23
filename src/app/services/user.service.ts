@@ -30,19 +30,16 @@ export class UserService {
   ) {}
 
   getUserData() {
-    console.log('cached user data', this._user);
     if (this._user) {
       return Observable.of(this._user);
     } else {
       if (this.authService.isLoggedIn()) {
-        console.log('logged in, get data from server');
         const headers = this.getTokenHeaders();
         return this.http
         .get('/api/user', {headers})
         .map(response => response.json().obj)
         .do(data => {
           this._user = data;
-          console.log('new user data from server', this._user);
           if (!data) {
             // user not found, get default user data
             return this.getDefaultUserData(null);
@@ -73,7 +70,6 @@ export class UserService {
   getDefaultUserData(queryLan: string) {
     const interfaceLan = this.getUserLan(queryLan);
     const user: User = this.getAnonymousUser(interfaceLan);
-    console.log('getting default user data', user, queryLan);
     this._user = user;
     return Observable.of(user);
   }
@@ -209,7 +205,6 @@ export class UserService {
   getPublicProfile(user: string) {
     const headers = this.getTokenHeaders();
     const filteredUser = user.slice(0, 25);
-    console.log('Fetching public profile for user', filteredUser);
     return this.http
     .get('/api/user/profile/' + filteredUser, {headers})
     .map(response => response.json().obj)
@@ -218,7 +213,6 @@ export class UserService {
 
   getPublicProfileById(userId: string) {
     const headers = this.getTokenHeaders();
-    console.log('Fetching public profile for user', userId);
     return this.http
     .get('/api/user/profileId/' + userId, {headers})
     .map(response => response.json().obj)
@@ -322,7 +316,6 @@ export class UserService {
   }
 
   unFollowUser(userId: string) {
-    console.log('unfollowing user', userId);
     const headers = this.getTokenHeaders();
     return this.http
     .put('/api/user/unfollow', JSON.stringify({userId}), {headers})
@@ -420,7 +413,6 @@ export class UserService {
 
   saveMessage(message: Message) {
     const headers = this.getTokenHeaders();
-    console.log('saving msg', message);
     return this.http
     .put('/api/user/message', JSON.stringify(message), {headers})
     .map(response => response.json().obj)

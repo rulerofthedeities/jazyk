@@ -66,6 +66,16 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     return txt;
   }
 
+  isToReview(result: ExerciseResult): boolean {
+    let toReview = false;
+    if (result) {
+      if (result.dtToReview && new Date(result.dtToReview) < new Date()) {
+        toReview = true;
+      }
+    }
+    return toReview;
+  }
+
   private getLessonResults() {
     if (!this.isDemo) {
       this.fetchLessonResults();

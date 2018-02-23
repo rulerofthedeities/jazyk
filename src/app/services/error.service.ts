@@ -70,7 +70,6 @@ export class ErrorService {
   }
 
   private logError(err: UserError) {
-    console.log('logging', err);
     err.module = 'en';
     const headers = new Headers({'Content-Type': 'application/json'});
     return this.http

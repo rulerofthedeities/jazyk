@@ -317,11 +317,9 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         profiles => {
           if (profiles) {
-            console.log('profiles', profiles);
             profiles.forEach(profile => {
               this.mapProfileToUser(profile);
             });
-            console.log('new network', this.network);
           }
         },
         error => this.errorService.handleError(error)

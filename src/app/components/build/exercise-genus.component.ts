@@ -42,7 +42,6 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
   }
 
   protected buildForm(exercise: Exercise) {
-    console.log('exercise', this.exercise);
     this.options = this.exercise.options.split('|');
     this.exerciseForm = this.formBuilder.group({
       localWord: [exercise.local.word, [Validators.required]],
@@ -61,7 +60,6 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
     exercise.foreign.word = formValues['foreignWord'];
     exercise.genus = this.checkIfValue(formValues['genus']);
     exercise.article = this.checkIfValue(formValues['article']);
-    console.log('updating', exercise);
     this.saveUpdatedExercise(exercise);
   }
 

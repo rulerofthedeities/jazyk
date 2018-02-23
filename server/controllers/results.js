@@ -337,6 +337,7 @@ module.exports = {
               streak: {'$first': '$streak'},
               dt: {'$first': '$dt'},
               daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+              dtToReview: {'$first': '$dtToReview'}
             }},
             {$project: {
               _id: 0,
@@ -344,9 +345,10 @@ module.exports = {
               isLearned: '$isLearned',
               learnLevel: '$firstLevel',
               isDifficult: '$isDifficult',
+              streak: '$streak',
               dt: '$dt',
               daysBetweenReviews: '$daysBetweenReviews',
-              streak: '$streak',
+              dtToReview: '$dtToReview'
             }}
           ],
           countPipeline = [
