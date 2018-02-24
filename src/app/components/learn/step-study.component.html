@@ -77,12 +77,12 @@
           </span>
           {{text["ContinueStudy"]}}
         </button>
-        <button type="button" *ngIf="!isRehearsal && !hasMoreToStudy"
+        <button type="button" *ngIf="!isRehearsal"
           class="btn btn-warning"
           (click)="onToPractise()">
           <span class="fa fa-fast-forward fa-spacing">
           </span>
-          {{text["PractiseStudy"]}}
+          {{text[hasMoreToStudy ? "GoToPractise" : 'PractiseStudy']}}
         </button>
         <button type="button" *ngIf="isRehearsal"
           class="btn btn-success"

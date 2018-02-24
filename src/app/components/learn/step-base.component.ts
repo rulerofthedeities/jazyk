@@ -1,5 +1,5 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
-import {isLearnedLevel, LearnService} from '../../services/learn.service';
+import {isLearnedLevel, maxStreak, LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
@@ -420,6 +420,7 @@ export abstract class Step {
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = this.calculateGrade(question, timeDelta, 0, solution);
+        this.currentData.result.streak = this.setStreak(this.currentData.result, '1');
       break;
       case AnsweredType.Alt:
         this.isCorrect = true;
@@ -427,6 +428,7 @@ export abstract class Step {
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = this.calculateGrade(question, timeDelta, 1, solution);
+        this.currentData.result.streak = this.setStreak(this.currentData.result, '1');
       break;
       case AnsweredType.AlmostCorrect:
         this.isCorrect = false;
@@ -434,6 +436,7 @@ export abstract class Step {
         this.currentData.data.isAlmostCorrect = true;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = 1;
+        this.currentData.result.streak = this.setStreak(this.currentData.result, '2');
       break;
       case AnsweredType.Incorrect:
         this.isCorrect = false;
@@ -441,6 +444,7 @@ export abstract class Step {
         this.currentData.data.isAlmostCorrect = false;
         this.currentData.data.isAlt = false;
         this.currentData.data.grade = 0;
+        this.currentData.result.streak = this.setStreak(this.currentData.result, '0');
       break;
     }
     // Learnlevel
@@ -541,6 +545,16 @@ export abstract class Step {
         this.exerciseData = done.concat(shuffled);
       }
     }
+  }
+
+  private setStreak(result: ExerciseResult, newResult: string): string {
+    // only temporarily for streak scores
+    // final streak is set in course component
+    let streak = result.streak || '';
+    if (result) {
+      streak += newResult;
+    }
+    return streak.slice(-maxStreak);
   }
 
   private filter(word: string): string {
@@ -649,19 +663,24 @@ export abstract class Step {
 
   private calculateStreakPoints(resultData: ExerciseResult): number {
     let points = 0,
-        accumulator = 0;
+        accumulator = 0,
+        multiplicator = 1.3;
     if (resultData && resultData.streak) {
       const streak = resultData.streak;
-      for (let i = streak.length; i > 0; i--) {
+      for (let i = Math.min(10, streak.length) - 1; i > 0; i--) {
         if (streak[i - 1] === '1') {
           accumulator += 5;
           points += accumulator;
+          points *= multiplicator;
         } else {
-          return points;
+          if (points > 0) {
+            points /= multiplicator;
+          }
+          return Math.round(points);
         }
       }
     }
-    return points;
+    return Math.round(points);
   }
 
   private calculateNewPoints(resultData: ExerciseResult): number {
