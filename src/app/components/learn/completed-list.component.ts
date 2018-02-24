@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData, ExerciseType, Direction, Points} from '../../models/exercise.model';
+import {isLearnedLevel} from '../../services/learn.service';
 
 interface Result {
   exercise: ExerciseData;
@@ -9,6 +10,7 @@ interface Result {
   points: number;
   streak: string;
   tpe: number;
+  isLearned: boolean;
 }
 
 @Component({
@@ -28,6 +30,7 @@ export class LearnCompletedListComponent implements OnInit {
   exType = ExerciseType;
 
   ngOnInit() {
+    console.log(this.data);
     // show only 1 result per word
     let result: Result;
     this.data.forEach(exerciseData => {
@@ -42,10 +45,12 @@ export class LearnCompletedListComponent implements OnInit {
             isAlmostCorrect: exerciseData.data.isAlmostCorrect,
             points: exerciseData.data.points.totalmincorrect(),
             streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
-            tpe: exerciseData.exercise.tpe
+            tpe: exerciseData.exercise.tpe,
+            isLearned: exerciseData.data.learnLevel >= isLearnedLevel
           };
           this.results.push(result);
         } else {
+          const res = JSON.parse(JSON.stringify(result.exercise.data));
           result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
           result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;
           result.isAlmostCorrect = exerciseData.data.isCorrect ?
@@ -53,6 +58,7 @@ export class LearnCompletedListComponent implements OnInit {
           result.points += exerciseData.data.points.totalmincorrect();
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
           result.tpe = exerciseData.exercise.tpe;
+          result.isLearned = exerciseData.data.learnLevel >= isLearnedLevel ? true : result.isLearned;
         }
       }
     });

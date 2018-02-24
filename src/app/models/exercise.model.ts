@@ -109,6 +109,7 @@ export interface ExerciseExtraData {
   isLearned?: boolean;
   isCaseSensitive?: boolean;
   questionType?: QuestionType;
+  streak: string; // temporary streak for 1 session
 }
 
 export interface ExerciseData {

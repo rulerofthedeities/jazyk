@@ -31,6 +31,8 @@
               orange: !result.isCorrect && result.isAlmostCorrect,
               red: !result.isCorrect && !result.isAlmostCorrect}">
           </span>
+          <span class="fa fa-check" *ngIf="result.isLearned">
+          </span>
         </div>
         <div class="col-xs-1 icons">
           <span>
