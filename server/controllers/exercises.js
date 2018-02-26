@@ -53,10 +53,8 @@ getCourseWordCount = function(id) {
         wordExercises = [];
     const lessonIds = getActiveLessonIds(results.course.lessons);
     results.lessons.forEach(lesson => {
-      console.log('Is lesson active', lesson._id, lessonIds);
       if (lessonIds.find(id => id === lesson._id.toString())) {
         // lesson is active, add to count
-        console.log('> yes');
         totalCount += lesson.exercises.length;
         wordExercises = lesson.exercises.filter(exercise => exercise.tpe === 0);
         wordCount += wordExercises.length;

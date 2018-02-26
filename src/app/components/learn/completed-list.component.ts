@@ -46,7 +46,7 @@ export class LearnCompletedListComponent implements OnInit {
             points: exerciseData.data.points.totalmincorrect(),
             streak: exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0',
             tpe: exerciseData.exercise.tpe,
-            isLearned: exerciseData.data.learnLevel >= isLearnedLevel
+            isLearned: exerciseData.data.learnLevel >= isLearnedLevel && this.step === 'Practise'
           };
           this.results.push(result);
         } else {
@@ -58,7 +58,7 @@ export class LearnCompletedListComponent implements OnInit {
           result.points += exerciseData.data.points.totalmincorrect();
           result.streak += exerciseData.data.isCorrect ? '1' : exerciseData.data.isAlmostCorrect ? '2' : '0';
           result.tpe = exerciseData.exercise.tpe;
-          result.isLearned = exerciseData.data.learnLevel >= isLearnedLevel ? true : result.isLearned;
+          result.isLearned = exerciseData.data.learnLevel >= isLearnedLevel && this.step === 'Practise' ? true : result.isLearned;
         }
       }
     });
@@ -77,6 +77,6 @@ export class LearnCompletedListComponent implements OnInit {
 
   getForeignWord(result: Result): string {
     const word = result.exercise.exercise.foreign.word;
-    return word.replace(/\|/g,', ');
+    return word.replace(/\|/g, ', ');
   }
 }
