@@ -57,3 +57,7 @@ a:hover, a:active {
   color: white;
   text-decoration: underline;
 }
+.version {
+  font-size: 10px;
+  color: grey;
+}

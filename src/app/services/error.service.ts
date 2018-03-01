@@ -17,7 +17,7 @@ export class ErrorService {
     if (error) {
       console.error('error', error);
       title = error.title || title;
-      if (error._body) {
+      if (error._body && error.body[0] === '{') {
         const body = JSON.parse(error._body);
         msg = body.title;
       } else {

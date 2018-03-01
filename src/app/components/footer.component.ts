@@ -5,6 +5,7 @@ import {UtilsService} from '../services/utils.service';
 import {ErrorService} from '../services/error.service';
 import {SharedService} from '../services/shared.service';
 import {EventMessage} from '../models/error.model';
+import {environment} from '../../environments/environment';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -20,6 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   isReady = false;
   lastEventMessage: string;
   showLog = false;
+  appVersion = environment.version;
 
   @ViewChild('log') logElement: ElementRef;
   @ViewChild('message') messageElement: ElementRef;
