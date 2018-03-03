@@ -478,7 +478,7 @@ export abstract class Step {
     if (this.doAddExercise(answer, question, learnLevel)) {
       this.addExercise(this.currentData.data.isCorrect, this.currentData.data.isAlmostCorrect);
     }
-    console.log('points', this.currentData.data.points, this.currentData.data.points.total());
+    this.sharedService.log('Points', this.currentData.data.points);
     this.levelUpdated.next(learnLevel);
     this.pointsEarned.next(this.currentData.data.points.total());
     this.nextExercise.next(this.current); // For bullets update

@@ -30,7 +30,6 @@ export class LearnCompletedListComponent implements OnInit {
   exType = ExerciseType;
 
   ngOnInit() {
-    console.log(this.data);
     // show only 1 result per word
     let result: Result;
     this.data.forEach(exerciseData => {

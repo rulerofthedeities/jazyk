@@ -1,5 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {EventMessage} from '../models/error.model';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class SharedService {
@@ -35,5 +36,12 @@ export class SharedService {
 
   get eventMessageList(): EventMessage[] {
     return this.eventMessages;
+  }
+
+  // Dev log
+  log(label: string, msg: any, tpe = 'info') {
+    if (!environment.production) {
+      console.log(label + ':', JSON.stringify(msg, undefined, 2));
+    }
   }
 }
