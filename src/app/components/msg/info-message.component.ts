@@ -3,7 +3,7 @@ import {Component, Input} from '@angular/core';
 @Component({
   selector: 'km-info-msg',
   template: `
-    <div class="msg info" *ngIf="msg">
+    <div class="msg info more-transparant" *ngIf="msg">
       <span class="fa fa-info-circle"></span>
       <span class="text">{{msg}}</span>
     </div>`,

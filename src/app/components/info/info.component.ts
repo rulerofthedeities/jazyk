@@ -12,7 +12,7 @@ interface Page {
 
 @Component({
   template: `
-  <div class="panel panel-default">
+  <div class="panel panel-default transparant">
     <div class="panel-heading">
       <span class="fa fa-info-circle fa-spacing-title"></span>{{page?.title}}
     </div>

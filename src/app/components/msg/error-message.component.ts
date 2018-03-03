@@ -8,7 +8,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-error-msg',
   template: `
-    <div class="msg error" *ngIf="msg">
+    <div class="msg error more-transparant" *ngIf="msg">
       <span class="fa fa-exclamation-circle"></span>
       <span class="text">{{msg}}</span>
     </div>`,

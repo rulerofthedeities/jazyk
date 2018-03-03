@@ -1,6 +1,5 @@
 .header, .footer {
   display: block;
-  background-color: rgba(239, 239, 239, .9);
   padding: 16px;
   border-radius: 6px;
   margin: 0 -15px 15px -15px;

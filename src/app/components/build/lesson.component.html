@@ -7,14 +7,14 @@
     [showLink]="true">
   </km-build-course-header-bar>
 
-  <h2 *ngIf="!isEditMode && isEditor()" class="header">
+  <h2 *ngIf="!isEditMode && isEditor()" class="header transparant">
     {{lesson?.name}}
     <div class="btn btn-warning" (click)="onEditLesson()">
       <span class="fa fa-cog"></span> {{text["Settings"]}}
     </div>
   </h2>
 
-  <km-build-lesson-header *ngIf="isEditMode" class="header"
+  <km-build-lesson-header *ngIf="isEditMode" class="header transparant"
     [lesson]="lesson"
     [regions]="configs?.foreign.regions"
     [defaults]="course.defaults"
@@ -44,7 +44,7 @@
       (removedExercise)="onExerciseRemoved($event)">
     </km-exercise-list>
 
-    <div class="footer" *ngIf="isEditor()">
+    <div class="footer transparant" *ngIf="isEditor()">
       <div *ngIf="!isNewExercise; else addExercise">
         <div align="" class="btn btn-success btn-lg" (click)="onNewWord()">
           <span class="fa fa-font fa-spacing"></span>
