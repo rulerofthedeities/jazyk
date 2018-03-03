@@ -65,6 +65,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   exercisesInterrupted: Subject<boolean> = new Subject();
   stepcountUpdated: BehaviorSubject<Map<StepCount>> = new BehaviorSubject<Map<StepCount>>({});
   lessonChanged: Subject<Lesson> = new Subject();
+  continueCourseLevel: Subject<boolean> = new Subject();
   level = Level;
   isDemo: boolean;
   rankKey: string;
@@ -91,9 +92,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   stepTo(i: number) {
-    this.errorService.clearError();
-    this.currentStep = i;
-    this.courseLevel = this.steps[i].level;
+    if (this.currentStep !== i) {
+      this.errorService.clearError();
+      this.currentStep = i;
+      this.courseLevel = this.steps[i].level;
+    } else if (this.courseLevel === Level.Course){
+      // Continue course level
+    console.log('continue course', i);
+      this.continueCourseLevel.next(true);
+    }
   }
 
   getGender(): string {

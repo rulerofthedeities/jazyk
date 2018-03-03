@@ -105,6 +105,7 @@
         [settings]="settings"
         [exercisesInterrupted]="exercisesInterrupted"
         [stepcountUpdated]="stepcountUpdated"
+        [continueCourseLevel]="continueCourseLevel"
         (stepCompleted)="onStepCompleted('review', $event)"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-review>
@@ -115,6 +116,7 @@
         [settings]="settings"
         [exercisesInterrupted]="exercisesInterrupted"
         [stepcountUpdated]="stepcountUpdated"
+        [continueCourseLevel]="continueCourseLevel"
         (stepCompleted)="onStepCompleted('difficult', $event)"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-difficult>

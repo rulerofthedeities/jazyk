@@ -6,6 +6,7 @@ import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
+import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
 // piggyback lesson options with exercise for course reviews
@@ -21,6 +22,7 @@ interface ExercisePlusOptions {
 })
 
 export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
+  @Input() private continueCourseLevel: Subject<boolean>;
 
   constructor(
     learnService: LearnService,
@@ -34,9 +36,14 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentStep = 'difficult';
     this.getDifficult();
+    this.checkToContinue();
   }
 
   onContinueDifficult() {
+    this.continueDifficult();
+  }
+
+  private continueDifficult() {
     this.clearToContinue();
     this.getDifficult();
   }
@@ -61,10 +68,21 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
       this.isReady = true;
       super.init();
     } else {
+      this.exerciseData = [];
       this.noMoreExercises = true;
+      this.isExercisesDone = true;
       this.isCountDown = false;
       this.isReady = true;
     }
+  }
+
+  private checkToContinue() {
+    // User continues review from course tabs
+    this.continueCourseLevel
+    .takeWhile(() => this.componentActive)
+    .subscribe(event => {
+      this.continueDifficult();
+    })
   }
 
   ngOnDestroy() {
