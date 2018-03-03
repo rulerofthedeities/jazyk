@@ -53,7 +53,10 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
     .fetchDifficult(this.course._id, this.settings.nrOfWordsReview)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => this.setExercises(data.difficult, data.results),
+      data => {
+        console.log('difficult results', data.results);
+        this.setExercises(data.difficult, data.results)
+      },
       error => this.errorService.handleError(error)
     );
   }

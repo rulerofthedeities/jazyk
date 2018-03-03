@@ -15,7 +15,6 @@ var resultSchema = new Schema({
   dt: {type: Date, default: Date.now},
   dtToReview: Date,
   daysBetweenReviews: Number,
-  percentOverdue: Number,
   streak: String,
   sequence: Number, // To find the last saved doc for docs with same save time
   isLast: Boolean, // True if it is the last doc of a learn session

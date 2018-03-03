@@ -104,6 +104,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
       lastResult = lastResults.find(last => last.exerciseId === countResult.exerciseId);
       Object.assign(countResult, lastResult);
     });
+    console.log('combined results', countResults);
     this.buildExerciseData(countResults);
   }
 

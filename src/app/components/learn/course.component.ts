@@ -450,6 +450,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
       const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
       data.forEach( (item, i) => {
+        console.log('item', item);
         item.data.points.correct = correctBonus;
         pointsEarned += item.data.points.total();
         streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
@@ -555,6 +556,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           // Calculate review time
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
           this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+        } else if (this.courseLevel === Level.Course) {
+          // copy review time over to new doc
+          // const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
+          // console.log('previous result', exercise.result);
+          // lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
         }
         lastResult[key].isLast = true;
       }
@@ -584,7 +590,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         newDaysBetweenReviews = daysBetweenReviews * Math.max(0.25, 1 / (Math.pow(difficultyWeight, 2)));
       }
       result.daysBetweenReviews = newDaysBetweenReviews;
-      result.percentOverdue = percentOverdue;
     }
   }
 
@@ -592,11 +597,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Checks if the word has to be put in the difficult step
     let isDifficult = false;
     if ((step !== 'study') && streak) {
-      // Check how many incorrect in last 5 results
-      let tmpStreak = streak.slice(-5);
-      let correctCount = (tmpStreak.match(/1/g) || []).length;
-      let inCorrectCount = tmpStreak.length - correctCount;
+      let tmpStreak = streak.slice(-5),
+          correctCount = (tmpStreak.match(/1/g) || []).length,
+          inCorrectCount = tmpStreak.length - correctCount;
       if (inCorrectCount > 1) {
+      // Check how many incorrect in last 5 results
+        console.log('Difficult (last five)', tmpStreak, inCorrectCount);
         isDifficult = true;
       } else {
         // Check how many incorrect in last 10 results
@@ -604,6 +610,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         correctCount = (tmpStreak.match(/1/g) || []).length;
         inCorrectCount = tmpStreak.length - correctCount;
         if (inCorrectCount > 2) {
+          console.log('Difficult (last ten)', tmpStreak, inCorrectCount);
           isDifficult = true;
         }
       }

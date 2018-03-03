@@ -62,7 +62,6 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       isLearned: doc.isLearned,
       timeDelta: doc.timeDelta,
       daysBetweenReviews: doc.daysBetweenReviews,
-      percentOverdue: doc.percentOverdue,
       streak: doc.streak,
       isLast: doc.isLast,
       isCorrect: doc.isCorrect,
@@ -95,7 +94,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   })
 }
 
-getCourseExercises = function(courseId, data, cb) {
+getCourseExercisesPipeline = function(courseId, data) {
   // piggyback lesson options with exercise for course reviews
   const exerciseIds = data.map(item => item.exerciseId),
         query = {'exercises._id': {$in: exerciseIds}},
@@ -105,6 +104,11 @@ getCourseExercises = function(courseId, data, cb) {
           {$match: query},
           {$project: {_id: 0, exercise: '$exercises', 'options': '$options'}}
         ];
+  return pipeline;
+}
+
+getCourseExercises = function(courseId, data, cb) {
+  const pipeline = getCourseExercisesPipeline(courseId, data);
   Lesson.aggregate(pipeline, function(err, exercises) {
     cb(err, exercises || []);
   });
@@ -144,13 +148,15 @@ getStepCounts = async (req, res) => {
             courseId,
             isLast: true,
             isRepeat: false,
+            isLearned: true, 
             isDeleted: false
           },
           reviewQuery = {
             userId,
             courseId,
             isLast: true,
-            isLearned: true,
+            isLearned: true, 
+            $or: [{step: 'practise', step: 'review'}],
             isRepeat: false,
             isDeleted: false,
             daysBetweenReviews: {$gt: 0}
@@ -490,6 +496,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
+            isLearned: true, 
             isRepeat: false,
             isDeleted: false
           },
@@ -530,22 +537,33 @@ module.exports = {
     });
   },
   getToReview: function(req, res) {
+    // To review is fetched from review of practise steps
+    // But for the streak we also need difficult step !!!
     const parms = req.query,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           courseId = new mongoose.Types.ObjectId(req.params.courseId),
           limit = parms.max ? parseInt(parms.max) : 10,
           sort = {dt: -1, sequence: -1},
-          query = {
+          toReviewQuery = {
+            userId,
+            courseId,
+            isLast: true,
+            isLearned: true, 
+            $or: [{step: 'practise', step: 'review'}],
+            isRepeat: false,
+            isDeleted: false,
+            daysBetweenReviews: {$gt: 0}
+          },
+          latestQuery = {
             userId,
             courseId,
             isLast: true,
             isLearned: true, 
             isRepeat: false,
-            isDeleted: false,
-            daysBetweenReviews: {$gt: 0}
+            isDeleted: false
           },
-          pipeline = [
-            {$match: query},
+          toReviewPipeline = [
+            {$match: toReviewQuery},
             {$sort: sort},
             {$group: {
               _id: '$exerciseId',
@@ -569,13 +587,39 @@ module.exports = {
               daysBetweenReviews: '$daysBetweenReviews',
               lessonId: '$lessonId'
             }}
+          ],
+          latestPipeline = [
+            {$match: latestQuery},
+            {$sort: sort},
+            {$group: {
+              _id: '$exerciseId',
+              streak: {'$first': '$streak'},
+              learnLevel: {'$first': '$learnLevel'}
+            }},
           ];
-    Result.aggregate(pipeline, function(err, results) {
+
+    const getReviewData = async (results) => {
+      const exercisesPipeline = getCourseExercisesPipeline(courseId, results),
+            exercises = await Lesson.aggregate(exercisesPipeline),
+            latest = await Result.aggregate(latestPipeline);
+      // Combine data
+      let latestOne;
+      results.forEach(result => {
+        latestOne = latest.find(l => l._id.toString() === result.exerciseId.toString());
+        if (latestOne) {
+          result.streak = latestOne.streak;
+          result.learnLevel = latestOne.learnLevel;
+        }
+      })
+      return {exercises: exercises || [], latest};
+    };
+
+    Result.aggregate(toReviewPipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
-        getCourseExercises(courseId, results, function(err, toreview) {
-          response.handleError(err, res, 400, 'Error fetching to review exercises', function(){
-            response.handleSuccess(res, {toreview, results}, 200, 'Fetched to review exercises');
-          });
+        getReviewData(results).then((data) => {
+          response.handleSuccess(res, {toreview: data.exercises, results}, 200, 'Fetched overview results');
+        }).catch((err) => {
+          response.handleError(err, res, 400, 'Error fetching overview results');
         });
       });
     });

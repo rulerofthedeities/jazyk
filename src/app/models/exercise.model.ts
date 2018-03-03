@@ -62,7 +62,6 @@ export interface ExerciseResult {
   dt?: Date;
   dtToReview?: Date;
   daysBetweenReviews?: number;
-  percentOverdue?: number;
   streak?: string;
 }
 
