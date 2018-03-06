@@ -73,6 +73,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
         toReview = true;
       }
     }
+    console.log(result.exerciseId, result.dtToReview, toReview);
     return toReview;
   }
 

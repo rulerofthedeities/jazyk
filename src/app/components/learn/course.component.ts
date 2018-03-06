@@ -557,10 +557,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
           this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
         } else if (this.courseLevel === Level.Course) {
-          // copy review time over to new doc
-          // const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          // console.log('previous result', exercise.result);
-          // lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
+          // copy review time over to new doc - for overview step
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
+          console.log('previous result', exercise.result);
+          lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
         }
         lastResult[key].isLast = true;
       }
