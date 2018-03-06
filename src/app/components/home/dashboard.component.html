@@ -35,13 +35,13 @@
           <a class="list-group-item"
             *ngFor="let message of communications; let i=index" 
             (click)="onSelectMessage(i)">
-            <span class="fa icon"  
+            <span class="fa fa-spacing"  
               [ngClass]="{
                 'fa-envelope-o': message.tpe==='message',
                 'fa-bell-o': message.tpe==='notification'
               }">
             </span>
-            <span class="fa"  
+            <span class="fa fa-spacing"  
               [ngClass]="{
                 'fa-circle': !message.read,
                 'fa-circle-o': message.read,

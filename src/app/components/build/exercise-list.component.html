@@ -35,7 +35,7 @@
         <div class="items">
           {{i + 1}}. 
           <span class="item active">
-            <span class="fa" [ngClass]="{
+            <span class="fa fa-spacing" [ngClass]="{
               'fa-font': exercise.tpe === exType.Word,
               'fa-list-alt': exercise.tpe === exType.Select,
               'fa-comments': exercise.tpe === exType.QA,
@@ -47,7 +47,7 @@
             </span>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
-            <span class="fa fa-volume-up"></span>
+            <span class="fa fa-volume-up fa-spacing"></span>
           </span>
           <span class="item" [class.active]="!!exercise.image">
             <span class="fa fa-camera"></span>
@@ -65,14 +65,15 @@
                 </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
                   <strong>{{exercise.foreign?.word}}</strong>
-                </span> / 
+                </span>
+                <span class="separator">/</span>
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
                   [thumb]="true">
                 </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
-                  {{exercise.local?.word}}
+                  <span>{{exercise.local?.word}}</span>
                 </span>
                 <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
               </div>

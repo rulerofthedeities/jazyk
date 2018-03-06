@@ -58,9 +58,6 @@
 .content.truncate {
   width: 180px;
 }
-.icon {
-  margin-right: 3px;
-}
 .list-group-item {
   cursor: pointer;
 }

@@ -64,7 +64,7 @@
             id="status" 
             (click)="onToggle('isPublic')"
             [ngClass]="{'disabled':isSaving}">
-            <span class="fa" [ngClass]="{
+            <span class="fa fa-spacing" [ngClass]="{
               'fa-lock': !course.isPublic,
               'fa-user': course.isPublic}">
             </span>
@@ -74,7 +74,7 @@
             class="btn btn-default"
             (click)="onToggle('isPublished')"
             [ngClass]="{disabled:isSaving||course.isPublished}">
-            <span class="fa" [ngClass]="{
+            <span class="fa fa-spacing" [ngClass]="{
               'fa-power-off': !course.isPublished,
               'fa-wifi': course.isPublished}">
             </span>
@@ -84,7 +84,7 @@
             class="btn btn-default"
             (click)="onToggle('isInProgress')"
             [ngClass]="{disabled:isSaving}">
-            <span class="fa" [ngClass]="{
+            <span class="fa fa-spacing" [ngClass]="{
               'fa-industry': course.isInProgress,
               'fa-check': !course.isInProgress}">
             </span>

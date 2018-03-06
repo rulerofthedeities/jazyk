@@ -25,3 +25,6 @@ km-toggle {
   position: relative;
   top: 12px;
 }
+.btn-group > .btn {
+  margin-right: 0;
+}

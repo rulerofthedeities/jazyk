@@ -7,6 +7,7 @@ body {
   border-radius: 3px;
   width: 30px;
   height: 20px;
+  margin-right: 3px;
 }
 .flag-from {
   font-size: 10px;
@@ -54,6 +55,9 @@ body {
 }
 .fa-spacing-title {
   margin-right: 12px;
+}
+.btn {
+  margin-right: 3px;
 }
 
 /* ng2-dnd */

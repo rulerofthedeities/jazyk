@@ -4,15 +4,15 @@
     [word]="course?.defaults">
   </km-region-flag>
   <span class="access pull-right">
-    <span class="fa fa-key fa-spacing"></span>{{getAccess()}}
+    <span class="fa fa-key fa-spacing-title"></span>{{getAccess()}}
   </span>
-  <a routerLink="/build/course/{{course._id}}" *ngIf="showLink">{{course.name}}</a>
-  <span *ngIf="!showLink">
-    {{course.name}}
-  </span>
+  <a *ngIf="showLink"
+    routerLink="/build/course/{{course._id}}"
+    class="title">{{course.name}}</a>
+  <span *ngIf="!showLink" class="title">{{course.name}}</span>
   <span class="indicators" *ngIf="!showLink"
     [class.edit]="canEditCourse">
-    <span class="fa"
+    <span class="fa fa-spacing"
       [ngClass]="{
         'disabled': savingData?.isPublic,
         'fa-lock': !course.isPublic,
@@ -21,7 +21,7 @@
       [tooltipPlacement]="'top'"
       (click)="onToggle('isPublic')">
     </span>
-    <span class="fa"
+    <span class="fa fa-spacing"
       [ngClass]="{
         'disabled': savingData?.isPublished,
         'fa-power-off': !course.isPublished,
@@ -30,7 +30,7 @@
         [tooltipPlacement]="'top'"
       (click)="onToggle('isPublished')">
     </span>
-    <span class="fa"
+    <span class="fa fa-spacing"
       [ngClass]="{
         'disabled': savingData?.isPublished,
         'fa-industry': course.isInProgress,

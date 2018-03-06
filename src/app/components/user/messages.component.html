@@ -17,7 +17,7 @@
           (click)="onMarkAllRead()">
           <a>
             <button class="btn btn-warning btnicon">
-              <span class="fa fa-check"></span>
+              <span class="fa fa-check fa-spacing"></span>
             </button>
             {{text["MarkAllRead"]}}
           </a>
@@ -26,7 +26,7 @@
           (click)="onDeleteAllRead()">
           <a>
             <button class="btn btn-danger btnicon">
-              <span class="fa fa-trash"></span>
+              <span class="fa fa-trash fa-spacing"></span>
             </button>
             {{text["DeleteAllReadMessages"]}}
           </a>
@@ -35,7 +35,7 @@
           (click)="onEmptyTrash()">
           <a>
             <button class="btn btn-danger btnicon">
-              <span class="fa fa-trash-o"></span>
+              <span class="fa fa-trash-o fa-spacing"></span>
             </button>
             {{text["EmptyTrash"]}}
           </a>
@@ -44,7 +44,7 @@
         <li (click)="onCreateMessage()">
           <a>
             <button class="btn btn-primary btnicon">
-              <span class="fa fa-file-o"></span>
+              <span class="fa fa-file-o fa-spacing"></span>
             </button>
             {{text["NewMessage"]}}
           </a>
@@ -91,13 +91,13 @@
           <a class="list-group-item"
             *ngFor="let message of messages; let i=index" 
             (click)="onSelectMessage(i)">
-            <span class="fa"  
+            <span class="fa fa-spacing"  
               *ngIf="isRecipient(message)"
               [ngClass]="{
               'fa-circle': !message.recipient.read,
               'fa-circle-o': message.recipient.read}">
             </span>
-            <span class="fa"
+            <span class="fa fa-spacing"
               [class.fa-retweet]="message.parentId ? true : false"
             ></span>
             <span class="user truncate">

@@ -9,7 +9,7 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-error-msg',
   template: `
     <div class="msg error more-transparant" *ngIf="msg">
-      <span class="fa fa-exclamation-circle"></span>
+      <span class="fa fa-exclamation-circle fa-spacing"></span>
       <span class="text">{{msg}}</span>
     </div>`,
   styleUrls: ['msg.css']

@@ -55,7 +55,7 @@
       *ngFor="let notification of notifications; let i=index"
       class="list-group-item"
       (click)="onSelectNotification(i)">
-      <span class="read fa" [ngClass]="{
+      <span class="read fa fa-spacing" [ngClass]="{
         'fa-circle':!notification.read,
         'fa-circle-o': notification.read}">
       </span>
