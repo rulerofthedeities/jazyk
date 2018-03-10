@@ -156,10 +156,11 @@ module.exports = {
             isPublished: true
           },
           projection = {
-            name:1,
-            image:1,
+            name: 1,
+            image: 1,
             totalCount: 1,
-            languagePair:1
+            languagePair: 1,
+            defaults: 1
           },
           options = {
             sort: {totalCount: -1}

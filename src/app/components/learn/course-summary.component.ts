@@ -6,7 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
-import {TooltipModule} from "ngx-tooltip";
+import {TooltipModule} from 'ngx-tooltip';
 
 interface BadgeData {
   review?: number;
@@ -58,7 +58,8 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
-    this.defaultImage = this.getDefaultImagePath();
+    this.defaultImage = this.utilsService.getDefaultCourseImagePath(this.course);
+    this.regionTo = this.utilsService.getRegionTo(this.course);
     if (this.tpe === CourseListType.Learn || this.tpe === CourseListType.Home) {
       this.getCourseData();
     }
@@ -149,13 +150,6 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-  }
-
-  private getDefaultImagePath(): string {
-    const from = this.course.languagePair.from,
-          path = this.utilsService.awsPath + 'images/courses/default/';
-    this.regionTo = this.course.defaults.region || this.course.languagePair.to;
-    return 'https://' + path + from + '-' + this.regionTo + '-course.jpg';
   }
 
   private log(message: string) {

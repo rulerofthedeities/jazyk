@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
-import {Translation, Dependables} from '../models/course.model';
+import {Course, Translation, Dependables} from '../models/course.model';
 import {retry, delay, map} from 'rxjs/operators';
 
 @Injectable()
@@ -107,6 +107,23 @@ export class UtilsService {
 
   get awsPath(): string {
     return this._awsPath;
+  }
+
+  getDefaultCourseImagePath(course: Course): string {
+    const from = course.languagePair.from,
+          path = this.awsPath + 'images/courses/default/',
+          regionTo = this.getRegionTo(course);
+    return 'https://' + path + from + '-' + regionTo + '-course.jpg';
+  }
+
+  getRegionTo(course: Course): string {
+    if (course) {
+      if (course.defaults) {
+        return course.defaults.region || course.languagePair.to;
+      } else {
+        return course.languagePair.to;
+      }
+    }
   }
 
   getWordTypes(): string[] {

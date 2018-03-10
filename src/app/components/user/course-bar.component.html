@@ -1,12 +1,12 @@
 <div class="list-group">
   <a class="list-group-item">
     <div class="image">
-      <img src="/assets/img/courses/{{course.image}}">
+      <img src="{{course?.image || defaultImage}}">
     </div>
     <div class="flags pull-right">
       <img src="/assets/img/flags/{{course.languagePair.from}}.png" class="flag" />
       <span class="fa fa-arrow-right"></span>
-      <img src="/assets/img/flags/{{course.languagePair.to}}.png" class="flag" />
+      <img src="/assets/img/flags/{{regionTo}}.png" class="flag" />
     </div>
     <div class="name">{{course.name}}</div>
     <div class="content">
