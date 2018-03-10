@@ -7,7 +7,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig, LanConfigs, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseType, RegionAudio} from '../../models/exercise.model';
-import {Filter, WordPair, WordPairDetail, WordDetail, File} from '../../models/word.model';
+import {Filter, WordPair, WordPairDetail, WordDetail, File, Media} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
 import 'rxjs/add/operator/debounceTime';
 
@@ -345,7 +345,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       .fetchMedia(this.currentExercise.wordDetailId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        media => {
+        (media: Media) => {
           if (media) {
             this.images = media.images;
             this.audios = media.audios;
@@ -436,9 +436,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       if (options.isGenus) {
         exercise.tpe = ExerciseType.Genus;
         exercise.wordTpe = foreign.wordTpe;
-        if (foreign.audios) {
-          exercise.audio = foreign.audios[0].s3;
-        }
+        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
         exercise.genus = foreign.genus;
         exercise.options = this.config.genera.join('|');
       }
@@ -447,9 +445,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       if (options.isArticle) {
         exercise.tpe = ExerciseType.Article;
         exercise.wordTpe = foreign.wordTpe;
-        if (foreign.audios) {
-          exercise.audio = foreign.audios[0].s3;
-        }
+        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
         exercise.article = foreign.article;
         exercise.options = this.config.articles.join('|');
         exercise.local.word = local.article + ' ' + formValues.localWord;
@@ -614,7 +610,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       .addExercises(this.saveExercises, this.lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        savedExercises => {
+        (savedExercises: Exercise[]) => {
           this.addedExercises.emit(savedExercises);
           this.exerciseForm.reset();
           this.isSaving = false;
@@ -763,7 +759,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       .fetchFilterWordPairs(filter, this.languagePair)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        wordpairs => {
+        (wordpairs: WordPair[]) => {
           let word, score;
           const filteredList = [];
           wordpairs.forEach(wp => {

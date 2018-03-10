@@ -3,12 +3,6 @@ import {Exercise, ExerciseSteps} from './exercise.model';
 export enum CourseListType {Learn, Teach, All, Home};
 export enum AccessLevel {None, Reader, Author, Editor, Manager, Owner};
 
-export interface StepCount {
-  nrDone: number;
-  nrRemaining: number;
-  step?: string;
-}
-
 export interface Language {
   name: string;
   nativeName: string;
@@ -116,6 +110,22 @@ export interface Lesson {
   rehearseStep?: string; // For repeats
 }
 
+export interface LessonHeader {
+  _id: string;
+  name: string;
+  chapterName: string;
+}
+
+export interface LessonResult {
+  _id: string;
+  studied: number;
+  learned: number;
+  total: number; // total nr of exercises in the lesson
+  totalwords: number; // nr of exercises op tpe 0 (words) for study count
+  hasStarted?: boolean;
+  hasCompleted?: boolean;
+}
+
 export interface Translation {
   key: string;
   txt: string;
@@ -128,3 +138,32 @@ export interface Step {
   level: Level;
   alwaysShown: boolean;
 }
+
+export interface StepCount {
+  nrDone: number;
+  nrRemaining: number;
+  step?: string;
+}
+
+export interface StepData {
+  lesson: StepCount[];
+  difficult: number;
+  review: number;
+}
+
+export interface Intro {
+  intro: string;
+}
+
+export interface Dependables {
+  translations: Translation[];
+  languages: Language[];
+}
+
+export interface DependableOptions {
+  lan?: string;
+  component?: string;
+  getTranslations?: boolean;
+  getLanguages?: boolean;
+}
+

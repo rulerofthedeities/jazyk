@@ -10,8 +10,8 @@ module.exports = {
           query = {userId, followId: userIdToFollow},
           update = {follow: true};
     Follow.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
-      response.handleError(err, res, 500, 'Error following user', () => {
-        response.handleSuccess(res, true, 200, 'Followed user');
+      response.handleError(err, res, 400, 'Error following user', () => {
+        response.handleSuccess(res, true);
       });
     });
   },
@@ -21,8 +21,8 @@ module.exports = {
           query = {userId, followId: userIdToUnFollow},
           update = {follow: false};
     Follow.findOneAndUpdate(query, update, (err, result) => {
-      response.handleError(err, res, 500, 'Error unfollowing user', () => {
-        response.handleSuccess(res, false, 200, 'Unfollowed user');
+      response.handleError(err, res, 400, 'Error unfollowing user', () => {
+        response.handleSuccess(res, true);
       });
     });
   },
@@ -33,14 +33,14 @@ module.exports = {
         projection = {_id: 0, followId:1};
 
     Follow.find(query, projection, (err, result) => {
-      response.handleError(err, res, 500, 'Error fetching followers', () => {
+      response.handleError(err, res, 400, 'Error fetching followers', () => {
         follows.follows = result;
         query = {followId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
         projection = {_id: 0, userId:1};
         Follow.find(query, projection, (err, result) => {
           follows.followed = result;
-          response.handleError(err, res, 500, 'Error fetching followed', () => {
-            response.handleSuccess(res, follows, 200, 'Fetched followers');
+          response.handleError(err, res, 400, 'Error fetching followed', () => {
+            response.handleSuccess(res, follows);
           });
         });
       });
@@ -56,7 +56,7 @@ module.exports = {
             {$project: {_id:0, recipient: '$_id.a'}}
           ];
     Follow.aggregate(pipeline, function(err, recipients) {
-      response.handleError(err, res, 500, 'Error fetching recipients', () => {
+      response.handleError(err, res, 400, 'Error fetching recipients', () => {
         users.getMailData(req, res, recipients);
       });
     })

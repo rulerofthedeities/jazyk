@@ -61,3 +61,6 @@
 .list-group-item {
   cursor: pointer;
 }
+.points {
+  color: black;
+}

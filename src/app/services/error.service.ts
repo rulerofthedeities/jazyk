@@ -1,33 +1,27 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Error, UserError} from '../models/error.model';
 import {Observable} from 'rxjs/Observable';
+import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 
 @Injectable()
 export class ErrorService {
   errorOccurred = new EventEmitter<Error>();
 
   constructor(
-    private http: Http
+    private http: HttpClient
   ) {}
 
   handleError(error: any) {
     let msg = 'unknown error message',
         title = 'error';
-    if (error) {
+    if (error.error) { // server side error
       console.error('error', error);
-      title = error.title || title;
-      if (error._body && error.body[0] === '{') {
-        const body = JSON.parse(error._body);
-        msg = body.title;
-      } else {
-        msg = error.message;
-        if (error.error) {
-          msg = error.error.error || error.error.message || msg;
-        }
-      }
-      this.errorOccurred.emit({title, msg});
+      title = error.error.title || title;
+      msg = error.message;
+      this.errorOccurred.emit({title, msg}); // Send info to error message componen
     }
+    return new ErrorObservable('Something bad happened; please try again later.');
   }
 
   clearError() {
@@ -71,11 +65,10 @@ export class ErrorService {
 
   private logError(err: UserError) {
     err.module = 'en';
-    const headers = new Headers({'Content-Type': 'application/json'});
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
     return this.http
-    .post('/api/error', JSON.stringify(err), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .post('/api/error', JSON.stringify(err), {headers});
   }
 
 }

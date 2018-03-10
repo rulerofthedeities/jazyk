@@ -1,19 +1,18 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
-import {User, LearnSettings, MainSettings, JazykConfig, Profile, Message, PublicProfile, Notification} from '../models/user.model';
+import {User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
+        Profile, Message, PublicProfile, Notification, Network} from '../models/user.model';
 import {Language, Course, UserAccess, AccessLevel} from '../models/course.model';
+import {CourseScore} from '../models/score.model';
 import {AuthService} from './auth.service';
 import {Subscription} from 'rxjs/Subscription';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/takeWhile';
-
+import {retry, delay, map} from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
@@ -25,27 +24,25 @@ export class UserService {
   messageRead = new EventEmitter<boolean>();
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private authService: AuthService
   ) {}
 
-  getUserData() {
+  getUserData(): Observable<User> {
     if (this._user) {
       return Observable.of(this._user);
     } else {
       if (this.authService.isLoggedIn()) {
         const headers = this.getTokenHeaders();
         return this.http
-        .get('/api/user', {headers})
-        .map(response => response.json().obj)
+        .get<User>('/api/user', {headers})
         .do(data => {
           this._user = data;
           if (!data) {
             // user not found, get default user data
             return this.getDefaultUserData(null);
           }
-        })
-        .catch(error => Observable.throw(error));
+        });
       } else {
         return this.getDefaultUserData(null);
       }
@@ -63,13 +60,12 @@ export class UserService {
       // Get default language
       learnLan = languages[0];
     }
-
     return learnLan;
   }
 
   getDefaultUserData(queryLan: string) {
-    const interfaceLan = this.getUserLan(queryLan);
-    const user: User = this.getAnonymousUser(interfaceLan);
+    const interfaceLan = this.getUserLan(queryLan),
+          user: User = this.getAnonymousUser(interfaceLan);
     this._user = user;
     return Observable.of(user);
   }
@@ -162,277 +158,227 @@ export class UserService {
     };
   }
 
-  getLearnSettings() {
+  getLearnSettings(): Observable<LearnSettings> {
+        console.log('getting learn settings');
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/settings/learn', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<LearnSettings>('/api/user/settings/learn', {headers})
+    .pipe(retry(3));
   }
 
-  saveLearnSettings(settings: LearnSettings) {
+  saveLearnSettings(settings: LearnSettings): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/settings/learn', JSON.stringify(settings), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<boolean>('/api/user/settings/learn', JSON.stringify(settings), {headers});
   }
 
-  saveMainSettings(settings: MainSettings) {
+  saveMainSettings(settings: MainSettings): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/settings/main', JSON.stringify(settings), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<boolean>('/api/user/settings/main', JSON.stringify(settings), {headers});
   }
 
-  getProfile() {
+  getProfile(): Observable<Profile> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/profile', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Profile>('/api/user/profile', {headers})
+    .pipe(retry(3));
   }
 
-  saveProfile(profile: Profile) {
+  saveProfile(profile: Profile): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/profile', JSON.stringify(profile), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<boolean>('/api/user/profile', JSON.stringify(profile), {headers});
   }
 
-  getPublicProfile(user: string) {
-    const headers = this.getTokenHeaders();
-    const filteredUser = user.slice(0, 25);
+  getPublicProfile(user: string): Observable<PublicProfile> {
+    const headers = this.getTokenHeaders(),
+          filteredUser = user.slice(0, 25);
     return this.http
-    .get('/api/user/profile/' + filteredUser, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<PublicProfile>('/api/user/profile/' + filteredUser, {headers})
+    .pipe(retry(3));
   }
 
-  getPublicProfileById(userId: string) {
+  getPublicProfileById(userId: string): Observable<PublicProfile> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/profileId/' + userId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<PublicProfile>('/api/user/profileId/' + userId, {headers})
+    .pipe(retry(3));
   }
 
-  saveNotification(notification: Notification) {
+  saveNotification(notification: Notification): Observable<Notification> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/notification', JSON.stringify(notification), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<Notification>('/api/user/notification', JSON.stringify(notification), {headers});
   }
 
-  fetchNotifications() {
+  fetchNotifications(): Observable<Notification[]> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/notifications', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Notification[]>('/api/user/notifications', {headers})
+    .pipe(retry(3));
   }
 
-  fetchNotification(notificationId: string) {
+  fetchNotification(notificationId: string): Observable<Notification> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/notification/' + notificationId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Notification>('/api/user/notification/' + notificationId, {headers})
+    .pipe(retry(3));
   }
 
-  deleteNotification(notificationId: string) {
+  deleteNotification(notificationId: string): Observable<Notification> {
     const headers = this.getTokenHeaders();
     return this.http
-    .delete('/api/user/notification/' + notificationId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .delete<Notification>('/api/user/notification/' + notificationId, {headers});
   }
 
-  deleteReadNotifications() {
+  deleteReadNotifications(): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .delete('/api/user/notifications/', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .delete<boolean>('/api/user/notifications', {headers});
   }
 
-  fetchNotificationsCount() {
+  fetchNotificationsCount(): Observable<number> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/notificationscount', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<number>('/api/user/notificationscount', {headers})
+    .pipe(retry(3));
   }
 
-  setNotificationAsRead(notificationId: string) {
+  setNotificationAsRead(notificationId: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/notificationread', JSON.stringify({notificationId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/notificationread', JSON.stringify({notificationId}), {headers});
   }
 
-  setAllNotificationsAsRead() {
+  setAllNotificationsAsRead(): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/notificationsread', JSON.stringify({}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/notificationsread', JSON.stringify({}), {headers});
   }
 
-  getWelcomeNotification(lan: string) {
+  getWelcomeNotification(lan: string): Observable<Notification> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/config/welcome/' + lan, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Notification>('/api/user/config/welcome/' + lan, {headers})
+    .pipe(retry(3));
   }
 
-  fetchScoreTotal() {
+  fetchScoreTotal(): Observable<number> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/score/total', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<number>('/api/user/score/total', {headers})
+    .pipe(retry(3));
   }
 
-  fetchScoreCourses() {
+  fetchScoreCourses(): Observable<CourseScore> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/score/courses', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<CourseScore>('/api/user/score/courses', {headers})
+    .pipe(retry(3));
   }
 
-  followUser(userId: string) {
+  followUser(userId: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .post('/api/user/follow', JSON.stringify({userId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .post<boolean>('/api/user/follow', JSON.stringify({userId}), {headers});
   }
 
-  unFollowUser(userId: string) {
+  unFollowUser(userId: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/unfollow', JSON.stringify({userId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<boolean>('/api/user/unfollow', JSON.stringify({userId}), {headers});
   }
 
-  getFollowers(userId: string) {
+  getFollowers(userId: string): Observable<Network> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/followers/' + userId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Network>('/api/user/followers/' + userId, {headers})
+    .pipe(retry(3));
   }
 
-  getCompactProfiles(userIds: string[]) {
+  getCompactProfiles(userIds: string[]): Observable<CompactProfile[]> {
     userIds.join(',');
     return this.http
-    .get('/api/user/profiles/' + userIds)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<CompactProfile[]>('/api/user/profiles/' + userIds)
+    .pipe(retry(3));
   }
 
-  getCoursesTeaching(userId: string) {
+  getCoursesTeaching(userId: string): Observable<Course[]> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/courses/teaching/' + userId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Course[]>('/api/courses/teaching/' + userId, {headers})
+    .pipe(retry(3));
   }
 
-  fetchMessages(tpe: string) {
+  fetchMessages(tpe: string): Observable<Message[]> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/messages/' + tpe, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Message[]>('/api/user/messages/' + tpe, {headers})
+    .pipe(retry(3));
   }
 
-  fetchMessage(messageId: string) {
+  fetchMessage(messageId: string): Observable<Message> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/message/' + messageId, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Message>('/api/user/message/' + messageId, {headers})
+    .pipe(retry(3));
   }
 
-  fetchMessagesCount() {
+  fetchMessagesCount(): Observable<number> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/messagescount', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<number>('/api/user/messagescount', {headers})
+    .pipe(retry(3));
   }
 
-  setMessageAsRead(messageId: string) {
+  setMessageAsRead(messageId: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/messageread', JSON.stringify({messageId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/messageread', JSON.stringify({messageId}), {headers});
   }
 
-  setAllMessagesAsRead() {
+  setAllMessagesAsRead(): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/messagesread', JSON.stringify({}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/messagesread', JSON.stringify({}), {headers});
   }
 
-  deleteMessage(messageId: string, tpe: string, action: string) {
+  deleteMessage(messageId: string, tpe: string, action: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/messagedelete', JSON.stringify({action, tpe, messageId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/messagedelete', JSON.stringify({action, tpe, messageId}), {headers});
   }
 
-  deleteReadMessages() {
+  deleteReadMessages(): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/messagesdelete', {}, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/messagesdelete', {}, {headers});
   }
 
-  emptyTrash() {
+  emptyTrash(): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/emptytrash', {}, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/emptytrash', {}, {headers});
   }
 
-  saveMessage(message: Message) {
+  saveMessage(message: Message): Observable<Message> {
     const headers = this.getTokenHeaders();
     return this.http
-    .put('/api/user/message', JSON.stringify(message), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .put<Message>('/api/user/message', JSON.stringify(message), {headers});
   }
 
-  fetchRecipients() {
+  fetchRecipients(): Observable<CompactProfile[]> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/recipients', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<CompactProfile[]>('/api/user/recipients', {headers})
+    .pipe(retry(3));
   }
 
-  updatePassword(oldPw: string, newPw: string) {
+  updatePassword(oldPw: string, newPw: string): Observable<boolean> {
     const headers = this.getTokenHeaders();
     return this.http
-    .patch('/api/user/password', JSON.stringify({old: oldPw, new: newPw}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}), {headers});
   }
 
   subscribeToCourse(course: Course) {
@@ -474,22 +420,19 @@ export class UserService {
   }
 
   private updateUserDb(lan: string, courseId: string) {
+    console.log('updating user db');
     // subscribe + set learn language
     const headers = this.getTokenHeaders();
     // Update learning lan
     if (lan && this._user.jazyk.learn.lan !== lan) {
       this.http
       .patch('/api/user/lan', JSON.stringify({lan}), {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error))
       .toPromise(); // not lazy
     }
     // Upsert subscription
     if (courseId) {
       this.http
       .post('/api/user/subscribe', JSON.stringify({courseId}), {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error))
       .toPromise(); // not lazy
     }
   }
@@ -543,11 +486,11 @@ export class UserService {
 
   /*** Common ***/
 
-  private getTokenHeaders(): Headers {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+  private getTokenHeaders(): HttpHeaders {
+    let headers = new HttpHeaders();
+    const token = this.authService.getToken();
+    headers = headers.append('Content-Type', 'application/json');
+    headers = headers.append('Authorization', 'Bearer ' + token);
     return headers;
   }
 }

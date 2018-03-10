@@ -162,7 +162,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       .addChapter(this.lesson.courseId, chapterName, lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        savedChapter => {},
+        savedCourse => {},
         error => this.errorService.handleError(error)
       );
     }

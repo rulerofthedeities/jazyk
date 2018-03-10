@@ -2,12 +2,7 @@ import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angula
 import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
-import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
-
-interface ResultsData {
-  last: ExerciseResult[];
-  count: ExerciseResult[];
-}
+import {Exercise, ExerciseResult, ExerciseData, ExerciseType, ResultsData} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-lesson-overview',
@@ -73,7 +68,6 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
         toReview = true;
       }
     }
-    console.log(result.exerciseId, result.dtToReview, toReview);
     return toReview;
   }
 
@@ -88,7 +82,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
-    .getLessonResults(this.lessonId, 'overview')
+    .fetchLessonStepResults(this.lessonId, 'overview')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => this.combineResults(results),
@@ -105,7 +99,6 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
       lastResult = lastResults.find(last => last.exerciseId === countResult.exerciseId);
       Object.assign(countResult, lastResult);
     });
-    console.log('combined results', countResults);
     this.buildExerciseData(countResults);
   }
 

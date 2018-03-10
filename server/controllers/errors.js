@@ -9,7 +9,7 @@ module.exports = {
 
     error.save(function(err, result) {
       response.handleError(err, res, 500, 'Error adding error', function(){
-        response.handleSuccess(res, result, 200, 'Added error');
+        response.handleSuccess(res, result);
       });
     });
   }

@@ -17,6 +17,13 @@
 }
 .text {
   display: inline-block;
+  font-weight: bold;
   position: relative;
   top: -4px;
+}
+.error-detail {
+  margin-left: 56px;
+  font-size: 12px;
+  color: #333;
+  font-style: italic;
 }

@@ -72,11 +72,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     .fetchIntro(this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      intro => {
-        if (intro && intro.intro) {
-          this.intro = intro.intro;
-        }
-      },
+      intro => this.intro = intro.intro,
       error => this.errorService.handleError(error)
     );
   }

@@ -46,7 +46,7 @@ module.exports = {
     };
 
     getCount().then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched dashboard count data');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
     });
@@ -69,7 +69,7 @@ module.exports = {
     };
 
     getCommunication().then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched dashboard communications data');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard communications data');
     });
@@ -110,11 +110,11 @@ module.exports = {
                   recentCourses.push({dt: id.dt, course})
                 }
               });
-              response.handleSuccess(res, recentCourses, 200, 'Fetched most recent courses');
+              response.handleSuccess(res, recentCourses);
             });
           });
         } else {
-          response.handleSuccess(res, [], 200, 'No courses found');
+          response.handleSuccess(res, []);
         }
       });
     });

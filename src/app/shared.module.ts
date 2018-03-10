@@ -1,9 +1,9 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {MarkdownModule} from 'angular2-markdown';
-import {TooltipModule} from "ngx-tooltip";
+import {TooltipModule} from 'ngx-tooltip';
 import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
 
@@ -29,7 +29,7 @@ import {ScorePipe} from './pipes/score.pipe';
 @NgModule({
   imports: [
     CommonModule,
-    HttpModule,
+    HttpClientModule,
     FormsModule,
     TooltipModule,
     MarkdownModule.forRoot()
@@ -69,7 +69,6 @@ import {ScorePipe} from './pipes/score.pipe';
     GravatarDirective,
     GetKeyPressDirective,
     CommonModule,
-    HttpModule,
     TooltipModule,
     MarkdownModule,
     ToggleComponent,

@@ -124,13 +124,15 @@ getChoicesFromAllCourses = function(res, options) {
           {$project: projection}
         ];
   Lesson.aggregate(pipeline, function(err, choices) {
+    console.log('get from all courses', choices);
     response.handleError(err, res, 400, 'Error fetching choices from multiple courses', function(){
-      response.handleSuccess(res, choices, 200, 'Fetched choices from multiple courses');
+      response.handleSuccess(res, choices);
     });
   });
 }
 
 module.exports = {
+  /*
   getExercises: function(req, res) {
     const parms = req.query,
           exerciseIds = [],
@@ -151,10 +153,11 @@ module.exports = {
           ];
     Lesson.aggregate(pipeline, function(err, exercises) {
       response.handleError(err, res, 400, 'Error fetching exercises', function(){
-        response.handleSuccess(res, exercises, 200, 'Fetched exercises');
+        response.handleSuccess(res, exercises);
       });
     });
   },
+  */
   addExercises: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
@@ -169,16 +172,17 @@ module.exports = {
           update = {
             $addToSet: {exercises: {$each: exercises}}
           };
+    console.log(exercises);
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error adding exercise(s)', function() {
+      response.handleError(err, res, 400, 'Error adding exercise(s)', function() {
+        if (result) {
           getCourseWordCount(result.courseId);
-          response.handleSuccess(res, exercises, 200, 'Added exercise(s)');
-        });
-      } else {
-        err = 'Not authorized to add exercise';
-        response.handleError(err, res, 401, err);
-      }
+          response.handleSuccess(res, exercises);
+        } else {
+          err = 'Not authorized to add exercise';
+          response.handleError(err, res, 401, err);
+        }
+      });
     });
   },
   updateExercise: function(req, res) {
@@ -194,14 +198,14 @@ module.exports = {
     if (exercise) {
       const update = { $set: { 'exercises.$': exercise}}
       Lesson.findOneAndUpdate(query, update, function(err, result) {
-        if (result) {
-          response.handleError(err, res, 400, 'Error updating exercise', function(){
-            response.handleSuccess(res, null, 200, 'Updated exercise');
-          });
-        } else {
-          err = 'Not authorized to update exercise';
-          response.handleError(err, res, 401, err);
-        }
+        response.handleError(err, res, 400, 'Error updating exercise', function(){
+          if (result) {
+            response.handleSuccess(res, null);
+          } else {
+            err = 'Not authorized to update exercise';
+            response.handleError(err, res, 401, err);
+          }
+        });
       });
     } else {
       err = 'No exercise to update';
@@ -219,14 +223,14 @@ module.exports = {
           update = {$set: { 'exercises': exercises}};
 
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error updating exercises in lesson ' + lessonId, function(){
-          response.handleSuccess(res, null, 200, 'Updated exercises in lesson ' + lessonId);
-        });
-      } else {
-        err = 'Not authorized to update exercises';
-        response.handleError(err, res, 401, err);
-      }
+      response.handleError(err, res, 400, 'Error updating exercises in lesson ' + lessonId, function(){
+        if (result) {
+          response.handleSuccess(res, null);
+        } else {
+          err = 'Not authorized to update exercises';
+          response.handleError(err, res, 401, err);
+        }
+      });
     });
   },
   removeExercise: function(req, res) {
@@ -242,16 +246,16 @@ module.exports = {
           };
 
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error removing exercise', function(){
+      response.handleError(err, res, 400, 'Error removing exercise', function(){
+        if (result) {
           getCourseWordCount(result.courseId);
-          response.handleSuccess(res, null, 200, 'Removed exercise');
+          response.handleSuccess(res, null);
           setResultExercisesAsDeleted(userId, lessonId, exerciseId);
-        });
-      } else {
-        err = 'Not authorized to remove exercise';
-        response.handleError(err, res, 401, err);
-      }
+        } else {
+          err = 'Not authorized to remove exercise';
+          response.handleError(err, res, 401, err);
+        }
+      });
     });
   },
   getCourseChoices: function(req, res) {
@@ -277,7 +281,7 @@ module.exports = {
     Lesson.aggregate(pipeline, function(err, choices) {
       response.handleError(err, res, 400, 'Error fetching choices', function(){
         if (choices.length >= minChoices || !lans) {
-          response.handleSuccess(res, choices, 200, 'Fetched choices');
+          response.handleSuccess(res, choices);
         } else {
           const options = {maxWords, lans};
           getChoicesFromAllCourses(res, options);

@@ -1,98 +1,104 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, URLSearchParams} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {Language, LanPair, Course, CourseDefaults, LessonOptions} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseResult} from '../models/exercise.model';
+import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro,
+        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig} from '../models/course.model';
+import {Exercise, ExerciseData, ExerciseOptions,
+        Direction, ExerciseResult, ResultsData, Choice} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import {retry, delay, map} from 'rxjs/operators';
 
 export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
 export const isLearnedLevel = 12; // minimum level before it is considered learned
 
+interface CourseData {
+  isDemo: boolean;
+  subscribed: Course[];
+  data: UserCourse[];
+}
+
+interface ExercisePlusOptions {
+  exercise: Exercise;
+  options: LessonOptions;
+}
+
+interface CourseResults {
+  results: ExerciseResult[];
+  toreview?: ExercisePlusOptions[];
+  difficult?: ExercisePlusOptions[];
+}
+
 @Injectable()
 export class LearnService {
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private authService: AuthService,
     private previewService: PreviewService
   ) {}
 
   /*** Courses ***/
 
-  fetchPublishedCourses(lanCode: string) {
+  fetchPublishedCourses(lanCode: string): Observable<Course[]> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/courses/published/' + lanCode, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Course[]>('/api/courses/published/' + lanCode, {headers})
+    .pipe(retry(3));
   }
 
-  fetchSubscribedCourses() {
+  fetchSubscribedCourses(): Observable<CourseData> {
     const headers = this.getTokenHeaders();
     if (this.authService.isLoggedIn()) {
       return this.http
-      .get('/api/user/courses/learn', {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error));
+      .get<CourseData>('/api/user/courses/learn', {headers})
+      .pipe(retry(3));
     } else {
       return this.http
-      .get('/api/courses/demo', {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error));
+      .get<CourseData>('/api/courses/demo', {headers})
+      .pipe(retry(3));
     }
   }
 
-  fetchCourse(id: string) {
+  fetchCourse(courseId: string): Observable<Course> {
     return this.http
-    .get('/api/learn/course/' + id)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Course>('/api/learn/course/' + courseId)
+    .pipe(retry(3));
   }
 
-  unSubscribeCourse(courseId: string) {
+  unSubscribeCourse(courseId: string): Observable<string> {
     const headers = this.getTokenHeaders();
     return this.http
-    .post('/api/user/unsubscribe', JSON.stringify({courseId}), {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .post<string>('/api/user/unsubscribe', JSON.stringify({courseId}), {headers});
   }
 
   /*** Lessons ***/
 
-  fetchLesson(lessonId: string) {
+  fetchLesson(lessonId: string): Observable<Lesson> {
     return this.http
-    .get('/api/lesson/' + lessonId)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Lesson>('/api/lesson/' + lessonId)
+    .pipe(retry(3));
   }
 
-  fetchLessonHeaders(courseId: string) {
+  fetchLessonHeaders(courseId: string): Observable<LessonHeader[]> {
     return this.http
-    .get('/api/lessons/header/' + courseId)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<LessonHeader[]>('/api/lessons/header/' + courseId)
+    .pipe(retry(3));
   }
 
-  fetchIntro(lessonId: string) {
+  fetchIntro(lessonId: string): Observable<Intro> {
     return this.http
-    .get('/api/lesson/intro/' + lessonId)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Intro>('/api/lesson/intro/' + lessonId)
+    .pipe(retry(3));
   }
 
-  fetchLessonResults(courseId: string) {
+  fetchLessonResults(courseId: string): Observable<LessonResult[]> {
     if (this.authService.isLoggedIn()) {
       const headers = this.getTokenHeaders();
       return this.http
-      .get('/api/user/results/lessons/' + courseId, {headers})
-      .map(response => response.json().obj)
-      .catch(error => Observable.throw(error));
+      .get<LessonResult[]>('/api/user/results/lessons/' + courseId, {headers})
+      .pipe(retry(3));
     } else {
       return Observable.of(null);
     }
@@ -100,85 +106,70 @@ export class LearnService {
 
   /*** Choices ***/
 
-  fetchCourseChoices(courseId: string, isBidirectional: boolean, lanPair: LanPair) {
+  fetchCourseChoices(courseId: string, lanPair: LanPair): Observable<Choice[]> {
     const lans = lanPair.from + '-' + lanPair.to;
     return this.http
-    .get('/api/choices/course/' + courseId + '/' + lans)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Choice[]>('/api/choices/course/' + courseId + '/' + lans)
+    .pipe(retry(3));
   }
 
   /*** Results ***/
 
-  saveUserResults(data: string) {
+  saveUserResults(data: string): Observable<number> {
     if (this.authService.isLoggedIn()) {
-      return this.saveResults(data);
+      // must be idempotent
+      const headers = this.getTokenHeaders();
+      return this.http
+      .post<number>('/api/user/results/add', data, {headers});
     } else {
       return Observable.of(null);
     }
   }
 
-  private saveResults(data: string) {
-    // must be idempotent
-    const headers = this.getTokenHeaders();
-    return this.http
-    .post('/api/user/results/add', data, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
-  }
-
-  getLessonResults(lessonId: string, step: string) {
+  fetchLessonStepResults(lessonId: string, step: string): Observable<ResultsData> {
     // Get the learn level of all exercises in this lesson
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/results/lesson/' + step + '/' + lessonId, {headers})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
+    .get<ResultsData>('/api/user/results/lesson/' + step + '/' + lessonId, {headers})
+    .pipe(retry(3));
   }
 
-  fetchMostRecentLesson(courseId: string) {
+  fetchMostRecentLesson(courseId: string): Observable<string> {
     // Get the most recent lesson saved for this course
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/results/course/currentlesson/' + courseId, {headers})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
+    .get<string>('/api/user/results/course/currentlesson/' + courseId, {headers})
+    .pipe(retry(3));
   }
 
-  fetchStepData(courseId: string, lessonId: string) {
+  fetchStepData(courseId: string, lessonId: string): Observable<StepData> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/results/countbystep/' + courseId + '/' + lessonId, {headers})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
+    .get<StepData>('/api/user/results/countbystep/' + courseId + '/' + lessonId, {headers})
+    .pipe(retry(3));
   }
 
-  fetchToReview(courseId: string, max: number) {
+  fetchToReview(courseId: string, max: number): Observable<CourseResults> {
     const headers = this.getTokenHeaders(),
-          params = new URLSearchParams();
-    params.set('max', max.toString());
+          params = {'max': max.toString()};
     return this.http
-    .get('/api/user/results/course/toreview/' + courseId, {headers, search: params})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
+    .get<CourseResults>('/api/user/results/course/toreview/' + courseId, {headers, params})
+    .pipe(retry(3));
   }
 
-  fetchDifficult(courseId: string, max: number) {
+  fetchDifficult(courseId: string, max: number): Observable<CourseResults> {
     const headers = this.getTokenHeaders(),
-          params = new URLSearchParams();
-    params.set('max', max.toString());
+          params = {'max': max.toString()};
     return this.http
-    .get('/api/user/results/course/difficult/' + courseId, {headers, search: params})
-    .map(response => response.json().obj || {})
-    .catch(error => Observable.throw(error));
+    .get<CourseResults>('/api/user/results/course/difficult/' + courseId, {headers, params})
+    .pipe(retry(3));
   }
 
-  fetchScoreTotal() {
+  fetchScoreTotal(): Observable<number> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get('/api/user/score/total', {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<number>('/api/user/score/total', {headers})
+    .pipe(retry(3));
   }
 
   /*** Exercises ***/
@@ -293,20 +284,19 @@ export class LearnService {
 
   /*** Config ***/
 
-  fetchLanConfig(lanCode: string) {
+  fetchLanConfig(lanCode: string): Observable<LanConfig> {
     return this.http
-    .get('/api/config/lan/' + lanCode)
-    .map(conn => conn.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<LanConfig>('/api/config/lan/' + lanCode)
+    .pipe(retry(3));
   }
 
   /*** Common ***/
 
-  private getTokenHeaders(): Headers {
-    const token = this.authService.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+  private getTokenHeaders(): HttpHeaders {
+    let headers = new HttpHeaders();
+    const token = this.authService.getToken();
+    headers = headers.append('Content-Type', 'application/json');
+    headers = headers.append('Authorization', 'Bearer ' + token);
     return headers;
   }
 }

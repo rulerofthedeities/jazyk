@@ -22,6 +22,11 @@ interface Alt {
   detailId: string;
 }
 
+export interface Media {
+  images: File[];
+  audios: File[];
+}
+
 export interface Word {
   detailId: string;
   word: string;

@@ -1,22 +1,20 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Headers, URLSearchParams} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Page} from '../models/info.model';
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import {retry} from 'rxjs/operators';
 
 @Injectable()
 export class InfoService {
 
   constructor(
-    private http: Http
+    private http: HttpClient
   ) {}
 
-  fetchInfoPage(page: string, lan: string) {
+  fetchInfoPage(page: string, lan: string): Observable<Page> {
     const filteredPage = page.replace(/\W/g, '');
     return this.http
-    .get('/api/info/' + filteredPage + '/' + lan)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Page>('/api/info/' + filteredPage + '/' + lan)
+    .pipe(retry(3));
   }
 }

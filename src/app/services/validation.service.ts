@@ -1,28 +1,36 @@
 import {FormControl, FormGroup, FormArray, AbstractControl} from '@angular/forms';
-import {Http} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {retry, delay, map} from 'rxjs/operators';
 
 export class ValidationService {
 
-  static getValidatorErrorMessage(text: Object, field: string, validatorName: string, validatorValue?: any) {
+  static getValidatorErrorMessage(
+    text: Object,
+    field: string,
+    validatorName: string,
+    validatorValue?: any) {
     const length = validatorValue ? validatorValue.requiredLength : 0,
-          required = text['isrequired'] ? text['isrequired'].replace('%s', text[field]) : '',
-          minlength = text['minLength'] ? text['minLength'].replace('%s', text[field]).replace('%d', length) : '',
-          invalidPassword = text['invalidPassword'] ? text['invalidPassword'].replace('%d', length) : '',
+          required = text['isrequired'] ?
+                      text['isrequired'].replace('%s', text[field]) : '',
+          minlength = text['minLength'] ?
+                      text['minLength'].replace('%s', text[field]).replace('%d', length) : '',
+          invalidPassword = text['invalidPassword'] ?
+                      text['invalidPassword'].replace('%d', length) : '',
           config = {
-      'required': required,
-      'invalidEmailAddress': text['Invalidemail'],
-      'minlength': minlength,
-      'invalidPassword': invalidPassword,
-      'invalidUserName': text['invalidUserName'],
-      'usernameTaken': text['usernameTaken'],
-      'emailTaken': text['emailTaken'],
-      'noSelectOptions': text['noSelectOptions'],
-      'invalidSelect': text['invalidSentence'],
-      'invalidQAnswer': text['invalidQAnswer'],
-      'invalidFillInSentence': text['invalidFillInSentence'],
-      'matchingPasswords': text['equalPasswords']
-      };
+            'required': required,
+            'invalidEmailAddress': text['Invalidemail'],
+            'minlength': minlength,
+            'invalidPassword': invalidPassword,
+            'invalidUserName': text['invalidUserName'],
+            'usernameTaken': text['usernameTaken'],
+            'emailTaken': text['emailTaken'],
+            'noSelectOptions': text['noSelectOptions'],
+            'invalidSelect': text['invalidSentence'],
+            'invalidQAnswer': text['invalidQAnswer'],
+            'invalidFillInSentence': text['invalidFillInSentence'],
+            'matchingPasswords': text['equalPasswords']
+           };
     return config[validatorName];
   }
 
@@ -50,33 +58,35 @@ export class ValidationService {
     }
   }
 
-  static checkUniqueUserName(http: Http) {
+  static checkUniqueUserName(http: HttpClient) {
     return function(control) {
       return http
-      .get('/api/user/check?user=' + control.value)
-      .map(response => {
-        if (response.json().obj === true) {
-          return {'usernameTaken': true};
-        } else {
-          return null;
-        }
-      })
-      .catch(error => Observable.throw(error.json()));
+      .get<boolean>('/api/user/check?user=' + control.value)
+      .pipe(
+        map(res => {
+          if (res === true) {
+            return {'usernameTaken': true};
+          } else {
+            return null;
+          }
+        })
+      );
     };
   }
 
-  static checkUniqueEmail(http: Http) {
+  static checkUniqueEmail(http: HttpClient) {
     return function(control: AbstractControl) {
       return http
-      .get('/api/user/check?mail=' + control.value)
-      .map(response => {
-        if (response.json().obj === true) {
-          return {'emailTaken': true};
-        } else {
-          return null;
-        }
-      })
-      .catch(error => Observable.throw(error.json()));
+      .get<boolean>('/api/user/check?mail=' + control.value)
+      .pipe(
+        map(res => {
+          if (res === true) {
+            return {'emailTaken': true};
+          } else {
+            return null;
+          }
+        })
+      );
     };
   }
 
@@ -131,5 +141,3 @@ export class ValidationService {
     }
   }
 }
-
-

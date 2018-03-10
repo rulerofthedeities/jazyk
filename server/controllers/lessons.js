@@ -16,7 +16,7 @@ module.exports = {
           };
     Lesson.find(query, {}, options, function(err, lessons) {
       response.handleError(err, res, 400, 'Error fetching lessons', function(){
-        response.handleSuccess(res, lessons, 200, 'Fetched lessons');
+        response.handleSuccess(res, lessons);
       });
     });
   },
@@ -32,7 +32,7 @@ module.exports = {
           };
     Lesson.find(query, projection, function(err, lessons) {
       response.handleError(err, res, 400, 'Error fetching lesson headers', function(){
-        response.handleSuccess(res, lessons, 200, 'Fetched lesson headers');
+        response.handleSuccess(res, lessons);
       });
     });
   },
@@ -42,13 +42,12 @@ module.exports = {
             query = {_id: lessonId};
       Lesson.findOne(query, {}, function(err, lesson) {
         response.handleError(err, res, 400, 'Error fetching lesson', function(){
-          response.handleSuccess(res, lesson, 200, 'Fetched lesson');
+          response.handleSuccess(res, lesson);
         });
       });
     } else {
       //invalid id
-      err = 'Invalid lesson id';
-      response.handleError(err, res, 400, err);
+      response.handleError(err, res, 404, 'Invalid lesson id');
     }
   },
   addLesson: function(req, res) {
@@ -67,7 +66,7 @@ module.exports = {
           lesson.access = courseResult.access;
           lesson.save(function(err, result) {
             response.handleError(err, res, 400, 'Error adding lesson', function(){
-              response.handleSuccess(res, result, 200, 'Added lesson');
+              response.handleSuccess(res, result);
             });
           });
         } else {
@@ -88,14 +87,14 @@ module.exports = {
             isDeleted: true
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error removing lesson', function(){
-          response.handleSuccess(res, result, 200, 'Removed lesson');
-        });
-      } else {
-        err = 'Not authorized';
-        response.handleError(err, res, 401, 'Not authorized to remove lesson');
-      }
+      response.handleError(err, res, 400, 'Error removing lesson', function(){
+        if (result) {
+          response.handleSuccess(res, result);
+        } else {
+          err = 'Not authorized';
+          response.handleError(err, res, 401, 'Not authorized to remove lesson');
+        }
+      });
     });
   },
   updateLessonHeader: function(req, res) {
@@ -113,14 +112,14 @@ module.exports = {
             options: lesson.options
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error updating lesson header', function(){
-          response.handleSuccess(res, result, 200, 'Updated lesson header');
-        });
-      } else {
-        err = 'Not authorized';
-        response.handleError(err, res, 401, 'Not authorized to update lesson');
-      }
+      response.handleError(err, res, 400, 'Error updating lesson header', function(){
+        if (result) {
+            response.handleSuccess(res, result);
+        } else {
+          err = 'Not authorized';
+          response.handleError(err, res, 401, 'Not authorized to update lesson');
+        }
+      });
     });
   },
   updateIntro: function(req, res) {
@@ -135,23 +134,24 @@ module.exports = {
             intro: intro
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-      if (result) {
-        response.handleError(err, res, 400, 'Error updating lesson intro', function(){
-          response.handleSuccess(res, result, 200, 'Updated lesson intro');
-        });
-      } else {
-        err = 'Not authorized';
-        response.handleError(err, res, 401, 'Not authorized to update lesson intro');
-      }
+        response.handleError(err, res, 400, 'Error updating lesson intro', function() {
+        if (result) {
+          response.handleSuccess(res, result);
+        } else {
+          err = 'Not authorized';
+          response.handleError(err, res, 401, 'Not authorized to update lesson intro');
+        }
+      });
     });
   },
   getIntro: function(req, res) {
     const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
           query = {_id: lessonId},
           projection = {_id: 0, intro: 1};
-    Lesson.findOne(query, projection, function(err, intro) {
-      response.handleError(err, res, 400, 'Error fetching intro', function(){
-        response.handleSuccess(res, intro, 200, 'Fetched intro from lesson');
+    Lesson.findOne(query, projection, function(err, data) {
+      response.handleError(err, res, 400, 'Error fetching intro', function() {
+        const intro = data ? data.intro || '' : '';
+        response.handleSuccess(res, {intro});
       });
     });
   }

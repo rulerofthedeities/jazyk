@@ -1,27 +1,11 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Lesson} from '../../models/course.model';
+import {Course, Lesson, LessonHeader, LessonResult} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
 
 interface Map<T> {
   [K: string]: T;
-}
-
-interface LessonHeader {
-  _id: string;
-  name: string;
-  chapterName: string;
-}
-
-interface LessonResult {
-  _id: string;
-  studied: number;
-  learned: number;
-  total: number; // total nr of exercises in the lesson
-  totalwords: number; // nr of exercises op tpe 0 (words) for study count
-  hasStarted?: boolean;
-  hasCompleted?: boolean;
 }
 
 @Component({

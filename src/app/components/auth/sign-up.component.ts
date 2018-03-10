@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Http} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {AuthService } from '../../services/auth.service';
@@ -29,7 +29,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService,
-    private http: Http
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -66,9 +66,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       .signup(user)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        data => {
-          this.signIn(user);
-        },
+        data => this.signIn(user),
         error => this.errorService.handleError(error)
       );
     }
@@ -90,9 +88,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.userForm = this.formBuilder.group({
-      'userName': ['', [Validators.required, ValidationService.userNameValidator], ValidationService.checkUniqueUserName(this.http)],
-      'email': ['', [Validators.required, ValidationService.emailValidator], ValidationService.checkUniqueEmail(this.http)],
-      'password': ['', [Validators.required, ValidationService.passwordValidator]]
+      'userName': ['', [
+        Validators.required,
+        ValidationService.userNameValidator],
+        ValidationService.checkUniqueUserName(this.http)],
+      'email': ['', [
+        Validators.required,
+        ValidationService.emailValidator],
+        ValidationService.checkUniqueEmail(this.http)],
+      'password': ['', [
+        Validators.required,
+        ValidationService.passwordValidator]]
     });
   }
 

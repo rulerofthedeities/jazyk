@@ -222,12 +222,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     // fetch results for all exercises in this lesson
     let leftToStudy: number;
     this.learnService
-    .getLessonResults(this.lesson._id, 'practise')
+    .fetchLessonStepResults(this.lesson._id, 'practise')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        if  (results) {
-          leftToStudy = this.getNewQuestions(results);
+        console.log('step results', results);
+        if  (results && results.count) {
+          leftToStudy = this.getNewQuestions(results.count);
         }
         this.isReady = true;
         if (this.exerciseData.length > 0) {

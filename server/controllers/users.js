@@ -34,7 +34,14 @@ var addUser = function(body, callback) {
 
 var findUser = function(body, expiresIn, callback) {
   const query = {email: body.email},
-        projection = {_id: 1, userName: 1, email: 1, password: 1, main: 1, 'jazyk.learn': 1};
+        projection = {
+          _id: 1,
+          userName: 1,
+          email: 1,
+          password: 1,
+          main: 1,
+          'jazyk.learn': 1
+        };
 
   User.findOne(query, projection, function (err, doc) {
     if (err) {
@@ -58,7 +65,9 @@ var findUser = function(body, expiresIn, callback) {
 };
 
 var checkPassword = function(enteredPassword, userId, callback) {
-  User.findOne({_id: userId}, {_id: 0, password: 1}, function(err, doc) {
+  const query = {_id: userId},
+        projection = {_id: 0, password: 1};
+  User.findOne(query, projection, function(err, doc) {
     if (err) {
       callback(err, {msg: 'user not found'});
     } else {
@@ -103,7 +112,15 @@ var isUniqueUser = function(options, callback) {
 }
 
 var getUserData = function(userId, callback) {
-  User.findOne({_id: userId}, {_id: 1, email: 1, userName: 1, main: 1, 'jazyk.learn': 1}, function(err, doc) {
+  const query = {_id: userId},
+        projection = {
+          _id: 1,
+          email: 1,
+          userName: 1,
+          main: 1,
+          'jazyk.learn': 1
+        };
+  User.findOne(query, projection, function(err, doc) {
     setEmailHash(doc);
     callback(err, doc);
   });
@@ -119,9 +136,14 @@ var updateLastLoginDate = function(user, res) {
 }
 
 var getPublicProfile = function(query, res) {
-  const projection = {'jazyk.profile': 1, 'jazyk.courses': 1, 'jazyk.dt': 1, userName: 1, email: 1}
+  const projection = {
+    'jazyk.profile': 1,
+    'jazyk.courses': 1,
+    'jazyk.dt': 1,
+    userName: 1,
+    email: 1}
   User.findOne(query, projection, (err, result) => {
-    let errCode = 500;
+    let errCode = 400;
     if (!result) {
       err = {msg: '404 not found'};
       errCode = 404;
@@ -133,7 +155,7 @@ var getPublicProfile = function(query, res) {
       publicProfile._id = result._id;
       publicProfile.email = result.email;
       setEmailHash(publicProfile);
-      response.handleSuccess(res, publicProfile, 200, 'Fetched public profile');
+      response.handleSuccess(res, publicProfile);
     });
   });
 }
@@ -141,15 +163,18 @@ var getPublicProfile = function(query, res) {
 module.exports = {
   signup: function(req, res) {
     addUser(req.body, function(err, doc) {
-      response.handleError(err, res, 500, 'Error creating new user', function(){
-        response.handleSuccess(res, doc, 200, 'Created new user');
+      response.handleError(err, res, 400, 'Error creating new user', function(){
+        if (doc) {
+          doc.password = undefined;
+        }
+        response.handleSuccess(res, doc);
       });
     });
   },
   signin: function(req, res) {
     findUser(req.body, req.expiresIn, function(err, result, errno, errmsg) {
       response.handleError(err, res, errno, errmsg, function(){
-        response.handleSuccess(res, result, 200, 'Signed in successfully');
+        response.handleSuccess(res, result);
         updateLastLoginDate(result, res);
       });
     });
@@ -158,15 +183,15 @@ module.exports = {
     const options = {mail:req.query.mail, user:req.query.user}
     if (options.mail) {
       isUniqueEmail(options, function(err, exists){
-        response.handleError(err, res, 500, 'Error checking email', function(){
-          response.handleSuccess(res, exists, 200, 'Checked email');
+        response.handleError(err, res, 400, 'Error checking email', function(){
+          response.handleSuccess(res, exists);
         });
       })
     }
     if (options.user) {
       isUniqueUser(options, function(err, exists){
-        response.handleError(err, res, 500, 'Error checking user', function(){
-          response.handleSuccess(res, exists, 200, 'Checked user');
+        response.handleError(err, res, 400, 'Error checking user', function(){
+          response.handleSuccess(res, exists);
         });
       })
     }
@@ -174,48 +199,50 @@ module.exports = {
   getUser: function(req, res) {
     const userId = req.decoded.user._id;
     getUserData(userId, function(err, doc) {
-      response.handleError(err, res, 500, 'Error getting user data for user with id"' + userId + '"', function(){
-        response.handleSuccess(res, doc, 200, 'Fetched user data');
+      response.handleError(err, res, 400, 'Error getting user data for user with id"' + userId + '"', function(){
+        response.handleSuccess(res, doc);
       });
     })
   },
   getLearnSettings: function(req, res) {
-    const userId = req.decoded.user._id;
-    User.findOne(
-      {_id: userId}, {_id: 0, 'jazyk.learn':1}, function(err, result) {
-      response.handleError(err, res, 500, 'Error fetching learn settings', function(){
-        response.handleSuccess(res, result.jazyk.learn, 200, 'Fetched learn settings');
+    const userId = req.decoded.user._id,
+          query = {_id: userId},
+          projection = {_id: 0, 'jazyk.learn': 1};
+    User.findOne(query, projection, function(err, result) {
+      response.handleError(err, res, 400, 'Error fetching learn settings', function(){
+        response.handleSuccess(res, result.jazyk.learn);
       });
     });
   },
   saveLearnSettings: function(req, res) {
     const userId = req.decoded.user._id,
           settings = req.body,
+          query = {_id: userId},
           updateObj = {$set: {'jazyk.learn': settings}};
-    User.findOneAndUpdate(
-      {_id: userId}, updateObj, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating learn settings', function(){
-        response.handleSuccess(res, true, 200, 'Updated learn settings');
+    User.findOneAndUpdate(query, updateObj, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating learn settings', function(){
+        response.handleSuccess(res, true);
       });
     });
   },
   saveMainSettings: function(req, res) {
     const userId = req.decoded.user._id,
           settings = req.body,
+          query = {_id: userId},
           updateObj = {$set: {'main': settings}};
-    User.findOneAndUpdate(
-      {_id: userId}, updateObj, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating main settings', function(){
-        response.handleSuccess(res, true, 200, 'Updated main settings');
+    User.findOneAndUpdate(query, updateObj, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating main settings', function(){
+        response.handleSuccess(res, true);
       });
     });
   },
   getProfile: function(req, res) {
-    const userId = req.decoded.user._id;
-    User.findOne(
-      {_id: userId}, {_id: 0, 'jazyk.profile':1}, function(err, result) {
-      response.handleError(err, res, 500, 'Error fetching profile', function(){
-        response.handleSuccess(res, result.jazyk.profile, 200, 'Fetched profile');
+    const userId = req.decoded.user._id,
+          query = {_id: userId},
+          projection = {_id: 0, 'jazyk.profile': 1};
+    User.findOne(query, projection, function(err, result) {
+      response.handleError(err, res, 400, 'Error fetching profile', function(){
+        response.handleSuccess(res, result.jazyk.profile);
       });
     });
   },
@@ -224,20 +251,20 @@ module.exports = {
           query = {_id: {$in: userIds}}
           projection = {userName: 1, email: 1};
     User.find(query, projection, function(err, users) {
-      response.handleError(err, res, 500, 'Error fetching users', function(){
+      response.handleError(err, res, 400, 'Error fetching users', function(){
         users.forEach(user => setEmailHash(user));
-        response.handleSuccess(res, users, 200, 'fetched users');
+        response.handleSuccess(res, users);
       });
     })
   },
   saveProfile: function(req, res) {
     const userId = req.decoded.user._id,
           profile = req.body,
+          query = {_id: userId},
           updateObj = {$set: {'jazyk.profile': profile}};
-    User.findOneAndUpdate(
-      {_id: userId}, updateObj, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating profile', function(){
-        response.handleSuccess(res, true, 200, 'Updated profile');
+    User.findOneAndUpdate(query, updateObj, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating profile', function(){
+        response.handleSuccess(res, true);
       });
     });
   },
@@ -264,8 +291,8 @@ module.exports = {
     }
     User.findOneAndUpdate(
       {_id: userId}, lanObj, function(err, result) {
-      response.handleError(err, res, 500, 'Error updating user', function(){
-        response.handleSuccess(res, result, 200, 'Updated user');
+      response.handleError(err, res, 400, 'Error updating user', function(){
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -279,12 +306,12 @@ module.exports = {
             set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 400, 'Error updating user', function(){
-          response.handleSuccess(res, result, 200, 'Updated user');
+        response.handleError(err, res, 400, 'Error updating user', function() {
+          response.handleSuccess(res, result);
         });
       });
     } else {
-      response.handleSuccess(res, {}, 200, 'No course data to update');
+      response.handleSuccess(res, {});
     }
   },
   unsubscribe: function(req, res) {
@@ -298,21 +325,21 @@ module.exports = {
             update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
         response.handleError(err, res, 400, 'Error updating user', function(){
-          response.handleSuccess(res, result, 200, 'Updated user');
+          response.handleSuccess(res, result);
         });
       });
     } else {
-      response.handleSuccess(res, {}, 200, 'No course data to update');
+      response.handleSuccess(res, {}, 200);
     }
   },
   updatePassword: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
     checkPassword(data.old, userId, function(err, doc) {
-      response.handleError(err, res, 500, 'IncorrectPassword', function() {
+      response.handleError(err, res, 400, 'IncorrectPassword', function() {
         saveNewPassword(data.new, userId, function(err) {
-          response.handleError(err, res, 500, 'Error saving password', function() {
-            response.handleSuccess(res, true, 200, 'Updated password');
+          response.handleError(err, res, 400, 'Error saving password', function() {
+            response.handleSuccess(res, true);
           });
         })
       });
@@ -324,7 +351,7 @@ module.exports = {
       delete payload.iat;
       delete payload.exp;
       const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
-      response.handleSuccess(res, token, 200, 'Refreshed token');
+      response.handleSuccess(res, {token});
     }
   },
   getMailData: function(req, res, recipients) {
@@ -335,13 +362,13 @@ module.exports = {
             projection = {userName: 1, email: 1},
             options = {sort: {userName: 1}};
       User.find(query, projection, options, function(err, docs) {
-        response.handleError(err, res, 500, 'Error getting mail data for recipients', function(){
+        response.handleError(err, res, 400, 'Error getting mail data for recipients', function(){
           docs.forEach(doc => setEmailHash(doc));
-          response.handleSuccess(res, docs, 200, 'Fetched recipients mail data');
+          response.handleSuccess(res, docs);
         });
       })
     } else {
-      response.handleSuccess(res, null, 200, 'No recipient Ids');
+      response.handleSuccess(res, null);
     }
   }
 }

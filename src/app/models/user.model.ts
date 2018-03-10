@@ -97,3 +97,16 @@ export interface Message {
   parentId?: string;
   dt?: Date;
 }
+
+export interface Follower {
+  followId: string;
+}
+
+export interface Followed {
+  userId: string;
+}
+
+export interface Network {
+  follows: Follower[];
+  followed: Followed[];
+}

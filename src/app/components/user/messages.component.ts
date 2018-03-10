@@ -276,9 +276,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .deleteMessage(messageId, tpe, action)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      deleted => {
-        this.infoMsg = this.text['MessageDeleted'];
-      },
+      deleted => this.infoMsg = this.text['MessageDeleted'],
       error => this.errorService.handleError(error)
     );
   }
@@ -288,9 +286,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .deleteReadMessages()
     .takeWhile(() => this.componentActive)
     .subscribe(
-      deleted => {
-        this.infoMsg = this.text['MessagesDeleted'];
-      },
+      deleted => this.infoMsg = this.text['MessagesDeleted'],
       error => this.errorService.handleError(error)
     );
   }
@@ -300,9 +296,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .emptyTrash()
     .takeWhile(() => this.componentActive)
     .subscribe(
-      deleted => {
-        this.infoMsg = this.text['MessagesDeleted'];
-      },
+      deleted => this.infoMsg = this.text['MessagesDeleted'],
       error => this.errorService.handleError(error)
     );
   }
@@ -313,7 +307,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       messages => {
-        this.messages = messages
+        this.messages = messages;
         if (messages) {
           this.getCurrentMessage();
         }

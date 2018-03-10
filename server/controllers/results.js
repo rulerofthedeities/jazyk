@@ -36,11 +36,11 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
     })
     Result.collection.bulkWrite(docs, function(err, bulkResult) {
       response.handleError(err, res, 400, 'Error saving user results for study', function(){
-        response.handleSuccess(res, bulkResult, 200, 'Saved user results for study');
+        response.handleSuccess(res, bulkResult);
       });
     })
   } else {
-    response.handleSuccess(res, null, 200, 'No results to save');
+    response.handleSuccess(res, null);
   }
 }
 
@@ -87,7 +87,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       this.getTotalPoints(userId, (err, result) => {
         score = result && result.length ? result[0].points : 0;
         response.handleError(err, res, 400, 'Error getting total', function(){
-          response.handleSuccess(res, score, 200, 'Saved results & got total');
+          response.handleSuccess(res, score);
         });
       });
     });
@@ -219,7 +219,7 @@ module.exports = {
     this.getTotalPoints(userId, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching total score', function(){
         score = result && result.length ? result[0].points : 0;
-        response.handleSuccess(res, score, 200, 'Fetched total score');
+        response.handleSuccess(res, score.toString());
       });
     })
   },
@@ -261,7 +261,7 @@ module.exports = {
             }
           })
         }
-        response.handleSuccess(res, {scores, total}, 200, 'Fetched score per course');
+        response.handleSuccess(res, {scores, total});
       });
     })
   },
@@ -316,7 +316,7 @@ module.exports = {
           ];
     Result.aggregate(pipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching all results', function(){
-        response.handleSuccess(res, results, 200, 'Fetched all results');
+        response.handleSuccess(res, {count: results});
       });
     });
   },
@@ -381,7 +381,7 @@ module.exports = {
     };
 
     getReview().then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched overview results');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching overview results');
     });
@@ -456,7 +456,7 @@ module.exports = {
           lesson.learned = resultData.learned;
         }
       })
-      response.handleSuccess(res, data.count, 200, 'Fetched all results by lesson');
+      response.handleSuccess(res, data.count);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching results by lesson');
     });
@@ -475,13 +475,14 @@ module.exports = {
           options = {sort: {dt: -1, sequence: -1}};
     Result.findOne(query, projection, options, function(err, result) {
       response.handleError(err, res, 400, 'Error fetching most recent result', function(){
-        response.handleSuccess(res, result, 200, 'Fetched most recent result');
+        const lessonId = result ? result.lessonId : null;
+        response.handleSuccess(res, lessonId);
       });
     })
   },
   getStepCount: function(req, res) {
     getStepCounts(req, res).then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched count steps');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching count steps');
     });
@@ -530,7 +531,7 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
         getCourseExercises(courseId, results, function(err, difficult) {
           response.handleError(err, res, 400, 'Error fetching difficult exercises', function(){
-            response.handleSuccess(res, {difficult, results}, 200, 'Fetched difficult exercises');
+            response.handleSuccess(res, {difficult, results});
           });
         });
       });
@@ -597,7 +598,6 @@ module.exports = {
               learnLevel: {'$first': '$learnLevel'}
             }},
           ];
-
     const getReviewData = async (results) => {
       const exercisesPipeline = getCourseExercisesPipeline(courseId, results),
             exercises = await Lesson.aggregate(exercisesPipeline),
@@ -617,7 +617,7 @@ module.exports = {
     Result.aggregate(toReviewPipeline, function(err, results) {
       response.handleError(err, res, 400, 'Error fetching to review exercise ids', function(){
         getReviewData(results).then((data) => {
-          response.handleSuccess(res, {toreview: data.exercises, results}, 200, 'Fetched overview results');
+          response.handleSuccess(res, {toreview: data.exercises, results});
         }).catch((err) => {
           response.handleError(err, res, 400, 'Error fetching overview results');
         });
@@ -626,7 +626,7 @@ module.exports = {
   },
   getCourseSummary: function(req, res) {
     getStepCounts(req, res).then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched count steps');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching count steps');
     });
@@ -665,7 +665,7 @@ module.exports = {
         results.forEach(result => {
           countPerTpe[result.tpe] = result.cnt || 0;
         })
-        response.handleSuccess(res, countPerTpe, 200, 'Fetched course count');
+        response.handleSuccess(res, countPerTpe);
       });
     });
   }

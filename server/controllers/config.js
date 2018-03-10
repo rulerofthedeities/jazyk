@@ -8,8 +8,8 @@ module.exports = {
     const lanCode = req.params.lan,
           query = {tpe:'language', code: lanCode};
     Config.findOne(query, function(err, config) {
-      response.handleError(err, res, 500, 'Error fetching lan config', function(){
-        response.handleSuccess(res, config, 200, 'Fetched lan config');
+      response.handleError(err, res, 400, 'Error fetching lan config', function(){
+        response.handleSuccess(res, config);
       });
     });
   },
@@ -20,13 +20,13 @@ module.exports = {
           queryForeign = {tpe:'language', code: lanForeign};
 
     const getConfigs = async () => {
-      const local = await Config.findOne(queryLocal);
-      const foreign = await Config.findOne(queryForeign);
+      const local = await Config.findOne(queryLocal),
+            foreign = await Config.findOne(queryForeign);
       return {local, foreign};
     };
 
     getConfigs().then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched configs');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching configs');
     });
@@ -36,37 +36,36 @@ module.exports = {
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
           projection = {_id: 0, title: 1, message: 1};
     Config.findOne(query, projection, function(err, message) {
-      response.handleError(err, res, 500, 'Error fetching notification message', function(){
-        response.handleSuccess(res, message, 200, 'Fetched notification message');
+      response.handleError(err, res, 400, 'Error fetching notification message', function(){
+        response.handleSuccess(res, message);
       });
     });
   },
   getDependables: function(req, res) {
     const params = req.query,
-          lan = params.lan;
-
-    const translationPipeline = [
-      {$match: {components: params.component}},
-      {$project:{
-        _id:0,
-        key:1,
-        txt:'$' + lan
-      }}
-    ];
-    const languagesPipeline = [
-      {$match: {tpe: 'language'}},
-      {$project:{
-        _id:0,
-        code: 1,
-        name: 1,
-        nativeName: 1,
-        interface: 1,
-        active: 1,
-        articles: 1,
-        regions: 1
-      }},
-      {$sort: {code: 1}}
-    ];
+          lan = params.lan,
+          translationPipeline = [
+            {$match: {components: params.component}},
+            {$project: {
+              _id: 0,
+              key: 1,
+              txt: '$' + lan
+            }}
+          ],
+          languagesPipeline = [
+            {$match: {tpe: 'language'}},
+            {$project: {
+              _id: 0,
+              code: 1,
+              name: 1,
+              nativeName: 1,
+              interface: 1,
+              active: 1,
+              articles: 1,
+              regions: 1
+            }},
+            {$sort: {code: 1}}
+          ];
     const getData = async () => {
       let translations, languages;
       if (params.getTranslations === 'true') {
@@ -79,7 +78,7 @@ module.exports = {
     };
 
     getData().then((results) => {
-      response.handleSuccess(res, results, 200, 'Fetched dependables');
+      response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching dependables');
     });

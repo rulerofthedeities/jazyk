@@ -11,6 +11,7 @@ import 'rxjs/add/operator/takeWhile';
     <div class="msg error more-transparant" *ngIf="msg">
       <span class="fa fa-exclamation-circle fa-spacing"></span>
       <span class="text">{{msg}}</span>
+      <div class="error-detail">{{info}}</div>
     </div>`,
   styleUrls: ['msg.css']
 })
@@ -18,6 +19,7 @@ import 'rxjs/add/operator/takeWhile';
 export class ErrorMessageComponent implements OnInit, OnDestroy {
   @Input() msg: string;
   @Input() text: Object;
+  info: string;
   private componentActive = true;
 
   constructor(
@@ -37,13 +39,13 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
     .subscribe(
       (errorData: Error) => {
         if (errorData) {
-          console.error('ERROR:', errorData);
-          if (errorData.msg) {
-            const translatedMsg = this.text && this.text[errorData.msg] ? this.text[errorData.msg] : errorData.msg;
+          if (errorData.title) {
+            const translatedMsg = this.text && this.text[errorData.title] ? this.text[errorData.title] : errorData.title;
             this.msg = translatedMsg;
           } else {
             this.msg = '';
           }
+          this.info = errorData.msg || '';
         }
       }
     );

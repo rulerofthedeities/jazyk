@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
-import {Course, UserCourse, CourseListType, AccessLevel} from '../../models/course.model';
+import {Course, UserCourse, CourseListType, AccessLevel, StepData} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
 import {DashboardService} from '../../services/dashboard.service';
@@ -59,13 +59,11 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     this.course.exercisesCount = this.course.totalCount - this.course.wordCount;
     this.percDone = 0;
     this.defaultImage = this.getDefaultImagePath();
-    if (!this.course.isDemo) {
-      if (this.tpe === CourseListType.Learn || this.tpe === CourseListType.Home) {
-        this.getCourseData();
-      }
-      if (this.tpe === CourseListType.All) {
-        this.checkIfCourseIsFollowed();
-      }
+    if (this.tpe === CourseListType.Learn || this.tpe === CourseListType.Home) {
+      this.getCourseData();
+    }
+    if (this.tpe === CourseListType.All) {
+      this.checkIfCourseIsFollowed();
     }
   }
 
@@ -96,10 +94,6 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     this.showCourseDetails = !this.showCourseDetails;
   }
 
-  isUser(): boolean {
-    return !!this.userService.user.email;
-  }
-
   isAuthor(): boolean {
     return this.userService.hasAccessLevel(this.course.access, AccessLevel.Author);
   }
@@ -115,7 +109,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     .fetchCourseSteps(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
+      (data: StepData) => {
         if (data) {
           this.badgeData.review = data.review;
           this.badgeData.difficult = data.difficult;
@@ -128,7 +122,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     .fetchCourseDone(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
+      (data: Array<number>) => {
         if (data) {
           this.doneData.words = data[0];
           this.doneData.exercises = data[1];
@@ -150,7 +144,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     .checkCourseFollowed(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      isSubscribed => {
+      (isSubscribed: boolean) => {
         this.isSubscribed = !!isSubscribed;
       },
       error => this.errorService.handleError(error)

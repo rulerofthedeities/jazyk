@@ -39,17 +39,17 @@ module.exports.initialize = function(app, router) {
   router.get('/courses/demo', courses.getDemoCourses);
   router.get('/learn/course/:courseId', courses.getCourse);
 
-  router.get('/chapters/:id', courses.getChapters);
+  // router.get('/chapters/:id', courses.getChapters);
 
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:lessonId', lessons.getLesson);
   router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
   router.get('/lesson/intro/:lessonId', lessons.getIntro);
 
-
+/*
   router.get('/exercises/:id', exercises.getExercises);
   router.get('/exercises/course/:courseId', exercises.getExercises);
-
+*/
   router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
 
   router.get('/info/:page/:lan', info.getPage);
@@ -79,10 +79,10 @@ module.exports.initialize = function(app, router) {
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
   router.patch('/user/lan', users.updateLan);
-  router.patch('/user/refresh', users.refreshToken);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe', users.subscribe);
   router.post('/user/unsubscribe', users.unsubscribe);
+  router.get('/user/refresh', users.refreshToken);
   router.get('/user', users.getUser);
 
   router.post('/user/follow', follows.followUser);

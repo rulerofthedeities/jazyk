@@ -31,16 +31,16 @@ module.exports = {
             [key]:search
           };
     WordPair.find(query, {}, {limit}, function(err, wordpairs) {
-      response.handleError(err, res, 500, 'Error fetching wordpairs', function() {
+      response.handleError(err, res, 400, 'Error fetching wordpairs', function() {
         // Count workaround until v3.4 (aggregate)
         if (query.getTotal === 'true') {
           WordPair.count(q, function(err, total) {
-            response.handleError(err, res, 500, 'Error fetching wordpairs total', function() {
-              response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
+            response.handleError(err, res, 400, 'Error fetching wordpairs total', function() {
+              response.handleSuccess(res, {wordpairs, total});
             });
           });
         } else {
-          response.handleSuccess(res, wordpairs, 200, 'Fetched wordpairs');
+          response.handleSuccess(res, wordpairs);
         }
       });
     });
@@ -52,19 +52,28 @@ module.exports = {
       languages = wordpair.lanPair;
       getDetail(wordpair[languages[0]], function(err, detail0) {
         getDetail(wordpair[languages[1]], function(err, detail1) {
-          words = {wordPair:wordpair, [languages[0]]:detail0, [languages[1]]:detail1};
-          response.handleError(err, res, 500, 'Error fetching wordpair details', function(){
-            response.handleSuccess(res, words, 200, 'Fetched wordpair details');
+          words = {
+            wordPair: wordpair,
+            [languages[0]]: detail0,
+            [languages[1]]: detail1
+          };
+          response.handleError(err, res, 400, 'Error fetching wordpair details', function(){
+            response.handleSuccess(res, words);
           });
         });
       });
     });
   },
   getWordDetailMedia: function(req, res) {
-    const wordDetailId = new mongoose.Types.ObjectId(req.params.wordpairId);
-    WordDetail.findOne({_id: wordDetailId}, {audios:1, images:1}, function(err, media) {
-      response.handleError(err, res, 500, 'Error fetching detail media', function(){
-        response.handleSuccess(res, media, 200, 'Fetched detail media');
+    const wordDetailId = new mongoose.Types.ObjectId(req.params.wordpairId),
+          projection = {
+            _id: 0,
+            audios: 1,
+            images: 1
+          };
+    WordDetail.findOne({_id: wordDetailId}, projection, function(err, media) {
+      response.handleError(err, res, 400, 'Error fetching detail media', function(){
+        response.handleSuccess(res, media);
       });
     });
   }

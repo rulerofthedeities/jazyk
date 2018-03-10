@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {Http, Headers} from '@angular/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {tokenNotExpired} from 'angular2-jwt';
 import {JwtHelper} from 'angular2-jwt';
 import {SharedService} from '../services/shared.service';
 import {User} from '../models/user.model';
+import {retry} from 'rxjs/operators';
 
 interface UserStorage {
   token: string;
@@ -19,41 +20,41 @@ interface SignedInData {
   user: User;
 }
 
+interface Token {
+  token: string;
+}
+
 @Injectable()
 export class AuthService {
   private jwtHelper: JwtHelper = new JwtHelper();
 
   constructor (
-    private http: Http,
+    private http: HttpClient,
     private router: Router,
     private sharedService: SharedService
   ) {}
 
-  signup(user: User) {
-    const body = JSON.stringify(user);
-    const headers = new Headers({'Content-Type': 'application/json'});
+  signup(user: User): Observable<User>  {
+    const body = JSON.stringify(user),
+          headers = this.getHeaders();
     return this.http
-    .post('/api/user/signup', body, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error.json()));
+    .post<User>('/api/user/signup', body, {headers});
   }
 
-  signin(user: User) {
-    const body = JSON.stringify(user);
-    const headers = new Headers({'Content-Type': 'application/json'});
+  signin(user: User): Observable<SignedInData> {
+    const body = JSON.stringify(user),
+          headers = this.getHeaders();
     return this.http
-    .post('/api/user/signin', body, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error.json()));
+    .post<SignedInData>('/api/user/signin', body, {headers});
   }
 
   signedIn(data: SignedInData) {
-    const decoded = this.jwtHelper.decodeToken(data.token);
-    const userStorage: UserStorage = {
-      token: data.token,
-      userId: decoded.user._id,
-      userName: decoded.user.userName
-    };
+    const decoded = this.jwtHelper.decodeToken(data.token),
+          userStorage: UserStorage = {
+            token: data.token,
+            userId: decoded.user._id,
+            userName: decoded.user.userName
+          };
     this.storeUserData(userStorage);
     this.router.navigateByUrl('/home');
   }
@@ -80,7 +81,8 @@ export class AuthService {
         // renew token if it is older than an hour
         this.refreshToken().subscribe(
           newToken => {
-            localStorage.setItem('km-jazyk.token', newToken);
+            console.log('refreshed token');
+            localStorage.setItem('km-jazyk.token', newToken.token);
           }
         );
       }
@@ -91,15 +93,11 @@ export class AuthService {
     return localStorage.getItem('km-jazyk.token');
   }
 
-  private refreshToken() {
-    const token = this.getToken(),
-          headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'Bearer ' + token);
+  private refreshToken(): Observable<Token> {
+    const headers = this.getHeaders(true);
     return this.http
-    .patch('/api/user/refresh', {}, {headers})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Token>('/api/user/refresh', {headers})
+    .pipe(retry(3));
   }
 
   private storeUserData(data: UserStorage) {
@@ -112,5 +110,14 @@ export class AuthService {
     localStorage.removeItem('km-jazyk.token');
     localStorage.removeItem('km-jazyk.userId');
     localStorage.removeItem('km-jazyk.userName');
+  }
+
+  private getHeaders(addToken = false): HttpHeaders {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
+    if (addToken) {
+      headers = headers.append('Authorization', 'Bearer ' + this.getToken());
+    }
+    return headers;
   }
 }

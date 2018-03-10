@@ -1,7 +1,5 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {SharedModule} from './shared.module';
-import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {CommonModule} from '@angular/common';
 
 import {PreviewService} from './services/preview.service';
@@ -19,9 +17,7 @@ import {RegionFlagComponent} from './components/fields/region-flag.component';
 @NgModule({
   imports: [
     CommonModule,
-    SharedModule,
-    HttpModule,
-    FormsModule
+    SharedModule
   ],
   declarations: [
     PreviewQuestionComponent,

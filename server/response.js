@@ -11,11 +11,7 @@ module.exports = {
       callback();
     }
   },
-  handleSuccess: function(res, result, statusno, message, objname) {
-    objname = objname || 'obj';
-    var returnObj = {message};
-    returnObj[objname] = result;
-    
-    res.status(statusno).send(returnObj);
+  handleSuccess: function(res, result) {
+    res.status(200).send(result);
   }
 }

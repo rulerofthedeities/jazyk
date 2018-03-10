@@ -4,13 +4,9 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import {LanPair} from '../../models/course.model';
+import {Score, CourseScore} from '../../models/score.model';
 import 'rxjs/add/operator/takeWhile';
 
-interface Score {
-  course: string,
-  lan: LanPair,
-  points: number
-}
 
 @Component({
   templateUrl: 'score.component.html',

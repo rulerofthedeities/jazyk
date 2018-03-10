@@ -90,6 +90,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         course => {
+          console.log('got course', course);
           this.course = course;
           if (course) {
             this.chapters = course.chapters;
@@ -125,7 +126,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       .addChapter(this.course._id, chapterName, lessonId)
       .takeWhile(() => this.componentActive)
       .subscribe(
-        savedChapter => {
+        savedCourse => {
         if (go) {
           this.router.navigate(['/build/lesson/' + lessonId]);
         }

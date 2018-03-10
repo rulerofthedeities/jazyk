@@ -54,7 +54,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       data => {
-        console.log('review results', data.results);
+        console.log('review results', data);
         this.setExercises(data.toreview, data.results)
       },
       error => this.errorService.handleError(error)

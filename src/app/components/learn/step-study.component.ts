@@ -217,12 +217,12 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     this.learnService
-    .getLessonResults(this.lesson._id, 'study')
+    .fetchLessonStepResults(this.lesson._id, 'study')
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
         if (results) {
-          this.getNewQuestions(results);
+          this.getNewQuestions(results.count);
         }
       },
       error => this.errorService.handleError(error)

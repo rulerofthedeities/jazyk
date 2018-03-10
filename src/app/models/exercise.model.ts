@@ -65,6 +65,11 @@ export interface ExerciseResult {
   streak?: string;
 }
 
+export interface ResultsData {
+  last: ExerciseResult[];
+  count: ExerciseResult[];
+}
+
 export interface Points {
   base: number; // fixed score depending on exercise type
   length: number; // length of word - spaces

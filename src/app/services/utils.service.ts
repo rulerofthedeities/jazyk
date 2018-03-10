@@ -1,12 +1,10 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Headers, URLSearchParams} from '@angular/http';
-import {Language, LanPair, Step, Level} from '../models/course.model';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
-import {Translation} from '../models/course.model';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import {Translation, Dependables} from '../models/course.model';
+import {retry, delay, map} from 'rxjs/operators';
 
 @Injectable()
 export class UtilsService {
@@ -37,31 +35,30 @@ export class UtilsService {
   countDownFinishedEvent = new EventEmitter();
 
   constructor(
-    private http: Http
+    private http: HttpClient
   ) {}
 
-  fetchDependables(options: any) {
-    const params = this.objToSearchParams(options);
+  fetchDependables(options: DependableOptions): Observable<Dependables> {
+    let params = this.objToSearchParams(options);
     return this.http
-    .get('/api/dependables/', {search: params})
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Dependables>('/api/dependables/', {params})
+    .pipe(retry(3));
   }
 
-  private objToSearchParams(obj): URLSearchParams {
-    const params = new URLSearchParams();
+  private objToSearchParams(obj: Object): HttpParams {
+    let params = new HttpParams();
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-        params.set(key, obj[key]);
+        params = params.set(key, obj[key]);
       }
     }
     return params;
- }
-  fetchTranslations(lan: string, component: string) {
+  }
+
+  fetchTranslations(lan: string, component: string): Observable<Translation[]> {
     return this.http
-    .get('/api/translations/' + lan + '/' + component)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+    .get<Translation[]>('/api/translations/' + lan + '/' + component)
+    .pipe(retry(3));
   }
 
   getTranslation(translations: Translation[], key: string): string {
@@ -174,9 +171,10 @@ export class UtilsService {
     ];
   }
 
-  // Events
+  /*** Events ***/
 
   countDownFinished() {
     this.countDownFinishedEvent.emit();
   }
+
 }

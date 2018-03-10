@@ -242,9 +242,9 @@ export abstract class Step {
     this.noMoreExercises = false;
   }
 
-  protected getChoices(courseId: string, isBidirectional: boolean = true) {
+  protected getChoices(courseId: string, isBidirectional = true) {
     this.learnService
-    .fetchCourseChoices(courseId, isBidirectional, this.lanPair)
+    .fetchCourseChoices(courseId, this.lanPair)
     .takeWhile(() => this.componentActive)
     .subscribe(
       choices => {
@@ -258,7 +258,10 @@ export abstract class Step {
   private checkIfWordAnswer(giveAnswer = false) {
     if (!this.isAnswered) {
       if (this.answerComponent) {
-        this.checkWordAnswer(this.answerComponent.getData(), giveAnswer);
+        this.checkWordAnswer(
+          this.answerComponent.getData(),
+          giveAnswer
+        );
       }
     } else {
       this.nextWord();
@@ -268,8 +271,12 @@ export abstract class Step {
   private checkIfFillInAnswer(giveAnswer = false) {
     if (!this.isAnswered || giveAnswer) {
       if (this.qaComponent && (this.qaComponent.getData() || giveAnswer)) {
-        this.checkFillInAnswer(this.qaComponent.getData(), this.qaComponent.getCorrect(), QuestionType.FillIn, giveAnswer);
-        }
+        this.checkFillInAnswer(
+          this.qaComponent.getData(),
+          this.qaComponent.getCorrect(),
+          QuestionType.FillIn, giveAnswer
+        );
+      }
     } else {
       this.nextWord();
     }
@@ -278,7 +285,11 @@ export abstract class Step {
   private checkIfComparisonAnswer() {
     if (!this.isAnswered) {
       if (this.comparisonComponent && this.comparisonComponent.getData()) {
-        this.checkFillInAnswer(this.comparisonComponent.getData(), this.comparisonComponent.getCorrect(), QuestionType.Comparison);
+        this.checkFillInAnswer(
+          this.comparisonComponent.getData(),
+          this.comparisonComponent.getCorrect(),
+          QuestionType.Comparison
+        );
       }
     } else {
       this.nextWord();

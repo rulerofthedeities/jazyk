@@ -8,7 +8,8 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
-import {Course, Lesson, Language, Translation, Step, Level, LessonId, StepCount} from '../../models/course.model';
+import {Course, Lesson, Language, Translation,
+        Step, Level, LessonId, StepCount, StepData} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
@@ -98,7 +99,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.courseLevel = this.steps[i].level;
     } else if (this.courseLevel === Level.Course){
       // Continue course level
-    console.log('continue course', i);
       this.continueCourseLevel.next(true);
     }
   }
@@ -266,7 +266,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     );
   }
 
-  private processStepResults(results: any) {
+  private processStepResults(results: StepData) {
     this.countPerStep = {};
     if (results) {
       this.getCourseStepCount(results);
@@ -450,7 +450,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       });
       const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
       data.forEach( (item, i) => {
-        console.log('item', item);
         item.data.points.correct = correctBonus;
         pointsEarned += item.data.points.total();
         streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
@@ -559,7 +558,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         } else if (this.courseLevel === Level.Course) {
           // copy review time over to new doc - for overview step
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          console.log('previous result', exercise.result);
           lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
         }
         lastResult[key].isLast = true;
@@ -602,7 +600,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           inCorrectCount = tmpStreak.length - correctCount;
       if (inCorrectCount > 1) {
       // Check how many incorrect in last 5 results
-        console.log('Difficult (last five)', tmpStreak, inCorrectCount);
         isDifficult = true;
       } else {
         // Check how many incorrect in last 10 results
@@ -610,7 +607,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         correctCount = (tmpStreak.match(/1/g) || []).length;
         inCorrectCount = tmpStreak.length - correctCount;
         if (inCorrectCount > 2) {
-          console.log('Difficult (last ten)', tmpStreak, inCorrectCount);
           isDifficult = true;
         }
       }
@@ -681,30 +677,30 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .fetchStepData(this.course._id, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      stepCount => {
-        if (stepCount) {
+      stepData => {
+        if (stepData) {
           let updated = false;
           // Difficult
-          if (stepCount.difficult !== this.countPerStep['difficult']) {
-            this.countPerStep['difficult'].nrRemaining = stepCount.difficult;
+          if (stepData.difficult !== this.countPerStep['difficult'].nrRemaining) {
+            this.countPerStep['difficult'].nrRemaining = stepData.difficult;
             updated = true;
           }
           // Review
-          if (stepCount.review !== this.countPerStep['review']) {
-            this.countPerStep['review'].nrRemaining = stepCount.review;
+          if (stepData.review !== this.countPerStep['review'].nrRemaining) {
+            this.countPerStep['review'].nrRemaining = stepData.review;
             updated = true;
           }
-          if (stepCount.lesson) {
+          if (stepData.lesson) {
             const totalWords = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
             // Study
-            const study = stepCount.lesson.find(count => count.step === 'study');
+            const study = stepData.lesson.find(count => count.step === 'study');
             if (study && study.nrDone !== this.countPerStep['study'].nrDone) {
               this.countPerStep['study'].nrDone = study.nrDone;
               this.countPerStep['study'].nrRemaining = Math.max(0, totalWords - study.nrDone);
               updated = true;
             }
             // Practise
-            const practise = stepCount.lesson.find(count => count.step === 'practise');
+            const practise = stepData.lesson.find(count => count.step === 'practise');
             if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
               this.countPerStep['practise'].nrDone = practise.nrDone;
               this.countPerStep['practise'].nrRemaining = Math.max(0, this.countPerStep['study'].nrRemaining - practise.nrDone);
@@ -742,10 +738,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .fetchMostRecentLesson(this.course._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      userResult => {
-        if (userResult && userResult.lessonId) {
+      lessonId => {
+        if (lessonId) {
           // set chapter & lesson to the latest result
-          this.getLesson(userResult.lessonId);
+          this.getLesson(lessonId);
         } else {
           // start from beginning of the course
           this.log('No results yet; start from beginning.');

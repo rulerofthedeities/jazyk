@@ -3,12 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {InfoService} from '../../services/info.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
+import {Page} from '../../models/info.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface Page {
-  title: string;
-  content: string;
-}
 
 @Component({
   template: `

@@ -4,26 +4,12 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {DashboardService} from '../../services/dashboard.service';
-import {Message, Notification} from '../../models/user.model';
-import {Course, CourseListType} from '../../models/course.model';
+import {SummaryData, CommunicationData, RecentCourse} from '../../models/dashboard.model';
+import {CourseListType} from '../../models/course.model';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import * as moment from 'moment';
 
-interface Learning {
-  subscribed: number;
-  unsubscribed: number;
-  total: number;
-}
 
-interface SummaryData {
-  score: number;
-  coursesLearning: Learning;
-}
-
-interface CommunicationData {
-  messages: Message[];
-  notifications: Notification[];
-}
 
 interface Communication {
   id: string;
@@ -32,11 +18,6 @@ interface Communication {
   message: string;
   dt: Date;
   read: boolean;
-}
-
-interface RecentCourse {
-  dt: Date,
-  course: Course
 }
 
 @Component({
@@ -89,20 +70,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getFromNow(dt: Date): string {
     moment.updateLocale('en', {
       relativeTime : {
-        future: "in %s",
-        past: this.text["dtPast"] || '',
-        s  : this.text["dts"] || '',
-        ss : this.text["dtss"] || '',
-        m:  this.text["dtm"] || '',
-        mm: this.text["dtmm"] || '',
-        h:  this.text["dth"] || '',
-        hh: this.text["dthh"] || '',
-        d:  this.text["dtd"] || '',
-        dd: this.text["dtdd"] || '',
-        M:  this.text["dtM"] || '',
-        MM: this.text["dtMM"] || '',
-        y:  this.text["dty"] || '',
-        yy: this.text["dtyy"] || ''
+        future: 'in %s',
+        past: this.text['dtPast'] || '',
+        s  : this.text['dts'] || '',
+        ss : this.text['dtss'] || '',
+        m:  this.text['dtm'] || '',
+        mm: this.text['dtmm'] || '',
+        h:  this.text['dth'] || '',
+        hh: this.text['dthh'] || '',
+        d:  this.text['dtd'] || '',
+        dd: this.text['dtdd'] || '',
+        M:  this.text['dtM'] || '',
+        MM: this.text['dtMM'] || '',
+        y:  this.text['dty'] || '',
+        yy: this.text['dtyy'] || ''
       }
     });
     return moment(dt).fromNow();
@@ -149,9 +130,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private processCourses(data: RecentCourse[]) {
     // Sort courses
     this.courses = data.sort(function(a, b){
-      var dtA = new Date(a.dt),
+      let dtA = new Date(a.dt),
           dtB = new Date(b.dt);
-      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0)
+      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
     this.coursesReady = true;
   }
@@ -181,9 +162,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
     // Sort communications
     this.communications = communications.sort(function(a, b){
-      var dtA = new Date(a.dt),
+      let dtA = new Date(a.dt),
           dtB = new Date(b.dt);
-      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0)
+      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     }).slice(0, 4);
   }
 

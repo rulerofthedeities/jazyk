@@ -4,22 +4,10 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
-import {PublicProfile, CompactProfile, Message} from '../../models/user.model';
+import {PublicProfile, CompactProfile, Message, Followed, Follower, Network} from '../../models/user.model';
 import {Course} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
-interface Follower {
-  followId: string;
-}
-
-interface Followed {
-  userId: string;
-}
-
-interface Network {
-  follows: Follower[];
-  followed: Followed[];
-}
 
 interface Courses {
   learning: Course[];

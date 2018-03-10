@@ -10,9 +10,9 @@ module.exports = {
     Info.findOne(query, function(err, result) {
       response.handleError(err, res, 400, 'Error getting info page "' + page +'"', function() {
         if (result && result[lan]) {
-          response.handleSuccess(res, result[lan], 200, 'Fetched info page');
+          response.handleSuccess(res, result[lan]);
         } else {
-          response.handleSuccess(res, null, 404, 'Info page "' + page +'" not found');
+          response.handleSuccess(res, null);
         }
       });
     });

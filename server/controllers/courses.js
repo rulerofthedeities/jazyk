@@ -21,7 +21,7 @@ let getCourse = function(req, res, authorOnly) {
     }
     Course.findOne(query, {}, function(err, course) {
       response.handleError(err, res, 400, 'Error fetching course', function(){
-        response.handleSuccess(res, course, 200, 'Fetched course');
+        response.handleSuccess(res, course);
       });
     });
   } else {
@@ -72,7 +72,7 @@ module.exports = {
     }
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching courses', function(){
-        response.handleSuccess(res, courses, 200, 'Fetched courses');
+        response.handleSuccess(res, courses);
       });
     });
   },
@@ -85,7 +85,7 @@ module.exports = {
           };
     // Find all courseIds for this user
     UserCourse.find(query, function(err, userCourses) {
-      response.handleError(err, res, 400, 'Error fetching user courses', function(){
+      response.handleError(err, res, 400, 'Error fetching user course ids', function(){
         const courseIdArr = [];
         userCourses.forEach(course => courseIdArr.push(course.courseId));
         const query = {
@@ -94,7 +94,7 @@ module.exports = {
         // Find courses with the courseIds
         Course.find(query, {},  function(err, courses) {
           response.handleError(err, res, 400, 'Error fetching user courses', function(){
-            response.handleSuccess(res, {subscribed: courses, data: userCourses}, 200, 'Fetched user courses');
+            response.handleSuccess(res, {subscribed: courses, data: userCourses});
           });
         });
       });
@@ -108,7 +108,7 @@ module.exports = {
           }
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching user created courses', function(){
-        response.handleSuccess(res, courses, 200, 'Fetched user created courses');
+        response.handleSuccess(res, courses);
       });
     })
   },
@@ -120,7 +120,7 @@ module.exports = {
     };
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching demo courses', function(){
-        response.handleSuccess(res, {subscribed: courses, isDemo: true}, 200, 'Fetched demo courses');
+        response.handleSuccess(res, {subscribed: courses, isDemo: true});
       });
     })
   },
@@ -139,7 +139,7 @@ module.exports = {
         if (course && course.subscribed) {
           result = true;
         }
-        response.handleSuccess(res, result, 200, 'Checked if course is followed');
+        response.handleSuccess(res, result);
       });
     })
   },
@@ -166,7 +166,7 @@ module.exports = {
           };
     Course.find(query, projection, options, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching teaching courses', function(){
-        response.handleSuccess(res, courses, 200, 'Fetched teaching courses');
+        response.handleSuccess(res, courses);
       });
     })
   },
@@ -179,7 +179,7 @@ module.exports = {
 
     course.save(function(err, result) {
       response.handleError(err, res, 400, 'Error adding new course', function(){
-        response.handleSuccess(res, result, 200, 'Added new course');
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -207,7 +207,7 @@ module.exports = {
     }
     Course.findOneAndUpdate(query, {$set: update}, function(err, result) {
       response.handleError(err, res, 400, 'Error updating course', function(){
-        response.handleSuccess(res, result, 200, 'Updated course');
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -231,9 +231,12 @@ module.exports = {
     if (key === 'isPublic' || key === 'isPublished' || key === 'isInProgress') {
       Course.findOneAndUpdate(query, update, function(err, result) {
         response.handleError(err, res, 400, 'Error updating ' + key, function(){
-          response.handleSuccess(res, result, 200, 'Updated ' + key);
+          response.handleSuccess(res, result);
         });
       });
+    } else {
+      err = 'Invalid property';
+      response.handleError(err, res, 401, err);
     }
   },
   updateCourseLesson: function(req, res) {
@@ -251,7 +254,7 @@ module.exports = {
 
     Course.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 400, 'Error updating course lesson', function(){
-        response.handleSuccess(res, result, 200, 'Updated course lesson');
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -274,12 +277,13 @@ module.exports = {
         // Check if lesson exists in another chapter; if so, remove it.
         moveLesson(result.lessons, chapter, lessonId, query, res, function(err, result) {
           response.handleError(err, res, 400, 'Error moving chapter', function(){
-            response.handleSuccess(res, result, 200, 'Moved chapter');
+            response.handleSuccess(res, result);
           });
         });
       });
     });
   },
+  /*
   getChapters: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.id),
           query = {_id: courseId},
@@ -287,10 +291,11 @@ module.exports = {
 
     Course.find(query, projection, function(err, result) {
       response.handleError(err, res, 400, 'Error fetching chapters', function(){
-        response.handleSuccess(res, result, 200, 'Fetched chapters');
+        response.handleSuccess(res, result);
       });
     });
   },
+  */
   removeChapter: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -308,7 +313,7 @@ module.exports = {
 
     Course.findOneAndUpdate(query, chapterUpdate, function(err, result) {
       response.handleError(err, res, 400, 'Error removing chapter "' + chapter + '"', function(){
-        response.handleSuccess(res, result, 200, 'Removed chapter "' + chapter + '"');
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -326,7 +331,7 @@ module.exports = {
 
     Course.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 400, 'Error updating chapters', function(){
-        response.handleSuccess(res, result, 200, 'Updated chapters');
+        response.handleSuccess(res, result);
       });
     });
   },
@@ -344,7 +349,7 @@ module.exports = {
 
     Course.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 400, 'Error updating lesson Ids', function(){
-        response.handleSuccess(res, result, 200, 'Updated lesson Ids');
+        response.handleSuccess(res, result);
       });
     });
   }
