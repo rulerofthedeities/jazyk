@@ -83,11 +83,14 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   });
 
   Result.insertMany(docs, function(err, insertResult) {
+    console.log('inserted');
     response.handleError(err, res, 400, 'Error saving results', function(){
+      console.log('getting total points');
       this.getTotalPoints(userId, (err, result) => {
         score = result && result.length ? result[0].points : 0;
         response.handleError(err, res, 400, 'Error getting total', function(){
-          response.handleSuccess(res, score);
+          console.log('got total points');
+          response.handleSuccess(res, score.toString());
         });
       });
     });
