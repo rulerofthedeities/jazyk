@@ -74,6 +74,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   routeStep: string;
   isCourseDone = false;
   loopCount = 0;
+  isError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -97,7 +98,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.errorService.clearError();
       this.currentStep = i;
       this.courseLevel = this.steps[i].level;
-    } else if (this.courseLevel === Level.Course){
+    } else if (this.courseLevel === Level.Course) {
       // Continue course level
       this.continueCourseLevel.next(true);
     }
@@ -238,10 +239,14 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
         } else {
+          this.isError = true;
           this.errorMsg = this.errorService.userError({code: 'learn01', src: courseId});
         }
       },
-      error => this.errorService.handleError(error)
+      error => {
+        this.errorService.handleError(error);
+        this.isError = true;
+      }
     );
   }
 
@@ -321,7 +326,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       if (this.routeStep === 'overview') {
         // defaultStep = 0;
       } else if (results > 0) {
-        // When pressing button 'continue course' go to exercises; if none, go to study; if none, go to next lesson
+        // When pressing button 'continue course' go to exercises;
+        // if none, go to study; if none, go to next lesson
         if (this.hasStep('practise') && this.countPerStep['practise'].nrRemaining > 0) {
           defaultStep = this.getStepNr('practise');
           this.currentStep = defaultStep;
