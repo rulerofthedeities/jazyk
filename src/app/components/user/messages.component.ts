@@ -111,7 +111,9 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   onDeleteAllRead() {
     this.infoMsg = '';
     this.showActions = false;
-    this.messages = this.messages.filter(message => !message.recipient.read && !message.recipient.trash);
+    this.messages = this.messages.filter(
+      message => !message.recipient.read && !message.recipient.trash
+    );
     this.deleteReadMessages();
   }
 
@@ -157,7 +159,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
       this.currentMessage = null;
       this.showActions = false;
       this.showNewMessage = false;
-    }      
+    }
   }
 
   private getCurrentMessage() {
@@ -205,7 +207,8 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
         userName: this.userService.user.userName,
         emailHash: this.userService.user.emailHash
       },
-      message: content
+      message: content,
+      parentId: message._id.toString()
     };
     this.saveMessage(replyMessage, true);
   }
@@ -229,9 +232,6 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private saveMessage(message: Message, isReply: boolean) {
-    if (isReply) {
-      message.parentId = message._id;
-    }
     this.userService
     .saveMessage(message)
     .takeWhile(() => this.componentActive)
