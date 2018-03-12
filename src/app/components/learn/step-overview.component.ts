@@ -66,7 +66,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     this.lessonData = lessonData;
   }
 
-  onContinueLesson(lessonId: string) {
+  onContinueLesson(event: MouseEvent, lessonId: string) {
     event.stopPropagation();
     if (this.lessonData._id === lessonId) {
       this.currentLesson.emit(this.lessonData);
@@ -75,8 +75,9 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRehearseLesson(lessonId: string, step: string, cnt: number) {
+  onRehearseLesson(event: MouseEvent, lessonId: string, step: string, cnt: number) {
     event.stopPropagation();
+    event.preventDefault();
     if (cnt > 0) {
       if (this.lessonData && this.lessonData._id === lessonId) {
         this.lessonData.rehearseStep = step;

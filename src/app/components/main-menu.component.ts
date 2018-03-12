@@ -78,7 +78,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.showDropDown = show;
   }
 
-  onGoto(page: string) {
+  onGoto(event: MouseEvent, page: string) {
     event.preventDefault();
     this.showDropDown = false;
     this.router.navigate(['/user/', page]);
@@ -89,10 +89,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.updateInterfaceLan(newInterfaceLan);
   }
 
-  onLogOut() {
+  onLogOut(event: MouseEvent) {
     event.preventDefault();
     this.log('Logging out');
-    this.authService.logout();
+    this.authService.logout(event);
     this.userService.clearUser();
   }
 
@@ -104,7 +104,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     return this.authService.isLoggedIn();
   }
 
-  onChangeRankColor(event: any) {
+  onChangeRankColor(event: MouseEvent) {
     this.rankColor = event.type == 'mouseover' ? 'b' : 'w';
   }
 

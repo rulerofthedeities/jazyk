@@ -44,7 +44,7 @@
       <ul class="nav navbar-nav navbar-right">
         <!-- Notifications & Messages -->
         <li class="nav-item indicator" 
-          (click)="onGoto('notifications')" 
+          (click)="onGoto($event, 'notifications')" 
           *ngIf="isLoggedIn()">
           <a class="nav-link notifications">
             <i class="fa fa-bell-o"></i>
@@ -56,7 +56,7 @@
           </a>
         </li>
         <li class="nav-item indicator" 
-          (click)="onGoto('messages')" 
+          (click)="onGoto($event, 'messages')" 
           *ngIf="isLoggedIn()">
           <a class="nav-link messages">
             <i class="fa fa-envelope-o"></i>
@@ -133,23 +133,23 @@
           <ul 
             class="dropdown-menu"
             [style.display]="showDropDown ? 'block' : 'none'">
-            <li (click)="onGoto('profile')">
+            <li (click)="onGoto($event, 'profile')">
               <a class="dropdown-item">
                 <span class="fa fa-user-o"></span> {{text["Profile"]}}
               </a>
             </li>
-            <li (click)="onGoto('settings')">
+            <li (click)="onGoto($event, 'settings')">
               <a class="dropdown-item">
                 <span class="fa fa-sliders"></span> {{text["Settings"]}}
               </a>
             </li>
-            <li (click)="onGoto('score')">
+            <li (click)="onGoto($event, 'score')">
               <a class="dropdown-item">
                 <span class="fa fa-trophy"></span> {{text["Score"]}}
               </a>
             </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
-            <li *ngIf="score" (click)="onGoto('score')">
+            <li *ngIf="score" (click)="onGoto($event, 'score')">
               <a class="dropdown-item"
                 (mouseover)="onChangeRankColor($event)"
                 (mouseout)="onChangeRankColor($event)">
@@ -157,7 +157,7 @@
               </a>
             </li>
             <li class="divider dropdown-divider"></li>
-            <li (click)="onLogOut()">
+            <li (click)="onLogOut($event)">
               <a class="dropdown-item">
                 <span class="fa fa-sign-out"></span> {{text["Logout"]}}
               </a>

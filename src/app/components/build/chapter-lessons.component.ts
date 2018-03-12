@@ -48,12 +48,12 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     this.cdRef.detectChanges();
   }
 
-  onEditLesson(lessonId: string) {
+  onEditLesson(event: MouseEvent, lessonId: string) {
     event.preventDefault();
     this.editLesson(lessonId);
   }
 
-  onRemoveLesson(lessonId: string, confirm: ModalConfirmComponent) {
+  onRemoveLesson(event: MouseEvent, lessonId: string, confirm: ModalConfirmComponent) {
     event.preventDefault();
     this.askRemoveLesson(lessonId, confirm);
   }

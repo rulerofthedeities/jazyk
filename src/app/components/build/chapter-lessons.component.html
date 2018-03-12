@@ -9,7 +9,7 @@
       [sortableIndex]="i"
       (onDropSuccess)="onResorted()">
         <div class="panel-body">
-          <span class="name" (click)="onEditLesson(lessonId)">
+          <span class="name" (click)="onEditLesson($event, lessonId)">
             {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
           </span>
           <button 
@@ -17,12 +17,12 @@
             class="btn btn-default pull-right">
             <span class="fa fa-arrows-alt"></span> {{text["Move"]}}
           </button>
-          <button class="btn btn-warning pull-right" (click)="onEditLesson(lessonId)">
+          <button class="btn btn-warning pull-right" (click)="onEditLesson($event, lessonId)">
             <span class="fa fa-pencil"></span> {{text["Editlesson"]}}
           </button>
           <button
             class="btn btn-danger pull-right"
-            (click)="onRemoveLesson(lessonId, confirmlesson)"
+            (click)="onRemoveLesson($event, lessonId, confirmlesson)"
             *ngIf="lessonDict[lessonId]?.exercises?.length === 0">
             <span class="fa fa-trash"></span>
           </button>

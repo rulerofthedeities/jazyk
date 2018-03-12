@@ -59,7 +59,7 @@ export class AuthService {
     this.router.navigateByUrl('/home');
   }
 
-  logout() {
+  logout(event: MouseEvent) {
     event.preventDefault();
     this.clearStorage();
     this.router.navigate(['/']);

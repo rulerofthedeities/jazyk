@@ -420,7 +420,6 @@ export class UserService {
   }
 
   private updateUserDb(lan: string, courseId: string) {
-    console.log('updating user db');
     // subscribe + set learn language
     const headers = this.getTokenHeaders();
     // Update learning lan

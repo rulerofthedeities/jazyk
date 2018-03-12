@@ -20,7 +20,7 @@ export class AudioFileComponent implements OnInit {
     }
   }
 
-  onPlay() {
+  onPlay(event: MouseEvent) {
     event.stopPropagation();
     this.play();
   }

@@ -178,7 +178,9 @@
         </button>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
-        <km-learnlevel-bar *ngIf="currentData?.exercise?.tpe === exType.Word && currentData?.data?.questionType !== qType.Preview"
+        <km-learnlevel-bar *ngIf="!isRehearsal && 
+          currentData?.exercise?.tpe === exType.Word && 
+          currentData?.data?.questionType !== qType.Preview"
           [levelUpdated]="levelUpdated">
         </km-learnlevel-bar>
         <km-points-earned [pointsEarned]="pointsEarned">

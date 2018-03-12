@@ -340,9 +340,9 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private checkLessonChanged() {
     this.lessonChanged
     .takeWhile(() => this.componentActive)
-    .subscribe((event: Lesson) => {
-      console.log('> LESSON CHANGED in practise TO ', event.name);
-      this.lesson = event;
+    .subscribe((lesson: Lesson) => {
+      console.log('> LESSON CHANGED in practise TO ', lesson.name);
+      this.lesson = lesson;
       if (this.lesson.rehearseStep) {
         // This is a repeat
       } else {

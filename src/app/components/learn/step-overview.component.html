@@ -65,7 +65,7 @@
       </button>
       <button type="button"
         *ngIf="resultsByLesson[lesson._id].hasStarted && !resultsByLesson[lesson._id].hasCompleted"
-        (click)="onContinueLesson(lesson._id)"
+        (click)="onContinueLesson($event, lesson._id)"
         class="btn btn-success pull-right">
         <span class="fa fa-arrow-right fa-spacing"></span>
         {{text["ContinueLesson"]}}
@@ -80,12 +80,12 @@
         </button>
         <ul class="dropdown-menu" [style.display]="dropDown === lesson._id ? 'block' : 'none'">
           <li *ngIf="resultsByLesson[lesson._id].totalwords > 0">
-            <a (click)="onRehearseLesson(lesson._id, 'study', resultsByLesson[lesson._id].totalwords)">
+            <a (click)="onRehearseLesson($event, lesson._id, 'study', resultsByLesson[lesson._id].totalwords)">
               {{text["Study"]}} ({{resultsByLesson[lesson._id].totalwords}})
             </a>
           </li>
           <li>
-            <a (click)="onRehearseLesson(lesson._id, 'practise', resultsByLesson[lesson._id].total)">
+            <a (click)="onRehearseLesson($event, lesson._id, 'practise', resultsByLesson[lesson._id].total)">
               {{text["Practise"]}} ({{resultsByLesson[lesson._id].total}})
             </a>
           </li>

@@ -24,7 +24,7 @@ export class BuildChapterComponent {
     private router: Router
   ) {}
 
-  onClick(e: any, action: string) {
+  onClick(event: MouseEvent, e: any, action: string) {
     event.preventDefault();
     switch (action) {
       case 'openchapter':
