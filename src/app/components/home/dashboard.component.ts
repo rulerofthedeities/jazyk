@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getCounts();
     this.getRecentCourses();
     this.getNotificationsAndMessages();
+    this.subscribe()
   }
 
   onSelectMessage(i: number) {
@@ -138,6 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private processCommunication(data: CommunicationData) {
+    console.log('processing communication', data);
     const communications = [];
     // Combine messages and notifcations
     data.messages.forEach(message => {
@@ -166,6 +168,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
           dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     }).slice(0, 4);
+  }
+
+  private subscribe() {
+    this.userService.notificationRead.subscribe(
+      isAllRead => {
+        // Refetch notification in case of a new welcome message
+        this.getNotificationsAndMessages();
+      }
+    );
   }
 
   ngOnDestroy() {
