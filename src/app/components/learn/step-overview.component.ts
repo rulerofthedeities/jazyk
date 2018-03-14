@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Lesson, LessonHeader, LessonResult} from '../../models/course.model';
+import {Course, Lesson, LessonHeader, LessonResult, Step, Level} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
 
 interface Map<T> {
@@ -68,7 +68,8 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   onContinueLesson(event: MouseEvent, lessonId: string) {
     event.stopPropagation();
-    if (this.lessonData._id === lessonId) {
+    event.preventDefault();
+    if (this.lessonData && this.lessonData._id === lessonId) {
       this.currentLesson.emit(this.lessonData);
     } else {
       this.fetchLesson(lessonId);
@@ -129,6 +130,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getChapterLessons(lessonHeaders: LessonHeader[]) {
+    console.log('lesson headers', lessonHeaders);
     // Group lessons by chapter name
     let filterName;
     this.courseChapters.forEach(chapterName => {
@@ -152,7 +154,8 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
         total: null,
         totalwords: null,
         hasStarted: false,
-        hasCompleted: false
+        hasCompleted: false,
+        introOnly: !this.hasStudyOrPractise(header)
       };
     });
     this.courseChapters.forEach(chapterName => {
@@ -189,10 +192,12 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     // Count totals per lesson
     results.forEach(result => {
       if (activeLessonIds.find(id => id === result._id)) {
-        this.resultsByLesson[result._id] = result;
-        this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-        this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-        cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+        if (!this.resultsByLesson[result._id].introOnly) {
+          this.resultsByLesson[result._id] = result;
+          this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+          this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+          cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+        }
       }
     });
     // Check if chapter is complete
@@ -200,8 +205,10 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       if (this.chapterLessons[chapter]) {
         this.chapterLessons[chapter].forEach(lesson => {
           if (this.resultsByLesson[lesson._id]) {
-            this.resultsByChapter[chapter].learned += this.resultsByLesson[lesson._id].learned;
-            this.resultsByChapter[chapter].total += this.resultsByLesson[lesson._id].total;
+            if (this.hasStudyOrPractise(lesson)) {
+              this.resultsByChapter[chapter].learned += this.resultsByLesson[lesson._id].learned;
+              this.resultsByChapter[chapter].total += this.resultsByLesson[lesson._id].total;
+            }
           }
         });
         this.resultsByChapter[chapter].hasCompleted = this.resultsByChapter[chapter].learned >= this.resultsByChapter[chapter].total;
@@ -213,6 +220,16 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       this.currentChapter = null;
       this.currentLessonId = null;
       this.courseCompleted.emit(true);
+    }
+  }
+
+  private hasStudyOrPractise(lesson: LessonHeader): boolean {
+    // Check if lesson has a study or practise step
+    // If not, do not count words
+    if (lesson.exerciseSteps.study.active || lesson.exerciseSteps.practise.active) {
+      return true;
+    } else {
+      return false;
     }
   }
 

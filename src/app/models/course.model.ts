@@ -115,6 +115,7 @@ export interface LessonHeader {
   _id: string;
   name: string;
   chapterName: string;
+  exerciseSteps: ExerciseSteps;
 }
 
 export interface LessonResult {
@@ -125,6 +126,7 @@ export interface LessonResult {
   totalwords: number; // nr of exercises op tpe 0 (words) for study count
   hasStarted?: boolean;
   hasCompleted?: boolean;
+  introOnly?: boolean; // is there only an intro step for this lesson
 }
 
 export interface Translation {

@@ -28,7 +28,8 @@ module.exports = {
           },
           projection = {
             name: 1,
-            chapterName: 1
+            chapterName: 1,
+            exerciseSteps: 1
           };
     Lesson.find(query, projection, function(err, lessons) {
       response.handleError(err, res, 400, 'Error fetching lesson headers', function(){
