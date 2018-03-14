@@ -54,7 +54,7 @@
             type="checkbox"
             name="options"
             value="{{value-1}}"
-            [attr.disabled]="i === steps.Practise ? '' : null"
+            [attr.disabled]="isLastActive(i) ? '' : null"
             [formControl]="control">
             {{text[tpeLabels[i]]}}
           <span *ngIf="i === steps.Practise"

@@ -61,6 +61,7 @@ export interface UserAccess {
 export interface Course {
   _id?: string;
   languagePair: LanPair;
+  creatorId: string;
   name: string;
   description: string;
   image: string;

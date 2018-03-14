@@ -102,6 +102,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
         from: userLan,
         to: this.currentLanguage.code
       },
+      creatorId: null,
       name: '',
       description: '',
       image: '',

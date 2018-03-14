@@ -93,6 +93,25 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lessonForm.markAsDirty();
   }
 
+  isLastActive(i: number) {
+    // Exam can only be active if at practise is active
+    if (!this.lessonForm.value['exerciseSteps'][2]) {
+      const steps = this.lessonForm.value['exerciseSteps'];
+      if (steps[3]) {
+        console.log('practise is not active');
+        // Exam is active, disable
+        steps[3] = false;
+        this.lessonForm.patchValue({exerciseSteps: steps});
+      }
+    }
+    // One lesson type must be active
+    // If the last one is selective it cannot be disabled
+    if (this.lessonForm.value['exerciseSteps'][i]) {
+      const active = this.lessonForm.value['exerciseSteps'].filter(step => step === true);
+      return active.length === 1;
+    }
+  }
+
   private editLesson() {
     this.isNew = false;
     this.courseId = this.lesson.courseId;
