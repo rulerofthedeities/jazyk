@@ -168,7 +168,7 @@ export class UtilsService {
       {
         name: 'practise',
         level: Level.Lesson,
-        alwaysShown: true
+        alwaysShown: false
       },
       {
         name: 'exam',

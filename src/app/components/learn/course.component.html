@@ -66,6 +66,7 @@
     <km-learn-intro *ngSwitchCase="'intro'"
       [lesson]="lesson"
       [lessonChanged]="lessonChanged"
+      [steps]="steps"
       [text]="text"
       (stepCompleted)="onStepCompleted('intro', null)">
     </km-learn-intro>

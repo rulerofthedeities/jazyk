@@ -196,8 +196,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private nextStep() {
-    if (this.currentStep < this.steps.length) {
+    const lessonSteps = this.steps.filter(step => step.level === Level.Lesson);
+    if (this.currentStep < lessonSteps.length - 1) {
       this.currentStep++;
+    } else {
+      this.getNextLesson(this.lesson._id);
     }
   }
 

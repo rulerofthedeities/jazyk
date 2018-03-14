@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angula
 import {MarkdownService} from 'angular2-markdown';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson} from '../../models/course.model';
+import {Lesson, Step, Level} from '../../models/course.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
@@ -12,8 +12,11 @@ import 'rxjs/add/operator/takeWhile';
     <markdown [data]="intro">
     </markdown>
 
-    <button type="button" class="btn btn-success" (click)="onStartStudy();">
-      {{text["StartStudy"]}}
+    <button *ngIf="buttonText"
+      type="button"
+      class="btn btn-success"
+      (click)="onContinue();">
+      {{text[buttonText]}}
     </button>`,
   styleUrls: ['../markdown.css']
 })
@@ -21,10 +24,12 @@ import 'rxjs/add/operator/takeWhile';
 export class LearnIntroComponent implements OnInit, OnDestroy {
   @Input() private lesson: Lesson;
   @Input() private lessonChanged: Subject<Lesson>;
+  @Input() private steps: Step[];
   @Input() text: Object;
   @Output() stepCompleted = new EventEmitter();
   private componentActive = true;
   intro = '';
+  buttonText: string;
 
   constructor(
     private learnService: LearnService,
@@ -37,13 +42,28 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
     this.checkLessonChanged();
   }
 
-  onStartStudy() {
+  onContinue() {
     this.stepCompleted.emit();
   }
 
   private init() {
+    this.checkNextStep();
     this.loadIntro();
     this.customizeMarkdown();
+  }
+
+  private checkNextStep() {
+    // Check what to show on next button
+    const lessonSteps = this.steps.filter(step => step.level === Level.Lesson);
+    if (lessonSteps.length < 3) {
+      this.buttonText = 'ToNextLesson';
+    } else {
+      if (this.steps[2].name === 'study') {
+        this.buttonText = 'StartStudy';
+      } else {
+        this.buttonText = 'GoToPractise';
+      }
+    }
   }
 
   private checkLessonChanged() {
