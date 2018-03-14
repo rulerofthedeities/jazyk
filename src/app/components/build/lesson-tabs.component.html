@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs">
+  <li *ngIf="steps.intro.active"
+    [class.active]="tab==='intro'"
+    (click)="onSelectTab('intro')">
+    <a>{{text["Intro"]}}</a>
+  </li>
+  <li *ngIf="steps.dialogue?.active"
+    [class.active]="tab==='dialogue'"
+    (click)="onSelectTab('dialogue')">
+    <a>{{text["Dialogue"]}}</a>
+  </li>
+  <li *ngIf="steps.practise.active || steps.study.active"
+    [class.active]="tab==='words'"
+    (click)="onSelectTab('words')">
+    <a>{{text["Words"]}}</a>
+  </li>
+</ul>

@@ -161,6 +161,11 @@ export class UtilsService {
         alwaysShown: false
       },
       {
+        name: 'dialogue',
+        level: Level.Lesson,
+        alwaysShown: false
+      },
+      {
         name: 'study',
         level: Level.Lesson,
         alwaysShown: false

@@ -5,7 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {Lesson, LanPair, CourseDefaults} from '../../models/course.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
-enum Steps {Intro, Study, Practise, Exam};
+enum Steps {Intro, Dialogue, Study, Practise, Exam};
 
 @Component({
   selector: 'km-build-lesson-header',
@@ -27,15 +27,15 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   @Output() doneandgo = new EventEmitter<Lesson>();
   @ViewChild(AutocompleteComponent) autocomplete: AutocompleteComponent;
   private componentActive = true;
-  private bidirectional = [false, false, true, false];
-  private ordered = [false, true, false, true];
-  private active = [false, true, true, true];
+  private bidirectional = [false, false, false, true, false];
+  private ordered = [false, false, true, false, true];
+  private active = [false, false, true, true, true];
   lessonForm: FormGroup;
   chapterForm: FormGroup;
   isFormReady = false;
   isNew = true;
   isSubmitted = false;
-  tpeLabels = ['Intro', 'Study', 'Practise', 'Exam'];
+  tpeLabels = ['Intro', 'Dialogue', 'Study', 'Practise', 'Exam'];
   steps = Steps;
 
   constructor(
@@ -95,17 +95,23 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
 
   isLastActive(i: number) {
     // Exam can only be active if practise is active
-    if (!this.lessonForm.value['exerciseSteps'][2]) {
+    if (!this.lessonForm.value['exerciseSteps'][3]) {
       const steps = this.lessonForm.value['exerciseSteps'];
-      if (steps[3]) {
+      if (steps[4]) {
         console.log('practise is not active');
-        // Exam is active, disable
-        steps[3] = false;
+        const active = this.lessonForm.value['exerciseSteps'].filter(step => step === true);
+        if (active.length === 1) {
+          // Nothing is enabled, enable practise
+          steps[3] = true;
+        } else {
+          // Exam is active, disable
+          steps[4] = false;
+        }
         this.lessonForm.patchValue({exerciseSteps: steps});
       }
     }
     // One lesson type must be active
-    // If the last one is selective it cannot be disabled
+    // If the last one is selected it cannot be disabled
     if (this.lessonForm.value['exerciseSteps'][i]) {
       const active = this.lessonForm.value['exerciseSteps'].filter(step => step === true);
       return active.length === 1;
@@ -152,6 +158,10 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       },
       exerciseSteps: {
         intro: {
+          active: false,
+          bidirectional: false,
+          ordered: false},
+        dialogue: {
           active: false,
           bidirectional: false,
           ordered: false},
@@ -204,6 +214,10 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
         bidirectional: this.bidirectional[0],
         ordered: this.ordered[0]},
       study: {
+        active: formValues.exerciseSteps[1],
+        bidirectional: this.bidirectional[1],
+        ordered: this.ordered[1]},
+      dialogue: {
         active: formValues.exerciseSteps[1],
         bidirectional: this.bidirectional[1],
         ordered: this.ordered[1]},

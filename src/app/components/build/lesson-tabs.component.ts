@@ -3,35 +3,8 @@ import {ExerciseSteps} from '../../models/exercise.model';
 
 @Component({
   selector: 'km-build-lesson-tabs',
-  template: `
-    <ul class="nav nav-tabs">
-      <li *ngIf="steps.intro.active"
-        [class.active]="tab==='intro'"
-        (click)="onSelectTab('intro')">
-        <a>{{text["Intro"]}}</a>
-      </li>
-      <li *ngIf="steps.practise.active || steps.study.active"
-        [class.active]="tab==='words'"
-        (click)="onSelectTab('words')">
-        <a>{{text["Words"]}}</a>
-      </li>
-    </ul>
-  `,
-  styles: [`
-    :host {
-      display: block;
-      margin: 0 -12px;
-    }
-    li {
-      cursor: pointer;
-    }
-    a {
-      color: white;
-    }
-    a:hover {
-      color: black;
-    }
-  `]
+  templateUrl: 'lesson-tabs.component.html',
+  styleUrls: ['lesson-tabs.component.css']
 })
 
 export class BuildLessonTabsComponent implements OnChanges {
