@@ -94,7 +94,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   }
 
   isLastActive(i: number) {
-    // Exam can only be active if at practise is active
+    // Exam can only be active if practise is active
     if (!this.lessonForm.value['exerciseSteps'][2]) {
       const steps = this.lessonForm.value['exerciseSteps'];
       if (steps[3]) {

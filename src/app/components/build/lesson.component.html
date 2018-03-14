@@ -25,8 +25,7 @@
 
   <km-build-lesson-tabs
     [text]="text"
-    [tab]="tab"
-    [isIntro]="lesson?.exerciseSteps?.intro?.active"
+    [steps]="lesson?.exerciseSteps"
     (selected)="onTabSelected($event)">
   </km-build-lesson-tabs>
 
