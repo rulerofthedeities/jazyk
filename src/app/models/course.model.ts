@@ -154,10 +154,6 @@ export interface StepData {
   review: number;
 }
 
-export interface Intro {
-  intro: string;
-}
-
 export interface Dependables {
   translations: Translation[];
   languages: Language[];
@@ -170,3 +166,15 @@ export interface DependableOptions {
   getLanguages?: boolean;
 }
 
+export interface Intro {
+  intro: string;
+}
+
+export interface Dialogue {
+  text: string;
+  tpe: string;
+  local: string;
+  foreign: string;
+  localTitle: string;
+  foreignTitle: string;
+}

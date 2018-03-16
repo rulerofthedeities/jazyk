@@ -72,7 +72,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     .fetchIntro(this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      intro => this.intro = intro.intro,
+      data => this.intro = data.intro,
       error => this.errorService.handleError(error)
     );
   }
@@ -120,19 +120,19 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
 | col 1 is |  left-aligned | €1000 |
 | col 2 is |    centered   |   €90 |
 | col 3 is | right-aligned |    €5 |`;
-  this.templates['olist'] = `1. List item 1
+    this.templates['olist'] = `1. List item 1
 2. List item 2
 3. List item 3`;
-  this.templates['ulist'] = `* List item 1
+    this.templates['ulist'] = `* List item 1
 * List item 2
 * List item 3`;
-  this.templates['header1'] = `# title`;
-  this.templates['header2'] = `## title`;
-  this.templates['header3'] = `### title`;
-  this.templates['quote'] = `> This is a blockquote.`;
-  this.templates['bold'] = `**this text is bold**`;
-  this.templates['rule'] = `---`;
-  this.templates['space'] = `<br>`;
+    this.templates['header1'] = `# title`;
+    this.templates['header2'] = `## title`;
+    this.templates['header3'] = `### title`;
+    this.templates['quote'] = `> This is a blockquote.`;
+    this.templates['bold'] = `**this text is bold**`;
+    this.templates['rule'] = `---`;
+    this.templates['space'] = `<br>`;
   }
 
   ngOnDestroy() {

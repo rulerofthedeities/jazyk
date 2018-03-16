@@ -20,6 +20,7 @@ import {BuildLessonComponent} from './components/build/lesson.component';
 import {BuildLessonHeaderComponent} from './components/build/lesson-header.component';
 import {BuildLessonTabsComponent} from './components/build/lesson-tabs.component';
 import {BuildLessonIntroComponent} from './components/build/lesson-intro.component';
+import {BuildLessonDialogueComponent} from './components/build/lesson-dialogue.component';
 import {BuildLessonsComponent} from './components/build/lessons.component';
 import {BuildExerciseComponent} from './components/build/exercise.component';
 import {BuildExerciseListComponent} from './components/build/exercise-list.component';
@@ -32,6 +33,7 @@ import {AutocompleteComponent} from './components/fields/autocomplete.component'
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
+import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
@@ -58,6 +60,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildLessonHeaderComponent,
     BuildLessonTabsComponent,
     BuildLessonIntroComponent,
+    BuildLessonDialogueComponent,
     BuildExerciseComponent,
     BuildExerciseListComponent,
     BuildSelectComponent,
@@ -68,7 +71,8 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,
-    AudioListComponent
+    AudioListComponent,
+    SanitizeHtmlPipe
   ]
 })
 export class BuildModule {}

@@ -119,6 +119,11 @@
     [lessonId]="lesson?._id"
     [text]="text">
   </km-build-lesson-intro>
+
+  <km-build-lesson-dialogue *ngIf="tab==='dialogue'"
+    [lessonId]="lesson?._id"
+    [text]="text">
+  </km-build-lesson-dialogue>
 </div>
 
 <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">

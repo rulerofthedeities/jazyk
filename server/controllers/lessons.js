@@ -135,7 +135,7 @@ module.exports = {
             intro: intro
           }};
     Lesson.findOneAndUpdate(query, update, function(err, result) {
-        response.handleError(err, res, 400, 'Error updating lesson intro', function() {
+      response.handleError(err, res, 400, 'Error updating lesson intro', function() {
         if (result) {
           response.handleSuccess(res, result);
         } else {
@@ -153,6 +153,39 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching intro', function() {
         const intro = data ? data.intro || '' : '';
         response.handleSuccess(res, {intro});
+      });
+    });
+  },
+  getDialogue: function(req, res) {
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {_id: lessonId},
+          projection = {_id: 0, dialogue: 1};
+    Lesson.findOne(query, projection, function(err, data) {
+      response.handleError(err, res, 400, 'Error fetching dialogue', function() {
+        response.handleSuccess(res, data.dialogue);
+      });
+    });
+  },
+  updateDialogue: function(req, res) {
+    const dialogue = req.body.dialogue,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lessonId = new mongoose.Types.ObjectId(req.params.lessonId),
+          query = {
+            _id: lessonId,
+            access: access.checkAccess(userId, 3) // Must be at least editor
+          },
+          update = {$set: {
+            dialogue: dialogue
+          }};
+          console.log('updating dialogue', dialogue);
+    Lesson.findOneAndUpdate(query, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating lesson dialogue', function() {
+        if (result) {
+          response.handleSuccess(res, result);
+        } else {
+          err = 'Not authorized';
+          response.handleError(err, res, 401, 'Not authorized to update lesson dialogue');
+        }
       });
     });
   }

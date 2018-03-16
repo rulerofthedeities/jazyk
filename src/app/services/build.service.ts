@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {AuthService} from './auth.service';
-import {Course, Lesson, LessonId, Language, LanPair, LanConfig, LanConfigs, Intro} from '../models/course.model';
+import {Course, Lesson, LessonId, Language, LanPair, LanConfig, LanConfigs, Intro, Dialogue} from '../models/course.model';
 import {Exercise} from '../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, Media} from '../models/word.model';
 import {Observable} from 'rxjs/Observable';
@@ -131,17 +131,30 @@ export class BuildService {
     .delete<Lesson>('/api/build/lesson/' + lessonId, {headers});
   }
 
+  fetchIntro(lessonId: string): Observable<Intro> {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get<Intro>('/api/lesson/intro/' + lessonId, {headers})
+    .pipe(retry(3));
+  }
+
   updateIntro(lessonId: string, intro: string): Observable<Lesson> {
     const headers = this.getTokenHeaders();
     return this.http
     .put<Lesson>('/api/build/lesson/intro/' + lessonId, {intro}, {headers});
   }
 
-  fetchIntro(lessonId: string): Observable<Intro> {
+  fetchDialogue(lessonId: string): Observable<Dialogue> {
     const headers = this.getTokenHeaders();
     return this.http
-    .get<Intro>('/api/lesson/intro/' + lessonId, {headers})
+    .get<Dialogue>('/api/lesson/dialogue/' + lessonId, {headers})
     .pipe(retry(3));
+  }
+
+  updateDialogue(lessonId: string, dialogue: Dialogue): Observable<Lesson> {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .put<Lesson>('/api/build/lesson/dialogue/' + lessonId, {dialogue}, {headers});
   }
 
   /*** WORDS ***/

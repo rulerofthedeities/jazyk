@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angul
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, LanPair, CourseDefaults} from '../../models/course.model';
+import {ExerciseStep} from '../../models/exercise.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 
 enum Steps {Intro, Dialogue, Study, Practise, Exam};
@@ -124,18 +125,21 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.languagePair = this.lesson.languagePair;
     this.bidirectional = [
       this.lesson.exerciseSteps.intro.bidirectional,
+      this.lesson.exerciseSteps.dialogue.bidirectional,
       this.lesson.exerciseSteps.study.bidirectional,
       this.lesson.exerciseSteps.practise.bidirectional,
       this.lesson.exerciseSteps.exam.bidirectional
     ];
     this.ordered = [
       this.lesson.exerciseSteps.intro.ordered,
+      this.lesson.exerciseSteps.dialogue.ordered,
       this.lesson.exerciseSteps.study.ordered,
       this.lesson.exerciseSteps.practise.ordered,
       this.lesson.exerciseSteps.exam.ordered
     ];
     this.active = [
       this.lesson.exerciseSteps.intro.active,
+      this.lesson.exerciseSteps.dialogue.active,
       this.lesson.exerciseSteps.study.active,
       this.lesson.exerciseSteps.practise.active,
       this.lesson.exerciseSteps.exam.active
@@ -209,27 +213,21 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       region: formValues.region
     };
     this.lesson.exerciseSteps = {
-      intro: {
-        active: formValues.exerciseSteps[0],
-        bidirectional: this.bidirectional[0],
-        ordered: this.ordered[0]},
-      study: {
-        active: formValues.exerciseSteps[1],
-        bidirectional: this.bidirectional[1],
-        ordered: this.ordered[1]},
-      dialogue: {
-        active: formValues.exerciseSteps[1],
-        bidirectional: this.bidirectional[1],
-        ordered: this.ordered[1]},
-      practise: {
-        active: formValues.exerciseSteps[2],
-        bidirectional: this.bidirectional[2],
-        ordered: this.ordered[2]},
-      exam: {
-        active: formValues.exerciseSteps[3],
-        bidirectional: this.bidirectional[3],
-        ordered: this.ordered[3]}
+      intro: this.setExerciseStep(formValues, Steps.Intro),
+      dialogue: this.setExerciseStep(formValues, Steps.Dialogue),
+      study: this.setExerciseStep(formValues, Steps.Study),
+      practise: this.setExerciseStep(formValues, Steps.Practise),
+      exam: this.setExerciseStep(formValues, Steps.Exam)
     };
+    console.log(this.lesson.exerciseSteps);
+  }
+
+  private setExerciseStep(formValues: any, step: number): ExerciseStep {
+    return {
+      active: formValues.exerciseSteps[step],
+      bidirectional: this.bidirectional[step],
+      ordered: this.ordered[step]
+    }
   }
 
   private addLesson(goToLesson: boolean) {

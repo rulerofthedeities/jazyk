@@ -1,0 +1,57 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row buttons">
+      <div class="col-xs-6">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn"
+              (click)="onSaveDialogue()"
+              [ngClass]="{
+                'btn-success':modified,
+                'btn-default':!modified
+              }"
+              [disabled]="!modified">
+              {{text["Update"]}}
+            </button>
+          </div>
+          <select 
+            class="form-control" 
+            id="dialogueTpes"
+            [(ngModel)]="dialogue.tpe"
+            (ngModelChange)="onChangedDialogue()">
+            <option 
+              *ngFor="let tpe of dialogueTpes"
+              [value]="tpe">
+              {{text[tpe]}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <textarea
+          class="form-control"
+          [(ngModel)]="dialogue.text"
+          (ngModelChange)="onChangedDialogue()"
+          rows="50"
+          #dialogueField>
+        </textarea>
+      </div>
+      <div class="col-xs-6 result">
+        <div class="panel panel-default">
+          <div class="panel-heading">{{dialogue.foreignTitle}}</div>
+          <div class="panel-body">
+            <div [innerHTML]="dialogue.foreign | sanitizeHtml"></div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">{{dialogue.localTitle}}</div>
+          <div class="panel-body">
+            <div [innerHTML]="dialogue.local | sanitizeHtml"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

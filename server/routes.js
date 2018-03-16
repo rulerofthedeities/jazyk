@@ -45,6 +45,7 @@ module.exports.initialize = function(app, router) {
   router.get('/lesson/:lessonId', lessons.getLesson);
   router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
   router.get('/lesson/intro/:lessonId', lessons.getIntro);
+  router.get('/lesson/dialogue/:lessonId', lessons.getDialogue);
 
 /*
   router.get('/exercises/:id', exercises.getExercises);
@@ -149,6 +150,7 @@ module.exports.initialize = function(app, router) {
 
   router.post('/build/lesson', lessons.addLesson);
   router.put('/build/lesson/intro/:lessonId', lessons.updateIntro);
+  router.put('/build/lesson/dialogue/:lessonId', lessons.updateDialogue);
   router.put('/build/lesson/header', lessons.updateLessonHeader);
   router.delete('/build/lesson/:lessonId', lessons.removeLesson);
   

@@ -46,6 +46,7 @@ var ExerciseStepSchema = new Schema({
 
 var ExerciseStepsSchema = new Schema({
   intro: ExerciseStepSchema,
+  dialogue: ExerciseStepSchema,
   study: ExerciseStepSchema,
   practise: ExerciseStepSchema,
   exam: ExerciseStepSchema
@@ -56,6 +57,15 @@ var LessonOptionsSchema = new Schema({
   addArticle: {type: Boolean, default: false},
   region: String
 }, {_id: false})
+
+var DialogueSchema = new Schema({
+  text: String,
+  tpe: {type: String, default: 'Dialogue'},
+  local: String,
+  foreign: String,
+  localTitle: String,
+  foreignTitle: String
+}, {_id: false});
 
 var accessSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
@@ -72,6 +82,7 @@ var lessonSchema = new Schema({
   exercises: [exerciseSchema],
   options: {type: LessonOptionsSchema, required: true},
   intro: String,
+  dialogue: DialogueSchema,
   difficulty: Number,
   access: {type: [accessSchema], required: true},
   isDeleted: {type: Boolean, default: false}
