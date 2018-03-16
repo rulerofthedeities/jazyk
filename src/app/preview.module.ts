@@ -13,6 +13,8 @@ import {RegionFlagSelectorComponent} from './components/fields/region-flag-selec
 import {WordColorDirective} from './directives/word-color.directive';
 import {AudioFileComponent} from './components/fields/audio-file.component';
 import {RegionFlagComponent} from './components/fields/region-flag.component';
+import {LearnDialogueComponent} from './components/learn/dialogue.component';
+import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
@@ -26,10 +28,12 @@ import {RegionFlagComponent} from './components/fields/region-flag.component';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
+    LearnDialogueComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
-    WordColorDirective
+    WordColorDirective,
+    SanitizeHtmlPipe
   ],
   providers: [
     PreviewService
@@ -41,10 +45,12 @@ import {RegionFlagComponent} from './components/fields/region-flag.component';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
+    LearnDialogueComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
-    WordColorDirective
+    WordColorDirective,
+    SanitizeHtmlPipe
   ]
 })
 export class PreviewModule {

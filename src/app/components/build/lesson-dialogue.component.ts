@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Dialogue} from '../../models/course.model';
+import {Dialogue, LanPair} from '../../models/course.model';
 
 @Component({
   selector: 'km-build-lesson-dialogue',
@@ -14,6 +14,7 @@ import {Dialogue} from '../../models/course.model';
 })
 
 export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
+  @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() text: Object;
   private componentActive = true;
@@ -100,8 +101,8 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
           this.dialogue.localTitle = lineLocal.trim();
           this.dialogue.foreignTitle = lineForeign.trim();
         } else {
-          local += lineBreak + `<span class="dl-${i}">${lineLocal.trim()}</span>`;
-          foreign += lineBreak + `<span class="df-${i}">${lineForeign.trim()}</span>`;
+          local += lineBreak + lineLocal.trim() + '<hr>';
+          foreign += lineBreak + lineForeign.trim() + '<hr>';
         }
       }
     });

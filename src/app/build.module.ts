@@ -33,7 +33,6 @@ import {AutocompleteComponent} from './components/fields/autocomplete.component'
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
-import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
@@ -71,8 +70,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,
-    AudioListComponent,
-    SanitizeHtmlPipe
+    AudioListComponent
   ]
 })
 export class BuildModule {}

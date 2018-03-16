@@ -1,0 +1,34 @@
+<div id="dialogue">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <img src="/assets/img/flags/{{languagePair.to}}.png" class="flag">
+      {{dialogue.foreignTitle}}
+    </div>
+    <div class="panel-body">
+      <span 
+        *ngFor="let foreign of dialogue.foreign.split('<hr>'); let i=index"
+        [innerHTML]="foreign | sanitizeHtml"
+        (mouseover)="onSelectLine(i)"
+        (mouseout)="onDeSelectLine()"
+        class="line"
+        [class.selected]="selectedLine === i"
+        >
+      </span>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <img src="/assets/img/flags/{{languagePair.from}}.png" class="flag">
+      {{dialogue.localTitle}}
+    </div>
+    <div class="panel-body">
+      <span *ngFor="let local of dialogue.local.split('<hr>'); let i=index"
+        [innerHTML]="local | sanitizeHtml"
+        (mouseover)="onSelectLine(i)"
+        (mouseout)="onDeSelectLine()"
+        class="line"
+        [class.selected]="selectedLine === i">
+      </span>
+    </div>
+  </div>
+</div>

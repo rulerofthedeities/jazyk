@@ -39,18 +39,10 @@
         </textarea>
       </div>
       <div class="col-xs-6 result">
-        <div class="panel panel-default">
-          <div class="panel-heading">{{dialogue.foreignTitle}}</div>
-          <div class="panel-body">
-            <div [innerHTML]="dialogue.foreign | sanitizeHtml"></div>
-          </div>
-        </div>
-        <div class="panel panel-default">
-          <div class="panel-heading">{{dialogue.localTitle}}</div>
-          <div class="panel-body">
-            <div [innerHTML]="dialogue.local | sanitizeHtml"></div>
-          </div>
-        </div>
+        <km-learn-dialogue
+          [languagePair]="languagePair"
+          [dialogue]="dialogue">
+        </km-learn-dialogue>
       </div>
     </div>
   </div>

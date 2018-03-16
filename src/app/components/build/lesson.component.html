@@ -122,7 +122,8 @@
 
   <km-build-lesson-dialogue *ngIf="tab==='dialogue'"
     [lessonId]="lesson?._id"
-    [text]="text">
+    [text]="text"
+    [languagePair]="lesson?.languagePair">
   </km-build-lesson-dialogue>
 </div>
 
