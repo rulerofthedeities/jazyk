@@ -2,13 +2,13 @@ import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {Dialogue, LanPair} from '../../models/course.model';
 
 @Component ({
-  selector: 'km-learn-dialogue',
+  selector: 'km-dialogue',
   templateUrl: 'dialogue.component.html',
   styleUrls: ['dialogue.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 
-export class LearnDialogueComponent {
+export class DialogueComponent {
   @Input() dialogue: Dialogue;
   @Input() languagePair: LanPair;
   selectedLine: number = null;

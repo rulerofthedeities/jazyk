@@ -9,6 +9,7 @@ import 'rxjs/add/operator/takeWhile';
 @Component({
   selector: 'km-learn-intro',
   template: `
+  <section style="padding: 12px;">
     <markdown [data]="intro">
     </markdown>
 
@@ -17,8 +18,9 @@ import 'rxjs/add/operator/takeWhile';
       class="btn btn-success"
       (click)="onContinue();">
       {{text[buttonText]}}
-    </button>`,
-  styleUrls: ['../markdown.css']
+    </button>
+  </section>`,
+  styleUrls: ['../markdown.css', 'step.component.css']
 })
 
 export class LearnIntroComponent implements OnInit, OnDestroy {
@@ -54,14 +56,19 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
 
   private checkNextStep() {
     // Check what to show on next button
-    const lessonSteps = this.steps.filter(step => step.level === Level.Lesson);
-    if (lessonSteps.length < 3) {
-      this.buttonText = 'ToNextLesson';
-    } else {
-      if (this.steps[2].name === 'study') {
-        this.buttonText = 'StartStudy';
+    if (this.steps) {
+      const lessonSteps = this.steps.filter(step => step.level === Level.Lesson);
+      if (lessonSteps[lessonSteps.length - 1].name === 'intro') {
+        // this is the last step -> go to next lesson
+        this.buttonText = 'ToNextLesson';
       } else {
-        this.buttonText = 'GoToPractise';
+        switch (this.steps[2].name) {
+          case 'dialogue': this.buttonText = 'GoTo' + this.lesson.dialogue.tpe;
+          break;
+          case 'study': this.buttonText = 'StartStudy';
+          break;
+          default: this.buttonText = 'GoToPractise';
+        }
       }
     }
   }

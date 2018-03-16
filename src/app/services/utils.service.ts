@@ -153,42 +153,50 @@ export class UtilsService {
       {
         name: 'overview',
         level: Level.Lesson,
-        alwaysShown: true
+        alwaysShown: true,
+        hasCounter: false
       },
       {
         name: 'intro',
         level: Level.Lesson,
-        alwaysShown: false
+        alwaysShown: false,
+        hasCounter: false
       },
       {
         name: 'dialogue',
         level: Level.Lesson,
-        alwaysShown: false
+        alwaysShown: false,
+        hasCounter: false
       },
       {
         name: 'study',
         level: Level.Lesson,
-        alwaysShown: false
+        alwaysShown: false,
+        hasCounter: true
       },
       {
         name: 'practise',
         level: Level.Lesson,
-        alwaysShown: false
+        alwaysShown: false,
+        hasCounter: true
       },
       {
         name: 'exam',
         level: Level.Course,
-        alwaysShown: false
+        alwaysShown: false,
+        hasCounter: true
       },
       {
         name: 'difficult',
         level: Level.Course,
-        alwaysShown: true
+        alwaysShown: true,
+        hasCounter: true
       },
       {
         name: 'review',
         level: Level.Course,
-        alwaysShown: true
+        alwaysShown: true,
+        hasCounter: true
       }
     ];
   }

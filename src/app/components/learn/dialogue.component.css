@@ -1,7 +1,10 @@
-.line:hover{
+.d-line {
+  margin-right: 5px;
+}
+.d-line:hover{
   background-color: #f3f315;
   cursor: default;
 }
-.selected {
+.d-selected {
   background-color: #f3f315;
 }

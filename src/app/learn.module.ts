@@ -13,6 +13,7 @@ import {LearnCoursesComponent} from './components/learn/courses.component';
 import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
 import {LearnCourseComponent} from './components/learn/course.component';
 import {LearnIntroComponent} from './components/learn/step-intro.component';
+import {LearnDialogueComponent} from './components/learn/step-dialogue.component';
 import {LearnStudyComponent} from './components/learn/step-study.component';
 import {LearnPractiseComponent} from './components/learn/step-practise.component';
 import {LearnOverviewComponent} from './components/learn/step-overview.component';
@@ -49,6 +50,7 @@ import {ScrollToDirective} from './directives/scroll-to.directive';
     LearnCoursesUserComponent,
     LearnCourseComponent,
     LearnIntroComponent,
+    LearnDialogueComponent,
     LearnStudyComponent,
     LearnPractiseComponent,
     LearnOverviewComponent,

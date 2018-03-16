@@ -81,6 +81,16 @@ h1 {
 .learn-header.study {
   background-color: rgb(173, 200, 136);
 }
+.active.btn-dialogue {
+  background-color: rgb(76, 182, 172);
+  border-bottom: 3px solid rgb(76, 182, 172);
+}
+.inactive:hover.btn-dialogue {
+  border-bottom: 3px solid rgb(76, 182, 172);
+}
+.learn-header.dialogue {
+  background-color: rgb(76, 182, 172);
+}
 .active.btn-practise {
   background-color: rgb(220, 202, 83);
   border-bottom: 3px solid rgb(220, 202, 83);
@@ -166,6 +176,12 @@ h1 {
 }
 .overview {
   background: #7f95a5;
+}
+.intro {
+  background: #7da483
+}
+.dialogue {
+  background: #4cb6ac;
 }
 .study {
   background: #adc888;

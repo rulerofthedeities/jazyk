@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro,
-        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig} from '../models/course.model';
+        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions,
         Direction, ExerciseResult, ResultsData, Choice} from '../models/exercise.model';
 import {AuthService} from './auth.service';
@@ -102,6 +102,13 @@ export class LearnService {
     } else {
       return Observable.of(null);
     }
+  }
+
+  fetchDialogue(lessonId: string): Observable<Dialogue> {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get<Dialogue>('/api/lesson/dialogue/' + lessonId, {headers})
+    .pipe(retry(3));
   }
 
   /*** Choices ***/

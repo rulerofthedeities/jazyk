@@ -343,9 +343,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        // new course: show intro if it exists otherwise start study;
+        // new course: show intro if it exists otherwise start dialogue otherwise start study;
         if (this.hasStep('intro')) {
           defaultStep = this.getStepNr('intro');
+        } else if (this.hasStep('dialogue')) {
+          defaultStep = this.getStepNr('dialogue');
         } else if (this.hasStep('study')) {
           defaultStep = this.getStepNr('study');
         } else if (this.hasStep('practise')) {

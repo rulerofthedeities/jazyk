@@ -27,6 +27,7 @@
             [ngClass]="{
               'btn-overview': step.name==='overview',
               'btn-intro': step.name==='intro',
+              'btn-dialogue': step.name==='dialogue',
               'btn-study': step.name==='study',
               'btn-practise': step.name==='practise',
               'btn-review': step.name==='review', 
@@ -36,14 +37,16 @@
               'inactive': currentStep!==i,
               'pull-right': step.level === level.Course
             }">
-            <span class="fa fa-spacing" [ngClass]="{
-              'fa-repeat': step.name==='review', 
-              'fa-fire': step.name==='difficult',
-              'fa-clock-o': step.name==='exam'
-            }"></span>
-            {{text[capitalize(step.name)]}}
-            <div class="badge"
-              *ngIf="step.name !== 'intro' && step.name !== 'overview'"
+            <span *ngIf="step.hasCounter"
+              class="fa fa-spacing" [ngClass]="{
+                'fa-repeat': step.name==='review', 
+                'fa-fire': step.name==='difficult',
+                'fa-clock-o': step.name==='exam'
+              }">
+            </span>
+            {{text[capitalize(step.name === 'dialogue' ? lesson.dialogue.tpe : step.name)]}}
+            <div *ngIf="step.hasCounter"
+              class="badge"
               [class.remaining]="countPerStep[step.name]?.nrRemaining > 0">
               {{countPerStep[step.name]?.nrRemaining || 0}}
             </div>
@@ -70,7 +73,14 @@
       [text]="text"
       (stepCompleted)="onStepCompleted('intro', null)">
     </km-learn-intro>
-    <km-learn-study  *ngSwitchCase="'study'"
+    <km-learn-dialogue *ngSwitchCase="'dialogue'"
+      [lesson]="lesson"
+      [lessonChanged]="lessonChanged"
+      [lanPair]="course.languagePair"
+      [steps]="steps"
+      [text]="text">
+    </km-learn-dialogue>
+    <km-learn-study *ngSwitchCase="'study'"
       [lanPair]="course.languagePair"
       [lesson]="lesson"
       [text]="text"

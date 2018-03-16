@@ -13,7 +13,7 @@ import {RegionFlagSelectorComponent} from './components/fields/region-flag-selec
 import {WordColorDirective} from './directives/word-color.directive';
 import {AudioFileComponent} from './components/fields/audio-file.component';
 import {RegionFlagComponent} from './components/fields/region-flag.component';
-import {LearnDialogueComponent} from './components/learn/dialogue.component';
+import {DialogueComponent} from './components/learn/dialogue.component';
 import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
@@ -28,7 +28,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
-    LearnDialogueComponent,
+    DialogueComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
@@ -45,7 +45,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     LearnQAComponent,
     LearnComparisonComponent,
     LearnKeyboardComponent,
-    LearnDialogueComponent,
+    DialogueComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,

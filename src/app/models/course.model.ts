@@ -108,6 +108,8 @@ export interface Lesson {
   exercises: Exercise[];
   difficulty: number;
   options: LessonOptions;
+  intro?: string;
+  dialogue?: Dialogue;
   rehearseStep?: string; // For repeats
 }
 
@@ -140,6 +142,7 @@ export interface Step {
   name: string;
   level: Level;
   alwaysShown: boolean;
+  hasCounter: boolean;
 }
 
 export interface StepCount {

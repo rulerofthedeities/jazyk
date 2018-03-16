@@ -130,7 +130,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getChapterLessons(lessonHeaders: LessonHeader[]) {
-    console.log('lesson headers', lessonHeaders);
     // Group lessons by chapter name
     let filterName;
     this.courseChapters.forEach(chapterName => {
