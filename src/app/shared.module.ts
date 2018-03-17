@@ -2,7 +2,6 @@ import {NgModule, ModuleWithProviders} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
-import {MarkdownModule} from 'angular2-markdown';
 import {TooltipModule} from 'ngx-tooltip';
 import {UtilsService} from './services/utils.service';
 import {ErrorService} from './services/error.service';
@@ -31,8 +30,7 @@ import {ScorePipe} from './pipes/score.pipe';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    TooltipModule,
-    MarkdownModule.forRoot()
+    TooltipModule
   ],
   declarations: [
     ErrorMessageComponent,
@@ -70,7 +68,6 @@ import {ScorePipe} from './pipes/score.pipe';
     GetKeyPressDirective,
     CommonModule,
     TooltipModule,
-    MarkdownModule,
     ToggleComponent,
     LoaderComponent,
     LearnCourseSummaryComponent,

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Dialogue, Step, Level, LanPair, Lesson} from '../../models/course.model';
@@ -30,6 +30,7 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
   @Input() private steps: Step[];
   @Input() lanPair: LanPair;
   @Input() text: Object;
+  @Output() stepCompleted = new EventEmitter();
   private componentActive = true;
   dialogue: Dialogue;
   buttonText = '';
@@ -42,6 +43,10 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.init();
     this.checkLessonChanged();
+  }
+
+  onContinue() {
+    this.stepCompleted.emit();
   }
 
   private init() {

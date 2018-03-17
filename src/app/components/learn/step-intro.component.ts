@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
-import {MarkdownService} from 'angular2-markdown';
+import {MarkdownService} from 'ngx-md';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Step, Level} from '../../models/course.model';

@@ -44,7 +44,7 @@
                 'fa-clock-o': step.name==='exam'
               }">
             </span>
-            {{text[capitalize(step.name === 'dialogue' ? lesson.dialogue.tpe : step.name)]}}
+            {{text[step.name === 'dialogue' ? lesson.dialogue?.tpe : capitalize(step.name)]}}
             <div *ngIf="step.hasCounter"
               class="badge"
               [class.remaining]="countPerStep[step.name]?.nrRemaining > 0">
@@ -78,7 +78,8 @@
       [lessonChanged]="lessonChanged"
       [lanPair]="course.languagePair"
       [steps]="steps"
-      [text]="text">
+      [text]="text"
+      (stepCompleted)="onStepCompleted('intro', null)">
     </km-learn-dialogue>
     <km-learn-study *ngSwitchCase="'study'"
       [lanPair]="course.languagePair"

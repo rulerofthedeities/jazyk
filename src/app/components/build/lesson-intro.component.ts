@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {MarkdownService} from 'angular2-markdown';
+import {MarkdownService} from 'ngx-md';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import 'rxjs/add/operator/takeWhile';
@@ -120,12 +120,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
 | col 1 is |  left-aligned | €1000 |
 | col 2 is |    centered   |   €90 |
 | col 3 is | right-aligned |    €5 |`;
-    this.templates['olist'] = `1. List item 1
-2. List item 2
-3. List item 3`;
-    this.templates['ulist'] = `* List item 1
-* List item 2
-* List item 3`;
+    this.templates['olist'] = `1. List item 1\n2. List item 2\n3. List item 3`;
+    this.templates['ulist'] = `* List item 1\n* List item 2\n* List item 3`;
     this.templates['header1'] = `# title`;
     this.templates['header2'] = `## title`;
     this.templates['header3'] = `### title`;

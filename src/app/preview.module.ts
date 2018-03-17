@@ -1,6 +1,7 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {CommonModule} from '@angular/common';
+import {MarkdownModule} from 'ngx-md';
 
 import {PreviewService} from './services/preview.service';
 import {PreviewQuestionComponent} from './components/build/preview-question.component';
@@ -19,7 +20,8 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 @NgModule({
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    MarkdownModule.forRoot()
   ],
   declarations: [
     PreviewQuestionComponent,
@@ -39,6 +41,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     PreviewService
   ],
   exports: [
+    MarkdownModule,
     PreviewQuestionComponent,
     LearnQuestionComponent,
     LearnSelectComponent,
