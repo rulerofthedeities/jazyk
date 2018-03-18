@@ -2,7 +2,7 @@ import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angula
 import {MarkdownService} from 'ngx-md';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson, Step, Level} from '../../models/course.model';
+import {Lesson, Step, Level, Intro} from '../../models/course.model';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
 
@@ -10,9 +10,7 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-learn-intro',
   template: `
   <section style="padding: 12px;">
-    <markdown [data]="intro">
-    </markdown>
-
+    <div innerHtml="intro?.html | sanitizeHtml"></div>
     <button *ngIf="buttonText"
       type="button"
       class="btn btn-success"
@@ -30,7 +28,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Output() stepCompleted = new EventEmitter();
   private componentActive = true;
-  intro = '';
+  intro: Intro;
   buttonText: string;
 
   constructor(
@@ -88,7 +86,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
     .fetchIntro(this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      intro => this.intro = intro.intro,
+      intro => this.intro = intro,
       error => this.errorService.handleError(error)
     );
   }

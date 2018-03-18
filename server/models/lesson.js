@@ -36,13 +36,13 @@ var exerciseSchema = new Schema({
   options: String,
   tpe: Number,
   difficulty: {type: Number, default: 0}
-})
+});
 
 var ExerciseStepSchema = new Schema({
   active: Boolean,
   bidirectional: Boolean,
   ordered: Boolean
-}, {_id: false})
+}, {_id: false});
 
 var ExerciseStepsSchema = new Schema({
   intro: ExerciseStepSchema,
@@ -50,13 +50,13 @@ var ExerciseStepsSchema = new Schema({
   study: ExerciseStepSchema,
   practise: ExerciseStepSchema,
   exam: ExerciseStepSchema
-}, {_id: false})
+}, {_id: false});
 
 var LessonOptionsSchema = new Schema({
   caseSensitive: {type: Boolean, default: false},
   addArticle: {type: Boolean, default: false},
   region: String
-}, {_id: false})
+}, {_id: false});
 
 var DialogueSchema = new Schema({
   text: String,
@@ -65,6 +65,11 @@ var DialogueSchema = new Schema({
   foreign: String,
   localTitle: String,
   foreignTitle: String
+}, {_id: false});
+
+var IntroSchema = new Schema({
+  text: String,
+  html: String
 }, {_id: false});
 
 var accessSchema = new Schema({
@@ -81,11 +86,11 @@ var lessonSchema = new Schema({
   exerciseSteps: ExerciseStepsSchema,
   exercises: [exerciseSchema],
   options: {type: LessonOptionsSchema, required: true},
-  intro: String,
+  intro: IntroSchema,
   dialogue: DialogueSchema,
   difficulty: Number,
   access: {type: [accessSchema], required: true},
   isDeleted: {type: Boolean, default: false}
-})
+});
 
 module.exports = mongoose.model('Lesson', lessonSchema);

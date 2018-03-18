@@ -151,8 +151,7 @@ module.exports = {
           projection = {_id: 0, intro: 1};
     Lesson.findOne(query, projection, function(err, data) {
       response.handleError(err, res, 400, 'Error fetching intro', function() {
-        const intro = data ? data.intro || '' : '';
-        response.handleSuccess(res, {intro});
+        response.handleSuccess(res, data.intro);
       });
     });
   },

@@ -11,7 +11,8 @@
                 'btn-default':!modified
               }"
               [disabled]="!modified">
-              {{text["Update"]}}
+              <span class="fa fa-check" [class.fa-check]="saved"></span>
+              {{text[saved ? "Updated" : "Update"]}}
             </button>
           </div>
           <select 
@@ -35,7 +36,7 @@
           [(ngModel)]="dialogue.text"
           (ngModelChange)="onChangedDialogue()"
           rows="50"
-          #dialogueField>
+          #dialogueField="ngModel">
         </textarea>
       </div>
       <div class="col-xs-6 result">

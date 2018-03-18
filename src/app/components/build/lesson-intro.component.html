@@ -4,9 +4,13 @@
       <div class="col-xs-12">
         <button type="button" class="btn"
           (click)="onSaveIntro()"
-          [ngClass]="{'btn-success':modified, 'btn-default':!modified}"
+          [ngClass]="{
+            'btn-success':modified,
+            'btn-default':!modified
+          }"
           [disabled]="!modified">
-          {{text["Update"]}}
+          <span class="fa fa-check" [class.fa-check]="saved"></span>
+          {{text[saved ? "Updated" : "Update"]}}
         </button>
         <div class="btn btn-primary" (click)="onInsertTemplate(introField, 'table')">
           {{text["Table"]}}
@@ -57,15 +61,15 @@
       <div class="col-xs-6">
         <textarea
           class="form-control"
-          [(ngModel)]="intro"
+          [(ngModel)]="intro.text"
           (ngModelChange)="onChangedIntro()"
           rows="50"
-          #introField>
+          #introField="ngModel">
         </textarea>
       </div>
-      <div class="col-xs-6 markdown">
-        <markdown [data]="intro">
-        </markdown>
+      <div class="col-xs-6">
+        <div [innerHTML]="intro?.html | sanitizeHtml"></div>
+        <hr>
       </div>
     </div>
   </div>

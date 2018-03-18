@@ -1,6 +1,7 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, ViewChild, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
+import {UtilsService} from '../../services/utils.service';
 import {Dialogue, LanPair} from '../../models/course.model';
 
 @Component({
@@ -13,23 +14,27 @@ import {Dialogue, LanPair} from '../../models/course.model';
   `]
 })
 
-export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
+export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() languagePair: LanPair;
   @Input() lessonId: string;
   @Input() text: Object;
+  @ViewChild('dialogueField') input;
   private componentActive = true;
   modified = false;
+  saved = false;
   dialogueTpes = ['Dialogue', 'Text', 'Story'];
   dialogue: Dialogue;
+  dialogueDefault: Dialogue;
   result: Text;
   
   constructor(
     private buildService: BuildService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
-    this.dialogue = {
+    this.dialogueDefault = {
       tpe: 'Dialogue',
       text: 'Title [Translated Title]',
       local: '',
@@ -37,13 +42,22 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
       localTitle: '',
       foreignTitle: ''
     }
+    this.dialogue = this.dialogueDefault;
     this.loadDialogue();
     this.parseText();
   }
 
+  ngAfterViewInit() {
+    this.input.valueChanges
+    .debounceTime(400)
+    .subscribe(data => {
+      this.parseText();
+    });
+  }
+
   onChangedDialogue() {
     this.modified = true;
-    this.parseText();
+    this.saved = false;
   }
 
   onSaveDialogue() {
@@ -57,7 +71,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
     .fetchDialogue(this.lessonId)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      dialogue => this.dialogue = dialogue,
+      dialogue => this.dialogue = dialogue ? dialogue : this.dialogueDefault,
       error => this.errorService.handleError(error)
     );
   }
@@ -68,7 +82,9 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
     .updateDialogue(this.lessonId, this.dialogue)
     .takeWhile(() => this.componentActive)
     .subscribe(
-      update => this.modified = false,
+      update => {
+        this.modified = false,
+        this.saved = true},
       error => this.errorService.handleError(error)
     );
   }
@@ -80,14 +96,11 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy {
         lineForeign = '',
         snippets: Array<string> = [],
         lineBreak: string;
-    // remove script, anchor and image tags
-    let text = this.dialogue.text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    text = text.replace(/<a\b[^<]*(?:(?!<\/a>)<[^<]*)*<\/a>/gi, '');
-    text = text.replace(/<img\b[^<]*(?:(?!<\/img>)<[^<]*)*<\/img>/gi, '');
-    text = text.replace(/<span\b[^<]*(?:(?!<\/span>)<[^<]*)*<\/span>/gi, '');
-    text = text.replace(/<div\b[^<]*(?:(?!<\/div>)<[^<]*)*<\/div>/gi, '');
+    // remove tags
+    const tags = ['script', 'a', 'img', 'span', 'div', 'audio'],
+          text = this.utilsService.removeTags(this.dialogue.text, tags),
+          sourceSentences = text.split(']');
     // parse content
-    const sourceSentences = text.split(']');
     sourceSentences.forEach((sentence, i) => {
       if (sentence) {
         lineBreak = sentence[0] === '\n' && i > 1 ? '<br>' : '';

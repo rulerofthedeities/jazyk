@@ -170,7 +170,8 @@ export interface DependableOptions {
 }
 
 export interface Intro {
-  intro: string;
+  text: string;
+  html: string;
 }
 
 export interface Dialogue {

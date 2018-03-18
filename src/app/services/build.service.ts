@@ -138,7 +138,7 @@ export class BuildService {
     .pipe(retry(3));
   }
 
-  updateIntro(lessonId: string, intro: string): Observable<Lesson> {
+  updateIntro(lessonId: string, intro: Intro): Observable<Lesson> {
     const headers = this.getTokenHeaders();
     return this.http
     .put<Lesson>('/api/build/lesson/intro/' + lessonId, {intro}, {headers});
