@@ -1,0 +1,36 @@
+/* Headers */
+/deep/ h1.i{
+  border-bottom: 4px double #06ae97;
+}
+/deep/ h2.i{
+  border-bottom: 1px solid #06ae97;
+  font-size: 20px;
+}
+/* Audio */
+/deep/ audio::-webkit-media-controls-time-remaining-display,
+/deep/ audio::-webkit-media-controls-current-time-display,
+/deep/ audio::-webkit-media-controls-timeline {
+  display: none;
+}
+/deep/ audio::-webkit-media-controls-panel {
+  background-color: transparent;
+  width: 76px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin: 0 8px;
+}
+/* Size */
+/deep/ span.i-size-1{
+  font-size: 20px;
+}
+/deep/ span.i-size-2{
+  font-size: 24px;
+}
+/deep/ span.i-size-3{
+  font-size: 36px;
+}
+/* Lists */
+/deep/ .i-list > li:hover {
+  cursor: pointer;
+  background-color: #e8fcfa;
+}

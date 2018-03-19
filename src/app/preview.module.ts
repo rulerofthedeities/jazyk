@@ -1,7 +1,6 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {CommonModule} from '@angular/common';
-import {MarkdownModule} from 'ngx-md';
 
 import {PreviewService} from './services/preview.service';
 import {PreviewQuestionComponent} from './components/build/preview-question.component';
@@ -15,13 +14,13 @@ import {WordColorDirective} from './directives/word-color.directive';
 import {AudioFileComponent} from './components/fields/audio-file.component';
 import {RegionFlagComponent} from './components/fields/region-flag.component';
 import {DialogueComponent} from './components/learn/dialogue.component';
+import {IntroComponent} from './components/learn/intro.component';
 import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
-    SharedModule,
-    MarkdownModule.forRoot()
+    SharedModule
   ],
   declarations: [
     PreviewQuestionComponent,
@@ -31,6 +30,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     LearnComparisonComponent,
     LearnKeyboardComponent,
     DialogueComponent,
+    IntroComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
@@ -41,7 +41,6 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     PreviewService
   ],
   exports: [
-    MarkdownModule,
     PreviewQuestionComponent,
     LearnQuestionComponent,
     LearnSelectComponent,
@@ -49,6 +48,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     LearnComparisonComponent,
     LearnKeyboardComponent,
     DialogueComponent,
+    IntroComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit} from '@angular/core';
-import {MarkdownService} from 'ngx-md';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
+import {PreviewService} from '../../services/preview.service';
 import {Intro} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -9,16 +9,26 @@ interface Map<T> {
     [K: string]: T;
 }
 
-interface Options {
+interface SnippetOptions {
   title?: string;
   format?: string;
   url?: string;
+  content?: string;
+  value?: number;
+}
+
+interface ReplaceOptions {
+  tag: string;
+  html: string;
+  oldText: string;
+  newText: string;
+  hasClosingTag: boolean;
 }
 
 @Component({
   selector: 'km-build-lesson-intro',
   templateUrl: 'lesson-intro.component.html',
-  styleUrls: ['lesson-intro.component.css', '../markdown.css']
+  styleUrls: ['lesson-intro.component.css']
 })
 
 export class BuildLessonIntroComponent implements OnInit, OnDestroy {
@@ -36,7 +46,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   constructor(
     private buildService: BuildService,
     private errorService: ErrorService,
-    private markdown: MarkdownService
+    private previewService: PreviewService
   ) {}
 
   ngOnInit() {
@@ -115,26 +125,65 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseText() {
-    let html = this.intro.text;
-    html = this.parseHeaders(html);
+    const tags = ['span', 'div', 'audio', 'h1', 'h2', 'ul', 'li'];
+    let html = this.previewService.removeTags(this.intro.text, tags);
+    html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
+    html = this.parseSize(html, 'size');
+    html = this.parseHeaders(html, 'header');
+    html = this.parseHeaders(html, 'subheader');
+    html = this.parseLists(html);
     html = this.parseAudio(html);
     this.intro.html = html;
   }
 
-  private parseHeaders(text: string): string {
-    // format [h1: title]
-    const tag = 'header',
-          headerTags = this.getTags('header');
+  private parseHeaders(text: string, tag: string): string {
+    // format [tag: title] 
+    const headerTags = this.getTags(text, tag, false);
     let headerTitle: string,
         headerHtml: string,
         html = text;
     headerTags.forEach(headerTag => {
-        console.log('headertag', headerTag);
       headerTitle = headerTag.trim() || '';
-      headerHtml = this.getHtmlSnippet('header', {title: headerTitle});
-        console.log('headerhtml', headerHtml);
-      html = this.replaceText('header', html, headerTag, headerHtml);
-        console.log('html', html);
+      headerHtml = this.getHtmlSnippet(tag, {title: headerTitle});
+      html = this.replaceText({tag, html, oldText: headerTag, newText: headerHtml, hasClosingTag: false});
+    });
+    return html;
+  }
+
+  private parseSize(text: string, tag: string): string {
+    // format [size:2 text] (1, 2, 3 with 3 being the largest)
+    const sizeTags = this.getTags(text, tag, false);
+    let sizeText: string,
+        sizeHtml: string,
+        html = text,
+        size: number;
+    sizeTags.forEach(sizeTag => {
+      if (sizeTag && sizeTag.length > 2 && sizeTag[1] === ':') {
+        size = parseInt(sizeTag[0], 10);
+        size = size > 0 && size < 4 ? size : 1;
+        sizeText = sizeTag.substr(2, sizeTag.length - 2).trim() || '';
+        sizeHtml = this.getHtmlSnippet(tag, {content: sizeText, value: size});
+        html = this.replaceText({tag, html, oldText: sizeTag, newText: sizeHtml, hasClosingTag: false});
+      }
+    });
+    return html;
+  }
+
+  private parseLists(text: string): string {
+    // format [list: item1\nitem2 list] 
+    const tag = 'list',
+          listTags = this.getTags(text, tag, true);
+    let listItems: string[],
+        listHtml = '',
+        html = text;
+    listTags.forEach(listTag => {
+      listItems = listTag.split('<br>');
+      listItems = listItems.map(data => data.trim());
+      listItems.forEach(item => {
+        listHtml+= this.getHtmlSnippet(tag, {content: item});
+      })
+      listHtml = '<ul class="list-group i-list">' + listHtml + '</ul>';
+      html = this.replaceText({tag, html, oldText: listTag, newText: listHtml, hasClosingTag: true});
     });
     return html;
   }
@@ -142,7 +191,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   private parseAudio(text: string): string {
     // format [audio: url, (format, default='ogg')]
     const tag = 'audio',
-          audioTags = this.getTags('audio'),
+          audioTags = this.getTags(text, tag, false),
           validFormats = ['ogg', 'mp3', 'mp4'];
     let audioData: Array<string>,
         audioFormat: string,
@@ -156,41 +205,48 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       audioUrl = audioData[0];
       audioFormat = audioData[1] && validFormats.find(format => format === audioData[1]) ? audioData[1] : 'ogg';
       audioHtml = this.getHtmlSnippet('audio', {url: audioUrl, format: audioFormat});
-      html = this.replaceText('audio', html, audioTag, audioHtml);
-      // regex = new RegExp('\\[audio:' + audioTag + '\\]', 'ig');
-      // html = html.replace(regex, audioHtml);
+      html = this.replaceText({tag, html, oldText: audioTag, newText: audioHtml, hasClosingTag: false});
     });
     return html;
   }
 
-  private getTags(tag: string) {
-    const regex = new RegExp(`(?<=\\[${tag}:).*?(?=\\])`, 'ig');
+  private getTags(text: string, tag: string, hasClosingTag: boolean) {
+    const regex = new RegExp(hasClosingTag ? `(?<=\\[${tag}:).*?(?=${tag}\\])` : `(?<=\\[${tag}:).*?(?=\\])`, 'igs');
     let result: RegExpExecArray,
         data: Array<string> = [],
         cnt = 0;
-    result = regex.exec(this.intro.text);
+    result = regex.exec(text);
     while (result && cnt < 100) {
       data.push(result[0]);
-      result = regex.exec(this.intro.text);
+      result = regex.exec(text);
       cnt++;
     }
     return data;
   }
 
-  private getHtmlSnippet(tpe: string, options: Options) {
+  private getHtmlSnippet(tpe: string, options: SnippetOptions) {
     switch (tpe) {
       case 'header': 
-        return `<h1>${options.title}</h1>`;
+        return `<h1 class="i">${options.title}</h1>`;
+      case 'subheader': 
+        return `<h2 class="i">${options.title}</h2>`;
+      case 'size': 
+        return `<span class="i-size-${options.value}">${options.content}</span>`;
+      case 'list': 
+        return `<li class="list-group-item">${options.content}</li>`;
       case 'audio':
         return `<audio controls>
-          <source src="${options.url}" type="audio/${options.format}">
-        </audio>`;
+                  <source src="${options.url}" type="audio/${options.format}">
+                </audio>`;
     }
   }
 
-  private replaceText(tpe: string, html: string, oldText: string, newText: string): string {
-    const regex = new RegExp(`\\[${tpe}:${oldText}\\]`, 'ig');
-    return html.replace(regex, newText);
+  private replaceText(options: ReplaceOptions): string {
+    const firstTag = options.tag + ':',
+          closedTag = `[${firstTag + options.oldText + options.tag}]`,
+          openTag = `[${firstTag + options.oldText}]`;
+          console.log('REPLACE>', options.tag, openTag);
+    return options.html.replace(options.hasClosingTag ? closedTag : openTag, options.newText);
   }
 
   private closeDropdowns(keepOpen: string) {

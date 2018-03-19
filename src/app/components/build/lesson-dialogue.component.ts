@@ -1,7 +1,7 @@
 import {Component, Input, ViewChild, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
+import {PreviewService} from '../../services/preview.service';
 import {Dialogue, LanPair} from '../../models/course.model';
 
 @Component({
@@ -30,7 +30,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   constructor(
     private buildService: BuildService,
     private errorService: ErrorService,
-    private utilsService: UtilsService
+    private previewService: PreviewService
   ) {}
 
   ngOnInit() {
@@ -97,8 +97,8 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
         snippets: Array<string> = [],
         lineBreak: string;
     // remove tags
-    const tags = ['script', 'a', 'img', 'span', 'div', 'audio'],
-          text = this.utilsService.removeTags(this.dialogue.text, tags),
+    const tags = ['a', 'img', 'span', 'div', 'audio'],
+          text = this.previewService.removeTags(this.dialogue.text, tags),
           sourceSentences = text.split(']');
     // parse content
     sourceSentences.forEach((sentence, i) => {

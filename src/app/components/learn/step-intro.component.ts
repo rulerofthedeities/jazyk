@@ -1,5 +1,4 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
-import {MarkdownService} from 'ngx-md';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Step, Level, Intro} from '../../models/course.model';
@@ -10,7 +9,8 @@ import 'rxjs/add/operator/takeWhile';
   selector: 'km-learn-intro',
   template: `
   <section style="padding: 12px;">
-    <div innerHtml="intro?.html | sanitizeHtml"></div>
+    <km-intro [html]="intro?.html">
+    </km-intro>
     <button *ngIf="buttonText"
       type="button"
       class="btn btn-success"
@@ -18,7 +18,7 @@ import 'rxjs/add/operator/takeWhile';
       {{text[buttonText]}}
     </button>
   </section>`,
-  styleUrls: ['../markdown.css', 'step.component.css']
+  styleUrls: ['step.component.css']
 })
 
 export class LearnIntroComponent implements OnInit, OnDestroy {
@@ -33,8 +33,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
 
   constructor(
     private learnService: LearnService,
-    private errorService: ErrorService,
-    private markdown: MarkdownService
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -49,7 +48,6 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
   private init() {
     this.checkNextStep();
     this.loadIntro();
-    this.customizeMarkdown();
   }
 
   private checkNextStep() {
@@ -89,24 +87,6 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
       intro => this.intro = intro,
       error => this.errorService.handleError(error)
     );
-  }
-
-  private customizeMarkdown() {
-    this.markdown.renderer.table = (header: string, body: string) => {
-      return `
-        <table class="mdtable">
-          <thead>
-            ${header}
-          </thead>
-          <tbody>
-            ${body}
-          </tbody>
-        </table>
-      `;
-    };
-    this.markdown.renderer.blockquote = (quote: string) => {
-      return `<blockquote class="mdquote">${quote}</blockquote>`;
-    };
   }
 
   ngOnDestroy() {

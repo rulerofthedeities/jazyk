@@ -126,16 +126,6 @@ export class UtilsService {
     }
   }
 
-  removeTags(text: string, tags: string[]): string {
-    let filteredText = text,
-        regex: RegExp;
-    tags.forEach(tag => {
-      regex = new RegExp('<${tag}\b[^<]*(?:(?!<\/${tag}>)<[^<]*)*<\/${tag}>', 'gi');
-      filteredText = filteredText.replace(regex, '');
-    })
-    return filteredText;
-  }
-
   getWordTypes(): string[] {
     return [
       'noun',

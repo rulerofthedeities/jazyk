@@ -67,9 +67,9 @@
           #introField="ngModel">
         </textarea>
       </div>
-      <div class="col-xs-6">
-        <div [innerHTML]="intro?.html | sanitizeHtml"></div>
-        <hr>
+      <div class="col-xs-6 markdown">
+        <km-intro [html]="intro?.html">
+        </km-intro>
       </div>
     </div>
   </div>
