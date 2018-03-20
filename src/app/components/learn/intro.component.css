@@ -4,7 +4,7 @@
 }
 /deep/ h2.i{
   border-bottom: 1px solid #06ae97;
-  font-size: 20px;
+  font-size: 22px;
 }
 /* Audio */
 /deep/ audio::-webkit-media-controls-time-remaining-display,
@@ -12,9 +12,13 @@
 /deep/ audio::-webkit-media-controls-timeline {
   display: none;
 }
+/deep/ audio::-webkit-media-controls-play-button,
+/deep/ audio::-webkit-media-controls-mute-button {
+  cursor: pointer;
+}
 /deep/ audio::-webkit-media-controls-panel {
   background-color: transparent;
-  width: 76px;
+  width: 70px;
   border: 1px solid grey;
   border-radius: 5px;
   margin: 0 8px;
@@ -31,6 +35,45 @@
 }
 /* Lists */
 /deep/ .i-list > li:hover {
-  cursor: pointer;
   background-color: #e8fcfa;
 }
+/* Tables */
+/deep/ .i-table tr {
+  border: 1px dashed #aaa;
+}
+/deep/ .i-table th {
+  border-bottom: 1px solid black;
+}
+/deep/ .i-table th.inverse,
+/deep/ .i-table td.inverse {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+/deep/ .i-table {
+  border: 1px solid black;
+  border-radius: 6px;
+}
+/deep/ .i-table .right {
+  text-align: right;
+}
+/deep/ .i-table .center {
+  text-align: center;
+}
+/deep/ .i-table .left {
+  text-align: left;
+}
+/deep/ .i-table td,
+/deep/ .i-table th {
+  padding: 3px 6px;
+  border-left: 1px dotted #aaa;
+}
+/deep/ .i-table .inverse,
+/deep/ .i-table th {
+  background-color: #4c96af;
+  color: white;
+}
+/deep/ .i-table tr:hover {
+  background-color: #e8fcfa;
+  cursor: default;
+}
+

@@ -33,6 +33,10 @@
       <div class="col-xs-6">
         <textarea
           class="form-control"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false" 
           [(ngModel)]="dialogue.text"
           (ngModelChange)="onChangedDialogue()"
           rows="50"

@@ -9,12 +9,28 @@ interface Map<T> {
     [K: string]: T;
 }
 
+enum Alignment {Left, Center, Right}
+
+interface ColumnOptions {
+  align: Alignment;
+  inverse: boolean;
+}
+
+interface TableOptions {
+  cells: string[];
+  first?: boolean;
+  last?: boolean;
+  alignment?: string[];
+  columns?: ColumnOptions[];
+}
+
 interface SnippetOptions {
   title?: string;
   format?: string;
   url?: string;
   content?: string;
   value?: number;
+  table?: TableOptions;
 }
 
 interface ReplaceOptions {
@@ -133,6 +149,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseHeaders(html, 'subheader');
     html = this.parseLists(html);
     html = this.parseAudio(html);
+    html = this.parseTables(html);
     this.intro.html = html;
   }
 
@@ -182,8 +199,67 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       listItems.forEach(item => {
         listHtml+= this.getHtmlSnippet(tag, {content: item});
       })
-      listHtml = '<ul class="list-group i-list">' + listHtml + '</ul>';
+      listHtml = this.getHtmlSnippet('ul', {content: listHtml});
       html = this.replaceText({tag, html, oldText: listTag, newText: listHtml, hasClosingTag: true});
+    });
+    return html;
+  }
+
+  private parseTables(text: string): string {
+    /* format [table: 
+    | Col1     |      Col2     |  Col3 |
+    |<         |               |>      |
+    | col 1 is | left-aligned  | €1000 |
+    | col 2 is |   centered    |   €90 |
+    | col 3 is | right-aligned |    €5 | table] */
+    const tag = 'table',
+          tableTags = this.getTags(text, tag, true);
+    let tableRows: string[],
+        tableCells: string[],
+        headerCells: string[],
+        tableHtml: string,
+        html = text,
+        colOptions: ColumnOptions[];
+    tableTags.forEach(tableTag => {
+      colOptions = [];
+      tableRows = tableTag.split('<br>');
+      console.log('tableRows', tableRows);
+      if (tableRows.length && tableRows[0].trim() === '') {
+        tableRows.shift(); // First row is empty, remove
+      }
+      tableRows.forEach((tableRow, rowNr) => {
+        tableRow = tableRow.trim();
+        tableCells = tableRow.split('|');
+        if (tableCells.length > 2) {
+          tableCells.pop();
+          tableCells.shift();
+        }
+        console.log('tablecells', tableCells, rowNr);
+        if (rowNr===0) {
+          headerCells = tableCells;
+        } else if (rowNr===1) {
+          // column options
+          tableCells.forEach((cell, colNr) => {
+            colOptions[colNr] = {
+              align: cell.indexOf('<') > -1 ? Alignment.Left : (cell.indexOf('>') > -1 ? Alignment.Right : Alignment.Center),
+              inverse: cell.indexOf('i') > -1 ? true : false
+            }
+          })
+        } else {
+          if (headerCells) {
+            tableHtml = this.getHtmlSnippet('t-header', {table: {cells: headerCells, columns: colOptions}});
+            headerCells = null;
+          }
+          tableHtml+= this.getHtmlSnippet('t-row', {table: {
+            cells: tableCells,
+            first: rowNr===1,
+            last: rowNr===tableRows.length - 1,
+            columns: colOptions}});
+        }
+          console.log('row', tableHtml);
+      })
+      tableHtml = this.getHtmlSnippet(tag, {content: tableHtml});
+      html = this.replaceText({tag, html, oldText: tableTag, newText: tableHtml, hasClosingTag: true});
     });
     return html;
   }
@@ -225,6 +301,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private getHtmlSnippet(tpe: string, options: SnippetOptions) {
+    let html = '',
+        classes = '';
     switch (tpe) {
       case 'header': 
         return `<h1 class="i">${options.title}</h1>`;
@@ -234,18 +312,42 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<span class="i-size-${options.value}">${options.content}</span>`;
       case 'list': 
         return `<li class="list-group-item">${options.content}</li>`;
+      case 'ul':
+        return `<ul class="list-group i-list">${options.content}</ul>`
       case 'audio':
         return `<audio controls>
                   <source src="${options.url}" type="audio/${options.format}">
                 </audio>`;
+      case 't-header':
+        options.table.cells.forEach((cell, i) => {
+          console.log('options', i, options.table.columns[i]);
+          classes = this.getColumnClasses(options.table.columns[i]);
+          html += `<th${classes}>${cell.trim()}</th>`;
+        })
+        return `<thead><tr>${html}</tr></thead>`;
+      case 't-row':
+        options.table.cells.forEach((cell, i) => {
+          classes = this.getColumnClasses(options.table.columns[i]);
+          html += `<td${classes}>${cell.trim()}</td>`;
+        })
+        let row = `<tr>${html}</tr>`;
+        return options.table.first ? `<tbody>${row}` :(options.table.last ? `${row}</tbody>`: row);
+      case 'table':
+        return `<table class="i-table">${options.content}</table>`;
     }
+  }
+
+  private getColumnClasses(options: ColumnOptions): string {
+    const alignClass = options.align === Alignment.Left ? "left" : (options.align === Alignment.Right ? "right" : "center"),
+          inverseClass = options.inverse ? "inverse" : null,
+          classes = alignClass + ' ' + (inverseClass || '');
+    return ` class="${classes.trim()}"`;
   }
 
   private replaceText(options: ReplaceOptions): string {
     const firstTag = options.tag + ':',
           closedTag = `[${firstTag + options.oldText + options.tag}]`,
           openTag = `[${firstTag + options.oldText}]`;
-          console.log('REPLACE>', options.tag, openTag);
     return options.html.replace(options.hasClosingTag ? closedTag : openTag, options.newText);
   }
 
@@ -259,7 +361,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private createTemplates() {
-    this.templates['table'] = `| Col1     |      Col2     |  Cool |
+    this.templates['table'] = `| Col1     |      Col2     |  Col3 |
 |----------|:-------------:|------:|
 | col 1 is |  left-aligned | €1000 |
 | col 2 is |    centered   |   €90 |
