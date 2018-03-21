@@ -7,7 +7,6 @@ import {routes} from './info.routes';
 import {InfoService} from './services/info.service';
 
 import {InfoComponent} from './components/info/info.component';
-import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
@@ -18,8 +17,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     InfoService
   ],
   declarations: [
-    InfoComponent,
-    SanitizeHtmlPipe
+    InfoComponent
   ]
 })
 export class InfoModule {}

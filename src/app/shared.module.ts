@@ -21,6 +21,7 @@ import {ToggleComponent} from './components/fields/toggle.component';
 import {LoaderComponent} from './components/loader.component';
 import {LearnCourseSummaryComponent} from './components/learn/course-summary.component';
 import {ModalRanksComponent} from './components/modals/modal-ranks.component';
+import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 import {ScorePipe} from './pipes/score.pipe';
 
@@ -48,7 +49,8 @@ import {ScorePipe} from './pipes/score.pipe';
     LoaderComponent,
     LearnCourseSummaryComponent,
     ModalRanksComponent,
-    ScorePipe
+    ScorePipe,
+    SanitizeHtmlPipe
   ],
   providers: [
     UtilsService,
@@ -72,7 +74,8 @@ import {ScorePipe} from './pipes/score.pipe';
     LoaderComponent,
     LearnCourseSummaryComponent,
     ModalRanksComponent,
-    ScorePipe
+    ScorePipe,
+    SanitizeHtmlPipe
   ]
 })
 export class SharedModule {

@@ -25,7 +25,7 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class LearnDialogueComponent implements OnInit, OnDestroy {
-  @Input() private lesson: Lesson;
+  @Input() lesson: Lesson;
   @Input() private lessonChanged: Subject<Lesson>;
   @Input() private steps: Step[];
   @Input() lanPair: LanPair;

@@ -15,7 +15,6 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
 import {RegionFlagComponent} from './components/fields/region-flag.component';
 import {DialogueComponent} from './components/learn/dialogue.component';
 import {IntroComponent} from './components/learn/intro.component';
-import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 @NgModule({
   imports: [
@@ -34,8 +33,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
-    WordColorDirective,
-    SanitizeHtmlPipe
+    WordColorDirective
   ],
   providers: [
     PreviewService
@@ -52,8 +50,7 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
-    WordColorDirective,
-    SanitizeHtmlPipe
+    WordColorDirective
   ]
 })
 export class PreviewModule {

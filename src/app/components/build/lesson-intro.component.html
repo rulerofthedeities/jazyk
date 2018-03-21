@@ -18,28 +18,28 @@
         <div class="btn-group">
           <div 
             class="btn btn-primary dropdown-toggle"
-            (click)="onToggleButton('list')">
-            {{text["List"]}} <span class="caret"></span>
+            (click)="onToggleButton('header')">
+            {{text["Headers"]}} <span class="caret"></span>
           </div>
-          <ul class="dropdown-menu" [style.display]="dropdowns['list'] ? 'block': 'none'">
-              <li (click)="onInsertTemplate(introField, 'olist', 'list')">
-                <a>{{text["Ordered List"]}}</a>
+          <ul class="dropdown-menu" [style.display]="dropdowns['header'] ? 'block': 'none'">
+              <li (click)="onInsertTemplate(introField, 'header', 'header')">
+                <a>{{text["MainHeader"]}}</a>
               </li>
-              <li (click)="onInsertTemplate(introField, 'ulist', 'list')">
-                <a>{{text["Unordered List"]}}</a>
+              <li (click)="onInsertTemplate(introField, 'subheader', 'header')">
+                <a>{{text["SubHeader"]}}</a>
               </li>
           </ul>
         </div>
         <div class="btn-group">
           <div 
             class="btn btn-primary dropdown-toggle"
-            (click)="onToggleButton('header')">
-            {{text["Header"]}} <span class="caret"></span>
+            (click)="onToggleButton('size')">
+            {{text["Size"]}} <span class="caret"></span>
           </div>
-          <ul class="dropdown-menu" [style.display]="dropdowns['header'] ? 'block': 'none'">
-              <li (click)="onInsertTemplate(introField, 'header1', 'header')"><a>{{text["Large"]}}</a></li>
-              <li (click)="onInsertTemplate(introField, 'header2', 'header')"><a>{{text["Medium"]}}</a></li>
-              <li (click)="onInsertTemplate(introField, 'header3', 'header')"><a>{{text["Small"]}}</a></li>
+          <ul class="dropdown-menu" [style.display]="dropdowns['size'] ? 'block': 'none'">
+              <li (click)="onInsertTemplate(introField, 'size1', 'size')"><a>{{text["Large"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'size2', 'size')"><a>{{text["Larger"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'size3', 'size')"><a>{{text["Largest"]}}</a></li>
           </ul>
         </div>
         <div class="btn-group">
@@ -49,10 +49,8 @@
             {{text["Miscellaneous"]}} <span class="caret"></span>
           </div>
           <ul class="dropdown-menu" [style.display]="dropdowns['other'] ? 'block': 'none'">
-              <li (click)="onInsertTemplate(introField, 'space', 'other')"><a>{{text["Space"]}}</a></li>
-              <li (click)="onInsertTemplate(introField, 'quote', 'other')"><a>{{text["Quote"]}}</a></li>
+              <li (click)="onInsertTemplate(introField, 'italic', 'other')"><a>{{text["Italic"]}}</a></li>
               <li (click)="onInsertTemplate(introField, 'bold', 'other')"><a>{{text["Bold"]}}</a></li>
-              <li (click)="onInsertTemplate(introField, 'rule', 'other')"><a>{{text["Rule"]}}</a></li>
           </ul>
         </div>
       </div>

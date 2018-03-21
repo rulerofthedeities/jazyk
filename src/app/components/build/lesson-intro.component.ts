@@ -38,7 +38,15 @@ interface ReplaceOptions {
   html: string;
   oldText: string;
   newText: string;
-  hasClosingTag: boolean;
+  hasClosingTag?: boolean;
+  hasBracket?: boolean;
+}
+
+interface TagOptions {
+  text: string;
+  tag: string;
+  hasClosingTag?: boolean;
+  hasBracket?: boolean;
 }
 
 @Component({
@@ -144,6 +152,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     const tags = ['span', 'div', 'audio', 'h1', 'h2', 'ul', 'li'];
     let html = this.previewService.removeTags(this.intro.text, tags);
     html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
+    html = this.parseFontStyles(html, '**');
+    html = this.parseFontStyles(html, '*');
     html = this.parseSize(html, 'size');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
@@ -153,23 +163,58 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     this.intro.html = html;
   }
 
+  private parseFontStyles(text: string, tag: string): string {
+    // format *text* (italic) or **text** (bold)
+    const fontTags = this.getTags({
+      text,
+      tag: tag === '*' ? '\\*' : '\\*\\*',
+      hasClosingTag: true
+    });
+    let fontText: string,
+        fontHtml: string,
+        html = text;
+    fontTags.forEach(fontTag => {
+      fontText = fontTag.trim() || '';
+      fontHtml = this.getHtmlSnippet(tag, {content: fontText});
+      html = this.replaceText({
+        tag,
+        html,
+        oldText: fontTag,
+        newText: fontHtml});
+    });
+    return html;
+  }
+
   private parseHeaders(text: string, tag: string): string {
     // format [tag: title] 
-    const headerTags = this.getTags(text, tag, false);
+    const headerTags = this.getTags({
+      text,
+      tag,
+      hasBracket: true
+    });
     let headerTitle: string,
         headerHtml: string,
         html = text;
     headerTags.forEach(headerTag => {
       headerTitle = headerTag.trim() || '';
       headerHtml = this.getHtmlSnippet(tag, {title: headerTitle});
-      html = this.replaceText({tag, html, oldText: headerTag, newText: headerHtml, hasClosingTag: false});
+      html = this.replaceText({
+        tag,
+        html,
+        oldText: headerTag,
+        newText: headerHtml,
+        hasBracket: true});
     });
     return html;
   }
 
   private parseSize(text: string, tag: string): string {
     // format [size:2 text] (1, 2, 3 with 3 being the largest)
-    const sizeTags = this.getTags(text, tag, false);
+    const sizeTags = this.getTags({
+      text,
+      tag,
+      hasBracket: true
+    });
     let sizeText: string,
         sizeHtml: string,
         html = text,
@@ -180,7 +225,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         size = size > 0 && size < 4 ? size : 1;
         sizeText = sizeTag.substr(2, sizeTag.length - 2).trim() || '';
         sizeHtml = this.getHtmlSnippet(tag, {content: sizeText, value: size});
-        html = this.replaceText({tag, html, oldText: sizeTag, newText: sizeHtml, hasClosingTag: false});
+        html = this.replaceText({
+          tag,
+          html,
+          oldText: sizeTag,
+          newText: sizeHtml,
+          hasBracket: true});
       }
     });
     return html;
@@ -189,7 +239,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   private parseLists(text: string): string {
     // format [list: item1\nitem2 list] 
     const tag = 'list',
-          listTags = this.getTags(text, tag, true);
+          listTags = this.getTags({
+      text,
+      tag,
+      hasClosingTag: true,
+      hasBracket: true
+    });
     let listItems: string[],
         listHtml = '',
         html = text;
@@ -200,7 +255,13 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         listHtml+= this.getHtmlSnippet(tag, {content: item});
       })
       listHtml = this.getHtmlSnippet('ul', {content: listHtml});
-      html = this.replaceText({tag, html, oldText: listTag, newText: listHtml, hasClosingTag: true});
+      html = this.replaceText({
+        tag,
+        html,
+        oldText: listTag,
+        newText: listHtml,
+        hasClosingTag: true,
+        hasBracket: true});
     });
     return html;
   }
@@ -213,7 +274,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     | col 2 is |   centered    |   €90 |
     | col 3 is | right-aligned |    €5 | table] */
     const tag = 'table',
-          tableTags = this.getTags(text, tag, true);
+          tableTags = this.getTags({
+            text,
+            tag,
+            hasClosingTag: true,
+            hasBracket: true
+          });
     let tableRows: string[],
         tableCells: string[],
         headerCells: string[],
@@ -223,7 +289,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     tableTags.forEach(tableTag => {
       colOptions = [];
       tableRows = tableTag.split('<br>');
-      console.log('tableRows', tableRows);
       if (tableRows.length && tableRows[0].trim() === '') {
         tableRows.shift(); // First row is empty, remove
       }
@@ -234,7 +299,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           tableCells.pop();
           tableCells.shift();
         }
-        console.log('tablecells', tableCells, rowNr);
         if (rowNr===0) {
           headerCells = tableCells;
         } else if (rowNr===1) {
@@ -256,10 +320,14 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
             last: rowNr===tableRows.length - 1,
             columns: colOptions}});
         }
-          console.log('row', tableHtml);
       })
       tableHtml = this.getHtmlSnippet(tag, {content: tableHtml});
-      html = this.replaceText({tag, html, oldText: tableTag, newText: tableHtml, hasClosingTag: true});
+      html = this.replaceText({
+        tag,
+        html, oldText: tableTag,
+        newText: tableHtml,
+        hasClosingTag: true,
+        hasBracket: true});
     });
     return html;
   }
@@ -267,7 +335,11 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   private parseAudio(text: string): string {
     // format [audio: url, (format, default='ogg')]
     const tag = 'audio',
-          audioTags = this.getTags(text, tag, false),
+          audioTags = this.getTags({
+            text,
+            tag,
+            hasBracket: true
+          }),
           validFormats = ['ogg', 'mp3', 'mp4'];
     let audioData: Array<string>,
         audioFormat: string,
@@ -281,20 +353,22 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       audioUrl = audioData[0];
       audioFormat = audioData[1] && validFormats.find(format => format === audioData[1]) ? audioData[1] : 'ogg';
       audioHtml = this.getHtmlSnippet('audio', {url: audioUrl, format: audioFormat});
-      html = this.replaceText({tag, html, oldText: audioTag, newText: audioHtml, hasClosingTag: false});
+      html = this.replaceText({tag, html, oldText: audioTag, newText: audioHtml, hasBracket: true});
     });
     return html;
   }
 
-  private getTags(text: string, tag: string, hasClosingTag: boolean) {
-    const regex = new RegExp(hasClosingTag ? `(?<=\\[${tag}:).*?(?=${tag}\\])` : `(?<=\\[${tag}:).*?(?=\\])`, 'igs');
+  private getTags(options: TagOptions) {
+    const regexBrackets = new RegExp(options.hasClosingTag ? `(?<=\\[${options.tag}:).*?(?=${options.tag}\\])` : `(?<=\\[${options.tag}:).*?(?=\\])`, 'igs'),
+          regexNoBrackets = new RegExp(`(?<=${options.tag}).*?(?=${options.tag})`, 'gs'),
+          regex = options.hasBracket ? regexBrackets : regexNoBrackets;
     let result: RegExpExecArray,
         data: Array<string> = [],
         cnt = 0;
-    result = regex.exec(text);
+    result = regex.exec(options.text);
     while (result && cnt < 100) {
       data.push(result[0]);
-      result = regex.exec(text);
+      result = regex.exec(options.text);
       cnt++;
     }
     return data;
@@ -308,6 +382,10 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<h1 class="i">${options.title}</h1>`;
       case 'subheader': 
         return `<h2 class="i">${options.title}</h2>`;
+      case '*': // Italic 
+        return `<em>${options.content}</em>`;
+      case '**': // Italic 
+        return `<strong>${options.content}</strong>`;
       case 'size': 
         return `<span class="i-size-${options.value}">${options.content}</span>`;
       case 'list': 
@@ -320,7 +398,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
                 </audio>`;
       case 't-header':
         options.table.cells.forEach((cell, i) => {
-          console.log('options', i, options.table.columns[i]);
           classes = this.getColumnClasses(options.table.columns[i]);
           html += `<th${classes}>${cell.trim()}</th>`;
         })
@@ -347,12 +424,16 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   private replaceText(options: ReplaceOptions): string {
     const firstTag = options.tag + ':',
           closedTag = `[${firstTag + options.oldText + options.tag}]`,
-          openTag = `[${firstTag + options.oldText}]`;
+          noBracketTag = `${options.tag + options.oldText + options.tag}`,
+          openTag = options.hasBracket ? `[${firstTag + options.oldText}]` : noBracketTag;
+          if (!options.hasBracket) {
+    console.log('replace>', options.hasClosingTag ? closedTag : openTag);
+          }
     return options.html.replace(options.hasClosingTag ? closedTag : openTag, options.newText);
   }
 
   private closeDropdowns(keepOpen: string) {
-    const dropdowns: Array<string> = ['list', 'header', 'other'];
+    const dropdowns: Array<string> = ['header', 'size', 'other'];
     dropdowns.forEach(dropdown => {
       if (dropdown !== keepOpen) {
         this.dropdowns[dropdown] = false;
@@ -361,20 +442,20 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private createTemplates() {
-    this.templates['table'] = `| Col1     |      Col2     |  Col3 |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | €1000 |
-| col 2 is |    centered   |   €90 |
-| col 3 is | right-aligned |    €5 |`;
-    this.templates['olist'] = `1. List item 1\n2. List item 2\n3. List item 3`;
-    this.templates['ulist'] = `* List item 1\n* List item 2\n* List item 3`;
-    this.templates['header1'] = `# title`;
-    this.templates['header2'] = `## title`;
-    this.templates['header3'] = `### title`;
-    this.templates['quote'] = `> This is a blockquote.`;
+    this.templates['table'] = `
+    [table:
+    | Col1     |      Col2     |  Col3 |
+    |<i        |               |      >|
+    | col 1 is |  left-aligned | €1000 |
+    | col 2 is |    centered   |   €90 |
+    | col 3 is | right-aligned |    €5 |table]`;
+    this.templates['header'] = `[header: My header]`;
+    this.templates['subheader'] = `[subheader: My subheader]`;
+    this.templates['size1'] = `[size:1: large text]`;
+    this.templates['size2'] = `[size:2: larger text]`;
+    this.templates['size3'] = `[size:3: largest text]`;
+    this.templates['italic'] = `*this text is italic*`;
     this.templates['bold'] = `**this text is bold**`;
-    this.templates['rule'] = `---`;
-    this.templates['space'] = `<br>`;
   }
 
   ngOnDestroy() {
