@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit, ElementRef, HostListener} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
@@ -59,8 +59,6 @@ interface TagOptions {
 export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   @Input() lessonId: string;
   @Input() text: Object;
-  @ViewChild('introField') introField;
-  @ViewChild('introField2') introField2;
   private componentActive = true;
   private templates: Map<string> = {};
   dropdowns: Map<boolean> = {};
@@ -68,6 +66,16 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   saved = false;
   intro: Intro;
   introDefault: Intro;
+  @ViewChild('introField') introField;
+  @ViewChild('introField2') introField2;
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.closeDropdowns(null);
+    }
+  }
 
   constructor(
     private buildService: BuildService,

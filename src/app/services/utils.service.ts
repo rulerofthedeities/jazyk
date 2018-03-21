@@ -78,21 +78,23 @@ export class UtilsService {
     return text;
   }
 
-  insertKey(el: any, key: string) {
-    // Inserts letter from virtual keyboard the current field
-    el.focus();
-    // Set new value
-    const start: number = el.selectionStart,
-          end: number = el.selectionEnd,
-          value: string = el.value,
-          left = value.substring(0, start),
-          right = value.substr(end, value.length - end),
-          newValue = left + key + right,
-          newPosition = left.length + key.length;
-    el.value = newValue;
-    // Set new cursor position
-    el.selectionStart = newPosition;
-    el.selectionEnd = newPosition;
+  insertKey(inputElement: any, key: string) {
+    if (inputElement) {
+      // Inserts letter from virtual keyboard the current field
+      inputElement.focus();
+      // Set new value
+      const start: number = inputElement.selectionStart,
+            end: number = inputElement.selectionEnd,
+            value: string = inputElement.value,
+            left = value.substring(0, start),
+            right = value.substr(end, value.length - end),
+            newValue = left + key + right,
+            newPosition = left.length + key.length;
+      inputElement.value = newValue;
+      // Set new cursor position
+      inputElement.selectionStart = newPosition;
+      inputElement.selectionEnd = newPosition;
+    }
   }
 
   getRank(score: number): number {

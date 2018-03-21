@@ -174,7 +174,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private setNotificationAsRead(i: number) {
-    if (! isNaN(i)) {
+    if (!isNaN(i)) {
       this.userService
       .setNotificationAsRead(this.notifications[i]._id)
       .takeWhile(() => this.componentActive)
