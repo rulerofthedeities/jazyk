@@ -1,7 +1,8 @@
-import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit, ElementRef} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
+import {UtilsService} from '../../services/utils.service';
 import {Intro} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
 
@@ -58,7 +59,8 @@ interface TagOptions {
 export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   @Input() lessonId: string;
   @Input() text: Object;
-  @ViewChild('introField') input;
+  @ViewChild('introField') introField;
+  @ViewChild('introField2') introField2;
   private componentActive = true;
   private templates: Map<string> = {};
   dropdowns: Map<boolean> = {};
@@ -70,7 +72,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   constructor(
     private buildService: BuildService,
     private errorService: ErrorService,
-    private previewService: PreviewService
+    private previewService: PreviewService,
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
@@ -85,7 +88,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.input.valueChanges
+    this.introField.valueChanges
     .debounceTime(400)
     .subscribe(data => {
       this.parseText();
@@ -99,6 +102,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   onChangedIntro() {
+    console.log('changed');
     this.modified = true;
     this.saved = false;
   }
@@ -109,18 +113,9 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   onInsertTemplate(introField: any, tpe: string, dropdown: string = 'none') {
-    const toInsert = '\n' + this.templates[tpe] + '\n';
-    const pos: number = introField.selectionStart;
-    let right = '';
-    if (pos !== undefined) {
-       const left = this.intro.text.slice(0, pos);
-       if (pos < this.intro.text.length) {
-         right = this.intro.text.slice(pos - this.intro.text.length);
-       }
-       this.intro.text = left + toInsert + right;
-    } else {
-      this.intro.text += toInsert;
-    }
+    const toInsert = this.templates[tpe];
+    this.utilsService.insertKey(this.introField2.nativeElement, toInsert);
+    this.intro.text = this.introField2.nativeElement.value;
     this.closeDropdowns(null);
     this.modified = true;
   }
