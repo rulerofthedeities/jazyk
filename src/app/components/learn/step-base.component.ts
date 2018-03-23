@@ -900,7 +900,7 @@ export abstract class Step {
     const learnLevel = this.getCurrentLearnLevel(this.currentData),
           exercise = this.currentData.exercise,
           direction = this.currentData.data.direction,
-          choices: string[] = [],
+          choices: string[] = [], 
           nrOfChoices = this.getNrOfChoices(learnLevel),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
 
@@ -912,7 +912,7 @@ export abstract class Step {
         choices.push(choice);
       }
     }
-    this.currentChoices = this.previewService.shuffle(choices);
+    this.currentChoices = this.previewService.shuffle(choices.filter(choice => !!choice));
   }
 
   private selectChoice(choices: Choice[], exercise: Exercise, direction: Direction): string {
