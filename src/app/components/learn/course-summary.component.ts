@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {Course, UserCourse, CourseListType, AccessLevel, StepData} from '../../models/course.model';
 import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
+import {AuthService} from '../../services/auth.service';
 import {DashboardService} from '../../services/dashboard.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
@@ -51,6 +52,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private dashboardService: DashboardService,
     private utilsService: UtilsService,
+    private authService: AuthService,
     private sharedService: SharedService,
     private errorService: ErrorService
   ) {}
@@ -97,6 +99,10 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
 
   isAuthor(): boolean {
     return this.userService.hasAccessLevel(this.course.access, AccessLevel.Author);
+  }
+
+  isNotLoggedIn(): boolean {
+    return !this.authService.isLoggedIn();
   }
 
   getAccessLevel(): string {

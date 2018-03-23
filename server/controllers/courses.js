@@ -114,10 +114,11 @@ module.exports = {
   },
   getDemoCourses : function(req, res) {
     const query = {
-      isDemo: true,
-      isPublished: true,
-      //isInProgress: false
-    };
+            isDemo: true,
+            isPublished: true,
+            //isInProgress: false
+          }, 
+          sort = {isDemo: 1};
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching demo courses', function(){
         response.handleSuccess(res, {subscribed: courses, isDemo: true});

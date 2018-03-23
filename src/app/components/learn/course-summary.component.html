@@ -1,7 +1,8 @@
-<div class="panel panel-default" [class.demo]="course.isDemo && tpe === listType.Teach">
+<div class="panel panel-default">
   <div class="panel-body">
     <div class="image">
       <img src="{{course?.image || defaultImage}}" class="course-img">
+      <div class="demo" *ngIf="course?.isDemo && (tpe === listType.Teach || isNotLoggedIn())">Demo</div>
     </div>
     <div class="course">
       <h3>

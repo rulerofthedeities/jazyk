@@ -1,8 +1,9 @@
 .image {
-  width: 162px;
-  height: 202px;
+  width: 160px;
+  height: 200px;
   border: 1px solid #333;
   float: left;
+  overflow: hidden;
 }
 .course {
   margin-left: 180px;
@@ -144,6 +145,24 @@ fieldset[disabled] .btn-review:active,
 .btn-review.disabled.active, 
 .btn-review[disabled].active, 
 fieldset[disabled] .btn-review.active { 
-  background-color: #F2C40F; 
-  border-color: #E2B500; 
+  background-color: #f2c40f; 
+  border-color: #e2b500;
 } 
+/* demo */
+/* src: https://codepen.io/eode9/pen/twkKm */
+.demo{
+  width: 200px;
+  background: #e43;
+  position: relative;
+  top: -56px;
+  left: 24px;
+  text-align: center;
+  line-height: 36px;
+  letter-spacing: 1px;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  font-size: 24px;
+  z-index: 0;
+  overflow: hidden;
+}
