@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import {LearnCourseComponent} from './components/learn/course.component';
 import {LearnCoursesComponent} from './components/learn/courses.component';
 import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
+import {AuthGuard} from './services/auth-guard.service';
 
 export const routes: Routes = [
   {
@@ -14,10 +15,12 @@ export const routes: Routes = [
   },
   {
     path: 'course/:id/:step',
-    component: LearnCourseComponent
+    component: LearnCourseComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'courses',
-    component: LearnCoursesComponent
+    component: LearnCoursesComponent,
+    canActivate: [AuthGuard]
   }
 ];

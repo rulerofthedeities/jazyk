@@ -234,6 +234,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       course => {
         if (course) {
+          if (!course.isDemo && !this.authService.isLoggedIn()) {
+            this.router.navigate(['/auth/signin']);
+          }
           if (course.isPublished) {
             this.course = course;
             this.getCurrentLesson();
