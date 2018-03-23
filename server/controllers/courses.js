@@ -116,7 +116,7 @@ module.exports = {
     const query = {
       isDemo: true,
       isPublished: true,
-      isInProgress: false
+      //isInProgress: false
     };
     Course.find(query, {}, function(err, courses) {
       response.handleError(err, res, 400, 'Error fetching demo courses', function(){

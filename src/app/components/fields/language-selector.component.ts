@@ -30,7 +30,7 @@ export class LanguageSelectorComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setSelectedLanguage(this.currentLanguage);
+    this.selectedLanguage = this.currentLanguage;
     this.dataReady = true;
   }
 
@@ -50,11 +50,5 @@ export class LanguageSelectorComponent implements OnInit {
 
   onHoverLanguage(hoveredLanguage: Language) {
     this.selectedDropdown = hoveredLanguage.code;
-  }
-
-  private setSelectedLanguage(currentLanguage: Language) {
-    if (this.languages && currentLanguage) {
-      this.selectedLanguage = this.languages.filter( language => language.code === currentLanguage.code)[0];
-    }
   }
 }

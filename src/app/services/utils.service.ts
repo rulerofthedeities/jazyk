@@ -128,6 +128,17 @@ export class UtilsService {
     }
   }
 
+  getAllLanguage(): Language {
+    return {
+      code: 'eu',
+      name: 'AllLanguages',
+      nativeName: '',
+      interface: true,
+      active: true,
+      article: false
+    };
+  }
+
   getWordTypes(): string[] {
     return [
       'noun',

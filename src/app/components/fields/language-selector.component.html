@@ -9,9 +9,9 @@
       <li 
         class="list-group-item" 
         [ngClass]="{active:lan.code===selectedDropdown}"
-        *ngFor="let lan of languages; let i:index"
-        (click)="onSelectLanguage(i)"
-        (mouseover)="onHoverLanguage(i)"
+        *ngFor="let lan of languages"
+        (click)="onSelectLanguage(lan)"
+        (mouseover)="onHoverLanguage(lan)"
         >
         <img src="/assets/img/flags/{{lan.code}}.png" alt="{{text[lan.name]}}" class="flag" />{{text[lan.name]}}
       </li>

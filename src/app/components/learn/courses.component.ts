@@ -65,15 +65,8 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
 
   private setActiveLanguages(languages: Language[]) {
     this.languages = languages.filter(language => language.active);
-    const allLanguages: Language = {
-      code: 'eu',
-      name: 'AllLanguages',
-      nativeName: '',
-      interface: true,
-      active: true,
-      article: false
-    };
-    this.languages.unshift(allLanguages);
+    const allLanguage = this.utilsService.getAllLanguage();
+    this.languages.unshift(allLanguage);
     this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
   }
 

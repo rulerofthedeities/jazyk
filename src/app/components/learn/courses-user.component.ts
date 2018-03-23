@@ -46,6 +46,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   }
 
   onLanguageSelected(newLanguage: Language) {
+    this.errorService.clearError();
     this.selectedLanguage = newLanguage;
     this.coursesReady = false;
     this.filterCourses();
@@ -121,9 +122,10 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
           this.lanCourses[language.code] = courseLan;
         }
       });
+      const allLanguage = this.utilsService.getAllLanguage();
+      languages.unshift(allLanguage);
     }
     this.languages = languages;
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
     this.filterCourses();
   }
 
@@ -132,27 +134,27 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     if (this.selectedLanguage) {
       lan = this.selectedLanguage.code;
     } else {
-      lan = this.getDefaultLanguage();
+      lan = 'eu';
     }
-    if (this.lanCourses[lan]) {
-      this.courses = this.lanCourses[lan];
+    if (lan === 'eu') {
+      this.courses = this.allCourses;
     } else {
-      this.courses = null;
+      if (this.lanCourses[lan]) {
+        this.courses = this.lanCourses[lan];
+      } else {
+        this.courses = null;
+      }
     }
     this.coursesReady = true;
   }
 
-  private getDefaultLanguage(): string {
-    let lan = '';
-    if (this.languages.length > 0) {
-      lan = this.languages[0].code;
-    }
-    return lan;
-  }
-
   private setActiveLanguages(languages: Language[]) {
     this.languages = languages.filter(language => language.active);
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+    if (this.authService.isLoggedIn()) {
+      this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+    } else {
+      this.selectedLanguage = this.utilsService.getAllLanguage();
+    }
   }
 
   private getDependables() {
