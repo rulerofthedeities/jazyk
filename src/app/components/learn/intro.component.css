@@ -1,9 +1,9 @@
 /* Headers */
 /deep/ h1.i{
-  border-bottom: 4px double #06ae97;
+  border-bottom: 6px double #06ae97;
 }
 /deep/ h2.i{
-  border-bottom: 1px solid #06ae97;
+  border-bottom: 4px double #06ae97;
   font-size: 22px;
 }
 /* Audio */
