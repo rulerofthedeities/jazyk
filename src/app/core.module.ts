@@ -2,6 +2,7 @@ import {NgModule, ModuleWithProviders, Optional, SkipSelf} from '@angular/core';
 import {UserService} from './services/user.service';
 import {AuthService} from './services/auth.service';
 import {SharedService} from './services/shared.service';
+import {AuthGuard} from './services/auth-guard.service';
 import {CommonModule} from '@angular/common';
 
 @NgModule({
@@ -16,7 +17,8 @@ export class CoreModule {
       providers: [
         AuthService,
         UserService,
-        SharedService
+        SharedService,
+        AuthGuard
       ]
     };
   }
