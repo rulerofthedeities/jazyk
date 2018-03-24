@@ -19,7 +19,7 @@ import 'rxjs/add/operator/takeWhile';
 export class ErrorMessageComponent implements OnInit, OnDestroy {
   @Input() msg: string;
   @Input() text: Object;
-  info: string;
+  @Input() info: string;
   private componentActive = true;
 
   constructor(

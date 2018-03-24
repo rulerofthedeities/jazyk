@@ -21,7 +21,7 @@ export const routes: Routes = [
       {path: 'info', loadChildren: './info.module#InfoModule'},
       {path: 'u/:name', component: UserComponent, canActivate: [AuthGuard]},
       {path: '404', component: PageNotFoundComponent},
-      {path: '**', redirectTo: '404'}
+      {path: '**', redirectTo: '404', data : {path : 'images'}}
     ]
   }
 ];

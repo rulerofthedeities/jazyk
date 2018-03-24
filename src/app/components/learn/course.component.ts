@@ -177,6 +177,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
+  hasStep(stepName: string): boolean {
+    return this.steps.find(step => step.name === stepName) ? true : false;
+  }
+
   private validateCourseStep(step: string): string {
     if (step && step !== 'overview') {
       if (step === 'review' || step === 'difficult' || step === 'exam') {
@@ -382,10 +386,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.currentStep = this.getStepNr(step);
       this.isLessonReady = true;
     }
-  }
-
-  hasStep(stepName: string): boolean {
-    return this.steps.find(step => step.name === stepName) ? true : false;
   }
 
   private getStepNr(stepName: string): number {

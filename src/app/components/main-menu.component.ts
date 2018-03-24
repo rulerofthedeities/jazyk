@@ -121,7 +121,20 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       if (this.url === '/') {
         this.url = '/home';
       }
+    if (this.url && this.url.substr(0, 12).toLowerCase() === '/auth/signin') {
+      this.url = '/auth/signin'; // clear path
+    }
     });
+  }
+
+  getPath() {
+    console.log('URI', this.router.url.substr(0, 12).toLowerCase());
+    if (this.router.url.substr(0, 12).toLowerCase() !== '/auth/signin') {
+      console.log('path', '?path=' + encodeURI(this.router.url));
+      return '?path=' + encodeURI(this.router.url);
+    } else {
+      return '';
+    }
   }
 
   private setInterfaceLan() {
