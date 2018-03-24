@@ -103,12 +103,11 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private getCurrentNotification() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.notificationId)
     .subscribe(
       params => {
-        if (params['notificationId']) {
-          this.isFromDashboard = true;
-          this.fetchNotification(params['notificationId'], null);
-        }
+        this.isFromDashboard = true;
+        this.fetchNotification(params['notificationId'], null);
       }
     );
   }

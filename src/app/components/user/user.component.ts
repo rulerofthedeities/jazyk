@@ -48,13 +48,12 @@ export class UserComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.name)
     .subscribe(
       params => {
-        if (params['name']) {
-          this.init();
-          this.fetchPublicProfile(params['name'].toLowerCase());
-          this.getTranslations();
-        }
+        this.init();
+        this.fetchPublicProfile(params['name'].toLowerCase());
+        this.getTranslations();
       }
     );
   }

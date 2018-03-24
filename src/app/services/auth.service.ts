@@ -18,6 +18,7 @@ interface SignedInData {
   message: string;
   token: string;
   user: User;
+  returnUrl?: string;
 }
 
 interface Token {
@@ -56,11 +57,11 @@ export class AuthService {
             userName: decoded.user.userName
           };
     this.storeUserData(userStorage);
-    this.router.navigateByUrl('/home');
+    const returnUrl = data.returnUrl || '/home';
+    this.router.navigateByUrl(returnUrl);
   }
 
   logout(event: MouseEvent) {
-    event.preventDefault();
     this.clearStorage();
     this.router.navigate(['/']);
     this.sharedService.userJustLoggedOut();

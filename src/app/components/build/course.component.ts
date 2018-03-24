@@ -221,17 +221,16 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private getRouteParams() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.id)
     .subscribe(
       params => {
-        if (params['id']) {
-          const courseId = params['id'];
-          if (courseId === 'new') {
-            this.isEditMode = true;
-            this.setDefaultLanguage(params['lan']);
-          } else {
-            this.isEditMode = false;
-            this.getCourse(courseId);
-          }
+        const courseId = params['id'];
+        if (courseId === 'new') {
+          this.isEditMode = true;
+          this.setDefaultLanguage(params['lan']);
+        } else {
+          this.isEditMode = false;
+          this.getCourse(courseId);
         }
       }
     );

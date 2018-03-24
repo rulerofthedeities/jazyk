@@ -835,13 +835,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private subscribe() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.id)
     .subscribe(
       params => {
-        if (params['id']) {
-          this.courseId = params['id'];
-          this.courseStep = this.validateCourseStep(params['step']);
-          this.getTranslations();
-        }
+        this.courseId = params['id'];
+        this.courseStep = this.validateCourseStep(params['step']);
+        this.getTranslations();
       }
     );
     this.sharedService.exerciseModeChanged

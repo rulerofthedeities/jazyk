@@ -113,18 +113,24 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getUrl() {
-    this.url = this.router.url;
+    this.url = this.filterUrl(this.router.url);
     this.router.events
     .takeWhile(() => this.componentActive)
     .subscribe((route: NavigationEnd) => {
-      this.url = route.url;
-      if (this.url === '/') {
-        this.url = '/home';
-      }
-    if (this.url && this.url.substr(0, 12).toLowerCase() === '/auth/signin') {
-      this.url = '/auth/signin'; // clear path
-    }
+      this.url = this.filterUrl(route.url);
     });
+  }
+
+  filterUrl(url: string): string {
+    // /-> /home
+    if (url === '/') {
+      url = '/home';
+    } else {
+      if (url && url.substr(0, 12).toLowerCase() === '/auth/signin') {
+        url = '/auth/signin'; // clear path
+      }
+    }
+    return url;
   }
 
   getPath() {

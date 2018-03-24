@@ -35,12 +35,9 @@ export class InfoComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.page)
     .subscribe(
-      params => {
-        if (params['page']) {
-          this.fetchInfoPage(params['page'].toLowerCase());
-        }
-      }
+      params => this.fetchInfoPage(params['page'].toLowerCase())
     );
   }
 

@@ -53,12 +53,11 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.id)
     .subscribe(
       params => {
-        if (params['id']) {
-          const lessonId = params['id'];
-          this.getTranslations(lessonId);
-        }
+        const lessonId = params['id'];
+        this.getTranslations(lessonId);
       }
     );
   }

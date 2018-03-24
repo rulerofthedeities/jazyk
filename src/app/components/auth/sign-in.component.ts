@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -8,6 +9,7 @@ import {SharedService} from '../../services/shared.service';
 import {ValidationService} from '../../services/validation.service';
 import {User} from '../../models/user.model';
 import 'rxjs/add/operator/takeWhile';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   templateUrl: 'sign-in.component.html',
@@ -17,9 +19,11 @@ import 'rxjs/add/operator/takeWhile';
 export class SignInComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private user: User;
+  private returnUrl: string;
   isSubmitted = false;
   userForm: FormGroup;
   text: Object = {};
+  referrerPath = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,10 +31,13 @@ export class SignInComponent implements OnInit, OnDestroy {
     private utilsService: UtilsService,
     private userService: UserService,
     private sharedService: SharedService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.getReturnUrl();
     this.getTranslations(this.userService.user.main.lan);
     this.buildForm();
   }
@@ -52,6 +59,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   onSubmitForm(user: User) {
     this.isSubmitted = true;
     this.errorService.clearError();
+    this.userService.clearUser();
     if (this.userForm.valid) {
       this.log('Logging in');
       this.authService
@@ -59,6 +67,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         data => {
+          data.returnUrl = this.returnUrl;
           this.authService.signedIn(data);
           this.userService.user = data.user;
           this.sharedService.userJustLoggedIn();
@@ -88,6 +97,10 @@ export class SignInComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private getReturnUrl() {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
   }
 
   private log(message: string) {

@@ -73,6 +73,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   private signIn(user: User) {
+    this.userService.clearUser();
     this.authService
     .signin(user)
     .takeWhile(() => this.componentActive)

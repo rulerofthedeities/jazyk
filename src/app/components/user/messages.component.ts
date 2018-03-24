@@ -165,13 +165,12 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private getCurrentMessage() {
     this.route.params
     .takeWhile(() => this.componentActive)
+    .filter(params => params.messageId)
     .subscribe(
       params => {
-        if (params['messageId']) {
-          this.isFromDashboard = true;
-          const i = this.messages.findIndex(message => message._id === params['messageId']);
-          this.selectMessage(params['messageId'], i);
-        }
+        this.isFromDashboard = true;
+        const i = this.messages.findIndex(message => message._id === params['messageId']);
+        this.selectMessage(params['messageId'], i);
       }
     );
   }
