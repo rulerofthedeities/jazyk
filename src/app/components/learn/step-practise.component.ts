@@ -2,7 +2,7 @@ import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angula
 import {Step} from './step-base.component';
 import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseExtraData,
         ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
-import {Lesson} from '../../models/course.model';
+import {Lesson, Map} from '../../models/course.model';
 import {LearnSettings} from '../../models/user.model';
 import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
@@ -12,10 +12,6 @@ import {ErrorService} from '../../services/error.service';
 // import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 @Component({
   selector: 'km-learn-practise',

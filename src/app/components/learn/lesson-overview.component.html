@@ -94,7 +94,10 @@
   </div>
   <div class="col-xs-6" *ngIf="isDemo">
     <div *ngIf="i===0" class="register">
-      <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToSeeResults"]}}
+      <km-signup
+        [text]="text"
+        [courseId]="courseId">
+      </km-signup>
     </div>
   </div>
 </div>

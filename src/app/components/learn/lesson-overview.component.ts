@@ -11,8 +11,9 @@ import {Exercise, ExerciseResult, ExerciseData, ExerciseType, ResultsData} from 
 })
 
 export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
-  @Input() text: Object;
   @Input() private lessonId: string;
+  @Input() text: Object;
+  @Input() courseId: string;
   @Input() isDemo = false;
   @Output() currentLesson = new EventEmitter<Lesson>();
   private componentActive = true;

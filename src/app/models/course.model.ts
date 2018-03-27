@@ -3,6 +3,11 @@ import {Exercise, ExerciseSteps} from './exercise.model';
 export enum CourseListType {Learn, Teach, All, Home};
 export enum AccessLevel {None, Reader, Author, Editor, Manager, Owner};
 
+
+export interface Map<T> {
+  [K: string]: T;
+}
+
 export interface Language {
   name: string;
   nativeName: string;
@@ -181,4 +186,40 @@ export interface Dialogue {
   foreign: string;
   localTitle: string;
   foreignTitle: string;
+}
+
+
+export interface ResultData {
+  // Save data
+  exerciseId: string;
+  lessonId: string;
+  tpe: number;
+  done: boolean;
+  points: number;
+  learnLevel: number;
+  sequence: number; // To find the last saved doc for docs with same save time
+  isLearned?: boolean;
+  timeDelta?: number;
+  daysBetweenReviews?: number;
+  percentOverdue?: number;
+  streak: string;
+  isLast: boolean;
+  isDifficult: boolean;
+  isRepeat: boolean;
+  isCorrect: boolean;
+}
+
+interface PreSaveResult {
+  courseId: string;
+  lessonId: string;
+  step: string;
+  data: ResultData[];
+}
+
+export interface ProcessedData {
+  // Data processed right before save
+  result: PreSaveResult;
+  lastResult: Map<ResultData>;
+  allCorrect: Map<boolean>;
+  pointsEarned: number;
 }

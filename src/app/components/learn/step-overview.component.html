@@ -28,6 +28,7 @@
             <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
             <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId && !resultsByLesson[lesson._id].introOnly" kmScrollTo
               [text]="text"
+              [courseId]="getCourseId()"
               [isDemo]="isDemo"
               [lessonId]="currentLessonId"
               (currentLesson)="onLessonDataLoaded($event)">
@@ -44,6 +45,7 @@
         <ng-container *ngTemplateOutlet="titleTemplate;context:{lesson:lesson, nr:j}"></ng-container>
         <km-lesson-overview #lessonDetail *ngIf="lesson._id === currentLessonId" kmScrollTo
           [text]="text"
+          [courseId]="getCourseId()"
           [isDemo]="isDemo"
           [lessonId]="currentLessonId"
           (currentLesson)="onLessonDataLoaded($event)">

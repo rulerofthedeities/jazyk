@@ -2,12 +2,8 @@ import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, Ch
 import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {Lesson} from '../../models/course.model';
+import {Lesson, Map} from '../../models/course.model';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
-
-interface Map<T> {
-    [K: string]: T;
-}
 
 @Component({
   selector: 'km-chapter-lessons',

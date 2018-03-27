@@ -1,10 +1,10 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
-import {isLearnedLevel, maxStreak, LearnService} from '../../services/learn.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
-import {SharedService} from '../../services/shared.service';
+import {maxStreak, SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount} from '../../models/course.model';
+import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -16,10 +16,6 @@ import {Subscription} from 'rxjs/Subscription';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 interface ById {
   levels: number;

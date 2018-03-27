@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
-import {maxLearnLevel, maxStreak, isLearnedLevel, LearnService} from '../../services/learn.service';
+import {maxLearnLevel, maxStreak} from '../../services/shared.service';
+import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
@@ -8,37 +9,14 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
-import {Course, Lesson, Language, Translation,
-        Step, Level, LessonId, StepCount, StepData} from '../../models/course.model';
+import {Course, Lesson, Language, Translation, ResultData, Map,
+        Step, Level, LessonId, StepCount, StepData, ProcessedData} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
-
-interface ResultData {
-  exerciseId: string;
-  lessonId: string;
-  tpe: number;
-  done: boolean;
-  points: number;
-  learnLevel: number;
-  sequence: number; // To find the last saved doc for docs with same save time
-  isLearned?: boolean;
-  timeDelta?: number;
-  daysBetweenReviews?: number;
-  percentOverdue?: number;
-  streak: string;
-  isLast: boolean;
-  isDifficult: boolean;
-  isRepeat: boolean;
-  isCorrect: boolean;
-}
 
 @Component({
   templateUrl: 'course.component.html',
@@ -121,14 +99,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
-    if (!this.isDemo) {
-      if (step === 'intro') {
-        this.nextStep();
+    if (step === 'intro' || step === 'dialogue') {
+      this.nextStep();
+    } else {
+      if (this.isDemo) {
+        this.userService.storeDemoData(data, step, this.course._id, this.lesson._id);
       } else {
         this.saveAnswers(step, data);
-        if (this.settingsUpdated) {
-          this.saveSettings();
-        }
+      }
+      if (this.settingsUpdated) {
+        this.saveSettings();
       }
     }
   }
@@ -239,7 +219,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       course => {
         if (course) {
           if (!course.isDemo && !this.authService.isLoggedIn()) {
-            this.router.navigate(['/auth/signin']);
+            this.router.navigate(['/auth/signin'], {queryParams: {returnUrl: this.router.url}});
           }
           if (course.isPublished) {
             this.course = course;
@@ -445,66 +425,29 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
-    const lastResult: Map<ResultData> = {}, // Get most recent result per exercise (for isLearned && reviewTime)
-          streak: Map<string> = {}, // Get streaks for exercise
-          allCorrect: Map<boolean> = {}, // Exercise is only correct if all answers for an exercise are correct
-          isRepeat = !!this.lesson.rehearseStep,
-          result = {
-            courseId: this.course._id,
-            lessonId: this.courseLevel === Level.Lesson ? this.lesson._id : undefined,
-            step,
-            data: []
-          };
-    let pointsEarned = 0;
-    if (data && data.length > 0) { // No data for study repeats
-      // calculate bonus for % correct
-      let correctCount = 0;
-      data.forEach((item) => {
-        correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
-      });
-      const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
-      data.forEach( (item, i) => {
-        item.data.points.correct = correctBonus;
-        pointsEarned += item.data.points.total();
-        streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
-        const newResult: ResultData = {
-          exerciseId: item.exercise._id,
-          tpe: item.exercise.tpe,
-          timeDelta: item.data.timeDelta,
-          done: item.data.isDone || false,
-          points: item.data.points.total() || 0,
-          learnLevel: isRepeat ? 0 : (Math.min(maxLearnLevel, item.data.learnLevel || 0)),
-          streak: isRepeat ? '' : streak[item.exercise._id],
-          sequence: i,
-          isLast: false,
-          isDifficult: false,
-          isRepeat,
-          isCorrect: item.data.isCorrect,
-          lessonId: item.result ? item.result.lessonId : this.lesson._id
-        };
-        lastResult[item.exercise._id] = newResult;
-        allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
-        result.data.push(newResult);
-      });
-      this.checkLastResult(step, lastResult, allCorrect, data);
-
+    const lessonId = this.lesson ? this.lesson._id : null,
+          isRepeat = this.lesson ? !!this.lesson.rehearseStep : false,
+          processedData: ProcessedData = this.sharedService.processAnswers(step, data, this.course._id, lessonId, isRepeat, this.courseLevel);
+    
+    if (processedData) {
+      this.checkLastResult(step, processedData.lastResult, processedData.allCorrect, data);
       if (!this.lesson.rehearseStep) {
-        this.updateStepCount(step, lastResult);
+        this.updateStepCount(step, processedData.lastResult);
       }
-      this.log(`Total points earned: ${pointsEarned}`);
+      this.log(`Total points earned: ${processedData.pointsEarned}`);
       this.learnService
-      .saveUserResults(JSON.stringify(result))
+      .saveUserResults(JSON.stringify(processedData.result))
       .takeWhile(() => this.componentActive)
       .subscribe(
         totalScore => {
           this.log('Saved exercise answers');
           if (totalScore) {
             // add results to data object
-            result.data.forEach((resultItem, i) => {
+            processedData.result.data.forEach((resultItem, i) => {
               data[i].result = resultItem;
             });
             this.checkStepCount();
-            this.checkNewRank(totalScore, pointsEarned);
+            this.checkNewRank(totalScore, processedData.pointsEarned);
           }
         },
         error => this.errorService.handleError(error)
@@ -522,27 +465,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.rankKey = 'rank' + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
         this.promotionComponent.doShowModal();
       }
-    }
-  }
-
-  private buildStreak(streak: string, result: ExerciseResult, data: ExerciseExtraData): string {
-    let newStreak = '';
-
-    if (result) {
-      newStreak = streak || result.streak || '';
-    }
-    if (data.questionType !== QuestionType.Preview) {
-      newStreak += data.isCorrect ? '1' : data.isAlmostCorrect ? '2' : '0';
-    }
-
-    return newStreak.slice(-maxStreak);
-  }
-
-  private getCorrectBonus(correctCount: number, totalCount: number, isRepeat: boolean, step: string): number {
-    if (totalCount > 1 && !isRepeat && step !== 'study') {
-      return Math.max(0, Math.trunc(((correctCount / totalCount * 100) - 60) * 0.5));
-    } else {
-      return 0;
     }
   }
 

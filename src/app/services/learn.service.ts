@@ -1,17 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro,
-        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions,
-        Direction, ExerciseResult, ResultsData, Choice} from '../models/exercise.model';
+import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro, 
+        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue, Map} from '../models/course.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData,
+        Direction, ExerciseResult, ResultsData, Choice, QuestionType} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
 import {retry, delay, map} from 'rxjs/operators';
-
-export const maxLearnLevel = 20; // maximum learn level
-export const maxStreak = 20; // maximum length of the streak
-export const isLearnedLevel = 12; // minimum level before it is considered learned
 
 interface CourseData {
   isDemo: boolean;
@@ -29,6 +25,7 @@ interface CourseResults {
   toreview?: ExercisePlusOptions[];
   difficult?: ExercisePlusOptions[];
 }
+export const isLearnedLevel = 12; // minimum level before it is considered learned
 
 @Injectable()
 export class LearnService {
@@ -132,7 +129,7 @@ export class LearnService {
       return Observable.of(null);
     }
   }
-
+  
   fetchLessonStepResults(lessonId: string, step: string): Observable<ResultsData> {
     // Get the learn level of all exercises in this lesson
     const headers = this.getTokenHeaders();

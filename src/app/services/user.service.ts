@@ -5,6 +5,7 @@ import {config} from '../app.config';
 import {User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
         Profile, Message, PublicProfile, Notification, Network} from '../models/user.model';
 import {Language, Course, UserAccess, AccessLevel} from '../models/course.model';
+import {ExerciseData} from '../models/exercise.model';
 import {CourseScore} from '../models/score.model';
 import {AuthService} from './auth.service';
 import {Subscription} from 'rxjs/Subscription';
@@ -14,9 +15,18 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/takeWhile';
 import {retry, delay, map} from 'rxjs/operators';
 
+interface DemoData {
+  courseId: string;
+  lessonId: string;
+  lan: string;
+  study?: ExerciseData[];
+  practise?: ExerciseData[];
+}
+
 @Injectable()
 export class UserService {
   private _user: User;
+  private demoData: DemoData;
   private subscription: Subscription;
   languageChanged = new EventEmitter<string>();
   backgroundChanged = new EventEmitter<boolean>();
@@ -27,6 +37,8 @@ export class UserService {
     private http: HttpClient,
     private authService: AuthService
   ) {}
+
+  // USER DATA
 
   getUserData(): Observable<User> {
     if (this._user) {
@@ -87,6 +99,54 @@ export class UserService {
       jazyk: this.getDefaultSettings(userLan, true)
     };
     return user;
+  }
+
+  get user() {
+    return this._user;
+  }
+
+  set user(user: User) {
+    if (user) {
+      this._user = user;
+    }
+  }
+
+  // DEMO DATA
+
+  storeDemoData(data: ExerciseData[], step: string, courseId: string, lessonId: string) {
+    if (!this.demoData || this.demoData.courseId !== courseId || this.demoData.lessonId !== lessonId) {
+      const lan = data[0].exercise.foreign.region;
+      this.demoData = {courseId, lessonId, lan};
+    }
+    if (step === 'study' || step === 'practise') {
+      this.demoData[step] = data;
+    }
+  }
+
+  getDemoData(step: string, courseId: string): ExerciseData[] {
+    if (courseId && this.demoData && courseId === this.demoData.courseId) {
+      return this.demoData[step];
+    } else {
+      return null;
+    }
+  }
+
+  getDemoLessonId(courseId: string): string {
+    if (courseId && this.demoData && courseId === this.demoData.courseId) {
+      return this.demoData.lessonId;
+    } else {
+      return null;
+    }
+  }
+
+  saveDemoResults(data: string): Observable<number> {
+    if (this.authService.isLoggedIn()) {
+      const headers = this.getTokenHeaders();
+      return this.http
+      .post<number>('/api/user/results/add', data, {headers});
+    } else {
+      return Observable.of(null);
+    }
   }
 
   // ACCESS LEVELS
@@ -390,6 +450,17 @@ export class UserService {
     }
   }
 
+  subscribeToDemo(courseId: string) {
+    if (this.authService.isLoggedIn()) {
+      if (courseId && this.demoData && courseId === this.demoData.courseId) {
+        if (this.demoData.lan) {
+          this.updateUserDb(this.demoData.lan, courseId);
+          this.updateUserCache(this.demoData.lan);
+        }
+      }
+    }
+  }
+
   fetchWelcomeNotification(user: User) {
     let notificationLoaded = false;
     this.subscription = this
@@ -471,16 +542,6 @@ export class UserService {
 
   private getInterfaceLanguages() {
     return ['en', 'fr', 'nl'];
-  }
-
-  get user() {
-    return this._user;
-  }
-
-  set user(user: User) {
-    if (user) {
-      this._user = user;
-    }
   }
 
   /*** Common ***/

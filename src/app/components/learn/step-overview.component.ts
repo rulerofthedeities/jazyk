@@ -1,12 +1,8 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {isLearnedLevel, LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Lesson, LessonHeader, LessonResult, Step, Level} from '../../models/course.model';
+import {Course, Lesson, LessonHeader, LessonResult, Step, Level, Map} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 @Component({
   selector: 'km-learn-overview',
@@ -103,6 +99,10 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     } else {
       return chapterName;
     }
+  }
+
+  getCourseId() {
+    return this.course._id;
   }
 
   private getCourseChapters() {

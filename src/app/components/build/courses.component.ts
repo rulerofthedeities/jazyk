@@ -4,12 +4,8 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, Translation, CourseListType} from '../../models/course.model';
+import {Course, Language, Translation, CourseListType, Map} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 @Component({
   templateUrl: 'courses.component.html',

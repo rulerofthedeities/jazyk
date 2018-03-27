@@ -30,6 +30,7 @@ import {LearnWordFieldComponent} from './components/learn/exercise-word-field.co
 import {LearnWordChoicesComponent} from './components/learn/exercise-word-choices.component';
 import {LearnCountdownComponent} from './components/learn/countdown.component';
 import {LearnTimerComponent} from './components/learn/timer.component';
+import {LearnSignUpComponent} from './components/learn/signup.component';
 import {ModalPromotionComponent} from './components/modals/modal-promotion.component';
 import {ScrollToDirective} from './directives/scroll-to.directive';
 
@@ -67,6 +68,7 @@ import {ScrollToDirective} from './directives/scroll-to.directive';
     LearnWordChoicesComponent,
     LearnCountdownComponent,
     LearnTimerComponent,
+    LearnSignUpComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ]

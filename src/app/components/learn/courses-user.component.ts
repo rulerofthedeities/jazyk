@@ -5,12 +5,8 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {AuthService} from '../../services/auth.service';
 import {UserService} from '../../services/user.service';
-import {Course, UserCourse, Language, Translation, CourseListType} from '../../models/course.model';
+import {Course, UserCourse, Language, Translation, CourseListType, Map} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-  [K: string]: T;
-}
 
 @Component({
   templateUrl: 'courses-user.component.html',
@@ -61,7 +57,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   }
 
   onLogIn() {
-    this.router.navigate(['/auth/signin']);
+    this.router.navigate(['/auth/signin'], {queryParams: {returnUrl: this.router.url}});
   }
 
   onRegister() {

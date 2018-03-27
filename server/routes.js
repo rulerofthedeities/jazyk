@@ -39,18 +39,12 @@ module.exports.initialize = function(app, router) {
   router.get('/courses/demo', courses.getDemoCourses);
   router.get('/learn/course/:courseId', courses.getCourse);
 
-  // router.get('/chapters/:id', courses.getChapters);
-
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:lessonId', lessons.getLesson);
   router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
   router.get('/lesson/intro/:lessonId', lessons.getIntro);
   router.get('/lesson/dialogue/:lessonId', lessons.getDialogue);
 
-/*
-  router.get('/exercises/:id', exercises.getExercises);
-  router.get('/exercises/course/:courseId', exercises.getExercises);
-*/
   router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
 
   router.get('/info/:page/:lan', info.getPage);
@@ -112,11 +106,9 @@ module.exports.initialize = function(app, router) {
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
   
-  // router.get('/user/results/lesson/lastperexercise/:lessonId', results.getLastResults);
   router.get('/user/results/lesson/overview/:lessonId', results.getLessonOverviewResults);
   router.get('/user/results/lesson/:step/:lessonId', results.getLessonResults);
   router.get('/user/results/lessons/:courseId', results.getResultsByLesson);
-
   router.get('/user/results/countbystep/:courseId/:lessonId', results.getStepCount);
   router.get('/user/results/course/currentlesson/:courseId', results.getCurrentLesson);
   router.get('/user/results/course/toreview/:courseId', results.getToReview);

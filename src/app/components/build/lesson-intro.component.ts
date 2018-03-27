@@ -3,12 +3,8 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
 import {UtilsService} from '../../services/utils.service';
-import {Intro} from '../../models/course.model';
+import {Intro, Map} from '../../models/course.model';
 import 'rxjs/add/operator/takeWhile';
-
-interface Map<T> {
-    [K: string]: T;
-}
 
 enum Alignment {Left, Center, Right}
 

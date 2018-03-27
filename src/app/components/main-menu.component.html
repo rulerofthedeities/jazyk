@@ -72,7 +72,7 @@
           class="login"
           *ngIf="!isLoggedIn() && url!=='/auth/signin' && url!=='/home'">
           <a 
-            routerLink="/auth/signin">
+            routerLink="/auth/signin" [queryParams]="{returnUrl: url}">
             <span class="fa fa-sign-in"></span>
             {{text["Login"]}}
             <span class="bar"></span>
