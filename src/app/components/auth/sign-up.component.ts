@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {SharedService} from '../../services/shared.service';
@@ -35,17 +35,14 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private errorService: ErrorService,
     private http: HttpClient,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getCourseId();
     this.getDependables();
     this.buildForm();
-  }
-
-  getDemoData(): ExerciseData[] {
-    return this.userService.getDemoData('study', this.courseId);
   }
 
   getIconClass(fieldName: string): string {
@@ -96,13 +93,14 @@ export class SignUpComponent implements OnInit, OnDestroy {
         this.authService.signedIn(signInData, false);
         this.userService.user = signInData.user;
         this.userService.fetchWelcomeNotification(signInData.user);
+        this.log(`Logged in as ${signInData.user.userName}`);
+        console.log('SIGNED IN', this.courseId);
         if (this.courseId) {
-          console.log('saving demo data');
           this.saveStudyDemoData();
           this.userService.subscribeToDemo(this.courseId);
+        } else {
+          this.goToDashboard();
         }
-        this.log(`Logged in as ${signInData.user.userName}`);
-        console.log(`Logged in as ${signInData.user.userName}`);
       },
       error => this.errorService.handleError(error)
     );
@@ -154,7 +152,16 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   private getCourseId() {
-    this.courseId = this.route.snapshot.queryParams['courseId'] || '';
+    let courseId = this.route.snapshot.queryParams['courseId'] || '';
+    const studyData = this.userService.getDemoData('study', courseId),
+          practiseData = this.userService.getDemoData('practise', courseId);
+    if (!studyData && ! practiseData) {
+      courseId = null;
+    }
+    if (!courseId) {
+      courseId = this.userService.getDemoCourseId();
+    }
+    this.courseId = courseId;
   }
 
   private saveStudyDemoData() {
@@ -178,10 +185,12 @@ export class SignUpComponent implements OnInit, OnDestroy {
     if (dataToSavePractise) {
       const lessonId = this.userService.getDemoLessonId(this.courseId),
             processedDataPractise = this.sharedService.processAnswers('practise', dataToSavePractise, this.courseId, lessonId, false, Level.Lesson);
-            
+
       if (processedDataPractise) {
         this.saveStepData('practise', JSON.stringify(processedDataPractise.result));
       }
+    } else {
+      this.goToDashboard();
     }
   }
 
@@ -194,10 +203,16 @@ export class SignUpComponent implements OnInit, OnDestroy {
         console.log('SAVED', step);
         if (step === 'study') {
           this.savePractiseDemoData();
+        } else {
+          this.goToDashboard();
         }
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private goToDashboard() {
+    this.router.navigateByUrl('/home');
   }
 
   private log(message: string) {

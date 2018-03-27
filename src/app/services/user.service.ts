@@ -139,6 +139,16 @@ export class UserService {
     }
   }
 
+  getDemoCourseId(): string {
+    if (this.demoData && this.demoData.courseId) {
+      if (this.demoData['study'] || this.demoData['practise']) {
+        return this.demoData.courseId;
+      } else {
+        return null;
+      }
+    }
+  }
+
   saveDemoResults(data: string): Observable<number> {
     if (this.authService.isLoggedIn()) {
       const headers = this.getTokenHeaders();
