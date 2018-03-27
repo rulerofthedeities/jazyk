@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {isLearnedLevel} from '../../services/learn.service';
+import {isLearnedLevel} from '../../services/shared.service';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({

@@ -4,9 +4,10 @@ import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseExtraData,
         ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
 import {Lesson, Map} from '../../models/course.model';
 import {LearnSettings} from '../../models/user.model';
-import {isLearnedLevel, LearnService} from '../../services/learn.service';
+import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
-import {SharedService} from '../../services/shared.service';
+import {isLearnedLevel, SharedService} from '../../services/shared.service';
+import {UserService} from '../../services/user.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
 // import {TimerObservable} from 'rxjs/observable/TimerObservable';
@@ -34,6 +35,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     previewService: PreviewService,
     sharedService: SharedService,
     errorService: ErrorService,
+    private userService: UserService,
     private audioService: AudioService
   ) {
     super(learnService, previewService, errorService, sharedService);
@@ -209,6 +211,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       if (!this.isDemo) {
         this.fetchLessonResults();
       } else {
+        const studyData = this.userService.getDemoData('study', this.course._id);
         this.getDemoQuestions();
       }
     }

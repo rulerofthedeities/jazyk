@@ -1,8 +1,8 @@
 import {Input, Output, ViewChild, EventEmitter} from '@angular/core';
-import {isLearnedLevel, LearnService} from '../../services/learn.service';
+import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
-import {maxStreak, SharedService} from '../../services/shared.service';
+import {isLearnedLevel, maxStreak, SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice,
@@ -708,7 +708,7 @@ export abstract class Step {
     // The longer it has been since the last review, the more points
     let agePoints = 0;
     if (!this.isRehearse() && resultData.result.dt) {
-      const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(resultData.result.dt), new Date()),
+      const daysSinceLastReview = this.sharedService.getDaysBetweenDates(new Date(resultData.result.dt), new Date()),
             days = Math.min(daysSinceLastReview, 365), // max a year
             multiplicator = this.getMultiplicator(resultData.exercise.tpe);
       agePoints = days > 2 ? Math.trunc(Math.log(days) * multiplicator) : 0;

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData, ExerciseType, Direction, Points} from '../../models/exercise.model';
-import {isLearnedLevel} from '../../services/learn.service';
+import {isLearnedLevel} from '../../services/shared.service';
 
 interface Result {
   exercise: ExerciseData;

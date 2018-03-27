@@ -1,11 +1,12 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {EventMessage} from '../models/error.model';
 import {Level, ProcessedData, ResultData, Map, Lesson} from '../models/course.model';
-import {ExerciseData, ExerciseExtraData, ExerciseResult, QuestionType} from '../models/exercise.model';
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, QuestionType} from '../models/exercise.model';
 import {environment} from '../../environments/environment';
 
 export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
+export const isLearnedLevel = 12; // minimum level before it is considered learned
 
 @Injectable()
 export class SharedService {
@@ -93,6 +94,7 @@ export class SharedService {
         allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
         result.data.push(newResult);
       });
+      this.checkLastResult(step, lastResult, allCorrect, data, courseLevel);
     }
     return {
       result,
@@ -121,5 +123,96 @@ export class SharedService {
     }
 
     return newStreak.slice(-maxStreak);
+  }
+
+  private checkLastResult(step: string, lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[], courseLevel: Level) {
+    // Only use the most recent result per exerciseid to determine isLearned / review time
+    for (const key in lastResult) {
+      if (lastResult.hasOwnProperty(key)) {
+        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
+        // Check if word is learned
+        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= isLearnedLevel) {
+          lastResult[key].isLearned = true;
+          // Calculate review time
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
+          this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+        } else if (courseLevel === Level.Course) {
+          // copy review time over to new doc - for overview step
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
+          lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
+        }
+        lastResult[key].isLast = true;
+      }
+    }
+  }
+
+  private checkIfDifficult(step: string, streak: string): boolean {
+    // Checks if the word has to be put in the difficult step
+    let isDifficult = false;
+    if ((step !== 'study') && streak) {
+      let tmpStreak = streak.slice(-5),
+          correctCount = (tmpStreak.match(/1/g) || []).length,
+          inCorrectCount = tmpStreak.length - correctCount;
+      if (inCorrectCount > 1) {
+      // Check how many incorrect in last 5 results
+        isDifficult = true;
+      } else {
+        // Check how many incorrect in last 10 results
+        tmpStreak = streak.slice(-10);
+        correctCount = (tmpStreak.match(/1/g) || []).length;
+        inCorrectCount = tmpStreak.length - correctCount;
+        if (inCorrectCount > 2) {
+          isDifficult = true;
+        }
+      }
+    }
+    return isDifficult;
+  }
+
+  private calculateReviewTime(result: ResultData, isCorrect: boolean, exercise: ExerciseData) {
+    if (exercise) {
+      const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
+            dateLastReviewed = exercise.result ? exercise.result.dt : new Date(),
+            daysBetweenReviews = exercise.result ? exercise.result.daysBetweenReviews || 0.25 : 0.25,
+            performanceRating = exercise.data.grade / 5 || 0.6;
+      let difficultyPerc = difficulty / 100 || 0.3,
+          percentOverdue = 1,
+          newDaysBetweenReviews = 1;
+
+      if (isCorrect) {
+        const daysSinceLastReview = this.getDaysBetweenDates(new Date(dateLastReviewed), new Date());
+        percentOverdue = Math.min(2, daysSinceLastReview / daysBetweenReviews);
+      }
+      const performanceDelta = this.clamp((8 - 9 * performanceRating) / 17, -1, 1);
+      difficultyPerc += percentOverdue * performanceDelta;
+      const difficultyWeight = 3 - 1.7 * difficultyPerc;
+      if (isCorrect) {
+        newDaysBetweenReviews = daysBetweenReviews * (1 + (difficultyWeight - 1) * percentOverdue);
+      } else {
+        newDaysBetweenReviews = daysBetweenReviews * Math.max(0.25, 1 / (Math.pow(difficultyWeight, 2)));
+      }
+      result.daysBetweenReviews = newDaysBetweenReviews;
+    }
+  }
+
+  private getInitialDifficulty(exercise: Exercise): number {
+    // Combination of character length & word length
+    // Only if no difficulty has been set
+    const word = exercise.foreign.word.trim(),
+          lengthScore = Math.min(70, word.length * 3),
+          wordScore =  Math.min(10, word.split(' ').length) * 5,
+          difficulty = lengthScore + wordScore;
+    return difficulty;
+  }
+
+  getDaysBetweenDates(firstDate: Date, secondDate: Date): number {
+    const oneDay = 24 * 60 * 60 * 1000, // ms in a day
+          diffDays = Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay));
+
+    return diffDays;
+  }
+
+  clamp(val: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, val));
   }
 }

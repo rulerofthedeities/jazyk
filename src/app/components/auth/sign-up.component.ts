@@ -93,7 +93,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     .subscribe(
       signInData => {
         signInData.returnUrl = '';
-        this.authService.signedIn(signInData);
+        this.authService.signedIn(signInData, false);
         this.userService.user = signInData.user;
         this.userService.fetchWelcomeNotification(signInData.user);
         if (this.courseId) {
@@ -173,14 +173,13 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private savePractiseDemoData() {
     const dataToSavePractise = this.userService.getDemoData('practise', this.courseId);
-    // Save study data
+    // Save practise data
+    console.log('Save practise demo data', dataToSavePractise);
     if (dataToSavePractise) {
-      console.log('Data to save practise', dataToSavePractise);
       const lessonId = this.userService.getDemoLessonId(this.courseId),
             processedDataPractise = this.sharedService.processAnswers('practise', dataToSavePractise, this.courseId, lessonId, false, Level.Lesson);
-      console.log('Processed data practise', processedDataPractise);
+            
       if (processedDataPractise) {
-        console.log('saving demo data practise');
         this.saveStepData('practise', JSON.stringify(processedDataPractise.result));
       }
     }
@@ -192,6 +191,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       totalScore => {
+        console.log('SAVED', step);
         if (step === 'study') {
           this.savePractiseDemoData();
         }

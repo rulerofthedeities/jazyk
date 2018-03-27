@@ -48,6 +48,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   isCountDown: boolean;
   isMute: boolean;
   isReady = false;
+  courseId: string;
 
   constructor(
     private learnService: LearnService,
@@ -117,6 +118,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private init() {
+    this.courseId = this.lesson.courseId;
     this.isCountDown = false;
     if (this.lesson.rehearseStep === 'study') {
       this.rehearseAll();

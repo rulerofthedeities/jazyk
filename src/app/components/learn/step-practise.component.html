@@ -153,6 +153,12 @@
             </span>
             {{text["RehearseAgain"]}}
           </button>
+          <div *ngIf="isDemo && course">
+            <km-signup
+              [text]="text"
+              [courseId]="course._id">
+            </km-signup>
+          </div>
         </div>
       </div>
     </div>

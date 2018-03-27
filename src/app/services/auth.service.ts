@@ -49,7 +49,7 @@ export class AuthService {
     .post<SignedInData>('/api/user/signin', body, {headers});
   }
 
-  signedIn(data: SignedInData) {
+  signedIn(data: SignedInData, reroute = true) {
     const decoded = this.jwtHelper.decodeToken(data.token),
           userStorage: UserStorage = {
             token: data.token,
@@ -57,8 +57,10 @@ export class AuthService {
             userName: decoded.user.userName
           };
     this.storeUserData(userStorage);
-    const returnUrl = data.returnUrl || '/home';
-    this.router.navigateByUrl(returnUrl);
+    if (reroute) {
+      const returnUrl = data.returnUrl || '/home';
+      this.router.navigateByUrl(returnUrl);
+    }
   }
 
   logout(event: MouseEvent) {

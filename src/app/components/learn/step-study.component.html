@@ -91,6 +91,12 @@
           </span>
           {{text["RehearseAgain"]}}
         </button>
+        <div *ngIf="isDemo && courseId" class="signup">
+          <km-signup
+            [text]="text"
+            [courseId]="courseId">
+          </km-signup>
+        </div>
       </div>
     </div>
     <div class="col-xs-4" *ngIf="!isStudyDone && exerciseData?.length > 0">

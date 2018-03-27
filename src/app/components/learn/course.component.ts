@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
-import {maxLearnLevel, maxStreak} from '../../services/shared.service';
-import {isLearnedLevel, LearnService} from '../../services/learn.service';
+import {isLearnedLevel, maxLearnLevel, maxStreak} from '../../services/shared.service';
+import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
@@ -103,7 +103,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.nextStep();
     } else {
       if (this.isDemo) {
-        this.userService.storeDemoData(data, step, this.course._id, this.lesson._id);
+        this.saveDemoAnswers(step, data);
       } else {
         this.saveAnswers(step, data);
       }
@@ -418,9 +418,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Practise step must have study finished or tpe != word
     if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
       const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-      if (!this.isDemo) {
+      //if (!this.isDemo) {
         this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
-      }
+      //}
     }
   }
 
@@ -430,7 +430,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           processedData: ProcessedData = this.sharedService.processAnswers(step, data, this.course._id, lessonId, isRepeat, this.courseLevel);
     
     if (processedData) {
-      this.checkLastResult(step, processedData.lastResult, processedData.allCorrect, data);
       if (!this.lesson.rehearseStep) {
         this.updateStepCount(step, processedData.lastResult);
       }
@@ -453,6 +452,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         error => this.errorService.handleError(error)
       );
     }
+  }
+
+  private saveDemoAnswers(step: string, data: ExerciseData[]) {
+    console.log('storing demo data for', step);
+    this.userService.storeDemoData(data, step, this.course._id, this.lesson._id);
+    const demoData = this.userService.getDemoData(step, this.course._id),
+          processedData = this.sharedService.processAnswers(step, demoData, this.course._id, this.lesson._id, false, Level.Lesson);
+    
+    this.updateStepCount(step, processedData.lastResult);
   }
 
   private checkNewRank(currentScore: number, newPoints: number) {
@@ -478,86 +486,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-  }
-
-  private checkLastResult(step: string, lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[]) {
-    // Only use the most recent result per exerciseid to determine isLearned / review time
-    for (const key in lastResult) {
-      if (lastResult.hasOwnProperty(key)) {
-        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
-        // Check if word is learned
-        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= isLearnedLevel) {
-          lastResult[key].isLearned = true;
-          // Calculate review time
-          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
-        } else if (this.courseLevel === Level.Course) {
-          // copy review time over to new doc - for overview step
-          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
-        }
-        lastResult[key].isLast = true;
-      }
-    }
-  }
-
-  private calculateReviewTime(result: ResultData, isCorrect: boolean, exercise: ExerciseData) {
-    if (exercise) {
-      const difficulty = exercise.exercise.difficulty || this.getInitialDifficulty(exercise.exercise) || 30,
-            dateLastReviewed = exercise.result ? exercise.result.dt : new Date(),
-            daysBetweenReviews = exercise.result ? exercise.result.daysBetweenReviews || 0.25 : 0.25,
-            performanceRating = exercise.data.grade / 5 || 0.6;
-      let difficultyPerc = difficulty / 100 || 0.3,
-          percentOverdue = 1,
-          newDaysBetweenReviews = 1;
-
-      if (isCorrect) {
-        const daysSinceLastReview = this.learnService.getDaysBetweenDates(new Date(dateLastReviewed), new Date());
-        percentOverdue = Math.min(2, daysSinceLastReview / daysBetweenReviews);
-      }
-      const performanceDelta = this.learnService.clamp((8 - 9 * performanceRating) / 17, -1, 1);
-      difficultyPerc += percentOverdue * performanceDelta;
-      const difficultyWeight = 3 - 1.7 * difficultyPerc;
-      if (isCorrect) {
-        newDaysBetweenReviews = daysBetweenReviews * (1 + (difficultyWeight - 1) * percentOverdue);
-      } else {
-        newDaysBetweenReviews = daysBetweenReviews * Math.max(0.25, 1 / (Math.pow(difficultyWeight, 2)));
-      }
-      result.daysBetweenReviews = newDaysBetweenReviews;
-    }
-  }
-
-  private checkIfDifficult(step: string, streak: string): boolean {
-    // Checks if the word has to be put in the difficult step
-    let isDifficult = false;
-    if ((step !== 'study') && streak) {
-      let tmpStreak = streak.slice(-5),
-          correctCount = (tmpStreak.match(/1/g) || []).length,
-          inCorrectCount = tmpStreak.length - correctCount;
-      if (inCorrectCount > 1) {
-      // Check how many incorrect in last 5 results
-        isDifficult = true;
-      } else {
-        // Check how many incorrect in last 10 results
-        tmpStreak = streak.slice(-10);
-        correctCount = (tmpStreak.match(/1/g) || []).length;
-        inCorrectCount = tmpStreak.length - correctCount;
-        if (inCorrectCount > 2) {
-          isDifficult = true;
-        }
-      }
-    }
-    return isDifficult;
-  }
-
-  private getInitialDifficulty(exercise: Exercise): number {
-    // Combination of character length & word length
-    // Only if no difficulty has been set
-    const word = exercise.foreign.word.trim(),
-          lengthScore = Math.min(70, word.length * 3),
-          wordScore =  Math.min(10, word.split(' ').length) * 5,
-          difficulty = lengthScore + wordScore;
-    return difficulty;
   }
 
   private updateStepCount(step: string, lastResult: Map<ResultData>) {

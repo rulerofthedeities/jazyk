@@ -1,5 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {isLearnedLevel, LearnService} from '../../services/learn.service';
+import {LearnService} from '../../services/learn.service';
+import {isLearnedLevel} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType, ResultsData} from '../../models/exercise.model';

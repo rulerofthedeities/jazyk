@@ -102,3 +102,6 @@ km-completed-list {
 .main-card {
   background: linear-gradient(90deg, #efefef , #fff);
 }
+.signup {
+  margin-top: 15px;
+}

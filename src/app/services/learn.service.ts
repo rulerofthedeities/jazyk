@@ -25,7 +25,6 @@ interface CourseResults {
   toreview?: ExercisePlusOptions[];
   difficult?: ExercisePlusOptions[];
 }
-export const isLearnedLevel = 12; // minimum level before it is considered learned
 
 @Injectable()
 export class LearnService {
@@ -234,17 +233,6 @@ export class LearnService {
       this.previewService.buildLocalData(newData, text, exercise);
     }
     return newData;
-  }
-
-  getDaysBetweenDates(firstDate: Date, secondDate: Date): number {
-    const oneDay = 24 * 60 * 60 * 1000, // ms in a day
-          diffDays = Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay));
-
-    return diffDays;
-  }
-
-  clamp(val: number, min: number, max: number): number {
-    return Math.max(min, Math.min(max, val));
   }
 
   isAlmostCorrect(answer: string, solution: string): boolean {
