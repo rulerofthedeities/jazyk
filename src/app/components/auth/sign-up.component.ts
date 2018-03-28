@@ -94,7 +94,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
         this.userService.user = signInData.user;
         this.userService.fetchWelcomeNotification(signInData.user);
         this.log(`Logged in as ${signInData.user.userName}`);
-        console.log('SIGNED IN', this.courseId);
         if (this.courseId) {
           this.saveStudyDemoData();
           this.userService.subscribeToDemo(this.courseId);
@@ -181,7 +180,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
   private savePractiseDemoData() {
     const dataToSavePractise = this.userService.getDemoData('practise', this.courseId);
     // Save practise data
-    console.log('Save practise demo data', dataToSavePractise);
     if (dataToSavePractise) {
       const lessonId = this.userService.getDemoLessonId(this.courseId),
             processedDataPractise = this.sharedService.processAnswers('practise', dataToSavePractise, this.courseId, lessonId, false, Level.Lesson);
@@ -200,7 +198,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       totalScore => {
-        console.log('SAVED', step);
         if (step === 'study') {
           this.savePractiseDemoData();
         } else {
@@ -212,6 +209,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   private goToDashboard() {
+    this.userService.clearDemoData();
     this.router.navigateByUrl('/home');
   }
 

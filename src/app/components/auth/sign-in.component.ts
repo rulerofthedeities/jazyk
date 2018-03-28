@@ -101,6 +101,10 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private getReturnUrl() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+    console.log('return url', this.returnUrl.substr(0, 5))
+    if (this.returnUrl.substr(0, 5) === '/auth') {
+      this.returnUrl = '/home';
+    }
   }
 
   private log(message: string) {

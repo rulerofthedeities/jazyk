@@ -280,12 +280,15 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private rehearseAll() {
+    console.log('REHEARSE');
     this.current = -1;
     this.isStudyDone = false;
     this.hasMoreToStudy = false;
     this.isRehearsal = true;
     this.isCountDown = false;
-    this.buildExerciseData(this.filterExercises());
+    const repeatExercises = this.filterExercises();
+    
+    this.buildExerciseData(repeatExercises);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 

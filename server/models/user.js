@@ -17,6 +17,8 @@ var jazykLearnSchema = new Schema({
   nrOfWordsStudy: Number,
   nrOfWordsLearn: Number,
   nrOfWordsReview: Number,
+  nrOfWordsStudyRepeat: Number,
+  nrOfWordsLearnRepeat: Number,
   countdown: Boolean,
   mute: Boolean,
   color: Boolean,

@@ -41,3 +41,6 @@ textarea.bio {
 .ig-fixed .input-group-addon {
   width: inherit;
 }
+.spacer {
+  height: 12px;
+}

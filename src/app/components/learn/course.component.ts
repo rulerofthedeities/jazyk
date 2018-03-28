@@ -455,7 +455,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private saveDemoAnswers(step: string, data: ExerciseData[]) {
-    console.log('storing demo data for', step);
     this.userService.storeDemoData(data, step, this.course._id, this.lesson._id);
     const demoData = this.userService.getDemoData(step, this.course._id),
           processedData = this.sharedService.processAnswers(step, demoData, this.course._id, this.lesson._id, false, Level.Lesson);

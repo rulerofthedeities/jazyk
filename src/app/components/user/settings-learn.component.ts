@@ -85,6 +85,8 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
       nrOfWordsStudy: parseInt(formValues['nrOfWordsStudy'], 10),
       nrOfWordsLearn: parseInt(formValues['nrOfWordsLearn'], 10),
       nrOfWordsReview: parseInt(formValues['nrOfWordsReview'], 10),
+      nrOfWordsStudyRepeat: parseInt(formValues['nrOfWordsStudyRepeat'], 10),
+      nrOfWordsLearnRepeat: parseInt(formValues['nrOfWordsLearnRepeat'], 10),
       countdown: formValues['countDown'],
       mute: formValues['mute'],
       color: formValues['color'],
@@ -103,7 +105,9 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
       mute: [settings.mute],
       nrOfWordsStudy: [settings.nrOfWordsStudy || 5],
       nrOfWordsLearn: [settings.nrOfWordsLearn || 5],
-      nrOfWordsReview: [settings.nrOfWordsReview || 5]
+      nrOfWordsReview: [settings.nrOfWordsReview || 5],
+      nrOfWordsStudyRepeat: [settings.nrOfWordsStudyRepeat || 10],
+      nrOfWordsLearnRepeat: [settings.nrOfWordsLearnRepeat || 10]
     });
     this.isFormReady = true;
   }

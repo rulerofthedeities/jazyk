@@ -123,6 +123,10 @@ export class UserService {
     }
   }
 
+  clearDemoData() {
+    this.demoData = {courseId: null, lessonId: null, lan: ''};
+  }
+
   getDemoData(step: string, courseId: string): ExerciseData[] {
     if (courseId && this.demoData && courseId === this.demoData.courseId) {
       return this.demoData[step];
@@ -212,6 +216,8 @@ export class UserService {
         nrOfWordsStudy: 5,
         nrOfWordsLearn: 5,
         nrOfWordsReview: 10,
+        nrOfWordsStudyRepeat: 10,
+        nrOfWordsLearnRepeat: 10,
         mute: false,
         delay: 2,
         color: true,
@@ -229,7 +235,6 @@ export class UserService {
   }
 
   getLearnSettings(): Observable<LearnSettings> {
-        console.log('getting learn settings');
     const headers = this.getTokenHeaders();
     return this.http
     .get<LearnSettings>('/api/user/settings/learn', {headers})

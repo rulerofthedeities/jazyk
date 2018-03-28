@@ -56,6 +56,39 @@
           {{text["perReviewSession"]}}
         </span>
       </div>
+      <div class="spacer"></div>
+      <div class="input-group ig-fixed">
+        <select 
+          class="form-control" 
+          id="nrOfWordsStudyRepeat"
+          (change)="onChangeField()"
+          formControlName="nrOfWordsStudyRepeat">
+          <option 
+            *ngFor="let nr of formData.nrofwords"
+            [value]="nr">
+            {{nr}}
+          </option>
+        </select>
+        <span class="input-group-addon">
+          {{text["perStudySessionRepeat"]}}
+        </span>
+      </div>
+      <div class="input-group ig-fixed">
+        <select 
+          class="form-control" 
+          id="nrOfWordsLearnRepeat"
+          (change)="onChangeField()"
+          formControlName="nrOfWordsLearnRepeat">
+          <option 
+            *ngFor="let nr of formData.nrofwords" 
+            [value]="nr">
+            {{nr}}
+          </option>
+        </select>
+        <span class="input-group-addon">
+          {{text["perPractiseSessionRepeat"]}}
+        </span>
+      </div>
     </div>
   </div>
   <!-- Audio -->

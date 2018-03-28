@@ -13,6 +13,8 @@ export interface LearnSettings {
   nrOfWordsStudy: number;
   nrOfWordsLearn: number;
   nrOfWordsReview: number;
+  nrOfWordsStudyRepeat: number;
+  nrOfWordsLearnRepeat: number;
   countdown: boolean;
   mute: boolean;
   color: boolean;
