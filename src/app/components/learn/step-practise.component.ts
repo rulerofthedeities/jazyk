@@ -299,7 +299,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getRepeatQuestions() {
-    this.buildExerciseData(this.lesson.exercises, null);
+    const maxNr = this.settings.nrOfWordsLearnRepeat || 10,
+          repeatExercises = this.learnService.getRandomExercises(this.lesson.exercises, maxNr);
+    console.log('Repeat exercises practise', repeatExercises);
+    this.buildExerciseData(repeatExercises, null);
     this.isReady = true;
     super.init(); // start countdown
   }

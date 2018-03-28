@@ -177,6 +177,30 @@ export class LearnService {
 
   /*** Exercises ***/
 
+  getRandomExercises(exercises: Exercise[], maxNrOfExercises: number): Exercise[] {
+    // Get random selection for repeat
+    const nrOfExercises = exercises.length,
+          selectedExercises: Exercise[] = [];
+    let availableExercises: Exercise[],
+        exercise: Exercise,
+        nr: number,
+        index: number;
+    if (exercises.length > maxNrOfExercises) {
+      availableExercises = exercises.map(e => e);
+      while (selectedExercises.length < maxNrOfExercises && availableExercises) {
+        nr = Math.floor((Math.random() * availableExercises.length));
+        exercise = availableExercises[nr];
+        availableExercises.splice(nr, 1);
+        if (!selectedExercises.find(selExercise => selExercise._id === exercise._id)) {
+          selectedExercises.push(exercise);
+        }
+      }
+      return selectedExercises;
+    } else {
+      return exercises;
+    }
+  }
+
   buildExerciseData(
     exercises: Exercise[],
     results: ExerciseResult[],
