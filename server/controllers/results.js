@@ -334,7 +334,11 @@ module.exports = {
             isRepeat: false,
             isDeleted: false
           },
-          countQuery = {userId, lessonId},
+          countQuery = {
+            userId,
+            lessonId,
+            isRepeat: false
+          },
           lastPipeline = [
             {$match: lastQuery},
             {$sort: {dt: -1, sequence: -1}},
