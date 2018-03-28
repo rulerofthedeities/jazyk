@@ -208,6 +208,45 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     return this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word);
   }
 
+  private getRandomWords(exercises: Exercise[]): Exercise[] {
+    const maxNrOfExercises = this.settings.nrOfWordsStudyRepeat || 10,
+          nrOfExercises = exercises.length,
+          selectedExercises: Exercise[] = [];
+    let availableExercises: Exercise[],
+        exercise: Exercise,
+        nr: number,
+        index: number;
+    if (exercises.length > maxNrOfExercises) {
+      availableExercises = exercises.map(e => e);
+      while (selectedExercises.length < maxNrOfExercises && availableExercises) {
+        nr = Math.floor((Math.random() * availableExercises.length));
+        exercise = availableExercises[nr];
+        availableExercises.splice(nr, 1);
+        if (!selectedExercises.find(selExercise => selExercise._id === exercise._id)) {
+          selectedExercises.push(exercise);
+        }
+      }
+      return selectedExercises;
+    } else {
+      return exercises;
+    }
+  }
+
+  private getRandomWordStart(exercises: Exercise[]): Exercise[] {
+    // words must stay ordered -> randomize only starting point
+    const maxNrOfExercises = this.settings.nrOfWordsStudyRepeat || 10;
+    let availableExercises: Exercise[];
+    if (exercises.length > maxNrOfExercises) {
+      const nr = Math.floor((Math.random() * exercises.length));
+      availableExercises = exercises.map(e => e);
+      availableExercises = availableExercises.concat(availableExercises);
+      const selectedExercises = availableExercises.slice(nr, nr + maxNrOfExercises);
+      return selectedExercises;
+    } else {
+      return exercises;
+    }
+  }
+
   private getLessonResults() {
     if (!this.isDemo) {
       this.fetchLessonResults();
@@ -286,9 +325,14 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     this.hasMoreToStudy = false;
     this.isRehearsal = true;
     this.isCountDown = false;
-    const repeatExercises = this.filterExercises();
-    
-    this.buildExerciseData(repeatExercises);
+    let repeatWords = this.filterExercises(); // only words for study
+    if (this.lesson.exerciseSteps.study.ordered) {
+      repeatWords = this.getRandomWordStart(repeatWords);
+    } else {
+      repeatWords = this.getRandomWords(repeatWords);
+    }
+    console.log('Repeat exercises', repeatWords);
+    this.buildExerciseData(repeatWords);
     this.exerciseData.map(exercise => exercise.data.isDone = false);
   }
 
