@@ -72,6 +72,7 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       result => {
+        this.userService.updateUserSettings(newSettings);
         this.infoMsg = this.text['SettingsUpdated'];
         this.learnForm.markAsPristine();
       },

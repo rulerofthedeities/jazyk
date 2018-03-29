@@ -527,6 +527,10 @@ export class UserService {
     this._user.jazyk.learn.lan = lan;
   }
 
+  updateUserSettings(settings: LearnSettings) {
+    this._user.jazyk.learn = settings;
+  }
+
   private getUserLan(queryLan: string): string {
     // User is not logged in, or no lan data
     // First get lan from url parm

@@ -252,26 +252,27 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private getNewQuestions(results: ExerciseResult[]): number {
     let nrOfExercises = 0,
         leftToStudy = 0,
-        exerciseResult: ExerciseResult;
+        exerciseResult: ExerciseResult,
+        practiseExercises: Exercise[] = [];
     const newExercises: Exercise[] = [],
           newResults: ExerciseResult[] = [];
 
     // Select exercises that have not been learned yet
     // (but have been studied if word unless there is no study tab)
-
-    this.toPractise = 0;
-    this.lesson.exercises.forEach(exercise => {
+    practiseExercises = this.lesson.exercises.filter(exercise => {
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
-      if ((exerciseResult && !exerciseResult.isLearned)
+      return ((exerciseResult && !exerciseResult.isLearned)
         || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
-      ) {
-        this.toPractise++;
-        if (nrOfExercises < this.settings.nrOfWordsLearn) {
-          // word is not learned yet; add to list of new questions
-          newExercises.push(exercise);
-          newResults.push(exerciseResult);
-          nrOfExercises = newExercises.length;
-        }
+      )
+    })
+    this.toPractise = practiseExercises.length;
+    const maxWords = this.learnService.getMaxExercises(practiseExercises, this.settings.nrOfWordsLearn);
+    practiseExercises.forEach(exercise => {
+      if (newExercises.length < maxWords) {
+        // word is not learned yet; add to list of new questions
+        newExercises.push(exercise);
+        exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
+        newResults.push(exerciseResult);
       } else {
         // word is not studied yet
         leftToStudy++;

@@ -260,9 +260,6 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     }
     const maxWords = this.learnService.getMaxExercises(wordExercises, this.settings.nrOfWordsStudy);
 
-    console.log('exercises to do', wordExercises);
-    console.log('maximum # of exercises', maxWords);
-
     this.toStudy = wordExercises.length;
     // Select exercises with no result
     wordExercises.forEach(exercise => {
