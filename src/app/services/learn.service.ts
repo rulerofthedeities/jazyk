@@ -177,10 +177,32 @@ export class LearnService {
 
   /*** Exercises ***/
 
+  getMaxExercises(exercises: Exercise[], wordsPerSession: number): number {
+    const minWords = 3, // Min 3 words per test
+          totalWords = exercises.length,
+          modulo = totalWords % wordsPerSession,
+          nrOfTests = totalWords % (wordsPerSession + 1) === 0 ? totalWords / (wordsPerSession + 1) : Math.trunc((totalWords - minWords) / wordsPerSession) + 1;
+    if (totalWords - wordsPerSession < minWords) {
+      // Not many words in the test left, return all so we don't end up with less than three
+      return totalWords;
+    } else {
+      // Check if one should be added to nr of words so we don't end up with less than three
+      if (modulo / nrOfTests >= 1 && totalWords % (wordsPerSession + 1) === 0) {
+        return wordsPerSession + 1;
+      } else {
+        // Check if one should be subtracted from nr of words so we end up with more left
+        if (modulo / nrOfTests >= 1 && totalWords % (wordsPerSession - 1) === 0) {
+          return wordsPerSession - 1;
+        } else {
+          return wordsPerSession;
+        }
+      }
+    }
+  }
+
   getRandomExercises(exercises: Exercise[], maxNrOfExercises: number): Exercise[] {
     // Get random selection for repeat
-    const nrOfExercises = exercises.length,
-          selectedExercises: Exercise[] = [];
+    const selectedExercises: Exercise[] = [];
     let availableExercises: Exercise[],
         exercise: Exercise,
         nr: number,

@@ -18,7 +18,7 @@
           <option 
             *ngFor="let nr of formData.nrofwords"
             [value]="nr">
-            {{nr}}
+            {{nr - 1}}-{{nr + 2}}
           </option>
         </select>
         <span class="input-group-addon">
@@ -34,7 +34,7 @@
           <option 
             *ngFor="let nr of formData.nrofwords"
             [value]="nr">
-            {{nr}}
+            {{nr - 1}}-{{nr + 2}}
           </option>
         </select>
         <span class="input-group-addon">

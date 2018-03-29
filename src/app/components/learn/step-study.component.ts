@@ -247,19 +247,27 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private getNewQuestions(results: ExerciseResult[]) {
-    let exerciseResult: ExerciseResult;
+    let exerciseResult: ExerciseResult,
+        wordExercises: Exercise[] = [];
     const newExercises: Exercise[] = [];
+    // Select words with no result (not studied yet)
+    if (results) {
+      wordExercises = this.filterExercises().filter(exercise => 
+        !results.find(result => result.exerciseId === exercise._id)
+      )
+    } else {
+      wordExercises = this.filterExercises();
+    }
+    const maxWords = this.learnService.getMaxExercises(wordExercises, this.settings.nrOfWordsStudy);
 
-    this.toStudy = 0;
+    console.log('exercises to do', wordExercises);
+    console.log('maximum # of exercises', maxWords);
+
+    this.toStudy = wordExercises.length;
     // Select exercises with no result
-    this.filterExercises().forEach(exercise => {
-      exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
-      if (!exerciseResult) {
-        this.toStudy++;
-        // study not done yet, add to list of new questions
-        if (newExercises.length < this.settings.nrOfWordsStudy) {
-          newExercises.push(exercise);
-        }
+    wordExercises.forEach(exercise => {
+      if (newExercises.length < maxWords) {
+        newExercises.push(exercise);
       }
     });
     if (newExercises.length > 0) {
