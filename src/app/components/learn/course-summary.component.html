@@ -86,7 +86,7 @@
           <span class="fa fa-arrow-right fa-spacing"></span>
           {{isSubscribed ? text["continuecourse"] : text["startcourse"]}}
         </button>
-        <button class="btn btn-warning" *ngIf="isAuthor()"
+        <button class="btn btn-warning" *ngIf="isCourseAuthor()"
           (click)="onEditCourse()">
           <span class="fa fa-pencil fa-spacing"></span>{{text["updatecourse"]}}
         </button>

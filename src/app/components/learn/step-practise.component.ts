@@ -155,12 +155,12 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     switch (tpe) {
       case ExerciseType.Word:
         if (exercise.result) {
-          // 6 -> 9: random
-          if (learnLevel > 5 && learnLevel < 10) {
+          // 6 -> 8: random
+          if (learnLevel > 5 && learnLevel < 9) {
             qTpe =  Math.random() >= 0.5 ? QuestionType.Choices : QuestionType.Word;
           }
-          // 10+ : always word
-          if (learnLevel > 9) {
+          // 9+ : always word
+          if (learnLevel > 8) {
             qTpe = QuestionType.Word;
           }
         }

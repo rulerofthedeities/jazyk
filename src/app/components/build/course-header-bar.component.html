@@ -55,4 +55,11 @@
     <span class="fa fa-arrow-right fa-spacing"></span>
     {{text["startcourse"]}}
   </button>
+  <button *ngIf="!course.isPublished"
+    type="button"
+    class="btn btn-info"
+    (click)="onTestCourse()">
+    <span class="fa fa-arrow-right fa-spacing"></span>
+    {{text["testcourse"]}}
+  </button>
 </h1>

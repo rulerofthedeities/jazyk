@@ -9,7 +9,6 @@ let getCourse = function(req, res, authorOnly) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let query = {
           _id: courseId,
-          isPublished: true,
           isPublic: true
         };
     if (authorOnly) {

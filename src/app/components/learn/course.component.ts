@@ -10,7 +10,7 @@ import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
 import {Course, Lesson, Language, Translation, ResultData, Map,
-        Step, Level, LessonId, StepCount, StepData, ProcessedData} from '../../models/course.model';
+        Step, Level, LessonId, StepCount, StepData, ProcessedData, AccessLevel} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
@@ -221,11 +221,12 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           if (!course.isDemo && !this.authService.isLoggedIn()) {
             this.router.navigate(['/auth/signin'], {queryParams: {returnUrl: this.router.url}});
           }
-          if (course.isPublished) {
+          if (course.isPublished || this.isCourseAuthor(course)) {
             this.course = course;
             this.getCurrentLesson();
             this.log(`Loaded course '${this.course.name}'`);
           } else {
+            this.isError = true;
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
           }
         } else {
@@ -238,6 +239,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.isError = true;
       }
     );
+  }
+
+  private isCourseAuthor(course: Course): boolean {
+    return this.userService.hasAccessLevel(course.access, AccessLevel.Author);
   }
 
   private getStepData() {

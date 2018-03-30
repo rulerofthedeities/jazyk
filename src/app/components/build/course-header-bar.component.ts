@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
+import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, AccessLevel} from '../../models/course.model';
@@ -31,6 +32,7 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private buildService: BuildService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -49,8 +51,14 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
 
   onStartCourse() {
     if (this.course.isPublished) {
+      this.userService.subscribeToCourse(this.course);
+      this.log(`Start course '${this.course.name}'`);
       this.router.navigate(['/learn/course/' + this.course._id]);
     }
+  }
+
+  onTestCourse() {
+    this.router.navigate(['/learn/course/' + this.course._id]);
   }
 
   onToggle(property: string) {
@@ -93,6 +101,13 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
       data => this.savingData[property] = false,
       error => this.errorService.handleError(error)
     );
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'CourseSummaryComponent'
+    });
   }
 
   ngOnDestroy() {
