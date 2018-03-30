@@ -80,11 +80,16 @@
         </div>
       </div>
       <div *ngIf="tpe===listType.All || tpe===listType.Teach" class="buttons">
-        <button class="btn btn-success"
+        <button class="btn btn-success" *ngIf="course?.isPublished"
           [class.disabled]="!course.isPublished"
           (click)="onStartCourse()">
           <span class="fa fa-arrow-right fa-spacing"></span>
           {{isSubscribed ? text["continuecourse"] : text["startcourse"]}}
+        </button>
+        <button class="btn btn-info" *ngIf="!course?.isPublished"
+          (click)="onTestCourse()">
+          <span class="fa fa-arrow-right fa-spacing"></span>
+          {{text["testcourse"]}}
         </button>
         <button class="btn btn-warning" *ngIf="isCourseAuthor()"
           (click)="onEditCourse()">

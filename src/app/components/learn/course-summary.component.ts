@@ -82,6 +82,11 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     }
   }
 
+  onTestCourse() {
+    this.log(`Start course '${this.course.name}'`);
+    this.router.navigate(['/learn/course/' + this.course._id]);
+  }
+
   onContinueCourse(step: string) {
     const steproute = step ? '/' + step : '';
     this.userService.continueCourse(this.course);
