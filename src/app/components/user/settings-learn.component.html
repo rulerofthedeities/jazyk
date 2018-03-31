@@ -105,20 +105,6 @@
       </km-toggle>
     </div>
   </div>
-  <!-- Countdown -->
-  <div class="form-group">
-    <label 
-      for="countdown" 
-      class="control-label col-xs-4">
-      {{text["Countdown"]}}
-    </label>
-    <div class="col-xs-8">
-      <km-toggle id="countdown"
-        [toggle]="learnForm.value.countDown"
-        (toggled)="onSetFlag('countDown', $event)">
-      </km-toggle>
-    </div>
-  </div>
   <!-- Keyboard -->
   <div class="form-group">
     <label 
@@ -147,8 +133,22 @@
       </km-toggle>
     </div>
   </div>
-  <!-- Delay -->
+  <!-- Countdown -->
   <div class="form-group">
+    <label 
+      for="countdown" 
+      class="control-label col-xs-4">
+      {{text["Countdown"]}}
+    </label>
+    <div class="col-xs-8">
+      <km-toggle id="countdown"
+        [toggle]="learnForm.value.countDown"
+        (toggled)="onSetFlag('countDown', $event)">
+      </km-toggle>
+    </div>
+  </div>
+  <!-- Delay -->
+  <div class="form-group" *ngIf="learnForm.value.countDown">
     <label 
       for="delay" 
       class="control-label col-xs-4">

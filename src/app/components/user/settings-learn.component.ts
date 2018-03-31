@@ -116,7 +116,7 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
   private setFormData() {
     this.formData = {
       nrofwords: [3, 5, 7, 10, 20],
-      delays: [0, 1, 2, 3, 5, 10]
+      delays: [1, 2, 3, 5, 9]
     };
   }
 

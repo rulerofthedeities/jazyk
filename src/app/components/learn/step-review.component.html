@@ -1,5 +1,6 @@
 <km-countdown 
   *ngIf="isCountDown; else exercise"
+  [counter]="settings.delay"
   [mute]="isMute"
   (countedDown)="onCountDownFinished()">
 </km-countdown>
