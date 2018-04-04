@@ -6,23 +6,6 @@
   border-bottom: 4px double #06ae97;
   font-size: 22px;
 }
-/* Audio */
-/deep/ audio::-webkit-media-controls-time-remaining-display,
-/deep/ audio::-webkit-media-controls-current-time-display,
-/deep/ audio::-webkit-media-controls-timeline {
-  display: none;
-}
-/deep/ audio::-webkit-media-controls-play-button,
-/deep/ audio::-webkit-media-controls-mute-button {
-  cursor: pointer;
-}
-/deep/ audio::-webkit-media-controls-panel {
-  background-color: transparent;
-  width: 70px;
-  border: 1px solid grey;
-  border-radius: 5px;
-  margin: 0 8px;
-}
 /* Size */
 /deep/ span.i-size-1{
   font-size: 20px;
@@ -76,4 +59,10 @@
   background-color: #e8fcfa;
   cursor: default;
 }
-
+/* audio */
+/deep/ .fa-play-circle,
+/deep/ .fa-pause-circle {
+  font-size: 32px;
+  cursor: pointer;
+  margin: 4px 8px;
+}

@@ -60,6 +60,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   dropdowns: Map<boolean> = {};
   modified = false;
   saved = false;
+  audioNr = 0;
   intro: Intro;
   introDefault: Intro;
   @ViewChild('introField') introField;
@@ -81,6 +82,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.previewService.loadAudioButtonScript();
     this.introDefault = {
       text: '',
       html: ''
@@ -106,7 +108,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   onChangedIntro() {
-    console.log('changed');
     this.modified = true;
     this.saved = false;
   }
@@ -148,6 +149,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseText() {
+    this.audioNr = 0;
     const tags = ['span', 'div', 'audio', 'h1', 'h2', 'ul', 'li'];
     let html = this.previewService.removeTags(this.intro.text, tags);
     html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
@@ -248,6 +250,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         listHtml = '',
         html = text;
     listTags.forEach(listTag => {
+      listHtml = '';
       listItems = listTag.split('<br>');
       listItems = listItems.map(data => data.trim());
       listItems.forEach(item => {
@@ -286,6 +289,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html = text,
         colOptions: ColumnOptions[];
     tableTags.forEach(tableTag => {
+      tableHtml = '';
       colOptions = [];
       tableRows = tableTag.split('<br>');
       if (tableRows.length && tableRows[0].trim() === '') {
@@ -392,9 +396,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       case 'ul':
         return `<ul class="list-group i-list">${options.content}</ul>`
       case 'audio':
-        return `<audio controls>
+        this.audioNr++;
+        return `<audio id="audio${this.audioNr}">
                   <source src="${options.url}" type="audio/${options.format}">
-                </audio>`;
+                </audio>
+                <span onclick="play(this, ${this.audioNr})" class="fa fa-play-circle"></span>
+                `;
       case 't-header':
         options.table.cells.forEach((cell, i) => {
           classes = this.getColumnClasses(options.table.columns[i]);
@@ -425,9 +432,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           closedTag = `[${firstTag + options.oldText + options.tag}]`,
           noBracketTag = `${options.tag + options.oldText + options.tag}`,
           openTag = options.hasBracket ? `[${firstTag + options.oldText}]` : noBracketTag;
-          if (!options.hasBracket) {
-    console.log('replace>', options.hasClosingTag ? closedTag : openTag);
-          }
     return options.html.replace(options.hasClosingTag ? closedTag : openTag, options.newText);
   }
 

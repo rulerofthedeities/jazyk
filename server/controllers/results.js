@@ -71,6 +71,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
+    console.log('DOC', doc);
     if (doc.daysBetweenReviews) {
       dtToReview = Date.now();
       dtToReview += 1000 * 60 * 60 * 24 * parseFloat(doc.daysBetweenReviews);
@@ -83,13 +84,10 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   });
 
   Result.insertMany(docs, function(err, insertResult) {
-    console.log('inserted');
     response.handleError(err, res, 400, 'Error saving results', function(){
-      console.log('getting total points');
       this.getTotalPoints(userId, (err, result) => {
         score = result && result.length ? result[0].points : 0;
         response.handleError(err, res, 400, 'Error getting total', function(){
-          console.log('got total points');
           response.handleSuccess(res, score.toString());
         });
       });

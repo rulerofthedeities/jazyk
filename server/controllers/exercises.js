@@ -172,7 +172,6 @@ module.exports = {
           update = {
             $addToSet: {exercises: {$each: exercises}}
           };
-    console.log(exercises);
     Lesson.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 400, 'Error adding exercise(s)', function() {
         if (result) {

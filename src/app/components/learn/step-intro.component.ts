@@ -1,5 +1,6 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
+import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Step, Level, Intro} from '../../models/course.model';
 import {Subject} from 'rxjs/Subject';
@@ -33,10 +34,12 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
 
   constructor(
     private learnService: LearnService,
+    private previewService: PreviewService,
     private errorService: ErrorService
   ) {}
 
   ngOnInit() {
+    this.previewService.loadAudioButtonScript();
     this.init();
     this.checkLessonChanged();
   }

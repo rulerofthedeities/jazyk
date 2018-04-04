@@ -137,9 +137,12 @@ export class SharedService {
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
           this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
         } else if (courseLevel === Level.Course) {
-          // copy review time over to new doc - for overview step
+          // copy review time over to new doc
           const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
           lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
+          if (!lastResult[key].daysBetweenReviews) {
+            this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+          }
         }
         lastResult[key].isLast = true;
       }

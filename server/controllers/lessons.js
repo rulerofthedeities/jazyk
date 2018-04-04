@@ -176,7 +176,6 @@ module.exports = {
           update = {$set: {
             dialogue: dialogue
           }};
-          console.log('updating dialogue', dialogue);
     Lesson.findOneAndUpdate(query, update, function(err, result) {
       response.handleError(err, res, 400, 'Error updating lesson dialogue', function() {
         if (result) {

@@ -150,6 +150,26 @@ export class PreviewService {
     return array;
   }
 
+  loadAudioButtonScript() {
+    // for user generated audio buttons
+    let body = <HTMLDivElement>document.body;
+    let script = document.createElement('script');
+    script.innerHTML = `
+    function play(button, audioId) {
+      var audio = document.getElementById('audio' + audioId);
+      if (audio) {
+        audio.play();
+        audio.onplaying = function() {
+          button.classList.add('fa-pause-circle');
+        };
+        audio.onended = function() {
+          button.classList.remove('fa-pause-circle');
+        };
+      }
+    }`;
+    body.appendChild(script);
+  }
+
   private getRandom(floor: number, ceiling: number) {
     return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
   }
