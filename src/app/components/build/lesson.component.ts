@@ -96,7 +96,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
   }
 
-  onToggleDropDown(show: boolean) {
+  onToggleDropDown() {
     this.showDropDown = !this.showDropDown;
   }
 

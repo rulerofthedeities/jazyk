@@ -20,7 +20,7 @@
             [lan]="course?.languagePair.to"
             [word]="course?.defaults">
           </km-region-flag>
-          <span class="language-name">
+          <span class="language-name" *ngIf="!isNewCourse">
             {{text[currentLanguage.name]}}
           </span>
         </div>

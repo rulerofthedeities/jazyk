@@ -418,12 +418,28 @@
         (click)="onAddNewWord(exerciseForm)">
         {{text["Addword"]}}
       </button>
-      <button type="button" class="btn btn-success btn-lg"
-        [disabled] = "isSaving ? '' : null"
-        (click)="onAddNewConjugations(exerciseForm)"
-        *ngIf="!currentExercise && exerciseForm.valid && hasConjugations">
-        {{text["AddConjugations"]}}
-      </button>
+      <div 
+        *ngIf="!currentExercise && exerciseForm.valid && hasConjugations"
+        class="btn-group" #dropdown>
+        <button 
+          type="button"
+          [disabled] = "isSaving ? '' : null"
+          class="btn btn-success btn-lg dropdown-toggle"
+          (click)="onToggleDropDown()">
+          <span class="fa fa-file-o fa-spacing"></span>
+          {{text["AddConjugations"]}}...
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" 
+          [style.display]="showDropDown ? 'block' : 'none'">
+          <li (click)="onAddNewConjugations('single', exerciseForm)"><a>
+            <span class="fa fa-bars fa-spacing"></span>{{text["ConjugationsGrouped"]}}
+          </a></li>
+          <li (click)="onAddNewConjugations('multiple', exerciseForm)"><a>
+            <span class="fa fa-minus fa-spacing"></span>{{text["ConjugationsSeparate"]}}
+          </a></li>
+        </ul>
+      </div>
       <button type="button" class="btn btn-success btn-lg"
         [disabled] = "isSaving ? '' : null"
         (click)="onAddNewGenus(exerciseForm)"

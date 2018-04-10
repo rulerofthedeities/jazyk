@@ -20,6 +20,10 @@
 /deep/ .i-list > li:hover {
   background-color: #e8fcfa;
 }
+/* borders */
+/deep/ .btn-default:hover {
+  background-color: #e8fcfa;
+}
 /* Tables */
 /deep/ .i-table tr {
   border: 1px dashed #aaa;

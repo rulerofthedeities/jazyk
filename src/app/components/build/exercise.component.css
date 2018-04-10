@@ -75,3 +75,6 @@
 .form-horizontal .control-label {
   padding-top: 0;
 }
+.dropdown-menu li {
+  cursor: pointer;
+}

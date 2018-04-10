@@ -15,6 +15,7 @@ import {AudioFileComponent} from './components/fields/audio-file.component';
 import {RegionFlagComponent} from './components/fields/region-flag.component';
 import {DialogueComponent} from './components/learn/dialogue.component';
 import {IntroComponent} from './components/learn/intro.component';
+import {TypeIconsComponent} from './components/learn/type-icons.component';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import {IntroComponent} from './components/learn/intro.component';
     LearnKeyboardComponent,
     DialogueComponent,
     IntroComponent,
+    TypeIconsComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
@@ -47,6 +49,7 @@ import {IntroComponent} from './components/learn/intro.component';
     LearnKeyboardComponent,
     DialogueComponent,
     IntroComponent,
+    TypeIconsComponent,
     RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,

@@ -1,5 +1,6 @@
 import {Component, Input, Output, OnInit, AfterViewInit,
-  ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter} from '@angular/core';
+  ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter,
+ViewChild, HostListener} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
@@ -36,6 +37,7 @@ interface NewExerciseOptions {
   isArticle?: boolean;
   isComparison?: boolean;
   lastDoc?: boolean;
+  singleDoc?: boolean;
   addArticle?: boolean;
 }
 
@@ -82,6 +84,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   hasArticle = false;
   hasComparison = false;
   maxFilterListLength = 8;
+  showDropDown = false;
+
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside dropdown, close dropdown
+      this.showDropDown = false;
+    }
+  }
 
   constructor(
     private utilsService: UtilsService,
@@ -123,6 +135,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   onFocus(word: string, lan: string) {
     this.isSelected = false;
     this.changeFilter(word, lan);
+  }
+
+  onToggleDropDown() {
+    this.showDropDown = !this.showDropDown;
   }
 
   onFilterChanged(word: string, lan: string) {
@@ -172,15 +188,27 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
-  onAddNewConjugations(form: any) {
+  onAddNewConjugations(tpe: string, form: any) {
+    this.showDropDown = false;
     if (form.valid) {
       const options: NewExerciseOptions = {
         isConjugation: true
       };
-      this.isSaving = true;
-      for (let i = 0; i < 6; i++) {
-        options.conjugationNr = i;
-        options.lastDoc = i === 5;
+      if (tpe === 'multiple') {
+        // Create multiple exercises
+        this.isSaving = true;
+        options.singleDoc = false;
+        for (let i = 0; i < 6; i++) {
+          options.conjugationNr = i;
+          options.lastDoc = i === 5;
+          this.buildNewExercise(form.value, options);
+        }
+      }
+      if (tpe=== 'single') {
+        // Create single exercise
+        options.lastDoc = true;
+        options.singleDoc = true;
+        console.log('create single exercise');
         this.buildNewExercise(form.value, options);
       }
     }
@@ -462,8 +490,25 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         }
       }
 
-      /* Conjugation test */
-      if (options.isConjugation) {
+      /* Conjugation test - one doc for all conjugations */
+      if (options.isConjugation && options.singleDoc) {
+        let alts: string[] = [],
+            conjugations: string[] = [],
+            tmp: string[];
+        exercise.tpe = ExerciseType.Conjugations;
+        for (let i = 0; i < 6; i++) {
+          tmp = this.selected[this.lanForeign].conjugation[i].split(';');
+          conjugations.push(tmp[0]);
+          alts.push(tmp[1] || '');
+        }
+        exercise.foreign.word = conjugations.join('|');
+        exercise.foreign.alt = alts.join('|');
+        exercise.local.word = this.selected[this.lanForeign].word;
+        console.log('CONJUGATIONS >>', exercise.local.word, exercise.foreign.word, exercise.foreign.alt);
+      }
+
+      /* Conjugation test - one doc per conjugation */
+      if (options.isConjugation && !options.singleDoc) {
         const nr = options.conjugationNr,
               foreignPronouns = this.config.subjectPronouns;
         // Split conjugation if there are multiple

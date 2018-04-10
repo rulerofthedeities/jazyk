@@ -29,6 +29,7 @@ import {BuildQAComponent} from './components/build/exercise-qa.component';
 import {BuildFillInComponent} from './components/build/exercise-fillin.component';
 import {BuildGenusComponent} from './components/build/exercise-genus.component';
 import {BuildComparisonComponent} from './components/build/exercise-comparison.component';
+import {BuildConjugationsComponent} from './components/build/exercise-conjugations.component';
 import {AutocompleteComponent} from './components/fields/autocomplete.component';
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
@@ -67,6 +68,7 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     BuildFillInComponent,
     BuildGenusComponent,
     BuildComparisonComponent,
+    BuildConjugationsComponent,
     AutocompleteComponent,
     FilterListComponent,
     ImageListComponent,

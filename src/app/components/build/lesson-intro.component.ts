@@ -19,6 +19,7 @@ interface TableOptions {
   last?: boolean;
   alignment?: string[];
   columns?: ColumnOptions[];
+  hasHeader?: boolean;
 }
 
 interface SnippetOptions {
@@ -158,6 +159,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseSize(html, 'size');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
+    html = this.parseBorders(html, 'border');
     html = this.parseLists(html);
     html = this.parseAudio(html);
     html = this.parseTables(html);
@@ -204,6 +206,31 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html,
         oldText: headerTag,
         newText: headerHtml,
+        hasBracket: true});
+    });
+    return html;
+  }
+
+  private parseBorders(text: string, tag: string): string {
+    // format [tag: text] 
+    const borderTags = this.getTags({
+      text,
+      tag,
+      hasClosingTag: true,
+      hasBracket: true
+    });
+    let borderText: string,
+        borderHtml: string,
+        html = text;
+    borderTags.forEach(borderTag => {
+      borderText = borderTag.trim() || '';
+      borderHtml = this.getHtmlSnippet(tag, {title: borderText});
+      html = this.replaceText({
+        tag,
+        html,
+        oldText: borderTag,
+        newText: borderHtml,
+        hasClosingTag: true,
         hasBracket: true});
     });
     return html;
@@ -275,6 +302,17 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     | col 1 is | left-aligned  | €1000 |
     | col 2 is |   centered    |   €90 |
     | col 3 is | right-aligned |    €5 | table] */
+    const isEmptyRow = (row: string) => {
+      let isEmpty = true;
+      const tableCells = row.split('|');
+      tableCells.forEach(cell => {
+        if (cell.trim() !== '') {
+          isEmpty = false;
+        }
+      });
+      return isEmpty;
+    }
+
     const tag = 'table',
           tableTags = this.getTags({
             text,
@@ -287,13 +325,17 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         headerCells: string[],
         tableHtml: string,
         html = text,
-        colOptions: ColumnOptions[];
+        colOptions: ColumnOptions[],
+        noHeader = false;
     tableTags.forEach(tableTag => {
       tableHtml = '';
       colOptions = [];
       tableRows = tableTag.split('<br>');
       if (tableRows.length && tableRows[0].trim() === '') {
         tableRows.shift(); // First row is empty, remove
+      }
+      if (tableRows.length && isEmptyRow(tableRows[0])) {
+        noHeader = true;
       }
       tableRows.forEach((tableRow, rowNr) => {
         tableRow = tableRow.trim();
@@ -314,14 +356,19 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           })
         } else {
           if (headerCells) {
-            tableHtml = this.getHtmlSnippet('t-header', {table: {cells: headerCells, columns: colOptions}});
+            tableHtml = this.getHtmlSnippet('t-header', {table: {
+              cells: headerCells,
+              columns: colOptions,
+              hasHeader: !noHeader
+            }});
             headerCells = null;
           }
           tableHtml+= this.getHtmlSnippet('t-row', {table: {
             cells: tableCells,
             first: rowNr===1,
             last: rowNr===tableRows.length - 1,
-            columns: colOptions}});
+            columns: colOptions
+          }});
         }
       })
       tableHtml = this.getHtmlSnippet(tag, {content: tableHtml});
@@ -385,6 +432,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<h1 class="i">${options.title}</h1>`;
       case 'subheader': 
         return `<h2 class="i">${options.title}</h2>`;
+      case 'border': 
+        return `<span class="btn btn-default">${options.title}</span>`;
       case '*': // Italic 
         return `<em>${options.content}</em>`;
       case '**': // Italic 
@@ -403,11 +452,15 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
                 <span onclick="play(this, ${this.audioNr})" class="fa fa-play-circle"></span>
                 `;
       case 't-header':
-        options.table.cells.forEach((cell, i) => {
-          classes = this.getColumnClasses(options.table.columns[i]);
-          html += `<th${classes}>${cell.trim()}</th>`;
-        })
-        return `<thead><tr>${html}</tr></thead>`;
+        if (options.table.hasHeader) {
+          options.table.cells.forEach((cell, i) => {
+            classes = this.getColumnClasses(options.table.columns[i]);
+            html += `<th${classes}>${cell.trim()}</th>`;
+          })
+          return `<thead><tr>${html}</tr></thead>`;
+        } else {
+          return ''
+        }
       case 't-row':
         options.table.cells.forEach((cell, i) => {
           classes = this.getColumnClasses(options.table.columns[i]);
@@ -421,10 +474,14 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private getColumnClasses(options: ColumnOptions): string {
-    const alignClass = options.align === Alignment.Left ? "left" : (options.align === Alignment.Right ? "right" : "center"),
-          inverseClass = options.inverse ? "inverse" : null,
-          classes = alignClass + ' ' + (inverseClass || '');
-    return ` class="${classes.trim()}"`;
+    if (options) {
+      const alignClass = options.align === Alignment.Left ? "left" : (options.align === Alignment.Right ? "right" : "center"),
+            inverseClass = options.inverse ? "inverse" : null,
+            classes = alignClass + ' ' + (inverseClass || '');
+      return ` class="${classes.trim()}"`;
+    } else {
+      return '';
+    }
   }
 
   private replaceText(options: ReplaceOptions): string {

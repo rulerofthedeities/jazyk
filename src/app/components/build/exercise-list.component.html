@@ -35,16 +35,10 @@
         <div class="items">
           {{i + 1}}. 
           <span class="item active">
-            <span class="fa fa-spacing" [ngClass]="{
-              'fa-font': exercise.tpe === exType.Word,
-              'fa-list-alt': exercise.tpe === exType.Select,
-              'fa-comments': exercise.tpe === exType.QA,
-              'fa-terminal': exercise.tpe === exType.FillIn,
-              'fa-superpowers': exercise.tpe === exType.Article,
-              'fa-venus-mars': exercise.tpe === exType.Genus,
-              'fa-signal': exercise.tpe === exType.Comparison
-            }">
-            </span>
+            <km-type-icons
+              [tpe]="exercise.tpe"
+              [text]="text">
+            </km-type-icons>
           </span>
           <span class="item" [class.active]="!!exercise.audio">
             <span class="fa fa-volume-up fa-spacing"></span>
@@ -308,6 +302,15 @@
             (updatedExercise)="onUpdatedExercise($event)"
             (cancelEdit)="onCancelEdit()">
           </km-build-comparison>
+          <km-build-conjugations *ngSwitchCase="exType.Conjugations"
+            [languagePair]="languagePair"
+            [configs]="configs"
+            [lessonId]="lessonId"
+            [exercise]="exercise"
+            [text]="text"
+            (updatedExercise)="onUpdatedExercise($event)"
+            (cancelEdit)="onCancelEdit()">
+          </km-build-conjugations>
         </div>
       </div>
     </li>
