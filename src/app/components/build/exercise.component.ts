@@ -501,9 +501,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
           conjugations.push(tmp[0]);
           alts.push(tmp[1] || '');
         }
+        conjugations.unshift(this.selected[this.lanForeign].word); // Add infinitive to the start
         exercise.foreign.word = conjugations.join('|');
         exercise.foreign.alt = alts.join('|');
-        exercise.local.word = this.selected[this.lanForeign].word;
+        exercise.local.word = this.selected[this.lanLocal].word;
         console.log('CONJUGATIONS >>', exercise.local.word, exercise.foreign.word, exercise.foreign.alt);
       }
 

@@ -84,15 +84,20 @@ export class BuildExerciseListComponent implements OnDestroy {
     this.viewId = this.viewId === id ? null : id;
   }
 
+  getInfinitive(words: string): string {
+    let infinitive = '';
+    const wordsArr = words.split('|');
+    return wordsArr[0];
+  }
+
   getRemoveMessage(): string {
     let msg = '';
-    if (this.text['RemoveWord']) {
-      msg = this.text['RemoveWord'];
-      const exerciseToRemove = this.exercises.find(exercise => exercise._id === this.removingId);
-      if (exerciseToRemove) {
-        const wordToRemove = exerciseToRemove.foreign.word;
-        msg = msg.replace('%s', wordToRemove);
-      }
+    const exerciseToRemove = this.exercises.find(exercise => exercise._id === this.removingId);
+    if (exerciseToRemove) {
+      msg = exerciseToRemove.tpe === this.exType.Word ? this.text['RemoveWord'] : this.text['RemoveExercise'];
+      const wordToRemove = exerciseToRemove.foreign.word.replace(';', '|');
+      const wordsArr = wordToRemove.split('|');
+      msg = msg.replace('%s', wordsArr[0]);
     }
     return msg;
   }

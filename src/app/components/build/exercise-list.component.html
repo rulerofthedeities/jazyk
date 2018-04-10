@@ -224,6 +224,32 @@
               {{getGenus(exercise)}}
             </div>
           </div>
+          <!-- CONJUGATIONS -->
+          <div *ngSwitchCase="exType.Conjugations">
+            <div class="col-xs-4">
+              <div class="words">
+                <span (dblclick)="onEditExercise(exercise._id, 'foreignWord')">
+                  <km-region-flag
+                    [lan]="languagePair.to"
+                    [word]="exercise.foreign"
+                    [thumb]="true">
+                  </km-region-flag>
+                  <strong>{{getInfinitive(exercise.foreign?.word)}}</strong>
+                </span> / 
+                <km-region-flag
+                  [lan]="languagePair.from"
+                  [word]="exercise.local"
+                  [thumb]="true">
+                </km-region-flag>
+                <span (dblclick)="onEditExercise(exercise._id, 'localWord')">
+                  {{exercise.local?.word}}
+                </span>
+              </div>
+            </div>
+            <div class="col-xs-4 annotations">
+              
+            </div>
+          </div>
         </div>
       </div>
       <!-- EDIT / VIEW Exercise -->

@@ -13,6 +13,8 @@ import {Exercise, ExerciseType} from '../../models/exercise.model';
 })
 
 export class BuildConjugationsComponent extends ExerciseBase implements OnInit, OnDestroy {
+  pronouns: string[];
+  conjugations: string[];
 
   constructor(
     protected buildService: BuildService,
@@ -27,17 +29,22 @@ export class BuildConjugationsComponent extends ExerciseBase implements OnInit, 
   }
 
   protected buildForm(exercise: Exercise) {
-    const words = exercise.foreign.word.split('|');
+    const words = exercise.foreign.word.split('|'),
+          alts = exercise.foreign.alt.split('|');
+    this.mergeAlts(words, alts);
+    this.pronouns = this.configs.foreign.subjectPronouns;
+    this.conjugations = this.buildConjugationFormControlNames();
     this.exerciseForm = this.formBuilder.group({
       localRegion: [this.formData.localRegions[0] || this.languagePair.from],
       foreignRegion: [this.formData.foreignRegions[0] || this.languagePair.to],
-      localWord: [exercise.local.word, [Validators.required]],
-      conjugation0: [words[0], [Validators.required]],
+      localWord: [exercise.local.word, [Validators.required]], // infinitive local
+      foreignWord: [words[0], [Validators.required]], // infinitive foreign
       conjugation1: [words[1], [Validators.required]],
       conjugation2: [words[2], [Validators.required]],
       conjugation3: [words[3], [Validators.required]],
       conjugation4: [words[4], [Validators.required]],
-      conjugation5: [words[5], [Validators.required]]
+      conjugation5: [words[5], [Validators.required]],
+      conjugation6: [words[6], [Validators.required]]
     });
     this.isFormReady = true;
   }
@@ -54,6 +61,22 @@ export class BuildConjugationsComponent extends ExerciseBase implements OnInit, 
     exercise.local.word = formValues['localWord'];
     exercise.foreign.word = words;
     this.saveUpdatedExercise(exercise);
+  }
+
+  private mergeAlts(words: string[], alts: string[]) {
+    alts.forEach((alt, i) => {
+      if (alt) {
+        words[i + 1] += ';' + alt;
+      }
+    });
+  }
+
+  private buildConjugationFormControlNames(): string[] {
+    const conjugations: string[] = [];
+    for (let i = 1; i < 7; i++) {
+      conjugations.push('conjugation' + i);
+    }
+    return conjugations;
   }
 
   ngOnDestroy() {
