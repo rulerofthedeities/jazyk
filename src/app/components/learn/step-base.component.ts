@@ -10,6 +10,7 @@ import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep,
 import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
 import {LearnComparisonComponent} from './exercise-comparison.component';
+import {LearnConjugationsComponent} from './exercise-conjugations.component';
 import {LearnQAComponent} from './exercise-qa.component';
 import {LearnTimerComponent} from './timer.component';
 import {Subscription} from 'rxjs/Subscription';
@@ -47,6 +48,7 @@ export abstract class Step {
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   @ViewChild(LearnWordFieldComponent) answerComponent: LearnWordFieldComponent;
   @ViewChild(LearnComparisonComponent) comparisonComponent: LearnComparisonComponent;
+  @ViewChild(LearnConjugationsComponent) conjugationsComponent: LearnConjugationsComponent;
   @ViewChild(LearnSelectComponent) selectComponent: LearnSelectComponent;
   @ViewChild(LearnQAComponent) qaComponent: LearnQAComponent;
   @ViewChild(LearnTimerComponent) timerComponent: LearnTimerComponent;

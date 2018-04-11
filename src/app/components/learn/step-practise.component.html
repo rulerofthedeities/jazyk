@@ -79,6 +79,12 @@
             [text]="text"
             [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
           </km-comparison>
+          <km-conjugations *ngIf="isQuestionType(qType.Conjugation)"
+            [lanPair]="lanPair"
+            [data]="currentData"
+            [text]="text"
+            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+          </km-conjugations>
           <div *ngIf="isQuestionType(qType.Preview)"
             class="answer"
             [class.imagepadding]="!!currentData.exercise?.image">

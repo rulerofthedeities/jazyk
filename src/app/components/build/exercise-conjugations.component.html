@@ -2,6 +2,27 @@
   <form [formGroup]="exerciseForm"
     class="form-horizontal">
 
+    <!-- Instruction -->
+    <div class="form-group">
+      <label 
+        for="instructions" 
+        class="control-label col-xs-1">
+        <km-region-flag-selector
+          [lan]="languagePair.from"
+          [region]="currentExercise?.local.region"
+          [regions]="formData.localRegions">
+        </km-region-flag-selector>
+      </label>
+      <div class="col-xs-11">
+        <input 
+          class="form-control input-lg" 
+          id="instructions"
+          autocomplete="off"
+          placeholder="{{text['EnterInstructions']}}"
+          formControlName="instructions">
+      </div>
+    </div>
+
     <!-- Infinitive -->
     <div class="form-group">
       <label 

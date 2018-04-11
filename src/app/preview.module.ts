@@ -8,6 +8,7 @@ import {LearnQuestionComponent} from './components/learn/question.component';
 import {LearnSelectComponent} from './components/learn/exercise-select.component';
 import {LearnQAComponent} from './components/learn/exercise-qa.component';
 import {LearnComparisonComponent} from './components/learn/exercise-comparison.component';
+import {LearnConjugationsComponent} from './components/learn/exercise-conjugations.component';
 import {LearnKeyboardComponent} from './components/learn/keyboard.component';
 import {RegionFlagSelectorComponent} from './components/fields/region-flag-selector.component';
 import {WordColorDirective} from './directives/word-color.directive';
@@ -28,6 +29,7 @@ import {TypeIconsComponent} from './components/learn/type-icons.component';
     LearnSelectComponent,
     LearnQAComponent,
     LearnComparisonComponent,
+    LearnConjugationsComponent,
     LearnKeyboardComponent,
     DialogueComponent,
     IntroComponent,
@@ -46,6 +48,7 @@ import {TypeIconsComponent} from './components/learn/type-icons.component';
     LearnSelectComponent,
     LearnQAComponent,
     LearnComparisonComponent,
+    LearnConjugationsComponent,
     LearnKeyboardComponent,
     DialogueComponent,
     IntroComponent,

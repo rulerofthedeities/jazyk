@@ -159,6 +159,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseSize(html, 'size');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
+    html = this.parseHeaders(html, 'subsubheader');
     html = this.parseBorders(html, 'border');
     html = this.parseLists(html);
     html = this.parseAudio(html);
@@ -432,6 +433,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<h1 class="i">${options.title}</h1>`;
       case 'subheader': 
         return `<h2 class="i">${options.title}</h2>`;
+      case 'subsubheader': 
+        return `<h3 class="i">${options.title}</h3>`;
       case 'border': 
         return `<span class="btn btn-default">${options.title}</span>`;
       case '*': // Italic 

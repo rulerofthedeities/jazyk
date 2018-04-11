@@ -6,6 +6,10 @@
   border-bottom: 4px double #06ae97;
   font-size: 22px;
 }
+/deep/ h3.i{
+  border-bottom: 1px solid #06ae97;
+  font-size: 16px;
+}
 /* Size */
 /deep/ span.i-size-1{
   font-size: 20px;

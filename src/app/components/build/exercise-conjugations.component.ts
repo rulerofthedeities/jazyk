@@ -30,7 +30,8 @@ export class BuildConjugationsComponent extends ExerciseBase implements OnInit, 
 
   protected buildForm(exercise: Exercise) {
     const words = exercise.foreign.word.split('|'),
-          alts = exercise.foreign.alt.split('|');
+          alts = exercise.foreign.alt.split('|'),
+          defaultInstruction = exercise.local.info || this.text['instructionConjugations'].replace('%s', words[0]);
     this.mergeAlts(words, alts);
     this.pronouns = this.configs.foreign.subjectPronouns;
     this.conjugations = this.buildConjugationFormControlNames();
@@ -44,20 +45,19 @@ export class BuildConjugationsComponent extends ExerciseBase implements OnInit, 
       conjugation3: [words[3], [Validators.required]],
       conjugation4: [words[4], [Validators.required]],
       conjugation5: [words[5], [Validators.required]],
-      conjugation6: [words[6], [Validators.required]]
+      conjugation6: [words[6], [Validators.required]],
+      instructions: [defaultInstruction]
     });
     this.isFormReady = true;
   }
 
   protected buildExistingExercise(formValues: any) {
     const exercise: Exercise = this.currentExercise;
-    let words = '';
-    for (let i = 0; i < 6; i++){
-      words += formValues['conjugation' + i];
-      if (i < 5) {
-        words += '|';
-      }
+    let words = formValues['foreignWord'];
+    for (let i = 1; i < 7; i++){
+      words += '|' + formValues['conjugation' + i];
     }
+    exercise.local.info = formValues['instructions'];
     exercise.local.word = formValues['localWord'];
     exercise.foreign.word = words;
     this.saveUpdatedExercise(exercise);
