@@ -40,7 +40,11 @@ export class LearnKeyboardComponent implements OnInit {
   private myToUpperCase = function(str) {
     var uppercase = '';
     str.split('').forEach((c, i) => {
-      uppercase += String.fromCharCode(str.charCodeAt(i) & 223);
+      if (str.charCodeAt(i) === 339) { // œ
+        uppercase += String.fromCharCode(338);
+      } else {
+        uppercase += String.fromCharCode(str.charCodeAt(i) & 223);
+      }
     });
     return uppercase;
   }

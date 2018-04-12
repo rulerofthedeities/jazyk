@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro, 
         Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue, Map} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData,
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData, ExerciseType,
         Direction, ExerciseResult, ResultsData, Choice, QuestionType} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
@@ -318,6 +318,19 @@ export class LearnService {
       examCount = 50;
     }
     return examCount;
+  }
+
+  showFilteredWord(word: string, tpe: number): string {
+    // Get word to display in overview and result
+    if (word) {
+      if (tpe === ExerciseType.Conjugations) {
+        word = word.split('|')[0]; // Show infinitive only
+      }
+      word = word.replace(/\|/g, ', ');
+      return word.replace(/\[|\]/g, '');
+    } else {
+      return '';
+    }
   }
 
   /*** Config ***/

@@ -24,7 +24,6 @@ export class LearnComparisonComponent implements OnInit, OnChanges {
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
-  @Output() answered = new EventEmitter<boolean>();
   @ViewChild('answerComparative') answerComparative: ElementRef;
   @ViewChild('answerSuperlative') answerSuperlative: ElementRef;
   questionData: ExerciseData;

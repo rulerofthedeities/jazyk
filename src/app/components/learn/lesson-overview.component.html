@@ -21,20 +21,11 @@
 <!-- TABLE -->
 <div *ngFor="let exercise of exerciseData;let i=index" class="row item data-row">
   <div class="col-xs-1 icons">
-    <span>
-      <span class="index">{{i+1}}.</span>
-      <span class="fa fa-spacing" [ngClass]="{
-        'fa-font': exercise.exercise.tpe === exType.Word,
-        'fa-list-alt': exercise.exercise.tpe === exType.Select,
-        'fa-comments': exercise.exercise.tpe === exType.QA,
-        'fa-terminal': exercise.exercise.tpe === exType.FillIn,
-        'fa-superpowers': exercise.exercise.tpe === exType.Article,
-        'fa-venus-mars': exercise.exercise.tpe === exType.Genus,
-        'fa-signal': exercise.exercise.tpe === exType.Comparison
-      }"
-        [tooltip]="getTypeText(exercise)">
-      </span>
-    </span>
+    <span class="index">{{i+1}}.</span>
+    <km-type-icons
+      [tpe]="exercise.exercise.tpe"
+      [text]="text">
+    </km-type-icons>
     <span>
       <span
         *ngIf="exercise.result?.isDifficult"
@@ -49,7 +40,7 @@
     </span>
   </div>
   <div class="col-xs-5">
-    <span class="word">{{showWord(exercise.exercise.foreign?.word)}}</span>
+    <span class="word">{{showWord(exercise.exercise.foreign?.word, exercise.exercise.tpe)}}</span>
     <span class="word local">{{exercise.exercise.local?.word}}</span>
   </div>
   <div class="col-xs-3" *ngIf="!isDemo">

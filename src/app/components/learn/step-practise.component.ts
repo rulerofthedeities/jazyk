@@ -177,7 +177,11 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       case ExerciseType.Comparison:
         qTpe = QuestionType.Comparison;
       break;
+      case ExerciseType.Conjugations:
+        qTpe = QuestionType.Conjugations;
+      break;
     }
+    console.log('qtpe', qTpe);
     return qTpe;
   }
 

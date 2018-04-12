@@ -5,7 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {isLearnedLevel, maxStreak, SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice,
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice, ConjugationsData
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
@@ -64,6 +64,7 @@ export abstract class Step {
   countPerStep: Map<StepCount> = {};
   isExercisesDone = false;
   keys: string[] = []; // keyboard keys
+  pronouns: string[] = []; // subject pronouns
   currentChoices: string[] = []; // choices
   answered: number; // choices
   answer: number; // choices
@@ -175,6 +176,9 @@ export abstract class Step {
       case QuestionType.Comparison:
         this.checkIfComparisonAnswer();
       break;
+      case QuestionType.Conjugations:
+        this.checkIfConjugationsAnswer();
+      break;
       case QuestionType.Preview:
         this.previewDone();
       break;
@@ -193,14 +197,36 @@ export abstract class Step {
     return tpe;
   }
 
-  isQuestionType(qTpe: QuestionType): boolean {
-    let isQTpe = false;
-    if (this.currentData && this.currentData.data.questionType === qTpe) {
-      isQTpe = true;
+  isInput() {
+    // can show keyboard
+    let isInput = false;
+    if (this.currentData) {
+      switch(this.currentData.data.questionType) {
+        case QuestionType.Word:
+        case QuestionType.FillIn:
+        case QuestionType.Comparison:
+        case QuestionType.Conjugations:
+        isInput = true;
+      }
     }
-    return isQTpe;
+    return isInput;
   }
 
+  showDefaultQuestion(): boolean {
+    const qTpe = this.currentData ? this.currentData.data.questionType : 0;
+    let show = true;
+    if (this.currentData) {
+      switch(this.currentData.data.questionType) {
+        case QuestionType.Select:
+        case QuestionType.FillIn:
+        case QuestionType.Comparison:
+        case QuestionType.Conjugations:
+        show = false;
+      }
+    }
+    return show;
+  }
+  
   isSelectionExercise(): boolean {
     let isSelection = false;
     if (this.currentData &&
@@ -211,22 +237,12 @@ export abstract class Step {
     return isSelection;
   }
 
-  isEnterDataExercise(): boolean {
-    let isEnterData = false;
-    if (this.currentData &&
-        (this.currentData.data.questionType === QuestionType.Word ||
-        this.currentData.data.questionType === QuestionType.FillIn)) {
-      isEnterData = true;
-    }
-    return isEnterData;
-  }
-
   protected init() {
     this.isCountDown = this.settings.countdown;
     this.isMute = this.settings.mute;
     this.checkExercisesInterrupted();
     this.checkCountUpdated();
-    this.getConfig(this.lanPair.to); // For keyboard keys
+    this.getConfig(this.lanPair.to); // For keyboard keys & pronouns
     if (!this.isCountDown) {
       this.onCountDownFinished();
     }
@@ -294,6 +310,16 @@ export abstract class Step {
     }
   }
 
+  private checkIfConjugationsAnswer() {
+    if (!this.isAnswered) {
+      if (this.conjugationsComponent) {
+        this.checkConjugationsAnswer(this.conjugationsComponent.getData());
+      }
+    } else {
+      this.nextWord();
+    }
+  }
+
   protected previewDone() {
     // Only in practise
   }
@@ -343,6 +369,9 @@ export abstract class Step {
     }
     if (this.comparisonComponent) {
       this.comparisonComponent.clearData();
+    }
+    if (this.conjugationsComponent) {
+      this.conjugationsComponent.clearData();
     }
     if (this.nextWordTimer) {
       this.nextWordTimer.unsubscribe();
@@ -413,6 +442,26 @@ export abstract class Step {
       }
     }
   }
+
+  protected checkConjugationsAnswer(data: ConjugationsData) {
+    console.log('answers', data.answers);
+    console.log('solutions', data.solutions);
+    console.log('alts', data.alts);
+    let correct = 0,
+        filteredAnswer: string,
+        result = [false, false, false, false, false, false];
+    data.answers.forEach((answer, i) => {
+      filteredAnswer = this.filter(answer);
+      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer ) {
+        result[i] = true;
+        correct++;
+      }
+    });
+    const answer = correct === 6 ? AnsweredType.Correct : (correct === 5 ? AnsweredType.AlmostCorrect : AnsweredType.Incorrect);
+    this.checkAnswer(answer, QuestionType.Conjugations);
+    this.conjugationsComponent.showResult(result);
+  }
+  
 
   private checkAnswer(answer: AnsweredType, question: QuestionType, solution = '') {
     const timeDelta = this.timerComponent.getTimeDelta();
@@ -1000,6 +1049,9 @@ export abstract class Step {
       case ExerciseType.Comparison:
         qTpe = QuestionType.Comparison;
       break;
+      case ExerciseType.Conjugations:
+        qTpe = QuestionType.Conjugations;
+      break;
     }
     return qTpe;
   }
@@ -1056,6 +1108,7 @@ export abstract class Step {
       (config: LanConfig) => {
         if (config) {
           this.keys = config.keys;
+          this.pronouns = config.subjectPronouns;
         }
       },
       error => this.errorService.handleError(error)

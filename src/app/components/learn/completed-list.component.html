@@ -31,24 +31,16 @@
               orange: !result.isCorrect && result.isAlmostCorrect,
               red: !result.isCorrect && !result.isAlmostCorrect}">
           </span>
-          <span *ngIf="result.isLearned"
+          <span *ngIf="result.isLearned && result.tpe === exType.Word"
             class="fa fa-check"
             [tooltip]="text['iWordLearned']">
           </span>
         </div>
         <div class="col-xs-1 icons">
-          <span>
-            <span class="fa" [ngClass]="{
-              'fa-font': result.tpe === exType.Word,
-              'fa-list-alt': result.tpe === exType.Select,
-              'fa-comments': result.tpe === exType.QA,
-              'fa-terminal': result.tpe === exType.FillIn,
-              'fa-superpowers': result.tpe === exType.Article,
-              'fa-venus-mars': result.tpe === exType.Genus,
-              'fa-signal': result.tpe === exType.Comparison
-            }">
-            </span>
-          </span>
+          <km-type-icons
+            [tpe]="result.tpe"
+            [text]="text">
+          </km-type-icons>
         </div>
         <div class="col-xs-6">
           <span class="word">{{getForeignWord(result)}}</span>

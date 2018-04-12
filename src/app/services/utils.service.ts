@@ -86,8 +86,8 @@ export class UtilsService {
       const start: number = inputElement.selectionStart,
             end: number = inputElement.selectionEnd,
             value: string = inputElement.value,
-            left = value.substring(0, start),
-            right = value.substr(end, value.length - end),
+            left = value ? value.substring(0, start) : '',
+            right = value ? value.substr(end, value.length - end) : '',
             newValue = left + key + right,
             newPosition = left.length + key.length;
       inputElement.value = newValue;

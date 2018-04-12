@@ -23,12 +23,12 @@
         <!-- EXERCISE -->
         <div *ngIf="!isExercisesDone && isQuestionReady" 
           class="card" 
-          [class.preview]="isQuestionType(qType.Preview)">
+          [class.preview]="currentData?.data?.questionType === qType.Preview">
           <div class="pull-right">
-            <span class="new" *ngIf="isQuestionType(qType.Preview)">{{text["NewWord"]}}!</span>
+            <span class="new" *ngIf="currentData?.data?.questionType === qType.Preview">{{text["NewWord"]}}!</span>
             <span class="case" *ngIf="currentData?.data?.isCaseSensitive">Aa</span>
           </div>
-          <div class="clearfix" *ngIf="!isQuestionType(qType.Select) && !isQuestionType(qType.FillIn) && !isQuestionType(qType.Comparison)">
+          <div class="clearfix" *ngIf="showDefaultQuestion()">
             <!-- IMAGE -->
             <div class="image" *ngIf="currentData.exercise.image">
               <img src="{{currentData.exercise.image}}">
@@ -42,55 +42,64 @@
               [settings]="settings"
             ></km-question>
           </div>
-          <km-word-choices *ngIf="isQuestionType(qType.Choices)"
-            [lanPair]="lanPair"
-            [choices]="currentChoices"
-            [data]="currentData"
-            [answer]="answer"
-            [answered]="answered"
-            [isSelected]="isAnswered"
-            [instruction]="text['instructionChoices']"
-            (selected)="onSelected($event)">
-          </km-word-choices>
-          <km-word-field *ngIf="isQuestionType(qType.Word)"
-            [lan]="lanPair.to"
-            [prefix]="prefix"
-            [disabled]="isAnswered"
-            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
-            [solution]="{solution: solution, msg: text['Expectedanswer']}"
-            [instruction]="text['instructionWordfield']"
-            [data]="currentData">
-          </km-word-field>
-          <km-select *ngIf="isQuestionType(qType.Select)"
-            [lanPair]="lanPair"
-            [data]="currentData"
-            [text]="text"
-            (answered)="onAnsweredSelect($event)">
-          </km-select>
-          <km-qa *ngIf="isQuestionType(qType.FillIn)"
-            [lanPair]="lanPair"
-            [data]="currentData"
-            [text]="text"
-            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
-          </km-qa>
-          <km-comparison *ngIf="isQuestionType(qType.Comparison)"
-            [lanPair]="lanPair"
-            [data]="currentData"
-            [text]="text"
-            [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
-          </km-comparison>
-          <div *ngIf="isQuestionType(qType.Preview)"
-            class="answer"
-            [class.imagepadding]="!!currentData.exercise?.image">
-            <h1 class="word">
-              <span>
-                <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
-              </span>
-              <span>
-                {{currentData.exercise?.local?.word}}
-                <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
-              </span>
-            </h1>
+          <div [ngSwitch]="currentData?.data?.questionType">
+            <km-word-choices *ngSwitchCase="qType.Choices"
+              [lanPair]="lanPair"
+              [choices]="currentChoices"
+              [data]="currentData"
+              [answer]="answer"
+              [answered]="answered"
+              [isSelected]="isAnswered"
+              [instruction]="text['instructionChoices']"
+              (selected)="onSelected($event)">
+            </km-word-choices>
+            <km-word-field *ngSwitchCase="qType.Word"
+              [lan]="lanPair.to"
+              [prefix]="prefix"
+              [disabled]="isAnswered"
+              [keyboard]="{showKeyboard: settings.keyboard, keys: keys}"
+              [solution]="{solution: solution, msg: text['Expectedanswer']}"
+              [instruction]="text['instructionWordfield']"
+              [data]="currentData">
+            </km-word-field>
+            <km-select *ngSwitchCase="qType.Select"
+              [lanPair]="lanPair"
+              [data]="currentData"
+              [text]="text"
+              (answered)="onAnsweredSelect($event)">
+            </km-select>
+            <km-qa *ngSwitchCase="qType.FillIn"
+              [lanPair]="lanPair"
+              [data]="currentData"
+              [text]="text"
+              [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+            </km-qa>
+            <km-comparison *ngSwitchCase="qType.Comparison"
+              [lanPair]="lanPair"
+              [data]="currentData"
+              [text]="text"
+              [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+            </km-comparison>
+            <km-conjugations *ngSwitchCase="qType.Conjugations"
+              [lanPair]="lanPair"
+              [data]="currentData"
+              [text]="text"
+              [pronouns]="pronouns"
+              [keyboard]="{showKeyboard: settings.keyboard, keys: keys}">
+            </km-conjugations>
+            <div *ngSwitchCase="qType.Preview"
+              class="answer"
+              [class.imagepadding]="!!currentData.exercise?.image">
+              <h1 class="word">
+                <span>
+                  <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag">
+                </span>
+                <span>
+                  {{currentData.exercise?.local?.word}}
+                  <div class="alts">{{getAlts('local', currentData.exercise)}}</div>
+                </span>
+              </h1>
+            </div>
           </div>
         </div>
         <!-- NO MORE EXERCISES -->
@@ -127,7 +136,7 @@
         [text]="text"
         [hasGenus]="!!this.currentData?.exercise.genus"
         [settings]="settings"
-        [isInput]="isQuestionType(qType.Word) || isQuestionType(qType.FillIn)"
+        [isInput]="isInput()"
         [isActive]="!isExercisesDone"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
@@ -139,7 +148,7 @@
           class="btn btn-lg btn-success next" 
           (click)="onNextWord()">
           <span class="fa fa-step-forward"></span>
-          {{!isAnswered && isEnterDataExercise() ? text["Check"] : text["Next"]}}
+          {{!isAnswered && isInput() ? text["Check"] : text["Next"]}}
         </button>
       </div>
       <div class="score" *ngIf="!isExercisesDone">

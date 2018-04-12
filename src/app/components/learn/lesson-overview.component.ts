@@ -34,33 +34,8 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     this.fetchLesson();
   }
 
-  showWord(word: string): string {
-    if (word) {
-      word = word.replace(/\|/g, ', ');
-      return word.replace(/\[|\]/g, '');
-    }
-  }
-
-  getTypeText(exercise: ExerciseData): string {
-    let txt = '';
-    switch (exercise.exercise.tpe) {
-      case ExerciseType.Article: txt = this.text['Article'];
-      break;
-      case ExerciseType.Comparison: txt = this.text['Comparison'];
-      break;
-      case ExerciseType.FillIn: txt = this.text['FillIn'];
-      break;
-      case ExerciseType.Genus: txt = this.text['Genus'];
-      break;
-      case ExerciseType.QA: txt = this.text['QA'];
-      break;
-      case ExerciseType.Select: txt = this.text['Select'];
-      break;
-      case ExerciseType.Word: txt = this.text['Word'];
-      break;
-      default: txt = this.text['iExerciseType'];
-    }
-    return txt;
+  showWord(word: string, tpe: number): string {
+    return this.learnService.showFilteredWord(word, tpe);
   }
 
   isToReview(result: ExerciseResult): boolean {

@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExerciseData, ExerciseType, Direction, Points} from '../../models/exercise.model';
 import {isLearnedLevel} from '../../services/shared.service';
+import {LearnService} from '../../services/learn.service';
 
 interface Result {
   exercise: ExerciseData;
@@ -28,6 +29,10 @@ export class LearnCompletedListComponent implements OnInit {
   results: Result[] = [];
   noResults = false;
   exType = ExerciseType;
+
+  constructor(
+    private learnService: LearnService
+  ) {}
 
   ngOnInit() {
     // show only 1 result per word
@@ -76,6 +81,6 @@ export class LearnCompletedListComponent implements OnInit {
 
   getForeignWord(result: Result): string {
     const word = result.exercise.exercise.foreign.word;
-    return word.replace(/\|/g, ', ');
+    return this.learnService.showFilteredWord(word, result.tpe);
   }
 }

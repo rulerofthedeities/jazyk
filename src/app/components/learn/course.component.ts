@@ -569,9 +569,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             }
             // Practise
             const practise = stepData.lesson.find(count => count.step === 'practise');
+            console.log('countPerStep', this.countPerStep);
             if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
               this.countPerStep['practise'].nrDone = practise.nrDone;
-              this.countPerStep['practise'].nrRemaining = Math.max(0, this.countPerStep['study'].nrRemaining - practise.nrDone);
+              let studyRemaining = this.countPerStep['study'] ? this.countPerStep['study'].nrRemaining : 0;
+              this.countPerStep['practise'].nrRemaining = Math.max(0, studyRemaining - practise.nrDone);
               updated = true;
             }
           }

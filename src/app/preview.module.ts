@@ -1,4 +1,5 @@
 import {NgModule, ModuleWithProviders} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {SharedModule} from './shared.module';
 import {CommonModule} from '@angular/common';
 
@@ -21,6 +22,7 @@ import {TypeIconsComponent} from './components/learn/type-icons.component';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     SharedModule
   ],
   declarations: [
