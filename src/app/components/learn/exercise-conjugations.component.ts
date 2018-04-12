@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, AfterViewInit, EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType, ConjugationsData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
@@ -14,7 +14,7 @@ interface Keyboard {
   styleUrls: ['field.css', 'exercise-conjugations.component.css']
 })
 
-export class LearnConjugationsComponent implements OnInit, OnChanges {
+export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() data: ExerciseData;
@@ -26,7 +26,7 @@ export class LearnConjugationsComponent implements OnInit, OnChanges {
   instruction: string = '';
   isAnswered = false;
   currentExerciseId: string;
-  currentField: number;
+  currentField = 0;
   conjugations: string[];
   alts: string[];
   answers: string[] = [];
@@ -36,15 +36,18 @@ export class LearnConjugationsComponent implements OnInit, OnChanges {
     private utilsService: UtilsService
   ) {}
 
-  ngOnInit() {
-    console.log(this.keyboard);
-  }
-
   ngOnChanges() {
     if (this.currentExerciseId !== this.data.exercise._id) {
       this.currentExerciseId = this.data.exercise._id;
       this.getConjugationsData(this.data.exercise);
     }
+  }
+
+  ngAfterViewInit() {
+    // Set focus on first conjugation field
+    this.conjugation.changes.subscribe(elements => {
+      elements.first.nativeElement.focus();
+    });
   }
 
   onFocus(field: number) {
@@ -70,14 +73,12 @@ export class LearnConjugationsComponent implements OnInit, OnChanges {
     console.log('result', result);
     this.results = result;
     this.isAnswered = true;
-    // Show local language infinitive
-    // show correct / incorrect
-        // show correct answer if incorrect
   }
 
   clearData() {
     this.isAnswered = false;
     this.answers = this.initAnswers();
+    this.currentField = 0;
   }
 
   private getConjugationsData(exercise: Exercise) {

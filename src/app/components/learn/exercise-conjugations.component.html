@@ -52,6 +52,7 @@
         autocomplete="off"
         spellcheck="false"
         required
+        [autofocus]="i===0"
         [attr.disabled]="isAnswered ? '': null"
         [ngClass]="{
           correct: isAnswered && results[i],
