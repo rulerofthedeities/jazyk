@@ -20,6 +20,24 @@
 /deep/ span.i-size-3{
   font-size: 36px;
 }
+/* Color */
+/deep/ span.i-color-f{
+  color: red;
+  font-weight: bold;
+}
+/deep/ span.i-color-m,
+/deep/ span.i-color-mi{
+  color: darkBlue;
+  font-weight: bold;
+}
+/deep/ span.i-color-ma{
+  color: dodgerBlue;
+  font-weight: bold;
+}
+/deep/ span.i-color-n{
+  color: green;
+  font-weight: bold;
+}
 /* Lists */
 /deep/ .i-list > li:hover {
   background-color: #e8fcfa;

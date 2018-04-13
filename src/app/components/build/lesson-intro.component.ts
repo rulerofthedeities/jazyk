@@ -157,6 +157,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseFontStyles(html, '**');
     html = this.parseFontStyles(html, '*');
     html = this.parseSize(html, 'size');
+    html = this.parseColor(html, 'color');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
     html = this.parseHeaders(html, 'subsubheader');
@@ -259,6 +260,38 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           html,
           oldText: sizeTag,
           newText: sizeHtml,
+          hasBracket: true});
+      }
+    });
+    return html;
+  }
+
+  private parseColor(text: string, tag: string): string {
+    console.log('parse color');
+    // format [color:f text] (m, f, mi, ma, n)
+    const colorTags = this.getTags({
+      text,
+      tag,
+      hasBracket: true
+    });
+    let colorText: string,
+        colorHtml: string,
+        html = text,
+        color: string,
+        colorArr: string[];
+    colorTags.forEach(colorTag => {
+        console.log('colorTag', colorTag);
+      if (colorTag && colorTag.length > 2) {
+        colorArr = colorTag.split(/\:(.+)/);
+        console.log('colorArr', colorArr);
+        color = colorArr[0].trim();
+        colorText = colorArr[1].trim() || '';
+        colorHtml = this.getHtmlSnippet(tag, {content: colorText, format: color});
+        html = this.replaceText({
+          tag,
+          html,
+          oldText: colorTag,
+          newText: colorHtml,
           hasBracket: true});
       }
     });
@@ -443,6 +476,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<strong>${options.content}</strong>`;
       case 'size': 
         return `<span class="i-size-${options.value}">${options.content}</span>`;
+      case 'color':
+        return `<span class="i-color-${options.format}">${options.content}</span>`;
       case 'list': 
         return `<li class="list-group-item">${options.content}</li>`;
       case 'ul':
@@ -496,7 +531,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private closeDropdowns(keepOpen: string) {
-    const dropdowns: Array<string> = ['header', 'size', 'other'];
+    const dropdowns: Array<string> = ['arrange', 'header', 'size', 'other'];
     dropdowns.forEach(dropdown => {
       if (dropdown !== keepOpen) {
         this.dropdowns[dropdown] = false;
@@ -514,11 +549,18 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     | col 3 is | right-aligned |    €5 |table]`;
     this.templates['header'] = `[header: My header]`;
     this.templates['subheader'] = `[subheader: My subheader]`;
+    this.templates['subsubheader'] = `[subsubheader: My sub-subheader]`;
     this.templates['size1'] = `[size:1: large text]`;
     this.templates['size2'] = `[size:2: larger text]`;
     this.templates['size3'] = `[size:3: largest text]`;
+    this.templates['color'] = `[color:f: color options are f, m, mi, ma, n]`;
     this.templates['italic'] = `*this text is italic*`;
     this.templates['bold'] = `**this text is bold**`;
+    this.templates['border'] = `[border: this text has a border!]`;
+    this.templates['audio'] = `[audio: https://s3.eu-central-1.amazonaws.com/jazyk/audio/cs/5ac50892b12e080e30c28b7f]`;
+    this.templates['list'] = `[list: item1
+    item2
+    item3 list]`;
   }
 
   ngOnDestroy() {

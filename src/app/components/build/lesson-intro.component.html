@@ -12,10 +12,22 @@
           <span class="fa fa-check" [class.fa-check]="saved"></span>
           {{text[saved ? "Updated" : "Update"]}}
         </button>
-        <div class="btn btn-primary" (click)="onInsertTemplate(introField, 'table')">
-          {{text["Table"]}}
-        </div>
         <span #dropdown>
+          <div class="btn-group">
+            <div 
+              class="btn btn-primary dropdown-toggle"
+              (click)="onToggleButton('arrange')">
+              {{text["Arrange"]}} <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu" [style.display]="dropdowns['arrange'] ? 'block': 'none'">
+                <li (click)="onInsertTemplate(introField, 'table', 'arrange')">
+                  <a>{{text["Table"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'list', 'arrange')">
+                  <a>{{text["List"]}}</a>
+                </li>
+            </ul>
+          </div>
           <div class="btn-group">
             <div 
               class="btn btn-primary dropdown-toggle"
@@ -29,6 +41,9 @@
                 <li (click)="onInsertTemplate(introField, 'subheader', 'header')">
                   <a>{{text["SubHeader"]}}</a>
                 </li>
+                <li (click)="onInsertTemplate(introField, 'subsubheader', 'header')">
+                  <a>{{text["SubSubHeader"]}}</a>
+                </li>
             </ul>
           </div>
           <div class="btn-group">
@@ -38,9 +53,15 @@
               {{text["Size"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['size'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'size1', 'size')"><a>{{text["Large"]}}</a></li>
-                <li (click)="onInsertTemplate(introField, 'size2', 'size')"><a>{{text["Larger"]}}</a></li>
-                <li (click)="onInsertTemplate(introField, 'size3', 'size')"><a>{{text["Largest"]}}</a></li>
+                <li (click)="onInsertTemplate(introField, 'size1', 'size')">
+                  <a>{{text["Large"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'size2', 'size')">
+                  <a>{{text["Larger"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'size3', 'size')">
+                  <a>{{text["Largest"]}}</a>
+                </li>
             </ul>
           </div>
           <div class="btn-group">
@@ -50,8 +71,24 @@
               {{text["Miscellaneous"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['other'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'italic', 'other')"><a>{{text["Italic"]}}</a></li>
-                <li (click)="onInsertTemplate(introField, 'bold', 'other')"><a>{{text["Bold"]}}</a></li>
+                <li (click)="onInsertTemplate(introField, 'italic', 'other')">
+                  <a>{{text["Italic"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'bold', 'other')">
+                  <a>{{text["Bold"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'border', 'other')">
+                  <a>{{text["Border"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'color', 'other')">
+                  <a>{{text["Color"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'list', 'other')">
+                  <a>{{text["List"]}}</a>
+                </li>
+                <li (click)="onInsertTemplate(introField, 'audio', 'other')">
+                  <a>{{text["Audio"]}}</a>
+                </li>
             </ul>
           </div>
         </span>
