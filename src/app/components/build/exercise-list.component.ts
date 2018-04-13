@@ -181,7 +181,8 @@ export class BuildExerciseListComponent implements OnDestroy {
     if (exercise.foreign) {
       const comparisons = exercise.foreign.word.split('|');
       if (comparisons.length === 3) {
-        return comparisons.join(', ');
+        // remove alts
+        return comparisons.map(comparison => comparison.split(';')[0]).join(', ');
       }
     }
   }

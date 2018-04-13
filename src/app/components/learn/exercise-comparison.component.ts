@@ -1,6 +1,7 @@
-import {Component, Input, Output, OnInit, OnChanges, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnInit, OnChanges, AfterViewInit, Renderer, EventEmitter, 
+        ViewChildren, QueryList, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
-import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
+import {ExerciseData, Exercise, ExerciseType, ConjugationsData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
 
 interface Keyboard {
@@ -19,28 +20,30 @@ interface Answer {
   styleUrls: ['field.css', 'exercise-comparison.component.css']
 })
 
-export class LearnComparisonComponent implements OnInit, OnChanges {
+export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() data: ExerciseData;
   @Input() keyboard: Keyboard;
-  @ViewChild('answerComparative') answerComparative: ElementRef;
-  @ViewChild('answerSuperlative') answerSuperlative: ElementRef;
+  @ViewChildren('comparison') comparison: QueryList<ElementRef>;
   questionData: ExerciseData;
-  correctAnswer: Answer;
   instruction: string;
-  currentField = 'comparative';
+  currentField = 0;
   isAnswered = false;
-  isComparativeCorrect = false;
-  isSuperlativeCorrect = false;
   currentExerciseId: string;
+  comparisons: string[];
+  answers: string[] = [];
+  results: boolean[];
+  labels: string[];
 
   constructor(
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    public renderer: Renderer
   ) {}
 
   ngOnInit() {
     this.instruction = this.text['instructionComparison'];
+    this.labels = [this.text["Comparative"], this.text["Superlative"]];
   }
 
   ngOnChanges() {
@@ -51,49 +54,54 @@ export class LearnComparisonComponent implements OnInit, OnChanges {
     }
   }
 
-  onFocus(field: string) {
+  ngAfterViewInit() {
+    // Set focus on first field
+    this.comparison.changes.subscribe(elements => {
+      this.renderer.invokeElementMethod(elements.first.nativeElement, 'focus', []);
+    });
+  }
+
+  onFocus(field: number) {
     this.currentField = field;
   }
 
   onKeySelected(key: string) {
-    if (this.currentField === 'superlative') {
-      this.utilsService.insertKey(this.answerSuperlative.nativeElement, key);
-    } else {
-      this.utilsService.insertKey(this.answerComparative.nativeElement, key);
+    const currentField = this.comparison.find((field, i) => i === this.currentField)
+    if (currentField) {
+      this.utilsService.insertKey(currentField.nativeElement, key);
+      this.answers[this.currentField] = currentField.nativeElement.value;
     }
   }
 
-  getData(): string {
-    return this.answerComparative.nativeElement.value + '|' + this.answerSuperlative.nativeElement.value;
+  getData(): ConjugationsData {
+    const alts = this.comparisons.map(comparison => comparison.split(';')[1]);
+    return {
+      answers: this.answers,
+      solutions: this.comparisons.map(comparison => comparison.split(';')[0]),
+      alts: alts.slice(1, this.comparisons.length)
+    };
   }
 
-  getCorrect(): string {
+  showResult(result: boolean[]) {
+    console.log('result', result);
+    this.results = result;
     this.isAnswered = true;
-    if (this.answerComparative.nativeElement.value === this.correctAnswer.comparative) {
-      this.isComparativeCorrect = true;
-    }
-    if (this.answerSuperlative.nativeElement.value === this.correctAnswer.superlative) {
-      this.isSuperlativeCorrect = true;
-    }
-    return this.correctAnswer.comparative + '|'  + this.correctAnswer.superlative;
   }
 
   clearData() {
-    this.answerComparative.nativeElement.value = '';
-    this.answerSuperlative.nativeElement.value = '';
+    this.answers = this.initAnswers();
     this.isAnswered = false;
-    this.isComparativeCorrect = false;
-    this.isSuperlativeCorrect = false;
+    this.answers = this.initAnswers();
+    this.currentField = 0;
   }
 
   private getComparisonData(exercise: Exercise) {
     this.questionData = JSON.parse(JSON.stringify(this.data));
-    const comparisonSteps = exercise.foreign.word.split('|');
-    comparisonSteps.map( step => step.split(';')[0]);
-    this.questionData.exercise.foreign.word = comparisonSteps[0];
-    this.correctAnswer = {
-      comparative: comparisonSteps[1],
-      superlative: comparisonSteps[2]
-    };
+    this.answers = this.initAnswers();
+    this.comparisons = exercise.foreign.word.split('|');
+  }
+
+  private initAnswers(): string[] {
+    return ['', ''];
   }
 }

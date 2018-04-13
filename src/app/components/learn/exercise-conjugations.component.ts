@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnChanges, AfterViewInit, EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, AfterViewInit, Renderer, EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType, ConjugationsData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
@@ -28,12 +28,12 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   currentExerciseId: string;
   currentField = 0;
   conjugations: string[];
-  alts: string[];
   answers: string[] = [];
   results: boolean[];
 
   constructor(
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    public renderer: Renderer
   ) {}
 
   ngOnChanges() {
@@ -46,7 +46,7 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit() {
     // Set focus on first conjugation field
     this.conjugation.changes.subscribe(elements => {
-      elements.first.nativeElement.focus();
+      this.renderer.invokeElementMethod(elements.first.nativeElement, 'focus', []);
     });
   }
 
@@ -58,14 +58,16 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
     const currentField = this.conjugation.find((field, i) => i === this.currentField)
     if (currentField) {
       this.utilsService.insertKey(currentField.nativeElement, key);
+      this.answers[this.currentField] = currentField.nativeElement.value;
     }
   }
 
   getData(): ConjugationsData {
+    const alts = this.conjugations.map(conjugation => conjugation.split(';')[1]);
     return {
       answers: this.answers,
       solutions: this.conjugations.map(conjugation => conjugation.split(';')[0]),
-      alts: this.alts
+      alts: alts.slice(1, this.conjugations.length)
     };
   }
 
@@ -86,7 +88,6 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
     this.instruction = exercise.local.info;
     this.answers = this.initAnswers();
     this.conjugations = exercise.foreign.word.split('|');
-    this.alts = exercise.foreign.alt.split('|');
   }
 
   private initAnswers(): string[] {

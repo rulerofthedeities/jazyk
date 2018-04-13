@@ -41,9 +41,9 @@ export class BuildComparisonComponent extends ExerciseBase implements OnInit, On
 
   protected buildExistingExercise(formValues: any) {
     const exercise: Exercise = this.currentExercise,
-          words = formValues['foreignWord'] + '|'
-                  + formValues['foreignComparative'] + '|'
-                  + formValues['foreignSuperlative'];
+          words = formValues['foreignWord'].replace(/\|/g, '') + '|'
+                  + formValues['foreignComparative'].replace(/\|/g, '') + '|'
+                  + formValues['foreignSuperlative'].replace(/\|/g, '');
     exercise.local.word = formValues['localWord'];
     exercise.foreign.word = words;
     this.saveUpdatedExercise(exercise);

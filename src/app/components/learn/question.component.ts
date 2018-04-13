@@ -14,8 +14,9 @@ export class LearnQuestionComponent {
   @Input() text: Object;
   @Input() currentData: ExerciseData;
   @Input() dir: string;
-  @Input() showAlt: false;
-  @Input() hideGenus: false;
+  @Input() showAlt = false;
+  @Input() hideGenus = false;
+  @Input() showAnnotations = true;
   @Input() settings: LearnSettings = null;
 
   getAlts(tpe: string, word: Exercise): string {

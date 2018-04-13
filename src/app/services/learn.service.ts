@@ -323,11 +323,13 @@ export class LearnService {
   showFilteredWord(word: string, tpe: number): string {
     // Get word to display in overview and result
     if (word) {
+      const wordArr = word.split('|').map(w => w.split(';')[0]); // remove aliases
       if (tpe === ExerciseType.Conjugations) {
-        word = word.split('|')[0]; // Show infinitive only
+        word = wordArr[0]; // Show infinitive only
+      } else {
+        word = wordArr.join(', ');
       }
-      word = word.replace(/\|/g, ', ');
-      return word.replace(/\[|\]/g, '');
+      return word;
     } else {
       return '';
     }

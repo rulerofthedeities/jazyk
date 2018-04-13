@@ -299,11 +299,7 @@ export abstract class Step {
   private checkIfComparisonAnswer() {
     if (!this.isAnswered) {
       if (this.comparisonComponent && this.comparisonComponent.getData()) {
-        this.checkFillInAnswer(
-          this.comparisonComponent.getData(),
-          this.comparisonComponent.getCorrect(),
-          QuestionType.Comparison
-        );
+        this.checkComparisonAnswer(this.comparisonComponent.getData());
       }
     } else {
       this.nextWord();
@@ -444,9 +440,6 @@ export abstract class Step {
   }
 
   protected checkConjugationsAnswer(data: ConjugationsData) {
-    console.log('answers', data.answers);
-    console.log('solutions', data.solutions);
-    console.log('alts', data.alts);
     let correct = 0,
         filteredAnswer: string,
         result = [false, false, false, false, false, false];
@@ -458,11 +451,29 @@ export abstract class Step {
       }
     });
     const answer = correct === 6 ? AnsweredType.Correct : (correct === 5 ? AnsweredType.AlmostCorrect : AnsweredType.Incorrect);
-    this.checkAnswer(answer, QuestionType.Conjugations);
+    this.checkAnswer(answer, QuestionType.Conjugations, data.solutions.join(''));
     this.conjugationsComponent.showResult(result);
   }
-  
 
+  protected checkComparisonAnswer(data: ConjugationsData) {
+    console.log('answers', data.answers);
+    console.log('solutions', data.solutions);
+    console.log('alts', data.alts);
+    let correct = 0,
+        filteredAnswer: string,
+        result = [false, false];
+    data.answers.forEach((answer, i) => {
+      filteredAnswer = this.filter(answer);
+      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer ) {
+        result[i] = true;
+        correct++;
+      }
+    });
+    const answer = correct === 2 ? AnsweredType.Correct : AnsweredType.Incorrect;
+    this.checkAnswer(answer, QuestionType.Comparison, data.solutions.join(''));
+    this.comparisonComponent.showResult(result);
+  }
+  
   private checkAnswer(answer: AnsweredType, question: QuestionType, solution = '') {
     const timeDelta = this.timerComponent.getTimeDelta();
     let learnLevel = this.getCurrentLearnLevel(this.currentData);
@@ -470,7 +481,6 @@ export abstract class Step {
     this.solution = solution;
     this.currentData.data.isDone = true;
     this.currentData.data.timeDelta = timeDelta;
-
     switch (answer) {
       case AnsweredType.Correct:
         this.isCorrect = true;
@@ -676,6 +686,12 @@ export abstract class Step {
         if (this.currentData.data.isCorrect) {
           points = 70;
         }
+      case QuestionType.Conjugations:
+        if (this.currentData.data.isCorrect) {
+          points = 110;
+        } else if (this.currentData.data.isAlmostCorrect) {
+          points = 15;
+        }
       break;
     }
     // Exercise type bonuses
@@ -773,12 +789,13 @@ export abstract class Step {
     let multiplicator = 2;
 
     switch (tpe) {
-      case ExerciseType.FillIn:
       case ExerciseType.Word:
         multiplicator = 20;
       break;
+      case ExerciseType.FillIn:
       case ExerciseType.QA:
       case ExerciseType.Comparison:
+      case ExerciseType.Conjugations:
         multiplicator = 10;
       break;
     }
@@ -816,6 +833,7 @@ export abstract class Step {
         extra = data.exercise.foreign.word.length * 5;
       break;
       case QuestionType.Comparison:
+      case QuestionType.Conjugations:
         extra = data.exercise.foreign.word.length;
         multiplier = 1.2;
       break;
@@ -828,7 +846,6 @@ export abstract class Step {
 
   private calculateGrade(question: QuestionType, delta: number, deduction = 0, solution = ''): number {
     let grade;
-
     switch (question) {
       case QuestionType.Choices:
       case QuestionType.Select:
@@ -837,6 +854,7 @@ export abstract class Step {
       case QuestionType.Word:
       case QuestionType.FillIn:
       case QuestionType.Comparison:
+      case QuestionType.Conjugations:
         grade = this.calculateWordGrade(delta, deduction, solution);
       break;
     }

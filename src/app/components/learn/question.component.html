@@ -12,8 +12,8 @@
         {{currentData.exercise.local.word}}
       </span>
     </h1>
-    <div class="wordinfo">
-      <div class="alts">
+    <div class="wordinfo" *ngIf="showAnnotations">
+      <div class="alts" *ngIf="showAlt">
         {{getAlts('local', currentData.exercise)}}
       </div>
       <div *ngFor="let annotation of currentData.data.annotations"
@@ -41,7 +41,7 @@
           [identifier]="currentData.exercise.genus" 
           [tpe]="currentData.exercise.wordTpe"
           [active]="showGenusColor()">
-        {{currentData.exercise?.foreign?.word}}
+        {{currentData.exercise?.foreign?.word.split('|')[0]}}
       </span>
       <span class="suffix">{{currentData.data.suffix}}</span>
       <span class="suffix">{{currentData.data.genus}}</span>
@@ -53,8 +53,8 @@
         </km-audio-file>
       </span>
     </h1>
-    <div class="wordinfo">
-      <div class="alts">
+    <div class="wordinfo" *ngIf="showAnnotations">
+      <div class="alts" *ngIf="showAlt">
         {{getAlts('foreign', currentData.exercise)}}
       </div>
       <div *ngFor="let annotation of currentData.data.annotations"

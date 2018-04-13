@@ -482,11 +482,13 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
       /* Comparison test */
       if (options.isComparison) {
         exercise.tpe = ExerciseType.Comparison;
+        exercise.foreign.word += '|';
         if (this.selected[this.lanForeign].comparative) {
-          exercise.foreign.word += '|' + this.selected[this.lanForeign].comparative.split(';')[0];
+           exercise.foreign.word += this.selected[this.lanForeign].comparative;
         }
+        exercise.foreign.word += '|';
         if (this.selected[this.lanForeign].superlative) {
-          exercise.foreign.word += '|' + this.selected[this.lanForeign].superlative.split(';')[0];
+          exercise.foreign.word += this.selected[this.lanForeign].superlative;
         }
       }
 
@@ -497,13 +499,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
             tmp: string[];
         exercise.tpe = ExerciseType.Conjugations;
         for (let i = 0; i < 6; i++) {
-          tmp = this.selected[this.lanForeign].conjugation[i].split(';');
-          conjugations.push(tmp[0]);
-          alts.push(tmp[1] || '');
+          conjugations.push(this.selected[this.lanForeign].conjugation[i]);
         }
         conjugations.unshift(this.selected[this.lanForeign].word); // Add infinitive to the start
         exercise.foreign.word = conjugations.join('|');
-        exercise.foreign.alt = alts.join('|');
         exercise.local.word = this.selected[this.lanLocal].word;
         console.log('CONJUGATIONS >>', exercise.local.word, exercise.foreign.word, exercise.foreign.alt);
       }

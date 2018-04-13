@@ -2,33 +2,23 @@
   <span class="fa fa-info-circle"></span>
   {{instruction}}
 </div>
-
-<!-- INFINITIVE -->
-<div class="form-group">
-  <div class="control-label col-xs-12 flag-comp buffer">
-    <km-region-flag
-      [lan]="lanPair.to"
-      [word]="data.exercise.foreign">
-    </km-region-flag>
-    <h1 class="main">
-      {{conjugations[0]}}
-    </h1>
-  </div>
-</div>
+<km-question
+  [currentData]="questionData"
+  [lanPair]="lanPair"
+  [text]="text"
+  [dir]="'foreign'"
+></km-question>
+<div class="clearfix"></div>
 <div *ngFor="let pronoun of pronouns; let i=index">
   <ng-container *ngTemplateOutlet="conjugationTemplate;context:{pronoun:pronouns[i], nr:i}"></ng-container>
 </div>
-<div class="form-group">
-  <div class="control-label col-xs-12 flag-comp" *ngIf="isAnswered">
-    <km-region-flag
-      [lan]="lanPair.from"
-      [word]="data.exercise.local">
-    </km-region-flag>
-    <h1>
-      {{data.exercise.local.word}}
-    </h1>
-  </div>
-</div>
+<km-question *ngIf="isAnswered"
+  [currentData]="questionData"
+  [lanPair]="lanPair"
+  [text]="text"
+  [dir]="'local'"
+  [showAnnotations]="false"
+></km-question>
 <div class="clearfix"></div>
 <div class="buffer"></div>
 <km-keyboard 

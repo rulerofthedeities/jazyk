@@ -10,75 +10,53 @@
   {{instruction}}
 </div>
 
-<!-- COMPARATIVE -->
-<div class="form-group">
-  <div class="control-label col-xs-1 flag-comp">
-    <km-region-flag
-      [lan]="lanPair.to"
-      [word]="data.exercise.foreign">
-    </km-region-flag>
-  </div>
-  <div class="col-xs-4">
-    <label for="answerComparative" class="step pull-right">
-      {{text["Comparative"]}}:
-    </label>
-  </div>
-  <div class="col-xs-7">
-    <div class="input-group input-lg">
-      <input 
-        class="form-control input-lg" 
-        id="answerComparative"
-        maxlength="100"
-        autofocus
-        autocomplete="off"
-        spellcheck="false"
-        [attr.disabled]="isAnswered ? '': null"
-        [ngClass]="{
-          correct: isAnswered && isComparativeCorrect,
-          incorrect: isAnswered && !isComparativeCorrect}"
-        (focus)="onFocus('comparative')"
-        #answerComparative>
-    </div>
-  </div>
+<div *ngFor="let label of labels; let i=index">
+  <ng-container *ngTemplateOutlet="comparisonTemplate;context:{label: labels[i], nr: i}"></ng-container>
 </div>
-<div class="solution" *ngIf="isAnswered && !isComparativeCorrect">
-  <span class="msg">{{text["Expectedanswer"]}} </span>
-  <span class="answer">{{correctAnswer.comparative}}</span>
-</div>
-
-<!-- SUPERLATIVE -->
-<div class="form-group">
-  <div class="col-xs-4 col-xs-offset-1">
-    <label for="answerSuperlative" class="step pull-right">
-      {{text["Superlative"]}}:
-    </label>
-  </div>
-  <div class="col-xs-7">
-    <div class="input-group input-lg">
-      <input 
-        class="form-control input-lg" 
-        id="answerSuperlative"
-        maxlength="100"
-        autofocus
-        autocomplete="off"
-        spellcheck="false"
-        [attr.disabled]="isAnswered ? '': null"
-        [ngClass]="{
-          correct: isAnswered && isSuperlativeCorrect,
-          incorrect: isAnswered && !isSuperlativeCorrect}"
-        (focus)="onFocus('superlative')"
-        #answerSuperlative>
-    </div>
-  </div>
-</div>
-<div class="solution" *ngIf="isAnswered && !isSuperlativeCorrect">
-  <span class="msg">{{text["Expectedanswer"]}} </span>
-  <span class="answer">{{correctAnswer.superlative}}</span>
-</div>
-
 <div class="clearfix"></div>
+<km-question *ngIf="isAnswered"
+  [currentData]="questionData"
+  [lanPair]="lanPair"
+  [text]="text"
+  [dir]="'local'"
+  [showAnnotations]="false"
+></km-question>
+<div class="clearfix"></div>
+<div class="buffer"></div>
 <km-keyboard 
   *ngIf="keyboard.showKeyboard && !isAnswered"
   [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">
 </km-keyboard>
+
+<ng-template #comparisonTemplate let-label=label let-i=nr>
+  <div class="form-group">
+    <div class="col-xs-4 col-xs-offset-1">
+      <label for="answerSuperlative" class="step pull-right">
+        {{label}}:
+      </label>
+    </div>
+    <div class="col-xs-7">
+      <div class="input-group input-lg">
+        <input 
+          class="form-control input-lg" 
+          [id]="'comparison' + i"
+          maxlength="100"
+          autofocus
+          autocomplete="off"
+          spellcheck="false"
+          [attr.disabled]="isAnswered ? '': null"
+          [ngClass]="{
+            correct: isAnswered && results[i],
+            incorrect: isAnswered && !results[i]}"
+          (focus)="onFocus(i)"
+          [(ngModel)]="answers[i]"
+          #comparison>
+      </div>
+    </div>
+  </div>
+  <div class="solution" *ngIf="isAnswered && !results[i]">
+    <span class="msg">{{text["Expectedanswer"]}} </span>
+    <span class="answer">{{comparisons[i + 1].split(';')[0]}}</span>
+  </div>
+</ng-template>
