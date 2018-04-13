@@ -171,34 +171,51 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getLessonResults() {
-    // Get results grouped by lesson id
-    this.learnService
-    .fetchLessonResults(this.course._id)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      (results: LessonResult[]) => {
-        if (results) {
-          this.countTotals(results);
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
+    if (this.isDemo) {
+      // Get counts only grouped by lesson id
+      this.learnService
+      .fetchLessonCounts(this.course._id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        (results: LessonResult[]) => {
+          if (results) {
+            this.countTotals(results);
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    } else {
+      // Get results grouped by lesson id
+      this.learnService
+      .fetchLessonResults(this.course._id)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        (results: LessonResult[]) => {
+          if (results) {
+            this.countTotals(results);
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   private countTotals(results: LessonResult[]) {
     const activeLessonIds: string[] = this.getActiveLessonIds();
     let cntCompleted = 0;
     // Count totals per lesson
-    results.forEach(result => {
-      if (activeLessonIds.find(id => id === result._id)) {
-        if (!this.resultsByLesson[result._id].introOnly) {
-          this.resultsByLesson[result._id] = result;
-          this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-          this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-          cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+    if (results) {
+      results.forEach(result => {
+        if (activeLessonIds.find(id => id === result._id)) {
+          if (!this.resultsByLesson[result._id].introOnly) {
+            this.resultsByLesson[result._id] = result;
+            this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+            this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+            cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+          }
         }
-      }
-    });
+      });
+    }
     // Check if chapter is complete
     this.courseChapters.forEach(chapter => {
       if (this.chapterLessons[chapter]) {

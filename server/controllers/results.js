@@ -424,6 +424,7 @@ module.exports = {
                learned: {'$sum': {$cond: ["$firstIsLearned", 1, 0 ]}}
             }}
           ],
+          // same as lesson.getCountsByLesson
           countPipeline = [
             {$match: countQuery},
             {$project: {

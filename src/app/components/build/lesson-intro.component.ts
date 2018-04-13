@@ -280,10 +280,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         color: string,
         colorArr: string[];
     colorTags.forEach(colorTag => {
-        console.log('colorTag', colorTag);
       if (colorTag && colorTag.length > 2) {
         colorArr = colorTag.split(/\:(.+)/);
-        console.log('colorArr', colorArr);
         color = colorArr[0].trim();
         colorText = colorArr[1].trim() || '';
         colorHtml = this.getHtmlSnippet(tag, {content: colorText, format: color});

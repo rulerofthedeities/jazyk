@@ -100,6 +100,13 @@ export class LearnService {
     }
   }
 
+  fetchLessonCounts(courseId: string): Observable<LessonResult[]> {
+    // for demo
+    return this.http
+    .get<LessonResult[]>('/api/lessons/count/' + courseId)
+    .pipe(retry(3));
+  }
+
   fetchDialogue(lessonId: string): Observable<Dialogue> {
     const headers = this.getTokenHeaders();
     return this.http

@@ -42,6 +42,7 @@ module.exports.initialize = function(app, router) {
   router.get('/lessons/:id', lessons.getLessons);
   router.get('/lesson/:lessonId', lessons.getLesson);
   router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
+  router.get('/lessons/count/:courseId', lessons.getCountsByLesson);
   router.get('/lesson/intro/:lessonId', lessons.getIntro);
   router.get('/lesson/dialogue/:lessonId', lessons.getDialogue);
 

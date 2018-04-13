@@ -186,5 +186,44 @@ module.exports = {
         }
       });
     });
+  },
+  getCountsByLesson: function(req, res) {
+    // Count exercises in lesson for overview (demo only, logged in is from result.getResultsByLesson)
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          sort = {dt: -1, sequence: -1},
+          countQuery = {
+            courseId,
+            isDeleted: false
+          },
+          countPipeline = [
+            {$match: countQuery},
+            {$project: {
+              words: {
+                $filter: {
+                  input: '$exercises',
+                  as: 'words',
+                  cond: {$eq: ['$$words.tpe', 0]}
+                }
+              },
+               exercises: 1
+            }},
+            {$group: {
+              _id: '$_id',
+              allcnt: {'$sum': {$size: '$exercises'}},
+              wordcnt: {'$sum': {$size: '$words'}}
+            }},
+            {$project: {
+              _id: 1,
+              total: '$allcnt',
+              totalwords: '$wordcnt'
+            }}
+          ];
+
+    Lesson.aggregate(countPipeline, function(err, results) {
+      response.handleError(err, res, 400, 'Error fetching exercises count per lesson', function(){
+        response.handleSuccess(res, results);
+      });
+    });
+
   }
 }
