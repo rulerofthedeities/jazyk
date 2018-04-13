@@ -10,7 +10,7 @@
       (onDropSuccess)="onResorted()">
         <div class="panel-body">
           <span class="name" (click)="onEditLesson($event, lessonId)">
-            {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
+            {{chapterNr !== null ? (chapterNr + 1) + '.' : ''}}{{i+1}}. {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
           </span>
           <button 
             *ngIf="lessonIds?.length > 1"

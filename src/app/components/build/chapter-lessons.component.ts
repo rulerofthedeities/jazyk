@@ -14,6 +14,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   @Input() private lessons: Lesson[];
   @Input() lessonIds: string[];
   @Input() text: Object;
+  @Input() chapterNr: number = null;
   @Output() remove = new EventEmitter<string>();
   @Output() sorted = new EventEmitter<string[]>();
   private componentActive = true;

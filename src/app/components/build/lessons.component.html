@@ -32,6 +32,7 @@
     *ngIf="isCurrent(chapter)"
     [lessons]="getLessons(chapter)"
     [lessonIds]="getLessonIds(chapter)"
+    [chapterNr]="i"
     [text]="text"
     (remove)="onRemoveLesson($event)"
     (sorted)="onResortedLessons(chapter, $event)">

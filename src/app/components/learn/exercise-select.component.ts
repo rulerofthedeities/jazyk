@@ -67,12 +67,14 @@ export class LearnSelectComponent implements OnChanges {
         break;
       case ExerciseType.Genus:
         this.instruction = this.text['instructionGenus'];
+        this.options = this.options.filter(option => option.indexOf(';') < 0);
         this.options = this.options.map(option => this.text[option.toLowerCase()]);
         this.correctOption = this.text[exercise.genus.toLowerCase()];
         this.sentence = [exercise.foreign.word, ''];
         break;
       case ExerciseType.Article:
         this.instruction = this.text['instructionArticle'];
+        this.options = this.options.filter(option => option.indexOf(';') < 0);
         this.correctOption = exercise.article;
         this.sentence = ['', exercise.foreign.word];
         break;

@@ -732,14 +732,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private checkGenus(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
     if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.genus) {
-      return true;
+      return detail.genus.indexOf(';') > -1 ? false : true; //ignore if multiple are possible
     }
   }
 
   private checkArticle(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
     if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.article && this.configs.foreign.articles.length > 1) {
-      return true;
+      return detail.article.indexOf(';') > -1 ? false : true; //ignore if multiple are possible
     }
   }
 
