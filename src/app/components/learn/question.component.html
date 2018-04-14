@@ -11,7 +11,7 @@
       <span class="word">
         {{currentData.exercise.local.word}}
       </span>
-      <span class="suffix" *ngIf="currentData.exercise?.genus">
+      <span class="suffix" *ngIf="showGenus(currentData.exercise?.genus)">
         ({{currentData.exercise?.genus}})
       </span>
     </h1>

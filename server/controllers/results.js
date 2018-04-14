@@ -1,7 +1,8 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Result = require('../models/result'),
-      Lesson = require('../models/lesson');
+      Lesson = require('../models/lesson'),
+      lessons = require('./lessons');
 
 saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
@@ -404,10 +405,6 @@ module.exports = {
             isRepeat: false,
             isDeleted: false
           },
-          countQuery = {
-            courseId,
-            isDeleted: false
-          },
           resultsPipeline = [
             {$match: resultsQuery},
             {$sort: sort},
@@ -424,30 +421,7 @@ module.exports = {
                learned: {'$sum': {$cond: ["$firstIsLearned", 1, 0 ]}}
             }}
           ],
-          // same as lesson.getCountsByLesson
-          countPipeline = [
-            {$match: countQuery},
-            {$project: {
-              words: {
-                $filter: {
-                  input: '$exercises',
-                  as: 'words',
-                  cond: {$eq: ['$$words.tpe', 0]}
-                }
-              },
-               exercises: 1
-            }},
-            {$group: {
-              _id: '$_id',
-              allcnt: {'$sum': {$size: '$exercises'}},
-              wordcnt: {'$sum': {$size: '$words'}}
-            }},
-            {$project: {
-              _id: 1,
-              total: '$allcnt',
-              totalwords: '$wordcnt'
-            }}
-          ];
+          countPipeline = lessons.getCountPipeLine(courseId);// same as lesson.getCountsByLesson
     const getByLesson = async () => {
       const results = await  Result.aggregate(resultsPipeline),
             count = await Lesson.aggregate(countPipeline);

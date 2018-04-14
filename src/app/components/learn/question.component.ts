@@ -44,4 +44,9 @@ export class LearnQuestionComponent {
     }
     return showGenus;
   }
+
+  showGenus(genus: string): boolean {
+    // Toon genus niet indien meerdere waarden mogelijk zijn
+    return genus.indexOf(';') > -1 ? false : true;
+  }
 }
