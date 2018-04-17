@@ -114,6 +114,16 @@
           #introField="ngModel"
           #introField2>
         </textarea>
+        <button type="button" class="btn"
+          (click)="onSaveIntro()"
+          [ngClass]="{
+            'btn-success':modified,
+            'btn-default':!modified
+          }"
+          [disabled]="!modified">
+          <span class="fa fa-check" [class.fa-check]="saved"></span>
+          {{text[saved ? "Updated" : "Update"]}}
+        </button>
       </div>
       <div class="col-xs-6 markdown">
         <km-intro [html]="intro?.html">

@@ -251,7 +251,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html = text,
         size: number;
     sizeTags.forEach(sizeTag => {
-    console.log('parse size', sizeTag);
       if (sizeTag && sizeTag.length > 2 && sizeTag[1] === ':') {
         size = parseInt(sizeTag[0], 10);
         size = size > 0 && size < 4 ? size : 1;
@@ -269,7 +268,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseTab(text: string, tag: string): string {
-    console.log('parse tab');
     // format [tab:2 text] (1, 2, 3) - block
     // format [tab:2] text (1, 2, 3) - only first line
     const tabTags = this.getTags({

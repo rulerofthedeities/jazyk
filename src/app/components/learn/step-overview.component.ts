@@ -131,16 +131,37 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   private getChapterLessons(lessonHeaders: LessonHeader[]) {
     // Group lessons by chapter name
-    let filterName;
     this.courseChapters.forEach(chapterName => {
-      filterName = chapterName === 'NoChapter' ? '' : chapterName;
-      this.chapterLessons[chapterName] = lessonHeaders.filter(lesson => lesson.chapterName === filterName);
+      this.chapterLessons[chapterName] = this.sortChapterLessons(lessonHeaders, chapterName);
+      
+      console.log('chapter lessons', chapterName, this.chapterLessons[chapterName]);
+      console.log('course lessons', this.course.lessons);
     });
     // Get current chapter
     const currentLesson = lessonHeaders.find(lesson => lesson._id === this.currentLessonId);
     if (currentLesson) {
       this.currentChapter = currentLesson.chapterName;
     }
+  }
+
+  private sortChapterLessons(lessonHeaders: LessonHeader[], chapterName: string): LessonHeader[] {
+    const filterName = chapterName === 'NoChapter' ? '' : chapterName,
+          sortedLessonHeaders: LessonHeader[] = [],
+          unSortedLessonHeaders = lessonHeaders.filter(lesson => lesson.chapterName === filterName);
+    let lessonHeader: LessonHeader;
+    // get sorting from course
+    const lessons = this.course.lessons.find(lesson => lesson.chapter === filterName);
+    console.log('lessons', lessons);
+    if (lessons && lessons.lessonIds) {
+      lessons.lessonIds.forEach(lessonId => {
+        lessonHeader = lessonHeaders.find(lesson => lesson._id === lessonId);
+        if (lessonHeader) {
+          sortedLessonHeaders.push(lessonHeader);
+        }
+        console.log(lessonId);
+      })
+    }
+    return sortedLessonHeaders.length ? sortedLessonHeaders : unSortedLessonHeaders;
   }
 
   private setDefaultResultData(lessonHeaders: LessonHeader[]) {
