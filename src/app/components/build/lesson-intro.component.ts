@@ -157,6 +157,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseFontStyles(html, '**');
     html = this.parseFontStyles(html, '*');
     html = this.parseSize(html, 'size');
+    html = this.parseTab(html, 'tab');
     html = this.parseColor(html, 'color');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
@@ -239,7 +240,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseSize(text: string, tag: string): string {
-    // format [size:2 text] (1, 2, 3 with 3 being the largest)
+    // format [size:2:text] (1, 2, 3 with 3 being the largest)
     const sizeTags = this.getTags({
       text,
       tag,
@@ -250,6 +251,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html = text,
         size: number;
     sizeTags.forEach(sizeTag => {
+    console.log('parse size', sizeTag);
       if (sizeTag && sizeTag.length > 2 && sizeTag[1] === ':') {
         size = parseInt(sizeTag[0], 10);
         size = size > 0 && size < 4 ? size : 1;
@@ -266,8 +268,38 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     return html;
   }
 
+  private parseTab(text: string, tag: string): string {
+    console.log('parse tab');
+    // format [tab:2 text] (1, 2, 3) - block
+    // format [tab:2] text (1, 2, 3) - only first line
+    const tabTags = this.getTags({
+      text,
+      tag,
+      hasBracket: true
+    });
+    let tabText: string,
+        tabHtml: string,
+        html = text,
+        tab: number;
+    tabTags.forEach(tabTag => {
+    console.log('parse tab', tabTag);
+      if (tabTag) {//} && tabTag.length > 2 && tabTag[1] === ':') {
+        tab = parseInt(tabTag[0], 10);
+        tab = tab > 0 && tab < 4 ? tab : 1;
+        tabText = tabTag.substr(2, tabTag.length - 2).trim() || '';
+        tabHtml = this.getHtmlSnippet(tag, {content: tabText, value: tab});
+        html = this.replaceText({
+          tag,
+          html,
+          oldText: tabTag,
+          newText: tabHtml,
+          hasBracket: true});
+      }
+    });
+    return html;
+  }
+
   private parseColor(text: string, tag: string): string {
-    console.log('parse color');
     // format [color:f text] (m, f, mi, ma, n)
     const colorTags = this.getTags({
       text,
@@ -282,16 +314,18 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     colorTags.forEach(colorTag => {
       if (colorTag && colorTag.length > 2) {
         colorArr = colorTag.split(/\:(.+)/);
-        color = colorArr[0].trim();
-        colorText = colorArr[1].trim() || '';
-        colorHtml = this.getHtmlSnippet(tag, {content: colorText, format: color});
-        html = this.replaceText({
-          tag,
-          html,
-          oldText: colorTag,
-          newText: colorHtml,
-          hasBracket: true});
-      }
+        if (colorArr.length > 1) {
+          color = colorArr[0].trim();
+          colorText = colorArr[1].trim() || '';
+          colorHtml = this.getHtmlSnippet(tag, {content: colorText, format: color});
+          html = this.replaceText({
+            tag,
+            html,
+            oldText: colorTag,
+            newText: colorHtml,
+            hasBracket: true});
+        }
+        }
     });
     return html;
   }
@@ -474,6 +508,12 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<strong>${options.content}</strong>`;
       case 'size': 
         return `<span class="i-size-${options.value}">${options.content}</span>`;
+      case 'tab': 
+      if (options.content) {
+        return `<span class="i-tab-${options.value} block">${options.content}</span>`;
+      } else {
+        return `<span class="i-tab-${options.value}"></span>`;
+      }
       case 'color':
         return `<span class="i-color-${options.format}">${options.content}</span>`;
       case 'list': 
@@ -551,6 +591,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     this.templates['size1'] = `[size:1: large text]`;
     this.templates['size2'] = `[size:2: larger text]`;
     this.templates['size3'] = `[size:3: largest text]`;
+    this.templates['tabfirstline'] = `[tab:2] Only the first line is indented (1, 2 or 3)`;
+    this.templates['tabblock'] = `[tab:2 The enclosed text is indented (1, 2 or 3)]`;
     this.templates['color'] = `[color:f: color options are f, m, mi, ma, n]`;
     this.templates['italic'] = `*this text is italic*`;
     this.templates['bold'] = `**this text is bold**`;

@@ -20,6 +20,19 @@
 /deep/ span.i-size-3{
   font-size: 36px;
 }
+/* Tab */
+/deep/ span.i-tab-1{
+  margin-left: 20px;
+}
+/deep/ span.i-tab-2{
+  margin-left: 40px;
+}
+/deep/ span.i-tab-3{
+  margin-left: 60px;
+}
+/deep/ span.block{
+  display: block;
+}
 /* Color */
 /deep/ span.i-color-f{
   color: red;
