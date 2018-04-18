@@ -6,7 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
-import {LanPair, LanConfig, LanConfigs, LessonOptions} from '../../models/course.model';
+import {LanPair, LanConfig, LanConfigs, LessonOptions, Map} from '../../models/course.model';
 import {Exercise, ExerciseType, RegionAudio} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File, Media} from '../../models/word.model';
 import 'rxjs/add/operator/takeWhile';
@@ -41,6 +41,11 @@ interface NewExerciseOptions {
   addArticle?: boolean;
 }
 
+interface Duplicate {
+  checked: boolean;
+  tpes?: Array<number>;
+}
+
 @Component({
   selector: 'km-build-exercise',
   templateUrl: 'exercise.component.html',
@@ -51,6 +56,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   @Input() languagePair: LanPair;
   @Input() configs: LanConfigs;
   @Input() lessonId: string;
+  @Input() courseId: string;
   @Input() lessonOptions: LessonOptions;
   @Input() exercise: Exercise;
   @Input() text: Object;
@@ -85,6 +91,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   hasComparison = false;
   maxFilterListLength = 8;
   showDropDown = false;
+  isDuplicate: Duplicate = {
+    checked: false
+  }
 
   @ViewChild('dropdown') el: ElementRef;
   @HostListener('document:click', ['$event'])
@@ -172,6 +181,10 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.hasGenus = this.checkGenus(wordpairDetail);
     this.hasArticle = this.checkArticle(wordpairDetail);
     this.hasComparison = this.checkComparison(wordpairDetail);
+    this.checkIfDuplicate(
+      wordpairDetail.wordPair[this.lanLocal].word,
+      wordpairDetail.wordPair[this.lanForeign].word
+    );
   }
 
   onAddNewWord(form: any) {
@@ -325,6 +338,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     } else {
       this.exerciseForm.patchValue({[tpe + 'Region']: newRegion});
     }
+  }
+
+  onCheckDuplicate(form: any) {
+    console.log('check Duplicate', form.value);
+    this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord'])
   }
 
   getDynamicFieldLabel(): string {
@@ -750,6 +768,34 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
+  private checkIfDuplicate(wordLocal: string, wordForeign: string) {
+    // Check if this wordpair is already in this course
+    // Get all wordpair matches from server, then check if there is also an exercise type match
+    console.log('check if duplicate', wordLocal, wordForeign);
+
+    this.buildService
+    .checkIfWordpairInCourse(wordLocal, wordForeign, this.courseId)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      exercises => {
+        if (exercises && exercises.length) {
+          this.isDuplicate = this.checkIfDuplicateType(exercises);
+        } else {
+          this.isDuplicate = {checked: true, tpes: null};
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private checkIfDuplicateType(exercises: Exercise[]): Duplicate {
+    let duplicate: Duplicate = {checked: true, tpes: []};
+    exercises.forEach(exercise => {
+      duplicate.tpes.push(exercise.tpe);
+    })
+    return duplicate
+  } 
+
   private setupFilterEvent() {
     let foreign = '',
         local = '';
@@ -781,6 +827,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.hasGenus = false;
     this.hasArticle = false;
     this.hasComparison = false;
+    this.isDuplicate = {checked: false};
     // setup filter
     const filter: Filter = {
       isExact: false,

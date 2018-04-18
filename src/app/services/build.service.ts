@@ -157,6 +157,13 @@ export class BuildService {
     .put<Lesson>('/api/build/lesson/dialogue/' + lessonId, {dialogue}, {headers});
   }
 
+  checkIfWordpairInCourse(wordLocal: string, wordForeign: string, courseId: string): Observable<Exercise[]> {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get<Exercise[]>('/api/build/check/wpincourse/' + courseId + '/' + wordLocal + '/' + wordForeign, {headers})
+    .pipe(retry(3));
+  }
+
   /*** WORDS ***/
 
   fetchFilterWordPairs(filter: Filter, lanpair: LanPair): Observable<WordPair[]> {

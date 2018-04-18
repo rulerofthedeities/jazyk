@@ -412,6 +412,18 @@
   </div>
   <div class="form-group buttons">
     <div class="col-xs-12">
+      <span class="alert alert-danger pull-right" *ngIf="isDuplicate.checked">
+        <km-type-icons *ngFor="let tpe of isDuplicate.tpes"
+          [tpe]="tpe"
+          [text]="text"
+        ></km-type-icons>
+      </span>
+      <button type="button" class="btn btn-info btn-lg pull-right"
+        *ngIf="!currentExercise"
+        [disabled]="!exerciseForm.valid || isDuplicate.checked"
+        (click)="onCheckDuplicate(exerciseForm)">
+        {{text["IsDuplicate"]}}
+      </button>
       <button type="button" class="btn btn-success btn-lg"
         *ngIf="!currentExercise"
         [disabled]="!exerciseForm.valid"

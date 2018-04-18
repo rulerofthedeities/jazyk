@@ -233,6 +233,32 @@ module.exports = {
         response.handleSuccess(res, results);
       });
     });
+  },
+  checkWordPairExists: function(req, res) {
+    // Check if an exercise with the wordpairId exists in the course
+    const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          wordLocal = req.params.wordLocal,
+          wordForeign = req.params.wordForeign,
+          query = {
+            courseId,
+            isDeleted: false,
+            exercises: {$elemMatch: {
+              'foreign.word': wordForeign,
+              'local.word': wordLocal
+            }}
+          },
+          projection = {
+            exercises: {$elemMatch: {
+              'foreign.word': wordForeign,
+              'local.word': wordLocal
+            }}
+          };
+    Lesson.find(query, projection, function(err, result) {
+      response.handleError(err, res, 400, 'Error checking exercises worpair exists in lesson', function(){
+        const exercises = result && result[0] ? result[0].exercises : [];
+        response.handleSuccess(res, exercises);
+      });
+    });
 
   }
 }

@@ -313,7 +313,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       if (colorTag && colorTag.length > 2) {
         colorArr = colorTag.split(/\:(.+)/);
         if (colorArr.length > 1) {
-          color = colorArr[0].trim();
+          color = colorArr[0].trim().toLowerCase();
           colorText = colorArr[1].trim() || '';
           colorHtml = this.getHtmlSnippet(tag, {content: colorText, format: color});
           html = this.replaceText({

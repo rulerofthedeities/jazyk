@@ -5,7 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {isLearnedLevel, maxStreak, SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
 import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice, ConjugationsData
+import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice, ConjugationsData,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
 import {LearnSelectComponent} from './exercise-select.component';
@@ -445,7 +445,7 @@ export abstract class Step {
         result = [false, false, false, false, false, false];
     data.answers.forEach((answer, i) => {
       filteredAnswer = this.filter(answer);
-      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer ) {
+      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer )) {
         result[i] = true;
         correct++;
       }
@@ -464,7 +464,7 @@ export abstract class Step {
         result = [false, false];
     data.answers.forEach((answer, i) => {
       filteredAnswer = this.filter(answer);
-      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer ) {
+      if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer)) {
         result[i] = true;
         correct++;
       }

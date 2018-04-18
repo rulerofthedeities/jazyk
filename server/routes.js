@@ -146,6 +146,8 @@ module.exports.initialize = function(app, router) {
   router.put('/build/lesson/dialogue/:lessonId', lessons.updateDialogue);
   router.put('/build/lesson/header', lessons.updateLessonHeader);
   router.delete('/build/lesson/:lessonId', lessons.removeLesson);
+
+  router.get('/build/check/wpincourse/:courseId/:wordLocal/:wordForeign', lessons.checkWordPairExists);
   
   router.get('/build/wordpairs', words.getWordPairs);
   router.get('/build/wordpair/:wordpairId', words.getWordPairDetail);

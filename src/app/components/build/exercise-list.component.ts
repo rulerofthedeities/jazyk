@@ -19,6 +19,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Input() configs: LanConfigs;
   @Input() access: UserAccess[];
   @Input() lessonId: string;
+  @Input() courseId: string;
   @Input() lessonOptions: LessonOptions;
   @Input() text: Object;
   @Input() isBidirectional: boolean;

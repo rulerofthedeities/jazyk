@@ -38,7 +38,7 @@ export interface Word {
 export interface WordPair {
   _id: string;
   docTpe: string;
-  langPair: string;
+  lanPair: string;
   cs?: Word;
   de?: Word;
   fr?: Word;

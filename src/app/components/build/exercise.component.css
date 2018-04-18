@@ -78,3 +78,7 @@
 .dropdown-menu li {
   cursor: pointer;
 }
+.alert {
+  font-size: 24px;
+  padding: 5px 6px 5px 10px;
+}
