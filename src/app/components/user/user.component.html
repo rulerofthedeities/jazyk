@@ -87,12 +87,33 @@
             {{text['ProfileCourses']}}
           </label>
           <div class="col-xs-9">
-            {{text["Learning"]}}: {{profile?.courses?.length || '-'}}
+            {{text["Learning"]}}: {{courses.learning?.length || '-'}}
+            <button 
+              *ngIf="courses.learning?.length > 0 && !showCoursesLearning"
+              type="button"
+              class="btn btn-info btn-xs"
+              (click)="onShowCourses('learning')">
+              <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
+            </button>
+            <button *ngIf="showCoursesLearning"
+              type="button"
+              class="btn btn-warning btn-xs"
+              (click)="onCloseCourses('learning')">
+              <span class="fa fa-times"></span> {{text["Close"]}}
+            </button>
+            <div *ngIf="showCoursesLearning">
+              <div *ngFor="let course of courses.learning">
+                <km-course-bar
+                  [course]="course"
+                  [text]="text">
+                </km-course-bar>
+              </div>
+            </div>
           </div>
           <div class="col-xs-9 col-xs-offset-3">
             {{text["Created"]}}:  {{courses.teaching?.length || '-'}}
             <button 
-              *ngIf="courses?.teaching?.length > 0 && !showCoursesTeaching"
+              *ngIf="courses.teaching?.length > 0 && !showCoursesTeaching"
               type="button"
               class="btn btn-info btn-xs"
               (click)="onShowCourses('teaching')">

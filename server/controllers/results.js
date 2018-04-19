@@ -158,7 +158,7 @@ getStepCounts = async (req, res) => {
             courseId,
             isLast: true,
             isLearned: true, 
-            $or: [{step: 'practise', step: 'review'}],
+            $or: [{step: 'practise'}, {step: 'review'}],
             isRepeat: false,
             isDeleted: false,
             daysBetweenReviews: {$gt: 0}
@@ -530,7 +530,7 @@ module.exports = {
             courseId,
             isLast: true,
             isLearned: true, 
-            $or: [{step: 'practise', step: 'review'}],
+            $or: [{step: 'practise'}, {step: 'review'}],
             isRepeat: false,
             isDeleted: false,
             daysBetweenReviews: {$gt: 0}

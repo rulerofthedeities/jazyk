@@ -192,6 +192,8 @@ export class UserComponent implements OnInit, OnDestroy {
   private fetchCourses(tpe: string, show = false) {
     if (tpe === 'teaching') {
       this.fetchCoursesTeaching(show);
+    } else {
+      this.fetchCoursesFollowing(show);
     }
   }
 
@@ -207,6 +209,20 @@ export class UserComponent implements OnInit, OnDestroy {
     );
   }
 
+  private fetchCoursesFollowing(show: boolean) {
+    this.userService
+    .getCoursesFollowing()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      courseData => {
+        console.log('courseData', courseData.subscribed);
+        this.courses.learning = courseData.subscribed;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+  
+
   private fetchPublicProfile(user: string) {
     this.userService
     .getPublicProfile(user)
@@ -217,6 +233,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.profile = profile;
         this.fetchFollowers(profile._id);
         this.fetchCourses('teaching');
+        this.fetchCourses('following');
       },
       error => {
         if (error.status === 404) {

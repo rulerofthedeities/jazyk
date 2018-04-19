@@ -255,7 +255,7 @@ module.exports = {
           };
     Lesson.find(query, projection, function(err, result) {
       response.handleError(err, res, 400, 'Error checking exercises worpair exists in lesson', function(){
-        const exercises = result && result[0] ? result[0].exercises : [];
+        const exercises = result.map(res => res.exercises[0]);
         response.handleSuccess(res, exercises);
       });
     });

@@ -791,6 +791,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private checkIfDuplicateType(exercises: Exercise[]): Duplicate {
     let duplicate: Duplicate = {checked: true, tpes: []};
     exercises.forEach(exercise => {
+      console.log('duplicate?', exercise);
       duplicate.tpes.push(exercise.tpe);
     })
     return duplicate

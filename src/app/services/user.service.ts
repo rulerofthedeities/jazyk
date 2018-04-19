@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
 import {User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
         Profile, Message, PublicProfile, Notification, Network} from '../models/user.model';
-import {Language, Course, UserAccess, AccessLevel} from '../models/course.model';
+import {Language, Course, UserAccess, AccessLevel, UserCourse} from '../models/course.model';
 import {ExerciseData} from '../models/exercise.model';
 import {CourseScore} from '../models/score.model';
 import {AuthService} from './auth.service';
@@ -21,6 +21,12 @@ interface DemoData {
   lan: string;
   study?: ExerciseData[];
   practise?: ExerciseData[];
+}
+
+interface CourseData {
+  isDemo: boolean;
+  subscribed: Course[];
+  data: UserCourse[];
 }
 
 @Injectable()
@@ -383,6 +389,13 @@ export class UserService {
     const headers = this.getTokenHeaders();
     return this.http
     .get<Course[]>('/api/courses/teaching/' + userId, {headers})
+    .pipe(retry(3));
+  }
+
+  getCoursesFollowing(): Observable<CourseData> {
+    const headers = this.getTokenHeaders();
+    return this.http
+    .get<CourseData>('/api/user/courses/learn', {headers})
     .pipe(retry(3));
   }
 

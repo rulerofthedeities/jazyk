@@ -116,6 +116,7 @@ export interface Lesson {
   intro?: string;
   dialogue?: Dialogue;
   rehearseStep?: string; // For repeats
+  isDeleted?: boolean;
 }
 
 export interface LessonHeader {

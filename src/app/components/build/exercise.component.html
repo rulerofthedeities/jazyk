@@ -412,11 +412,16 @@
   </div>
   <div class="form-group buttons">
     <div class="col-xs-12">
-      <span class="alert alert-danger pull-right" *ngIf="isDuplicate.checked">
-        <km-type-icons *ngFor="let tpe of isDuplicate.tpes"
-          [tpe]="tpe"
-          [text]="text"
-        ></km-type-icons>
+      <span *ngIf="isDuplicate.checked">
+        <span class="alert alert-danger pull-right" *ngIf="isDuplicate.tpes">
+          <km-type-icons *ngFor="let tpe of isDuplicate.tpes"
+            [tpe]="tpe"
+            [text]="text"
+          ></km-type-icons>
+        </span>
+        <span class="alert alert-success pull-right" *ngIf="!isDuplicate.tpes">
+          <span class="fa fa-smile-o"></span>
+        </span>
       </span>
       <button type="button" class="btn btn-info btn-lg pull-right"
         *ngIf="!currentExercise"

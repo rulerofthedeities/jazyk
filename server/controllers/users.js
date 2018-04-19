@@ -138,7 +138,6 @@ var updateLastLoginDate = function(user, res) {
 var getPublicProfile = function(query, res) {
   const projection = {
     'jazyk.profile': 1,
-    'jazyk.courses': 1,
     'jazyk.dt': 1,
     userName: 1,
     email: 1}
