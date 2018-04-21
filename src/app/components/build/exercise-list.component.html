@@ -17,7 +17,9 @@
         class="list-group-item row"
         dnd-sortable
         [sortableIndex]="i"
-        (onDropSuccess)="onResorted($event)">
+        (onDragStart)="onDraggedStart(exercise._id)"
+        (onDragEnd)="onDraggedEnd(exercise._id)"
+        (onDropSuccess)="onResorted(exercise._id)">
         <div class="pull-right">
           <span *ngIf="isEditor()"
             class="btn btn-danger fa fa-trash-o"

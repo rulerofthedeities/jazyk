@@ -14,9 +14,9 @@ import 'rxjs/add/operator/takeWhile';
     </km-intro>
     <button *ngIf="buttonText"
       type="button"
-      class="btn btn-success"
+      class="btn btn-success intro-next-button"
       (click)="onContinue();">
-      {{text[buttonText]}}
+      <span class="fa fa-arrow-right fa-spacing"></span>{{text[buttonText]}}
     </button>
   </section>`,
   styleUrls: ['step.component.css']

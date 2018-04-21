@@ -7,10 +7,18 @@
       <div class="panel panel-default"
       dnd-sortable
       [sortableIndex]="i"
-      (onDropSuccess)="onResorted()">
+      (onDragStart)="onDraggedStart(lessonId)"
+      (onDragEnd)="onDraggedEnd(lessonId)"
+      (onDropSuccess)="onResorted(lessonId)">
         <div class="panel-body">
           <span class="name" (click)="onEditLesson($event, lessonId)">
-            {{chapterNr !== null ? (chapterNr + 1) + '.' : ''}}{{i+1}}. {{lessonDict[lessonId].name}} <span class="woorden">({{getExercisesLabel(lessonId)}})</span>
+            {{chapterNr !== null ? (chapterNr + 1) + '.' : ''}}{{i+1}}. {{lessonDict[lessonId].name}} <span class="woorden">
+              (<span class="fa fa-info-circle" *ngIf="lessonDict[lessonId].intro?.text.length > 9">,
+              </span>
+              <span class="fa fa-comment" *ngIf="lessonDict[lessonId].dialogue?.text.length > 9">,
+              </span>
+              {{getExercisesLabels(lessonId)}})
+            </span>
           </span>
           <button 
             *ngIf="lessonIds?.length > 1"

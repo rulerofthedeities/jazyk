@@ -1,14 +1,18 @@
+:host {
+  font-size: 18px;
+}
+
 /* Headers */
 /deep/ h1.i{
   border-bottom: 6px double #06ae97;
 }
 /deep/ h2.i{
   border-bottom: 4px double #06ae97;
-  font-size: 22px;
+  font-size: 26px;
 }
 /deep/ h3.i{
   border-bottom: 1px solid #06ae97;
-  font-size: 16px;
+  font-size: 20px;
 }
 /* Size */
 /deep/ span.i-size-1{

@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Map} from '../../models/course.model';
+import {ExerciseType} from '../../models/exercise.model';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 
 @Component({
@@ -19,6 +20,8 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   @Output() sorted = new EventEmitter<string[]>();
   private componentActive = true;
   private lessonToRemove: string;
+  private sortingId: string; // Workaround for sorting bug
+  private draggingId: string; // Workaround for sorting bug
   lessonDict: Map<Lesson> = {}; // For sorting
   isReady = false;
 
@@ -62,8 +65,25 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     }
   }
 
-  onResorted() {
+  onResorted(id: string) {
+    console.log('resorted (lesson)', id);
+    this.sortingId = id;
     this.sorted.emit(this.lessonIds);
+  }
+
+  onDraggedStart(id: string) {
+    this.draggingId = id;
+    console.log('dragged start (lesson)', id);
+  }
+
+  onDraggedEnd(id: string) {
+    console.log('dragged end (lesson)', id);
+    if (this.sortingId !== this.draggingId) {
+      console.log('save sort anyway (lesson)');
+      this.sorted.emit(this.lessonIds);
+    }
+    this.sortingId = null;
+    this.draggingId = null;
   }
 
   getRemoveMessage(): string {
@@ -78,13 +98,25 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
     return msg;
   }
 
-  getExercisesLabel(lessonId: string): string {
-    const nr = this.lessonDict[lessonId].exercises.length;
-    let label = nr.toString();
-    if (nr === 1) {
+  getExercisesLabels(lessonId: string): string {
+    const lesson = this.lessonDict[lessonId],
+          nrWords = lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length,
+          nrExercises = lesson.exercises.length - nrWords,
+          hasIntro = !!(lesson.intro && lesson.intro.length > 10),
+          hasDialogue = !!(lesson.dialogue && lesson.dialogue.text.length > 10);
+    let label = nrWords.toString();
+    if (nrWords === 1) {
       label += ' ' + this.text['word'];
     } else {
       label += ' ' + this.text['words'];
+    }
+    if (nrExercises > 0) {
+      label += ', ' + nrExercises.toString();
+      if (nrExercises === 1) {
+        label += ' ' + this.text['exercise'];
+      } else {
+        label += ' ' + this.text['exercises'];
+      }
     }
 
     return label;

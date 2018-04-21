@@ -154,6 +154,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     const tags = ['span', 'div', 'audio', 'h1', 'h2', 'ul', 'li'];
     let html = this.previewService.removeTags(this.intro.text, tags);
     html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
+    html = html.replace(/(?:->)/g, '→'); //replace -> with arrow
     html = this.parseFontStyles(html, '**');
     html = this.parseFontStyles(html, '*');
     html = this.parseSize(html, 'size');

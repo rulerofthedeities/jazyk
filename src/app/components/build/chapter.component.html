@@ -4,7 +4,9 @@
   dnd-sortable
   [sortableIndex]="nr"
   [dragEnabled]="!isOpen"
-  (onDropSuccess)="onResorted()">
+  (onDragStart)="onDraggedStart(title)"
+  (onDragEnd)="onDraggedEnd(title)"
+  (onDropSuccess)="onResorted(title)">
   <div class="navbar-header">
     <a href="#" (click)="onClick($event, null, 'open')" class="navbar-brand">
       <span class="fa" [ngClass]="{'fa-caret-down': isOpen, 'fa-caret-right': !isOpen}"></span>

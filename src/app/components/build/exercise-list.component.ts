@@ -26,6 +26,8 @@ export class BuildExerciseListComponent implements OnDestroy {
   @Output() removedExercise = new EventEmitter<number>();
   private componentActive = true;
   private isRemoving = false;
+  private sortingId: string; // Workaround for sorting bug
+  private draggingId: string; // Workaround for sorting bug
   editingId: string = null;
   viewId: string = null;
   removingId: string = null;
@@ -76,8 +78,25 @@ export class BuildExerciseListComponent implements OnDestroy {
     }
   }
 
-  onResorted(event) {
+  onResorted(id: string) {
+    console.log('resorted (exercise)', id);
+    this.sortingId = id;
     this.saveResortedExercises();
+  }
+
+  onDraggedStart(id: string) {
+    this.draggingId = id;
+    console.log('dragged start (exercise)', id);
+  }
+
+  onDraggedEnd(id: string) {
+    console.log('dragged end (exercise)', id);
+    if (this.sortingId !== this.draggingId) {
+      console.log('save sort anyway (exercise)');
+      this.saveResortedExercises();
+    }
+    this.sortingId = null;
+    this.draggingId = null;
   }
 
   onViewExercise(id: string) {
