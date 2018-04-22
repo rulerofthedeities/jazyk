@@ -160,6 +160,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     html = this.parseSize(html, 'size');
     html = this.parseTab(html, 'tab');
     html = this.parseColor(html, 'color');
+    html = this.parseTranslation(html, 'tl');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
     html = this.parseHeaders(html, 'subsubheader');
@@ -188,6 +189,30 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html,
         oldText: fontTag,
         newText: fontHtml});
+    });
+    return html;
+  }
+
+  private parseTranslation(text: string, tag: string): string {
+    // format [tag: text] 
+    const tlTags = this.getTags({
+      text,
+      tag,
+      hasBracket: true
+    });
+    let tlText: string,
+        tlHtml: string,
+        html = text;
+    console.log('parseTranslation', tlTags);
+    tlTags.forEach(tlTag => {
+      tlText = tlTag.trim() || '';
+      tlHtml = this.getHtmlSnippet(tag, {content: tlText});
+      html = this.replaceText({
+        tag,
+        html,
+        oldText: tlTag,
+        newText: tlHtml,
+        hasBracket: true});
     });
     return html;
   }
@@ -501,6 +526,9 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<h3 class="i">${options.title}</h3>`;
       case 'border': 
         return `<span class="btn btn-default">${options.title}</span>`;
+      case 'tl': 
+      console.log('tl', options.content);
+        return `<span class="translation">${options.content}</span>`;
       case '*': // Italic 
         return `<em>${options.content}</em>`;
       case '**': // Italic 

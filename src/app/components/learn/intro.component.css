@@ -63,6 +63,15 @@
 /deep/ .btn-default:hover {
   background-color: #e8fcfa;
 }
+/* translations */
+/deep/ .translation {
+  color: #bbbaba;
+  font-style: italic;
+  text-align: right;
+  display: block;
+  margin-top: -8px;
+  padding: 0 2px;
+}
 /* Tables */
 /deep/ .i-table tr {
   border: 1px dashed #aaa;
