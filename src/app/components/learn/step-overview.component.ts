@@ -18,7 +18,9 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   @Output() currentLesson = new EventEmitter<Lesson>();
   @Output() rehearseLesson = new EventEmitter<Lesson>();
   @Output() courseCompleted = new EventEmitter<boolean>();
+  @Output() goToIntro = new EventEmitter<Lesson>();
   private componentActive = true;
+  lessonHeaders: LessonHeader[] = [];
   courseChapters: string[] = [];
   chapterLessons: Map<LessonHeader[]> = {};
   resultsByLesson: Map<LessonResult> = {};
@@ -85,6 +87,12 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  onGoToStep(event: MouseEvent, lessonId: string, step: string) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.fetchLesson(lessonId, null, step);
+  }
+
   onOpenDropDown(lessonId: string) {
     this.dropDown = lessonId;
   }
@@ -103,6 +111,18 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
 
   getCourseId() {
     return this.course._id;
+  }
+
+  hasStep(step: string, lessonId: string): boolean {
+    let hasIntro = false;
+    // Check if lesson has an intro step
+    const lessonHeader = this.lessonHeaders.find(lesson => lesson._id.toString() === lessonId);
+    if (lessonHeader) {
+      if (lessonHeader.exerciseSteps[step].active) {
+        hasIntro = true;
+      }
+    }
+    return hasIntro;
   }
 
   private getCourseChapters() {
@@ -130,6 +150,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getChapterLessons(lessonHeaders: LessonHeader[]) {
+    this.lessonHeaders = lessonHeaders;
     // Group lessons by chapter name
     this.courseChapters.forEach(chapterName => {
       this.chapterLessons[chapterName] = this.sortChapterLessons(lessonHeaders, chapterName);
@@ -280,7 +301,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     return lessonIds;
   }
 
-  private fetchLesson(lessonId: string, rehearse: string = null) {
+  private fetchLesson(lessonId: string, rehearse: string = null, skipTo: string = null) {
     this.learnService
     .fetchLesson(lessonId)
     .takeWhile(() => this.componentActive)
@@ -289,6 +310,9 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
         if (rehearse) {
           lesson.rehearseStep = rehearse;
           this.rehearseLesson.emit(lesson);
+        } else if (skipTo) {
+          lesson.skipToStep = skipTo;
+          this.goToIntro.emit(lesson);
         } else {
           this.currentLesson.emit(lesson);
         }

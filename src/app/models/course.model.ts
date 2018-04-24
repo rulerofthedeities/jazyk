@@ -116,6 +116,7 @@ export interface Lesson {
   intro?: string;
   dialogue?: Dialogue;
   rehearseStep?: string; // For repeats
+  skipToStep?: string; // Jump to intro or dialog from overview
   isDeleted?: boolean;
 }
 

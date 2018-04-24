@@ -103,6 +103,18 @@
         {{text["GoToLesson"]}}
       </button>
     </div>
+    <button type="button" *ngIf="hasStep('dialogue', lesson._id)"
+      (click)="onGoToStep($event, lesson._id, 'dialogue')"
+      class="btn btn-success pull-right">
+      <span class="fa fa-arrow-right fa-spacing"></span>
+      DIALOGUE
+    </button>
+    <button type="button" *ngIf="hasStep('intro', lesson._id)"
+      (click)="onGoToStep($event, lesson._id, 'intro')"
+      class="btn btn-success pull-right">
+      <span class="fa fa-arrow-right fa-spacing"></span>
+      INTRO
+    </button>
     <span *ngIf="j !== undefined">{{j + 1}}.</span>{{i + 1}}. {{lesson.name}}
     <span *ngIf="resultsByLesson[lesson._id] && !resultsByLesson[lesson._id].introOnly">
       <span class="count">

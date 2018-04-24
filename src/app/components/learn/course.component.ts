@@ -143,6 +143,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.lessonSelected(lesson);
   }
 
+  onGoToIntro(lesson: Lesson) {
+    this.lessonSelected(lesson);
+  }
+
   onCourseCompleted(isCompleted: boolean) {
     if (isCompleted) {
       this.isCourseDone = true;
@@ -317,6 +321,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     let defaultStep: number = null;
     if (this.lesson.rehearseStep) {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
+    } if (this.lesson.skipToStep) {
+      this.currentStep = this.getStepNr(this.lesson.skipToStep);
     } else {
       if (this.routeStep === 'overview') {
         // defaultStep = 0;
