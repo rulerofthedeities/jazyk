@@ -22,7 +22,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   private componentActive = true;
   modified = false;
   saved = false;
-  dialogueTpes = ['Dialogue', 'Text', 'Story'];
+  dialogueTpes = ['Dialogue', 'Text'];
   dialogue: Dialogue;
   dialogueDefault: Dialogue;
   result: Text;
@@ -36,7 +36,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   ngOnInit() {
     this.dialogueDefault = {
       tpe: 'Dialogue',
-      text: 'Title [Translated Title]',
+      text: 'Title|Translated Title',
       local: '',
       foreign: '',
       localTitle: '',
@@ -44,20 +44,21 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
     }
     this.dialogue = this.dialogueDefault;
     this.loadDialogue();
-    this.parseText();
+    this.parse();
   }
 
   ngAfterViewInit() {
     this.input.valueChanges
     .debounceTime(400)
     .subscribe(data => {
-      this.parseText();
+      this.parse();
     });
   }
 
   onChangedDialogue() {
     this.modified = true;
     this.saved = false;
+    this.parse();
   }
 
   onSaveDialogue() {
@@ -77,7 +78,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   }
 
   private saveDialogue() {
-    this.parseText();
+    this.parse();
     this.buildService
     .updateDialogue(this.lessonId, this.dialogue)
     .takeWhile(() => this.componentActive)
@@ -89,38 +90,71 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
     );
   }
 
-  private parseText() {
-    let local = '',
-        foreign = '',
-        lineLocal = '',
-        lineForeign = '',
-        snippets: Array<string> = [],
-        lineBreak: string;
+  private parse() {
     // remove tags
     const tags = ['a', 'img', 'span', 'div', 'audio'],
           text = this.previewService.removeTags(this.dialogue.text, tags),
-          sourceSentences = text.split(']');
+          splitter = this.dialogue.tpe === 'Dialogue' ? '\n' : ']',
+          sourceSentences = text.split(splitter);
+    this.dialogue.local = '';
+    this.dialogue.foreign = '';
     // parse content
     sourceSentences.forEach((sentence, i) => {
       if (sentence) {
-        lineBreak = sentence[0] === '\n' && i > 1 ? '<br>' : '';
-        snippets = sentence.split('[');
-
-        lineLocal = snippets[1] || '';
-        lineForeign = snippets[0] || '';
-
-        if (i === 0) {
-          // First line is the title
-          this.dialogue.localTitle = lineLocal.trim();
-          this.dialogue.foreignTitle = lineForeign.trim();
+        if (this.dialogue.tpe === 'Dialogue') {
+          this.parseDialogueSentence(sentence, i);
         } else {
-          local += lineBreak + lineLocal.trim() + '<hr>';
-          foreign += lineBreak + lineForeign.trim() + '<hr>';
+          this.parseTextSentence(sentence, i);
         }
       }
     });
-    this.dialogue.local = local.trim();
-    this.dialogue.foreign = foreign.trim();
+  }
+
+  private parseDialogueSentence(sentence: string, i: number) {
+    // Format: [Foreign Name]Foreign text | [Local Name]Local Text
+    const snippets = sentence.split('|'),
+          lineLocal = snippets[1] || '',
+          lineForeign = snippets[0] || '';
+
+    if (i === 0) {
+      // First line is the title
+      this.dialogue.localTitle = lineLocal.trim();
+      this.dialogue.foreignTitle = lineForeign.trim();
+    } else {
+      this.dialogue.local += this.parseDialogueLine(lineLocal);
+      this.dialogue.foreign += this.parseDialogueLine(lineForeign);
+    }
+  }
+
+  private parseTextSentence(sentence: string, i: number) {
+    const lineBreak = sentence[0] === '\n' && i > 1 ? '<br>' : '',
+          snippets = sentence.split('['),
+          lineLocal = snippets[1] || '',
+          lineForeign = snippets[0] || '';
+
+    if (i === 0) {
+      // First line is the title
+      this.dialogue.localTitle = lineLocal.trim();
+      this.dialogue.foreignTitle = lineForeign.trim();
+    } else {
+      this.dialogue.local += lineBreak + lineLocal + '<hr>';
+      this.dialogue.foreign += lineBreak + lineForeign + '<hr>';
+    }
+  }
+
+  private parseDialogueLine(line: string) {
+    const match = line.match(/\[.*\]/);
+    let name: string,
+        text: string;
+    if (match) {
+      name = match[0];
+      name = `<dt>${name.substr(1, name.length -2)}</dt>`;
+      text = `<dd>${line.substring(match.index + match[0].length, line.length)}</dd>`;
+    } else {
+      name = `<dt></dt>`;
+      text = `<dd>${line}</dd>`;
+    }
+    return name + text + '<hr>';
   }
 
   ngOnDestroy() {

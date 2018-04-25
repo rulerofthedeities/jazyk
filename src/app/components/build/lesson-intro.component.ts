@@ -203,7 +203,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     let tlText: string,
         tlHtml: string,
         html = text;
-    console.log('parseTranslation', tlTags);
     tlTags.forEach(tlTag => {
       tlText = tlTag.trim() || '';
       tlHtml = this.getHtmlSnippet(tag, {content: tlText});
@@ -306,7 +305,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html = text,
         tab: number;
     tabTags.forEach(tabTag => {
-    console.log('parse tab', tabTag);
       if (tabTag) {//} && tabTag.length > 2 && tabTag[1] === ':') {
         tab = parseInt(tabTag[0], 10);
         tab = tab > 0 && tab < 4 ? tab : 1;
@@ -527,7 +525,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       case 'border': 
         return `<span class="btn btn-default">${options.title}</span>`;
       case 'tl': 
-      console.log('tl', options.content);
         return `<span class="translation">${options.content}</span>`;
       case '*': // Italic 
         return `<em>${options.content}</em>`;

@@ -94,7 +94,7 @@
         </ul>
       </div>
     </div>
-    <div class="header-data" *ngIf="resultsByLesson[lesson._id] && resultsByLesson[lesson._id].introOnly">
+    <div class="header-data" *ngIf="resultsByLesson[lesson._id].hasStarted && !resultsByLesson[lesson._id]?.introOnly">
       <button type="button"
         *ngIf="!resultsByLesson[lesson._id].hasStarted"
         (click)="onContinueLesson($event, lesson._id)"
@@ -106,14 +106,14 @@
     <button type="button" *ngIf="hasStep('dialogue', lesson._id)"
       (click)="onGoToStep($event, lesson._id, 'dialogue')"
       class="btn btn-success pull-right">
-      <span class="fa fa-arrow-right fa-spacing"></span>
-      DIALOGUE
+      <span class="fa fa-comment fa-spacing"></span>
+      {{text["Dialogue"]}}
     </button>
     <button type="button" *ngIf="hasStep('intro', lesson._id)"
       (click)="onGoToStep($event, lesson._id, 'intro')"
       class="btn btn-success pull-right">
-      <span class="fa fa-arrow-right fa-spacing"></span>
-      INTRO
+      <span class="fa fa-info-circle fa-spacing"></span>
+      {{text["Intro"]}}
     </button>
     <span *ngIf="j !== undefined">{{j + 1}}.</span>{{i + 1}}. {{lesson.name}}
     <span *ngIf="resultsByLesson[lesson._id] && !resultsByLesson[lesson._id].introOnly">

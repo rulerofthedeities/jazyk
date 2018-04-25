@@ -1,10 +1,10 @@
-.d-line {
-  margin-right: 5px;
-}
 .d-line:hover{
   background-color: #f3f315;
   cursor: default;
 }
 .d-selected {
+  background-color: #f3f315;
+}
+.d-selected dd{
   background-color: #f3f315;
 }

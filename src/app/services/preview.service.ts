@@ -68,7 +68,7 @@ export class PreviewService {
   removeTags(text: string, tags: string[]): string {
     let filteredText = text,
         regex: RegExp,
-        defaultTags = ['script', 'a', 'img'];
+        defaultTags = ['script', 'a', 'img', 'embed', 'object', 'canvas', 'iframe', 'input', 'source', 'textarea', 'video', 'applet'];
     // remove script tags and enclosed data
     defaultTags.forEach(scriptTag => {
       regex = new RegExp(`<${scriptTag}\\b[^<]*(?:(?!<\\/${scriptTag}>)<[^<]*)*<\\/${scriptTag}>`, 'gi');
