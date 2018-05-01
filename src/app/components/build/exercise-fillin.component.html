@@ -7,7 +7,12 @@
     <label 
       for="hint" 
       class="control-label col-xs-1">
-      
+      <km-region-flag-selector
+        [lan]="languagePair.from"
+        [region]="currentExercise?.local.region"
+        [regions]="localRegions"
+        (newRegion)="onUpdateRegion($event,'local')">
+      </km-region-flag-selector>
     </label>
     <div class="col-xs-11">
       <input 
@@ -19,7 +24,6 @@
         formControlName="hint">
     </div>
   </div>
-
   <!-- ANSWER -->
   <div class="form-group">
     <label 

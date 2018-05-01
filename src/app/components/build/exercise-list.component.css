@@ -60,3 +60,10 @@ li:last-child {
 .separator{
   margin: 0 4px;
 }
+.media-icons {
+  width: 48px;
+  display: inline-block;
+}
+.list-group-item:hover {
+  background-color: #e8fcfa;
+}

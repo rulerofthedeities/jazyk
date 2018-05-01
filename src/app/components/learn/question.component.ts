@@ -47,6 +47,10 @@ export class LearnQuestionComponent {
 
   showGenus(genus: string): boolean {
     // Toon genus niet indien meerdere waarden mogelijk zijn
-    return genus.indexOf(';') > -1 ? false : true;
+    if (genus) {
+      return genus.indexOf(';') > -1 ? false : true;
+    } else {
+      return false;
+    }
   }
 }

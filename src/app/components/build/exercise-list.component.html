@@ -42,11 +42,15 @@
               [text]="text">
             </km-type-icons>
           </span>
-          <span class="item" [class.active]="!!exercise.audio">
-            <span class="fa fa-volume-up fa-spacing"></span>
-          </span>
-          <span class="item" [class.active]="!!exercise.image">
-            <span class="fa fa-camera"></span>
+          <span class="media-icons">
+            <span *ngIf="exercise.tpe === exType.Word">
+              <span class="item" [class.active]="!!exercise.audio">
+                <span class="fa fa-volume-up fa-spacing"></span>
+              </span>
+              <span class="item" [class.active]="!!exercise.image">
+                <span class="fa fa-camera"></span>
+              </span>
+            </span>
           </span>
         </div>
         <div [ngSwitch]="exercise.tpe">
@@ -143,7 +147,12 @@
                   <strong>{{exercise.foreign?.word}}</strong>
                 </span> <span *ngIf="exercise.foreign?.word">/</span>
                 <span (dblclick)="onEditExercise(exercise._id)">
-                  {{exercise.foreign?.hint}}
+                  <km-region-flag *ngIf="exercise.local?.word"
+                    [lan]="exercise.local.region"
+                    [word]="exercise.local"
+                    [thumb]="true">
+                  </km-region-flag>
+                  {{exercise.local?.word}}
                 </span>
               </div>
             </div>

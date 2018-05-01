@@ -118,7 +118,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     // Check if lesson has an intro step
     const lessonHeader = this.lessonHeaders.find(lesson => lesson._id.toString() === lessonId);
     if (lessonHeader) {
-      if (lessonHeader.exerciseSteps[step].active) {
+      if (lessonHeader.exerciseSteps[step] && lessonHeader.exerciseSteps[step].active) {
         hasIntro = true;
       }
     }
@@ -269,7 +269,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
             }
           }
         });
-        this.resultsByChapter[chapter].hasCompleted = this.resultsByChapter[chapter].learned >= this.resultsByChapter[chapter].total;
+        this.resultsByChapter[chapter].hasCompleted = this.resultsByChapter[chapter].total > 0 && this.resultsByChapter[chapter].learned >= this.resultsByChapter[chapter].total;
       }
     });
     // Check if course is complete

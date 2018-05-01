@@ -75,6 +75,7 @@
 /* Tables */
 /deep/ .i-table tr {
   border: 1px dashed #aaa;
+  background-color: white;
 }
 /deep/ .i-table th {
   border-bottom: 1px solid black;

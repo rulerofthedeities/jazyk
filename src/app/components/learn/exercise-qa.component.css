@@ -18,6 +18,15 @@
   position: relative;
   top: -32px;
 }
+.qa-question {
+  margin-bottom: 30px;
+}
+.qa-answer {
+  margin-top: 30px;
+}
+.flag-to {
+  margin-left: -15px;
+}
 km-keyboard {
   padding-left: 20px;
 }

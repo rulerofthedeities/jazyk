@@ -1,28 +1,34 @@
-<div class="form-group translation" *ngIf="data.exercise.tpe === exType.QA">
-  <div class="col-xs-12">
-    <div class="input-group input-lg question">
-      {{question}}
-    </div>
-  </div>
+<div class="qa-question" *ngIf="!sentence[0]">
+  <km-question
+    [currentData]="data"
+    [lanPair]="lanPair"
+    [text]="text"
+    [dir]="'local'"
+    [settings]="settings"
+    [showAlt]="true"
+  ></km-question>
 </div>
 <div class="clearfix"></div>
-<div class="answer-instruction" [style.display]="isAnswered ? 'none' : 'block'">
-  <span class="fa fa-info-circle"></span>
-  {{instruction}}
-  <br>
-  <span class="fa fa-exclamation-circle"></span>
-  {{text["hint"]}}: <span class="hint">{{question}}</span>
+<div class="answer-instruction" [style.display]="isAnswered ? 'none' : 'block'" *ngIf="sentence[0]">
+  <div class="qa-instruction">
+    <span class="fa fa-info-circle"></span>
+    {{instruction}}
+  </div>
+  <div class="qa-hint" *ngIf="question">
+    <span class="fa fa-exclamation-circle"></span>
+    {{text["hint"]}}: <span class="hint">{{question}}</span>
+  </div>
 </div>
-<div class="form-group">
+<div class="form-group qa-answer">
   <label class="control-label col-xs-1">
-    <km-region-flag
+    <km-region-flag class="flag-to"
       [lan]="lanPair.to"
       [word]="data.exercise.foreign">
     </km-region-flag>
   </label>
   <div class="col-xs-11">
     <div class="input-group answer">
-      <span class="input-group-addon">
+      <span class="input-group-addon" *ngIf="sentence[0]">
         <span class="sentence">{{sentence[0]}}</span>
       </span>
       <input 

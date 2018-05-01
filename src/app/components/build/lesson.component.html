@@ -63,15 +63,17 @@
           </button>
           <ul class="dropdown-menu" 
             [style.display]="showDropDown ? 'block' : 'none'">
-            <li (click)="onNewSelect()"><a>
-              <span class="fa fa-list-alt fa-spacing"></span>{{text["NewSelect"]}}
-            </a></li>
+            <li (click)="onNewSelect()">
+              <a><span class="fa fa-list-alt fa-spacing"></span>{{text["NewSelect"]}}</a>
+            </li>
+            <!--
             <li (click)="onNewQA()"><a>
               <span class="fa fa-comments fa-spacing"></span>{{text["NewQA"]}}
             </a></li>
-            <li (click)="onNewFillIn()"><a>
-              <span class="fa fa-terminal fa-spacing"></span>{{text["NewFillIn"]}}
-            </a></li>
+          -->
+            <li (click)="onNewFillIn()">
+              <a><span class="fa fa-terminal fa-spacing"></span>{{text["NewFillIn"]}}</a>
+            </li>
           </ul>
         </div>
       </div>

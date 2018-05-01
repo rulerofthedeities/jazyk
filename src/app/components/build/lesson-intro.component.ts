@@ -155,16 +155,16 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     let html = this.previewService.removeTags(this.intro.text, tags);
     html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
     html = html.replace(/(?:->)/g, '→'); //replace -> with arrow
-    html = this.parseFontStyles(html, '**');
-    html = this.parseFontStyles(html, '*');
+    html = this.parseFontStyles(html, 'b');
+    html = this.parseFontStyles(html, 'i');
     html = this.parseSize(html, 'size');
-    html = this.parseTab(html, 'tab');
     html = this.parseColor(html, 'color');
     html = this.parseTranslation(html, 'tl');
     html = this.parseHeaders(html, 'header');
     html = this.parseHeaders(html, 'subheader');
     html = this.parseHeaders(html, 'subsubheader');
     html = this.parseBorders(html, 'border');
+    html = this.parseTab(html, 'tab');
     html = this.parseLists(html);
     html = this.parseAudio(html);
     html = this.parseTables(html);
@@ -172,11 +172,11 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseFontStyles(text: string, tag: string): string {
-    // format *text* (italic) or **text** (bold)
+    // format [i: text] (italic) or [b: text] (bold)
     const fontTags = this.getTags({
       text,
-      tag: tag === '*' ? '\\*' : '\\*\\*',
-      hasClosingTag: true
+      tag,
+      hasBracket: true
     });
     let fontText: string,
         fontHtml: string,
@@ -188,7 +188,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         tag,
         html,
         oldText: fontTag,
-        newText: fontHtml});
+        newText: fontHtml,
+        hasBracket: true});
     });
     return html;
   }
@@ -504,8 +505,10 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         data: Array<string> = [],
         cnt = 0;
     result = regex.exec(options.text);
-    while (result && cnt < 100) {
-      data.push(result[0]);
+    while (result && cnt < 200) {
+      if (result[0]) {
+        data.push(result[0]);
+      }
       result = regex.exec(options.text);
       cnt++;
     }
@@ -526,9 +529,9 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return `<span class="btn btn-default">${options.title}</span>`;
       case 'tl': 
         return `<span class="translation">${options.content}</span>`;
-      case '*': // Italic 
+      case 'i': // Italic 
         return `<em>${options.content}</em>`;
-      case '**': // Italic 
+      case 'b': // Italic 
         return `<strong>${options.content}</strong>`;
       case 'size': 
         return `<span class="i-size-${options.value}">${options.content}</span>`;
@@ -570,6 +573,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         return options.table.first ? `<tbody>${row}` :(options.table.last ? `${row}</tbody>`: row);
       case 'table':
         return `<table class="i-table">${options.content}</table>`;
+      default :
+        return '';
     }
   }
 
@@ -618,8 +623,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     this.templates['tabfirstline'] = `[tab:2] Only the first line is indented (1, 2 or 3)`;
     this.templates['tabblock'] = `[tab:2 The enclosed text is indented (1, 2 or 3)]`;
     this.templates['color'] = `[color:f: color options are f, m, mi, ma, n]`;
-    this.templates['italic'] = `*this text is italic*`;
-    this.templates['bold'] = `**this text is bold**`;
+    this.templates['italic'] = `[i:this text is italic]`;
+    this.templates['bold'] = `[b:this text is bold]`;
     this.templates['border'] = `[border: this text has a border!]`;
     this.templates['audio'] = `[audio: https://s3.eu-central-1.amazonaws.com/jazyk/audio/cs/5ac50892b12e080e30c28b7f]`;
     this.templates['list'] = `[list: item1

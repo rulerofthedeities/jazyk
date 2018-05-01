@@ -22,7 +22,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   private componentActive = true;
   modified = false;
   saved = false;
-  dialogueTpes = ['Dialogue', 'Text'];
+  dialogueTpes = ['Dialogue', 'Story'];
   dialogue: Dialogue;
   dialogueDefault: Dialogue;
   result: Text;
