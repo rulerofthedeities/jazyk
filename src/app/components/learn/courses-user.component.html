@@ -29,10 +29,13 @@
 
   <!-- No courses found for selected language -->
   <div *ngIf="!courses?.length">
-    <km-info-msg [msg]="text['Nocourses']">
+    <km-info-msg [msg]="text['NocoursesStudying']">
     </km-info-msg>
     <div class="panel panel-default">
       <div class="panel-body">
+        <span class="select-course">
+          {{text['SelectCourse1']}} '<a routerLink="/learn/courses">{{text["Courses"]}}</a>' {{text['SelectCourse2']}} 
+        </span>
         <button class="btn btn-primary" (click)="onNewCourse()" *ngIf="isLoggedIn()">
           {{text["Newcourselg"]}}
         </button>

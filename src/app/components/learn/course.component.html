@@ -79,7 +79,7 @@
       [lanPair]="course.languagePair"
       [steps]="steps"
       [text]="text"
-      (stepCompleted)="onStepCompleted('intro', null)">
+      (stepCompleted)="onStepCompleted('dialogue', null)">
     </km-learn-dialogue>
     <km-learn-study *ngSwitchCase="'study'"
       [lanPair]="course.languagePair"
@@ -158,6 +158,9 @@
       </div>
       <div *ngSwitchCase="'difficult'" class="register">
         <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseDifficult"]}}.
+      </div>
+      <div *ngSwitchCase="'exam'" class="register">
+        <a href="/auth/signup">{{text["SignupAction"]}}</a> {{text["ToUseExam"]}}.
       </div>
     </div>
   </div>

@@ -79,6 +79,7 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
       console.log('LESSON CHANGED in dialogue TO ', lesson.name);
       this.lesson = lesson;
       this.init();
+      window.scroll(0, 0);
     });
   }
 

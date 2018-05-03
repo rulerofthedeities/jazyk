@@ -99,17 +99,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onStepCompleted(step: string, data: ExerciseData[]) {
-    if (step === 'intro' || step === 'dialogue') {
-      this.nextStep();
+    if (this.isDemo) {
+      this.saveDemoAnswers(step, data);
     } else {
-      if (this.isDemo) {
-        this.saveDemoAnswers(step, data);
-      } else {
-        this.saveAnswers(step, data);
-      }
-      if (this.settingsUpdated) {
-        this.saveSettings();
-      }
+      this.saveAnswers(step, data);
+    }
+    if (this.settingsUpdated) {
+      this.saveSettings();
     }
   }
 
@@ -273,6 +269,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private processStepResults(results: StepData) {
     this.countPerStep = {};
     if (results) {
+      console.log('RESULTS', results);
       this.getCourseStepCount(results);
       this.getLessonStepCount(results.lesson);
       if (this.courseLevel === Level.Lesson) {
@@ -342,14 +339,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         }
       } else {
         // new course: show intro if it exists otherwise start dialogue otherwise start study;
-        if (this.hasStep('intro')) {
-          defaultStep = this.getStepNr('intro');
-        } else if (this.hasStep('dialogue')) {
-          defaultStep = this.getStepNr('dialogue');
-        } else if (this.hasStep('study')) {
-          defaultStep = this.getStepNr('study');
-        } else if (this.hasStep('practise')) {
-          defaultStep = this.getStepNr('practise');
+        defaultStep = this.getNextStep(0);
+      }
+      //Only intro or dialogue done, go to next step
+      if (defaultStep === null) {
+        if (this.hasStep('dialogue') && this.countPerStep['dialogue'].nrDone > 0) {
+          defaultStep = this.getNextStep(this.getStepNr('dialogue'));
+        } else {
+          if (this.hasStep('intro') && this.countPerStep['intro'].nrDone > 0) {
+            defaultStep = this.getNextStep(this.getStepNr('intro'));
+          }
         }
       }
       if (defaultStep !== null) {
@@ -369,6 +368,25 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  private getNextStep(startStepNr: number): number {
+    let nextStep: number = null;
+    startStepNr++;
+    console.log(startStepNr, this.getStepNr('intro'))
+    if (this.hasStep('intro') && startStepNr <= this.getStepNr('intro')) {
+      nextStep = this.getStepNr('intro');
+    } else if (this.hasStep('dialogue') && startStepNr <= this.getStepNr('dialogue')) {
+      nextStep = this.getStepNr('dialogue');
+    } else if (this.hasStep('study') && startStepNr <= this.getStepNr('study')) {
+      nextStep = this.getStepNr('study');
+    } else if (this.hasStep('practise') && startStepNr <= this.getStepNr('practise')) {
+      nextStep = this.getStepNr('practise');
+    } else {
+      // No exercises left in lesson -> go to next lesson
+      this.getNextLesson(this.lesson._id);
+    }
+    return nextStep;
   }
 
   private setCourseStep() {
@@ -450,14 +468,18 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         totalScore => {
-          this.log('Saved exercise answers');
-          if (totalScore) {
-            // add results to data object
-            processedData.result.data.forEach((resultItem, i) => {
-              data[i].result = resultItem;
-            });
-            this.checkStepCount();
-            this.checkNewRank(totalScore, processedData.pointsEarned);
+          if (step === 'intro' || step === 'dialogue') {
+            this.nextStep();
+          } else {
+            this.log('Saved exercise answers');
+            if (totalScore) {
+              // add results to data object
+              processedData.result.data.forEach((resultItem, i) => {
+                data[i].result = resultItem;
+              });
+              this.checkStepCount();
+              this.checkNewRank(totalScore, processedData.pointsEarned);
+            }
           }
         },
         error => this.errorService.handleError(error)
@@ -469,8 +491,11 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.userService.storeDemoData(data, step, this.course._id, this.lesson._id);
     const demoData = this.userService.getDemoData(step, this.course._id),
           processedData = this.sharedService.processAnswers(step, demoData, this.course._id, this.lesson._id, false, Level.Lesson);
-    
-    this.updateStepCount(step, processedData.lastResult);
+    if (step === 'intro' || step === 'dialogue') {
+      this.nextStep();
+    } else {
+      this.updateStepCount(step, processedData.lastResult);
+    }
   }
 
   private checkNewRank(currentScore: number, newPoints: number) {

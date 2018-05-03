@@ -4,6 +4,20 @@ const response = require('../response'),
       Lesson = require('../models/lesson'),
       lessons = require('./lessons');
 
+saveIntroStep = function(res, results, userId, courseId, lessonId) {
+  const introResult = new Result({
+    courseId,
+    lessonId,
+    userId,
+    exerciseId: null,
+    step: results.step
+  });
+  introResult.save(function(err, result) {
+    response.handleError(err, res, 400, 'Error saving result', function(){
+      response.handleSuccess(res, result);
+    });
+  });
+},
 saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
   if (results.data.length > 0) {
@@ -72,7 +86,6 @@ saveStep = function(res, results, userId, courseId, lessonId) {
       dt: Date.now(),
       sequence: doc.sequence // To find the last saved doc for docs with same save time
     };
-    console.log('DOC', doc);
     if (doc.daysBetweenReviews) {
       dtToReview = Date.now();
       dtToReview += 1000 * 60 * 60 * 24 * parseFloat(doc.daysBetweenReviews);
@@ -143,7 +156,7 @@ getStepCounts = async (req, res) => {
             lessonId,
             isDeleted: false,
             isRepeat: false,
-            $or: [{isLearned: true}, {step: 'study'}]
+            $or: [{isLearned: true}, {step: 'study'}, {step: 'intro'}, {step: 'dialogue'}]
           },
           difficultQuery = {
             userId,
@@ -272,10 +285,14 @@ module.exports = {
           courseId = new mongoose.Types.ObjectId(results.courseId),
           lessonId = results.lessonId ? new mongoose.Types.ObjectId(results.lessonId) : null,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id);
-    if (results.step === 'study') {
-      saveStudy(res, results, userId, courseId, lessonId);
-    } else {
-      saveStep(res, results, userId, courseId, lessonId);
+    switch(results.step) {
+      case 'intro': saveIntroStep(res, results, userId, courseId, lessonId);
+      break;
+      case 'dialogue': saveIntroStep(res, results, userId, courseId, lessonId);
+      break;
+      case 'study': saveStudy(res, results, userId, courseId, lessonId);
+      break;
+      default: saveStep(res, results, userId, courseId, lessonId);
     }
   },
   getLessonResults: function(req, res) {

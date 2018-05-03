@@ -64,37 +64,41 @@ export class SharedService {
             data: []
           };
     let pointsEarned = 0;
-    if (data && data.length > 0) { // No data for study repeats
-      // calculate bonus for % correct
-      let correctCount = 0;
-      data.forEach((item) => {
-        correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
-      });
-      const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
-      data.forEach((item, i) => {
-        item.data.points.correct = correctBonus;
-        pointsEarned += item.data.points.total();
-        streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
-        const newResult: ResultData = {
-          exerciseId: item.exercise._id,
-          tpe: item.exercise.tpe,
-          timeDelta: item.data.timeDelta,
-          done: item.data.isDone || false,
-          points: item.data.points.total() || 0,
-          learnLevel: isRepeat ? 0 : (Math.min(maxLearnLevel, item.data.learnLevel || 0)),
-          streak: isRepeat ? '' : streak[item.exercise._id],
-          sequence: i,
-          isLast: false,
-          isDifficult: false,
-          isRepeat,
-          isCorrect: item.data.isCorrect,
-          lessonId: item.result ? item.result.lessonId : lessonId
-        };
-        lastResult[item.exercise._id] = newResult;
-        allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
-        result.data.push(newResult);
-      });
-      this.checkLastResult(step, lastResult, allCorrect, data, courseLevel);
+    if (step === 'intro' || step === 'dialogue') {
+      console.log('processing answers - saving', step);
+    } else {
+      if (data && data.length > 0) { // No data for study repeats
+        // calculate bonus for % correct
+        let correctCount = 0;
+        data.forEach((item) => {
+          correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
+        });
+        const correctBonus = this.getCorrectBonus(correctCount, data.length, isRepeat, step);
+        data.forEach((item, i) => {
+          item.data.points.correct = correctBonus;
+          pointsEarned += item.data.points.total();
+          streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
+          const newResult: ResultData = {
+            exerciseId: item.exercise._id,
+            tpe: item.exercise.tpe,
+            timeDelta: item.data.timeDelta,
+            done: item.data.isDone || false,
+            points: item.data.points.total() || 0,
+            learnLevel: isRepeat ? 0 : (Math.min(maxLearnLevel, item.data.learnLevel || 0)),
+            streak: isRepeat ? '' : streak[item.exercise._id],
+            sequence: i,
+            isLast: false,
+            isDifficult: false,
+            isRepeat,
+            isCorrect: item.data.isCorrect,
+            lessonId: item.result ? item.result.lessonId : lessonId
+          };
+          lastResult[item.exercise._id] = newResult;
+          allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
+          result.data.push(newResult);
+        });
+        this.checkLastResult(step, lastResult, allCorrect, data, courseLevel);
+      }
     }
     return {
       result,

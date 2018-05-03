@@ -124,7 +124,6 @@ getChoicesFromAllCourses = function(res, options) {
           {$project: projection}
         ];
   Lesson.aggregate(pipeline, function(err, choices) {
-    console.log('get from all courses', choices);
     response.handleError(err, res, 400, 'Error fetching choices from multiple courses', function(){
       response.handleSuccess(res, choices);
     });
@@ -132,32 +131,6 @@ getChoicesFromAllCourses = function(res, options) {
 }
 
 module.exports = {
-  /*
-  getExercises: function(req, res) {
-    const parms = req.query,
-          exerciseIds = [],
-          courseId = new mongoose.Types.ObjectId(req.params.courseId);
-    let exerciseId;
-    for (var key in parms) {
-      if (parms[key]) {
-        exerciseId = new mongoose.Types.ObjectId(parms[key]);
-        exerciseIds.push(exerciseId);
-      }
-    }
-    const query = {'exercises._id': {$in: exerciseIds}},
-          pipeline = [
-            {$match: {courseId}},
-            {$unwind: '$exercises'},
-            {$match: query},
-            {$project: {_id: 0, exercise: '$exercises'}}
-          ];
-    Lesson.aggregate(pipeline, function(err, exercises) {
-      response.handleError(err, res, 400, 'Error fetching exercises', function(){
-        response.handleSuccess(res, exercises);
-      });
-    });
-  },
-  */
   addExercises: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lessonId = new mongoose.Types.ObjectId(req.params.lessonId),

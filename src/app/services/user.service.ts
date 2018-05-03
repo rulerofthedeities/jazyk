@@ -121,10 +121,10 @@ export class UserService {
 
   storeDemoData(data: ExerciseData[], step: string, courseId: string, lessonId: string) {
     if (!this.demoData || this.demoData.courseId !== courseId || this.demoData.lessonId !== lessonId) {
-      const lan = data[0].exercise.foreign.region;
+      const lan = data && data[0] ? data[0].exercise.foreign.region : '';
       this.demoData = {courseId, lessonId, lan};
     }
-    if (step === 'study' || step === 'practise') {
+    if (step === 'intro' || step === 'dialogue' || step === 'study' || step === 'practise') {
       this.demoData[step] = data;
     }
   }
@@ -225,7 +225,7 @@ export class UserService {
         nrOfWordsStudyRepeat: 10,
         nrOfWordsLearnRepeat: 10,
         mute: false,
-        delay: 2,
+        delay: 3,
         color: true,
         keyboard: true
       },
@@ -471,7 +471,7 @@ export class UserService {
 
   subscribeToCourse(course: Course) {
     // Only subscribe if it is a loggedin user
-    if (this.authService.isLoggedIn() && this._user && !course.isDemo) {
+    if (this.authService.isLoggedIn() && this._user) {
       const lan = course.languagePair.to;
       this.updateUserDb(lan, course._id);
       this.updateUserCache(lan);

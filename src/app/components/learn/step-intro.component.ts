@@ -79,6 +79,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
       console.log('LESSON CHANGED in intro TO ', lesson.name);
       this.lesson = lesson;
       this.init();
+      window.scroll(0, 0);
     });
   }
 

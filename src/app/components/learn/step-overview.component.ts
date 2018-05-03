@@ -154,9 +154,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     // Group lessons by chapter name
     this.courseChapters.forEach(chapterName => {
       this.chapterLessons[chapterName] = this.sortChapterLessons(lessonHeaders, chapterName);
-      
-      console.log('chapter lessons', chapterName, this.chapterLessons[chapterName]);
-      console.log('course lessons', this.course.lessons);
     });
     // Get current chapter
     const currentLesson = lessonHeaders.find(lesson => lesson._id === this.currentLessonId);
@@ -172,14 +169,12 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     let lessonHeader: LessonHeader;
     // get sorting from course
     const lessons = this.course.lessons.find(lesson => lesson.chapter === filterName);
-    console.log('lessons', lessons);
     if (lessons && lessons.lessonIds) {
       lessons.lessonIds.forEach(lessonId => {
         lessonHeader = lessonHeaders.find(lesson => lesson._id === lessonId);
         if (lessonHeader) {
           sortedLessonHeaders.push(lessonHeader);
         }
-        console.log(lessonId);
       })
     }
     return sortedLessonHeaders.length ? sortedLessonHeaders : unSortedLessonHeaders;
