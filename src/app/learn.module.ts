@@ -20,6 +20,7 @@ import {LearnOverviewComponent} from './components/learn/step-overview.component
 import {LearnLessonOverviewComponent} from './components/learn/lesson-overview.component';
 import {LearnReviewComponent} from './components/learn/step-review.component';
 import {LearnDifficultComponent} from './components/learn/step-difficult.component';
+import {LearnExamComponent} from './components/learn/step-exam.component';
 import {LearnSettingsComponent} from './components/learn/settings.component';
 import {LearnCompletedListComponent} from './components/learn/completed-list.component';
 import {LearnPointsCompletedComponent} from './components/learn/points-completed.component';
@@ -58,6 +59,7 @@ import {ScrollToDirective} from './directives/scroll-to.directive';
     LearnLessonOverviewComponent,
     LearnReviewComponent,
     LearnDifficultComponent,
+    LearnExamComponent,
     LearnSettingsComponent,
     LearnCompletedListComponent,
     LearnPointsCompletedComponent,

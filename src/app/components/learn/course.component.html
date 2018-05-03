@@ -45,7 +45,7 @@
               }">
             </span>
             {{text[step.name === 'dialogue' ? lesson.dialogue?.tpe : capitalize(step.name)]}}
-            <div *ngIf="step.hasCounter"
+            <div *ngIf="step.hasCounter && step.name!=='exam'"
               class="badge"
               [class.remaining]="countPerStep[step.name]?.nrRemaining > 0">
               {{countPerStep[step.name]?.nrRemaining || 0}}
@@ -132,6 +132,15 @@
         (stepCompleted)="onStepCompleted('difficult', $event)"
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-difficult>
+      <km-learn-exam *ngSwitchCase="'exam'"
+        [course]="course"
+        [lanPair]="course.languagePair"
+        [text]="text"
+        [settings]="settings"
+        [exercisesInterrupted]="exercisesInterrupted"
+        [stepcountUpdated]="stepcountUpdated"
+        [continueCourseLevel]="continueCourseLevel">
+      </km-learn-exam>
     </div>
     <km-learn-overview *ngSwitchCase="'overview'"
       [course]="course"
