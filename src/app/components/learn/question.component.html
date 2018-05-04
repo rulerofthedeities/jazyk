@@ -2,6 +2,13 @@
   <!-- LOCAL -->
   <div class="local" *ngIf="dir==='local'">
     <h1>
+      <span class="audio pull-right" *ngIf="currentData.exercise.audio">
+        <km-audio-file *ngIf="hasAnswered"
+          [regionAudio]="currentData.exercise.audio"
+          [active]="!settings.mute"
+          autoPlay="true">
+        </km-audio-file>
+      </span>
       <span>
         <km-region-flag
           [lan]="lanPair.from"
@@ -10,9 +17,6 @@
       </span>
       <span class="word">
         {{currentData.exercise.local.word}}
-      </span>
-      <span class="suffix" *ngIf="showGenus(currentData.exercise?.genus)">
-        ({{currentData.exercise?.genus}})
       </span>
     </h1>
     <div class="wordinfo" *ngIf="showAnnotations">
@@ -47,10 +51,10 @@
         {{currentData.exercise?.foreign?.word.split('|')[0]}}
       </span>
       <span class="suffix">{{currentData.data.suffix}}</span>
-      <span class="suffix">{{currentData.data.genus}}</span>
-      <span class="audio pull-right" *ngIf="currentData.exercise.audios && currentData.exercise.audios.length > 0">
+      <span class="suffix" *ngIf="!showGenusColor()">{{currentData.data.genus}}</span>
+      <span class="audio pull-right" *ngIf="currentData.exercise.audio">
         <km-audio-file
-          [regionAudio]="currentData.exercise.audios[0]"
+          [regionAudio]="currentData.exercise.audio"
           [active]="!settings.mute"
           autoPlay="true">
         </km-audio-file>

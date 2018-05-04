@@ -373,7 +373,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getNextStep(startStepNr: number): number {
     let nextStep: number = null;
     startStepNr++;
-    console.log(startStepNr, this.getStepNr('intro'))
     if (this.hasStep('intro') && startStepNr <= this.getStepNr('intro')) {
       nextStep = this.getStepNr('intro');
     } else if (this.hasStep('dialogue') && startStepNr <= this.getStepNr('dialogue')) {
@@ -451,6 +450,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
       //}
     }
+    console.log('got lesson step count', this.countPerStep);
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
@@ -547,6 +547,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Learned - Decrease practise count
               remaining = this.countPerStep['practise'].nrRemaining - 1;
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
+              console.log('practise', lastResult[key], remaining);
             }
           }
         };
@@ -568,6 +569,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep['review'].nrRemaining = Math.max(0, remaining);
       break;
     }
+    console.log('updated step count', this.countPerStep);
   }
 
   private checkStepCount() {
@@ -600,13 +602,17 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             }
             // Practise
             const practise = stepData.lesson.find(count => count.step === 'practise');
-            console.log('countPerStep', this.countPerStep);
+            console.log('countPerStep1', this.countPerStep);
+            console.log('practise', practise);
             if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
               this.countPerStep['practise'].nrDone = practise.nrDone;
-              let studyRemaining = this.countPerStep['study'] ? this.countPerStep['study'].nrRemaining : 0;
+            }
+            let studyRemaining = this.countPerStep['study'] ? this.countPerStep['study'].nrRemaining : 0;
+            if (this.countPerStep['practise'].nrRemaining + this.countPerStep['practise'].nrDone > this.countPerStep['study'].nrDone) {
               this.countPerStep['practise'].nrRemaining = Math.max(0, studyRemaining - practise.nrDone);
               updated = true;
             }
+            console.log('countPerStep2', this.countPerStep);
           }
           if (updated) {
             this.stepcountUpdated.next(this.countPerStep);

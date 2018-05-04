@@ -40,6 +40,8 @@
               [showAlt]="true"
               [dir]="getQuestionDir()"
               [settings]="settings"
+              [onHasAnswered]="hasAnswered"
+              [onNextWord]="gotoNextWord"
             ></km-question>
           </div>
           <div [ngSwitch]="currentData?.data?.questionType">

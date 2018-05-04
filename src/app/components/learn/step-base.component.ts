@@ -59,6 +59,8 @@ export abstract class Step {
   exerciseData: ExerciseData[]; // main container of exercise data + results
   currentData: ExerciseData; // container for current exercise data + results
   pointsEarned: Subject<number> = new Subject();
+  hasAnswered: Subject<boolean> = new Subject();
+  gotoNextWord: Subject<boolean> = new Subject();
   nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   countPerStep: Map<StepCount> = {};
@@ -140,6 +142,7 @@ export abstract class Step {
 
   onSelected(i: number) {
     if (!this.isAnswered) {
+      this.hasAnswered.next(true);
       this.checkChoicesAnswer(i);
     }
   }
@@ -151,6 +154,7 @@ export abstract class Step {
   }
 
   onNextWord(giveAnswer = false) {
+    this.gotoNextWord.next(true);
     switch (this.currentData.data.questionType) {
       case QuestionType.Choices:
         if (giveAnswer) {

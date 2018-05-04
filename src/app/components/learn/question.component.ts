@@ -1,7 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {ExerciseData, Exercise} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair} from '../../models/course.model';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'km-question',
@@ -9,7 +10,7 @@ import {LanPair} from '../../models/course.model';
   styleUrls: ['question.component.css']
 })
 
-export class LearnQuestionComponent {
+export class LearnQuestionComponent implements OnInit, OnDestroy {
   @Input() lanPair: LanPair;
   @Input() text: Object;
   @Input() currentData: ExerciseData;
@@ -18,6 +19,26 @@ export class LearnQuestionComponent {
   @Input() hideGenus = false;
   @Input() showAnnotations = true;
   @Input() settings: LearnSettings = null;
+  @Input() private onHasAnswered: Subject<boolean>;
+  @Input() private onNextWord: Subject<boolean>;
+  private componentActive = true;
+  hasAnswered = false;
+
+  ngOnInit() {
+    //check if question has been answered
+    this.onHasAnswered
+    .takeWhile(() => this.componentActive)
+    .subscribe(event => {
+      console.log('has answered');
+      this.hasAnswered = true;
+    });
+    this.onNextWord
+    .takeWhile(() => this.componentActive)
+    .subscribe(event => {
+      console.log('next word');
+      this.hasAnswered = false;
+    });
+  }
 
   getAlts(tpe: string, word: Exercise): string {
     let altwords = '';
@@ -38,19 +59,28 @@ export class LearnQuestionComponent {
   }
 
   showGenusColor(): boolean {
-    let showGenus = false;
+    let showGenusColor = false;
     if (!this.hideGenus) {
-      showGenus = this.settings ? this.settings.color : true;
+      showGenusColor = this.settings ? this.settings.color : true;
     }
-    return showGenus;
+    return showGenusColor;
   }
 
   showGenus(genus: string): boolean {
     // Toon genus niet indien meerdere waarden mogelijk zijn
+      console.log('genus', genus);
     if (genus) {
-      return genus.indexOf(';') > -1 ? false : true;
+      const showGenusColor = this.settings ? this.settings.color : true;
+      console.log('show genus color', showGenusColor);
+      if (!showGenusColor) {
+        return genus.indexOf(';') > -1 ? false : true;
+      }
     } else {
       return false;
     }
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

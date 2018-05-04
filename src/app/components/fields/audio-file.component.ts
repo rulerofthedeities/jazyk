@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnChanges, Input} from '@angular/core';
 import {File} from '../../models/word.model';
 import {RegionAudio} from '../../models/exercise.model';
 
@@ -8,13 +8,14 @@ import {RegionAudio} from '../../models/exercise.model';
   styleUrls: ['./files.css']
 })
 
-export class AudioFileComponent implements OnInit {
+export class AudioFileComponent implements OnChanges {
   @Input() regionAudio: RegionAudio;
   @Input() autoPlay = false;
   @Input() active = true;
   audio: any;
 
-  ngOnInit() {
+  ngOnChanges() {
+    this.audio = null;
     if (this.autoPlay) {
       this.play();
     }
