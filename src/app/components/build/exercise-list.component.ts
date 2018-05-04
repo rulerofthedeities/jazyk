@@ -79,20 +79,16 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   onResorted(id: string) {
-    console.log('resorted (exercise)', id);
     this.sortingId = id;
     this.saveResortedExercises();
   }
 
   onDraggedStart(id: string) {
     this.draggingId = id;
-    console.log('dragged start (exercise)', id);
   }
 
   onDraggedEnd(id: string) {
-    console.log('dragged end (exercise)', id);
     if (this.sortingId !== this.draggingId) {
-      console.log('save sort anyway (exercise)');
       this.saveResortedExercises();
     }
     this.sortingId = null;

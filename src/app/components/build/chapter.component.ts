@@ -39,20 +39,16 @@ export class BuildChapterComponent {
   }
 
   onResorted(id: string) {
-    console.log('Resorted (chapter)', id);
     this.sortingId = id;
     this.sorted.emit();
   }
 
   onDraggedStart(id: string) {
     this.draggingId = id;
-    console.log('Dragged start (chapter)', id);
   }
 
   onDraggedEnd(id: string) {
-    console.log('Dragged end (chapter)', id);
     if (this.sortingId !== this.draggingId) {
-      console.log('Save sort anyway (chapter)');
       this.sorted.emit();
     }
     this.sortingId = null;

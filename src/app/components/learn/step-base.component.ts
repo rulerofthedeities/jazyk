@@ -111,6 +111,8 @@ export abstract class Step {
           switch (key) {
             case 'Enter':
               if (this.isAnswered) {
+                this.gotoNextWord.next(true);
+                console.log('enter key next word');
                 this.nextWord();
               }
             break;
@@ -125,6 +127,8 @@ export abstract class Step {
               if (!this.isAnswered) {
                 selection = parseInt(key, 10);
                 if (selection > 0 && selection <= this.currentChoices.length) {
+                  console.log('choices key');
+                  this.hasAnswered.next(true);
                   this.checkChoicesAnswer(selection - 1);
                 }
               }
@@ -133,6 +137,7 @@ export abstract class Step {
         break;
         case QuestionType.Word:
           if (key === 'Enter') {
+            console.log('enter key word');
             this.checkIfWordAnswer();
           }
         break;
@@ -142,6 +147,7 @@ export abstract class Step {
 
   onSelected(i: number) {
     if (!this.isAnswered) {
+      console.log('answered selected base');
       this.hasAnswered.next(true);
       this.checkChoicesAnswer(i);
     }
@@ -154,7 +160,10 @@ export abstract class Step {
   }
 
   onNextWord(giveAnswer = false) {
-    this.gotoNextWord.next(true);
+    console.log('next word base');
+    if (!giveAnswer) {
+      this.gotoNextWord.next(true);
+    }
     switch (this.currentData.data.questionType) {
       case QuestionType.Choices:
         if (giveAnswer) {
@@ -276,12 +285,15 @@ export abstract class Step {
   private checkIfWordAnswer(giveAnswer = false) {
     if (!this.isAnswered) {
       if (this.answerComponent) {
+        console.log('answered base word');
+        this.hasAnswered.next(true);
         this.checkWordAnswer(
           this.answerComponent.getData(),
           giveAnswer
         );
       }
     } else {
+      this.gotoNextWord.next(true);
       this.nextWord();
     }
   }

@@ -27,9 +27,7 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
   }
 
   protected buildForm(exercise: Exercise) {
-    console.log('formData', this.formData);
     this.localRegions = this.getAllRegions();
-    console.log('regions', this.localRegions);
     if (!exercise) {
       // New FillIn
       this.exerciseForm = this.formBuilder.group({

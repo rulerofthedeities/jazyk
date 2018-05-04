@@ -41,7 +41,7 @@
               [dir]="getQuestionDir()"
               [settings]="settings"
               [onHasAnswered]="hasAnswered"
-              [onNextWord]="gotoNextWord"
+              [onGotoNextWord]="gotoNextWord"
             ></km-question>
           </div>
           <div [ngSwitch]="currentData?.data?.questionType">

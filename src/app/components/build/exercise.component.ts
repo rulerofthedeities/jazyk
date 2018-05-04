@@ -221,7 +221,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         // Create single exercise
         options.lastDoc = true;
         options.singleDoc = true;
-        console.log('create single exercise');
         this.buildNewExercise(form.value, options);
       }
     }
@@ -341,7 +340,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onCheckDuplicate(form: any) {
-    console.log('check Duplicate', form.value);
     this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord'])
   }
 
@@ -522,7 +520,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         conjugations.unshift(this.selected[this.lanForeign].word); // Add infinitive to the start
         exercise.foreign.word = conjugations.join('|');
         exercise.local.word = this.selected[this.lanLocal].word;
-        console.log('CONJUGATIONS >>', exercise.local.word, exercise.foreign.word, exercise.foreign.alt);
       }
 
       /* Conjugation test - one doc per conjugation */
@@ -771,8 +768,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private checkIfDuplicate(wordLocal: string, wordForeign: string) {
     // Check if this wordpair is already in this course
     // Get all wordpair matches from server, then check if there is also an exercise type match
-    console.log('check if duplicate', wordLocal, wordForeign);
-
+    
     this.buildService
     .checkIfWordpairInCourse(wordLocal, wordForeign, this.courseId)
     .takeWhile(() => this.componentActive)
@@ -791,7 +787,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private checkIfDuplicateType(exercises: Exercise[]): Duplicate {
     let duplicate: Duplicate = {checked: true, tpes: []};
     exercises.forEach(exercise => {
-      console.log('duplicate?', exercise);
       duplicate.tpes.push(exercise.tpe);
     })
     return duplicate

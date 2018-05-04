@@ -20,24 +20,30 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
   @Input() showAnnotations = true;
   @Input() settings: LearnSettings = null;
   @Input() private onHasAnswered: Subject<boolean>;
-  @Input() private onNextWord: Subject<boolean>;
+  @Input() private onGotoNextWord: Subject<boolean>;
   private componentActive = true;
   hasAnswered = false;
 
   ngOnInit() {
     //check if question has been answered
-    this.onHasAnswered
-    .takeWhile(() => this.componentActive)
-    .subscribe(event => {
-      console.log('has answered');
-      this.hasAnswered = true;
-    });
-    this.onNextWord
-    .takeWhile(() => this.componentActive)
-    .subscribe(event => {
-      console.log('next word');
-      this.hasAnswered = false;
-    });
+    if (this.onHasAnswered) {
+      // not in study
+      this.onHasAnswered
+      .takeWhile(() => this.componentActive)
+      .subscribe(event => {
+        console.log('has answered');
+        this.hasAnswered = true;
+      });
+    }
+    if (this.onGotoNextWord) {
+      // not in study
+      this.onGotoNextWord
+      .takeWhile(() => this.componentActive)
+      .subscribe(event => {
+        console.log('next word');
+        this.hasAnswered = false;
+      });
+    }
   }
 
   getAlts(tpe: string, word: Exercise): string {

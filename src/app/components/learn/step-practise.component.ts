@@ -181,7 +181,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
         qTpe = QuestionType.Conjugations;
       break;
     }
-    console.log('qtpe', qTpe);
     return qTpe;
   }
 
@@ -217,7 +216,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       } else {
         const studyData = this.userService.getDemoData('study', this.course._id),
               practiseData = this.userService.getDemoData('practise', this.course._id);
-        console.log('demo data >>', studyData, practiseData);
         if (studyData && !practiseData) {
           this.noMoreExercises = false;
           this.getDemoQuestions();
@@ -237,7 +235,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
-        console.log('step results', results);
         if  (results && results.count) {
           leftToStudy = this.getNewQuestions(results.count);
         }
@@ -306,7 +303,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private getRepeatQuestions() {
     const maxNr = this.settings.nrOfWordsLearnRepeat || 10,
           repeatExercises = this.learnService.getRandomExercises(this.lesson.exercises, maxNr);
-    console.log('Repeat exercises practise', repeatExercises);
     this.buildExerciseData(repeatExercises, null);
     this.isReady = true;
     super.init(); // start countdown

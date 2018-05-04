@@ -66,20 +66,16 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   }
 
   onResorted(id: string) {
-    console.log('resorted (lesson)', id);
     this.sortingId = id;
     this.sorted.emit(this.lessonIds);
   }
 
   onDraggedStart(id: string) {
     this.draggingId = id;
-    console.log('dragged start (lesson)', id);
   }
 
   onDraggedEnd(id: string) {
-    console.log('dragged end (lesson)', id);
     if (this.sortingId !== this.draggingId) {
-      console.log('save sort anyway (lesson)');
       this.sorted.emit(this.lessonIds);
     }
     this.sortingId = null;

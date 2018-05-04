@@ -269,7 +269,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private processStepResults(results: StepData) {
     this.countPerStep = {};
     if (results) {
-      console.log('RESULTS', results);
       this.getCourseStepCount(results);
       this.getLessonStepCount(results.lesson);
       if (this.courseLevel === Level.Lesson) {
@@ -450,7 +449,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
       //}
     }
-    console.log('got lesson step count', this.countPerStep);
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
@@ -547,7 +545,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               // Learned - Decrease practise count
               remaining = this.countPerStep['practise'].nrRemaining - 1;
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
-              console.log('practise', lastResult[key], remaining);
             }
           }
         };
@@ -569,7 +566,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep['review'].nrRemaining = Math.max(0, remaining);
       break;
     }
-    console.log('updated step count', this.countPerStep);
   }
 
   private checkStepCount() {
@@ -602,8 +598,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             }
             // Practise
             const practise = stepData.lesson.find(count => count.step === 'practise');
-            console.log('countPerStep1', this.countPerStep);
-            console.log('practise', practise);
             if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
               this.countPerStep['practise'].nrDone = practise.nrDone;
             }
@@ -612,7 +606,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep['practise'].nrRemaining = Math.max(0, studyRemaining - practise.nrDone);
               updated = true;
             }
-            console.log('countPerStep2', this.countPerStep);
           }
           if (updated) {
             this.stepcountUpdated.next(this.countPerStep);

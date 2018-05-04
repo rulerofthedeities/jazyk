@@ -219,7 +219,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       practise: this.setExerciseStep(formValues, Steps.Practise),
       exam: this.setExerciseStep(formValues, Steps.Exam)
     };
-    console.log(this.lesson.exerciseSteps);
   }
 
   private setExerciseStep(formValues: any, step: number): ExerciseStep {
