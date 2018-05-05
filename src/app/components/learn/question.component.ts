@@ -16,6 +16,7 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
   @Input() currentData: ExerciseData;
   @Input() dir: string;
   @Input() showAlt = false;
+  @Input() showImage = true;
   @Input() hideGenus = false;
   @Input() showAnnotations = true;
   @Input() settings: LearnSettings = null;

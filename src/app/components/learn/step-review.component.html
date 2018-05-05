@@ -29,10 +29,6 @@
             <span class="case" *ngIf="currentData?.data?.isCaseSensitive">Aa</span>
           </div>
           <div class="clearfix" *ngIf="showDefaultQuestion()">
-            <!-- IMAGE -->
-            <div class="image" *ngIf="currentData.exercise.image">
-              <img src="{{currentData.exercise.image}}">
-            </div>
             <km-question
               [currentData]="currentData"
               [lanPair]="lanPair"

@@ -1,6 +1,10 @@
 <div *ngIf="currentData">
   <!-- LOCAL -->
   <div class="local" *ngIf="dir==='local'">
+    <!-- IMAGE -->
+    <div class="image" *ngIf="showImage && currentData.exercise.image">
+      <img src="{{currentData.exercise.image}}">
+    </div>
     <h1>
       <span class="audio pull-right" *ngIf="currentData.exercise.audio">
         <km-audio-file *ngIf="hasAnswered"
@@ -35,6 +39,10 @@
   </div>
   <!-- FOREIGN -->
   <div class="foreign" *ngIf="dir==='foreign'">
+    <!-- IMAGE -->
+    <div class="image" *ngIf="showImage && currentData.exercise.image && hasAnswered">
+      <img src="{{currentData.exercise.image}}">
+    </div>
     <h1>
       <span>
         <km-region-flag

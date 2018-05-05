@@ -112,7 +112,6 @@ export abstract class Step {
             case 'Enter':
               if (this.isAnswered) {
                 this.gotoNextWord.next(true);
-                console.log('enter key next word');
                 this.nextWord();
               }
             break;
@@ -127,7 +126,6 @@ export abstract class Step {
               if (!this.isAnswered) {
                 selection = parseInt(key, 10);
                 if (selection > 0 && selection <= this.currentChoices.length) {
-                  console.log('choices key');
                   this.hasAnswered.next(true);
                   this.checkChoicesAnswer(selection - 1);
                 }
@@ -147,7 +145,6 @@ export abstract class Step {
 
   onSelected(i: number) {
     if (!this.isAnswered) {
-      console.log('answered selected base');
       this.hasAnswered.next(true);
       this.checkChoicesAnswer(i);
     }
