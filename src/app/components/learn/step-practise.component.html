@@ -113,7 +113,7 @@
             {{text["LearnNewWords"]}}
           </button>
           <button 
-            *ngIf="countPerStep['study'] && countPerStep['study']?.nrRemaining === 0"
+            *ngIf="countPerStep['study'] && countPerStep['study']?.nrRemaining === 0 || !countPerStep['study']"
             type="button"
             class="btn btn-success"
             (click)="onToNextLesson()">

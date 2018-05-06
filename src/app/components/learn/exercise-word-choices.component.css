@@ -7,9 +7,10 @@
 }
 .choice {
   width: 332px;
-  margin: 4px 8px;
-  font-size: 28px;
+  margin: 3px 6px;
+  font-size: 24px;
   text-align: left;
+  white-space: normal;
 }
 .done {
   background-color: #eee;
