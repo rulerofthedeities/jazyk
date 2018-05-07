@@ -15,7 +15,9 @@ export class AudioFileComponent implements OnChanges {
   audio: any;
 
   ngOnChanges() {
-    this.audio = null;
+    if (this.audio && this.regionAudio.s3 !== this.audio.src) {
+      this.audio = null;
+    }
     if (this.autoPlay) {
       this.play();
     }
@@ -44,7 +46,9 @@ export class AudioFileComponent implements OnChanges {
       };
       this.audio.onloadeddata = () => {
         // The audio has loaded
-        this.audio.play();
+        if (this.audio) {
+          this.audio.play();
+        }
       };
       this.audio.onplaying = () => {
         // The audio is now playing

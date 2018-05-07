@@ -328,7 +328,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   protected soundLearnedLevel(learnLevel: number) {
     if (learnLevel > isLearnedLevel) {
-      this.audioService.playSound(this.isMute, this.beep);
+      this.audioService.playSound(this.settings.mute, this.beep);
     }
   }
 

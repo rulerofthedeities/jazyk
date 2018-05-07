@@ -8,10 +8,6 @@
   <div [ngSwitch]="exercise.tpe" class="col-xs-8">
     <div class="pull-right case" *ngIf="exerciseData?.data?.isCaseSensitive">Aa</div>
     <div *ngSwitchCase="exType.Word">
-      <!-- IMAGE -->
-      <div class="image" *ngIf="exercise.image">
-        <img src="{{exercise.image}}">
-      </div>
       <km-question
         [currentData]="exerciseData"
         [lanPair]="lanPair"

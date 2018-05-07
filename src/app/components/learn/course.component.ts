@@ -1,4 +1,5 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Location} from '@angular/common';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {isLearnedLevel, maxLearnLevel, maxStreak} from '../../services/shared.service';
 import {LearnService} from '../../services/learn.service';
@@ -57,6 +58,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private learnService: LearnService,
     private sharedService: SharedService,
     private utilsService: UtilsService,
@@ -447,7 +449,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     });
     // Practise step must have study finished or tpe != word
     if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
-      const diff = this.countPerStep['study'].nrDone - this.countPerStep['practise'].nrRemaining;
+      const diff = this.countPerStep['study'].nrDone + (lessonTotal - studyTotal) - this.countPerStep['practise'].nrDone;
       this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
     }
     this.stepcountUpdated.next(this.countPerStep);
@@ -738,6 +740,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       params => {
         this.courseId = params['id'];
         this.courseStep = this.validateCourseStep(params['step']);
+        if (params['step']) {
+          // remove step from url
+          this.location.go('/learn/course/' + this.courseId);
+        }
         this.getTranslations();
       }
     );

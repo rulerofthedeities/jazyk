@@ -63,7 +63,7 @@
       <span class="audio pull-right" *ngIf="currentData.exercise.audio">
         <km-audio-file
           [regionAudio]="currentData.exercise.audio"
-          [active]="!settings.mute"
+          [active]="!settings?.mute"
           autoPlay="true">
         </km-audio-file>
       </span>

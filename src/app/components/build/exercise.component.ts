@@ -181,6 +181,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.hasGenus = this.checkGenus(wordpairDetail);
     this.hasArticle = this.checkArticle(wordpairDetail);
     this.hasComparison = this.checkComparison(wordpairDetail);
+    // check duplicate
     this.checkIfDuplicate(
       wordpairDetail.wordPair[this.lanLocal].word,
       wordpairDetail.wordPair[this.lanForeign].word
@@ -492,7 +493,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
         exercise.article = foreign.article;
         exercise.options = this.config.articles.join('|');
-        exercise.local.word = local.article + ' ' + formValues.localWord;
+        exercise.local.word = local.article + this.addSpace(local.article) + formValues.localWord;
       }
 
       /* Comparison test */
@@ -581,8 +582,19 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private addArticle(exercise: Exercise, foreign: WordDetail, local: WordDetail) {
     const aForeign = foreign.article || '',
           aLocal = local.article || '';
-    exercise.foreign.word = (aForeign + ' ' + exercise.foreign.word).trim();
-    exercise.local.word = (aLocal + ' ' + exercise.local.word).trim();
+    exercise.foreign.word = (aForeign + this.addSpace(aForeign) + exercise.foreign.word).trim();
+    exercise.local.word = (aLocal + this.addSpace(aLocal) + exercise.local.word).trim();
+  }
+
+  private addSpace(article: string): string {
+    let space = ' ';
+    if (article) {
+      const lastChar = article.slice(-1);
+      if (lastChar === '\'') {
+        space = '';
+      }
+    }
+    return space;
   }
 
   private checkIfValue(field: string): string {
@@ -768,7 +780,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private checkIfDuplicate(wordLocal: string, wordForeign: string) {
     // Check if this wordpair is already in this course
     // Get all wordpair matches from server, then check if there is also an exercise type match
-    
     this.buildService
     .checkIfWordpairInCourse(wordLocal, wordForeign, this.courseId)
     .takeWhile(() => this.componentActive)
