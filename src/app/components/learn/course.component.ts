@@ -260,6 +260,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       results => {
+        console.log('fetched step data', results);
         this.processStepResults(results);
       },
       error => this.errorService.handleError(error)
@@ -317,7 +318,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     let defaultStep: number = null;
     if (this.lesson.rehearseStep) {
       this.currentStep = this.getStepNr(this.lesson.rehearseStep);
-    } if (this.lesson.skipToStep) {
+    } else if (this.lesson.skipToStep) {
       this.currentStep = this.getStepNr(this.lesson.skipToStep);
     } else {
       if (this.routeStep === 'overview') {
@@ -428,27 +429,28 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
     // Check how many results have been done per tab
     if (results && results.length > 0) {
-      results.forEach(result => {
-        total = result.step === 'study' ? studyTotal : lessonTotal;
-        if (!this.countPerStep[result.step]) {
+      results.forEach((result: StepCount) => {
+        if (result.step === 'study' || result.step === 'practise') {
+          total = result.step === 'study' ? studyTotal : lessonTotal;
           this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: Math.max(0, total - result.nrDone || 0)};
         }
       });
     }
     // Fill in step count for the steps without a result
     this.steps.forEach(step => {
-      total = step.name === 'study' ? studyTotal : lessonTotal;
-      if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
-        this.countPerStep[step.name] = {nrDone: 0, nrRemaining: Math.max(0, total)};
+      if (step.level === Level.Lesson) {
+        total = step.name === 'study' ? studyTotal : lessonTotal;
+        if (step.level === Level.Lesson && !this.countPerStep[step.name]) {
+          this.countPerStep[step.name] = {nrDone: 0, nrRemaining: Math.max(0, total)};
+        }
       }
     });
     // Practise step must have study finished or tpe != word
     if (this.countPerStep['practise'] && this.countPerStep['study']) { // Study is optional!!
-      const diff = this.countPerStep['practise'].nrRemaining - this.countPerStep['study'].nrRemaining;
-      //if (!this.isDemo) {
-        this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
-      //}
+      const diff = this.countPerStep['study'].nrDone - this.countPerStep['practise'].nrRemaining;
+      this.countPerStep['practise'].nrRemaining = Math.max(0, diff);
     }
+    this.stepcountUpdated.next(this.countPerStep);
   }
 
   private saveAnswers(step: string, data: ExerciseData[]) {
@@ -528,7 +530,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         remaining: number;
     const nrOfResults = Object.keys(lastResult).length;
 
-    console.log('UPDATING STEP COUNT', this.countPerStep);
     // Update count before save
     switch (step) {
       case 'study':
@@ -569,20 +570,23 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.countPerStep['review'].nrRemaining = Math.max(0, remaining);
       break;
     }
-    console.log('UPDATED STEP COUNT', this.countPerStep);
+    this.stepcountUpdated.next(this.countPerStep);
   }
 
   private checkStepCount() {
-        console.log('CHECKing STEP COUNT');
     // Update stepcount with data from db
     this.learnService
     .fetchStepData(this.course._id, this.lesson._id)
     .takeWhile(() => this.componentActive)
     .subscribe(
       stepData => {
-        console.log('CHECKED STEP COUNT', stepData);
+        console.log('fetched step data 2 ', stepData);
         if (stepData) {
-          let updated = false;
+
+          this.getCourseStepCount(stepData);
+          this.getLessonStepCount(stepData.lesson);
+
+          /*
           // Difficult
           if (stepData.difficult !== this.countPerStep['difficult'].nrRemaining) {
             this.countPerStep['difficult'].nrRemaining = stepData.difficult;
@@ -609,18 +613,15 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep['practise'].nrDone = practiseDone;
             }
             let studyDone = this.countPerStep['study'] ? this.countPerStep['study'].nrDone : totalWords;
-            console.log('studyDone', studyDone);
-            console.log('practiseRemaining', studyDone - practiseDone);
-            
             if (this.countPerStep['practise'].nrRemaining + this.countPerStep['practise'].nrDone !== studyDone) {
               this.countPerStep['practise'].nrRemaining = Math.max(0, studyDone - practiseDone);
               updated = true;
             }
           }
           if (updated) {
-            console.log('UPDATED CHECKED STEP COUNT', this.countPerStep);
             this.stepcountUpdated.next(this.countPerStep);
           }
+            */
         }
       },
       error => this.errorService.handleError(error)

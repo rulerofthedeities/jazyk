@@ -77,6 +77,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   onRehearseLesson(event: MouseEvent, lessonId: string, step: string, cnt: number) {
     event.stopPropagation();
     event.preventDefault();
+    console.log('rehearse lesson', step, cnt);
     if (cnt > 0) {
       if (this.lessonData && this.lessonData._id === lessonId) {
         this.lessonData.rehearseStep = step;
@@ -254,13 +255,14 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       });
     }
     // Check if chapter is complete
+    console.log('results by chapter 1');
     this.courseChapters.forEach(chapter => {
       if (this.chapterLessons[chapter]) {
         this.chapterLessons[chapter].forEach(lesson => {
           if (this.resultsByLesson[lesson._id]) {
             if (this.hasStudyOrPractise(lesson)) {
-              this.resultsByChapter[chapter].learned += this.resultsByLesson[lesson._id].learned;
-              this.resultsByChapter[chapter].total += this.resultsByLesson[lesson._id].total;
+              this.resultsByChapter[chapter].learned += this.resultsByLesson[lesson._id].learned || 0;
+              this.resultsByChapter[chapter].total += this.resultsByLesson[lesson._id].total || 0;
             }
           }
         });

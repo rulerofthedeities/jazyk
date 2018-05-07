@@ -11,6 +11,7 @@
   font-size: 24px;
   text-align: left;
   white-space: normal;
+  overflow: hidden;
 }
 .done {
   background-color: #eee;
