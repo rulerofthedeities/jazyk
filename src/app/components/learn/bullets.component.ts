@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {ExerciseData} from '../../models/exercise.model';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/takeWhile';
+import {BehaviorSubject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-bullets',
@@ -32,7 +32,7 @@ export class LearnBulletsComponent implements OnInit, OnDestroy {
 
   private checkBulletsUpdated() {
     this.onNextExercise
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       this.sliceExercises(event);
       this.countDifferentExercises();

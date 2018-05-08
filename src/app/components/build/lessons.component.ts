@@ -2,6 +2,7 @@ import {Component, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, LessonId} from '../../models/course.model';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-build-lessons',
@@ -76,7 +77,7 @@ export class BuildLessonsComponent implements OnDestroy {
   private saveResortedChapters() {
     this.buildService
     .updateChapters(this.courseId, this.chapters)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       () => {},
       error => this.errorService.handleError(error)
@@ -86,7 +87,7 @@ export class BuildLessonsComponent implements OnDestroy {
   private removeChapter(chapterName: string) {
     this.buildService
     .removeChapter(this.courseId, chapterName)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (removed) => {
         if (removed) {
@@ -101,7 +102,7 @@ export class BuildLessonsComponent implements OnDestroy {
     if (lessonId) {
       this.buildService
       .removeLesson(lessonId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (removed) => {
           if (removed) {

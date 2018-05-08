@@ -3,7 +3,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair} from '../../models/course.model';
 import {Filter, WordPair, WordPairDetail} from '../../models/word.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-filter-list',
@@ -60,7 +60,7 @@ export class FilterListComponent implements OnInit, OnDestroy {
     if (wordPair) {
       this.buildService
       .fetchWordPairDetail(wordPair._id)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (data: WordPairDetail) => {
           if (data) {

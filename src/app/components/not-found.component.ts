@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
-import 'rxjs/add/operator/filter';
+import {filter} from 'rxjs/operators';
 
 @Component({
   template: `
@@ -19,7 +19,7 @@ export class PageNotFoundComponent {
     private router: Router
   ) {
     router.events
-    .filter(event => event instanceof NavigationEnd)
+    .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe((nav: NavigationEnd) => {
       this.previousPath = nav.url;
       this.showError = true;

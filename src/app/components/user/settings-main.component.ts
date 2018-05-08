@@ -5,7 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Language} from '../../models/course.model';
 import {MainSettings} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 interface FormData {
   lans: Language[];
@@ -83,7 +83,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   private updateMainSettings(settings: MainSettings) {
     this.userService
     .saveMainSettings(settings)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.infoMsg = this.text['SettingsUpdated'];
@@ -124,7 +124,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     };
     this.utilsService
     .fetchDependables(options)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.setInterfaceLanguages(dependables.languages);

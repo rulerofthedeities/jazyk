@@ -5,6 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {Lesson, LanPair, CourseDefaults} from '../../models/course.model';
 import {ExerciseStep} from '../../models/exercise.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
+import {takeWhile} from 'rxjs/operators';
 
 enum Steps {Intro, Dialogue, Study, Practise, Exam};
 
@@ -233,7 +234,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     this.lesson.languagePair = this.languagePair;
     this.buildService
     .addLesson(this.lesson)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       savedLesson => {
         this.lesson = savedLesson;
@@ -250,7 +251,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
   private updateLesson() {
     this.buildService
     .updateLessonHeader(this.lesson)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       updatedLesson => this.done.emit(this.lesson),
       error => this.errorService.handleError(error)

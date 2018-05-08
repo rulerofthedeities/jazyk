@@ -6,7 +6,7 @@ import {ErrorService} from '../services/error.service';
 import {SharedService} from '../services/shared.service';
 import {EventMessage} from '../models/error.model';
 import {environment} from '../../environments/environment';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-footer',
@@ -76,7 +76,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   private getTranslations(lan) {
     this.utilsService
     .fetchTranslations(lan, 'FooterComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

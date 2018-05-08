@@ -8,8 +8,7 @@ import {SummaryData, CommunicationData, RecentCourse} from '../../models/dashboa
 import {CourseListType} from '../../models/course.model';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import * as moment from 'moment';
-
-
+import {takeWhile} from 'rxjs/operators';
 
 interface Communication {
   id: string;
@@ -101,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private getCounts() {
     this.dashboardService
     .fetchCounts()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => this.summaryData = data,
       error => this.errorService.handleError(error)
@@ -111,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private getRecentCourses() {
     this.dashboardService
     .fetchRecentCourses()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => this.processCourses(data),
       error => this.errorService.handleError(error)
@@ -121,7 +120,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private getNotificationsAndMessages() {
     this.dashboardService
     .fetchCommunication()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => this.processCommunication(data),
       error => this.errorService.handleError(error)
@@ -171,7 +170,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private subscribe() {
-    this.userService.notificationRead.subscribe(
+    this.userService.notificationRead
+    .subscribe(
       isAllRead => {
         // Refetch notification in case of a new welcome message
         this.getNotificationsAndMessages();

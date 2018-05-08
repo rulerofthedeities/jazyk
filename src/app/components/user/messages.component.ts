@@ -5,7 +5,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {Message, CompactProfile} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'messages.component.html',
@@ -164,8 +164,9 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   private getCurrentMessage() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.messageId)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.messageId))
     .subscribe(
       params => {
         this.isFromDashboard = true;
@@ -233,7 +234,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private saveMessage(message: Message, isReply: boolean) {
     this.userService
     .saveMessage(message)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       saved => {
         this.showReply = false;
@@ -253,7 +254,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private setMessageAsRead(i: number) {
     this.userService
     .setMessageAsRead(this.messages[i]._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       read => this.messages[i].recipient.read = true,
       error => this.errorService.handleError(error)
@@ -263,7 +264,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private setAllMessagesAsRead() {
     this.userService
     .setAllMessagesAsRead()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       read => {},
       error => this.errorService.handleError(error)
@@ -273,7 +274,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private deleteMessage(messageId: string, tpe: string, action: string) {
     this.userService
     .deleteMessage(messageId, tpe, action)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       deleted => this.infoMsg = this.text['MessageDeleted'],
       error => this.errorService.handleError(error)
@@ -283,7 +284,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private deleteReadMessages() {
     this.userService
     .deleteReadMessages()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       deleted => this.infoMsg = this.text['MessagesDeleted'],
       error => this.errorService.handleError(error)
@@ -293,7 +294,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private emptyTrash() {
     this.userService
     .emptyTrash()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       deleted => this.infoMsg = this.text['MessagesDeleted'],
       error => this.errorService.handleError(error)
@@ -303,7 +304,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private fetchMessages() {
     this.userService
     .fetchMessages(this.tab)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       messages => {
         this.messages = messages;
@@ -318,7 +319,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private fetchParentMessage(messageId: string) {
     this.userService
     .fetchMessage(messageId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       message => this.parentMessage = message,
       error => this.errorService.handleError(error)
@@ -328,7 +329,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private getPossibleRecipients() {
     this.userService
     .fetchRecipients()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       recipients => {
         this.recipients = recipients;
@@ -343,7 +344,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

@@ -8,6 +8,7 @@ import {DashboardService} from '../../services/dashboard.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {TooltipModule} from 'ngx-tooltip';
+import {takeWhile} from 'rxjs/operators';
 
 interface BadgeData {
   review?: number;
@@ -119,7 +120,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     // Stepcount
     this.dashboardService
     .fetchCourseSteps(this.course._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (data: StepData) => {
         if (data) {
@@ -132,7 +133,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
     // Count words done
     this.dashboardService
     .fetchCourseDone(this.course._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (data: Array<number>) => {
         if (data) {
@@ -154,7 +155,7 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   private checkIfCourseIsFollowed() {
     this.dashboardService
     .checkCourseFollowed(this.course._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (isSubscribed: boolean) => {
         this.isSubscribed = !!isSubscribed;

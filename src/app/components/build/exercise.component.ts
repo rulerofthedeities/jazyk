@@ -9,8 +9,7 @@ import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfig, LanConfigs, LessonOptions, Map} from '../../models/course.model';
 import {Exercise, ExerciseType, RegionAudio} from '../../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, WordDetail, File, Media} from '../../models/word.model';
-import 'rxjs/add/operator/takeWhile';
-import 'rxjs/add/operator/debounceTime';
+import {takeWhile, debounceTime} from 'rxjs/operators';
 
 interface AddFields {
   altForeign: boolean;
@@ -388,7 +387,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (!this.isMediaLoaded && this.currentExercise.wordDetailId) {
       this.buildService
       .fetchMedia(this.currentExercise.wordDetailId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (media: Media) => {
           if (media) {
@@ -680,7 +679,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (lastInBatch) {
       this.buildService
       .addExercises(this.saveExercises, this.lessonId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (savedExercises: Exercise[]) => {
           this.addedExercises.emit(savedExercises);
@@ -696,7 +695,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   private saveUpdatedExercise(exercise: Exercise) {
     this.buildService
     .updateExercise(exercise, this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       saved => {
         this.updatedExercise.emit(exercise);
@@ -782,7 +781,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     // Get all wordpair matches from server, then check if there is also an exercise type match
     this.buildService
     .checkIfWordpairInCourse(wordLocal, wordForeign, this.courseId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       exercises => {
         if (exercises && exercises.length) {
@@ -808,8 +807,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
         local = '';
     this.exerciseForm.controls['foreignWord']
     .valueChanges
-    .debounceTime(300)
-    .takeWhile(() => this.componentActive)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      debounceTime(300))
     .subscribe(newValue => {
       if (newValue !== foreign) {
         this.changeFilter(newValue, this.lanForeign);
@@ -818,8 +818,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     });
     this.exerciseForm.controls['localWord']
     .valueChanges
-    .takeWhile(() => this.componentActive)
-    .debounceTime(300)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      debounceTime(300))
     .subscribe(newValue => {
       if (newValue !== local) {
         this.changeFilter(newValue, this.lanLocal);
@@ -856,7 +857,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     if (filter.word) {
       this.buildService
       .fetchFilterWordPairs(filter, this.languagePair)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (wordpairs: WordPair[]) => {
           let word, score;

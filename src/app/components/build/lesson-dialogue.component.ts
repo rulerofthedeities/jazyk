@@ -3,6 +3,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
 import {Dialogue, LanPair} from '../../models/course.model';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-build-lesson-dialogue',
@@ -70,7 +71,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   private loadDialogue() {
     this.buildService
     .fetchDialogue(this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dialogue => this.dialogue = dialogue ? dialogue : this.dialogueDefault,
       error => this.errorService.handleError(error)
@@ -81,7 +82,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
     this.parse();
     this.buildService
     .updateDialogue(this.lessonId, this.dialogue)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       update => {
         this.modified = false,

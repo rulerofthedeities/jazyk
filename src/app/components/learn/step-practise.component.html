@@ -34,6 +34,7 @@
               [lanPair]="lanPair"
               [text]="text"
               [showAlt]="true"
+              [isStudy]="currentData?.data?.questionType === qType.Preview"
               [dir]="getQuestionDir()"
               [settings]="settings"
               [onHasAnswered]="hasAnswered"
@@ -133,34 +134,36 @@
             [data]="exerciseData"
             [text]="text">
           </km-points-completed>
-          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining > 0"
-            class="btn btn-success"
-            (click)="onContinuePractise()">
-            <span class="fa fa-arrow-right fa-spacing">
-            </span>
-            {{text["ContinuePractise"]}}
-          </button>
-          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining > 0"
-            class="btn btn-success"
-            (click)="onToStudy()">
-            <span class="fa fa-arrow-right fa-spacing">
-            </span>
-            {{text["ContinueStudy"]}}
-          </button>
-          <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining === 0"
-            class="btn btn-warning"
-            (click)="onToNextLesson()">
-            <span class="fa fa-fast-forward fa-spacing">
-            </span>
-            {{text["ToNextLesson"]}}
-          </button>
-          <button type="button" *ngIf="isRehearsal"
-            class="btn btn-success"
-            (click)="onRehearseAll()">
-            <span class="fa fa-refresh fa-spacing">
-            </span>
-            {{text["RehearseAgain"]}}
-          </button>
+          <div *ngIf="!isDemo">
+            <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining > 0"
+              class="btn btn-success"
+              (click)="onContinuePractise()">
+              <span class="fa fa-arrow-right fa-spacing">
+              </span>
+              {{text["ContinuePractise"]}}
+            </button>
+            <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining > 0"
+              class="btn btn-success"
+              (click)="onToStudy()">
+              <span class="fa fa-arrow-right fa-spacing">
+              </span>
+              {{text["ContinueStudy"]}}
+            </button>
+            <button type="button" *ngIf="!isRehearsal && countPerStep['practise']?.nrRemaining === 0 && countPerStep['study']?.nrRemaining === 0"
+              class="btn btn-warning"
+              (click)="onToNextLesson()">
+              <span class="fa fa-fast-forward fa-spacing">
+              </span>
+              {{text["ToNextLesson"]}}
+            </button>
+            <button type="button" *ngIf="isRehearsal"
+              class="btn btn-success"
+              (click)="onRehearseAll()">
+              <span class="fa fa-refresh fa-spacing">
+              </span>
+              {{text["RehearseAgain"]}}
+            </button>
+          </div>
           <div *ngIf="isDemo && course">
             <km-signup
               [text]="text"

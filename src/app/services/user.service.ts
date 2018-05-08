@@ -1,6 +1,5 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
 import {config} from '../app.config';
 import {User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
         Profile, Message, PublicProfile, Notification, Network} from '../models/user.model';
@@ -8,12 +7,8 @@ import {Language, Course, UserAccess, AccessLevel, UserCourse} from '../models/c
 import {ExerciseData} from '../models/exercise.model';
 import {CourseScore} from '../models/score.model';
 import {AuthService} from './auth.service';
-import {Subscription} from 'rxjs/Subscription';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/takeWhile';
-import {retry, delay, map} from 'rxjs/operators';
+import {Observable, Subscription, of} from 'rxjs';
+import {retry, delay, map, tap, takeWhile} from 'rxjs/operators';
 
 interface DemoData {
   courseId: string;
@@ -48,19 +43,19 @@ export class UserService {
 
   getUserData(): Observable<User> {
     if (this._user) {
-      return Observable.of(this._user);
+      return of(this._user);
     } else {
       if (this.authService.isLoggedIn()) {
         const headers = this.getTokenHeaders();
         return this.http
         .get<User>('/api/user', {headers})
-        .do(data => {
+        .pipe(tap(data => {
           this._user = data;
           if (!data) {
             // user not found, get default user data
             return this.getDefaultUserData(null);
           }
-        });
+        }));
       } else {
         return this.getDefaultUserData(null);
       }
@@ -85,7 +80,7 @@ export class UserService {
     const interfaceLan = this.getUserLan(queryLan),
           user: User = this.getAnonymousUser(interfaceLan);
     this._user = user;
-    return Observable.of(user);
+    return of(user);
   }
 
   clearUser() {
@@ -165,7 +160,7 @@ export class UserService {
       return this.http
       .post<number>('/api/user/results/add', data, {headers});
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
@@ -493,7 +488,7 @@ export class UserService {
     let notificationLoaded = false;
     this.subscription = this
     .getWelcomeNotification(user.main.lan)
-    .takeWhile(() => !notificationLoaded)
+    .pipe(takeWhile(() => !notificationLoaded))
     .subscribe(
       notification => {
         notificationLoaded = true;
@@ -509,7 +504,7 @@ export class UserService {
     let notificationCreated = false;
     this.subscription = this
     .saveNotification(notification)
-    .takeWhile(() => !notificationCreated)
+    .pipe(takeWhile(() => !notificationCreated))
     .subscribe(
       result => {
         notificationCreated = true;

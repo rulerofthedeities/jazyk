@@ -10,9 +10,8 @@ import {isLearnedLevel, SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
-// import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-practise',
@@ -197,15 +196,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     return nrOfChoices;
   }
 
-/*
-  private timeNext(secs: number) {
-    // Timer to show the next word
-    const timer = TimerObservable.create(secs * 1000);
-    this.nextWordTimer = timer
-    .takeWhile(() => this.componentActive)
-    .subscribe(t => this.nextWord());
-  }
-*/
   private getLessonResults() {
     if (this.lesson.rehearseStep === 'practise') {
       this.rehearseAll();
@@ -232,7 +222,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
     let leftToStudy: number;
     this.learnService
     .fetchLessonStepResults(this.lesson._id, 'practise')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
         if  (results && results.count) {
@@ -243,7 +233,6 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
           super.init(); // start countdown
         } else {
           this.noMoreExercises = true;
-          // this.onToNextLesson();
         }
       },
       error => this.errorService.handleError(error)
@@ -284,7 +273,10 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getDemoQuestions() {
-    this.buildExerciseData(this.lesson.exercises, null);
+    console.log('DEMO - to learn', this.settings.nrOfWordsLearn);
+    const exercises = this.lesson.exercises.slice(0, this.settings.nrOfWordsLearn);
+    console.log('DEMO - to learn 2 ', exercises);
+    this.buildExerciseData(exercises, null);
     this.current = -1;
     this.isQuestionReady = false;
     this.isExercisesDone = false;
@@ -350,7 +342,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
 
   private checkLessonChanged() {
     this.lessonChanged
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
       console.log('> LESSON CHANGED in practise TO ', lesson.name);
       this.lesson = lesson;

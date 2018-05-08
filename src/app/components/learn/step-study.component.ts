@@ -2,16 +2,13 @@ import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angula
 import {LanPair, Lesson, LessonOptions} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
-import {Subscription} from 'rxjs/Subscription';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject, BehaviorSubject, Subscription, timer} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-study',
@@ -136,7 +133,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private checkLessonChanged() {
     this.lessonChanged
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
       console.log('LESSON CHANGED in study TO ', lesson.name);
       this.lesson = lesson;
@@ -236,7 +233,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
     // fetch results for all exercises in this lesson
     this.learnService
     .fetchLessonStepResults(this.lesson._id, 'study')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
         if (results) {
@@ -322,15 +319,15 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
         this.subscription.forEach(sub => sub.unsubscribe());
       }
       // Timer for the local word display
-      const wordTimer = TimerObservable.create(this.settings.delay * 1000);
+      const wordTimer = timer(this.settings.delay * 1000);
       this.subscription[0] = wordTimer
-      .takeWhile(() => this.componentActive && !this.showLocal)
+      .pipe(takeWhile(() => this.componentActive && !this.showLocal))
       .subscribe(t => this.wordDone());
 
       // Timer for the dots countdown
-      const dotTimer = TimerObservable.create(0, 200);
+      const dotTimer = timer(0, 200);
       this.subscription[1] = dotTimer
-      .takeWhile(() => this.componentActive && this.dotLength > 0)
+      .pipe(takeWhile(() => this.componentActive && this.dotLength > 0))
       .subscribe(
         t => {
           this.dotLength = this.dotLength - 1;
@@ -344,7 +341,7 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   checkExercisesInterrupted() {
     this.exercisesInterrupted
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe( event => {
       let nrDone = 0;
       if (!this.isRehearsal) { // Don't save if this is a rehearsal

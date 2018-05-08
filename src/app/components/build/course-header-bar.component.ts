@@ -5,6 +5,7 @@ import {SharedService} from '../../services/shared.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, AccessLevel} from '../../models/course.model';
+import {takeWhile} from 'rxjs/operators';
 
 interface SavingData {
   isPublic: boolean;
@@ -96,7 +97,7 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
     this.savingData[property] = true;
     this.buildService
     .updateCourseProperty(this.course._id, property, this.course[property])
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => this.savingData[property] = false,
       error => this.errorService.handleError(error)

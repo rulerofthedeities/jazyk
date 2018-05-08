@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-points-earned',
@@ -21,7 +21,7 @@ export class LearnPointsEarnedComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.pointsEarned
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(points => {
       this.points = points;
     });

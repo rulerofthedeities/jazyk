@@ -11,7 +11,7 @@ import {ValidationService} from '../../services/validation.service';
 import {Language, Level} from '../../models/course.model';
 import {User, Notification} from '../../models/user.model';
 import {ExerciseData} from '../../models/exercise.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'sign-up.component.html',
@@ -72,7 +72,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     if (this.userForm.valid) {
       this.authService
       .signup(user)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         data => {
           this.signIn(user);
@@ -86,7 +86,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.userService.clearUser();
     this.authService
     .signin(user)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       signInData => {
         signInData.returnUrl = '';
@@ -139,7 +139,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     };
     this.utilsService
     .fetchDependables(options)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
@@ -195,7 +195,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   private saveStepData(step: string, data: string) {
     this.userService
     .saveDemoResults(data)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       totalScore => {
         if (step === 'study') {

@@ -15,9 +15,8 @@ import {Course, Lesson, Language, Translation, ResultData, Map,
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
         ExerciseType, QuestionType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
-import {Subject} from 'rxjs/Subject';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/takeWhile';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'course.component.html',
@@ -203,7 +202,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'LearnComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         this.getCourse(translations, this.courseId);
@@ -216,7 +215,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getCourse(translations: Translation[], courseId: string) {
     this.learnService
     .fetchCourse(courseId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       course => {
         if (course) {
@@ -259,7 +258,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private fetchStepData() {
     this.learnService
     .fetchStepData(this.courseId, this.lesson._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
         console.log('fetched step data', results);
@@ -469,7 +468,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.log(`Total points earned: ${processedData.pointsEarned}`);
       this.learnService
       .saveUserResults(JSON.stringify(processedData.result))
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         totalScore => {
           if (step === 'intro' || step === 'dialogue') {
@@ -518,7 +517,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private saveSettings() {
     this.userService
     .saveLearnSettings(this.settings)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       saved => {
         this.settingsUpdated = false;
@@ -579,51 +578,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Update stepcount with data from db
     this.learnService
     .fetchStepData(this.course._id, this.lesson._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       stepData => {
         console.log('fetched step data 2 ', stepData);
         if (stepData) {
-
           this.getCourseStepCount(stepData);
           this.getLessonStepCount(stepData.lesson);
-
-          /*
-          // Difficult
-          if (stepData.difficult !== this.countPerStep['difficult'].nrRemaining) {
-            this.countPerStep['difficult'].nrRemaining = stepData.difficult;
-            updated = true;
-          }
-          // Review
-          if (stepData.review !== this.countPerStep['review'].nrRemaining) {
-            this.countPerStep['review'].nrRemaining = stepData.review;
-            updated = true;
-          }
-          if (stepData.lesson) {
-            const totalWords = this.lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length;
-            // Study
-            const study = stepData.lesson.find(count => count.step === 'study');
-            if (study && study.nrDone !== this.countPerStep['study'].nrDone) {
-              this.countPerStep['study'].nrDone = study.nrDone;
-              this.countPerStep['study'].nrRemaining = Math.max(0, totalWords - study.nrDone);
-              updated = true;
-            }
-            // Practise
-            const practise = stepData.lesson.find(count => count.step === 'practise'),
-                  practiseDone = practise ? practise.nrDone : 0;
-            if (practise && practise.nrDone !== this.countPerStep['practise'].nrDone) {
-              this.countPerStep['practise'].nrDone = practiseDone;
-            }
-            let studyDone = this.countPerStep['study'] ? this.countPerStep['study'].nrDone : totalWords;
-            if (this.countPerStep['practise'].nrRemaining + this.countPerStep['practise'].nrDone !== studyDone) {
-              this.countPerStep['practise'].nrRemaining = Math.max(0, studyDone - practiseDone);
-              updated = true;
-            }
-          }
-          if (updated) {
-            this.stepcountUpdated.next(this.countPerStep);
-          }
-            */
         }
       },
       error => this.errorService.handleError(error)
@@ -650,7 +611,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private fetchMostRecentLesson() {
     this.learnService
     .fetchMostRecentLesson(this.course._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       lessonId => {
         if (lessonId) {
@@ -671,7 +632,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     this.log('Fetching lesson data');
     this.learnService
     .fetchLesson(lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (lesson: Lesson) => {
         if (lesson) {
@@ -734,8 +695,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private subscribe() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.id)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.id))
     .subscribe(
       params => {
         this.courseId = params['id'];
@@ -748,7 +710,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     );
     this.sharedService.exerciseModeChanged
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (started: boolean) => {
         this.exercisesStarted = started;

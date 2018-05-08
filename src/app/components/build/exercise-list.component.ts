@@ -5,7 +5,7 @@ import {BuildService} from '../../services/build.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-exercise-list',
@@ -211,7 +211,7 @@ export class BuildExerciseListComponent implements OnDestroy {
     this.isRemoving = true;
     this.buildService
     .removeExercise(this.removingId, this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       () => {
         let toRemoveIndex = null;
@@ -236,7 +236,7 @@ export class BuildExerciseListComponent implements OnDestroy {
     if (empty.length === 0) {
       this.buildService
       .updateExercises(this.exercises, this.lessonId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         () => {},
         error => this.errorService.handleError(error)

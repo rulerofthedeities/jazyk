@@ -4,7 +4,7 @@ import {InfoService} from '../../services/info.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Page} from '../../models/info.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   template: `
@@ -34,8 +34,9 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.page)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.page))
     .subscribe(
       params => this.fetchInfoPage(params['page'].toLowerCase())
     );
@@ -44,7 +45,7 @@ export class InfoComponent implements OnInit, OnDestroy {
   private fetchInfoPage(page: string) {
     this.infoService
     .fetchInfoPage(page, this.userService.user.main.lan)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       page => this.page = page,
       error => {

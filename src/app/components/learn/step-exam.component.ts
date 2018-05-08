@@ -6,8 +6,8 @@ import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-exam',

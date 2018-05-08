@@ -4,7 +4,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {LanPair, LanConfigs} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 interface FormData {
   foreignRegions?: string[];
@@ -87,7 +87,7 @@ export abstract class ExerciseBase {
     saveExercises.push(exercise);
     this.buildService
     .addExercises(saveExercises, this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       savedExercises => {
         this.isSaving = false;
@@ -101,7 +101,7 @@ export abstract class ExerciseBase {
   protected saveUpdatedExercise(exercise: Exercise) {
     this.buildService
     .updateExercise(exercise, this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       saved => {
         this.isSaving = false;

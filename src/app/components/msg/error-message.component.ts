@@ -3,7 +3,7 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Error} from '../../models/error.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-error-msg',
@@ -35,7 +35,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   private getError() {
     this.errorService
     .errorOccurred
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (errorData: Error) => {
         if (errorData) {

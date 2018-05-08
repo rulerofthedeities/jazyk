@@ -4,7 +4,7 @@ import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
 import {UtilsService} from '../../services/utils.service';
 import {Intro, Map} from '../../models/course.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 enum Alignment {Left, Center, Right}
 
@@ -129,7 +129,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   private loadIntro() {
     this.buildService
     .fetchIntro(this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       intro => this.intro = intro ? intro : this.introDefault,
       error => this.errorService.handleError(error)
@@ -140,7 +140,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     this.parseText();
     this.buildService
     .updateIntro(this.lessonId, this.intro)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       intro => {
         this.modified = false,

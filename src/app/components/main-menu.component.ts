@@ -7,8 +7,8 @@ import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
 import {User} from '../models/user.model';
 import {Translation, Language} from '../models/course.model';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import 'rxjs/add/operator/takeWhile';
+import {timer} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-main-menu',
@@ -115,7 +115,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   private getUrl() {
     this.url = this.filterUrl(this.router.url);
     this.router.events
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe((route: NavigationEnd) => {
       this.url = this.filterUrl(route.url);
     });
@@ -150,7 +150,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn()) {
       this.userService
       .fetchNotificationsCount()
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         count => this.nrOfNotifications = count,
         error => this.errorService.handleError(error)
@@ -162,7 +162,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn()) {
       this.userService
       .fetchMessagesCount()
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         count => this.nrOfMessages = count,
         error => this.errorService.handleError(error)
@@ -174,7 +174,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn()) {
       this.userService
       .fetchScoreTotal()
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         score => {
           this.score = score || 0;
@@ -186,9 +186,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private checkMessages() {
-    TimerObservable
-    .create(0, 900000) // Start immediately, then check every 15 minutes
-    .takeWhile(() => this.componentActive)
+    timer(0, 900000) // Start immediately, then check every 15 minutes
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(t => this.getMessagesCount());
   }
 
@@ -215,7 +214,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   private getTranslations(lan: string) {
     this.utilsService
     .fetchTranslations(lan, 'MainMenuComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => this.text = this.utilsService.getTranslatedText(translations),
       error => this.errorService.handleError(error)
@@ -236,7 +235,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     };
     this.utilsService
     .fetchDependables(options)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);

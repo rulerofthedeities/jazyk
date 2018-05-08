@@ -15,7 +15,7 @@ import {ExerciseType} from '../../models/exercise.model';
 })
 
 export class TypeIconsComponent {
-  @Input() tpe: string;
+  @Input() tpe: ExerciseType;
   @Input() text: Object;
   exType = ExerciseType;
 

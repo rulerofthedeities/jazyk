@@ -13,10 +13,8 @@ import {LearnComparisonComponent} from './exercise-comparison.component';
 import {LearnConjugationsComponent} from './exercise-conjugations.component';
 import {LearnQAComponent} from './exercise-qa.component';
 import {LearnTimerComponent} from './timer.component';
-import {Subscription} from 'rxjs/Subscription';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject, BehaviorSubject, Subscription} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 interface ById {
   levels: number;
@@ -269,7 +267,7 @@ export abstract class Step {
   protected getChoices(courseId: string, isBidirectional = true) {
     this.learnService
     .fetchCourseChoices(courseId, this.lanPair)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       choices => {
         this.choices = choices;
@@ -1134,7 +1132,7 @@ export abstract class Step {
   private getConfig(lanCode: string) {
     this.learnService
     .fetchLanConfig(lanCode)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (config: LanConfig) => {
         if (config) {
@@ -1148,7 +1146,7 @@ export abstract class Step {
 
   private checkExercisesInterrupted() {
     this.exercisesInterrupted
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       let nrDone = this.current;
       if (this.currentData.data.isDone) {
@@ -1170,7 +1168,7 @@ export abstract class Step {
   private checkCountUpdated() {
     if (this.stepcountUpdated) {
       this.stepcountUpdated
-      .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
       .subscribe( count => {
         if (count) {
           this.countPerStep = count;

@@ -1,6 +1,6 @@
 import {Component, Input, Output, OnInit, OnDestroy, ElementRef, ViewChild, EventEmitter} from '@angular/core';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import 'rxjs/add/operator/takeWhile';
+import {timer} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-countdown',
@@ -126,10 +126,10 @@ export class LearnCountdownComponent implements OnInit, OnDestroy {
     const startDate = new Date(),
           intervalMs = 50,
           steps = 1000 / intervalMs,
-          timer = TimerObservable.create(0, intervalMs);
+          timerObservable = timer(0, intervalMs);
     this.playSound(false);
-    timer
-    .takeWhile(() => this.componentActive)
+    timerObservable
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(t => {
       this.updateAngle(t, steps);
       if (t > 0 && t % steps === 0) {

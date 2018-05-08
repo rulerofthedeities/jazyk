@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
 import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro, 
         Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue, Map} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData, ExerciseType,
         Direction, ExerciseResult, ResultsData, Choice, QuestionType} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
+import {Observable, of} from 'rxjs';
 import {retry, delay, map} from 'rxjs/operators';
 
 interface CourseData {
@@ -96,7 +96,7 @@ export class LearnService {
       .get<LessonResult[]>('/api/user/results/lessons/' + courseId, {headers})
       .pipe(retry(3));
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
@@ -132,7 +132,7 @@ export class LearnService {
       return this.http
       .post<number>('/api/user/results/add', data, {headers});
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
   

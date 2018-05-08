@@ -2,8 +2,8 @@ import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angula
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Dialogue, Step, Level, LanPair, Lesson} from '../../models/course.model';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-dialogue',
@@ -74,7 +74,7 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
 
   private checkLessonChanged() {
     this.lessonChanged
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
       console.log('LESSON CHANGED in dialogue TO ', lesson.name);
       this.lesson = lesson;

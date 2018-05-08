@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'settings.component.html',
@@ -39,7 +39,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   private getTranslations(lan: string) {
     this.utilsService
     .fetchTranslations(lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

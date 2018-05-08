@@ -2,7 +2,8 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {ExerciseData, Exercise} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LanPair} from '../../models/course.model';
-import {Subject} from 'rxjs/Subject';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-question',
@@ -18,6 +19,7 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
   @Input() showAlt = false;
   @Input() showImage = true;
   @Input() hideGenus = false;
+  @Input() isStudy = false; // For study without study tab
   @Input() showAnnotations = true;
   @Input() settings: LearnSettings = null;
   @Input() private onHasAnswered: Subject<boolean>;
@@ -30,7 +32,7 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
     if (this.onHasAnswered) {
       // not in study
       this.onHasAnswered
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(event => {
         console.log('has answered');
         this.hasAnswered = true;
@@ -39,7 +41,7 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
     if (this.onGotoNextWord) {
       // not in study
       this.onGotoNextWord
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(event => {
         console.log('next word');
         this.hasAnswered = false;

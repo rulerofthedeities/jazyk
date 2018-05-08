@@ -7,7 +7,7 @@ import {UserService} from '../../services/user.service';
 import {Course, Lesson, Translation, LanPair, LanConfigs, AccessLevel} from '../../models/course.model';
 import {Filter, WordPairDetail} from '../../models/word.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'lesson.component.html',
@@ -52,8 +52,9 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.id)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.id))
     .subscribe(
       params => {
         const lessonId = params['id'];
@@ -136,7 +137,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getLesson(lessonId: string) {
     this.buildService
     .fetchLesson(lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       lesson => {
         this.lesson = lesson;
@@ -159,7 +160,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       this.chapters.push(chapterName);
       this.buildService
       .addChapter(this.lesson.courseId, chapterName, lessonId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         savedCourse => {},
         error => this.errorService.handleError(error)
@@ -170,7 +171,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getCourse() {
     this.buildService
     .fetchCourse(this.lesson.courseId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       course => {
         this.course = course;
@@ -188,7 +189,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getTranslations(lessonId: string) {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'LessonComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         this.setText(translations);
@@ -201,7 +202,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getConfigs(lanPair: LanPair) {
     this.buildService
     .fetchLanConfigs(lanPair)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       configs => this.configs = configs,
       error => this.errorService.handleError(error)

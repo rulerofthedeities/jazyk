@@ -5,7 +5,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {Profile} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'profile.component.html',
@@ -56,7 +56,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private fetchProfile() {
     this.userService
     .getProfile()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       profile => {
         this.buildForm(profile);
@@ -68,7 +68,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private updateProfile(newProfile: Profile) {
     this.userService
     .saveProfile(newProfile)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.infoMsg = this.text['ProfileUpdated'];
@@ -102,7 +102,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

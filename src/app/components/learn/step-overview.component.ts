@@ -3,6 +3,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, LessonHeader, LessonResult, Step, Level, Map} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-overview',
@@ -139,7 +140,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     // Get all lesson headers for this course
     this.learnService
     .fetchLessonHeaders(this.course._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       headers => {
         this.getChapterLessons(headers);
@@ -213,7 +214,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       // Get counts only grouped by lesson id
       this.learnService
       .fetchLessonCounts(this.course._id)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (results: LessonResult[]) => {
           if (results) {
@@ -226,7 +227,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       // Get results grouped by lesson id
       this.learnService
       .fetchLessonResults(this.course._id)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (results: LessonResult[]) => {
           if (results) {
@@ -301,7 +302,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   private fetchLesson(lessonId: string, rehearse: string = null, skipTo: string = null) {
     this.learnService
     .fetchLesson(lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (lesson: Lesson) => {
         if (rehearse) {

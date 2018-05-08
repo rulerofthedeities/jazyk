@@ -1,8 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Error, UserError} from '../models/error.model';
-import {Observable} from 'rxjs/Observable';
-import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
+import {Observable, throwError} from 'rxjs';
 
 @Injectable()
 export class ErrorService {
@@ -21,7 +20,7 @@ export class ErrorService {
       msg = error.message;
       this.errorOccurred.emit({title, msg}); // Send info to error message componen
     }
-    return new ErrorObservable('Something bad happened; please try again later.');
+    return throwError('Something bad happened; please try again later.');
   }
 
   clearError() {

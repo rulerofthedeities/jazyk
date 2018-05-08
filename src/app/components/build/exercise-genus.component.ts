@@ -6,6 +6,7 @@ import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
 import {LanConfig} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-build-genus',
@@ -34,7 +35,7 @@ export class BuildGenusComponent extends ExerciseBase implements OnInit, OnDestr
   private getConfig(lanCode: string) {
     this.buildService
     .fetchLanConfig(lanCode)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       config => this.config = config,
       error => this.errorService.handleError(error)

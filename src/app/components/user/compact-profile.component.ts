@@ -2,6 +2,7 @@ import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {CompactProfile} from '../../models/user.model';
 import {UserService} from '../../services/user.service';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-compact-profile',
@@ -47,7 +48,7 @@ export class UserCompactProfileComponent implements OnInit, OnDestroy {
 
   private getUserData(userId: string) {
     this.userService.getPublicProfileById(userId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
         if (data) {

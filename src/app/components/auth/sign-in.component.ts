@@ -8,8 +8,7 @@ import {UserService} from '../../services/user.service';
 import {SharedService} from '../../services/shared.service';
 import {ValidationService} from '../../services/validation.service';
 import {User} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
-import {Observable} from 'rxjs/Observable';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'sign-in.component.html',
@@ -64,7 +63,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       this.log('Logging in');
       this.authService
       .signin(user)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         data => {
           data.returnUrl = this.returnUrl;
@@ -88,7 +87,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   private getTranslations(lan: string) {
     this.utilsService
     .fetchTranslations(lan, 'AuthComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

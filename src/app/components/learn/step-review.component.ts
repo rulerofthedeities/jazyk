@@ -6,8 +6,8 @@ import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Exercise, ExerciseData, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 // piggyback lesson options with exercise for course reviews
 interface ExercisePlusOptions {
@@ -51,7 +51,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   private getToReview() {
     this.learnService
     .fetchToReview(this.course._id, this.settings.nrOfWordsReview)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
         this.setExercises(data.toreview, data.results)
@@ -80,7 +80,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   private checkToContinue() {
     // User continues review from course tabs
     this.continueCourseLevel
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       this.continueReview();
     })

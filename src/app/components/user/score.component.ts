@@ -5,8 +5,7 @@ import {UtilsService} from '../../services/utils.service';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import {LanPair} from '../../models/course.model';
 import {Score, CourseScore} from '../../models/score.model';
-import 'rxjs/add/operator/takeWhile';
-
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'score.component.html',
@@ -40,7 +39,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   private fetchScores() {
     this.userService
     .fetchScoreCourses()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
         this.scores = data.scores;
@@ -55,7 +54,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

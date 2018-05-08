@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Page} from '../models/info.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {retry} from 'rxjs/operators';
 
 @Injectable()

@@ -6,7 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {AuthService} from '../../services/auth.service';
 import {UserService} from '../../services/user.service';
 import {Course, UserCourse, Language, Translation, CourseListType, Map} from '../../models/course.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'courses-user.component.html',
@@ -71,7 +71,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private getCourses() {
     this.learnService
     .fetchSubscribedCourses()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courses => {
         if (courses) {
@@ -96,7 +96,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   private unsubscribeCourse(courseId: string) {
     this.learnService
     .unSubscribeCourse(courseId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.courses = this.lanCourses[this.selectedLanguage.code].filter(course => course._id !== courseId);
@@ -162,7 +162,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
     };
     this.utilsService
     .fetchDependables(options)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);

@@ -4,6 +4,7 @@ import {isLearnedLevel} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
 import {Exercise, ExerciseResult, ExerciseData, ExerciseType, ResultsData} from '../../models/exercise.model';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-lesson-overview',
@@ -60,7 +61,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
     // fetch results for all exercises in this lesson
     this.learnService
     .fetchLessonStepResults(this.lessonId, 'overview')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => this.combineResults(results),
       error => this.errorService.handleError(error)
@@ -96,7 +97,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   private fetchLesson() {
     this.learnService
     .fetchLesson(this.lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (lesson: Lesson) => {
         this.lesson = lesson;

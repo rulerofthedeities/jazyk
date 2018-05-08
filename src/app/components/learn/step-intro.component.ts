@@ -3,8 +3,8 @@ import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson, Step, Level, Intro} from '../../models/course.model';
-import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/takeWhile';
+import {Subject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-intro',
@@ -74,7 +74,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
 
   private checkLessonChanged() {
     this.lessonChanged
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
       console.log('LESSON CHANGED in intro TO ', lesson.name);
       this.lesson = lesson;
@@ -86,7 +86,7 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
   private loadIntro() {
     this.learnService
     .fetchIntro(this.lesson._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       intro => this.intro = intro,
       error => this.errorService.handleError(error)

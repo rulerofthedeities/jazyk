@@ -6,8 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
 import {PublicProfile, CompactProfile, Message, Followed, Follower, Network} from '../../models/user.model';
 import {Course} from '../../models/course.model';
-import 'rxjs/add/operator/takeWhile';
-
+import {takeWhile, filter} from 'rxjs/operators';
 
 interface Courses {
   learning: Course[];
@@ -47,8 +46,9 @@ export class UserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.name)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.name))
     .subscribe(
       params => {
         this.init();
@@ -68,7 +68,7 @@ export class UserComponent implements OnInit, OnDestroy {
       const id = this.userService.user._id;
       this.userService
       .followUser(userId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         follow => {
           this.isCurrentlyFollowing = true;
@@ -90,7 +90,7 @@ export class UserComponent implements OnInit, OnDestroy {
       const id = this.userService.user._id;
       this.userService
       .unFollowUser(userId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         unfollow => {
           this.isCurrentlyFollowing = false;
@@ -200,7 +200,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private fetchCoursesTeaching(show: boolean) {
     this.userService
     .getCoursesTeaching(this.profile._id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courses => {
         this.courses.teaching = courses;
@@ -212,7 +212,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private fetchCoursesFollowing(show: boolean) {
     this.userService
     .getCoursesFollowing()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courseData => {
         console.log('courseData', courseData.subscribed);
@@ -226,7 +226,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private fetchPublicProfile(user: string) {
     this.userService
     .getPublicProfile(user)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       profile => {
         this.isCurrentUser = this.userService.user._id === profile._id;
@@ -248,7 +248,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private fetchFollowers(userId: string) {
     this.userService
     .getFollowers(userId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       network => {
         this.network = network;
@@ -317,7 +317,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (users.length > 0 && users[0]) {
       this.userService
       .getCompactProfiles(users)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         profiles => {
           if (profiles) {
@@ -359,7 +359,7 @@ export class UserComponent implements OnInit, OnDestroy {
       };
     this.userService
     .saveMessage(message)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       saved => {
         const info = this.text['MessageSent'];
@@ -372,7 +372,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

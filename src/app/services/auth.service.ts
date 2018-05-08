@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {tokenNotExpired} from 'angular2-jwt';
-import {JwtHelper} from 'angular2-jwt';
+import {JwtHelperService} from '@auth0/angular-jwt';
 import {SharedService} from '../services/shared.service';
 import {User} from '../models/user.model';
+import {Observable} from 'rxjs';
 import {retry} from 'rxjs/operators';
 
 interface UserStorage {
@@ -27,7 +26,7 @@ interface Token {
 
 @Injectable()
 export class AuthService {
-  private jwtHelper: JwtHelper = new JwtHelper();
+  private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor (
     private http: HttpClient,
@@ -70,7 +69,8 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!tokenNotExpired('km-jazyk.token');
+    const token = this.getToken();
+    return !this.jwtHelper.isTokenExpired(token);
   }
 
   keepTokenFresh() {

@@ -4,7 +4,7 @@ import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {LearnSettings} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 interface FormData {
   nrofwords: number[];
@@ -57,7 +57,7 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
   private fetchSettings() {
     this.userService
     .getLearnSettings()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       settings => {
         this.buildForm(settings);
@@ -69,7 +69,7 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
   private updateSettings(newSettings: LearnSettings) {
     this.userService
     .saveLearnSettings(newSettings)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.userService.updateUserSettings(newSettings);

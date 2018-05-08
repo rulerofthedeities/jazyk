@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {isLearnedLevel} from '../../services/shared.service';
-import 'rxjs/add/operator/takeWhile';
+import {BehaviorSubject} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learnlevel-bar',
@@ -33,7 +33,7 @@ export class LearnLevelBarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.maxLevel = isLearnedLevel.toString();
     this.levelUpdated
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       this.updateLevel(event);
     });

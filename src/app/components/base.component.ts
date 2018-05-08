@@ -3,8 +3,8 @@ import {AuthService} from '../services/auth.service';
 import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
 import {SharedService} from '../services/shared.service';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import 'rxjs/add/operator/takeWhile';
+import {timer} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'base.component.html',
@@ -55,9 +55,9 @@ export class BaseComponent implements OnInit, OnDestroy {
   }
 
   private setUpTokenRefresh() {
-    const timer = TimerObservable.create(30000, 3600000); // Start after 30 secs, then check every hour
-    timer
-    .takeWhile(() => this.componentActive)
+    const timerObservable = timer(30000, 3600000); // Start after 30 secs, then check every hour
+    timerObservable
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(t => {
       if (this.authService.isLoggedIn()) {
         this.authService.keepTokenFresh();

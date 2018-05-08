@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, OnDestroy} from '@angular/core';
 import {ExerciseData, TimeCutoffs} from '../../models/exercise.model';
-import {TimerObservable} from 'rxjs/observable/TimerObservable';
-import 'rxjs/add/operator/takeWhile';
+import {timer} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-timer',
@@ -69,10 +69,10 @@ export class LearnTimerComponent implements OnDestroy, OnChanges {
 
   private changeBar() {
     const step = 50,
-          timer = TimerObservable.create(0, step);
+          timerObservable = timer(0, step);
     let percTogo = 0;
-    timer
-    .takeWhile(() => this.componentActive && this.barLength > 0 && this.isAnswered === false)
+    timerObservable
+    .pipe(takeWhile(() => this.componentActive && this.barLength > 0 && this.isAnswered === false))
     .subscribe(t => {
       this.currentTimeMs -= step;
       percTogo = Math.trunc(this.currentTimeMs / this.totalTimeMs * 1000) / 10;

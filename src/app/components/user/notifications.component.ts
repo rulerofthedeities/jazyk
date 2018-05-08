@@ -4,7 +4,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {Notification} from '../../models/user.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'notifications.component.html',
@@ -102,8 +102,9 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
   private getCurrentNotification() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.notificationId)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.notificationId))
     .subscribe(
       params => {
         this.isFromDashboard = true;
@@ -115,7 +116,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private fetchNotifications() {
     this.userService
     .fetchNotifications()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       notifications => this.notifications = notifications,
       error => this.errorService.handleError(error)
@@ -125,7 +126,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private fetchNotification(id: string, i: number) {
     this.userService
     .fetchNotification(id)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       notification => {
         if (notification) {
@@ -151,7 +152,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private deleteNotification(notificationId: string) {
     this.userService
     .deleteNotification(notificationId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       deleted => {
         this.infoMsg = this.text['NotificationDeleted'];
@@ -163,7 +164,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private deleteReadNotifications() {
     this.userService
     .deleteReadNotifications()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       deleted => {
         this.infoMsg = this.text['NotificationsDeleted'];
@@ -176,7 +177,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     if (!isNaN(i)) {
       this.userService
       .setNotificationAsRead(this.notifications[i]._id)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         read => {},
         error => this.errorService.handleError(error)
@@ -187,7 +188,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private setAllNotificationsAsRead() {
     this.userService
     .setAllNotificationsAsRead()
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       read => {},
       error => this.errorService.handleError(error)
@@ -197,7 +198,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private getTranslations() {
     this.utilsService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

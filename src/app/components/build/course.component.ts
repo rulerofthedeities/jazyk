@@ -6,7 +6,7 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../services/auth.service';
 import {Course, Lesson, LessonId, Language, Translation, AccessLevel} from '../../models/course.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'course.component.html',
@@ -87,7 +87,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     if (this.authService.isLoggedIn()) {
       this.buildService
       .fetchCourse(courseId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         course => {
           console.log('got course', course);
@@ -112,7 +112,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private getLessons(courseId: string) {
     this.buildService
     .fetchLessons(courseId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       lessons => this.lessons = lessons,
       error => this.errorService.handleError(error)
@@ -124,7 +124,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       this.chapters.push(chapterName);
       this.buildService
       .addChapter(this.course._id, chapterName, lessonId)
-      .takeWhile(() => this.componentActive)
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         savedCourse => {
         if (go) {
@@ -141,7 +141,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private addLessonId(chapterName: string, lessonId: string, go: boolean) {
     this.buildService
     .updateCourseLesson(this.course._id, chapterName, lessonId)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       savedLessonId => {
         if (go) {
@@ -167,7 +167,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   private saveResortedLessons() {
     this.buildService
     .updateLessonIds(this.course._id, this.lessonIds)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       () => {},
       error => this.errorService.handleError(error)
@@ -207,7 +207,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     };
     this.utilsService
     .fetchDependables(options)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
@@ -220,8 +220,9 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private getRouteParams() {
     this.route.params
-    .takeWhile(() => this.componentActive)
-    .filter(params => params.id)
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.id))
     .subscribe(
       params => {
         const courseId = params['id'];

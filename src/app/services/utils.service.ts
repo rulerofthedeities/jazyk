@@ -2,7 +2,7 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Course, Translation, Dependables} from '../models/course.model';
 import {retry, delay, map} from 'rxjs/operators';
 

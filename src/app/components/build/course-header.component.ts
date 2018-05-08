@@ -5,7 +5,7 @@ import {BuildService} from '../../services/build.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Course, Lesson, Language} from '../../models/course.model';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-build-course-header',
@@ -145,7 +145,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   private addCourse() {
     this.buildService
     .addCourse(this.course)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       savedCourse => {
         this.course = savedCourse;
@@ -158,7 +158,7 @@ export class BuildCourseHeaderComponent implements OnInit, OnDestroy {
   private updateCourse() {
     this.buildService
     .updateCourseHeader(this.course)
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       updatedCourse => this.done.emit(this.course),
       error => this.errorService.handleError(error)

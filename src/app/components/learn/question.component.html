@@ -40,7 +40,7 @@
   <!-- FOREIGN -->
   <div class="foreign" *ngIf="dir==='foreign'">
     <!-- IMAGE -->
-    <div class="image" *ngIf="showImage && currentData.exercise.image && hasAnswered">
+    <div class="image" *ngIf="showImage && currentData.exercise.image && (hasAnswered || isStudy)">
       <img src="{{currentData.exercise.image}}">
     </div>
     <h1>

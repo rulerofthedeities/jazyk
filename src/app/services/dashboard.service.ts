@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {AuthService} from './auth.service';
 import {SummaryData, CommunicationData, RecentCourse} from '../models/dashboard.model';
 import {StepData} from '../models/course.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable, of} from 'rxjs';
 import {retry, delay, map} from 'rxjs/operators';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class DashboardService {
       .get<StepData>('/api/user/results/course/summary/' + courseId, {headers})
       .pipe(retry(3));
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 
@@ -53,7 +53,7 @@ export class DashboardService {
       .get<Array<number>>('/api/user/results/course/count/' + courseId, {headers})
       .pipe(retry(3));
     } else {
-      return Observable.of(null);
+      return of(null);
     }
   }
 

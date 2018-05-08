@@ -3,7 +3,7 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../services/auth.service';
-import 'rxjs/add/operator/takeWhile';
+import {takeWhile} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'home.component.html',
@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private getTranslations(lan) {
     this.utilsService
     .fetchTranslations(lan, 'HomeComponent')
-    .takeWhile(() => this.componentActive)
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {

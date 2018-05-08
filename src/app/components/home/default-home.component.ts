@@ -1,8 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {UserService} from '../../services/user.service';
-import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-home-default',
