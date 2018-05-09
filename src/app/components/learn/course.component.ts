@@ -660,19 +660,27 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private getNextLesson(currentLessonId: string) {
     // Go to next lesson
     let currentFound = false,
-        newLessonId;
-    this.sortChapters().forEach(chapter => {
-      chapter.lessonIds.forEach(lessonId => {
-        if (currentFound && !newLessonId) {
-          newLessonId = lessonId;
-        } else {
-          currentFound = currentLessonId === lessonId;
-        }
-      });
+        newLessonId,
+        chapter: LessonId;
+
+    this.course.chapters.forEach(chapterName => {
+      // Get lessons for this chapter
+      chapter = this.course.lessons.find(lesson => lesson.chapter === chapterName);
+      if (chapter) {
+        chapter.lessonIds.forEach(lessonId => {
+          if (currentFound && !newLessonId) {
+            newLessonId = lessonId;
+          } else {
+            currentFound = currentLessonId === lessonId;
+          }
+        });
+      }
     });
     if (newLessonId) {
+          console.log('new lesson id - get new lesson', newLessonId);
       this.getLesson(newLessonId);
     } else {
+          console.log('no new lesson id - course is done?', newLessonId);
       // There is no new lesson; course is done
       this.currentStep = 0;
       this.isLessonReady = true;
