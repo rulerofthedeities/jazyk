@@ -136,6 +136,11 @@ export abstract class Step {
             this.checkIfWordAnswer();
           }
         break;
+        case QuestionType.FillIn:
+          if (key === 'Enter') {
+            this.checkIfFillInAnswer(false);
+          }
+        break;
       }
     }
   }
