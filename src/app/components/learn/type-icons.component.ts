@@ -21,7 +21,7 @@ export class TypeIconsComponent {
 
   getToolTip(tpe: number): string {
     let key: string;
-    switch(tpe) {
+    switch (tpe) {
       case ExerciseType.Article:
         key = 'Article';
       break;
@@ -50,5 +50,3 @@ export class TypeIconsComponent {
     return key ? this.text[key] : '';
   }
 }
-
-            

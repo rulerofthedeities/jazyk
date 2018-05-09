@@ -69,5 +69,4 @@ export class ErrorService {
     return this.http
     .post('/api/error', JSON.stringify(err), {headers});
   }
-
 }

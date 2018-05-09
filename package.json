@@ -64,6 +64,7 @@
     "@types/jasmine": "2.5.38",
     "codelyzer": "^4.3.0",
     "eslint": "^4.19.1",
+    "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.9.1",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",

@@ -7,6 +7,7 @@ import {environment} from '../../environments/environment';
 export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
 export const isLearnedLevel = 12; // minimum level before it is considered learned
+export const appTitle = 'Jazyk';
 
 export class SharedService {
   private eventMessages: EventMessage[] = [];
@@ -52,7 +53,13 @@ export class SharedService {
 
   /*** Process data to save exercises ***/
 
-  processAnswers(step: string, data: ExerciseData[], courseId: string, lessonId: string, isRepeat: boolean, courseLevel: Level): ProcessedData {
+  processAnswers(
+    step: string,
+    data: ExerciseData[],
+    courseId: string,
+    lessonId: string,
+    isRepeat: boolean,
+    courseLevel: Level): ProcessedData {
     const lastResult: Map<ResultData> = {}, // Get most recent result per exercise (for isLearned && reviewTime)
           streak: Map<string> = {}, // Get streaks for exercise
           allCorrect: Map<boolean> = {}, // Exercise is only correct if all answers for an exercise are correct

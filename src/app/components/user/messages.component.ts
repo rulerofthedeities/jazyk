@@ -349,6 +349,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'PrivateMessages');
         }
       },
       error => this.errorService.handleError(error)

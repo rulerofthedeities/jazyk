@@ -1,5 +1,5 @@
-import {Component, Input, Output, OnInit, OnChanges, AfterViewInit, Renderer, EventEmitter, 
-        ViewChildren, QueryList, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnInit, OnChanges, AfterViewInit, Renderer,
+  EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
 import {LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType, ConjugationsData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
@@ -43,7 +43,7 @@ export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewIni
 
   ngOnInit() {
     this.instruction = this.text['instructionComparison'];
-    this.labels = [this.text["Comparative"], this.text["Superlative"]];
+    this.labels = [this.text['Comparative'], this.text['Superlative']];
   }
 
   ngOnChanges() {
@@ -66,7 +66,7 @@ export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   onKeySelected(key: string) {
-    const currentField = this.comparison.find((field, i) => i === this.currentField)
+    const currentField = this.comparison.find((field, i) => i === this.currentField);
     if (currentField) {
       this.utilsService.insertKey(currentField.nativeElement, key);
       this.answers[this.currentField] = currentField.nativeElement.value;

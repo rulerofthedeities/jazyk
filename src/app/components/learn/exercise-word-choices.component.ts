@@ -3,7 +3,6 @@ import {LearnService} from '../../services/learn.service';
 import {ExerciseData, ExerciseWord, Direction} from '../../models/exercise.model';
 import {LanPair} from '../../models/course.model';
 
-
 @Component({
   selector: 'km-word-choices',
   templateUrl: 'exercise-word-choices.component.html',
@@ -41,6 +40,5 @@ export class LearnWordChoicesComponent implements OnChanges {
 
   filter(choice: string): string {
     return choice;
-    // return this.learnService.filterPrefix(choice);
   }
 }

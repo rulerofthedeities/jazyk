@@ -23,7 +23,7 @@ export class BuildService {
     .get<Course>('/api/build/course/' + courseId, {headers})
     .pipe(retry(3));
   }
-  
+
   fetchAuthorCourses(): Observable<Course[]> {
     const headers = this.getTokenHeaders();
     return this.http
@@ -66,14 +66,6 @@ export class BuildService {
 
   /*** CHAPTERS ***/
 
-/*
-  fetchChapters(courseId: string) {
-    return this.http
-    .get('/api/chapters/' + courseId)
-    .pipe(retry(3));
-  }
-*/
-
   addChapter(courseId: string, chapterName: string, lessonId: string): Observable<Course> {
     const headers = this.getTokenHeaders(),
           lesson = {chapter: chapterName, lessonIds: [lessonId]};
@@ -94,9 +86,7 @@ export class BuildService {
   }
 
   getCourseChapters(course: Course): string[] {
-    return course.chapters; /*
-    .filter(el => el.lessonIds.length > 0)
-    .map(el => el.chapter);*/
+    return course.chapters;
   }
 
   /*** LESSONS ***/

@@ -226,6 +226,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             this.course = course;
             this.getCurrentLesson();
             this.log(`Loaded course '${this.course.name}'`);
+            this.utilsService.setPageTitle(null, course.name);
           } else {
             this.isError = true;
             this.infoMsg = this.utilsService.getTranslation(translations, 'notpublished');
@@ -341,7 +342,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         // new course: show intro if it exists otherwise start dialogue otherwise start study;
         defaultStep = this.getNextStep(0);
       }
-      //Only intro or dialogue done, go to next step
+      // Only intro or dialogue done, go to next step
       if (defaultStep === null) {
         if (this.hasStep('dialogue') && this.countPerStep['dialogue'].nrDone > 0) {
           defaultStep = this.getNextStep(this.getStepNr('dialogue'));
@@ -456,8 +457,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private saveAnswers(step: string, data: ExerciseData[]) {
     const lessonId = this.lesson ? this.lesson._id : null,
           isRepeat = this.lesson ? !!this.lesson.rehearseStep : false,
-          processedData: ProcessedData = this.sharedService.processAnswers(step, data, this.course._id, lessonId, isRepeat, this.courseLevel);
-    
+          processedData: ProcessedData = 
+            this.sharedService.processAnswers(step, data, this.course._id, lessonId, isRepeat, this.courseLevel);
+
     if (processedData) {
       /*
       if (!this.lesson.rehearseStep) {
@@ -551,7 +553,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep['practise'].nrRemaining = Math.max(0, remaining);
             }
           }
-        };
+        }
       break;
       case 'difficult':
         // Check which results have isDifficult false
@@ -563,7 +565,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
               this.countPerStep['difficult'].nrRemaining = Math.max(0, remaining);
             }
           }
-        };
+        }
       break;
       case 'review':
         remaining = this.countPerStep['review'].nrRemaining - nrOfResults;

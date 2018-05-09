@@ -259,6 +259,5 @@ module.exports = {
         response.handleSuccess(res, exercises);
       });
     });
-
   }
 }

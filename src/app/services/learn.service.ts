@@ -135,7 +135,7 @@ export class LearnService {
       return of(null);
     }
   }
-  
+
   fetchLessonStepResults(lessonId: string, step: string): Observable<ResultsData> {
     // Get the learn level of all exercises in this lesson
     const headers = this.getTokenHeaders();
@@ -188,7 +188,9 @@ export class LearnService {
     const minWords = 3, // Min 3 words per test
           totalWords = exercises.length,
           modulo = totalWords % wordsPerSession,
-          nrOfTests = totalWords % (wordsPerSession + 1) === 0 ? totalWords / (wordsPerSession + 1) : Math.trunc((totalWords - minWords) / wordsPerSession) + 1;
+          nrOfTests = totalWords % (wordsPerSession + 1) === 0 ?
+            totalWords / (wordsPerSession + 1) :
+            Math.trunc((totalWords - minWords) / wordsPerSession) + 1;
     if (totalWords - wordsPerSession < minWords) {
       // Not many words in the test left, return all so we don't end up with less than three
       return totalWords;
@@ -212,8 +214,7 @@ export class LearnService {
     const selectedExercises: Exercise[] = [];
     let availableExercises: Exercise[],
         exercise: Exercise,
-        nr: number,
-        index: number;
+        nr: number;
     if (exercises.length > maxNrOfExercises) {
       availableExercises = exercises.map(e => e);
       while (selectedExercises.length < maxNrOfExercises && availableExercises) {

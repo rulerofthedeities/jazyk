@@ -20,6 +20,5 @@ export class UserResolver implements Resolve<any> {
     } else {
       return this.userService.getDefaultUserData(state.root.queryParams['lan']);
     }
-
   }
 }

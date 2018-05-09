@@ -167,6 +167,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
         this.setActiveLanguages(dependables.languages);
+        this.utilsService.setPageTitle(this.text, 'Learn');
         this.getCourses();
         this.isReady = true;
       },

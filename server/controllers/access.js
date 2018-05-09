@@ -1,4 +1,3 @@
-
 module.exports = {
   checkAccess: function(userId, minLevel) {
     return {

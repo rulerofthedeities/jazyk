@@ -240,8 +240,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getNewQuestions(results: ExerciseResult[]): number {
-    let nrOfExercises = 0,
-        leftToStudy = 0,
+    let leftToStudy = 0,
         exerciseResult: ExerciseResult,
         practiseExercises: Exercise[] = [];
     const newExercises: Exercise[] = [],
@@ -253,8 +252,8 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       exerciseResult = results && results.find(result => result.exerciseId === exercise._id);
       return ((exerciseResult && !exerciseResult.isLearned)
         || (!exerciseResult && (exercise.tpe !== ExerciseType.Word || !this.hasStudyTab))
-      )
-    })
+      );
+    });
     this.toPractise = practiseExercises.length;
     const maxWords = this.learnService.getMaxExercises(practiseExercises, this.settings.nrOfWordsLearn);
     practiseExercises.forEach(exercise => {

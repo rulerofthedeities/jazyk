@@ -107,6 +107,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'Profile');
         }
       },
       error => this.errorService.handleError(error)

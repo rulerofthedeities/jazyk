@@ -23,7 +23,7 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   @ViewChildren('conjugation') conjugation: QueryList<ElementRef>;
 
   questionData: ExerciseData;
-  instruction: string = '';
+  instruction = '';
   isAnswered = false;
   currentExerciseId: string;
   currentField = 0;
@@ -55,7 +55,7 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   }
 
   onKeySelected(key: string) {
-    const currentField = this.conjugation.find((field, i) => i === this.currentField)
+    const currentField = this.conjugation.find((field, i) => i === this.currentField);
     if (currentField) {
       this.utilsService.insertKey(currentField.nativeElement, key);
       this.answers[this.currentField] = currentField.nativeElement.value;

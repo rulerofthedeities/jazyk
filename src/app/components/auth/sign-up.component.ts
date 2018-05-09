@@ -144,6 +144,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
         this.languages = dependables.languages;
+        this.utilsService.setPageTitle(this.text, 'Signup');
         this.isReady = true;
       },
       error => this.errorService.handleError(error)
@@ -182,7 +183,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
     // Save practise data
     if (dataToSavePractise) {
       const lessonId = this.userService.getDemoLessonId(this.courseId),
-            processedDataPractise = this.sharedService.processAnswers('practise', dataToSavePractise, this.courseId, lessonId, false, Level.Lesson);
+            processedDataPractise = this.sharedService.processAnswers(
+              'practise', dataToSavePractise, this.courseId, lessonId, false, Level.Lesson);
 
       if (processedDataPractise) {
         this.saveStepData('practise', JSON.stringify(processedDataPractise.result));

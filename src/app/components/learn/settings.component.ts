@@ -49,6 +49,4 @@ export class LearnSettingsComponent {
   private settingsUpdated() {
     this.updatedSettings.emit(this.settings);
   }
-
 }
-

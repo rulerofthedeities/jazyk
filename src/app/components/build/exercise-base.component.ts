@@ -42,7 +42,7 @@ export abstract class ExerciseBase {
     this.formData = {
       localRegions: this.configs.local.regions,
       foreignRegions: this.configs.foreign.regions
-    }
+    };
     this.buildForm(this.currentExercise);
   }
 
@@ -115,7 +115,7 @@ export abstract class ExerciseBase {
 
   protected checkIfValue(field: string): string {
     // Prevent saving empty values to db
-    let value = undefined;
+    let value;
     if (field) {
       value = field;
     }

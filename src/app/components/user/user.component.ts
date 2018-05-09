@@ -220,7 +220,6 @@ export class UserComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-  
 
   private fetchPublicProfile(user: string) {
     this.userService
@@ -299,7 +298,7 @@ export class UserComponent implements OnInit, OnDestroy {
     let isFollowing = false;
     if (followed.find(user => user.userId === currentId)) {
       isFollowing = true;
-    };
+    }
     return isFollowing;
   }
 
@@ -308,7 +307,7 @@ export class UserComponent implements OnInit, OnDestroy {
     let isFollowed = false;
     if (follow.find(user => user.followId === currentId)) {
       isFollowed = true;
-    };
+    }
     return isFollowed;
   }
 
@@ -376,6 +375,7 @@ export class UserComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'PublicProfile');
         }
       },
       error => this.errorService.handleError(error)

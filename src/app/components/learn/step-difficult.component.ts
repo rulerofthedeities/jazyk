@@ -82,7 +82,7 @@ export class LearnDifficultComponent extends Step implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       this.continueDifficult();
-    })
+    });
   }
 
   ngOnDestroy() {

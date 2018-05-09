@@ -120,13 +120,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "<%= prefix %>",
+      "km",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "<%= prefix %>",
+      "km",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

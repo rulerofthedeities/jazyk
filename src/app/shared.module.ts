@@ -25,7 +25,6 @@ import {SanitizeHtmlPipe} from './pipes/sanitize-html.pipe';
 
 import {ScorePipe} from './pipes/score.pipe';
 
-
 @NgModule({
   imports: [
     CommonModule,

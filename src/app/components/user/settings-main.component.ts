@@ -23,7 +23,7 @@ interface FormData {
     .gen-selected {
       color: green;
     }
-  `]  
+  `]
 })
 
 export class UserSettingsMainComponent implements OnInit, OnDestroy {
@@ -134,7 +134,6 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-
 
   ngOnDestroy() {
     this.componentActive = false;

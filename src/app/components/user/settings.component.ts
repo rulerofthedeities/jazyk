@@ -44,6 +44,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'Settings');
         }
       },
       error => this.errorService.handleError(error)

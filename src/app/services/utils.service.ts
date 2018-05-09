@@ -1,7 +1,9 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Title} from '@angular/platform-browser';
 import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
+import {appTitle} from '../services/shared.service';
 import {Observable} from 'rxjs';
 import {Course, Translation, Dependables} from '../models/course.model';
 import {retry, delay, map} from 'rxjs/operators';
@@ -35,11 +37,12 @@ export class UtilsService {
   countDownFinishedEvent = new EventEmitter();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private titleService: Title
   ) {}
 
   fetchDependables(options: DependableOptions): Observable<Dependables> {
-    let params = this.objToSearchParams(options);
+    const params = this.objToSearchParams(options);
     return this.http
     .get<Dependables>('/api/dependables/', {params})
     .pipe(retry(3));
@@ -72,9 +75,11 @@ export class UtilsService {
 
   getTranslatedText(translations: Translation[]): Object {
     const text = {};
-    translations.forEach(translation => {
-      text[translation.key] = translation.txt;
-    });
+    if (translations) {
+      translations.forEach(translation => {
+        text[translation.key] = translation.txt;
+      });
+    }
     return text;
   }
 
@@ -137,6 +142,13 @@ export class UtilsService {
       active: true,
       article: false
     };
+  }
+
+  setPageTitle(text: Object, pageName: string, isBuild = false) {
+    const separator = ' - ' + (isBuild ? '*' : '');
+    let pageTitle = text ? text[pageName] : pageName;
+    pageTitle = pageTitle ? separator + pageTitle : '';
+    this.titleService.setTitle(appTitle + pageTitle);
   }
 
   getWordTypes(): string[] {
@@ -219,5 +231,4 @@ export class UtilsService {
   countDownFinished() {
     this.countDownFinishedEvent.emit();
   }
-
 }

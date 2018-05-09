@@ -28,7 +28,7 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
   hasAnswered = false;
 
   ngOnInit() {
-    //check if question has been answered
+    // check if question has been answered
     if (this.onHasAnswered) {
       // not in study
       this.onHasAnswered

@@ -53,9 +53,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .fetchToReview(this.course._id, this.settings.nrOfWordsReview)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      data => {
-        this.setExercises(data.toreview, data.results)
-      },
+      data => this.setExercises(data.toreview, data.results),
       error => this.errorService.handleError(error)
     );
   }
@@ -83,7 +81,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       this.continueReview();
-    })
+    });
   }
 
   ngOnDestroy() {

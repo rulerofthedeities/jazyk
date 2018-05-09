@@ -245,14 +245,13 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   }
 
   private getNewQuestions(results: ExerciseResult[]) {
-    let exerciseResult: ExerciseResult,
-        wordExercises: Exercise[] = [];
+    let wordExercises: Exercise[] = [];
     const newExercises: Exercise[] = [];
     // Select words with no result (not studied yet)
     if (results) {
-      wordExercises = this.filterExercises().filter(exercise => 
+      wordExercises = this.filterExercises().filter(exercise =>
         !results.find(result => result.exerciseId === exercise._id)
-      )
+      );
     } else {
       wordExercises = this.filterExercises();
     }

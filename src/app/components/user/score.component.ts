@@ -59,6 +59,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'Score');
         }
       },
       error => this.errorService.handleError(error)

@@ -207,7 +207,7 @@ export abstract class Step {
     // can show keyboard
     let isInput = false;
     if (this.currentData) {
-      switch(this.currentData.data.questionType) {
+      switch (this.currentData.data.questionType) {
         case QuestionType.Word:
         case QuestionType.FillIn:
         case QuestionType.Comparison:
@@ -222,7 +222,7 @@ export abstract class Step {
     const qTpe = this.currentData ? this.currentData.data.questionType : 0;
     let show = true;
     if (this.currentData) {
-      switch(this.currentData.data.questionType) {
+      switch (this.currentData.data.questionType) {
         case QuestionType.Select:
         case QuestionType.FillIn:
         case QuestionType.Comparison:
@@ -232,7 +232,7 @@ export abstract class Step {
     }
     return show;
   }
-  
+
   isSelectionExercise(): boolean {
     let isSelection = false;
     if (this.currentData &&
@@ -448,11 +448,11 @@ export abstract class Step {
   }
 
   protected checkConjugationsAnswer(data: ConjugationsData) {
+    const result = [false, false, false, false, false, false];
     let correct = 0,
-        filteredAnswer: string,
-        result = [false, false, false, false, false, false];
-    data.answers.forEach((answer, i) => {
-      filteredAnswer = this.filter(answer);
+        filteredAnswer: string;
+    data.answers.forEach((answerItem, i) => {
+      filteredAnswer = this.filter(answerItem);
       if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer )) {
         result[i] = true;
         correct++;
@@ -464,11 +464,11 @@ export abstract class Step {
   }
 
   protected checkComparisonAnswer(data: ConjugationsData) {
+    const result = [false, false];
     let correct = 0,
-        filteredAnswer: string,
-        result = [false, false];
-    data.answers.forEach((answer, i) => {
-      filteredAnswer = this.filter(answer);
+        filteredAnswer: string;
+    data.answers.forEach((answerItem, i) => {
+      filteredAnswer = this.filter(answerItem);
       if (filteredAnswer === data.solutions[i + 1] || (filteredAnswer && data.alts[i] === filteredAnswer)) {
         result[i] = true;
         correct++;
@@ -478,7 +478,7 @@ export abstract class Step {
     this.checkAnswer(answer, QuestionType.Comparison, data.solutions.join(''));
     this.comparisonComponent.showResult(result);
   }
-  
+
   private checkAnswer(answer: AnsweredType, question: QuestionType, solution = '') {
     const timeDelta = this.timerComponent.getTimeDelta();
     let learnLevel = this.getCurrentLearnLevel(this.currentData);
@@ -672,7 +672,7 @@ export abstract class Step {
           points = 50;
         } else if (this.currentData.data.isAlt) {
           points = 40;
-        }else if (this.currentData.data.isAlmostCorrect) {
+        } else if (this.currentData.data.isAlmostCorrect) {
           points = 10;
         }
       break;
@@ -691,6 +691,7 @@ export abstract class Step {
         if (this.currentData.data.isCorrect) {
           points = 70;
         }
+      break;
       case QuestionType.Conjugations:
         if (this.currentData.data.isCorrect) {
           points = 110;
@@ -970,7 +971,7 @@ export abstract class Step {
     const learnLevel = this.getCurrentLearnLevel(this.currentData),
           exercise = this.currentData.exercise,
           direction = this.currentData.data.direction,
-          choices: string[] = [], 
+          choices: string[] = [],
           nrOfChoices = this.getNrOfChoices(learnLevel),
           word = direction === Direction.ForeignToLocal ? exercise.local.word : exercise.foreign.word;
 
@@ -982,7 +983,9 @@ export abstract class Step {
         choices.push(choice);
       }
     }
-    this.currentChoices = this.previewService.shuffle(choices.filter(choice => !!choice));
+    this.currentChoices = this.previewService.shuffle(
+      choices.filter(choiceItem => !!choiceItem)
+    );
   }
 
   private selectChoice(choices: Choice[], exercise: Exercise, direction: Direction): string {

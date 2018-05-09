@@ -92,6 +92,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
         course => {
           this.course = course;
           if (course) {
+            this.utilsService.setPageTitle(null, course.name, true);
             this.chapters = course.chapters;
             this.lessonIds = course.lessons;
             this.setDefaultLanguage(course.languagePair.to);

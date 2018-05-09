@@ -132,7 +132,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         if (notification) {
           if (i === null) {
             // look for current notification in array
-            i = this.notifications.findIndex(notification => notification._id === id);
+            i = this.notifications.findIndex(notItem => notItem._id === id);
           }
           if (!notification.read) {
             this.setNotificationAsRead(i);
@@ -154,9 +154,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     .deleteNotification(notificationId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      deleted => {
-        this.infoMsg = this.text['NotificationDeleted'];
-      },
+      deleted => this.infoMsg = this.text['NotificationDeleted'],
       error => this.errorService.handleError(error)
     );
   }
@@ -166,9 +164,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     .deleteReadNotifications()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      deleted => {
-        this.infoMsg = this.text['NotificationsDeleted'];
-      },
+      deleted => this.infoMsg = this.text['NotificationsDeleted'],
       error => this.errorService.handleError(error)
     );
   }
@@ -203,6 +199,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'Notifications');
         }
       },
       error => this.errorService.handleError(error)

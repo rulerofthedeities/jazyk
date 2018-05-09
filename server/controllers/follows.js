@@ -60,5 +60,5 @@ module.exports = {
         users.getMailData(req, res, recipients);
       });
     })
-  },
+  }
 }

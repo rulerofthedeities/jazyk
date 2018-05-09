@@ -92,6 +92,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       translations => {
         if (translations) {
           this.text = this.utilsService.getTranslatedText(translations);
+          this.utilsService.setPageTitle(this.text, 'Login');
         }
       },
       error => this.errorService.handleError(error)

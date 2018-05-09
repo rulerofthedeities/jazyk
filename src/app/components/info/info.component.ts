@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {InfoService} from '../../services/info.service';
 import {UserService} from '../../services/user.service';
+import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {Page} from '../../models/info.model';
 import {takeWhile, filter} from 'rxjs/operators';
@@ -23,12 +24,13 @@ import {takeWhile, filter} from 'rxjs/operators';
 export class InfoComponent implements OnInit, OnDestroy {
   private componentActive = true;
   page: Page;
-  
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
     private infoService: InfoService,
+    private utilsService: UtilsService,
     private errorService: ErrorService
   ) {}
 
@@ -43,11 +45,15 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   private fetchInfoPage(page: string) {
+    console.log('page', page);
     this.infoService
     .fetchInfoPage(page, this.userService.user.main.lan)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      page => this.page = page,
+      fetchedPage => {
+        this.page = fetchedPage;
+        this.utilsService.setPageTitle(null, fetchedPage.title);
+      },
       error => {
         if (error.status === 404) {
           this.router.navigate(['/404']);

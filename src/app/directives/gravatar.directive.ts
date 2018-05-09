@@ -5,9 +5,9 @@ import * as md5 from 'md5';
   selector: '[kmGravatar]'
 })
 export class GravatarDirective implements OnInit {
-  @Input('hash') hash: string;
-  @Input('width') width = 32;
-  @Input('fallback') fallback = 'identicon';
+  @Input() hash: string;
+  @Input() width = 32;
+  @Input() fallback = 'identicon';
 
   constructor(
     private elementRef: ElementRef

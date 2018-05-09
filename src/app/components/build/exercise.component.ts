@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnInit, ChangeDetectorRef, ElementRef
+import {Component, Input, Output, OnInit, ChangeDetectorRef, ElementRef,
   OnDestroy, EventEmitter, ViewChild, HostListener} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';

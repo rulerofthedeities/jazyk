@@ -105,7 +105,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   onChangeRankColor(event: MouseEvent) {
-    this.rankColor = event.type == 'mouseover' ? 'b' : 'w';
+    this.rankColor = event.type === 'mouseover' ? 'b' : 'w';
   }
 
   getRankColor(): string {

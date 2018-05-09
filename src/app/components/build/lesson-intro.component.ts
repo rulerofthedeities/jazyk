@@ -1,4 +1,5 @@
-import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit, ElementRef, HostListener} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChild, AfterViewInit,
+  ElementRef, HostListener} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
@@ -53,7 +54,7 @@ interface TagOptions {
   styleUrls: ['lesson-intro.component.css']
 })
 
-export class BuildLessonIntroComponent implements OnInit, OnDestroy {
+export class BuildLessonIntroComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() lessonId: string;
   @Input() text: Object;
   private componentActive = true;
@@ -87,7 +88,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     this.introDefault = {
       text: '',
       html: ''
-    }
+    };
     this.intro = this.introDefault;
     this.loadIntro();
     this.createTemplates();
@@ -143,8 +144,9 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       intro => {
-        this.modified = false,
-        this.saved = true},
+        this.modified = false;
+        this.saved = true;
+      },
       error => this.errorService.handleError(error)
     );
   }
@@ -154,7 +156,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     const tags = ['span', 'div', 'audio', 'h1', 'h2', 'ul', 'li'];
     let html = this.previewService.removeTags(this.intro.text, tags);
     html = html.replace(/(?:\r\n|\r|\n)/g, '<br>'); // replace line breaks with <br>
-    html = html.replace(/(?:->)/g, '→'); //replace -> with arrow
+    html = html.replace(/(?:->)/g, '→'); // replace -> with arrow
     html = this.parseFontStyles(html, 'b');
     html = this.parseFontStyles(html, 'i');
     html = this.parseSize(html, 'size');
@@ -195,7 +197,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseTranslation(text: string, tag: string): string {
-    // format [tag: text] 
+    // format [tag: text]
     const tlTags = this.getTags({
       text,
       tag,
@@ -218,7 +220,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseHeaders(text: string, tag: string): string {
-    // format [tag: title] 
+    // format [tag: title]
     const headerTags = this.getTags({
       text,
       tag,
@@ -241,7 +243,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseBorders(text: string, tag: string): string {
-    // format [tag: text] 
+    // format [tag: text]
     const borderTags = this.getTags({
       text,
       tag,
@@ -306,7 +308,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         html = text,
         tab: number;
     tabTags.forEach(tabTag => {
-      if (tabTag) {//} && tabTag.length > 2 && tabTag[1] === ':') {
+      if (tabTag) {
         tab = parseInt(tabTag[0], 10);
         tab = tab > 0 && tab < 4 ? tab : 1;
         tabText = tabTag.substr(2, tabTag.length - 2).trim() || '';
@@ -354,7 +356,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseLists(text: string): string {
-    // format [list: item1\nitem2 list] 
+    // format [list: item1\nitem2 list]
     const tag = 'list',
           listTags = this.getTags({
       text,
@@ -370,8 +372,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       listItems = listTag.split('<br>');
       listItems = listItems.map(data => data.trim());
       listItems.forEach(item => {
-        listHtml+= this.getHtmlSnippet(tag, {content: item});
-      })
+        listHtml += this.getHtmlSnippet(tag, {content: item});
+      });
       listHtml = this.getHtmlSnippet('ul', {content: listHtml});
       html = this.replaceText({
         tag,
@@ -385,7 +387,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private parseTables(text: string): string {
-    /* format [table: 
+    /* format [table:
     | Col1     |      Col2     |  Col3 |
     |<         |               |>      |
     | col 1 is | left-aligned  | €1000 |
@@ -393,14 +395,14 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     | col 3 is | right-aligned |    €5 | table] */
     const isEmptyRow = (row: string) => {
       let isEmpty = true;
-      const tableCells = row.split('|');
-      tableCells.forEach(cell => {
+      const cells = row.split('|');
+      cells.forEach(cell => {
         if (cell.trim() !== '') {
           isEmpty = false;
         }
       });
       return isEmpty;
-    }
+    };
 
     const tag = 'table',
           tableTags = this.getTags({
@@ -433,16 +435,16 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           tableCells.pop();
           tableCells.shift();
         }
-        if (rowNr===0) {
+        if (rowNr === 0) {
           headerCells = tableCells;
-        } else if (rowNr===1) {
+        } else if (rowNr === 1) {
           // column options
           tableCells.forEach((cell, colNr) => {
             colOptions[colNr] = {
               align: cell.indexOf('<') > -1 ? Alignment.Left : (cell.indexOf('>') > -1 ? Alignment.Right : Alignment.Center),
               inverse: cell.indexOf('i') > -1 ? true : false
-            }
-          })
+            };
+          });
         } else {
           if (headerCells) {
             tableHtml = this.getHtmlSnippet('t-header', {table: {
@@ -452,14 +454,14 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
             }});
             headerCells = null;
           }
-          tableHtml+= this.getHtmlSnippet('t-row', {table: {
+          tableHtml += this.getHtmlSnippet('t-row', {table: {
             cells: tableCells,
-            first: rowNr===1,
-            last: rowNr===tableRows.length - 1,
+            first: rowNr === 1,
+            last: rowNr === tableRows.length - 1,
             columns: colOptions
           }});
         }
-      })
+      });
       tableHtml = this.getHtmlSnippet(tag, {content: tableHtml});
       html = this.replaceText({
         tag,
@@ -484,7 +486,6 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
         audioFormat: string,
         audioUrl: string,
         audioHtml: string,
-        regex: RegExp,
         html = text;
     audioTags.forEach(audioTag => {
       audioData = audioTag.split(',');
@@ -498,11 +499,15 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
   }
 
   private getTags(options: TagOptions) {
-    const regexBrackets = new RegExp(options.hasClosingTag ? `(?<=\\[${options.tag}:).*?(?=${options.tag}\\])` : `(?<=\\[${options.tag}:).*?(?=\\])`, 'igs'),
+    const regexBrackets = new RegExp(
+            options.hasClosingTag ?
+            `(?<=\\[${options.tag}:).*?(?=${options.tag}\\])` :
+            `(?<=\\[${options.tag}:).*?(?=\\])`, 'igs'
+          ),
           regexNoBrackets = new RegExp(`(?<=${options.tag}).*?(?=${options.tag})`, 'gs'),
-          regex = options.hasBracket ? regexBrackets : regexNoBrackets;
+          regex = options.hasBracket ? regexBrackets : regexNoBrackets,
+          data: Array<string> = [];
     let result: RegExpExecArray,
-        data: Array<string> = [],
         cnt = 0;
     result = regex.exec(options.text);
     while (result && cnt < 200) {
@@ -519,23 +524,23 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
     let html = '',
         classes = '';
     switch (tpe) {
-      case 'header': 
+      case 'header':
         return `<h1 class="i">${options.title}</h1>`;
-      case 'subheader': 
+      case 'subheader':
         return `<h2 class="i">${options.title}</h2>`;
-      case 'subsubheader': 
+      case 'subsubheader':
         return `<h3 class="i">${options.title}</h3>`;
-      case 'border': 
+      case 'border':
         return `<span class="btn btn-default">${options.title}</span>`;
-      case 'tl': 
+      case 'tl':
         return `<span class="translation">${options.content}</span>`;
-      case 'i': // Italic 
+      case 'i': // Italic
         return `<em>${options.content}</em>`;
-      case 'b': // Italic 
+      case 'b': // Italic
         return `<strong>${options.content}</strong>`;
-      case 'size': 
+      case 'size':
         return `<span class="i-size-${options.value}">${options.content}</span>`;
-      case 'tab': 
+      case 'tab':
       if (options.content) {
         return `<span class="i-tab-${options.value} block">${options.content}</span>`;
       } else {
@@ -543,10 +548,10 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
       }
       case 'color':
         return `<span class="i-color-${options.format}">${options.content}</span>`;
-      case 'list': 
+      case 'list':
         return `<li class="list-group-item">${options.content}</li>`;
       case 'ul':
-        return `<ul class="list-group i-list">${options.content}</ul>`
+        return `<ul class="list-group i-list">${options.content}</ul>`;
       case 'audio':
         this.audioNr++;
         return `<audio id="audio${this.audioNr}">
@@ -559,18 +564,18 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
           options.table.cells.forEach((cell, i) => {
             classes = this.getColumnClasses(options.table.columns[i]);
             html += `<th${classes}>${cell.trim()}</th>`;
-          })
+          });
           return `<thead><tr>${html}</tr></thead>`;
         } else {
-          return ''
+          return '';
         }
       case 't-row':
         options.table.cells.forEach((cell, i) => {
           classes = this.getColumnClasses(options.table.columns[i]);
           html += `<td${classes}>${cell.trim()}</td>`;
-        })
-        let row = `<tr>${html}</tr>`;
-        return options.table.first ? `<tbody>${row}` :(options.table.last ? `${row}</tbody>`: row);
+        });
+        const row = `<tr>${html}</tr>`;
+        return options.table.first ? `<tbody>${row}` : (options.table.last ? `${row}</tbody>` : row);
       case 'table':
         return `<table class="i-table">${options.content}</table>`;
       default :
@@ -580,8 +585,8 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
 
   private getColumnClasses(options: ColumnOptions): string {
     if (options) {
-      const alignClass = options.align === Alignment.Left ? "left" : (options.align === Alignment.Right ? "right" : "center"),
-            inverseClass = options.inverse ? "inverse" : null,
+      const alignClass = options.align === Alignment.Left ? 'left' : (options.align === Alignment.Right ? 'right' : 'center'),
+            inverseClass = options.inverse ? 'inverse' : null,
             classes = alignClass + ' ' + (inverseClass || '');
       return ` class="${classes.trim()}"`;
     } else {

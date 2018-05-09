@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {CompactProfile} from '../../models/user.model';
 import {UserService} from '../../services/user.service';
@@ -10,7 +10,7 @@ import {takeWhile} from 'rxjs/operators';
   styleUrls: ['compact-profile.component.css']
 })
 
-export class UserCompactProfileComponent implements OnInit, OnDestroy {
+export class UserCompactProfileComponent implements OnInit, OnDestroy, OnChanges {
   @Input() profile: CompactProfile;
   @Input() text: Object;
   private componentActive = true;

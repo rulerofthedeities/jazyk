@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getCounts();
     this.getRecentCourses();
     this.getNotificationsAndMessages();
-    this.subscribe()
+    this.subscribe();
   }
 
   onSelectMessage(i: number) {
@@ -129,9 +129,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private processCourses(data: RecentCourse[]) {
     // Sort courses
-    this.courses = data.sort(function(a, b){
-      let dtA = new Date(a.dt),
-          dtB = new Date(b.dt);
+    this.courses = data.sort(function(a, b) {
+      const dtA = new Date(a.dt),
+            dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
     this.coursesReady = true;
@@ -161,9 +161,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
     });
     // Sort communications
-    this.communications = communications.sort(function(a, b){
-      let dtA = new Date(a.dt),
-          dtB = new Date(b.dt);
+    this.communications = communications.sort(function(a, b) {
+      const dtA = new Date(a.dt),
+            dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     }).slice(0, 4);
   }

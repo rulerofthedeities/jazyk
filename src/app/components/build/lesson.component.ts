@@ -130,10 +130,6 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     return this.userService.hasAccessLevel(this.course.access, AccessLevel.Editor);
   }
 
-  private setText(translations: Translation[]) {
-    this.text = this.utilsService.getTranslatedText(translations);
-  }
-
   private getLesson(lessonId: string) {
     this.buildService
     .fetchLesson(lessonId)
@@ -176,6 +172,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
       course => {
         this.course = course;
         if (course) {
+          this.utilsService.setPageTitle(null, course.name, true);
           this.chapters = course.chapters;
           this.isCourseAccess = true;
         } else {
@@ -192,7 +189,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
-        this.setText(translations);
+        this.text = this.utilsService.getTranslatedText(translations);
         this.getLesson(lessonId);
       },
       error => this.errorService.handleError(error)
