@@ -50,7 +50,6 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    console.log('steps dialogue', this.steps, this.lesson);
     this.checkNextStep();
   }
 
@@ -76,7 +75,6 @@ export class LearnDialogueComponent implements OnInit, OnDestroy {
     this.lessonChanged
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
-      console.log('LESSON CHANGED in dialogue TO ', lesson.name);
       this.lesson = lesson;
       this.init();
       window.scroll(0, 0);

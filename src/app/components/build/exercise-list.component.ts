@@ -31,7 +31,6 @@ export class BuildExerciseListComponent implements OnDestroy {
   editingId: string = null;
   viewId: string = null;
   removingId: string = null;
-  focusField: string = null;
   exType = ExerciseType;
 
   constructor(
@@ -44,11 +43,10 @@ export class BuildExerciseListComponent implements OnDestroy {
     return item._id;
   }
 
-  onEditExercise(id: string, focus = null) {
+  onEditExercise(id: string) {
     this.viewId = null;
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
-      this.focusField = focus;
     }
   }
 
@@ -101,7 +99,6 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getInfinitive(words: string): string {
-    let infinitive = '';
     const wordsArr = words.split('|');
     return wordsArr[0];
   }

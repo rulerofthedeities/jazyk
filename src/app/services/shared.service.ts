@@ -8,7 +8,6 @@ export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
 export const isLearnedLevel = 12; // minimum level before it is considered learned
 
-@Injectable()
 export class SharedService {
   private eventMessages: EventMessage[] = [];
   private messageLimit = 10;
@@ -65,7 +64,7 @@ export class SharedService {
           };
     let pointsEarned = 0;
     if (step === 'intro' || step === 'dialogue') {
-      console.log('processing answers - saving', step);
+      // No save required
     } else {
       if (data && data.length > 0) { // No data for study repeats
         // calculate bonus for % correct

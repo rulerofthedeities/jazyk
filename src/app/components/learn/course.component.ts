@@ -261,7 +261,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
-        console.log('fetched step data', results);
         this.processStepResults(results);
       },
       error => this.errorService.handleError(error)
@@ -581,7 +580,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       stepData => {
-        console.log('fetched step data 2 ', stepData);
         if (stepData) {
           this.getCourseStepCount(stepData);
           this.getLessonStepCount(stepData.lesson);

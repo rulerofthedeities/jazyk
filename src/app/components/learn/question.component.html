@@ -59,7 +59,7 @@
         {{currentData.exercise?.foreign?.word.split('|')[0]}}
       </span>
       <span class="suffix">{{currentData.data.suffix}}</span>
-      <span class="suffix" *ngIf="!showGenusColor()">{{currentData.data.genus}}</span>
+      <span class="suffix" *ngIf="!showGenusColor()">({{currentData.exercise.genus}})</span>
       <span class="audio pull-right" *ngIf="currentData.exercise.audio">
         <km-audio-file
           [regionAudio]="currentData.exercise.audio"

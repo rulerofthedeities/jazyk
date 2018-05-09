@@ -1,6 +1,5 @@
-import {Component, Input, Output, OnInit, AfterViewInit,
-  ElementRef, ChangeDetectorRef, Renderer, OnDestroy, EventEmitter,
-ViewChild, HostListener} from '@angular/core';
+import {Component, Input, Output, OnInit, ChangeDetectorRef, ElementRef
+  OnDestroy, EventEmitter, ViewChild, HostListener} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {BuildService} from '../../services/build.service';
@@ -51,7 +50,7 @@ interface Duplicate {
   styleUrls: ['exercise.component.css', 'exercise-wrapper.css']
 })
 
-export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BuildExerciseComponent implements OnInit, OnDestroy {
   @Input() languagePair: LanPair;
   @Input() configs: LanConfigs;
   @Input() lessonId: string;
@@ -59,7 +58,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   @Input() lessonOptions: LessonOptions;
   @Input() exercise: Exercise;
   @Input() text: Object;
-  @Input() focus: string;
   @Input() isBidirectional: boolean;
   @Output() addedExercises = new EventEmitter<Exercise[]>();
   @Output() updatedExercise = new EventEmitter<Exercise>();
@@ -92,7 +90,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
   showDropDown = false;
   isDuplicate: Duplicate = {
     checked: false
-  }
+  };
 
   @ViewChild('dropdown') el: ElementRef;
   @HostListener('document:click', ['$event'])
@@ -110,8 +108,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     private previewService: PreviewService,
     private errorService: ErrorService,
     private element: ElementRef,
-    private ref: ChangeDetectorRef,
-    private renderer: Renderer
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -130,14 +127,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy, AfterViewInit 
     this.setFormData(this.configs);
     this.config = this.configs.foreign;
     this.buildForm(this.currentExercise);
-  }
-
-  ngAfterViewInit() {
-    const focusElement = this.element.nativeElement.querySelector('#' + this.focus);
-    if (focusElement) {
-      this.renderer.invokeElementMethod(focusElement, 'focus', []);
-      this.ref.detectChanges();
-    }
   }
 
   onFocus(word: string, lan: string) {

@@ -72,7 +72,6 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   }
 
   showResult(result: boolean[]) {
-    console.log('result', result);
     this.results = result;
     this.isAnswered = true;
   }

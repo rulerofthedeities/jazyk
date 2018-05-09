@@ -34,7 +34,6 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
       this.onHasAnswered
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(event => {
-        console.log('has answered');
         this.hasAnswered = true;
       });
     }
@@ -43,7 +42,6 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
       this.onGotoNextWord
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(event => {
-        console.log('next word');
         this.hasAnswered = false;
       });
     }
@@ -77,10 +75,8 @@ export class LearnQuestionComponent implements OnInit, OnDestroy {
 
   showGenus(genus: string): boolean {
     // Toon genus niet indien meerdere waarden mogelijk zijn
-      console.log('genus', genus);
     if (genus) {
       const showGenusColor = this.settings ? this.settings.color : true;
-      console.log('show genus color', showGenusColor);
       if (!showGenusColor) {
         return genus.indexOf(';') > -1 ? false : true;
       }

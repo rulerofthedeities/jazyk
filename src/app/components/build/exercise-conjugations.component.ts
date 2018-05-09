@@ -30,9 +30,9 @@ export class BuildConjugationsComponent extends ExerciseBase implements OnInit, 
 
   protected buildForm(exercise: Exercise) {
     const words = exercise.foreign.word.split('|'),
-          //alts = exercise.foreign.alt.split('|'),
+          // alts = exercise.foreign.alt.split('|'),
           defaultInstruction = exercise.local.info || this.text['instructionConjugations'].replace('%s', words[0]);
-    //this.mergeAlts(words, alts);
+    // this.mergeAlts(words, alts);
     this.pronouns = this.configs.foreign.subjectPronouns;
     this.conjugations = this.buildConjugationFormControlNames();
     this.exerciseForm = this.formBuilder.group({

@@ -215,7 +215,6 @@ export class UserComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courseData => {
-        console.log('courseData', courseData.subscribed);
         this.courses.learning = courseData.subscribed;
       },
       error => this.errorService.handleError(error)

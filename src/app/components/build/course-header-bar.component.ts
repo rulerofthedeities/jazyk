@@ -84,10 +84,10 @@ export class BuildCourseHeaderBarComponent implements OnInit, OnDestroy {
         toolTip = isProperty ? 'iCoursePublic' : 'iCourseNotPublic';
       break;
       case 'isPublished':
-        toolTip = isProperty ? 'iCoursePublished': 'iCourseNotPublished';
+        toolTip = isProperty ? 'iCoursePublished' : 'iCourseNotPublished';
       break;
       case 'isInProgress':
-        toolTip = isProperty ? 'iCourseInProgress': 'iCourseComplete';
+        toolTip = isProperty ? 'iCourseInProgress' : 'iCourseComplete';
       break;
     }
     return toolTip ? this.text[toolTip] : '';

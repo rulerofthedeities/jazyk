@@ -27,7 +27,8 @@ export class WordColorDirective implements OnChanges {
     if (this.identifier && this.active) {
       switch (this.identifier.toLowerCase()) {
         case 'f': color = 'red'; break;
-        case 'mi': color = 'darkBlue'; break;
+        case 'mi':
+        case 'm': color = 'darkBlue'; break;
         case 'ma': color = 'dodgerBlue'; break;
         case 'n': color = 'green'; break;
         default: color = 'black';

@@ -83,7 +83,6 @@ export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   showResult(result: boolean[]) {
-    console.log('result', result);
     this.results = result;
     this.isAnswered = true;
   }

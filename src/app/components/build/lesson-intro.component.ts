@@ -4,7 +4,7 @@ import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
 import {UtilsService} from '../../services/utils.service';
 import {Intro, Map} from '../../models/course.model';
-import {takeWhile} from 'rxjs/operators';
+import {takeWhile, debounceTime} from 'rxjs/operators';
 
 enum Alignment {Left, Center, Right}
 
@@ -96,7 +96,7 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.introField.valueChanges
-    .debounceTime(400)
+    .pipe(debounceTime(400))
     .subscribe(data => {
       this.parseText();
     });

@@ -3,7 +3,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {PreviewService} from '../../services/preview.service';
 import {Dialogue, LanPair} from '../../models/course.model';
-import {takeWhile} from 'rxjs/operators';
+import {takeWhile, debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'km-build-lesson-dialogue',
@@ -27,7 +27,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   dialogue: Dialogue;
   dialogueDefault: Dialogue;
   result: Text;
-  
+
   constructor(
     private buildService: BuildService,
     private errorService: ErrorService,
@@ -42,7 +42,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
       foreign: '',
       localTitle: '',
       foreignTitle: ''
-    }
+    };
     this.dialogue = this.dialogueDefault;
     this.loadDialogue();
     this.parse();
@@ -50,7 +50,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
 
   ngAfterViewInit() {
     this.input.valueChanges
-    .debounceTime(400)
+    .pipe(debounceTime(400))
     .subscribe(data => {
       this.parse();
     });
@@ -85,8 +85,9 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       update => {
-        this.modified = false,
-        this.saved = true},
+        this.modified = false;
+        this.saved = true;
+      },
       error => this.errorService.handleError(error)
     );
   }
@@ -149,7 +150,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
         text: string;
     if (match) {
       name = match[0];
-      name = `<dt>${name.substr(1, name.length -2)}</dt>`;
+      name = `<dt>${name.substr(1, name.length - 2)}</dt>`;
       text = `<dd>${line.substring(match.index + match[0].length, line.length)}</dd>`;
     } else {
       name = `<dt></dt>`;

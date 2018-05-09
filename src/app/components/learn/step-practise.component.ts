@@ -273,9 +273,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getDemoQuestions() {
-    console.log('DEMO - to learn', this.settings.nrOfWordsLearn);
     const exercises = this.lesson.exercises.slice(0, this.settings.nrOfWordsLearn);
-    console.log('DEMO - to learn 2 ', exercises);
     this.buildExerciseData(exercises, null);
     this.current = -1;
     this.isQuestionReady = false;

@@ -64,6 +64,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
       }
     );
   }
+
   private getLanguages() {
     const AllLanguages = JSON.parse(JSON.stringify(this.activeLanguages));
     const languages: Language[] = [];

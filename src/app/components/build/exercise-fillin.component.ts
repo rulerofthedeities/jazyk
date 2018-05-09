@@ -52,13 +52,13 @@ export class BuildFillInComponent extends ExerciseBase implements OnInit, OnDest
     let regions = [];
     // Add foreign regions
     if (this.formData.foreignRegions.length) {
-      regions = regions.concat(this.formData.foreignRegions)
+      regions = regions.concat(this.formData.foreignRegions);
     } else {
       regions.push(this.languagePair.to);
     }
     // Add local regions
     if (this.formData.localRegions.length) {
-      regions = regions.concat(this.formData.localRegions)
+      regions = regions.concat(this.formData.localRegions);
     } else {
       regions.push(this.languagePair.from);
     }

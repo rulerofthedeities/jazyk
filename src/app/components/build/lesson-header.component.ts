@@ -7,7 +7,7 @@ import {ExerciseStep} from '../../models/exercise.model';
 import {AutocompleteComponent} from '../fields/autocomplete.component';
 import {takeWhile} from 'rxjs/operators';
 
-enum Steps {Intro, Dialogue, Study, Practise, Exam};
+enum Steps {Intro, Dialogue, Study, Practise, Exam}
 
 @Component({
   selector: 'km-build-lesson-header',
@@ -100,7 +100,6 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
     if (!this.lessonForm.value['exerciseSteps'][3]) {
       const steps = this.lessonForm.value['exerciseSteps'];
       if (steps[4]) {
-        console.log('practise is not active');
         const active = this.lessonForm.value['exerciseSteps'].filter(step => step === true);
         if (active.length === 1) {
           // Nothing is enabled, enable practise
@@ -227,7 +226,7 @@ export class BuildLessonHeaderComponent implements OnInit, OnDestroy {
       active: formValues.exerciseSteps[step],
       bidirectional: this.bidirectional[step],
       ordered: this.ordered[step]
-    }
+    };
   }
 
   private addLesson(goToLesson: boolean) {

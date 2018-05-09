@@ -138,7 +138,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private processCommunication(data: CommunicationData) {
-    console.log('processing communication', data);
     const communications = [];
     // Combine messages and notifcations
     data.messages.forEach(message => {

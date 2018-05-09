@@ -90,7 +90,6 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         course => {
-          console.log('got course', course);
           this.course = course;
           if (course) {
             this.chapters = course.chapters;
@@ -151,7 +150,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
       error => this.errorService.handleError(error)
     );
   }
-  
+
   private setLessonIds(updatedLessonId: LessonId) {
     const chapterName = updatedLessonId.chapter;
     const lessonIdItems = updatedLessonId.lessonIds;

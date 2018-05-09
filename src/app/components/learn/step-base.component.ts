@@ -133,7 +133,6 @@ export abstract class Step {
         break;
         case QuestionType.Word:
           if (key === 'Enter') {
-            console.log('enter key word');
             this.checkIfWordAnswer();
           }
         break;
@@ -155,7 +154,6 @@ export abstract class Step {
   }
 
   onNextWord(giveAnswer = false) {
-    console.log('next word base');
     if (!giveAnswer) {
       this.gotoNextWord.next(true);
     }
@@ -280,7 +278,6 @@ export abstract class Step {
   private checkIfWordAnswer(giveAnswer = false) {
     if (!this.isAnswered) {
       if (this.answerComponent) {
-        console.log('answered base word');
         this.hasAnswered.next(true);
         this.checkWordAnswer(
           this.answerComponent.getData(),
@@ -467,9 +464,6 @@ export abstract class Step {
   }
 
   protected checkComparisonAnswer(data: ConjugationsData) {
-    console.log('answers', data.answers);
-    console.log('solutions', data.solutions);
-    console.log('alts', data.alts);
     let correct = 0,
         filteredAnswer: string,
         result = [false, false];
