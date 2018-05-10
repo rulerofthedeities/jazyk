@@ -76,7 +76,6 @@ export class LearnIntroComponent implements OnInit, OnDestroy {
     this.lessonChanged
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((lesson: Lesson) => {
-      console.log('LESSON CHANGED in intro TO ', lesson.name);
       this.lesson = lesson;
       this.init();
       window.scroll(0, 0);

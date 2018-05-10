@@ -45,7 +45,6 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   private fetchInfoPage(page: string) {
-    console.log('page', page);
     this.infoService
     .fetchInfoPage(page, this.userService.user.main.lan)
     .pipe(takeWhile(() => this.componentActive))

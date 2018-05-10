@@ -677,10 +677,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       }
     });
     if (newLessonId) {
-          console.log('new lesson id - get new lesson', newLessonId);
       this.getLesson(newLessonId);
     } else {
-          console.log('no new lesson id - course is done?', newLessonId);
       // There is no new lesson; course is done
       this.currentStep = 0;
       this.isLessonReady = true;
