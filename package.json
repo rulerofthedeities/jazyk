@@ -6,12 +6,12 @@
     "preinstall": "npm install pm2 -g",
     "ng": "ng",
     "start": "pm2 start km-jazyk.js --watch",
-    "build": "ng build -w",
-    "build:prod": "ng build -prod",
+    "build": "ng build --watch",
+    "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build -prod"
+    "postinstall": "ng build --prod"
   },
   "engines": {
     "node": "8.11.1",
