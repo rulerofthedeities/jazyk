@@ -152,7 +152,7 @@
             {{text['Network']}}
           </label>
           <div class="col-xs-9">
-            {{text['Follows']}} {{network?.follows?.length || text['noone']}} {{ network?.follows?.length === 1 ? text['person'] : text['people']}}
+            {{text['Follows']}} {{network?.follows?.length || text['noone']}} {{ network?.follows?.length === 1 ? text['person'] : (network?.follows?.length === 0 ? '' : text['people'])}}
           </div>
           <div class="col-xs-9 col-xs-offset-3">
             {{text['FollowedBy']}} {{network?.followed?.length || text['noone']}}
