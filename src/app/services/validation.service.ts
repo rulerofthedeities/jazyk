@@ -51,7 +51,7 @@ export class ValidationService {
   }
 
   static passwordValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,100}$/)) {
+    if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9_\-\.\,\+\+?\"\(\)\[\]\{\}\~\\;:!@#$%^&*]{6,100}$/)) {
       return null;
     } else {
       return {'invalidPassword': {requiredLength: 6}};

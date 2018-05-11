@@ -334,6 +334,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           if (this.countPerStep['study'].nrRemaining > 0) {
             defaultStep = this.getStepNr('study');
           } else {
+            defaultStep = -1;
             // No exercises left in lesson -> go to next lesson
             this.getNextLesson(this.lesson._id);
           }
@@ -352,20 +353,22 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if (defaultStep !== null) {
-        this.currentStep = defaultStep;
-        this.isLessonReady = true;
-        this.lessonChanged.next(this.lesson);
-      } else {
-        if (this.loopCount < 1) {
-          // Course is at the end
-          // Start again from the beginning in case not all exercises were done
-          this.loopCount++; // to prevent infinite loop
-          this.getFirstLesson();
-        } else {
-          // Course is done
-          this.currentStep = 0;
+      if (defaultStep !== -1) { // ignore steps, already loading the next lesson
+        if (defaultStep !== null) {
+          this.currentStep = defaultStep;
           this.isLessonReady = true;
+          this.lessonChanged.next(this.lesson);
+        } else {
+          if (this.loopCount < 1) {
+            // Course is at the end
+            // Start again from the beginning in case not all exercises were done
+            this.loopCount++; // to prevent infinite loop
+            this.getFirstLesson();
+          } else {
+            // Course is done
+            this.currentStep = 0;
+            this.isLessonReady = true;
+          }
         }
       }
     }
@@ -457,7 +460,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private saveAnswers(step: string, data: ExerciseData[]) {
     const lessonId = this.lesson ? this.lesson._id : null,
           isRepeat = this.lesson ? !!this.lesson.rehearseStep : false,
-          processedData: ProcessedData = 
+          processedData: ProcessedData =
             this.sharedService.processAnswers(step, data, this.course._id, lessonId, isRepeat, this.courseLevel);
 
     if (processedData) {
@@ -649,12 +652,16 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
 
   private getFirstLesson() {
     // Get first lesson from course data
-    const chapterLessons = this.sortChapters().filter(lesson => lesson.lessonIds.length > 0),
-          chapterLesson = chapterLessons[0];
-    if (chapterLesson) {
-      const lessonId = chapterLesson.lessonIds[0];
-      this.getLesson(lessonId);
+    const chapters = this.course.chapters,
+          firstChapter = this.course.lessons.find(lesson => lesson.chapter === chapters[0]);
+    let lessonId: string;
+
+    if (firstChapter) {
+      lessonId = firstChapter.lessonIds[0];
+    } else {
+      lessonId = this.course.lessons[0].lessonIds[0];
     }
+    this.getLesson(lessonId);
   }
 
   private getNextLesson(currentLessonId: string) {
@@ -662,7 +669,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     let currentFound = false,
         newLessonId,
         chapter: LessonId;
-
     this.course.chapters.forEach(chapterName => {
       // Get lessons for this chapter
       chapter = this.course.lessons.find(lesson => lesson.chapter === chapterName);
@@ -683,20 +689,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.currentStep = 0;
       this.isLessonReady = true;
     }
-  }
-
-  private sortChapters(): LessonId[] {
-    // Move empty chapter to the back
-    const sortedChapters = this.course.lessons;
-    if (sortedChapters && sortedChapters.length) {
-      const firstChapter = sortedChapters[0];
-      if (firstChapter.chapter === '') {
-        // Chapter is empty; move to the back
-        sortedChapters.shift();
-        sortedChapters.push(firstChapter);
-      }
-    }
-    return sortedChapters;
   }
 
   private subscribe() {
