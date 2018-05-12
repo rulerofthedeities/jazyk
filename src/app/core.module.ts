@@ -4,9 +4,13 @@ import {AuthService} from './services/auth.service';
 import {SharedService} from './services/shared.service';
 import {AuthGuard} from './services/auth-guard.service';
 import {CommonModule} from '@angular/common';
+import {CookieModule} from 'ngx-cookie';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [
+    CookieModule.forRoot(),
+    CommonModule
+  ],
   declarations: [],
   exports: [CommonModule]
 })

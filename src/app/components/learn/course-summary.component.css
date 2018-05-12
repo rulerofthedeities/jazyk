@@ -32,6 +32,9 @@ h3 {
   margin-bottom: 8px;
   font-size: 28px;
 }
+.icons .fa {
+  margin-left: 2px;
+}
 .icons {
   font-size: 16px;
   color: #999;

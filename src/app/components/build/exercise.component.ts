@@ -784,12 +784,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   private checkIfDuplicateType(exercises: Exercise[]): Duplicate {
-    let duplicate: Duplicate = {checked: true, tpes: []};
+    const duplicate: Duplicate = {checked: true, tpes: []};
     exercises.forEach(exercise => {
       duplicate.tpes.push(exercise.tpe);
-    })
-    return duplicate
-  } 
+    });
+    return duplicate;
+  }
 
   private setupFilterEvent() {
     let foreign = '',

@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
+import {CookieService, CookieOptions} from 'ngx-cookie';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {environment} from '../../environments/environment';
 import {SharedService} from '../services/shared.service';
 import {User} from '../models/user.model';
 import {Observable} from 'rxjs';
@@ -31,6 +33,7 @@ export class AuthService {
   constructor (
     private http: HttpClient,
     private router: Router,
+    private cookie: CookieService,
     private sharedService: SharedService
   ) {}
 
@@ -70,7 +73,11 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const token = this.getToken();
-    return !this.jwtHelper.isTokenExpired(token);
+    if (token) {
+      return !this.jwtHelper.isTokenExpired(token);
+    } else {
+      return false;
+    }
   }
 
   keepTokenFresh() {
@@ -84,8 +91,8 @@ export class AuthService {
         // renew token if it is older than an hour
         this.refreshToken().subscribe(
           newToken => {
-            console.log('refreshed token');
-            localStorage.setItem('km-jazyk.token', newToken.token);
+            console.log('refreshing token');
+            this.cookie.put('km-jazyk.token', newToken.token, this.getCookieOptions());
           }
         );
       }
@@ -93,7 +100,7 @@ export class AuthService {
   }
 
   getToken(): string {
-    return localStorage.getItem('km-jazyk.token');
+    return this.cookie.get('km-jazyk.token');
   }
 
   private refreshToken(): Observable<Token> {
@@ -104,15 +111,24 @@ export class AuthService {
   }
 
   private storeUserData(data: UserStorage) {
-    localStorage.setItem('km-jazyk.token', data.token);
-    localStorage.setItem('km-jazyk.userId', data.userId);
-    localStorage.setItem('km-jazyk.userName', data.userName);
+    // localStorage.setItem('km-jazyk.token', data.token);
+    this.cookie.put('km-jazyk.token', data.token, this.getCookieOptions());
   }
 
   private clearStorage() {
-    localStorage.removeItem('km-jazyk.token');
-    localStorage.removeItem('km-jazyk.userId');
-    localStorage.removeItem('km-jazyk.userName');
+    // localStorage.removeItem('km-jazyk.token');
+    this.cookie.removeAll();
+  }
+
+  private getCookieOptions(): CookieOptions {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7);
+    const cookieOptions: CookieOptions = {
+      secure: true,
+      httpOnly: true,
+      expires: expirationDate
+    };
+    return cookieOptions;
   }
 
   private getHeaders(addToken = false): HttpHeaders {

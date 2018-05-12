@@ -5,9 +5,12 @@ var express = require('express'),
     path = require('path'),
     bodyParser = require('body-parser'),
     bearerToken  = require('express-bearer-token'),
+    fs = require('fs'),
     routes = require('./server/routes'),
     checks = require('./server/checks'),
-    {mongoose} = require('./server/mongoose');
+    {mongoose} = require('./server/mongoose'),
+    https = require('https'),
+    options = {};
 
 // config
 app.set('port', process.env.PORT || 4800);
@@ -27,6 +30,16 @@ app.use(express.static(path.join(__dirname, 'dist')));
 routes.initialize(app, new express.Router());
 
 // server
-app.listen(app.get('port'), function() { 
-  console.log('Server running on port ' + app.get('port'));
-});
+if (app.get('env') === 'development') {
+  var options = {
+    key: fs.readFileSync('../ssl/jazyk.key'),
+    cert: fs.readFileSync('../ssl/jazyk.crt')
+  };
+  https.createServer(options, app).listen(app.get('port'), function() {
+    console.log('Local https server running on port ' + app.get('port'));
+  });
+} else {
+  app.listen(app.get('port'), function() { 
+    console.log('Server running on port ' + app.get('port'));
+  });
+}

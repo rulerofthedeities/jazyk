@@ -19,7 +19,6 @@ function encodeMongoURI(urlString) {
   return urlString;
 }
 
-
 mongoose.Promise = global.Promise;
 mongoose.connect(encodeMongoURI(db_url), options);
 
