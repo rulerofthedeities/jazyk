@@ -77,6 +77,12 @@ export class SignInComponent implements OnInit, OnDestroy {
     }
   }
 
+  onKeyPressed(key: string, user: User) {
+    if (key === 'Enter') {
+      this.onSubmitForm(user);
+    }
+  }
+
   private buildForm() {
     this.userForm = this.formBuilder.group({
       'email': ['', [Validators.required, ValidationService.emailValidator]],

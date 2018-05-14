@@ -350,6 +350,8 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         } else {
           if (this.hasStep('intro') && this.countPerStep['intro'].nrDone > 0) {
             defaultStep = this.getNextStep(this.getStepNr('intro'));
+          } else {
+            defaultStep = this.getStepNr('intro');
           }
         }
       }
@@ -434,7 +436,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     // Check how many results have been done per tab
     if (results && results.length > 0) {
       results.forEach((result: StepCount) => {
-        if (result.step === 'study' || result.step === 'practise') {
+        if (result.step === 'study' || result.step === 'practise' || result.step === 'intro' || result.step === 'dialogue') {
           total = result.step === 'study' ? studyTotal : lessonTotal;
           this.countPerStep[result.step] = {nrDone: result.nrDone || 0, nrRemaining: Math.max(0, total - result.nrDone || 0)};
         }
