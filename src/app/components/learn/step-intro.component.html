@@ -1,0 +1,19 @@
+<section style="padding: 12px;">
+  <ng-container 
+    *ngTemplateOutlet="buttonTemplate">  
+  </ng-container>
+  <km-intro [html]="intro?.html">
+  </km-intro>
+  <ng-container 
+    *ngTemplateOutlet="buttonTemplate">  
+  </ng-container>
+</section>
+
+<ng-template #buttonTemplate>
+  <button *ngIf="buttonText"
+    type="button"
+    class="btn btn-success intro-next-button"
+    (click)="onContinue();">
+    <span class="fa fa-arrow-right fa-spacing"></span>{{text[buttonText]}}
+  </button>
+</ng-template>

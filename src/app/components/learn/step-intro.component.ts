@@ -8,17 +8,7 @@ import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-intro',
-  template: `
-  <section style="padding: 12px;">
-    <km-intro [html]="intro?.html">
-    </km-intro>
-    <button *ngIf="buttonText"
-      type="button"
-      class="btn btn-success intro-next-button"
-      (click)="onContinue();">
-      <span class="fa fa-arrow-right fa-spacing"></span>{{text[buttonText]}}
-    </button>
-  </section>`,
+  templateUrl: 'step-intro.component.html',
   styleUrls: ['step.component.css']
 })
 

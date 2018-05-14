@@ -4,6 +4,22 @@ const response = require('../response'),
       Lesson = require('../models/lesson'),
       lessons = require('./lessons');
 
+hasIntroStep = function(res, results, userId, courseId, lessonId, cb) {
+  const query = {
+    courseId,
+    lessonId,
+    userId,
+    exerciseId: null,
+    step: results.step
+  };
+  Result.find(query, function(err, result) {
+    response.handleError(err, res, 400, `Error fetching ${results.step} step`, function() {
+      const hasResult = result && result.length ? true: false;
+      cb(hasResult);
+    });
+  })
+}
+
 saveIntroStep = function(res, results, userId, courseId, lessonId) {
   const introResult = new Result({
     courseId,
@@ -286,9 +302,15 @@ module.exports = {
           lessonId = results.lessonId ? new mongoose.Types.ObjectId(results.lessonId) : null,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     switch(results.step) {
-      case 'intro': saveIntroStep(res, results, userId, courseId, lessonId);
-      break;
-      case 'dialogue': saveIntroStep(res, results, userId, courseId, lessonId);
+      case 'intro': 
+      case 'dialogue': 
+        hasIntroStep(res, results, userId, courseId, lessonId, function(hasStep) {
+          if (!hasStep) {
+            saveIntroStep(res, results, userId, courseId, lessonId);
+          } else {
+            response.handleSuccess(res, null);
+          }
+        })
       break;
       case 'study': saveStudy(res, results, userId, courseId, lessonId);
       break;
