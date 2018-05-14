@@ -58,7 +58,8 @@
       [control]="exerciseForm"
       [text]="text">
     </km-field-messages>
-    <button type="button" class="btn btn-success btn-option"
+    <button type="button" *ngIf="exerciseForm.controls['options'].controls.length < 5"
+      class="btn btn-success btn-option"
       (click)="onAddOption()">
       <span class="fa fa-plus"></span> 
       {{text["AddOption"]}}
