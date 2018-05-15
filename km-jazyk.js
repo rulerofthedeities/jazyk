@@ -31,7 +31,7 @@ routes.initialize(app, new express.Router());
 
 // server
 if (app.get('env') === 'development') {
-  var options = {
+  options = {
     key: fs.readFileSync('../ssl/jazyk.key'),
     cert: fs.readFileSync('../ssl/jazyk.crt')
   };

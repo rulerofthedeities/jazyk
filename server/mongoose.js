@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 
 function encodeMongoURI(urlString) {
   if (urlString) {
-    let parsed = uriFormat.parse(urlString)
+    let parsed = uriFormat.parse(urlString);
     urlString = uriFormat.format(parsed);
   }
   return urlString;
