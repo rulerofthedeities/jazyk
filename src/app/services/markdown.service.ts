@@ -1,4 +1,4 @@
-import {Map} from '../models/page.model';
+import {Map} from '../models/course.model';
 import {Alignment, TagOptions, SnippetOptions, ReplaceOptions,
         ColumnOptions} from '../models/markdown.model';
 

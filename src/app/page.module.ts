@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from './shared.module';
 import {RouterModule} from '@angular/router';
-import {routes} from './info.routes';
-import {InfoService} from './services/info.service';
-import {InfoComponent} from './components/info/info.component';
+import {routes} from './page.routes';
+import {PageService} from './services/page.service';
+import {InfoComponent} from './components/pages/info.component';
 
 @NgModule({
   imports: [
@@ -11,10 +11,10 @@ import {InfoComponent} from './components/info/info.component';
     RouterModule.forChild(routes)
   ],
   providers: [
-    InfoService
+    PageService
   ],
   declarations: [
     InfoComponent
   ]
 })
-export class InfoModule {}
+export class PageModule {}

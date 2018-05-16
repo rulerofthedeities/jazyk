@@ -1,11 +1,11 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Page} from '../models/info.model';
+import {Page} from '../models/page.model';
 import {Observable} from 'rxjs';
 import {retry} from 'rxjs/operators';
 
 @Injectable()
-export class InfoService {
+export class PageService {
 
   constructor(
     private http: HttpClient
@@ -13,8 +13,10 @@ export class InfoService {
 
   fetchInfoPage(page: string, lan: string): Observable<Page> {
     const filteredPage = page.replace(/\W/g, '');
+
+    console.log('page', '/api/pages/info/' + filteredPage + '/' + lan);
     return this.http
-    .get<Page>('/api/info/' + filteredPage + '/' + lan)
+    .get<Page>('/api/pages/info/' + filteredPage + '/' + lan)
     .pipe(retry(3));
   }
 }

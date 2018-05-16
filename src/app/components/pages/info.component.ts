@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {InfoService} from '../../services/info.service';
+import {PageService} from '../../services/page.service';
 import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
-import {Page} from '../../models/info.model';
+import {Page} from '../../models/page.model';
 import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
@@ -14,11 +14,11 @@ import {takeWhile, filter} from 'rxjs/operators';
       <span class="fa fa-info-circle fa-spacing-title"></span>{{page?.title}}
     </div>
     <div class="panel-body">
-      <div [innerHTML]="page?.content | sanitizeHtml">
+      <div [innerHTML]="page?.html | sanitizeHtml">
     </div>
   </div>
   `,
-  styleUrls: ['info.component.css']
+  styleUrls: ['page.component.css']
 })
 
 export class InfoComponent implements OnInit, OnDestroy {
@@ -29,7 +29,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private infoService: InfoService,
+    private pageService: PageService,
     private utilsService: UtilsService,
     private errorService: ErrorService
   ) {}
@@ -45,12 +45,13 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   private fetchInfoPage(page: string) {
-    this.infoService
+    this.pageService
     .fetchInfoPage(page, this.userService.user.main.lan)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {
         this.page = fetchedPage;
+        console.log('page', this.page);
         this.utilsService.setPageTitle(null, fetchedPage.title);
       },
       error => {
