@@ -8,6 +8,7 @@ import {DndModule} from 'ng2-dnd'; // Sorting
 import {routes} from './build.routes';
 
 import {BuildService} from './services/build.service';
+import {MarkdownService} from './services/markdown.service';
 
 import {BuildComponent} from './components/build/build.component';
 import {BuildCoursesComponent} from './components/build/courses.component';
@@ -45,7 +46,8 @@ import {AudioListComponent} from './components/fields/audio-list.component';
     DndModule.forRoot()
   ],
   providers: [
-    BuildService
+    BuildService,
+    MarkdownService
   ],
   declarations: [
     BuildComponent,

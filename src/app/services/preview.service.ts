@@ -64,26 +64,6 @@ export class PreviewService {
     };
   }
 
-  // Remove tags from user input data
-  removeTags(text: string, tags: string[]): string {
-    const defaultTags = ['script', 'a', 'img', 'embed', 'object', 'canvas', 'iframe', 'input', 'source', 'textarea', 'video', 'applet'];
-    let filteredText = text,
-        regex: RegExp;
-    // remove script tags and enclosed data
-    defaultTags.forEach(scriptTag => {
-      regex = new RegExp(`<${scriptTag}\\b[^<]*(?:(?!<\\/${scriptTag}>)<[^<]*)*<\\/${scriptTag}>`, 'gi');
-      filteredText = filteredText.replace(regex, '');
-    });
-    // remove image tag
-    filteredText = filteredText.replace(/<img[^>]*>/g, '');
-    // remove other html tags
-    tags.forEach(tag => {
-      regex = new RegExp(`(<${tag}>)|(<\\/${tag}>)`, 'gi');
-      filteredText = filteredText.replace(regex, '');
-    });
-    return filteredText;
-  }
-
   // https://gist.github.com/IceCreamYou/8396172
   getDamerauLevenshteinDistance(source: string, target: string): number {
     if (!source) {

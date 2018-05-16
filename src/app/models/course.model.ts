@@ -189,7 +189,6 @@ export interface Dialogue {
   foreignTitle: string;
 }
 
-
 export interface ResultData {
   // Save data
   exerciseId: string;

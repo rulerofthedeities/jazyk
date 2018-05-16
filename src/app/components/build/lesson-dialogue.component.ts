@@ -1,7 +1,7 @@
 import {Component, Input, ViewChild, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
-import {PreviewService} from '../../services/preview.service';
+import {MarkdownService} from '../../services/markdown.service';
 import {Dialogue, LanPair} from '../../models/course.model';
 import {takeWhile, debounceTime} from 'rxjs/operators';
 
@@ -30,8 +30,8 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
 
   constructor(
     private buildService: BuildService,
-    private errorService: ErrorService,
-    private previewService: PreviewService
+    private markdownService: MarkdownService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -95,7 +95,7 @@ export class BuildLessonDialogueComponent implements OnInit, OnDestroy, AfterVie
   private parse() {
     // remove tags
     const tags = ['a', 'img', 'span', 'div', 'audio'],
-          text = this.previewService.removeTags(this.dialogue.text, tags),
+          text = this.markdownService.removeTags(this.dialogue.text, tags),
           splitter = this.dialogue.tpe === 'Dialogue' ? '\n' : ']',
           sourceSentences = text.split(splitter);
     this.dialogue.local = '';

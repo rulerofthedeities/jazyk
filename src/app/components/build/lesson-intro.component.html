@@ -2,16 +2,8 @@
   <div class="panel-body">
     <div class="row buttons">
       <div class="col-xs-12">
-        <button type="button" class="btn"
-          (click)="onSaveIntro()"
-          [ngClass]="{
-            'btn-success':modified,
-            'btn-default':!modified
-          }"
-          [disabled]="!modified">
-          <span class="fa fa-check" [class.fa-check]="saved"></span>
-          {{text[saved ? "Updated" : "Update"]}}
-        </button>
+        <ng-container *ngTemplateOutlet="saveButtonTemplate;context:{modified:modified, saved:saved}">
+        </ng-container>
         <span #dropdown>
           <div class="btn-group">
             <div 
@@ -20,10 +12,10 @@
               {{text["Arrange"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['arrange'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'table', 'arrange')">
+                <li (click)="onInsertTemplate('table', 'arrange')">
                   <a>{{text["Table"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'list', 'arrange')">
+                <li (click)="onInsertTemplate('list', 'arrange')">
                   <a>{{text["List"]}}</a>
                 </li>
             </ul>
@@ -35,13 +27,13 @@
               {{text["Headers"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['header'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'header', 'header')">
+                <li (click)="onInsertTemplate('header', 'header')">
                   <a>{{text["MainHeader"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'subheader', 'header')">
+                <li (click)="onInsertTemplate('subheader', 'header')">
                   <a>{{text["SubHeader"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'subsubheader', 'header')">
+                <li (click)="onInsertTemplate('subsubheader', 'header')">
                   <a>{{text["SubSubHeader"]}}</a>
                 </li>
             </ul>
@@ -53,13 +45,13 @@
               {{text["Size"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['size'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'size1', 'size')">
+                <li (click)="onInsertTemplate('size1', 'size')">
                   <a>{{text["Large"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'size2', 'size')">
+                <li (click)="onInsertTemplate('size2', 'size')">
                   <a>{{text["Larger"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'size3', 'size')">
+                <li (click)="onInsertTemplate('size3', 'size')">
                   <a>{{text["Largest"]}}</a>
                 </li>
             </ul>
@@ -71,28 +63,28 @@
               {{text["Miscellaneous"]}} <span class="caret"></span>
             </div>
             <ul class="dropdown-menu" [style.display]="dropdowns['other'] ? 'block': 'none'">
-                <li (click)="onInsertTemplate(introField, 'italic', 'other')">
+                <li (click)="onInsertTemplate('italic', 'other')">
                   <a>{{text["Italic"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'bold', 'other')">
+                <li (click)="onInsertTemplate('bold', 'other')">
                   <a>{{text["Bold"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'border', 'other')">
+                <li (click)="onInsertTemplate('border', 'other')">
                   <a>{{text["Border"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'color', 'other')">
+                <li (click)="onInsertTemplate('color', 'other')">
                   <a>{{text["Color"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'tabfirstline', 'other')">
+                <li (click)="onInsertTemplate('tabfirstline', 'other')">
                   <a>{{text["TabFirstLine"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'tabblock', 'other')">
+                <li (click)="onInsertTemplate('tabblock', 'other')">
                   <a>{{text["TabBlock"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'list', 'other')">
+                <li (click)="onInsertTemplate('list', 'other')">
                   <a>{{text["List"]}}</a>
                 </li>
-                <li (click)="onInsertTemplate(introField, 'audio', 'other')">
+                <li (click)="onInsertTemplate('audio', 'other')">
                   <a>{{text["Audio"]}}</a>
                 </li>
             </ul>
@@ -112,18 +104,10 @@
           (ngModelChange)="onChangedIntro()"
           rows="50"
           #introField="ngModel"
-          #introField2>
+          #insertField>
         </textarea>
-        <button type="button" class="btn"
-          (click)="onSaveIntro()"
-          [ngClass]="{
-            'btn-success':modified,
-            'btn-default':!modified
-          }"
-          [disabled]="!modified">
-          <span class="fa fa-check" [class.fa-check]="saved"></span>
-          {{text[saved ? "Updated" : "Update"]}}
-        </button>
+        <ng-container *ngTemplateOutlet="saveButtonTemplate;context:{modified:modified, saved:saved}">
+        </ng-container>
       </div>
       <div class="col-xs-6 markdown">
         <km-intro [html]="intro?.html">
@@ -132,3 +116,16 @@
     </div>
   </div>
 </div>
+
+<ng-template #saveButtonTemplate let-modified=modified let-saved=saved>
+  <button type="button" class="btn"
+    (click)="onSaveIntro()"
+    [ngClass]="{
+      'btn-success':modified,
+      'btn-default':!modified
+    }"
+    [disabled]="!modified">
+    <span class="fa fa-check" [class.fa-check]="saved"></span>
+    {{text[saved ? "Updated" : "Update"]}}
+  </button>
+</ng-template>
