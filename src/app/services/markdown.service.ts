@@ -144,7 +144,6 @@ export class MarkdownService {
         borderHtml: string,
         html = text;
     borderTags.forEach(borderTag => {
-      console.log('border', borderTag);
       borderText = borderTag.trim() || '';
       borderHtml = this.getHtmlSnippet(tag, {title: borderText});
       html = this.replaceText({
@@ -454,7 +453,7 @@ export class MarkdownService {
       return '';
     }
   }
-  
+
   replaceText(options: ReplaceOptions): string {
     const firstTag = options.tag + ':',
           closedTag = `[${firstTag + options.oldText + options.tag}]`,

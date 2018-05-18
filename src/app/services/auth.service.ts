@@ -91,7 +91,7 @@ export class AuthService {
         // renew token if it is older than an hour
         this.refreshToken().subscribe(
           newToken => {
-            console.log('refreshing token');
+            this.sharedService.log('Token', 'refreshing token');
             this.cookie.put('km-jazyk.token', newToken.token, this.getCookieOptions());
           }
         );

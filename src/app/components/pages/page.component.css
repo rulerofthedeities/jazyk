@@ -139,3 +139,7 @@
 /deep/ .i-float {
   float: left;
 }
+/* routes */
+/deep/ .i-route {
+  cursor: pointer;
+}
