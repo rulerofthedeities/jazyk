@@ -1,6 +1,7 @@
 import {Map} from '../models/course.model';
 import {Alignment, TagOptions, SnippetOptions, ReplaceOptions,
         ColumnOptions} from '../models/markdown.model';
+import {awsPath} from '../services/shared.service';
 
 export class MarkdownService {
 
@@ -203,6 +204,8 @@ export class MarkdownService {
       audioData = audioTag.split(',');
       audioData = audioData.map(data => data.trim());
       audioUrl = audioData[0];
+      audioUrl = audioUrl.substr(0, 1) === '/' ? audioUrl.substr(1) : audioUrl; // remove starting /
+      audioUrl = audioUrl.substr(0, 4) === 'http' ? audioUrl : 'https://' + awsPath + 'audio/' + audioUrl;  // add path if not included
       audioFormat = audioData[1] && validFormats.find(format => format === audioData[1]) ? audioData[1] : 'ogg';
       audioHtml = this.getHtmlSnippet('audio', {url: audioUrl, format: audioFormat, audioNr: i});
       html = this.replaceText({tag, html, oldText: audioTag, newText: audioHtml, hasBracket: true});
@@ -349,7 +352,7 @@ export class MarkdownService {
     templates['italic'] = `[i:this text is italic]`;
     templates['bold'] = `[b:this text is bold]`;
     templates['border'] = `[border: this text has a border!]`;
-    templates['audio'] = `[audio: https://s3.eu-central-1.amazonaws.com/jazyk/audio/cs/5ac50892b12e080e30c28b7f]`;
+    templates['audio'] = `[audio: cs/5ac50892b12e080e30c28b7f]`;
     templates['list'] = `[list: item1
       item2
       item3 list]`;

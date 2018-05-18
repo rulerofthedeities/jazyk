@@ -12,7 +12,7 @@
         class="form-control" 
         autocomplete="off"
         id="name" 
-        [placeholder]="text['EnterLessonName']"
+        [placeholder]="text['EnterLessonName'] || ''"
         (focus)="onFocusName()"
         formControlName="name">
         <km-field-messages 
@@ -30,7 +30,7 @@
       <km-autocomplete
         [items]="chapters"
         [currentItem]="lesson.chapterName"
-        [placeholder]="text['EnterChapterName']">
+        [placeholder]="text['EnterChapterName'] || ''">
       </km-autocomplete>
     </div>
   </div>

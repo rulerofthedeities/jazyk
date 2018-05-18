@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Title} from '@angular/platform-browser';
 import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
 import {WordPairDetail} from '../models/word.model';
-import {appTitle} from '../services/shared.service';
+import {appTitle, awsPath} from '../services/shared.service';
 import {Observable} from 'rxjs';
 import {Course, Translation, Dependables} from '../models/course.model';
 import {retry, delay, map} from 'rxjs/operators';
@@ -33,7 +33,6 @@ export class UtilsService {
     200000000,
     400000000
   ];
-  private _awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
   countDownFinishedEvent = new EventEmitter();
 
   constructor(
@@ -112,13 +111,9 @@ export class UtilsService {
     return this._rankScores;
   }
 
-  get awsPath(): string {
-    return this._awsPath;
-  }
-
   getDefaultCourseImagePath(course: Course): string {
     const from = course.languagePair.from,
-          path = this.awsPath + 'images/courses/default/',
+          path = awsPath + 'images/courses/default/',
           regionTo = this.getRegionTo(course);
     return 'https://' + path + from + '-' + regionTo + '-course.jpg';
   }

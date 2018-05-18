@@ -31,7 +31,7 @@
                 class="form-control input-lg bio"
                 id="bio"
                 maxlength="500" 
-                placeholder="{{text['EnterBio']}}"
+                [placeholder]="text['EnterBio'] || ''"
                 formControlName="bio"
               ></textarea> 
             </div>
@@ -48,7 +48,7 @@
                 class="form-control input-lg" 
                 id="realName"
                 autocomplete="off"
-                placeholder="{{text['EnterRealName']}}"
+                [placeholder]="text['EnterRealName'] || ''"
                 maxlength="50" 
                 formControlName="realName">
             </div>
@@ -65,7 +65,7 @@
                 class="form-control input-lg" 
                 id="location"
                 autocomplete="off"
-                placeholder="{{text['EnterLocation']}}"
+                [placeholder]="text['EnterLocation'] || ''"
                 maxlength="50" 
                 formControlName="location">
             </div>
@@ -82,7 +82,7 @@
                 class="form-control input-lg" 
                 id="nativeLan"
                 autocomplete="off"
-                placeholder="{{text['EnterNativeLanguage']}}"
+                [placeholder]="text['EnterNativeLanguage'] || ''"
                 maxlength="50" 
                 formControlName="nativeLan">
             </div>

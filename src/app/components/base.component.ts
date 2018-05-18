@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
-import {SharedService} from '../services/shared.service';
+import {awsPath, SharedService} from '../services/shared.service';
 import {timer} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   month: string;
   exercisesStarted = false;
   showBackground: Boolean;
-  awsPath: string;
+  imagePath: string;
 
   constructor (
     private authService: AuthService,
@@ -26,7 +26,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.awsPath = this.utilsService.awsPath + 'images/bg/';
+    this.imagePath = awsPath + 'images/bg/';
     this.showBackground = this.userService.user.main.background;
     this.setBackgroundMonth();
     this.setUpTokenRefresh();

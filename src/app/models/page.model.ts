@@ -1,4 +1,9 @@
 export interface Page {
+  tpe: string;
+  lan: string;
+  name: string;
   title: string;
-  content: string;
+  text: string;
+  html: string;
+  index: boolean;
 }

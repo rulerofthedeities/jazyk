@@ -20,7 +20,7 @@
         id="select"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterSentence']}}"
+        [placeholder]="text['EnterSentence'] || ''"
         required
         formControlName="select">
       <km-field-messages 
@@ -43,7 +43,7 @@
           id="option{{i}}"
           autocomplete="off"
           spellcheck="false"
-          placeholder="{{text['Option']}} #{{i + 1}}"
+          placeholder="{{text['Option'] || ''}} #{{i + 1}}"
           [attr.focus]="i===2"
           [formControl]="control"
           (keyup.enter)="onAddOption()">
@@ -84,7 +84,7 @@
         id="selectLocal"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterSentenceLocal']}}"
+        [placeholder]="text['EnterSentenceLocal'] || ''"
         formControlName="selectLocal">
     </div>
   </div>

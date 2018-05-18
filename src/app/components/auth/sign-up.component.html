@@ -29,7 +29,7 @@
               formControlName="userName" 
               type="text" 
               class="form-control input-lg"
-              [placeholder]="text['Enterusername']"
+              [placeholder]="text['Enterusername'] || ''"
               minlength="5"
               maxlength="25"
               autofocus
@@ -56,7 +56,7 @@
               formControlName="email"
               type="email" 
               class="form-control input-lg"
-              [placeholder]="text['Enteremail']"
+              [placeholder]="text['Enteremail'] || ''"
               minlength="5"
               maxlength="100"
               spellcheck="false"
@@ -83,7 +83,7 @@
               formControlName="password"
               type="password" 
               class="form-control input-lg"
-              [placeholder]="text['Enterpw']"
+              [placeholder]="text['Enterpw'] || ''"
               minlength="5"
               maxlength="100">
           </div>

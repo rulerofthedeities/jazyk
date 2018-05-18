@@ -8,6 +8,7 @@ export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
 export const isLearnedLevel = 12; // minimum level before it is considered learned
 export const appTitle = 'Jazyk';
+export const awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
 
 export class SharedService {
   private eventMessages: EventMessage[] = [];

@@ -46,7 +46,6 @@ export class LearnCourseSummaryComponent implements OnInit, OnDestroy {
   doneData: DoneData = {};
   defaultImage: string;
   regionTo: string;
-  awsPath: string;
 
   constructor(
     private router: Router,

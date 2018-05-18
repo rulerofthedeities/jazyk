@@ -5,7 +5,7 @@
       class="form-control" 
       id="name" 
       autocomplete="off"
-      [placeholder]="placeholder"
+      [placeholder]="placeholder || ''"
       [(ngModel)]="entry"
       (ngModelChange)="showItemList()">
   </div>

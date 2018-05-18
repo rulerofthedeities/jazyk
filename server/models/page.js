@@ -7,7 +7,8 @@ var pageSchema = new Schema({
   name: {type: String, required: true},
   title: String,
   text: String,
-  html: String
+  html: String,
+  index: {type: Boolean, default: true}
 });
 
 module.exports = mongoose.model('Page', pageSchema);

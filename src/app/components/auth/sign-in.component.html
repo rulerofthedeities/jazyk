@@ -30,7 +30,7 @@
               formControlName="email"
               type="text" 
               class="form-control input-lg"
-              [placeholder]="text['Enteremail']"
+              [placeholder]="text['Enteremail'] || ''"
               minlength="5"
               maxlength="100"
               spellcheck="false"
@@ -57,7 +57,7 @@
               formControlName="password"
               type="password" 
               class="form-control input-lg"
-              [placeholder]="text['Enterpw']"
+              [placeholder]="text['Enterpw'] || ''"
               minlength="5"
               maxlength="100">
           </div>

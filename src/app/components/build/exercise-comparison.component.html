@@ -19,7 +19,7 @@
         class="form-control input-lg" 
         id="foreignWord"
         autocomplete="off"
-        placeholder="{{text['Enterword' + lanForeign]}}"
+        [placeholder]="text['Enterword' + lanForeign] || ''"
         required
         formControlName="foreignWord"
         #foreign>
@@ -75,7 +75,7 @@
         class="form-control input-lg" 
         id="localWord"
         autocomplete="off"
-        placeholder="{{text['Enterword' + lanLocal]}}"
+        [placeholder]="text['Enterword' + lanLocal] || ''"
         required
         formControlName="localWord"
         #local>

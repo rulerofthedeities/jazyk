@@ -14,7 +14,7 @@
         id="question"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterQuestion']}}"
+        [placeholder]="text['EnterQuestion'] || ''"
         required
         formControlName="question">
     </div>
@@ -38,7 +38,7 @@
         id="answer"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterAnswer']}}"
+        [placeholder]="text['EnterAnswer'] || ''"
         formControlName="answer">
       <km-field-messages 
         [control]="exerciseForm.controls.answer"

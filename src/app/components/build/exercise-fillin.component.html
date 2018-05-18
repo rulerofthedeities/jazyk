@@ -20,7 +20,7 @@
         id="hint"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterHint']}}"
+        [placeholder]="text['EnterHint'] || ''"
         formControlName="hint">
     </div>
   </div>
@@ -42,7 +42,7 @@
         id="sentence"
         autocomplete="off"
         spellcheck="false"
-        placeholder="{{text['EnterSentence']}}"
+        [placeholder]="text['EnterSentence'] || ''"
         formControlName="sentence">
       <km-field-messages 
         [control]="exerciseForm.controls.sentence"

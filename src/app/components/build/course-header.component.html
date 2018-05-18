@@ -36,7 +36,7 @@
             autocomplete="off"
             id="name" 
             maxlength="50" 
-            [placeholder]="text['EnterCourseName']"
+            [placeholder]="text['EnterCourseName'] || ''"
             formControlName="name">
         </div>
       </div>
@@ -49,7 +49,7 @@
             class="form-control" 
             id="description" 
             maxlength="150"
-            [placeholder]="text['EnterCourseDescription']"
+            [placeholder]="text['EnterCourseDescription'] || ''"
             formControlName="description"
             rows="3">
           </textarea>

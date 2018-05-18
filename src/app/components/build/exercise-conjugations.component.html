@@ -18,7 +18,7 @@
           class="form-control input-lg" 
           id="instructions"
           autocomplete="off"
-          placeholder="{{text['EnterInstructions']}}"
+          [placeholder]="text['EnterInstructions'] || ''"
           formControlName="instructions">
       </div>
     </div>
@@ -40,7 +40,7 @@
           class="form-control input-lg" 
           id="foreignWord"
           autocomplete="off"
-          placeholder="{{text['EnterInfinitive']}}"
+          [placeholder]="text['EnterInfinitive'] || ''"
           required
           formControlName="foreignWord">
       </div>
@@ -68,7 +68,7 @@
           class="form-control input-lg" 
           id="localWord"
           autocomplete="off"
-          placeholder="{{text['Enterword' + lanLocal]}}"
+          [placeholder]="text['Enterword' + lanLocal] || ''"
           required
           formControlName="localWord"
           #local>

@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Meta} from '@angular/platform-browser';
 import {PageService} from '../../services/page.service';
 import {UserService} from '../../services/user.service';
 import {UtilsService} from '../../services/utils.service';
@@ -28,6 +29,7 @@ export class InfoComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private meta: Meta,
     private userService: UserService,
     private pageService: PageService,
     private utilsService: UtilsService,
@@ -51,8 +53,10 @@ export class InfoComponent implements OnInit, OnDestroy {
     .subscribe(
       fetchedPage => {
         this.page = fetchedPage;
-        console.log('page', this.page);
         this.utilsService.setPageTitle(null, fetchedPage.title);
+        if (this.page.index === false) {
+          this.meta.addTag({name: 'robots', content: 'noindex'});
+        }
       },
       error => {
         if (error.status === 404) {
