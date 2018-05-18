@@ -129,3 +129,13 @@
   cursor: pointer;
   margin: 4px 8px;
 }
+/* images */
+/deep/ .i-image {
+  border: 1px solid #ddd;
+}
+/deep/ .i-width {
+  width: 100%;
+}
+/deep/ .i-float {
+  float: left;
+}
