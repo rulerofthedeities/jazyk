@@ -338,6 +338,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     if (this.exerciseForm.value['wordTpe']) {
       switch (this.exerciseForm.value['wordTpe']) {
         case 'noun':
+        case 'noungroup':
           if (this.lanForeign === 'cs' || this.lanForeign === 'de' || this.lanForeign === 'fr') {
             label = 'Gender';
             this.customField = 'genus';
@@ -345,6 +346,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
           if (this.lanForeign === 'nl') {
             label = 'Article';
             this.customField = 'article';
+          }
+          break;
+        case 'propernoun':
+          if (this.lanForeign === 'cs') {
+            label = 'Gender';
+            this.customField = 'genus';
           }
           break;
         case 'adjective':
