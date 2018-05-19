@@ -48,7 +48,7 @@ module.exports.initialize = function(app, router) {
 
   router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
 
-  router.get('/pages/info/:page/:lan', info.getPage);
+  router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
 
   router.use('/', function(req, res, next) {
     jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {

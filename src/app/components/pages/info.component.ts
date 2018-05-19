@@ -32,13 +32,6 @@ export class InfoComponent implements OnInit, OnDestroy {
   updateNodes(event, route) {
     if (route) {
       route = route.substr(0, 1) === '/' ? route : '/' + route;
-      if (route === '/courses') {
-        if (this.authService.isLoggedIn()) {
-          route = '/learn/courses'; // courses route is only available when logged on
-        } else {
-          route = '/learn';
-        }
-      }
       this.router.navigate([route]);
     }
   }
@@ -67,7 +60,7 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   private fetchInfoPage(page: string) {
     this.pageService
-    .fetchInfoPage(page, this.userService.user.main.lan)
+    .fetchInfoPage(page, this.userService.user.main.lan, this.authService.isLoggedIn())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {

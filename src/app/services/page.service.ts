@@ -11,11 +11,11 @@ export class PageService {
     private http: HttpClient
   ) {}
 
-  fetchInfoPage(page: string, lan: string): Observable<Page> {
+  fetchInfoPage(page: string, lan: string, loggedIn: boolean): Observable<Page> {
     const filteredPage = page.replace(/\W/g, '');
 
     return this.http
-    .get<Page>('/api/pages/info/' + filteredPage + '/' + lan)
+    .get<Page>('/api/pages/info/' + filteredPage + '/' + lan + '/' + loggedIn.toString())
     .pipe(retry(3));
   }
 

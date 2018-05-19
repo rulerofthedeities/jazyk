@@ -6,4 +6,6 @@ export interface Page {
   text: string;
   html: string;
   index: boolean;
+  loggedIn: boolean;
+  loggedOut: boolean;
 }
