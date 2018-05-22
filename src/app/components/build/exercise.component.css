@@ -85,3 +85,16 @@
 .alert-success {
   padding-right: 10px;
 }
+.db {
+  color: green;
+}
+.nodb {
+  color: red;
+}
+.fa-database {
+  font-size: 34px;
+  margin-left: 15px;
+  position: relative;
+  top: 8px;
+  cursor: default;
+}

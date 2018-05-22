@@ -126,10 +126,10 @@ export class BuildLessonIntroComponent implements OnInit, OnDestroy, AfterViewIn
     html = this.markdownService.parseHeaders(html, 'header');
     html = this.markdownService.parseHeaders(html, 'subheader');
     html = this.markdownService.parseHeaders(html, 'subsubheader');
-    html = this.markdownService.parseBorders(html, 'border');
     html = this.markdownService.parseTab(html, 'tab');
     html = this.markdownService.parseLists(html);
     html = this.markdownService.parseAudio(html);
+    html = this.markdownService.parseBorders(html, 'border');
     html = this.markdownService.parseTables(html);
     this.intro.html = html;
   }

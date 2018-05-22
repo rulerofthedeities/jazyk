@@ -392,7 +392,7 @@ export class MarkdownService {
       case 'subsubheader':
         return `<h3 class="i">${options.title}</h3>`;
       case 'border':
-        return `<span class="btn btn-outline-secondary">${options.title}</span>`;
+        return `<span class="btn btn-default">${options.title}</span>`;
       case 'tl':
         return `<span class="translation">${options.content}</span>`;
       case 'i': // Italic
