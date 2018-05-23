@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro, 
+import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro,
         Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue, Map} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData, ExerciseType,
         Direction, ExerciseResult, ResultsData, Choice, QuestionType} from '../models/exercise.model';

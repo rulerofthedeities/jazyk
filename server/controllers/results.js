@@ -125,23 +125,36 @@ saveStep = function(res, results, userId, courseId, lessonId) {
   })
 }
 
-getCourseExercisesPipeline = function(courseId, data) {
+getCourseExercisesPipeline = function(courseId, resultData) {
   // piggyback lesson options with exercise for course reviews
-  const exerciseIds = data.map(item => item.exerciseId),
-        query = {'exercises._id': {$in: exerciseIds}},
+  const maxExercises = 100,
+        exerciseIds = resultData.map(item => item.exerciseId.exerciseId),
+        query = {'exercises._id': {$in: exerciseIds.slice(0, maxExercises)}},
         pipeline = [
           {$match: {courseId}},
-          {$unwind: '$exercises'},
+          {$unwind: '$exercises'}, 
           {$match: query},
-          {$project: {_id: 0, exercise: '$exercises', 'options': '$options'}}
+          {$project: {_id: 0, lessonId:'$_id', exercise: '$exercises', 'options': '$options'}}
         ];
   return pipeline;
 }
 
-getCourseExercises = function(courseId, data, cb) {
-  const pipeline = getCourseExercisesPipeline(courseId, data);
+getCourseExercises = function(courseId, resultData, cb) {
+  const pipeline = getCourseExercisesPipeline(courseId, resultData);
   Lesson.aggregate(pipeline, function(err, exercises) {
-    cb(err, exercises || []);
+    const validExercises = [];
+    let isInResult;
+    // Check if exercises are for correct lesson
+    exercises.forEach(exercise => {
+      isInResult = resultData.find(data => 
+        data.exerciseId.exerciseId.toString() === exercise.exercise._id.toString() &&
+        data.exerciseId.lessonId.toString() === exercise.lessonId.toString()
+      );
+      if (!!isInResult) {
+        validExercises.push(exercise);
+      }
+    })
+    cb(err, validExercises || []);
   });
 }
 
@@ -213,7 +226,7 @@ getStepCounts = async (req, res) => {
             {$match: difficultQuery},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               difficult: {'$first': '$isDifficult'}
             }},
             {$match: {difficult: true}},
@@ -225,7 +238,7 @@ getStepCounts = async (req, res) => {
             {$match: reviewQuery},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               dtToReview: {'$first': '$dtToReview'},
             }},
             {$match: {dtToReview:{$lte: new Date()}}},
@@ -448,7 +461,7 @@ module.exports = {
             {$match: resultsQuery},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               lessonId: {'$first': '$lessonId'},
               firstStep: {'$first': '$step'},
               firstTpe: {'$first': '$tpe'},
@@ -524,7 +537,7 @@ module.exports = {
             {$match: query},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               dtToReview: {'$first': '$dtToReview'},
               dt: {'$first': '$dt'},
               streak: {'$first': '$streak'},
@@ -586,7 +599,7 @@ module.exports = {
             {$match: toReviewQuery},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               dtToReview: {'$first': '$dtToReview'},
               dt: {'$first': '$dt'},
               streak: {'$first': '$streak'},
@@ -612,7 +625,7 @@ module.exports = {
             {$match: latestQuery},
             {$sort: sort},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               streak: {'$first': '$streak'},
               learnLevel: {'$first': '$learnLevel'}
             }},
@@ -665,7 +678,7 @@ module.exports = {
           pipeline = [
             {$match: query},
             {$group: {
-              _id: '$exerciseId',
+              _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
               tpe: {$first: {$cond: [{$eq: [ "$tpe", 0]} , 0, 1]}}, // word or exercise
             }},
             {$group: {

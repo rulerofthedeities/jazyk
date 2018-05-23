@@ -230,6 +230,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       .subscribe(
         (results: LessonResult[]) => {
           if (results) {
+            console.log('RESULTS from DB', results);
             this.countTotals(results);
           }
         },
@@ -245,11 +246,13 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
     if (results) {
       results.forEach(result => {
         if (activeLessonIds.find(id => id === result._id)) {
-          if (!this.resultsByLesson[result._id].introOnly) {
-            this.resultsByLesson[result._id] = result;
-            this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
-            this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
-            cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+          if (this.resultsByLesson[result._id]) {
+            if (!this.resultsByLesson[result._id].introOnly) {
+              this.resultsByLesson[result._id] = result;
+              this.resultsByLesson[result._id].hasStarted = !!(result.learned || result.studied);
+              this.resultsByLesson[result._id].hasCompleted = result.learned >= result.total;
+              cntCompleted += this.resultsByLesson[result._id].hasCompleted ? 1 : 0;
+            }
           }
         }
       });
@@ -265,7 +268,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
             }
           }
         });
-        this.resultsByChapter[chapter].hasCompleted = 
+        this.resultsByChapter[chapter].hasCompleted =
           this.resultsByChapter[chapter].total > 0 &&
           this.resultsByChapter[chapter].learned >= this.resultsByChapter[chapter].total;
       }

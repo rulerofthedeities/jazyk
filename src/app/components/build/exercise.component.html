@@ -493,11 +493,11 @@
         *ngIf="!currentExercise">
         {{text["cancel"]}}
       </button>
-      <span
+      <span *ngIf="currentExercise"
         class="fa fa-database"
         [ngClass]="{
-          nodb: !currentExercise?.wordDetailId,
-          db: !!currentExercise?.wordDetailId
+          nodb: !currentExercise.wordDetailId,
+          db: !!currentExercise.wordDetailId
         }">
       </span>
     </div>
