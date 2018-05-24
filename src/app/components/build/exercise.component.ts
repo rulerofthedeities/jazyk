@@ -206,7 +206,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
           this.buildNewExercise(form.value, options);
         }
       }
-      if (tpe=== 'single') {
+      if (tpe === 'single') {
         // Create single exercise
         options.lastDoc = true;
         options.singleDoc = true;
@@ -316,7 +316,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       this.currentExercise.audio = {
         s3: this.audios[i].s3,
         region: this.audios[i].local.substr(0, 2)
-      }
+      };
     }
   }
 
@@ -329,7 +329,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   onCheckDuplicate(form: any) {
-    this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord'])
+    this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord']);
   }
 
   getDynamicFieldLabel(): string {
@@ -437,7 +437,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       }
       exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
       if (this.selected[this.lanForeign].region) {
-        exercise.foreign.region = this.selected[this.lanForeign].region // Override region for words selected from database !
+        exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
       }
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
@@ -506,9 +506,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
       /* Conjugation test - one doc for all conjugations */
       if (options.isConjugation && options.singleDoc) {
-        let alts: string[] = [],
-            conjugations: string[] = [],
-            tmp: string[];
+        const alts: string[] = [],
+              conjugations: string[] = [];
         exercise.tpe = ExerciseType.Conjugations;
         for (let i = 0; i < 6; i++) {
           conjugations.push(this.selected[this.lanForeign].conjugation[i]);
@@ -594,7 +593,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
 
   private checkIfValue(field: string): string {
     // Prevent saving empty values to db
-    let value = undefined;
+    let value;
     if (field) {
       value = field;
     }
@@ -622,15 +621,18 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (detail.wordTpe === 'adverb' || detail.wordTpe === 'adjective' || detail.wordTpe === 'preposition') {
         annotations.push(this.text[detail.wordTpe]);
       }
+      if (detail.isIndeclinable) {
+        annotations.push(this.text['indeclinable']);
+      }
+      // If verb has aspect or motion, add to annotations
+      if (detail.aspect) {
+        annotations.push(this.text[detail.aspect]);
+      }
+      if (detail.motion) {
+        annotations.push(this.text[detail.motion]);
+      }
     }
 
-    // If verb has aspect or motion, add to annotations
-    if (detail.aspect) {
-      annotations.push(this.text[detail.aspect]);
-    }
-    if (detail.motion) {
-      annotations.push(this.text[detail.motion]);
-    }
     if (detail.isPlural) {
       annotations.push(this.text['plural']);
     }
@@ -652,18 +654,20 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
         s3: audio.s3,
         region: audio.local.substr(0, 2)
       };
-    }
+    };
 
     if (audios && audios.length > 0) {
       if (audios.length === 1) {
         return getRegionAudio(audios[0]);
       } else {
-        //check if there is a region for the region of the exercise
+        // check if there is a region for the region of the exercise
         const searchRegion = region ? region : this.lanForeign,
               filteredAudios = audios.filter(audio => audio.local.substr(0, 2) === searchRegion);
         if (filteredAudios.length > 0) {
-          return getRegionAudio(filteredAudios[0])
-        } else return getRegionAudio(audios[0]);
+          return getRegionAudio(filteredAudios[0]);
+        } else {
+          return getRegionAudio(audios[0]);
+        }
       }
     }
   }
@@ -754,14 +758,14 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   private checkGenus(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
     if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.genus) {
-      return detail.genus.indexOf(';') > -1 ? false : true; //ignore if multiple are possible
+      return detail.genus.indexOf(';') > -1 ? false : true; // ignore if multiple are possible
     }
   }
 
   private checkArticle(wordpairDetail: WordPairDetail): boolean {
     const detail = wordpairDetail[this.lanForeign];
     if ((detail.wordTpe === 'noun' || detail.wordTpe === 'noungroup') && detail.article && this.configs.foreign.articles.length > 1) {
-      return detail.article.indexOf(';') > -1 ? false : true; //ignore if multiple are possible
+      return detail.article.indexOf(';') > -1 ? false : true; // ignore if multiple are possible
     }
   }
 

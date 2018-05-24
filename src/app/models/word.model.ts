@@ -64,6 +64,7 @@ export interface WordDetail {
   comparative?: string;
   superlative?: string;
   isPlural?: boolean;
+  isIndeclinable?: boolean;
   isDiminutive?: boolean;
   isComparative?: boolean;
   isSuperlative?: boolean;
