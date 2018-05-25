@@ -5,7 +5,8 @@
   </div>
 </div>
 <!-- Exercise list -->
-<div class="exercises" *ngIf="exercises?.length > 0">
+<div class="exercises" *ngIf="exercises?.length > 0"
+            #dropdown>
   <ul 
     class="list-unstyled list list-group"
     dnd-sortable-container
@@ -32,6 +33,21 @@
           <span 
             class="btn btn-info fa fa-eye"
             (click)="onViewExercise(exercise._id)">
+          </span>
+          <span
+            class="btn btn-default fa fa-arrows-v"
+            (click)="onToggleArrows(exercise._id)">
+            <ul class="dropdown-menu pull-right" 
+              [style.display]="arrowDropDownId === exercise._id && showArrowDropDown ? 'block' : 'none'">
+              <li (click)="onMoveExercise(exercise, i, 'up')"><a>
+                <span class="btn btn-success fa fa-arrow-up"></span>
+                {{text['ToTop']}}
+              </a></li>
+              <li (click)="onMoveExercise(exercise, i, 'down')"><a>
+                <span class="btn btn-success fa fa-arrow-down"></span>
+                {{text['ToBottom']}}
+              </a></li>
+            </ul>
           </span>
         </div>
         <div class="items">

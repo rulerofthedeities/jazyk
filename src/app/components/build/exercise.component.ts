@@ -439,6 +439,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (this.selected[this.lanForeign].region) {
         exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
       }
+      exercise.local.region = this.selected[this.lanLocal].region;
+      exercise.foreign.region = this.selected[this.lanForeign].region;
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;

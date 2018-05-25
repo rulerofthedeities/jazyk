@@ -1,4 +1,5 @@
-import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnDestroy, EventEmitter,
+        ViewChild, ElementRef, HostListener} from '@angular/core';
 import {LanPair, LessonOptions, LanConfigs, UserAccess, AccessLevel} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {BuildService} from '../../services/build.service';
@@ -32,6 +33,16 @@ export class BuildExerciseListComponent implements OnDestroy {
   viewId: string = null;
   removingId: string = null;
   exType = ExerciseType;
+  showArrowDropDown = false;
+  arrowDropDownId: string = null;
+  @ViewChild('dropdown') el: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.el && !this.el.nativeElement.contains(event.target)) {
+      // Outside list, close dropdown
+      this.showArrowDropDown = false;
+    }
+  }
 
   constructor(
     private buildService: BuildService,
@@ -45,16 +56,38 @@ export class BuildExerciseListComponent implements OnDestroy {
 
   onEditExercise(id: string) {
     this.viewId = null;
+    this.showArrowDropDown = false;
     if (!this.isRemoving) {
       this.editingId = id === this.editingId ? null : id;
     }
   }
 
+  onToggleArrows(id: string) {
+    if (this.arrowDropDownId === id && this.showArrowDropDown) {
+      this.showArrowDropDown = false;
+    } else {
+      this.arrowDropDownId = id;
+      this.showArrowDropDown = true;
+    }
+  }
+
   onCancelEdit() {
     this.editingId = null;
+    this.showArrowDropDown = false;
+  }
+
+  onMoveExercise(exercise: Exercise, i: number, direction: string) {
+    this.exercises.splice(i, 1);
+    if (direction === 'down') {
+      this.exercises.push(exercise);
+    } else {
+      this.exercises.unshift(exercise);
+    }
+    this.saveResortedExercises();
   }
 
   onUpdatedExercise(updatedExercise: Exercise) {
+    this.showArrowDropDown = false;
     this.exercises.forEach((exercise, i) => {
       if (exercise._id === this.editingId) {
         this.exercises[i] = updatedExercise;
@@ -82,6 +115,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   onDraggedStart(id: string) {
+    this.showArrowDropDown = false;
     this.draggingId = id;
   }
 
@@ -94,6 +128,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   onViewExercise(id: string) {
+    this.showArrowDropDown = false;
     this.editingId = null;
     this.viewId = this.viewId === id ? null : id;
   }
@@ -235,7 +270,10 @@ export class BuildExerciseListComponent implements OnDestroy {
       .updateExercises(this.exercises, this.lessonId)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
-        () => {},
+        () => {
+          this.showArrowDropDown = false;
+          this.arrowDropDownId = null;
+        },
         error => this.errorService.handleError(error)
       );
     }
