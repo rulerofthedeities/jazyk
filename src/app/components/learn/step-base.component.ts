@@ -4,7 +4,7 @@ import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {isLearnedLevel, maxStreak, SharedService} from '../../services/shared.service';
 import {LearnSettings} from '../../models/user.model';
-import {Course, LanPair, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
+import {Course, LanPair, KeyboardKeys, LanConfig, Lesson, LessonOptions, StepCount, Map} from '../../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, ExerciseStep, Choice, ConjugationsData,
         ExerciseType, AnsweredType, QuestionType, Direction, Points, TimeCutoffs} from '../../models/exercise.model';
 import {LearnWordFieldComponent} from './exercise-word-field.component';
@@ -63,7 +63,7 @@ export abstract class Step {
   levelUpdated: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   countPerStep: Map<StepCount> = {};
   isExercisesDone = false;
-  keys: string[] = []; // keyboard keys
+  keys: KeyboardKeys = {lowercase: [], uppercase: []}; // keyboard keys
   pronouns: string[] = []; // subject pronouns
   currentChoices: string[] = []; // choices
   answered: number; // choices

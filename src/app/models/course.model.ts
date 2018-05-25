@@ -28,6 +28,16 @@ export interface Case {
   code: string;
 }
 
+export interface KeyboardKeys {
+  lowercase: string[];
+  uppercase: string[];
+}
+
+export interface Keyboard {
+  showKeyboard: boolean;
+  keys: KeyboardKeys;
+}
+
 export interface LanConfig  {
   tpe: string;
   code: string;
@@ -38,7 +48,7 @@ export interface LanConfig  {
   cases?: Case[];
   subjectPronouns?: string[];
   regions?: string[];
-  keys?: string[];
+  keys?: KeyboardKeys;
 }
 
 export interface LanConfigs {

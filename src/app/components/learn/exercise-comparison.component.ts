@@ -1,13 +1,8 @@
 import {Component, Input, Output, OnInit, OnChanges, AfterViewInit, Renderer,
   EventEmitter, ViewChildren, QueryList, ElementRef} from '@angular/core';
-import {LanPair} from '../../models/course.model';
+import {Keyboard, LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType, ConjugationsData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
-
-interface Keyboard {
-  showKeyboard: boolean;
-  keys: string[];
-}
 
 interface Answer {
   comparative: string;

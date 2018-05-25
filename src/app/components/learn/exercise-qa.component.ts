@@ -1,12 +1,7 @@
 import {Component, Input, Output, OnChanges, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
-import {LanPair} from '../../models/course.model';
+import {Keyboard, LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
-
-interface Keyboard {
-  showKeyboard: boolean;
-  keys: string[];
-}
 
 @Component({
   selector: 'km-qa',

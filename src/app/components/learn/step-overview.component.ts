@@ -230,7 +230,6 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       .subscribe(
         (results: LessonResult[]) => {
           if (results) {
-            console.log('RESULTS from DB', results);
             this.countTotals(results);
           }
         },

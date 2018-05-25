@@ -1,4 +1,5 @@
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {KeyboardKeys} from '../../models/course.model';
 
 @Component({
   selector: 'km-keyboard',
@@ -7,7 +8,7 @@ import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 })
 
 export class LearnKeyboardComponent implements OnInit {
-  @Input() keys: string[];
+  @Input() keys: KeyboardKeys;
   @Output() selectedKey = new EventEmitter<string>();
   rows: string[][] = [];
   isUpperCase = false;
@@ -27,25 +28,10 @@ export class LearnKeyboardComponent implements OnInit {
 
   private setKeys() {
     if (this.keys) {
-      this.keys.forEach((keyList, i) => {
-        if (this.isUpperCase) {
-          // keyList = keyList.toUpperCase(); // doesn't work for ß
-          keyList = this.myToUpperCase(keyList);
-        }
+      const keys = this.isUpperCase ? this.keys.uppercase : this.keys.lowercase;
+      keys.forEach((keyList, i) => {
         this.rows[i] = keyList.split('');
       });
     }
   }
-
-  private myToUpperCase = function(str) {
-    let uppercase = '';
-    str.split('').forEach((c, i) => {
-      if (str.charCodeAt(i) === 339) { // œ
-        uppercase += String.fromCharCode(338);
-      } else {
-        uppercase += String.fromCharCode(str.charCodeAt(i) & 223);
-      }
-    });
-    return uppercase;
-  };
 }

@@ -1,11 +1,7 @@
 import {Component, Input, ViewChild, ElementRef, OnChanges, AfterViewChecked} from '@angular/core';
+import {Keyboard} from '../../models/course.model';
 import {ExerciseData, ExerciseExtraData} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';
-
-interface Keyboard {
-  showKeyboard: boolean;
-  keys: string[];
-}
 
 interface Solution {
   solution: string;
