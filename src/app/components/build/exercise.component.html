@@ -280,7 +280,7 @@
       class="control-label col-xs-1">
       <km-region-flag-selector
         [lan]="languagePair.from"
-        [region]="currentExercise?.local.region"
+        [region]="exerciseForm.value.localRegion"
         [regions]="formData.localRegions"
         (newRegion)="onUpdateRegion($event,'local')">
       </km-region-flag-selector>
@@ -479,7 +479,7 @@
         [disabled] = "isSaving ? '' : null"
         (click)="onUpdateWord(exerciseForm)"
         *ngIf="currentExercise && exerciseForm.valid">
-        {{text["Editword"]}}
+        {{text["UpdateWord"]}}
       </button>
       <button type="button" class="btn btn-warning btn-lg"
         [disabled] = "isSaving ? '' : null"

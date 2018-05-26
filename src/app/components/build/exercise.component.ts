@@ -157,6 +157,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       foreignWord: wordpairDetail.wordPair[this.lanForeign].word,
       localWord: wordpairDetail.wordPair[this.lanLocal].word
     }, {emitEvent: false});
+    // Update region
+    if (wordpairDetail[this.lanLocal] && wordpairDetail[this.lanLocal].region) {
+      this.exerciseForm.patchValue({
+        localRegion: wordpairDetail[this.lanLocal].region
+      }, {emitEvent: false});
+    }
     if (!this.currentExercise) {
       // Update word
       if (wordpairDetail[this.lanLocal]) {
@@ -439,8 +445,6 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (this.selected[this.lanForeign].region) {
         exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
       }
-      exercise.local.region = this.selected[this.lanLocal].region;
-      exercise.foreign.region = this.selected[this.lanForeign].region;
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
