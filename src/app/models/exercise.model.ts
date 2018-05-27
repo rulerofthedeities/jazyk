@@ -19,6 +19,7 @@ export interface RegionAudio {
 
 export interface Exercise {
   _id?: string;
+  lessonId?: string; // for uniqueness across course
   wordDetailId?: string;
   local: ExerciseWord;
   foreign: ExerciseWord;
@@ -48,12 +49,18 @@ export interface ExerciseSteps {
   exam: ExerciseStep;
 }
 
+export interface ExerciseUnid { // exercise id is only unique within a lessonId
+  exerciseId: string;
+  lessonId: string;
+}
+
 export interface ExerciseResult {
   _id?: string;
   userId?: string;
   courseId?: string;
   lessonId?: string;
   exerciseId?: string;
+  exerciseUnid?: ExerciseUnid;
   tpe?: number;
   points?: number;
   learnLevel?: number;

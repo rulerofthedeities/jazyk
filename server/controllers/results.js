@@ -128,7 +128,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 getCourseExercisesPipeline = function(courseId, resultData) {
   // piggyback lesson options with exercise for course reviews
   const maxExercises = 100,
-        exerciseIds = resultData.map(item => item.exerciseId.exerciseId),
+        exerciseIds = resultData.map(item => item.exerciseUnid.exerciseId),
         query = {'exercises._id': {$in: exerciseIds.slice(0, maxExercises)}},
         pipeline = [
           {$match: {courseId}},
@@ -147,8 +147,8 @@ getCourseExercises = function(courseId, resultData, cb) {
     // Check if exercises are for correct lesson
     exercises.forEach(exercise => {
       isInResult = resultData.find(data => 
-        data.exerciseId.exerciseId.toString() === exercise.exercise._id.toString() &&
-        data.exerciseId.lessonId.toString() === exercise.lessonId.toString()
+        data.exerciseUnid.exerciseId.toString() === exercise.exercise._id.toString() &&
+        data.exerciseUnid.lessonId.toString() === exercise.lessonId.toString()
       );
       if (!!isInResult) {
         validExercises.push(exercise);
@@ -550,7 +550,7 @@ module.exports = {
             {$sample: {size: limit}},
             {$project: {
               _id: 0,
-              exerciseId: '$_id',
+              exerciseUnid: '$_id',
               dtToReview: '$dtToReview',
               dt: '$dt',
               streak: '$streak',
@@ -612,7 +612,7 @@ module.exports = {
             {$limit: limit},
             {$project: {
               _id: 0,
-              exerciseId: '$_id',
+              exerciseUnid: '$_id',
               dtToReview: '$dtToReview',
               dt: '$dt',
               streak: '$streak',
@@ -635,14 +635,17 @@ module.exports = {
             exercises = await Lesson.aggregate(exercisesPipeline),
             latest = await Result.aggregate(latestPipeline);
       // Combine data
+      /*
       let latestOne;
       results.forEach(result => {
-        latestOne = latest.find(l => l._id.toString() === result.exerciseId.toString());
+        latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseId.toString() && 
+                                     l._id.lessonId.toString() === result.lessonId.toString());
         if (latestOne) {
           result.streak = latestOne.streak;
           result.learnLevel = latestOne.learnLevel;
         }
       })
+      */
       return {exercises: exercises || [], latest};
     };
 
@@ -651,7 +654,7 @@ module.exports = {
         getReviewData(results).then((data) => {
           response.handleSuccess(res, {toreview: data.exercises, results});
         }).catch((err) => {
-          response.handleError(err, res, 400, 'Error fetching overview results');
+          response.handleError(err, res, 400, 'Error fetching to review results');
         });
       });
     });

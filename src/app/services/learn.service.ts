@@ -245,7 +245,12 @@ export class LearnService {
       exercises.forEach( (exercise) => {
         filteredResult = null;
         if (results) {
-          filteredResult = results.filter(result => result && result.exerciseId === exercise._id)[0];
+          // if course level exercise, use exerciseUnid to ensure uniqueness across course;
+          filteredResult = results.filter(result =>
+            result ? (result.exerciseUnid ?
+              result.exerciseUnid.exerciseId === exercise._id && result.exerciseUnid.lessonId === exercise.lessonId :
+              result.exerciseId === exercise._id) : false
+          )[0];
         }
         if (stepOptions.isBidirectional) {
           direction = Math.random() >= 0.5 ? Direction.LocalToForeign : Direction.ForeignToLocal;

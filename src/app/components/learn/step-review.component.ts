@@ -12,6 +12,7 @@ import {takeWhile} from 'rxjs/operators';
 // piggyback lesson options with exercise for course reviews
 interface ExercisePlusOptions {
   exercise: Exercise;
+  lessonId?: string;
   options: LessonOptions;
 }
 
@@ -59,7 +60,13 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   }
 
   private setExercises(newExercises: ExercisePlusOptions[], results: ExerciseResult[]) {
-    const exercises = newExercises.map(exercise => exercise.exercise),
+    // add lessonId to exercise to ensure uniqueness across course!
+    let ex: Exercise;
+    const exercises = newExercises.map(exercise => {
+            ex = exercise.exercise;
+            ex.lessonId = exercise.lessonId;
+            return ex;
+          }),
           options = newExercises.map(exercise => exercise.options);
     if (exercises.length > 0) {
       this.buildExerciseData(exercises, results, options[0]);

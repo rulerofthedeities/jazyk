@@ -69,7 +69,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isDemo = !this.authService.isLoggedIn();
     this.settings = this.userService.user.jazyk.learn;
-    this.subscribe();
+    this.subscriptions();
   }
 
   stepTo(i: number) {
@@ -323,7 +323,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
       this.currentStep = this.getStepNr(this.lesson.skipToStep);
     } else {
       if (this.routeStep === 'overview') {
-        // defaultStep = 0;
+        defaultStep = 0;
       } else if (results > 0) {
         // When pressing button 'continue course' go to exercises;
         // if none, go to study; if none, go to next lesson
@@ -693,7 +693,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private subscribe() {
+  private subscriptions() {
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),
