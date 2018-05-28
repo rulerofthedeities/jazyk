@@ -94,14 +94,8 @@
                 <div [innerHTML]="getInfoAlt(exercise)" class="sublines"></div>
               </div>
             </div>
-            <div class="col-xs-2 annotations">
-              {{getInfo(exercise)}}
-              <span>
-                <div [innerHTML]="getInfoHint(exercise, 'foreign')"></div>
-              </span>
-            </div>
-            <div class="col-xs-2 annotations">
-              <div [innerHTML]="getInfoHint(exercise, 'local')"></div>
+            <div class="col-xs-4 annotations">
+              <div [innerHTML]="getWordInfo(exercise)"></div>
             </div>
           </div>
           <!-- SELECT -->
@@ -128,25 +122,6 @@
             </div>
             <div class="col-xs-2 annotations">
               <div [innerHTML]="getSelectOptions(exercise)"></div>
-            </div>
-          </div>
-          <!-- QA -->
-          <div *ngSwitchCase="exType.QA">
-            <div class="col-xs-8">
-              <div class="words">
-                <span 
-                  (dblclick)="onEditExercise(exercise._id)">
-                  <km-region-flag
-                    [lan]="languagePair.to"
-                    [word]="exercise.foreign"
-                    [thumb]="true">
-                  </km-region-flag>
-                  <strong>{{exercise.foreign?.word}}</strong>
-                </span> <span *ngIf="exercise.foreign?.word">/</span>
-                <span (dblclick)="onEditExercise(exercise._id)">
-                  {{exercise.foreign?.hint}}
-                </span>
-              </div>
             </div>
           </div>
           <!-- Fill In -->
@@ -227,7 +202,7 @@
           </div>
           <!-- COMPARISON -->
           <div *ngSwitchCase="exType.Comparison">
-            <div class="col-xs-4">
+            <div class="col-xs-8">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id)">
                   <km-region-flag
@@ -247,13 +222,10 @@
                 </span>
               </div>
             </div>
-            <div class="col-xs-4 annotations">
-              {{getGenus(exercise)}}
-            </div>
           </div>
           <!-- CONJUGATIONS -->
           <div *ngSwitchCase="exType.Conjugations">
-            <div class="col-xs-4">
+            <div class="col-xs-8">
               <div class="words">
                 <span (dblclick)="onEditExercise(exercise._id)">
                   <km-region-flag
@@ -272,9 +244,6 @@
                   {{exercise.local?.word}}
                 </span>
               </div>
-            </div>
-            <div class="col-xs-4 annotations">
-              
             </div>
           </div>
         </div>

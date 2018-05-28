@@ -150,7 +150,26 @@ export class BuildExerciseListComponent implements OnDestroy {
     return msg;
   }
 
-  getInfo(exercise: Exercise): string {
+  getWordInfo(exercise: Exercise): string {
+    const infoArr: string[] = [],
+          annotations = this.getInfoAnnotations(exercise, 'local'),
+          genus = this.getInfoGenus(exercise),
+          hint = this.getInfoHint(exercise, 'local');
+    infoArr.push(annotations);
+    infoArr.push(genus);
+    infoArr.push(hint);
+    return infoArr.filter(info => !!info).join('<br>');
+  }
+
+  private getInfoAnnotations(exercise: Exercise, tpe: string): string {
+    let annotationList: string[] = [];
+    if (exercise[tpe]) {
+      annotationList = exercise[tpe].annotations ? exercise[tpe].annotations.split('|') : [];
+    }
+    return annotationList.join('<br>');
+  }
+
+  private getInfoGenus(exercise: Exercise): string {
     let info = '';
     if (exercise.genus) {
       info = exercise.genus;
@@ -165,30 +184,12 @@ export class BuildExerciseListComponent implements OnDestroy {
     return this.text[info];
   }
 
-  getInfoHint(exercise: Exercise, tpe: string): string {
-    if (exercise[tpe]) {
-      const annotations: string[] = exercise[tpe].annotations ? exercise[tpe].annotations.split('|') : [];
-      let hint = '';
-      annotations.forEach(annotation => {
-        if (hint) {
-          hint = hint + '<br>';
-        }
-        hint = hint + annotation;
-      });
-      if (exercise[tpe].hint) {
-        if (hint) {
-          hint = hint + '<br>';
-        }
-        hint = hint + '(' + exercise[tpe].hint + ')';
-      }
-      if (exercise[tpe].info) {
-        if (hint) {
-          hint = hint + '<br>';
-        }
-        hint = hint + exercise[tpe].info;
-      }
-      return hint;
+  private getInfoHint(exercise: Exercise, tpe: string): string {
+    let hint = '';
+    if (exercise[tpe] && exercise[tpe].hint) {
+      hint = '(' + exercise[tpe].hint + ')';
     }
+    return hint;
   }
 
   getInfoAlt(exercise: Exercise): string {
@@ -206,6 +207,7 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getSelectOptions(exercise: Exercise): string {
+    console.log('GET select options');
     let options = '';
     if (exercise.options) {
       const optionArray = exercise.options.split('|');
