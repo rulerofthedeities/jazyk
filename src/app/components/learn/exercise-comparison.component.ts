@@ -25,7 +25,7 @@ export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewIni
   instruction: string;
   currentField = 0;
   isAnswered = false;
-  currentExerciseId: string;
+  currentExerciseUnid: string;
   comparisons: string[];
   answers: string[] = [];
   results: boolean[];
@@ -42,8 +42,10 @@ export class LearnComparisonComponent implements OnInit, OnChanges, AfterViewIni
   }
 
   ngOnChanges() {
-    if (this.currentExerciseId !== this.data.exercise._id) {
-      this.currentExerciseId = this.data.exercise._id;
+    const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
+    if (this.currentExerciseUnid !== unid) {
+      this.currentExerciseUnid = unid;
+      console.log('current unid', this.currentExerciseUnid);
       const exercise = this.data.exercise;
       this.getComparisonData(this.data.exercise);
     }

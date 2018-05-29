@@ -111,7 +111,9 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       add = true;
     }
     // Only readd exercise to the back if question asked < x times
-    const exercise = this.dataByExercise[this.currentData.exercise._id],
+    console.log('unid', this.currentData.exercise._id);
+    console.log(this.dataByExerciseUnid);
+    const exercise = this.dataByExerciseUnid[this.currentData.exercise._id], // in practise unid === exerciseid
           countWrong = exercise.countWrong ? exercise.countWrong : 0,
           correct = aType === AnsweredType.Correct  || aType === AnsweredType.Alt,
           countRight = exercise.countRight ? exercise.countRight : 0;

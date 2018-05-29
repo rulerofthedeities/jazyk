@@ -151,7 +151,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   onContinueCourse() {
-    this.router.navigate(['/learn/course/' + this.courseId]);
+    this.router.navigate(['/learn/course/' + this.courseId + '/continue']);
   }
 
   capitalize(word: string): string {
@@ -338,6 +338,10 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
             // No exercises left in lesson -> go to next lesson
             this.getNextLesson(this.lesson._id);
           }
+        } else {
+          defaultStep = -1;
+          // No exercises left in lesson -> go to next lesson
+          this.getNextLesson(this.lesson._id);
         }
       } else {
         // new course: show intro if it exists otherwise start dialogue otherwise start study;
@@ -671,7 +675,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
     let currentFound = false,
         newLessonId,
         chapter: LessonId;
-    this.course.chapters.forEach(chapterName => {
+    const chapters: string[] = this.course.chapters.length ? this.course.chapters : [''];
+    console.log('getting next lesson', chapters);
+    chapters.forEach(chapterName => {
       // Get lessons for this chapter
       chapter = this.course.lessons.find(lesson => lesson.chapter === chapterName);
       if (chapter) {

@@ -40,7 +40,10 @@ export class LearnCompletedListComponent implements OnInit {
     this.data.forEach(exerciseData => {
       if (exerciseData.data.isDone) {
         // Check if this exercise is already in results
-        result = this.results.find(existingResult => existingResult.exercise.exercise._id === exerciseData.exercise._id);
+        console.log('results unid check', this.results, exerciseData.exercise);
+        result = this.results.find(existingResult =>
+          existingResult.exercise.exercise._id === exerciseData.exercise._id &&
+          existingResult.exercise.exercise.lessonId === exerciseData.exercise.lessonId);
         if (!result) {
           result = {
             exercise: exerciseData,
@@ -54,6 +57,7 @@ export class LearnCompletedListComponent implements OnInit {
           };
           this.results.push(result);
         } else {
+          console.log('exercise in result');
           const res = JSON.parse(JSON.stringify(result.exercise.data));
           result.isCorrect = exerciseData.data.isCorrect ? result.isCorrect : false;
           result.isAlt = exerciseData.data.isAlt ? true : result.isAlt;

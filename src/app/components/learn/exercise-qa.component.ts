@@ -22,16 +22,18 @@ export class LearnQAComponent implements OnChanges, AfterViewChecked {
   instruction: string;
   isAnswered = false;
   exType = ExerciseType;
-  currentExerciseId: string;
+  currentExerciseUnid: string;
 
   constructor(
     private utilsService: UtilsService
   ) {}
 
   ngOnChanges() {
-    if (this.currentExerciseId !== this.data.exercise._id) {
+    const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
+    if (this.currentExerciseUnid !== unid) {
+      this.currentExerciseUnid = unid;
+      console.log('current unid', this.currentExerciseUnid);
       const exercise = this.data.exercise;
-      this.currentExerciseId = exercise._id;
       this.instruction = exercise.tpe === ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
       this.getQAData(exercise);
     }

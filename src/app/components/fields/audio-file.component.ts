@@ -31,13 +31,16 @@ export class AudioFileComponent implements OnChanges {
   private play() {
     if (this.active) {
       if (!this.audio) {
+        console.log('load audio');
         this.audio = new Audio();
         this.audio.src = this.regionAudio.s3;
         this.audio.load();
       } else {
         if (this.audio.ended || this.audio.paused) {
+        console.log('play audio');
           this.audio.play();
         } else {
+        console.log('pause audio');
           this.audio.pause();
         }
       }
@@ -46,6 +49,7 @@ export class AudioFileComponent implements OnChanges {
       };
       this.audio.onloadeddata = () => {
         // The audio has loaded
+        console.log('audio loaded, play');
         if (this.audio) {
           this.audio.play();
         }

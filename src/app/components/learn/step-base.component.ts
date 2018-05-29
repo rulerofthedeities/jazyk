@@ -53,7 +53,7 @@ export abstract class Step {
   protected componentActive = true;
   protected choices: Choice[];
   protected nextWordTimer: Subscription;
-  protected dataByExercise: Map<ById> = {}; // Keeps track of data per exercise, not per result
+  protected dataByExerciseUnid: Map<ById> = {}; // Keeps track of data per exercise, not per result
   exerciseData: ExerciseData[]; // main container of exercise data + results
   currentData: ExerciseData; // container for current exercise data + results
   pointsEarned: Subject<number> = new Subject();
@@ -541,9 +541,11 @@ export abstract class Step {
         learnLevel = isLearnedLevel;
       }
     }
+    const unid = this.currentData.exercise._id + (this.currentData.exercise.lessonId || '');
+    console.log('UNID base', unid);
     this.currentData.data.learnLevel = learnLevel;
-    this.dataByExercise[this.currentData.exercise._id].levels = learnLevel;
-    this.addCount(this.isCorrect, this.currentData.exercise._id);
+    this.dataByExerciseUnid[unid].levels = learnLevel;
+    this.addCount(this.isCorrect, unid);
     this.currentData.data.points.base = this.calculateBasePoints(answer, question);
     const foreignWord = this.currentData.exercise.foreign.word;
     if (answer === AnsweredType.Correct && !this.isRehearse()) {
@@ -570,7 +572,8 @@ export abstract class Step {
       add = true;
     }
     // Only readd exercise to the back if question was answered incorrectly max twice
-    const exercise = this.dataByExercise[this.currentData.exercise._id],
+    const unid = this.currentData.exercise._id + (this.currentData.exercise.lessonId || ''),
+          exercise = this.dataByExerciseUnid[unid],
           countWrong = exercise.countWrong ? exercise.countWrong : 0;
     if (countWrong > 2) {
       add = false;
@@ -949,21 +952,21 @@ export abstract class Step {
     return level;
   }
 
-  private addCount(isCorrect: boolean, exerciseId: string) {
+  private addCount(isCorrect: boolean, exerciseUnid: string) {
     if (isCorrect) {
-      this.addRightCount(exerciseId);
+      this.addRightCount(exerciseUnid);
     } else {
-      this.addWrongCount(exerciseId);
+      this.addWrongCount(exerciseUnid);
     }
   }
 
-  protected addWrongCount(exerciseId: string) {
-    const exercise = this.dataByExercise[exerciseId];
+  protected addWrongCount(exerciseUnid: string) {
+    const exercise = this.dataByExerciseUnid[exerciseUnid];
     exercise.countWrong = exercise.countWrong ? ++exercise.countWrong : 1;
   }
 
-  protected addRightCount(exerciseId: string) {
-    const exercise = this.dataByExercise[exerciseId];
+  protected addRightCount(exerciseUnid: string) {
+    const exercise = this.dataByExerciseUnid[exerciseUnid];
     exercise.countRight = exercise.countRight ? ++exercise.countRight : 1;
   }
 
@@ -1096,7 +1099,7 @@ export abstract class Step {
   protected getCurrentLearnLevel(data: ExerciseData): number {
     let learnLevel = data && data.result ? data.result.learnLevel || 0 : 1; // saved data
     // CHECK if this exerciseid has been answered before; if so; use this level
-    const lastLevel = this.dataByExercise[data.exercise._id].levels;
+    const lastLevel = this.dataByExerciseUnid[data.exercise._id + (data.exercise.lessonId || '')].levels;
     if (lastLevel !== null) {
       // Use level from this score
       learnLevel = lastLevel;
@@ -1120,8 +1123,8 @@ export abstract class Step {
   }
 
   protected setExerciseDataById() {
-    this.exerciseData.forEach(exercise => {
-      this.dataByExercise[exercise.exercise._id] = {
+    this.exerciseData.forEach((exercise: ExerciseData) => {
+      this.dataByExerciseUnid[exercise.exercise._id + (exercise.exercise.lessonId || '')] = {
         countRight: 0,
         countWrong: 0,
         levels: null

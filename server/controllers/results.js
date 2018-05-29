@@ -607,8 +607,8 @@ module.exports = {
               daysBetweenReviews: {'$first': '$daysBetweenReviews'},
               lessonId: {'$first': '$lessonId'}
             }},
-            {$match: {dtToReview:{$lte: new Date()}}},
             {$sort: {dtToReview: 1}},
+            {$match: {dtToReview: {$lte: new Date()}}},
             {$limit: limit},
             {$project: {
               _id: 0,
@@ -626,8 +626,12 @@ module.exports = {
             {$sort: sort},
             {$group: {
               _id: {exerciseId: '$exerciseId', lessonId: '$lessonId'},
+              dtToReview: {'$first': '$dtToReview'},
+              dt: {'$first': '$dt'},
               streak: {'$first': '$streak'},
-              learnLevel: {'$first': '$learnLevel'}
+              learnLevel: {'$first': '$learnLevel'},
+              daysBetweenReviews: {'$first': '$daysBetweenReviews'},
+              difficult: {'$first': '$isDifficult'}
             }},
           ];
     const getReviewData = async (results) => {
@@ -635,17 +639,17 @@ module.exports = {
             exercises = await Lesson.aggregate(exercisesPipeline),
             latest = await Result.aggregate(latestPipeline);
       // Combine data
-      /*
       let latestOne;
       results.forEach(result => {
-        latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseId.toString() && 
-                                     l._id.lessonId.toString() === result.lessonId.toString());
+        console.log(result);
+        latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseUnid.exerciseId.toString() && 
+                                     l._id.lessonId.toString() === result.exerciseUnid.lessonId.toString());
         if (latestOne) {
+          console.log('latest one');
           result.streak = latestOne.streak;
           result.learnLevel = latestOne.learnLevel;
         }
       })
-      */
       return {exercises: exercises || [], latest};
     };
 
@@ -654,6 +658,7 @@ module.exports = {
         getReviewData(results).then((data) => {
           response.handleSuccess(res, {toreview: data.exercises, results});
         }).catch((err) => {
+          console.log('err', err);
           response.handleError(err, res, 400, 'Error fetching to review results');
         });
       });

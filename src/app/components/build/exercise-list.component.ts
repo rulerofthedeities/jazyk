@@ -207,7 +207,6 @@ export class BuildExerciseListComponent implements OnDestroy {
   }
 
   getSelectOptions(exercise: Exercise): string {
-    console.log('GET select options');
     let options = '';
     if (exercise.options) {
       const optionArray = exercise.options.split('|');

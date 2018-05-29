@@ -24,15 +24,17 @@ export class LearnSelectComponent implements OnChanges {
   isAnswered = false;
   isCorrect: boolean;
   exerciseTpe: ExerciseType;
-  currentExerciseId: string;
+  currentExerciseUnid: string;
 
   constructor(
     private previewService: PreviewService
   ) {}
 
   ngOnChanges() {
-    if (this.currentExerciseId !== this.data.exercise._id) {
-      this.currentExerciseId = this.data.exercise._id;
+    const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
+    if (this.currentExerciseUnid !== unid) {
+      this.currentExerciseUnid = unid;
+      console.log('current unid', this.currentExerciseUnid);
       this.getSelectData(this.data.exercise);
     }
   }

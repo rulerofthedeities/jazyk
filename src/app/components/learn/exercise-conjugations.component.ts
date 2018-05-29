@@ -21,7 +21,7 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   questionData: ExerciseData;
   instruction = '';
   isAnswered = false;
-  currentExerciseId: string;
+  currentExerciseUnid: string;
   currentField = 0;
   conjugations: string[];
   answers: string[] = [];
@@ -33,8 +33,10 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
   ) {}
 
   ngOnChanges() {
-    if (this.currentExerciseId !== this.data.exercise._id) {
-      this.currentExerciseId = this.data.exercise._id;
+    const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
+    if (this.currentExerciseUnid !== unid) {
+      this.currentExerciseUnid = unid;
+      console.log('current unid', this.currentExerciseUnid);
       this.getConjugationsData(this.data.exercise);
     }
   }

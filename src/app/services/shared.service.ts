@@ -76,7 +76,8 @@ export class SharedService {
     } else {
       if (data && data.length > 0) { // No data for study repeats
         // calculate bonus for % correct
-        let correctCount = 0;
+        let correctCount = 0,
+            unid: string;
         data.forEach((item) => {
           correctCount = correctCount + (item.data.isCorrect ? 1 : 0);
         });
@@ -84,7 +85,9 @@ export class SharedService {
         data.forEach((item, i) => {
           item.data.points.correct = correctBonus;
           pointsEarned += item.data.points.total();
-          streak[item.exercise._id] = this.buildStreak(streak[item.exercise._id], item.result, item.data);
+          unid = item.exercise._id + (item.exercise.lessonId || '');
+          console.log('processing save unid', unid);
+          streak[unid] = this.buildStreak(streak[unid], item.result, item.data);
           const newResult: ResultData = {
             exerciseId: item.exercise._id,
             tpe: item.exercise.tpe,
@@ -92,16 +95,20 @@ export class SharedService {
             done: item.data.isDone || false,
             points: item.data.points.total() || 0,
             learnLevel: isRepeat ? 0 : (Math.min(maxLearnLevel, item.data.learnLevel || 0)),
-            streak: isRepeat ? '' : streak[item.exercise._id],
+            streak: isRepeat ? '' : streak[unid],
             sequence: i,
             isLast: false,
             isDifficult: false,
             isRepeat,
             isCorrect: item.data.isCorrect,
-            lessonId: item.result ? item.result.lessonId : lessonId
+            lessonId: item.exercise.lessonId || lessonId
           };
-          lastResult[item.exercise._id] = newResult;
-          allCorrect[item.exercise._id] = allCorrect[item.exercise._id] !== false ? item.data.isCorrect  : false;
+          if (!result.lessonId || result.lessonId.toString() !== newResult.lessonId.toString()) {
+            console.error('Possible error lessonId', result.lessonId, newResult.lessonId, lessonId);
+          }
+          console.log('EXERCISEID / LESSONID', newResult.exerciseId, newResult.lessonId);
+          lastResult[unid] = newResult;
+          allCorrect[unid] = allCorrect[unid] !== false ? item.data.isCorrect  : false;
           result.data.push(newResult);
         });
         this.checkLastResult(step, lastResult, allCorrect, data, courseLevel);
@@ -137,25 +144,26 @@ export class SharedService {
   }
 
   private checkLastResult(step: string, lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[], courseLevel: Level) {
-    // Only use the most recent result per exerciseid to determine isLearned / review time
-    for (const key in lastResult) {
-      if (lastResult.hasOwnProperty(key)) {
-        lastResult[key].isDifficult = this.checkIfDifficult(step, lastResult[key].streak);
+    // Only use the most recent result per exerciseunid to determine isLearned / review time
+    for (const unid in lastResult) {
+      console.log('checking last result', unid);
+      if (lastResult.hasOwnProperty(unid)) {
+        lastResult[unid].isDifficult = this.checkIfDifficult(step, lastResult[unid].streak);
         // Check if word is learned
-        if (step === 'review' || (step === 'practise' && lastResult[key].learnLevel || 0) >= isLearnedLevel) {
-          lastResult[key].isLearned = true;
+        if (step === 'review' || (step === 'practise' && lastResult[unid].learnLevel || 0) >= isLearnedLevel) {
+          lastResult[unid].isLearned = true;
           // Calculate review time
-          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id + (ex.exercise.lessonId || '') === unid);
+          this.calculateReviewTime(lastResult[unid], allCorrect[unid], exercise);
         } else if (courseLevel === Level.Course) {
           // copy review time over to new doc
-          const exercise: ExerciseData = data.find(ex => ex.exercise._id === key);
-          lastResult[key].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
-          if (!lastResult[key].daysBetweenReviews) {
-            this.calculateReviewTime(lastResult[key], allCorrect[key], exercise);
+          const exercise: ExerciseData = data.find(ex => ex.exercise._id + (ex.exercise.lessonId || '') === unid);
+          lastResult[unid].daysBetweenReviews = exercise.result.daysBetweenReviews || undefined;
+          if (!lastResult[unid].daysBetweenReviews) {
+            this.calculateReviewTime(lastResult[unid], allCorrect[unid], exercise);
           }
         }
-        lastResult[key].isLast = true;
+        lastResult[unid].isLast = true;
       }
     }
   }
