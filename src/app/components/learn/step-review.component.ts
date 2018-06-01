@@ -54,11 +54,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
     .fetchToReview(this.course._id, this.settings.nrOfWordsReview)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      data => {
-        console.log('To review exercises', data.toreview);
-        console.log('To review results', data.results);
-        this.setExercises(data.toreview, data.results);
-      },
+      data => this.setExercises(data.toreview, data.results),
       error => this.errorService.handleError(error)
     );
   }

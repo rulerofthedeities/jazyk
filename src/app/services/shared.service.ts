@@ -86,7 +86,6 @@ export class SharedService {
           item.data.points.correct = correctBonus;
           pointsEarned += item.data.points.total();
           unid = item.exercise._id + (item.exercise.lessonId || '');
-          console.log('processing save unid', unid);
           streak[unid] = this.buildStreak(streak[unid], item.result, item.data);
           const newResult: ResultData = {
             exerciseId: item.exercise._id,
@@ -103,10 +102,6 @@ export class SharedService {
             isCorrect: item.data.isCorrect,
             lessonId: item.exercise.lessonId || lessonId
           };
-          if (!result.lessonId || result.lessonId.toString() !== newResult.lessonId.toString()) {
-            console.error('Possible error lessonId', result.lessonId, newResult.lessonId, lessonId);
-          }
-          console.log('EXERCISEID / LESSONID', newResult.exerciseId, newResult.lessonId);
           lastResult[unid] = newResult;
           allCorrect[unid] = allCorrect[unid] !== false ? item.data.isCorrect  : false;
           result.data.push(newResult);
@@ -146,7 +141,6 @@ export class SharedService {
   private checkLastResult(step: string, lastResult: Map<ResultData>, allCorrect: Map<boolean>, data: ExerciseData[], courseLevel: Level) {
     // Only use the most recent result per exerciseunid to determine isLearned / review time
     for (const unid in lastResult) {
-      console.log('checking last result', unid);
       if (lastResult.hasOwnProperty(unid)) {
         lastResult[unid].isDifficult = this.checkIfDifficult(step, lastResult[unid].streak);
         // Check if word is learned

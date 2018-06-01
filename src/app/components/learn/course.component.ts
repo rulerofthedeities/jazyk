@@ -676,7 +676,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         newLessonId,
         chapter: LessonId;
     const chapters: string[] = this.course.chapters.length ? this.course.chapters : [''];
-    console.log('getting next lesson', chapters);
     chapters.forEach(chapterName => {
       // Get lessons for this chapter
       chapter = this.course.lessons.find(lesson => lesson.chapter === chapterName);

@@ -127,6 +127,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 
 getCourseExercisesPipeline = function(courseId, resultData) {
   // piggyback lesson options with exercise for course reviews
+  console.log('exercise Ids', resultData.map(item => item.exerciseUnid.exerciseId));
   const maxExercises = 100,
         exerciseIds = resultData.map(item => item.exerciseUnid.exerciseId),
         query = {'exercises._id': {$in: exerciseIds.slice(0, maxExercises)}},
@@ -563,7 +564,16 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching difficult exercise ids', function(){
         getCourseExercises(courseId, results, function(err, difficult) {
           response.handleError(err, res, 400, 'Error fetching difficult exercises', function(){
-            response.handleSuccess(res, {difficult, results});
+            // Remove exercises for which there is no result (for duplicate exerciseIds)
+            const uniqueExercises = [];
+            difficult.forEach(exercise => {
+              result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() && 
+                                              exercise.lessonId.toString() === result.exerciseUnid.lessonId.toString());
+              if (result) {
+                uniqueExercises.push(exercise);
+              }
+            });
+            response.handleSuccess(res, {difficult: uniqueExercises, results});
           });
         });
       });
@@ -637,8 +647,17 @@ module.exports = {
     const getReviewData = async (results) => {
       const exercisesPipeline = getCourseExercisesPipeline(courseId, results),
             exercises = await Lesson.aggregate(exercisesPipeline),
-            latest = await Result.aggregate(latestPipeline);
-      // Combine data
+            latest = await Result.aggregate(latestPipeline),
+            uniqueExercises = [];
+      // Remove exercises for which there is no result (for duplicate exerciseIds)
+      exercises.forEach(exercise => {
+        result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() && 
+                                        exercise.lessonId.toString() === result.exerciseUnid.lessonId.toString());
+        if (result) {
+          uniqueExercises.push(exercise);
+        }
+      });
+      // Combine data (so that data from difficult tests is added to result)
       let latestOne;
       results.forEach(result => {
         console.log(result);
@@ -650,7 +669,7 @@ module.exports = {
           result.learnLevel = latestOne.learnLevel;
         }
       })
-      return {exercises: exercises || [], latest};
+      return {exercises: uniqueExercises || [], latest};
     };
 
     Result.aggregate(toReviewPipeline, function(err, results) {

@@ -36,7 +36,6 @@ export class LearnConjugationsComponent implements OnChanges, AfterViewInit {
     const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
     if (this.currentExerciseUnid !== unid) {
       this.currentExerciseUnid = unid;
-      console.log('current unid', this.currentExerciseUnid);
       this.getConjugationsData(this.data.exercise);
     }
   }

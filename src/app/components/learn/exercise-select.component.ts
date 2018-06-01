@@ -34,7 +34,6 @@ export class LearnSelectComponent implements OnChanges {
     const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
     if (this.currentExerciseUnid !== unid) {
       this.currentExerciseUnid = unid;
-      console.log('current unid', this.currentExerciseUnid);
       this.getSelectData(this.data.exercise);
     }
   }

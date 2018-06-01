@@ -32,7 +32,6 @@ export class LearnQAComponent implements OnChanges, AfterViewChecked {
     const unid = this.data.exercise._id + (this.data.exercise.lessonId || '');
     if (this.currentExerciseUnid !== unid) {
       this.currentExerciseUnid = unid;
-      console.log('current unid', this.currentExerciseUnid);
       const exercise = this.data.exercise;
       this.instruction = exercise.tpe === ExerciseType.QA ? this.text['instructionQA'] : this.text['instructionFillIn'];
       this.getQAData(exercise);
