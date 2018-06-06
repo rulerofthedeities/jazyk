@@ -12,6 +12,7 @@
     <div class="btn btn-warning" (click)="onEditLesson()">
       <span class="fa fa-cog"></span> {{text["Settings"]}}
     </div>
+    <div class="chapter-name">{{lesson?.chapterName}}</div>
   </h2>
 
   <km-build-lesson-header *ngIf="isEditMode" class="header transparant"

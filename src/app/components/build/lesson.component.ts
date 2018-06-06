@@ -4,7 +4,8 @@ import {BuildService} from '../../services/build.service';
 import {UtilsService} from '../../services/utils.service';
 import {ErrorService} from '../../services/error.service';
 import {UserService} from '../../services/user.service';
-import {Course, Lesson, Translation, LanPair, LanConfigs, AccessLevel} from '../../models/course.model';
+import {Course, Lesson, Translation, LanPair,
+        LanConfigs, AccessLevel, LessonId} from '../../models/course.model';
 import {Filter, WordPairDetail} from '../../models/word.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
 import {takeWhile, filter} from 'rxjs/operators';
