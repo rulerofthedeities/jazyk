@@ -53,21 +53,22 @@ export class InfoComponent implements OnInit, OnDestroy {
       takeWhile(() => this.componentActive),
       filter(params => params.page))
     .subscribe(
-      params => this.fetchInfoPage(params['page'].toLowerCase())
+      params => this.fetchInfoPage(params['page'].toLowerCase(), this.userService.user.main.lan)
     );
     this.pageService.loadRouteScript(); // For route links
   }
 
-  private fetchInfoPage(page: string) {
+  private fetchInfoPage(pageId: string, lan: string) {
     this.pageService
-    .fetchInfoPage(page, this.userService.user.main.lan, this.authService.isLoggedIn())
+    .fetchInfoPage(pageId, lan, this.authService.isLoggedIn())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {
-        this.page = fetchedPage;
-        this.utilsService.setPageTitle(null, fetchedPage.title);
-        if (this.page.index === false) {
-          this.meta.addTag({name: 'robots', content: 'noindex'});
+        if (fetchedPage) {
+          this.setPage(fetchedPage);
+        } else if (lan !== 'en') {
+          // No info page available in the user's interface language
+          this.fetchInfoPage(pageId.toLowerCase(), 'en');
         }
       },
       error => {
@@ -78,6 +79,14 @@ export class InfoComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  private setPage(page: Page) {
+    this.page = page;
+    this.utilsService.setPageTitle(null, page.title);
+    if (page.index === false) {
+      this.meta.addTag({name: 'robots', content: 'noindex'});
+    }
   }
 
   ngOnDestroy() {
