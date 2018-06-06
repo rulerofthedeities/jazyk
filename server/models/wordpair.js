@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var altSchema = new Schema({
+var altWordSchema = new Schema({
   word: String,
   detailId: Schema.Types.ObjectId
 }, {_id: false})
@@ -9,14 +9,14 @@ var altSchema = new Schema({
 var wordLangSchema = new Schema({
   detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
-  alt: [altSchema],
+  alt: {type: [altWordSchema], default: void 0},
   hint: String,
   info: String
 }, {_id: false})
 
 var wordSchema = new Schema({
     docTpe: {type: String, required: true},
-    wordTpe: {type: String, required: true},
+    wordTpe: String,
     lanPair: [String],
     tags: [String],
     cs: wordLangSchema,
@@ -51,4 +51,7 @@ wordSchema.index(
   });
 wordSchema.index({userId: 1, courseId: 1}); 
 */
-module.exports = mongoose.model('Wordpair', wordSchema);
+module.exports = {
+  model: mongoose.model('Wordpair', wordSchema),
+  schema: wordSchema // for multiple dbs
+};

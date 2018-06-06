@@ -4,7 +4,8 @@ const response = require('../response'),
       Course = require('../models/course').model,
       Lesson = require('../models/lesson'),
       Result = require('../models/result'),
-      WordPair = require('../models/wordpair');
+      WordPair = require('../models/wordpair').model,
+      ErrorModel = require('../models/error');
 
 updateCourseWordCount = function(courseId, count) {
   const query = {_id: courseId},
@@ -96,7 +97,13 @@ setResultExercisesAsDeleted = function(userId, lessonId, exerciseId) {
         update = {isDeleted: true};
   Result.updateMany(query, update, function(err, result) {
     if (err) {
-      console.log('ERREXE03: Error setting delete flag for exercise "' + exerciseId + '"')
+      console.log(`ERREXE03: Error setting delete flag for exercise ${exerciseId}`);
+      const error = new ErrorModel({
+        code: 'ERREXE03',
+        src: 'setResultExercisesAsDeleted',
+        msg: `ERREXE03: Error setting delete flag for exercise ${exerciseId}`,
+        module: 'exercises'});
+      error.save(function(err, result) {});
     }
   });
 }
@@ -229,6 +236,9 @@ module.exports = {
         }
       });
     });
+  },
+  setExercisesAsDeleted(userId, lessonId, exerciseId) {
+    setResultExercisesAsDeleted(userId, lessonId, exerciseId);
   },
   getCourseChoices: function(req, res) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),

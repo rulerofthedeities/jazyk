@@ -2,7 +2,10 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       Result = require('../models/result'),
       Lesson = require('../models/lesson'),
-      lessons = require('./lessons');
+      lessons = require('./lessons'),
+      exercisesModule = require('./exercises'),
+      ErrorModel = require('../models/error'),
+      maxExercises = 120;
 
 hasIntroStep = function(res, results, userId, courseId, lessonId, cb) {
   const query = {
@@ -127,9 +130,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 
 getCourseExercisesPipeline = function(courseId, resultData) {
   // piggyback lesson options with exercise for course reviews
-  console.log('exercise Ids', resultData.map(item => item.exerciseUnid.exerciseId));
-  const maxExercises = 100,
-        exerciseIds = resultData.map(item => item.exerciseUnid.exerciseId),
+  const exerciseIds = resultData.map(item => item.exerciseUnid.exerciseId),
         query = {'exercises._id': {$in: exerciseIds.slice(0, maxExercises)}},
         pipeline = [
           {$match: {courseId}},
@@ -137,6 +138,7 @@ getCourseExercisesPipeline = function(courseId, resultData) {
           {$match: query},
           {$project: {_id: 0, lessonId:'$_id', exercise: '$exercises', 'options': '$options'}}
         ];
+
   return pipeline;
 }
 
@@ -649,6 +651,23 @@ module.exports = {
             exercises = await Lesson.aggregate(exercisesPipeline),
             latest = await Result.aggregate(latestPipeline),
             uniqueExercises = [];
+      // Check if there is an exerciseId that was not found in any lesson
+      if (results.length > exercises.length && results.length < maxExercises) {
+        const notFound = results.find(result => !exercises.find(exercise => exercise.exercise._id === result.exerciseUnid.exerciseId));
+        if (notFound) {
+          // This exercise id does not exist anymore, flag results as deleted
+          delExerciseId = new mongoose.Types.ObjectId(notFound.exerciseUnid.exerciseId);
+          delLessonId = new mongoose.Types.ObjectId(notFound.exerciseUnid.lessonId);
+          exercisesModule.setExercisesAsDeleted(userId, delLessonId, delExerciseId);
+          const error = new ErrorModel({
+            code: 'ERREXE04',
+            src: 'getToReview',
+             msg: `ERREXE04: Exercise id "${delExerciseId}" not found in lesson "${delLessonId}"!`,
+            module: 'results'
+          });
+          error.save(function(err, result) {});
+        }
+      }
       // Remove exercises for which there is no result (for duplicate exerciseIds)
       exercises.forEach(exercise => {
         result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() && 
@@ -657,18 +676,18 @@ module.exports = {
           uniqueExercises.push(exercise);
         }
       });
+
       // Combine data (so that data from difficult tests is added to result)
       let latestOne;
       results.forEach(result => {
-        console.log(result);
         latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseUnid.exerciseId.toString() && 
                                      l._id.lessonId.toString() === result.exerciseUnid.lessonId.toString());
         if (latestOne) {
-          console.log('latest one');
           result.streak = latestOne.streak;
           result.learnLevel = latestOne.learnLevel;
         }
       })
+      
       return {exercises: uniqueExercises || [], latest};
     };
 
@@ -677,7 +696,6 @@ module.exports = {
         getReviewData(results).then((data) => {
           response.handleSuccess(res, {toreview: data.exercises, results});
         }).catch((err) => {
-          console.log('err', err);
           response.handleError(err, res, 400, 'Error fetching to review results');
         });
       });

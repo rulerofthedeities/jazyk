@@ -162,6 +162,7 @@ export class LearnService {
   fetchToReview(courseId: string, max: number): Observable<CourseResults> {
     const headers = this.getTokenHeaders(),
           params = {'max': max.toString()};
+    console.log('nr to review', max);
     return this.http
     .get<CourseResults>('/api/user/results/course/toreview/' + courseId, {headers, params})
     .pipe(retry(3));

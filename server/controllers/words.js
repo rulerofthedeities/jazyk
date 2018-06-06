@@ -1,7 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      WordPair = require('../models/wordpair'),
-      WordDetail = require('../models/worddetail');
+      WordPair = require('../models/wordpair').model,
+      WordDetail = require('../models/worddetail').model;
 
 getDetail= function(word, callback) {
   let detail = null;
