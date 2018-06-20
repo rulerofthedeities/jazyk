@@ -4,7 +4,7 @@ import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, Translation, CourseListType, Map} from '../../models/course.model';
+import {Course, Language, CourseListType, Map} from '../../models/course.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -66,7 +66,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   }
 
   private getLanguages() {
-    const AllLanguages = JSON.parse(JSON.stringify(this.activeLanguages));
+    const AllLanguages = [...this.activeLanguages];
     const languages: Language[] = [];
     let courseLan;
     AllLanguages.filter( language => {

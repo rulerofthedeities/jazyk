@@ -439,23 +439,23 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       const foreign = this.selected[this.lanForeign],
             local = this.selected[this.lanLocal];
       if (options.addArticle) {
-        this.addArticle(exercise, this.selected[this.lanForeign], this.selected[this.lanLocal]);
+        this.addArticle(exercise, foreign, local);
       }
-      exercise.wordDetailId = this.selected[this.lanForeign]._id; // For media files
-      if (this.selected[this.lanForeign].region) {
-        exercise.foreign.region = this.selected[this.lanForeign].region; // Override region for words selected from database !
+      exercise.wordDetailId = foreign._id; // For media files
+      if (foreign.region) {
+        exercise.foreign.region = foreign.region; // Override region for words selected from database !
       }
       if (!options.isGenus && !options.isArticle) {
         /* Foreign */
         exercise.foreign.hint = this.selected.wordPair[this.lanForeign].hint;
         exercise.foreign.info = this.selected.wordPair[this.lanForeign].info;
-        exercise.wordTpe = this.selected[this.lanForeign].wordTpe;
-        exercise.genus = this.selected[this.lanForeign].genus;
-        exercise.article = this.selected[this.lanForeign].article;
-        if (this.selected[this.lanForeign].wordTpe === 'preposition') {
-          exercise.followingCase = this.selected[this.lanForeign].followingCase;
+        exercise.wordTpe = foreign.wordTpe;
+        exercise.genus = foreign.genus;
+        exercise.article = foreign.article;
+        if (foreign.wordTpe === 'preposition') {
+          exercise.followingCase = foreign.followingCase;
         }
-        exercise.aspect = this.selected[this.lanForeign].aspect;
+        exercise.aspect = foreign.aspect;
         this.addAnnotations(foreignAnnotations, this.selected, 'foreign');
         exercise.foreign.annotations = foreignAnnotations.join('|');
         exercise.foreign.annotations = this.checkIfValue(exercise.foreign.annotations);
@@ -463,9 +463,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
           exercise.foreign.alt = this.selected.wordPair[this.lanForeign].alt.map(alt => alt.word).join('|');
         }
         exercise.foreign.alt = this.checkIfValue(exercise.foreign.alt);
-        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
-        if (this.selected[this.lanForeign].images) {
-          exercise.image = this.selected[this.lanForeign].images[0].s3;
+        exercise.audio = this.selectAudio(foreign.audios, exercise.foreign.region);
+        if (foreign.images) {
+          exercise.image = foreign.images[0].s3;
         }
         /* Local */
         this.addAnnotations(localAnnotations, this.selected, 'local');
@@ -482,7 +482,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (options.isGenus) {
         exercise.tpe = ExerciseType.Genus;
         exercise.wordTpe = foreign.wordTpe;
-        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
+        exercise.audio = this.selectAudio(foreign.audios, exercise.foreign.region);
         exercise.genus = foreign.genus;
         exercise.options = this.config.genera.join('|');
       }
@@ -491,7 +491,7 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (options.isArticle) {
         exercise.tpe = ExerciseType.Article;
         exercise.wordTpe = foreign.wordTpe;
-        exercise.audio = this.selectAudio(this.selected[this.lanForeign].audios, exercise.foreign.region);
+        exercise.audio = this.selectAudio(foreign.audios, exercise.foreign.region);
         exercise.article = foreign.article;
         exercise.options = this.config.articles.join('|');
         exercise.local.word = local.article + this.addSpace(local.article) + formValues.localWord;
@@ -501,12 +501,12 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
       if (options.isComparison) {
         exercise.tpe = ExerciseType.Comparison;
         exercise.foreign.word += '|';
-        if (this.selected[this.lanForeign].comparative) {
-           exercise.foreign.word += this.selected[this.lanForeign].comparative;
+        if (foreign.comparative) {
+           exercise.foreign.word += foreign.comparative;
         }
         exercise.foreign.word += '|';
-        if (this.selected[this.lanForeign].superlative) {
-          exercise.foreign.word += this.selected[this.lanForeign].superlative;
+        if (foreign.superlative) {
+          exercise.foreign.word += foreign.superlative;
         }
       }
 
@@ -516,11 +516,16 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
               conjugations: string[] = [];
         exercise.tpe = ExerciseType.Conjugations;
         for (let i = 0; i < 6; i++) {
-          conjugations.push(this.selected[this.lanForeign].conjugation[i]);
+          conjugations.push(foreign.conjugation[i]);
         }
-        conjugations.unshift(this.selected[this.lanForeign].word); // Add infinitive to the start
+        conjugations.unshift(foreign.word); // Add infinitive to the start
         exercise.foreign.word = conjugations.join('|');
-        exercise.local.word = this.selected[this.lanLocal].word;
+        const localWords: string[] = [];
+        localWords.push(local.word);
+        if (this.selected.wordPair[this.lanLocal].alt) {
+          localWords.push(...this.selected.wordPair[this.lanLocal].alt.map((alt) => alt.word));
+        }
+        exercise.local.word = localWords.join(' / ');
       }
 
       /* Conjugation test - one doc per conjugation */
@@ -528,8 +533,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
         const nr = options.conjugationNr,
               foreignPronouns = this.config.subjectPronouns;
         // Split conjugation if there are multiple
-        const localWords = this.selected[this.lanLocal].conjugation[nr].split(';'),
-              foreignWords = this.selected[this.lanForeign].conjugation[nr].split(';');
+        const localWords = local.conjugation[nr].split(';'),
+              foreignWords = foreign.conjugation[nr].split(';');
         // Add first word in list as the main word
         const localPronoun = '(' + this.text['subjectpronoun' + nr.toString()] + ') ',
               foreignPronoun = '(' + foreignPronouns[nr] + ') ';

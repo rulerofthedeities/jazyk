@@ -127,7 +127,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getCourseChapters() {
-    this.courseChapters = JSON.parse(JSON.stringify(this.course.chapters)); // slice for no reference
+    this.courseChapters = [...this.course.chapters]; // no reference
     this.hasChapters = !!this.courseChapters.length;
     const emptyChapter = this.course.lessons.find(lesson => lesson.chapter === '');
     if (emptyChapter && !this.hasChapters) {

@@ -27,8 +27,6 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
 
   constructor(
     private router: Router,
-    private buildService: BuildService,
-    private errorService: ErrorService,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -97,9 +95,7 @@ export class BuildChapterLessonsComponent implements OnInit, OnChanges, OnDestro
   getExercisesLabels(lessonId: string): string {
     const lesson = this.lessonDict[lessonId],
           nrWords = lesson.exercises.filter(exercise => exercise.tpe === ExerciseType.Word).length,
-          nrExercises = lesson.exercises.length - nrWords,
-          hasIntro = !!(lesson.intro && lesson.intro.length > 10),
-          hasDialogue = !!(lesson.dialogue && lesson.dialogue.text.length > 10);
+          nrExercises = lesson.exercises.length - nrWords;
     let label = nrWords.toString();
     if (nrWords === 1) {
       label += ' ' + this.text['word'];

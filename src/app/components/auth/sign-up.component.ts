@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
@@ -9,8 +9,7 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ValidationService} from '../../services/validation.service';
 import {Language, Level} from '../../models/course.model';
-import {User, Notification} from '../../models/user.model';
-import {ExerciseData} from '../../models/exercise.model';
+import {User} from '../../models/user.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({

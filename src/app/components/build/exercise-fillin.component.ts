@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {ExerciseBase} from './exercise-base.component';
 import {BuildService} from '../../services/build.service';
 import {ErrorService} from '../../services/error.service';

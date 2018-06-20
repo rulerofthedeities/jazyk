@@ -1,6 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
-import {Lesson} from '../../models/course.model';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 
 @Component({
