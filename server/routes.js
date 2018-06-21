@@ -106,7 +106,7 @@ module.exports.initialize = function(app, router) {
   router.get('/user/messagescount', messages.getMessagesCount);
 
   router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
-  
+
   router.get('/user/results/lesson/overview/:lessonId', results.getLessonOverviewResults);
   router.get('/user/results/lesson/:step/:lessonId', results.getLessonResults);
   router.get('/user/results/lessons/:courseId', results.getResultsByLesson);
@@ -147,8 +147,8 @@ module.exports.initialize = function(app, router) {
   router.put('/build/lesson/header', lessons.updateLessonHeader);
   router.delete('/build/lesson/:lessonId', lessons.removeLesson);
 
-  router.get('/build/check/wpincourse/:courseId/:wordLocal/:wordForeign', lessons.checkWordPairExists);
-  
+  router.get('/build/check/wpincourse/:courseId/:wpId/:wordLocal/:wordForeign', lessons.checkWordPairExists);
+
   router.get('/build/wordpairs', words.getWordPairs);
   router.get('/build/wordpair/:wordpairId', words.getWordPairDetail);
   router.get('/build/wordpair/media/:wordpairId', words.getWordDetailMedia);

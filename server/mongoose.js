@@ -20,6 +20,12 @@ function encodeMongoURI(urlString) {
 }
 
 mongoose.Promise = global.Promise;
-mongoose.connect(encodeMongoURI(db_url), options);
+mongoose.connect(encodeMongoURI(db_url), options)
+.then(() => {
+  console.log('Connected to database.');
+})
+.catch(() => {
+  console.log('Error connecting to database.');
+});
 
 module.exports = {mongoose};

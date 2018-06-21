@@ -237,9 +237,10 @@ module.exports = {
   checkWordPairExists: function(req, res) {
     // Check if an exercise with the wordpairId exists in the course
     const courseId = new mongoose.Types.ObjectId(req.params.courseId),
+          wpId = req.params.wpId,
           wordLocal = req.params.wordLocal,
           wordForeign = req.params.wordForeign,
-          query = {
+          wordQuery = {
             courseId,
             isDeleted: false,
             exercises: {$elemMatch: {
@@ -247,17 +248,48 @@ module.exports = {
               'local.word': wordLocal
             }}
           },
-          projection = {
+          wordProjection = {
             exercises: {$elemMatch: {
               'foreign.word': wordForeign,
               'local.word': wordLocal
             }}
+          },
+          idQuery = {
+            courseId,
+            isDeleted: false,
+            'exercises.wordDetailId': wpId
+          },
+          idProjection = {
+            exercises: {$elemMatch: {
+              'wordDetailId': wpId
+            }}
           };
+          console.log('wpId', wpId);
+    const getExercises = async () => {
+      const idResult = wpId ? await Lesson.findOne(idQuery, idProjection) : null,
+            wordResult = await Lesson.findOne(wordQuery, wordProjection)
+
+      const idExercises = idResult ? idResult.exercises : [],
+            wordExercises = wordResult ? wordResult.exercises : [];
+
+      return {exercises: idExercises.concat(wordExercises)}
+    }
+
+
+    getExercises().then((results) => {
+      console.log('results', results);
+      response.handleSuccess(res, results.exercises);
+    }).catch((err) => {
+      console.log(err);
+      response.handleError(err, res, 400, 'Error fetching overview results');
+    });
+    /*
     Lesson.find(query, projection, function(err, result) {
       response.handleError(err, res, 400, 'Error checking exercises worpair exists in lesson', function(){
         const exercises = result.map(res => res.exercises[0]);
         response.handleSuccess(res, exercises);
       });
     });
+    */
   }
 }

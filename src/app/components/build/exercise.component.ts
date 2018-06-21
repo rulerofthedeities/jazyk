@@ -178,7 +178,8 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     // check duplicate
     this.checkIfDuplicate(
       wordpairDetail.wordPair[this.lanLocal].word,
-      wordpairDetail.wordPair[this.lanForeign].word
+      wordpairDetail.wordPair[this.lanForeign].word,
+      wordpairDetail[this.lanForeign]._id
     );
   }
 
@@ -335,7 +336,9 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
   }
 
   onCheckDuplicate(form: any) {
-    this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord']);
+    if (this.selected[this.lanForeign]) {
+      this.checkIfDuplicate(form.value['localWord'], form.value['foreignWord'], this.selected[this.lanForeign]._id);
+    }
   }
 
   getDynamicFieldLabel(): string {
@@ -787,11 +790,11 @@ export class BuildExerciseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkIfDuplicate(wordLocal: string, wordForeign: string) {
+  private checkIfDuplicate(wordLocal: string, wordForeign: string, wpId: string) {
     // Check if this wordpair is already in this course
     // Get all wordpair matches from server, then check if there is also an exercise type match
     this.buildService
-    .checkIfWordpairInCourse(wordLocal, wordForeign, this.courseId)
+    .checkIfWordpairInCourse(wordLocal, wordForeign, wpId, this.courseId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       exercises => {
