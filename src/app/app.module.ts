@@ -7,6 +7,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {routes} from './app.routes';
 import {UserResolver} from './resolves/user.resolver';
 import {DashboardService} from './services/dashboard.service';
+import {LogService} from './services/log.service';
 
 import {AppComponent} from './components/app.component';
 import {BaseComponent} from './components/base.component';
@@ -26,7 +27,8 @@ import {PageNotFoundComponent} from './components/not-found.component';
   ],
   providers: [
     UserResolver,
-    DashboardService
+    DashboardService,
+    LogService
   ],
   declarations: [
     AppComponent,

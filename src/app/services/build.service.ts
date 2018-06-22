@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
-import {Course, Lesson, LessonId, Language, LanPair, LanConfig, LanConfigs, Intro, Dialogue} from '../models/course.model';
+import {Course, Lesson, LessonId, LanPair, LanConfig, LanConfigs, Intro, Dialogue} from '../models/course.model';
 import {Exercise} from '../models/exercise.model';
 import {Filter, WordPair, WordPairDetail, Media} from '../models/word.model';
 import {Observable} from 'rxjs';
-import {retry, delay, map} from 'rxjs/operators';
+import {retry} from 'rxjs/operators';
 
 @Injectable()
 export class BuildService {

@@ -14,6 +14,7 @@ var path = require("path"),
     results = require("./controllers/results"),
     info = require("./controllers/info"),
     dashboard = require("./controllers/dashboard"),
+    log = require("./controllers/log"),
     response = require("./response");
 
 module.exports.initialize = function(app, router) {
@@ -23,6 +24,7 @@ module.exports.initialize = function(app, router) {
   });
 
   router.post('/error', errors.addError);
+  router.post('/log/page', log.logPage);
 
   router.get('/user/check', users.check);
   router.post('/user/signin', users.signin);
