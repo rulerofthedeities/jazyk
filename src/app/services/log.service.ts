@@ -10,7 +10,6 @@ export class LogService {
   ) {}
 
   logPage(page: String): Observable<string> {
-    console.log('logging page', page);
     return this.http
     .post<string>('/api/log/page', {page});
   }

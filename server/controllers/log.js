@@ -15,9 +15,6 @@ module.exports = {
           update = {
             $inc: {count: 1}
           };
-
-    console.log('page', page);
-
     Log.findOneAndUpdate(query, update, {upsert: true})
     .then((result) => {
       response.handleSuccess(res, result);

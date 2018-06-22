@@ -5,14 +5,13 @@
   </div>
 </div>
 <!-- Exercise list -->
-<div class="exercises" *ngIf="exercises?.length > 0"
-            #dropdown>
-  <ul 
+<div class="exercises" *ngIf="exercises?.length > 0 else loading" #dropdown>
+  <ul
     class="list-unstyled list list-group"
     dnd-sortable-container
     [sortableData]="exercises">
     <li *ngFor="let exercise of exercises; let i = index;trackBy: trackByFn">
-      <div 
+      <div
         [class.editing]="editingId === exercise._id"
         [class.viewing]="viewId === exercise._id"
         class="list-group-item row"
@@ -26,18 +25,18 @@
             class="btn btn-danger fa fa-trash-o"
             (click)="onRemoveExercise(confirm, exercise._id)">
           </span>
-          <span 
+          <span
             class="btn btn-primary fa fa-pencil"
             (click)="onEditExercise(exercise._id)">
           </span>
-          <span 
+          <span
             class="btn btn-info fa fa-eye"
             (click)="onViewExercise(exercise._id)">
           </span>
           <span
             class="btn btn-default fa fa-arrows-v"
             (click)="onToggleArrows(exercise._id)">
-            <ul class="dropdown-menu pull-right" 
+            <ul class="dropdown-menu pull-right"
               [style.display]="arrowDropDownId === exercise._id && showArrowDropDown ? 'block' : 'none'">
               <li (click)="onMoveExercise(exercise, i, 'up')"><a>
                 <span class="btn btn-success fa fa-arrow-up"></span>
@@ -51,7 +50,7 @@
           </span>
         </div>
         <div class="items">
-          {{i + 1}}. 
+          {{i + 1}}.
           <span class="item active">
             <km-type-icons
               [tpe]="exercise.tpe"
@@ -109,7 +108,7 @@
                 </km-region-flag>
                 <span (dblclick)="onEditExercise(exercise._id)">
                   <strong>{{exercise.foreign?.word}}</strong>
-                </span> / 
+                </span> /
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
@@ -128,7 +127,7 @@
           <div *ngSwitchCase="exType.FillIn">
             <div class="col-xs-8">
               <div class="words">
-                <span 
+                <span
                   (dblclick)="onEditExercise(exercise._id)">
                   <km-region-flag
                     [lan]="languagePair.to"
@@ -159,7 +158,7 @@
                     [thumb]="true">
                   </km-region-flag>
                   <strong>{{exercise.foreign?.word}}</strong>
-                </span> / 
+                </span> /
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
@@ -185,7 +184,7 @@
                     [thumb]="true">
                   </km-region-flag>
                   <strong>{{exercise.article}} {{exercise.foreign?.word}}</strong>
-                </span> / 
+                </span> /
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
@@ -211,7 +210,7 @@
                     [thumb]="true">
                   </km-region-flag>
                   <strong>{{getComparisons(exercise)}}</strong>
-                </span> / 
+                </span> /
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
@@ -234,7 +233,7 @@
                     [thumb]="true">
                   </km-region-flag>
                   <strong>{{getInfinitive(exercise.foreign?.word)}}</strong>
-                </span> / 
+                </span> /
                 <km-region-flag
                   [lan]="languagePair.from"
                   [word]="exercise.local"
@@ -346,3 +345,9 @@
   <div title>{{text["Warning"]}}</div>
   <div message>{{getRemoveMessage()}}</div>
 </km-modal-confirm>
+
+<ng-template #loading>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingExercises']">
+  </km-loader>
+</ng-template>

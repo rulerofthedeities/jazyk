@@ -27,9 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
       if (event instanceof NavigationEnd) {
         this.logService
         .logPage(event.url)
-        .subscribe(() => {
-          console.log('logged page', event.url);
-        });
+        .subscribe();
       }
     });
   }

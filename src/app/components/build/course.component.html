@@ -16,7 +16,7 @@
 
 <!-- CHAPTER / LESSON LIST -->
 
-<div class="panel panel-default chapters" *ngIf="lessons?.length > 0">
+<div class="panel panel-default chapters" *ngIf="lessons?.length > 0 else loading">
   <div class="panel-body">
     <km-build-lessons
       [lessons]="lessons"
@@ -60,8 +60,14 @@
   </div>
 </ng-template>
 
+<ng-template #loading>
+  <km-loader *ngIf="!isError"
+    [msg]="text['LoadingLessons']">
+  </km-loader>
+</ng-template>
+
 <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
 </km-info-msg>
-  
+
 <km-error-msg>
 </km-error-msg>
