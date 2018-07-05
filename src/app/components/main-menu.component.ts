@@ -6,7 +6,7 @@ import {SharedService} from '../services/shared.service';
 import {AuthService} from '../services/auth.service';
 import {ErrorService} from '../services/error.service';
 import {User} from '../models/user.model';
-import {Translation, Language} from '../models/course.model';
+import {Language} from '../models/course.model';
 import {timer} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 
@@ -28,6 +28,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   intLan: Language;
   intLans: Language[];
   isReady = false;
+  isLoggedIn = false;
   rankColor = 'w';
 
   constructor(
@@ -40,6 +41,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.getUrl();
     this.getDependables();
     this.getNotificationsCount();
@@ -60,6 +62,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
         this.nrOfMessages = 0;
         this.nrOfNotifications = 0;
         this.showDropDown = false;
+        this.isLoggedIn = loggedIn;
         if (loggedIn) {
           this.setInterfaceLan();
           this.getNotificationsCount();
@@ -98,10 +101,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   getUser(): User {
     return this.userService.user;
-  }
-
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
   }
 
   onChangeRankColor(event: MouseEvent) {
@@ -147,7 +146,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getNotificationsCount() {
-    if (this.isLoggedIn()) {
+    if (this.isLoggedIn) {
       this.userService
       .fetchNotificationsCount()
       .pipe(takeWhile(() => this.componentActive))
@@ -159,7 +158,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getMessagesCount() {
-    if (this.isLoggedIn()) {
+    if (this.isLoggedIn) {
       this.userService
       .fetchMessagesCount()
       .pipe(takeWhile(() => this.componentActive))
@@ -171,7 +170,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getScoreCount() {
-    if (this.isLoggedIn()) {
+    if (this.isLoggedIn) {
       this.userService
       .fetchScoreTotal()
       .pipe(takeWhile(() => this.componentActive))

@@ -1,4 +1,4 @@
-<km-countdown 
+<km-countdown
   *ngIf="isCountDown else study"
   [counter]="settings.delay"
   [mute]="isMute"
@@ -6,7 +6,7 @@
 </km-countdown>
 <ng-template #study>
   <section kmPressed class="main-card" *ngIf="isReady else loading"
-    (onKeyPressed)="onKeyPressed($event)">
+    (hasKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isStudyDone ? 'col-xs-12' : 'col-xs-8'">
       <div *ngIf="exerciseData?.length > 0">
         <km-bullets *ngIf="!isStudyDone"
@@ -51,7 +51,7 @@
         <div class="msg-info">
           <span class="fa fa-info-circle"></span>{{text['NoMoreToStudy']}}
         </div>
-        <button 
+        <button
           type="button"
           class="btn btn-success"
           (click)="onRehearseAll()">
@@ -61,7 +61,7 @@
       </div>
       <!-- STUDY DONE -->
       <div *ngIf="isStudyDone && exerciseData?.length > 0" class="frame">
-        <km-completed-list 
+        <km-completed-list
           [data]="exerciseData"
           [isRepeat]="isRehearsal"
           [title]="text['Wordslearned']"
@@ -112,7 +112,7 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions">
-        <button 
+        <button
           *ngIf="exerciseData?.length > 0"
           type="button"
           class="btn btn-success btn-lg"

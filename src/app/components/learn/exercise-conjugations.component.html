@@ -21,7 +21,7 @@
 ></km-question>
 <div class="clearfix"></div>
 <div class="buffer"></div>
-<km-keyboard 
+<km-keyboard
   *ngIf="keyboard.showKeyboard && !isAnswered"
   [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">
@@ -29,14 +29,14 @@
 
 <ng-template #conjugationTemplate let-pronoun=pronoun let-i=nr>
   <div class="form-group row">
-    <label 
-      [for]="'conjugation' + i" 
+    <label
+      [for]="'conjugation' + i"
       class="control-label col-xs-2 col-xs-offset-1 text-right">
       {{pronoun}}
     </label>
     <div class="col-xs-9">
-      <input 
-        class="form-control" 
+      <input
+        class="form-control"
         [id]="'conjugation' + i"
         maxlength="100"
         autocomplete="off"

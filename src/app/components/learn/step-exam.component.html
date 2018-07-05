@@ -1,4 +1,4 @@
-<km-countdown 
+<km-countdown
   *ngIf="isCountDown; else exam"
   [counter]="settings.delay"
   [mute]="isMute"
@@ -7,7 +7,7 @@
 
 <ng-template #exam>
   <section kmPressed class="main-card" *ngIf="isReady else loading"
-    (onKeyPressed)="onKeyPressed($event)">
+    (hasKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isExercisesDone || (noMoreExercises && !exerciseData?.length) ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
@@ -21,8 +21,8 @@
           [data]="currentData">
         </km-timer>
         <!-- EXERCISE -->
-        <div *ngIf="!isExercisesDone && isQuestionReady" 
-          class="card" 
+        <div *ngIf="!isExercisesDone && isQuestionReady"
+          class="card"
           [class.preview]="currentData?.data?.questionType === qType.Preview">
           <div class="pull-right">
             <span class="new" *ngIf="currentData?.data?.questionType === qType.Preview">{{text["NewWord"]}}!</span>
@@ -121,11 +121,11 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions" *ngIf="!noMoreExercises">
-        <button 
+        <button
           type="button"
           *ngIf="!isExercisesDone"
           [disabled]="!isAnswered && isSelectionExercise()"
-          class="btn btn-lg btn-success next" 
+          class="btn btn-lg btn-success next"
           (click)="onNextWord()">
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isInput() ? text["Check"] : text["Next"]}}
@@ -140,10 +140,10 @@
         <div class="clearfix"></div>
       </div>
       <div class="actions" *ngIf="!noMoreExercises && !isAnswered">
-        <button 
+        <button
           type="button"
           *ngIf="!isExercisesDone"
-          class="btn btn-lg btn-warning next" 
+          class="btn btn-lg btn-warning next"
           (click)="onNextWord(true)">
           <span class="fa fa-step-forward"></span>
           {{text["GiveAnswer"]}}

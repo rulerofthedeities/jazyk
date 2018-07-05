@@ -51,7 +51,7 @@
         </li>
       </ul>
     </div>
-    <span 
+    <span
       *ngIf="currentMessage || showNewMessage"
       (click)='onCloseMessage()'
       class="fa fa-times pull-right">
@@ -61,7 +61,7 @@
     <!-- MESSAGE LIST -->
     <div *ngIf="!currentMessage && !showNewMessage else messageDetail">
       <ul class="nav nav-tabs">
-        <li 
+        <li
           [class.active]="tab==='inbox'"
           (click)="onSelectTab('inbox')">
           <a>
@@ -89,9 +89,9 @@
       <div *ngIf="messages && messages[0] else nomessages" class="messages">
         <div class="list-group">
           <a class="list-group-item"
-            *ngFor="let message of messages; let i=index" 
+            *ngFor="let message of messages; let i=index"
             (click)="onSelectMessage(i)">
-            <span class="fa fa-spacing"  
+            <span class="fa fa-spacing"
               *ngIf="isRecipient(message)"
               [ngClass]="{
               'fa-circle': !message.recipient.read,
@@ -135,10 +135,10 @@
 <!-- MESSAGE DETAIL -->
 <ng-template #messageDetail>
   <div class="message" *ngIf="!showNewMessage else newMessage"
-    kmPressed 
-    (onKeyPressed)="onKeyPressed($event)">
+    kmPressed
+    (hasKeyPressed)="onKeyPressed($event)">
     <div class="row">
-      <label  
+      <label
         class="control-label col-xs-1">
         {{text["From"]}}
       </label>
@@ -152,7 +152,7 @@
       </div>
     </div>
     <div class="row">
-      <label  
+      <label
         class="control-label col-xs-1">
         {{text["To"]}}
       </label>
@@ -203,13 +203,13 @@
 <!-- NEW MESSAGE -->
 <ng-template #newMessage>
   <div
-    kmPressed 
-    (onKeyPressed)="onKeyPressed($event)">
+    kmPressed
+    (hasKeyPressed)="onKeyPressed($event)">
     <km-user-selector *ngIf="recipients[0]"
       [prefix]="text['To'] + ':'"
       [users]="recipients"
       [selectedUser]="selectedRecipient"
-      (userSelected)="onRecipientSelected($event, msgField)">    
+      (userSelected)="onRecipientSelected($event, msgField)">
     </km-user-selector>
     <div [style.display]="selectedRecipient ? 'block' : 'none'">
       <km-message

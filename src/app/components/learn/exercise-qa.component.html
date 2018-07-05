@@ -31,9 +31,9 @@
       <span class="input-group-addon" *ngIf="sentence[0]">
         <span class="sentence">{{sentence[0]}}</span>
       </span>
-      <input 
+      <input
         type="text"
-        class="form-control input-lg" 
+        class="form-control input-lg"
         id="answer"
         maxlength="100"
         autofocus
@@ -55,7 +55,7 @@
 <div class="solution" *ngIf="isAnswered && (!data.data.isCorrect || data.data.isAlt)">
   <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{correctAnswer}}</span>
 </div>
-<km-keyboard 
+<km-keyboard
   *ngIf="keyboard.showKeyboard && !isAnswered"
   [keys]="keyboard.keys"
   (selectedKey)="onKeySelected($event)">

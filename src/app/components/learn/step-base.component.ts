@@ -136,6 +136,11 @@ export abstract class Step {
             this.checkIfWordAnswer();
           }
         break;
+        case QuestionType.Conjugations:
+          if (key === 'Enter') {
+            this.checkIfConjugationsAnswer();
+          }
+        break;
         case QuestionType.FillIn:
           if (key === 'Enter') {
             this.checkIfFillInAnswer(false);
@@ -206,6 +211,14 @@ export abstract class Step {
       }
     }
     return tpe;
+  }
+
+  getAlts(tpe: string, word: Exercise): string {
+    let altwords = '';
+    if (word && word[tpe] && word[tpe].alt) {
+      altwords = word[tpe].alt.split('|').join(', ');
+    }
+    return altwords;
   }
 
   isInput() {

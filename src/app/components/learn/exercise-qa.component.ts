@@ -1,4 +1,5 @@
-import {Component, Input, Output, OnChanges, AfterViewChecked, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, Output, OnChanges, AfterViewChecked,
+        EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Keyboard, LanPair} from '../../models/course.model';
 import {ExerciseData, Exercise, ExerciseType} from '../../models/exercise.model';
 import {UtilsService} from '../../services/utils.service';

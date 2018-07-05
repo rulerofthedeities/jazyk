@@ -1,6 +1,6 @@
-<div class="modal" tabindex="-1" role="dialog" 
+<div class="modal" tabindex="-1" role="dialog"
   [ngStyle]="{'display': showModal ? 'block' : 'none'}"
-  kmPressed (onKeyPressed)="onKeyPressed($event)">
+  kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">

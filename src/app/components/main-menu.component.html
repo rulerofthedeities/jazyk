@@ -24,7 +24,7 @@
             </span>
           </a>
         </li>
-        <li routerLinkActive="active" *ngIf="isLoggedIn()">
+        <li routerLinkActive="active" *ngIf="isLoggedIn">
           <a routerLink="/build/courses">
             <span class="fa fa-pencil"></span>
             {{text["Teach"]}}
@@ -32,7 +32,7 @@
             </span>
           </a>
         </li>
-        <li routerLinkActive="active" *ngIf="isLoggedIn()">
+        <li routerLinkActive="active" *ngIf="isLoggedIn">
           <a routerLink="/learn/courses">
             <span class="fa fa-th-list"></span>
             {{text["Courses"]}}
@@ -43,9 +43,9 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- Notifications & Messages -->
-        <li class="nav-item indicator" 
-          (click)="onGoto($event, 'notifications')" 
-          *ngIf="isLoggedIn()">
+        <li class="nav-item indicator"
+          (click)="onGoto($event, 'notifications')"
+          *ngIf="isLoggedIn">
           <a class="nav-link notifications">
             <i class="fa fa-bell-o"></i>
             <span class="badge"
@@ -55,9 +55,9 @@
             <span class="bar small"></span>
           </a>
         </li>
-        <li class="nav-item indicator" 
-          (click)="onGoto($event, 'messages')" 
-          *ngIf="isLoggedIn()">
+        <li class="nav-item indicator"
+          (click)="onGoto($event, 'messages')"
+          *ngIf="isLoggedIn">
           <a class="nav-link messages">
             <i class="fa fa-envelope-o"></i>
             <span class="badge"
@@ -68,41 +68,41 @@
           </a>
         </li>
         <!-- Not Logged In -->
-        <li routerLinkActive="active" 
+        <li routerLinkActive="active"
           class="login"
-          *ngIf="!isLoggedIn() && url!=='/auth/signin' && url!=='/home'">
-          <a 
+          *ngIf="!isLoggedIn && url!=='/auth/signin' && url!=='/home'">
+          <a
             routerLink="/auth/signin" [queryParams]="{returnUrl: url}">
             <span class="fa fa-sign-in"></span>
             {{text["Login"]}}
             <span class="bar"></span>
           </a>
         </li>
-        <li 
-          class="nav-item dropdown" 
-          *ngIf="!isLoggedIn() && url==='/home'"
+        <li
+          class="nav-item dropdown"
+          *ngIf="!isLoggedIn && url==='/home'"
           on-mouseover='onShowDropDown(true)'
           on-mouseout='onShowDropDown(false)'>
-          <a 
+          <a
             class="nav-link dropdown-toggle user-action">
-            <img 
+            <img
               src="/assets/img/flags/{{intLan.code}}.png"
               alt="{{intLan?.nativeName}}" class="flag" />
               {{intLan?.nativeName}}
-            <span 
+            <span
               class="fa fa-caret" [ngClass]="{
               'fa-caret-right': !showDropDown,
               'fa-caret-down': showDropDown
             }"></span>
           </a>
-          <ul 
+          <ul
             class="dropdown-menu dropdown-lan"
             [style.display]="showDropDown ? 'block' : 'none'">
             <li
-              *ngFor="let lan of intLans" 
+              *ngFor="let lan of intLans"
               (click)="onSelectLanguage(lan)">
               <a class="dropdown-item" *ngIf="lan.code !== intLan.code">
-                <img 
+                <img
                   src="/assets/img/flags/{{lan.code}}.png"
                   alt="{{lan?.nativeName}}" class="flag" />
                 {{lan.nativeName}}
@@ -113,24 +113,24 @@
         <!-- Logged In -->
         <li
           class="gravatar"
-          *ngIf="isLoggedIn() && getUser()?.emailHash">
+          *ngIf="isLoggedIn && getUser()?.emailHash">
           <img kmGravatar [hash]="getUser()?.emailHash" [width]="32">
         </li>
-        <li 
-          class="nav-item dropdown" 
-          *ngIf="isLoggedIn()"
+        <li
+          class="nav-item dropdown"
+          *ngIf="isLoggedIn"
           on-mouseover='onShowDropDown(true)'
           on-mouseout='onShowDropDown(false)'>
-          <a 
+          <a
             class="nav-link dropdown-toggle user-action">
-            {{getUser()?.userName}} 
-            <span 
+            {{getUser()?.userName}}
+            <span
               class="fa fa-caret" [ngClass]="{
               'fa-caret-right': !showDropDown,
               'fa-caret-down': showDropDown
             }"></span>
           </a>
-          <ul 
+          <ul
             class="dropdown-menu"
             [style.display]="showDropDown ? 'block' : 'none'">
             <li (click)="onGoto($event, 'profile')">

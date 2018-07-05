@@ -28,10 +28,10 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
-  private current = -1;
   private timerActive: boolean;
   private dotLength = 0;
   private toStudy = 0;
+  current = -1;
   nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   isRehearsal = false; // all words have been studied before
   isStudyDone = false; // toggles with every replay

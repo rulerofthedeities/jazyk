@@ -56,6 +56,8 @@ import {ScorePipe} from './pipes/score.pipe';
     ErrorService
   ],
   exports: [
+    CommonModule,
+    TooltipModule,
     ErrorMessageComponent,
     InfoMessageComponent,
     LanguageSelectorComponent,
@@ -67,8 +69,6 @@ import {ScorePipe} from './pipes/score.pipe';
     MailFieldComponent,
     GravatarDirective,
     GetKeyPressDirective,
-    CommonModule,
-    TooltipModule,
     ToggleComponent,
     LoaderComponent,
     LearnCourseSummaryComponent,

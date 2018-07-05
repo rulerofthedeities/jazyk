@@ -1,5 +1,5 @@
 <div class="panel panel-default more-transparant"
-  kmPressed (onKeyPressed)="onKeyPressed($event, userForm.value)">
+  kmPressed (hasKeyPressed)="onKeyPressed($event, userForm.value)">
   <div class="panel-body">
     <div class="col-xs-6 col-xs-offset-3">
       <div class="panel panel-primary">
@@ -11,7 +11,7 @@
       <div class="altsign">
         <a routerLink="/auth/signup">{{text["Signup"]}}</a>
       </div>
-    </div>  
+    </div>
     <div class="panel-body bg-info">
       <form id="signinform"
           [formGroup]="userForm"
@@ -25,10 +25,10 @@
             <span class="input-group-addon">
               <span class="fa fa-pencil"></span>
             </span>
-            <input 
+            <input
               id="email"
               formControlName="email"
-              type="text" 
+              type="text"
               class="form-control input-lg"
               [placeholder]="text['Enteremail'] || ''"
               minlength="5"
@@ -36,7 +36,7 @@
               spellcheck="false"
               autocomplete="off">
           </div>
-          <km-field-messages 
+          <km-field-messages
             [control]="userForm.controls.email"
             [label]="'TheEmail'"
             [text]="text"
@@ -52,30 +52,30 @@
             <span class="input-group-addon">
               <span class="fa fa-key"></span>
             </span>
-            <input 
+            <input
               id="password"
               formControlName="password"
-              type="password" 
+              type="password"
               class="form-control input-lg"
               [placeholder]="text['Enterpw'] || ''"
               minlength="5"
               maxlength="100">
           </div>
-          <km-field-messages 
+          <km-field-messages
             [control]="userForm.controls.password"
             [label]="'ThePassword'"
             [text]="text"
             [touchRequired]="!isSubmitted">
           </km-field-messages>
         </div>
-                       
-        <button 
-          type="button" 
+
+        <button
+          type="button"
           (click)="onSubmitForm(userForm.value)"
           class="btn btn-success btn-lg center-block">
           <span class="fa fa-hand-o-right register"></span> {{text["Login"]}}
         </button>
-        
+
         <km-error-msg [text]="text">
         </km-error-msg>
 

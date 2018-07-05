@@ -12,7 +12,7 @@ var express = require('express'),
     https = require('https');
 
 // config
-app.set('port', process.env.PORT || 4801);
+app.set('port', process.env.PORT || 4800);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('token_expiration', 604800);// Token expires after 7 days
 
@@ -39,7 +39,7 @@ if (app.get('env') === 'development') {
     console.log('Local https server running on port ' + app.get('port'));
   });
 } else {
-  app.listen(app.get('port'), function() { 
+  app.listen(app.get('port'), function() {
     console.log('Server running on port ' + app.get('port'));
   });
 }

@@ -30,7 +30,7 @@
         </li>
       </ul>
     </div>
-    <span 
+    <span
       *ngIf="currentNotification"
       (click)='onCloseNotification()'
       class="fa fa-times pull-right">
@@ -51,7 +51,7 @@
 
 <ng-template #notificationsList>
   <div class="list-group" *ngIf="!currentNotification else notificiationDetail">
-    <a 
+    <a
       *ngFor="let notification of notifications; let i=index"
       class="list-group-item"
       (click)="onSelectNotification(i)">
@@ -74,8 +74,8 @@
 
 <ng-template #notificiationDetail>
   <div [innerHTML]="currentNotification.message"
-  kmPressed 
-  (onKeyPressed)="onKeyPressed($event)">
+  kmPressed
+  (hasKeyPressed)="onKeyPressed($event)">
   </div>
   <div class="badge pull-right">
     {{currentNotification.dt | date: "yyyy-MM-dd HH:mm"}}

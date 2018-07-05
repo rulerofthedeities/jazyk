@@ -1,4 +1,4 @@
-<km-countdown 
+<km-countdown
   *ngIf="isCountDown else exercise"
   [counter]="settings.delay"
   [mute]="isMute"
@@ -7,7 +7,7 @@
 
 <ng-template #exercise>
   <section kmPressed class="main-card" *ngIf="isReady else loading"
-    (onKeyPressed)="onKeyPressed($event)">
+    (hasKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isExercisesDone ? 'col-xs-12' : 'col-xs-8'">
       <div class="panel centerpanel">
         <km-bullets *ngIf="!isExercisesDone"
@@ -21,7 +21,7 @@
           [data]="currentData">
         </km-timer>
         <!-- EXERCISE -->
-        <div *ngIf="!isExercisesDone && isQuestionReady" 
+        <div *ngIf="!isExercisesDone && isQuestionReady"
           class="card"
           [class.preview]="currentData?.data?.questionType === qType.Preview">
           <div class="pull-right">
@@ -106,14 +106,14 @@
           <div class="msg-info">
             <span class="fa fa-info-circle"></span>{{text['NoMoreExercises']}}
           </div>
-          <button 
+          <button
             *ngIf="countPerStep['study']?.nrRemaining > 0"
             type="button"
             class="btn btn-success"
             (click)="onToStudy()">
             {{text["LearnNewWords"]}}
           </button>
-          <button 
+          <button
             *ngIf="countPerStep['study'] && countPerStep['study']?.nrRemaining === 0 || !countPerStep['study']"
             type="button"
             class="btn btn-success"
@@ -184,19 +184,19 @@
         (updatedSettings)="onSettingsUpdated($event)">
       </km-learn-settings>
       <div class="actions" *ngIf="!noMoreExercises">
-        <button 
+        <button
           type="button"
           *ngIf="!isExercisesDone"
           [disabled]="!isAnswered && isSelectionExercise()"
-          class="btn btn-lg btn-success next" 
+          class="btn btn-lg btn-success next"
           (click)="onNextWord(false)">
           <span class="fa fa-step-forward"></span>
           {{!isAnswered && isInput() ? text["Check"] : text["Next"]}}
         </button>
       </div>
       <div class="score" *ngIf="!isExercisesDone">
-        <km-learnlevel-bar *ngIf="!isRehearsal && 
-          currentData?.exercise?.tpe === exType.Word && 
+        <km-learnlevel-bar *ngIf="!isRehearsal &&
+          currentData?.exercise?.tpe === exType.Word &&
           currentData?.data?.questionType !== qType.Preview"
           [levelUpdated]="levelUpdated">
         </km-learnlevel-bar>
@@ -205,10 +205,10 @@
         <div class="clearfix"></div>
       </div>
       <div class="actions" *ngIf="!noMoreExercises && !isAnswered">
-        <button 
+        <button
           type="button"
           *ngIf="!isExercisesDone"
-          class="btn btn-lg btn-warning next" 
+          class="btn btn-lg btn-warning next"
           (click)="onNextWord(true)">
           <span class="fa fa-step-forward"></span>
           {{text["GiveAnswer"]}}

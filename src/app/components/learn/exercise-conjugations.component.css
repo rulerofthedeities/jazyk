@@ -20,3 +20,6 @@ h1 {
   position: relative;
   top: 6px;
 }
+.form-group {
+  margin-bottom: 6px;
+}

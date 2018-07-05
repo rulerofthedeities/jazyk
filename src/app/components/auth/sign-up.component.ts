@@ -106,10 +106,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.userForm = this.formBuilder.group({
-      'userName': ['', [
-        Validators.required,
-        ValidationService.userNameValidator],
-        ValidationService.checkUniqueUserName(this.http)],
+      'userName': ['', {
+        validators: [Validators.required, ValidationService.userNameValidator],
+        asyncValidators: [ValidationService.checkUniqueUserName(this.http)]
+      }],
       'email': ['', [
         Validators.required,
         ValidationService.emailValidator],
