@@ -7,7 +7,7 @@ import {UserService} from '../../services/user.service';
 import {Course, Lesson, LanPair,
         LanConfigs, AccessLevel} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
-import {takeWhile, filter} from 'rxjs/operators';
+import {takeWhile, filter, delay} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'lesson.component.html',
@@ -21,6 +21,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   course: Course;
   chapters: string[];
   lesson: Lesson;
+  isLoading = false;
   isNewExercise = false;
   isEditMode = false;
   isBidirectional = false;
@@ -131,6 +132,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   }
 
   private getLesson(lessonId: string) {
+    this.isLoading = true;
     this.buildService
     .fetchLesson(lessonId)
     .pipe(takeWhile(() => this.componentActive))
@@ -144,6 +146,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
           this.setBidirectional();
           this.getConfigs(lesson.languagePair);
         } else {
+          this.isLoading = false;
           this.infoMsg = this.text['LessonIdInvalid'];
         }
       },
@@ -167,9 +170,10 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getCourse() {
     this.buildService
     .fetchCourse(this.lesson.courseId)
-    .pipe(takeWhile(() => this.componentActive))
+    .pipe(takeWhile(() => this.componentActive), delay(2000))
     .subscribe(
       course => {
+        this.isLoading = false;
         this.course = course;
         if (course) {
           this.utilsService.setPageTitle(null, course.name, true);

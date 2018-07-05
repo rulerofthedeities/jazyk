@@ -1,7 +1,6 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Location} from '@angular/common';
-import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
-import {isLearnedLevel, maxLearnLevel, maxStreak} from '../../services/shared.service';
+import {ActivatedRoute, Router} from '@angular/router';
 import {LearnService} from '../../services/learn.service';
 import {UtilsService} from '../../services/utils.service';
 import {SharedService} from '../../services/shared.service';
@@ -10,10 +9,9 @@ import {AuthService} from '../../services/auth.service';
 import {ErrorService} from '../../services/error.service';
 import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {ModalPromotionComponent} from '../modals/modal-promotion.component';
-import {Course, Lesson, Language, Translation, ResultData, Map,
-        Step, Level, LessonId, StepCount, StepData, ProcessedData, AccessLevel} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, Points,
-        ExerciseType, QuestionType} from '../../models/exercise.model';
+import {Course, Lesson, Translation, ResultData, Map, Step, Level,
+        LessonId, StepCount, StepData, ProcessedData, AccessLevel} from '../../models/course.model';
+import {ExerciseData, ExerciseType} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {takeWhile, filter} from 'rxjs/operators';
@@ -27,9 +25,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   private courseId: string;
-  private settings: LearnSettings;
   private settingsUpdated = false;
   private courseStep: string; // Step to start with defined by route
+  settings: LearnSettings;
   lesson: Lesson;
   errorMsg: string;
   infoMsg: string;
@@ -39,6 +37,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   currentStep = 0;
   steps: Step[];
   courseLevel: Level;
+  isLoading = false;
   isLessonReady = false;
   exercisesStarted = false;
   exercisesInterrupted: Subject<boolean> = new Subject();
@@ -213,11 +212,13 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   }
 
   private getCourse(translations: Translation[], courseId: string) {
+    this.isLoading = true;
     this.learnService
     .fetchCourse(courseId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       course => {
+        this.isLoading = false;
         if (course) {
           if (!course.isDemo && !this.authService.isLoggedIn()) {
             this.router.navigate(['/auth/signin'], {queryParams: {returnUrl: this.router.url}});

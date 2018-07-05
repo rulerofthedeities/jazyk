@@ -346,8 +346,6 @@
   <div message>{{getRemoveMessage()}}</div>
 </km-modal-confirm>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingExercises']">
-  </km-loader>
-</ng-template>
+<km-loader *ngIf="!isError && !isLoading"
+  [msg]="text['LoadingExercises']">
+</km-loader>

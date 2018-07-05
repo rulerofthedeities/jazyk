@@ -3,11 +3,11 @@
 </div>
 
 <!-- COURSE HEADER -->
-<div *ngIf="!exercisesStarted && !isError">
+<div *ngIf="!exercisesStarted && !isError && !isLoading">
   <div class="panel panel-default panel-header">
     <div class="panel-body">
       <h1>
-        <button type="button" 
+        <button type="button"
           *ngIf="!isDemo && currentStep===getStepNr('overview')"
           class="btn btn-success pull-right"
           (click)="onContinueCourse()">
@@ -22,7 +22,7 @@
       <ul class="list-unstyled list-inline steps">
         <ng-template ngFor [ngForOf]="steps" let-step let-i="index">
           <li *ngIf="isLessonReady || step.level === level.Course"
-            (click)="stepTo(i)" 
+            (click)="stepTo(i)"
             class="btn btn-lg btn-step"
             [ngClass]="{
               'btn-overview': step.name==='overview',
@@ -30,7 +30,7 @@
               'btn-dialogue': step.name==='dialogue',
               'btn-study': step.name==='study',
               'btn-practise': step.name==='practise',
-              'btn-review': step.name==='review', 
+              'btn-review': step.name==='review',
               'btn-difficult': step.name==='difficult',
               'btn-exam': step.name==='exam',
               'active': currentStep===i,
@@ -39,7 +39,7 @@
             }">
             <span *ngIf="step.hasCounter"
               class="fa fa-spacing" [ngClass]="{
-                'fa-repeat': step.name==='review', 
+                'fa-repeat': step.name==='review',
                 'fa-fire': step.name==='difficult',
                 'fa-clock-o': step.name==='exam'
               }">
@@ -60,8 +60,8 @@
   </div>
 </div>
 <!-- COURSE DATA -->
-<div *ngIf="isLessonReady else loading">
-  <div 
+<div *ngIf="isLessonReady && !isLoading">
+  <div
     [ngSwitch]="steps[currentStep]?.name"
     class="learn"
     [class.rehearse]="exercisesStarted && !!lesson?.rehearseStep"
@@ -188,8 +188,6 @@
   [gender]="getGender()">
 </km-modal-promotion>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingCourse']">
-  </km-loader>
-</ng-template>
+<km-loader *ngIf="isLoading && !isError"
+  [msg]="text['LoadingCourse']">
+</km-loader>

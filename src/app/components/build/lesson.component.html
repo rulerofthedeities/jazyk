@@ -31,7 +31,7 @@
   </km-build-lesson-tabs>
 
   <div *ngIf="tab==='words'">
-    <km-exercise-list 
+    <km-exercise-list
       *ngIf="lesson"
       [languagePair]="lesson?.languagePair"
       [configs]="configs"
@@ -53,7 +53,7 @@
         </div>
 
         <div class="btn-group" #dropdown>
-          <button 
+          <button
             type="button"
             data-toggle="dropdown"
             class="btn btn-success btn-lg dropdown-toggle"
@@ -62,7 +62,7 @@
             {{text["New..."]}}
             <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu" 
+          <ul class="dropdown-menu"
             [style.display]="showDropDown ? 'block' : 'none'">
             <li (click)="onNewSelect()">
               <a><span class="fa fa-list-alt fa-spacing"></span>{{text["NewSelect"]}}</a>
@@ -134,3 +134,7 @@
 
 <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
 </km-info-msg>
+
+<km-loader *ngIf="isLoading"
+  [msg]="text['LoadingLesson']">
+</km-loader>
