@@ -4,7 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {SharedService} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
-import {Exercise, ExerciseData, ExerciseResult, Direction, QuestionType} from '../../models/exercise.model';
+import {Exercise, ExerciseResult} from '../../models/exercise.model';
 import {LessonOptions} from '../../models/course.model';
 import {Subject} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
@@ -24,6 +24,7 @@ interface ExercisePlusOptions {
 
 export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   @Input() private continueCourseLevel: Subject<boolean>;
+  isLoading = false;
 
   constructor(
     learnService: LearnService,
@@ -50,6 +51,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
   }
 
   private getToReview() {
+    this.isLoading = true;
     this.learnService
     .fetchToReview(this.course._id, this.settings.nrOfWordsReview)
     .pipe(takeWhile(() => this.componentActive))
@@ -68,6 +70,7 @@ export class LearnReviewComponent extends Step implements OnInit, OnDestroy {
             return ex;
           }),
           options = newExercises.map(exercise => exercise.options);
+    this.isLoading = false;
     if (exercises.length > 0) {
       this.buildExerciseData(exercises, results, options[0]);
       this.noMoreExercises = false;

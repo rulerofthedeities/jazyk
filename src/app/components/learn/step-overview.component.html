@@ -19,7 +19,7 @@
           <span class="fa fa-check" *ngIf="resultsByChapter[chapterName]?.hasCompleted">
           </span>
         </h2>
-        
+
         <ul *ngIf="chapterName === currentChapter"
           class="list-group lesson">
           <li *ngFor="let lesson of chapterLessons[chapterName]; let j=index"

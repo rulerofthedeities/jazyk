@@ -17,6 +17,7 @@ import {takeWhile} from 'rxjs/operators';
 
 export class LearnExamComponent extends Step implements OnInit, OnDestroy {
   @Input() private continueCourseLevel: Subject<boolean>;
+  isLoading = false;
 
   constructor(
     learnService: LearnService,

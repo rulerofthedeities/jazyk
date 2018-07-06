@@ -66,11 +66,14 @@ export interface ExerciseResult {
   learnLevel?: number;
   isLearned?: boolean;
   isRepeat?: boolean;
+  isDifficult?: boolean;
   sequence?: number; // To find the last saved doc for docs with same save time
   dt?: Date;
   dtToReview?: Date;
   daysBetweenReviews?: number;
   streak?: string;
+  timesDone?: number;
+  timesCorrect?: number;
 }
 
 export interface ResultsData {

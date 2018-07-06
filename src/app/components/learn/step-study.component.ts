@@ -1,12 +1,11 @@
 import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
-import {LanPair, Lesson, LessonOptions} from '../../models/course.model';
-import {Exercise, ExerciseData, ExerciseStep, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
+import {LanPair, Lesson} from '../../models/course.model';
+import {Exercise, ExerciseData, ExerciseType, Direction, ExerciseResult} from '../../models/exercise.model';
 import {LearnSettings} from '../../models/user.model';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {ErrorService} from '../../services/error.service';
 import {SharedService} from '../../services/shared.service';
-import {ModalConfirmComponent} from '../modals/modal-confirm.component';
 import {Subject, BehaviorSubject, Subscription, timer} from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 
@@ -28,11 +27,11 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
   @Output() stepCompleted = new EventEmitter<ExerciseData[]>();
   @Output() updatedSettings = new EventEmitter<LearnSettings>();
   private componentActive = true;
-  private timerActive: boolean;
   private dotLength = 0;
   private toStudy = 0;
   current = -1;
   nextExercise: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  isLoading = false;
   isRehearsal = false; // all words have been studied before
   isStudyDone = false; // toggles with every replay
   hasMoreToStudy = false; // to show button to continue studying
@@ -230,11 +229,13 @@ export class LearnStudyComponent implements OnInit, OnDestroy {
 
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
+    this.isLoading = true;
     this.learnService
     .fetchLessonStepResults(this.lesson._id, 'study')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
+        this.isLoading = false;
         if (results) {
           this.getNewQuestions(results.count);
         }

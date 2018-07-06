@@ -20,6 +20,10 @@
             {{summaryData.coursesLearning.subscribed}} {{summaryData.coursesLearning.subscribed === 1 ? text["courseLearning"] : text["coursesLearning"]}}
           </div>
         </div>
+        <km-loader *ngIf="isLoadingOverview && !isError"
+          [msg]="text['Loading']"
+          [showBackground]="false">
+        </km-loader>
       </div>
     </div>
   </div>
@@ -62,6 +66,10 @@
             </span>
           </a>
         </div>
+        <km-loader *ngIf="isLoadingCommunication && !isError"
+          [msg]="text['Loading']"
+          [showBackground]="false">
+        </km-loader>
       </div>
     </div>
   </div>

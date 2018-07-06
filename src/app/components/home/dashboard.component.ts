@@ -32,6 +32,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   communications: Communication[];
   courses: RecentCourse[];
   isLoadingRecent = false;
+  isLoadingCommunication = false;
+  isLoadingOverview = false;
   coursesReady = false;
   listType = CourseListType;
 
@@ -99,11 +101,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private getCounts() {
+    this.isLoadingOverview = true;
     this.dashboardService
     .fetchCounts()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      data => this.summaryData = data,
+      data => {
+        this.isLoadingOverview = false;
+        this.summaryData = data;
+      },
       error => this.errorService.handleError(error)
     );
   }
@@ -112,7 +118,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoadingRecent = true;
     this.dashboardService
     .fetchRecentCourses()
-    .pipe(takeWhile(() => this.componentActive), delay(2000))
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
         this.isLoadingRecent = false;
@@ -123,11 +129,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private getNotificationsAndMessages() {
+    this.isLoadingCommunication = true;
     this.dashboardService
     .fetchCommunication()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      data => this.processCommunication(data),
+      data => {
+        this.isLoadingCommunication = false;
+        this.processCommunication(data);
+      },
       error => this.errorService.handleError(error)
     );
   }

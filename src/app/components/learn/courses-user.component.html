@@ -1,7 +1,7 @@
 <!-- LANGUAGE -->
 <div class="form-group form-group-lg" *ngIf="languages && languages.length > 1">
   <div class="col-xs-12 lanselector">
-    <km-language-selector 
+    <km-language-selector
       [languages]="languages"
       [currentLanguage]="selectedLanguage"
       [text]="text"
@@ -13,7 +13,7 @@
 <div class="clearfix"></div>
 
 <!-- COURSE LIST -->
-<div *ngIf="coursesReady else loading">
+<div *ngIf="coursesReady">
   <ul class="list-unstyled" *ngIf="courses?.length">
     <li *ngFor="let course of courses">
       <km-course-summary
@@ -34,7 +34,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <span class="select-course">
-          {{text['SelectCourse1']}} '<a routerLink="/learn/courses">{{text["Courses"]}}</a>' {{text['SelectCourse2']}} 
+          {{text['SelectCourse1']}} '<a routerLink="/learn/courses">{{text["Courses"]}}</a>' {{text['SelectCourse2']}}
         </span>
         <button class="btn btn-primary" (click)="onNewCourse()" *ngIf="isLoggedIn()">
           {{text["Newcourselg"]}}
@@ -48,11 +48,9 @@
   </div>
 </div>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingCourses']">
-  </km-loader>
-</ng-template>
+<km-loader *ngIf="isLoading && !isError"
+  [msg]="text['LoadingCourses']">
+</km-loader>
 
 <km-error-msg
   [text]="text">

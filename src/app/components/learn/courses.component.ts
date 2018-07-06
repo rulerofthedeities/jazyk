@@ -4,8 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, Translation, CourseListType} from '../../models/course.model';
-import {Observable} from 'rxjs';
+import {Course, Language, CourseListType} from '../../models/course.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -20,6 +19,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   courses: Course[];
   text: Object = {};
   listType = CourseListType;
+  isLoading = false;
   isError = false;
   isReady = false;
   coursesReady = false;
@@ -48,11 +48,13 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   }
 
   private getCourses() {
+    this.isLoading = true;
     this.learnService
     .fetchPublishedCourses(this.selectedLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courses => {
+        this.isLoading = false;
         this.courses = courses;
         this.coursesReady = true;
       },

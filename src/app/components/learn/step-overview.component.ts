@@ -1,9 +1,8 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
-import {Course, Lesson, LessonHeader, LessonResult, Step, Level, Map} from '../../models/course.model';
-import {Exercise, ExerciseResult, ExerciseData, ExerciseType} from '../../models/exercise.model';
-import {takeWhile} from 'rxjs/operators';
+import {Course, Lesson, LessonHeader, LessonResult, Map} from '../../models/course.model';
+import {takeWhile, delay} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-overview',
@@ -226,7 +225,7 @@ export class LearnOverviewComponent implements OnInit, OnDestroy {
       // Get results grouped by lesson id
       this.learnService
       .fetchLessonResults(this.course._id)
-      .pipe(takeWhile(() => this.componentActive))
+      .pipe(takeWhile(() => this.componentActive), delay(2000))
       .subscribe(
         (results: LessonResult[]) => {
           if (results) {

@@ -5,7 +5,7 @@
   (countedDown)="onCountDownFinished()">
 </km-countdown>
 <ng-template #study>
-  <section kmPressed class="main-card" *ngIf="isReady else loading"
+  <section kmPressed class="main-card" *ngIf="isReady"
     (hasKeyPressed)="onKeyPressed($event)">
     <div [ngClass]="isStudyDone ? 'col-xs-12' : 'col-xs-8'">
       <div *ngIf="exerciseData?.length > 0">
@@ -127,6 +127,10 @@
     </div>
     <div class="clearfix"></div>
   </section>
+  <km-loader *ngIf="isLoading && !isError"
+    [msg]="text['LoadingExercises']"
+    [showBackground]="false">
+  </km-loader>
 </ng-template>
 
 <ng-template #loadingword>
@@ -136,12 +140,6 @@
       </span>
     </span>
   </span>
-</ng-template>
-
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingLesson']">
-  </km-loader>
 </ng-template>
 
 <km-modal-confirm #confirm

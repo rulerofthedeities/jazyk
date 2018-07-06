@@ -3,7 +3,7 @@ import {LearnService} from '../../services/learn.service';
 import {isLearnedLevel} from '../../services/shared.service';
 import {ErrorService} from '../../services/error.service';
 import {Lesson} from '../../models/course.model';
-import {Exercise, ExerciseResult, ExerciseData, ExerciseType, ResultsData} from '../../models/exercise.model';
+import {ExerciseResult, ExerciseData, ExerciseType, ResultsData} from '../../models/exercise.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -19,10 +19,10 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   @Input() isDemo = false;
   @Output() currentLesson = new EventEmitter<Lesson>();
   private componentActive = true;
-  private exercises: Exercise[];
   lesson: Lesson;
   exerciseData: ExerciseData[] = [];
   exType = ExerciseType;
+  isLoading = false;
   isLearnedLevel: number;
 
   constructor(
@@ -95,11 +95,13 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   }
 
   private fetchLesson() {
+    this.isLoading = true;
     this.learnService
     .fetchLesson(this.lessonId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (lesson: Lesson) => {
+        this.isLoading = false;
         this.lesson = lesson;
         this.currentLesson.emit(lesson);
         this.getLessonResults();

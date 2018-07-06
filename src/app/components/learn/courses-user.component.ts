@@ -5,7 +5,7 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {AuthService} from '../../services/auth.service';
 import {UserService} from '../../services/user.service';
-import {Course, UserCourse, Language, Translation, CourseListType, Map} from '../../models/course.model';
+import {Course, UserCourse, Language, CourseListType, Map} from '../../models/course.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -24,6 +24,7 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   text: Object = {};
   listType = CourseListType;
   coursesReady = false;
+  isLoading = false;
   isError = false;
   isReady = false;
   isDemo = false;
@@ -69,11 +70,13 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
   }
 
   private getCourses() {
+    this.isLoading = true;
     this.learnService
     .fetchSubscribedCourses()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courses => {
+        this.isLoading = false;
         if (courses) {
           this.allCourses = courses.subscribed;
           this.isDemo = !!courses.isDemo;

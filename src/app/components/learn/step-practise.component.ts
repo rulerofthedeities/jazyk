@@ -1,9 +1,8 @@
 import {Component, Input, Output, OnInit, EventEmitter, OnDestroy} from '@angular/core';
 import {Step} from './step-base.component';
-import {Exercise, ExerciseData, ExerciseOptions, Direction, ExerciseExtraData,
-        ExerciseResult, ExerciseType, Choice, AnsweredType, QuestionType} from '../../models/exercise.model';
-import {Lesson, Map} from '../../models/course.model';
-import {LearnSettings} from '../../models/user.model';
+import {Exercise, ExerciseData, Direction, ExerciseResult,
+        ExerciseType, AnsweredType, QuestionType} from '../../models/exercise.model';
+import {Lesson} from '../../models/course.model';
 import {LearnService} from '../../services/learn.service';
 import {PreviewService} from '../../services/preview.service';
 import {isLearnedLevel, SharedService} from '../../services/shared.service';
@@ -11,7 +10,7 @@ import {UserService} from '../../services/user.service';
 import {AudioService} from '../../services/audio.service';
 import {ErrorService} from '../../services/error.service';
 import {Subject} from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
+import {takeWhile, delay} from 'rxjs/operators';
 
 @Component({
   selector: 'km-learn-practise',
@@ -26,6 +25,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   @Output() lessonCompleted = new EventEmitter<string>();
   @Output() stepBack = new EventEmitter();
   toPractise = 0;
+  isLoading = false;
   isRehearsal = false;
   beep: any;
 
@@ -220,11 +220,13 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
   private fetchLessonResults() {
     // fetch results for all exercises in this lesson
     let leftToStudy: number;
+    this.isLoading = true;
     this.learnService
     .fetchLessonStepResults(this.lesson._id, 'practise')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       results => {
+        this.isLoading = false;
         if  (results && results.count) {
           leftToStudy = this.getNewQuestions(results.count);
         }
