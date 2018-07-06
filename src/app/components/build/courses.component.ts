@@ -20,6 +20,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   selectedLanguage: Language;
   activeLanguages: Language[];
   languages: Language[];
+  isLoading = false;
   multipleLanguages = false;
   listType = CourseListType;
   coursesReady = false;
@@ -47,11 +48,13 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
   }
 
   private getCourses() {
+    this.isLoading = true;
     this.buildService
     .fetchAuthorCourses()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       courses => {
+        this.isLoading = false;
         this.courses = courses;
         if (courses && courses.length) {
           this.getLanguages();

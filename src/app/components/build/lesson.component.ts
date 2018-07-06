@@ -7,7 +7,7 @@ import {UserService} from '../../services/user.service';
 import {Course, Lesson, LanPair,
         LanConfigs, AccessLevel} from '../../models/course.model';
 import {Exercise, ExerciseType} from '../../models/exercise.model';
-import {takeWhile, filter, delay} from 'rxjs/operators';
+import {takeWhile, filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: 'lesson.component.html',
@@ -170,7 +170,7 @@ export class BuildLessonComponent implements OnInit, OnDestroy {
   private getCourse() {
     this.buildService
     .fetchCourse(this.lesson.courseId)
-    .pipe(takeWhile(() => this.componentActive), delay(2000))
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       course => {
         this.isLoading = false;

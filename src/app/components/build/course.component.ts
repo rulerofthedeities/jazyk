@@ -21,6 +21,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   lessons: Lesson[];
   lessonIds: LessonId[];
   chapters: string[];
+  isLoading = false;
   isEditMode = false;
   isNewLesson = false;
   isCourseReady = false;
@@ -85,6 +86,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
 
   private getCourse(courseId: string) {
     if (this.authService.isLoggedIn()) {
+      this.isLoading = true;
       this.buildService
       .fetchCourse(courseId)
       .pipe(takeWhile(() => this.componentActive))
@@ -99,6 +101,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
             this.getLessons(courseId);
             this.isCourseReady = true;
           } else {
+            this.isLoading = false;
             this.infoMsg = this.text['NotAuthorizedEditCourse'];
           }
         },
@@ -114,7 +117,10 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .fetchLessons(courseId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      lessons => this.lessons = lessons,
+      lessons => {
+        this.isLoading = false;
+        this.lessons = lessons;
+      },
       error => this.errorService.handleError(error)
     );
   }

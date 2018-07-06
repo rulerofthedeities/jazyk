@@ -7,7 +7,7 @@
 <div *ngIf="multipleLanguages">
   <div class="form-group form-group-lg">
     <div class="col-xs-12 lanselector">
-      <km-language-selector 
+      <km-language-selector
         [languages]="languages"
         [currentLanguage]="selectedLanguage"
         [text]="text"
@@ -19,7 +19,7 @@
 </div>
 
 <!-- COURSE LIST -->
-<div *ngIf="coursesReady else loading">
+<div *ngIf="coursesReady">
   <ul class="list-unstyled" *ngIf="courses?.length">
     <li *ngFor="let course of courses">
       <km-course-summary
@@ -45,11 +45,9 @@
   </div>
 </div>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingCourses']">
-  </km-loader>
-</ng-template>
+<km-loader *ngIf="isLoading && !isError"
+  [msg]="text['LoadingCourses']">
+</km-loader>
 
 <km-error-msg
   [text]="text">

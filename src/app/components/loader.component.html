@@ -1,0 +1,23 @@
+<div
+  *ngIf="showBackground else loaderTemplate"
+  class="panel panel-default"
+  [ngStyle]="{visibility : show ? 'visible' : 'hidden'}">
+  <div class="panel-body">
+    <ng-container *ngTemplateOutlet="loaderTemplate">
+    </ng-container>
+  </div>
+</div>
+<ng-template #loaderTemplate>
+  <div class="loader">
+    <div class="spinner">
+      <div class="bounce0"></div>
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+      <div class="bounce4"></div>
+    </div>
+    <div class="msg">
+      {{msg}}
+    </div>
+  </div>
+</ng-template>

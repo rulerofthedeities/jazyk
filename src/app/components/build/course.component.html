@@ -60,11 +60,9 @@
   </div>
 </ng-template>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingLessons']">
-  </km-loader>
-</ng-template>
+<km-loader *ngIf="isLoading && !isError"
+  [msg]="text['LoadingLessons']">
+</km-loader>
 
 <km-info-msg [msg]="infoMsg" *ngIf="infoMsg">
 </km-info-msg>

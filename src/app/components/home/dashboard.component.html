@@ -33,15 +33,15 @@
       <div class="panel-body">
         <div class="list-group">
           <a class="list-group-item"
-            *ngFor="let message of communications; let i=index" 
+            *ngFor="let message of communications; let i=index"
             (click)="onSelectMessage(i)">
-            <span class="fa fa-spacing"  
+            <span class="fa fa-spacing"
               [ngClass]="{
                 'fa-envelope-o': message.tpe==='message',
                 'fa-bell-o': message.tpe==='notification'
               }">
             </span>
-            <span class="fa fa-spacing"  
+            <span class="fa fa-spacing"
               [ngClass]="{
                 'fa-circle': !message.read,
                 'fa-circle-o': message.read,
@@ -75,7 +75,7 @@
         {{text["RecentCourses"]}}
       </div>
       <div class="panel-body">
-        <div *ngIf="coursesReady else loading">
+        <div *ngIf="coursesReady">
           <ul class="list-unstyled" *ngIf="courses?.length">
             <li *ngFor="let course of courses">
               <km-course-summary
@@ -90,16 +90,15 @@
             {{text["NoRecentCourses"]}}
           </div>
         </div>
+        <km-loader *ngIf="isLoadingRecent && !isError"
+          [msg]="text['LoadingCourses']"
+          [showBackground]="false">
+        </km-loader>
       </div>
     </div>
   </div>
 </div>
 
-<ng-template #loading>
-  <km-loader *ngIf="!isError"
-    [msg]="text['LoadingCourses']">
-  </km-loader>
-</ng-template>
 
 <km-modal-ranks #ranks
   [rank]="getRank()"

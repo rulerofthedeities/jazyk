@@ -8,7 +8,7 @@ import {SummaryData, CommunicationData, RecentCourse} from '../../models/dashboa
 import {CourseListType} from '../../models/course.model';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import * as moment from 'moment';
-import {takeWhile} from 'rxjs/operators';
+import {takeWhile, delay} from 'rxjs/operators';
 
 interface Communication {
   id: string;
@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   summaryData: SummaryData;
   communications: Communication[];
   courses: RecentCourse[];
+  isLoadingRecent = false;
   coursesReady = false;
   listType = CourseListType;
 
@@ -108,11 +109,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private getRecentCourses() {
+    this.isLoadingRecent = true;
     this.dashboardService
     .fetchRecentCourses()
-    .pipe(takeWhile(() => this.componentActive))
+    .pipe(takeWhile(() => this.componentActive), delay(2000))
     .subscribe(
-      data => this.processCourses(data),
+      data => {
+        this.isLoadingRecent = false;
+        this.processCourses(data);
+      },
       error => this.errorService.handleError(error)
     );
   }
