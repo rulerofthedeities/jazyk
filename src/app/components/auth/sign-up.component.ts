@@ -110,13 +110,13 @@ export class SignUpComponent implements OnInit, OnDestroy {
         validators: [Validators.required, ValidationService.userNameValidator],
         asyncValidators: [ValidationService.checkUniqueUserName(this.http)]
       }],
-      'email': ['', [
-        Validators.required,
-        ValidationService.emailValidator],
-        ValidationService.checkUniqueEmail(this.http)],
-      'password': ['', [
-        Validators.required,
-        ValidationService.passwordValidator]]
+      'email': ['', {
+        validators: [Validators.required, ValidationService.emailValidator],
+        asyncValidators: [ValidationService.checkUniqueEmail(this.http)]
+      }],
+      'password': ['', {
+        validators: [Validators.required, ValidationService.passwordValidator]
+      }]
     });
   }
 

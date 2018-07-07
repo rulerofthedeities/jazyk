@@ -83,8 +83,12 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.userForm = this.formBuilder.group({
-      'email': ['', [Validators.required, ValidationService.emailValidator]],
-      'password': ['', Validators.required]
+      'email': ['', {
+        validators: [Validators.required, ValidationService.emailValidator]
+      }],
+      'password': ['', {
+        validators: [Validators.required]
+      }]
     });
   }
 
