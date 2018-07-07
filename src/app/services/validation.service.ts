@@ -1,6 +1,5 @@
 import {FormControl, FormGroup, FormArray, AbstractControl} from '@angular/forms';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 import {retry, delay, map} from 'rxjs/operators';
 
 export class ValidationService {
@@ -43,7 +42,9 @@ export class ValidationService {
   }
 
   static emailValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/)) {
+    if (control.value.match(
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    )) {
       return null;
     } else {
       return {'invalidEmailAddress': true};

@@ -35,6 +35,8 @@ import {AutocompleteComponent} from './components/fields/autocomplete.component'
 import {FilterListComponent} from './components/fields/filter-list.component';
 import {ImageListComponent} from './components/fields/image-list.component';
 import {AudioListComponent} from './components/fields/audio-list.component';
+import {AuthInterceptor} from './interceptors/auth.interceptor';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -47,7 +49,8 @@ import {AudioListComponent} from './components/fields/audio-list.component';
   ],
   providers: [
     BuildService,
-    MarkdownService
+    MarkdownService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   declarations: [
     BuildComponent,

@@ -18,71 +18,61 @@ export class BuildService {
   /*** COURSES ***/
 
   fetchCourse(courseId: string): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Course>('/api/build/course/' + courseId, {headers})
+    .get<Course>('/api/build/course/' + courseId)
     .pipe(retry(3));
   }
 
   fetchAuthorCourses(): Observable<Course[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Course[]>('/api/build/courses', {headers})
+    .get<Course[]>('/api/build/courses')
     .pipe(retry(3));
   }
 
   addCourse(course: Course): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .post<Course>('/api/build/course', JSON.stringify(course), {headers});
+    .post<Course>('/api/build/course', JSON.stringify(course));
   }
 
   updateCourseHeader(course: Course): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Course>('/api/build/course/header', JSON.stringify(course), {headers});
+    .put<Course>('/api/build/course/header', JSON.stringify(course));
   }
 
   updateCourseProperty(courseId: string, property: string, isProperty: boolean): Observable<Course> {
-    const headers = this.getTokenHeaders(),
-          data = {[property]: isProperty};
+    const data = {[property]: isProperty};
     return this.http
-    .patch<Course>('/api/build/course/property/' + courseId, JSON.stringify(data), {headers});
+    .patch<Course>('/api/build/course/property/' + courseId, JSON.stringify(data));
   }
 
   updateCourseLesson(courseId: string, chapterName: string, lessonId: string): Observable<Course> {
     // add lesson Id to list of lesson ids in course
-    const headers = this.getTokenHeaders(),
-          data = {chapterName, lessonId};
+    const data = {chapterName, lessonId};
     return this.http
-    .patch<Course>('/api/build/course/lesson/' + courseId, JSON.stringify(data), {headers});
+    .patch<Course>('/api/build/course/lesson/' + courseId, JSON.stringify(data));
   }
 
   updateLessonIds(courseId: string, lessonIds: LessonId[]): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Course>('/api/build/lessonIds/' + courseId, JSON.stringify(lessonIds), {headers});
+    .put<Course>('/api/build/lessonIds/' + courseId, JSON.stringify(lessonIds));
   }
 
   /*** CHAPTERS ***/
 
   addChapter(courseId: string, chapterName: string, lessonId: string): Observable<Course> {
-    const headers = this.getTokenHeaders(),
-          lesson = {chapter: chapterName, lessonIds: [lessonId]};
+    const lesson = {chapter: chapterName, lessonIds: [lessonId]};
     return this.http
-    .post<Course>('/api/build/chapter/' + courseId + '/' + lessonId,  JSON.stringify({chapterName, lesson}), {headers});
+    .post<Course>('/api/build/chapter/' + courseId + '/' + lessonId,  JSON.stringify({chapterName, lesson}));
   }
 
   removeChapter(courseId: string, chapter: string): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Course>('/api/build/chapter/' + courseId, JSON.stringify({name: chapter}), {headers});
+    .put<Course>('/api/build/chapter/' + courseId, JSON.stringify({name: chapter}));
   }
 
   updateChapters(courseId: string, chapters: string[]): Observable<Course> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Course>('/api/build/chapters/' + courseId, JSON.stringify(chapters), {headers});
+    .put<Course>('/api/build/chapters/' + courseId, JSON.stringify(chapters));
   }
 
   getCourseChapters(course: Course): string[] {
@@ -104,61 +94,52 @@ export class BuildService {
   }
 
   addLesson(lesson: Lesson): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .post<Lesson>('/api/build/lesson', JSON.stringify(lesson), {headers});
+    .post<Lesson>('/api/build/lesson', JSON.stringify(lesson));
   }
 
   updateLessonHeader(lesson: Lesson): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Lesson>('/api/build/lesson/header', JSON.stringify(lesson), {headers});
+    .put<Lesson>('/api/build/lesson/header', JSON.stringify(lesson));
   }
 
   removeLesson(lessonId: string): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .delete<Lesson>('/api/build/lesson/' + lessonId, {headers});
+    .delete<Lesson>('/api/build/lesson/' + lessonId);
   }
 
   fetchIntro(lessonId: string): Observable<Intro> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Intro>('/api/lesson/intro/' + lessonId, {headers})
+    .get<Intro>('/api/lesson/intro/' + lessonId)
     .pipe(retry(3));
   }
 
   updateIntro(lessonId: string, intro: Intro): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Lesson>('/api/build/lesson/intro/' + lessonId, {intro}, {headers});
+    .put<Lesson>('/api/build/lesson/intro/' + lessonId, {intro});
   }
 
   fetchDialogue(lessonId: string): Observable<Dialogue> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Dialogue>('/api/lesson/dialogue/' + lessonId, {headers})
+    .get<Dialogue>('/api/lesson/dialogue/' + lessonId)
     .pipe(retry(3));
   }
 
   updateDialogue(lessonId: string, dialogue: Dialogue): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Lesson>('/api/build/lesson/dialogue/' + lessonId, {dialogue}, {headers});
+    .put<Lesson>('/api/build/lesson/dialogue/' + lessonId, {dialogue});
   }
 
   checkIfWordpairInCourse(wordLocal: string, wordForeign: string, wpId: string, courseId: string): Observable<Exercise[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Exercise[]>('/api/build/check/wpincourse/' + courseId + '/' + wpId + '/' + wordLocal + '/' + wordForeign, {headers})
+    .get<Exercise[]>('/api/build/check/wpincourse/' + courseId + '/' + wpId + '/' + wordLocal + '/' + wordForeign)
     .pipe(retry(3));
   }
 
   /*** WORDS ***/
 
   fetchFilterWordPairs(filter: Filter, lanpair: LanPair): Observable<WordPair[]> {
-    const headers = this.getTokenHeaders(),
-          params = {
+    const params = {
             'word': filter.word,
             'languagePair': lanpair.from.slice(0, 2) + ';' + lanpair.to.slice(0, 2),
             'languageId': filter.languageId,
@@ -168,48 +149,42 @@ export class BuildService {
             'getTotal': filter.getTotal.toString()
           };
     return this.http
-    .get<WordPair[]>('/api/build/wordpairs', {headers, params})
+    .get<WordPair[]>('/api/build/wordpairs', {params})
     .pipe(retry(3));
   }
 
   fetchWordPairDetail(wordpairId: string): Observable<WordPairDetail> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<WordPairDetail>('/api/build/wordpair/' + wordpairId, {headers})
+    .get<WordPairDetail>('/api/build/wordpair/' + wordpairId)
     .pipe(retry(3));
   }
 
   fetchMedia(wordPairId: string): Observable<Media> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Media>('/api/build/wordpair/media/' + wordPairId, {headers})
+    .get<Media>('/api/build/wordpair/media/' + wordPairId)
     .pipe(retry(3));
   }
 
   /*** EXERCISES ***/
 
   addExercises(exercises: Exercise[], lessonId: string): Observable<Exercise[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .post<Exercise[]>('/api/build/exercise/' + lessonId, JSON.stringify(exercises), {headers});
+    .post<Exercise[]>('/api/build/exercise/' + lessonId, JSON.stringify(exercises));
   }
 
   updateExercise(exercise: Exercise, lessonId: string): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Lesson>('/api/build/exercise/' + lessonId, JSON.stringify(exercise), {headers});
+    .put<Lesson>('/api/build/exercise/' + lessonId, JSON.stringify(exercise));
   }
 
   updateExercises(exercises: Exercise[], lessonId: string): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Lesson>('/api/build/exercises/' + lessonId, JSON.stringify(exercises), {headers});
+    .put<Lesson>('/api/build/exercises/' + lessonId, JSON.stringify(exercises));
   }
 
   removeExercise(exerciseId: string, lessonId: string): Observable<Lesson> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .delete<Lesson>('/api/build/exercise/' + lessonId + '/' + exerciseId, {headers});
+    .delete<Lesson>('/api/build/exercise/' + lessonId + '/' + exerciseId);
   }
 
   /*** Config ***/
@@ -224,15 +199,5 @@ export class BuildService {
     return this.http
     .get<LanConfigs>('/api/config/lanpair/' + lanPair.from + '/' + lanPair.to)
     .pipe(retry(3));
-  }
-
-  /*** Common ***/
-
-  private getTokenHeaders(): HttpHeaders {
-    let headers = new HttpHeaders();
-    const token = this.authService.getToken();
-    headers = headers.append('Content-Type', 'application/json');
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 }

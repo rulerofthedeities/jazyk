@@ -46,9 +46,9 @@ export class UserService {
       return of(this._user);
     } else {
       if (this.authService.isLoggedIn()) {
-        const headers = this.getTokenHeaders();
+        // const headers = this.getTokenHeaders();
         return this.http
-        .get<User>('/api/user', {headers})
+        .get<User>('/api/user')
         .pipe(tap(data => {
           this._user = data;
           if (!data) {
@@ -156,9 +156,8 @@ export class UserService {
 
   saveDemoResults(data: string): Observable<number> {
     if (this.authService.isLoggedIn()) {
-      const headers = this.getTokenHeaders();
       return this.http
-      .post<number>('/api/user/results/add', data, {headers});
+      .post<number>('/api/user/results/add', data);
     } else {
       return of(null);
     }
@@ -236,140 +235,119 @@ export class UserService {
   }
 
   getLearnSettings(): Observable<LearnSettings> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<LearnSettings>('/api/user/settings/learn', {headers})
+    .get<LearnSettings>('/api/user/settings/learn')
     .pipe(retry(3));
   }
 
   saveLearnSettings(settings: LearnSettings): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<boolean>('/api/user/settings/learn', JSON.stringify(settings), {headers});
+    .put<boolean>('/api/user/settings/learn', JSON.stringify(settings));
   }
 
   saveMainSettings(settings: MainSettings): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<boolean>('/api/user/settings/main', JSON.stringify(settings), {headers});
+    .put<boolean>('/api/user/settings/main', JSON.stringify(settings));
   }
 
   getProfile(): Observable<Profile> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Profile>('/api/user/profile', {headers})
+    .get<Profile>('/api/user/profile')
     .pipe(retry(3));
   }
 
   saveProfile(profile: Profile): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<boolean>('/api/user/profile', JSON.stringify(profile), {headers});
+    .put<boolean>('/api/user/profile', JSON.stringify(profile));
   }
 
   getPublicProfile(user: string): Observable<PublicProfile> {
-    const headers = this.getTokenHeaders(),
-          filteredUser = user.slice(0, 25);
+    const filteredUser = user.slice(0, 25);
     return this.http
-    .get<PublicProfile>('/api/user/profile/' + filteredUser, {headers})
+    .get<PublicProfile>('/api/user/profile/' + filteredUser)
     .pipe(retry(3));
   }
 
   getPublicProfileById(userId: string): Observable<PublicProfile> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<PublicProfile>('/api/user/profileId/' + userId, {headers})
+    .get<PublicProfile>('/api/user/profileId/' + userId)
     .pipe(retry(3));
   }
 
   saveNotification(notification: Notification): Observable<Notification> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Notification>('/api/user/notification', JSON.stringify(notification), {headers});
+    .put<Notification>('/api/user/notification', JSON.stringify(notification));
   }
 
   fetchNotifications(): Observable<Notification[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Notification[]>('/api/user/notifications', {headers})
+    .get<Notification[]>('/api/user/notifications')
     .pipe(retry(3));
   }
 
   fetchNotification(notificationId: string): Observable<Notification> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Notification>('/api/user/notification/' + notificationId, {headers})
+    .get<Notification>('/api/user/notification/' + notificationId)
     .pipe(retry(3));
   }
 
   deleteNotification(notificationId: string): Observable<Notification> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .delete<Notification>('/api/user/notification/' + notificationId, {headers});
+    .delete<Notification>('/api/user/notification/' + notificationId);
   }
 
   deleteReadNotifications(): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .delete<boolean>('/api/user/notifications', {headers});
+    .delete<boolean>('/api/user/notifications');
   }
 
   fetchNotificationsCount(): Observable<number> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<number>('/api/user/notificationscount', {headers})
+    .get<number>('/api/user/notificationscount')
     .pipe(retry(3));
   }
 
   setNotificationAsRead(notificationId: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/notificationread', JSON.stringify({notificationId}), {headers});
+    .patch<boolean>('/api/user/notificationread', JSON.stringify({notificationId}));
   }
 
   setAllNotificationsAsRead(): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/notificationsread', JSON.stringify({}), {headers});
+    .patch<boolean>('/api/user/notificationsread', JSON.stringify({}));
   }
 
   getWelcomeNotification(lan: string): Observable<Notification> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Notification>('/api/user/config/welcome/' + lan, {headers})
+    .get<Notification>('/api/user/config/welcome/' + lan)
     .pipe(retry(3));
   }
 
   fetchScoreTotal(): Observable<number> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<number>('/api/user/score/total', {headers})
+    .get<number>('/api/user/score/total')
     .pipe(retry(3));
   }
 
   fetchScoreCourses(): Observable<CourseScore> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<CourseScore>('/api/user/score/courses', {headers})
+    .get<CourseScore>('/api/user/score/courses')
     .pipe(retry(3));
   }
 
   followUser(userId: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .post<boolean>('/api/user/follow', JSON.stringify({userId}), {headers});
+    .post<boolean>('/api/user/follow', JSON.stringify({userId}));
   }
 
   unFollowUser(userId: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<boolean>('/api/user/unfollow', JSON.stringify({userId}), {headers});
+    .put<boolean>('/api/user/unfollow', JSON.stringify({userId}));
   }
 
   getFollowers(userId: string): Observable<Network> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Network>('/api/user/followers/' + userId, {headers})
+    .get<Network>('/api/user/followers/' + userId)
     .pipe(retry(3));
   }
 
@@ -381,87 +359,74 @@ export class UserService {
   }
 
   getCoursesTeaching(userId: string): Observable<Course[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Course[]>('/api/courses/teaching/' + userId, {headers})
+    .get<Course[]>('/api/courses/teaching/' + userId)
     .pipe(retry(3));
   }
 
   getCoursesFollowing(): Observable<CourseData> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<CourseData>('/api/user/courses/learn', {headers})
+    .get<CourseData>('/api/user/courses/learn')
     .pipe(retry(3));
   }
 
   fetchMessages(tpe: string): Observable<Message[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Message[]>('/api/user/messages/' + tpe, {headers})
+    .get<Message[]>('/api/user/messages/' + tpe)
     .pipe(retry(3));
   }
 
   fetchMessage(messageId: string): Observable<Message> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Message>('/api/user/message/' + messageId, {headers})
+    .get<Message>('/api/user/message/' + messageId)
     .pipe(retry(3));
   }
 
   fetchMessagesCount(): Observable<number> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<number>('/api/user/messagescount', {headers})
+    .get<number>('/api/user/messagescount')
     .pipe(retry(3));
   }
 
   setMessageAsRead(messageId: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/messageread', JSON.stringify({messageId}), {headers});
+    .patch<boolean>('/api/user/messageread', JSON.stringify({messageId}));
   }
 
   setAllMessagesAsRead(): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/messagesread', JSON.stringify({}), {headers});
+    .patch<boolean>('/api/user/messagesread', JSON.stringify({}));
   }
 
   deleteMessage(messageId: string, tpe: string, action: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/messagedelete', JSON.stringify({action, tpe, messageId}), {headers});
+    .patch<boolean>('/api/user/messagedelete', JSON.stringify({action, tpe, messageId}));
   }
 
   deleteReadMessages(): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/messagesdelete', {}, {headers});
+    .patch<boolean>('/api/user/messagesdelete', {});
   }
 
   emptyTrash(): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/emptytrash', {}, {headers});
+    .patch<boolean>('/api/user/emptytrash', {});
   }
 
   saveMessage(message: Message): Observable<Message> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .put<Message>('/api/user/message', JSON.stringify(message), {headers});
+    .put<Message>('/api/user/message', JSON.stringify(message));
   }
 
   fetchRecipients(): Observable<CompactProfile[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<CompactProfile[]>('/api/user/recipients', {headers})
+    .get<CompactProfile[]>('/api/user/recipients')
     .pipe(retry(3));
   }
 
   updatePassword(oldPw: string, newPw: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}), {headers});
+    .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
   subscribeToCourse(course: Course) {
@@ -515,17 +480,16 @@ export class UserService {
 
   private updateUserDb(lan: string, courseId: string) {
     // subscribe + set learn language
-    const headers = this.getTokenHeaders();
     // Update learning lan
     if (lan && this._user.jazyk.learn.lan !== lan) {
       this.http
-      .patch('/api/user/lan', JSON.stringify({lan}), {headers})
+      .patch('/api/user/lan', JSON.stringify({lan}))
       .toPromise(); // not lazy
     }
     // Upsert subscription
     if (courseId) {
       this.http
-      .post('/api/user/subscribe', JSON.stringify({courseId}), {headers})
+      .post('/api/user/subscribe', JSON.stringify({courseId}))
       .toPromise(); // not lazy
     }
   }
@@ -569,15 +533,5 @@ export class UserService {
 
   private getInterfaceLanguages() {
     return ['en', 'fr', 'nl'];
-  }
-
-  /*** Common ***/
-
-  private getTokenHeaders(): HttpHeaders {
-    let headers = new HttpHeaders();
-    const token = this.authService.getToken();
-    headers = headers.append('Content-Type', 'application/json');
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 }

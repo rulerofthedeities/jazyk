@@ -1,6 +1,6 @@
 import {EventEmitter} from '@angular/core';
 import {EventMessage} from '../models/error.model';
-import {Level, ProcessedData, ResultData, Map, Lesson} from '../models/course.model';
+import {Level, ProcessedData, ResultData, Map} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, QuestionType} from '../models/exercise.model';
 import {environment} from '../../environments/environment';
 

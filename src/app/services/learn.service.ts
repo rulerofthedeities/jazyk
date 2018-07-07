@@ -38,21 +38,19 @@ export class LearnService {
   /*** Courses ***/
 
   fetchPublishedCourses(lanCode: string): Observable<Course[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Course[]>('/api/courses/published/' + lanCode, {headers})
+    .get<Course[]>('/api/courses/published/' + lanCode)
     .pipe(retry(3));
   }
 
   fetchSubscribedCourses(): Observable<CourseData> {
-    const headers = this.getTokenHeaders();
     if (this.authService.isLoggedIn()) {
       return this.http
-      .get<CourseData>('/api/user/courses/learn', {headers})
+      .get<CourseData>('/api/user/courses/learn')
       .pipe(retry(3));
     } else {
       return this.http
-      .get<CourseData>('/api/courses/demo', {headers})
+      .get<CourseData>('/api/courses/demo')
       .pipe(retry(3));
     }
   }
@@ -64,9 +62,8 @@ export class LearnService {
   }
 
   unSubscribeCourse(courseId: string): Observable<string> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .post<string>('/api/user/unsubscribe', JSON.stringify({courseId}), {headers});
+    .post<string>('/api/user/unsubscribe', JSON.stringify({courseId}));
   }
 
   /*** Lessons ***/
@@ -91,9 +88,8 @@ export class LearnService {
 
   fetchLessonResults(courseId: string): Observable<LessonResult[]> {
     if (this.authService.isLoggedIn()) {
-      const headers = this.getTokenHeaders();
       return this.http
-      .get<LessonResult[]>('/api/user/results/lessons/' + courseId, {headers})
+      .get<LessonResult[]>('/api/user/results/lessons/' + courseId)
       .pipe(retry(3));
     } else {
       return of(null);
@@ -108,9 +104,8 @@ export class LearnService {
   }
 
   fetchDialogue(lessonId: string): Observable<Dialogue> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<Dialogue>('/api/lesson/dialogue/' + lessonId, {headers})
+    .get<Dialogue>('/api/lesson/dialogue/' + lessonId)
     .pipe(retry(3));
   }
 
@@ -128,9 +123,8 @@ export class LearnService {
   saveUserResults(data: string): Observable<number> {
     if (this.authService.isLoggedIn()) {
       // must be idempotent
-      const headers = this.getTokenHeaders();
       return this.http
-      .post<number>('/api/user/results/add', data, {headers});
+      .post<number>('/api/user/results/add', data);
     } else {
       return of(null);
     }
@@ -138,48 +132,42 @@ export class LearnService {
 
   fetchLessonStepResults(lessonId: string, step: string): Observable<ResultsData> {
     // Get the learn level of all exercises in this lesson
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<ResultsData>('/api/user/results/lesson/' + step + '/' + lessonId, {headers})
+    .get<ResultsData>('/api/user/results/lesson/' + step + '/' + lessonId)
     .pipe(retry(3));
   }
 
   fetchMostRecentLesson(courseId: string): Observable<string> {
     // Get the most recent lesson saved for this course
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<string>('/api/user/results/course/currentlesson/' + courseId, {headers})
+    .get<string>('/api/user/results/course/currentlesson/' + courseId)
     .pipe(retry(3));
   }
 
   fetchStepData(courseId: string, lessonId: string): Observable<StepData> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<StepData>('/api/user/results/countbystep/' + courseId + '/' + lessonId, {headers})
+    .get<StepData>('/api/user/results/countbystep/' + courseId + '/' + lessonId)
     .pipe(retry(3));
   }
 
   fetchToReview(courseId: string, max: number): Observable<CourseResults> {
-    const headers = this.getTokenHeaders(),
-          params = {'max': max.toString()};
+    const params = {'max': max.toString()};
     console.log('nr to review', max);
     return this.http
-    .get<CourseResults>('/api/user/results/course/toreview/' + courseId, {headers, params})
+    .get<CourseResults>('/api/user/results/course/toreview/' + courseId, {params})
     .pipe(retry(3));
   }
 
   fetchDifficult(courseId: string, max: number): Observable<CourseResults> {
-    const headers = this.getTokenHeaders(),
-          params = {'max': max.toString()};
+    const params = {'max': max.toString()};
     return this.http
-    .get<CourseResults>('/api/user/results/course/difficult/' + courseId, {headers, params})
+    .get<CourseResults>('/api/user/results/course/difficult/' + courseId, {params})
     .pipe(retry(3));
   }
 
   fetchScoreTotal(): Observable<number> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<number>('/api/user/score/total', {headers})
+    .get<number>('/api/user/score/total')
     .pipe(retry(3));
   }
 
@@ -355,15 +343,5 @@ export class LearnService {
     return this.http
     .get<LanConfig>('/api/config/lan/' + lanCode)
     .pipe(retry(3));
-  }
-
-  /*** Common ***/
-
-  private getTokenHeaders(): HttpHeaders {
-    let headers = new HttpHeaders();
-    const token = this.authService.getToken();
-    headers = headers.append('Content-Type', 'application/json');
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 }

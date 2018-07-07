@@ -1,8 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Title} from '@angular/platform-browser';
 import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
-import {WordPairDetail} from '../models/word.model';
 import {appTitle, awsPath} from '../services/shared.service';
 import {Observable} from 'rxjs';
 import {Course, Translation, Dependables} from '../models/course.model';

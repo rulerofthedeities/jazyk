@@ -37,17 +37,15 @@ export class AuthService {
   ) {}
 
   signup(user: User): Observable<User>  {
-    const body = JSON.stringify(user),
-          headers = this.getHeaders();
+    const body = JSON.stringify(user);
     return this.http
-    .post<User>('/api/user/signup', body, {headers});
+    .post<User>('/api/user/signup', body);
   }
 
   signin(user: User): Observable<SignedInData> {
-    const body = JSON.stringify(user),
-          headers = this.getHeaders();
+    const body = JSON.stringify(user);
     return this.http
-    .post<SignedInData>('/api/user/signin', body, {headers});
+    .post<SignedInData>('/api/user/signin', body);
   }
 
   signedIn(data: SignedInData, reroute = true) {
@@ -103,19 +101,16 @@ export class AuthService {
   }
 
   private refreshToken(): Observable<Token> {
-    const headers = this.getHeaders(true);
     return this.http
-    .get<Token>('/api/user/refresh', {headers})
+    .get<Token>('/api/user/refresh')
     .pipe(retry(3));
   }
 
   private storeUserData(data: UserStorage) {
-    // localStorage.setItem('km-jazyk.token', data.token);
     this.cookie.put('km-jazyk.token', data.token, this.getCookieOptions());
   }
 
   private clearStorage() {
-    // localStorage.removeItem('km-jazyk.token');
     this.cookie.removeAll();
   }
 
@@ -128,14 +123,5 @@ export class AuthService {
       expires: expirationDate
     };
     return cookieOptions;
-  }
-
-  private getHeaders(addToken = false): HttpHeaders {
-    let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json');
-    if (addToken) {
-      headers = headers.append('Authorization', 'Bearer ' + this.getToken());
-    }
-    return headers;
   }
 }

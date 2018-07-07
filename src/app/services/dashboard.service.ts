@@ -15,31 +15,27 @@ export class DashboardService {
   ) {}
 
   fetchCounts(): Observable<SummaryData> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<SummaryData>('/api/dashboard/count', {headers})
+    .get<SummaryData>('/api/dashboard/count')
     .pipe(retry(3));
   }
 
   fetchCommunication(): Observable<CommunicationData> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<CommunicationData>('/api/dashboard/communication/5', {headers})
+    .get<CommunicationData>('/api/dashboard/communication/5')
     .pipe(retry(3));
   }
 
   fetchRecentCourses(): Observable<RecentCourse[]> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<RecentCourse[]>('/api/dashboard/courses/3', {headers})
+    .get<RecentCourse[]>('/api/dashboard/courses/3')
     .pipe(retry(3));
   }
 
   fetchCourseSteps(courseId: string): Observable<StepData> {
     if (this.authService.isLoggedIn()) { // Not for demos
-      const headers = this.getTokenHeaders();
       return this.http
-      .get<StepData>('/api/user/results/course/summary/' + courseId, {headers})
+      .get<StepData>('/api/user/results/course/summary/' + courseId)
       .pipe(retry(3));
     } else {
       return of(null);
@@ -48,9 +44,8 @@ export class DashboardService {
 
   fetchCourseDone(courseId: string): Observable<Array<number>> {
     if (this.authService.isLoggedIn()) { // Not for demos
-      const headers = this.getTokenHeaders();
       return this.http
-      .get<Array<number>>('/api/user/results/course/count/' + courseId, {headers})
+      .get<Array<number>>('/api/user/results/course/count/' + courseId)
       .pipe(retry(3));
     } else {
       return of(null);
@@ -58,19 +53,8 @@ export class DashboardService {
   }
 
   checkCourseFollowed(courseId: string): Observable<boolean> {
-    const headers = this.getTokenHeaders();
     return this.http
-    .get<boolean>('/api/user/courseFollowed/' + courseId, {headers})
+    .get<boolean>('/api/user/courseFollowed/' + courseId)
     .pipe(retry(3));
-  }
-
-  /*** Common ***/
-
-  private getTokenHeaders(): HttpHeaders {
-    let headers = new HttpHeaders();
-    const token = this.authService.getToken();
-    headers = headers.append('Content-Type', 'application/json');
-    headers = headers.append('Authorization', 'Bearer ' + token);
-    return headers;
   }
 }

@@ -17,6 +17,7 @@ import {UserSettingsLearnComponent} from './components/user/settings-learn.compo
 import {UserSettingsPasswordComponent} from './components/user/settings-password.component';
 import {UserSelectorComponent} from './components/fields/user-selector.component';
 
+
 @NgModule({
   imports: [
     SharedModule,

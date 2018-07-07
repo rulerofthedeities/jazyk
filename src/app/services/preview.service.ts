@@ -1,4 +1,4 @@
-import {Exercise, ExerciseData, Points, TimeCutoffs} from '../models/exercise.model';
+import {Exercise, ExerciseData, Points} from '../models/exercise.model';
 
 export class PreviewService {
   buildForeignData(exerciseData: ExerciseData, text: Object, exercise: Exercise) {
