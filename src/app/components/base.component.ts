@@ -1,6 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AuthService} from '../services/auth.service';
-import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
 import {awsPath, SharedService} from '../services/shared.service';
 import {timer} from 'rxjs';
@@ -21,8 +20,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   constructor (
     private authService: AuthService,
     private userService: UserService,
-    private sharedService: SharedService,
-    private utilsService: UtilsService
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {

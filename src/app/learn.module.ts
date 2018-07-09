@@ -34,9 +34,9 @@ import {LearnTimerComponent} from './components/learn/timer.component';
 import {LearnSignUpComponent} from './components/learn/signup.component';
 import {ModalPromotionComponent} from './components/modals/modal-promotion.component';
 import {ScrollToDirective} from './directives/scroll-to.directive';
+import {ErrorInterceptor} from './interceptors/error.interceptor';
 import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
-
 
 @NgModule({
   imports: [
@@ -48,7 +48,8 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
     LearnService,
     TimeService,
     AudioService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
   declarations: [
     LearnCoursesComponent,

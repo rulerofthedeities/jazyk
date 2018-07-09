@@ -4,7 +4,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {CommonModule} from '@angular/common';
 import {TooltipModule} from 'ngx-tooltip';
 import {UtilsService} from './services/utils.service';
-import {ErrorService} from './services/error.service';
 
 import {ErrorMessageComponent} from './components/msg/error-message.component';
 import {InfoMessageComponent} from './components/msg/info-message.component';
@@ -51,8 +50,7 @@ import {ScorePipe} from './pipes/score.pipe';
     SanitizeHtmlPipe
   ],
   providers: [
-    UtilsService,
-    ErrorService
+    UtilsService
   ],
   exports: [
     CommonModule,
@@ -81,8 +79,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
-        UtilsService,
-        ErrorService
+        UtilsService
       ]
     };
   }

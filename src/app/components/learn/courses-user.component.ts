@@ -88,10 +88,6 @@ export class LearnCoursesUserComponent implements OnInit, OnDestroy {
           this.coursesReady = true;
           this.getLanguages();
         }
-      },
-      error => {
-        this.errorService.handleError(error);
-        this.isError = true;
       }
     );
   }

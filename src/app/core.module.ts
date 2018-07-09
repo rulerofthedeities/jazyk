@@ -1,11 +1,12 @@
-import {NgModule, ModuleWithProviders, Optional, SkipSelf} from '@angular/core';
+import {NgModule, ModuleWithProviders} from '@angular/core';
 import {UserService} from './services/user.service';
 import {AuthService} from './services/auth.service';
+import {ErrorService} from './services/error.service';
 import {SharedService} from './services/shared.service';
 import {AuthGuard} from './services/auth-guard.service';
-import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {CommonModule} from '@angular/common';
 import {CookieModule} from 'ngx-cookie';
+import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 @NgModule({
@@ -25,6 +26,7 @@ export class CoreModule {
         UserService,
         SharedService,
         AuthGuard,
+        ErrorService,
         {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
       ]
     };

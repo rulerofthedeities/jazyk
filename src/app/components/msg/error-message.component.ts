@@ -1,6 +1,4 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {UtilsService} from '../../services/utils.service';
-import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {Error} from '../../models/error.model';
 import {takeWhile} from 'rxjs/operators';
@@ -23,9 +21,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   private componentActive = true;
 
   constructor(
-    private utilsService: UtilsService,
-    private errorService: ErrorService,
-    private userService: UserService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -38,6 +34,7 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (errorData: Error) => {
+        console.log('received error', errorData);
         if (errorData) {
           if (errorData.title) {
             const translatedMsg = this.text && this.text[errorData.title] ? this.text[errorData.title] : errorData.title;

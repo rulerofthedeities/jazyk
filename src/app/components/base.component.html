@@ -7,6 +7,7 @@
     <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
     <div class="main" [class.margin]="!exercisesStarted">
       <router-outlet></router-outlet>
+      <km-error-msg></km-error-msg>
     </div>
     <km-footer *ngIf="!exercisesStarted"></km-footer>
   </div>

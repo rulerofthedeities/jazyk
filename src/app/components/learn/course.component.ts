@@ -29,7 +29,6 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
   private courseStep: string; // Step to start with defined by route
   settings: LearnSettings;
   lesson: Lesson;
-  errorMsg: string;
   infoMsg: string;
   course: Course;
   countPerStep: Map<StepCount> = {};
@@ -234,12 +233,9 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
           }
         } else {
           this.isError = true;
-          this.errorMsg = this.errorService.userError({code: 'learn01', src: courseId});
+          const errorMessage = this.utilsService.getTranslation(translations, 'InvalidCourseId');
+          this.errorService.handleError({title: 'Error', message: errorMessage});
         }
-      },
-      error => {
-        this.errorService.handleError(error);
-        this.isError = true;
       }
     );
   }

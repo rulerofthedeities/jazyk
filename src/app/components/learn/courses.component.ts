@@ -57,10 +57,6 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.courses = courses;
         this.coursesReady = true;
-      },
-      error => {
-        this.errorService.handleError(error);
-        this.isError = true;
       }
     );
   }
@@ -89,8 +85,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
         this.utilsService.setPageTitle(this.text, 'Courses');
         this.getCourses();
         this.isReady = true;
-      },
-      error => this.errorService.handleError(error)
+      }
     );
   }
 
