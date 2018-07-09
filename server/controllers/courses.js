@@ -5,7 +5,7 @@ const response = require('../response'),
       UserCourse = require('../models/usercourse').model;
 
 let getCourse = function(req, res, authorOnly) {
-  if (mongoose.Types.ObjectId.isValid(req.params.courseId)) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.courseId)) {
     const courseId = new mongoose.Types.ObjectId(req.params.courseId);
     let query = {
           _id: courseId,

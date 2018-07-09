@@ -1,4 +1,5 @@
 import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Router, NavigationEnd} from '@angular/router';
 import {ErrorService} from '../../services/error.service';
 import {Error} from '../../models/error.model';
 import {takeWhile} from 'rxjs/operators';
@@ -21,11 +22,13 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
   private componentActive = true;
 
   constructor(
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getError();
+    this.getRoute();
   }
 
   private getError() {
@@ -34,7 +37,6 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (errorData: Error) => {
-        console.log('received error', errorData);
         if (errorData) {
           if (errorData.title) {
             const translatedMsg = this.text && this.text[errorData.title] ? this.text[errorData.title] : errorData.title;
@@ -43,10 +45,25 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
             this.msg = '';
           }
           this.info = errorData.msg || '';
+        } else {
+          this.msg = null;
         }
       }
     );
   }
+
+  private getRoute() {
+    this.router
+    .events
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        console.log('url', event.url);
+        this.errorService.clearError();
+      }
+    });
+  }
+
 
   ngOnDestroy() {
     this.componentActive = false;

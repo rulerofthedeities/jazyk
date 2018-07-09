@@ -19,7 +19,6 @@ export class ErrorService {
       title = error.error.title || error.title || title;
       msg = error.error.message || error.message;
       this.errorOccurred.emit({title, msg}); // Send info to error message component
-      console.log('emitted error', {title, msg});
     }
     return throwError('Something bad happened; please try again later.');
   }
