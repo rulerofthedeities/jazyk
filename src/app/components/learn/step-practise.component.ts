@@ -206,7 +206,7 @@ export class LearnPractiseComponent extends Step implements OnInit, OnDestroy {
       } else {
         const studyData = this.userService.getDemoData('study', this.course._id),
               practiseData = this.userService.getDemoData('practise', this.course._id);
-        if (studyData && !practiseData) {
+        if (!practiseData) {
           this.noMoreExercises = false;
           this.getDemoQuestions();
         } else {

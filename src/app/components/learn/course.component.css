@@ -147,12 +147,25 @@ h1 {
   background: linear-gradient(90deg, #efefef , #fff);
 }
 .closeExercises {
-  height: 36px;
   font-size: 36px;
   color: white;
   margin-bottom: 12px;
   text-shadow: 1px 1px 1px #333;
   cursor: pointer;
+}
+.exercise-header{
+  height: 36px;
+}
+.demo-message {
+  background-color: white;
+  border: 1px dotted #999;
+  font-size: 18px;
+  padding: 6px 6px 3px 6px;
+}
+.demo-title {
+  color: red;
+  font-size: 24px;
+  margin-right: 12px;
 }
 .register {
   font-style: italic;

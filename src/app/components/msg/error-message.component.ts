@@ -58,7 +58,6 @@ export class ErrorMessageComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
       if (event instanceof NavigationEnd) {
-        console.log('url', event.url);
         this.errorService.clearError();
       }
     });
