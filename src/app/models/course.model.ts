@@ -72,6 +72,12 @@ export interface UserAccess {
   level: number;
 }
 
+interface CourseDt {
+  created: Date;
+  published: Date;
+  completed: Date;
+}
+
 export interface Course {
   _id?: string;
   languagePair: LanPair;
@@ -90,6 +96,7 @@ export interface Course {
   chapters: string[];
   lessons?: LessonId[];
   access?: UserAccess[];
+  dt?: CourseDt;
 }
 
 interface UserCourseDates {

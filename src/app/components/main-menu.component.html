@@ -16,10 +16,18 @@
     <!-- Collection of nav links and other content for toggling -->
     <div id="navbarCollapse" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="isLoggedIn">
           <a routerLink="/learn">
-            <span class="fa fa-book"></span>
+            <span class="fa fa-list-alt"></span>
             {{text["Learn"]}}
+            <span class="bar">
+            </span>
+          </a>
+        </li>
+        <li routerLinkActive="active" *ngIf="isLoggedIn">
+          <a routerLink="/read">
+            <span class="fa fa-book"></span>
+            {{text["Read"]}}
             <span class="bar">
             </span>
           </a>
@@ -28,14 +36,6 @@
           <a routerLink="/build/courses">
             <span class="fa fa-pencil"></span>
             {{text["Teach"]}}
-            <span class="bar">
-            </span>
-          </a>
-        </li>
-        <li routerLinkActive="active" *ngIf="isLoggedIn">
-          <a routerLink="/learn/courses">
-            <span class="fa fa-th-list"></span>
-            {{text["Courses"]}}
             <span class="bar">
             </span>
           </a>

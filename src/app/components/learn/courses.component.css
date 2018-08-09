@@ -1,6 +1,10 @@
-.lanselector {
+.selector, .lan-selector {
   padding: 0;
-  margin-bottom: 1px;
+  margin-bottom: 4px;
+}
+.tpe-selector {
+  padding-left: 4px;
+  cursor: pointer;
 }
 .nocourses {
   margin-bottom: 12px;

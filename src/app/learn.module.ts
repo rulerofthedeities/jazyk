@@ -10,7 +10,6 @@ import {TimeService} from './services/time.service';
 import {AudioService} from './services/audio.service';
 
 import {LearnCoursesComponent} from './components/learn/courses.component';
-import {LearnCoursesUserComponent} from './components/learn/courses-user.component';
 import {LearnCourseComponent} from './components/learn/course.component';
 import {LearnIntroComponent} from './components/learn/step-intro.component';
 import {LearnDialogueComponent} from './components/learn/step-dialogue.component';
@@ -53,7 +52,6 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
   ],
   declarations: [
     LearnCoursesComponent,
-    LearnCoursesUserComponent,
     LearnCourseComponent,
     LearnIntroComponent,
     LearnDialogueComponent,

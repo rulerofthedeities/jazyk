@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Language, LanPair, Course, UserCourse, CourseDefaults, Intro,
-        Lesson, LessonHeader, LessonOptions, StepData, LessonResult, LanConfig, Dialogue, Map} from '../models/course.model';
-import {Exercise, ExerciseData, ExerciseOptions, ExerciseExtraData, ExerciseType,
-        Direction, ExerciseResult, ResultsData, Choice, QuestionType} from '../models/exercise.model';
+import {HttpClient} from '@angular/common/http';
+import {LanPair, Course, UserCourse, Intro, Lesson, LessonHeader,
+        LessonOptions, StepData, LessonResult, LanConfig, Dialogue} from '../models/course.model';
+import {Exercise, ExerciseData, ExerciseOptions, ExerciseType,
+        Direction, ExerciseResult, ResultsData, Choice} from '../models/exercise.model';
 import {AuthService} from './auth.service';
 import {PreviewService} from './preview.service';
 import {Observable, of} from 'rxjs';
@@ -61,9 +61,9 @@ export class LearnService {
     .pipe(retry(3));
   }
 
-  unSubscribeCourse(courseId: string): Observable<string> {
+  unSubscribeCourse(courseId: string): Observable<UserCourse> {
     return this.http
-    .post<string>('/api/user/unsubscribe', JSON.stringify({courseId}));
+    .post<UserCourse>('/api/user/unsubscribe', JSON.stringify({courseId}));
   }
 
   /*** Lessons ***/

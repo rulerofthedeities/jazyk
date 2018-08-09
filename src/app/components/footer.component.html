@@ -1,30 +1,34 @@
-<nav class="footer well" *ngIf="isReady">
-  <span class="event-messages" (click)="onToggleEvents()" #message>
-    {{lastEventMessage}}
-  </span>
-  <a routerLink="/info/features">{{text["Features"]}}</a>  -
-  <a routerLink="/info/about">{{text["About"]}}</a> -
-  <a routerLink="/info/credits">{{text["Credits"]}}</a> -
-  <a routerLink="/info/terms">{{text["Terms"]}}</a> -
-  <a routerLink="/info/privacy">{{text["Privacy"]}}</a>
-  <div class="version pull-right">v{{appVersion}}</div>
-</nav>
+<footer>
+  <nav class="footer well" *ngIf="isReady">
+    <span class="event-messages" (click)="onToggleEvents()" #message>
+      {{lastEventMessage}}
+    </span>
+    <small>
+      <a routerLink="/info/features">{{text["Features"]}}</a>  -
+      <a routerLink="/info/about">{{text["About"]}}</a> -
+      <a routerLink="/info/credits">{{text["Credits"]}}</a> -
+      <a routerLink="/info/terms">{{text["Terms"]}}</a> -
+      <a routerLink="/info/privacy">{{text["Privacy"]}}</a>
+      <div class="version pull-right">v{{appVersion}}</div>
+    </small>
+  </nav>
 
-<div class="log" *ngIf="showLog"
-  kmPressed
-  (hasKeyPressed)="onKeyPressed($event)" #log>
-  <div class="close-log clearfix">
-    <span class="fa fa-times pull-right" (click)="onCloseLog()"></span>
-  </div>
-  <div *ngFor="let message of eventMessages; let i=index"
-    class="row"
-    [class.even]="isEven(i)">
-    <div class="col-xs-9">
-      <span class="time">{{message.dt | date: 'yyyy/MM/dd hh:mm:ss'}}</span>
-      <span class="message">{{message.message}}</span>
+  <div class="log" *ngIf="showLog"
+    kmPressed
+    (hasKeyPressed)="onKeyPressed($event)" #log>
+    <div class="close-log clearfix">
+      <span class="fa fa-times pull-right" (click)="onCloseLog()"></span>
     </div>
-    <div class="col-xs-3">
-      {{showSource() ? message.source : ''}}
+    <div *ngFor="let message of eventMessages; let i=index"
+      class="row"
+      [class.even]="isEven(i)">
+      <div class="col-xs-9">
+        <time [dateTime]="message.dt">{{message.dt | date: 'yyyy/MM/dd hh:mm:ss'}}</time>
+        <span class="message">{{message.message}}</span>
+      </div>
+      <div class="col-xs-3">
+        {{showSource() ? message.source : ''}}
+      </div>
     </div>
   </div>
-</div>
+</footer>

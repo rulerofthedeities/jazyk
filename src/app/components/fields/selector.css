@@ -1,6 +1,7 @@
 .btn-dropdown {
   text-align: left;
   width: 100%;
+  cursor: default;
 }
 .selector {
   position: relative;

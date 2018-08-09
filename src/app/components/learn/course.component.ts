@@ -718,6 +718,7 @@ export class LearnCourseComponent implements OnInit, OnDestroy {
         this.exercisesStarted = started;
         if (started) {
           this.log(`Starting lesson '${this.lesson.name}'`);
+          this.errorService.clearError();
         }
       }
     );

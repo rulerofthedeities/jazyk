@@ -4,7 +4,7 @@ import {LearnService} from '../../services/learn.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
-import {Course, Language, CourseListType} from '../../models/course.model';
+import {Map, Course, Language, CourseListType, UserCourse} from '../../models/course.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -16,13 +16,15 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   selectedLanguage: Language;
   languages: Language[];
-  courses: Course[];
+  allCourses: Course[];
   text: Object = {};
+  userCourses: Map<UserCourse> = {};
   listType = CourseListType;
   isLoading = false;
   isError = false;
   isReady = false;
-  coursesReady = false;
+  allCoursesReady = false;
+  courseTpe = 'all';
 
   constructor(
     private router: Router,
@@ -39,7 +41,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   onLanguageSelected(newLanguage: Language) {
     this.errorService.clearError();
     this.selectedLanguage = newLanguage;
-    this.coursesReady = false;
+    this.allCoursesReady = false;
     this.getCourses();
   }
 
@@ -47,7 +49,20 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/build/course/new']);
   }
 
+  onChangeCourseType(tpe: string) {
+    this.courseTpe = tpe;
+  }
+
+  onUnsubscribe(courseId: string) {
+    this.unsubscribeCourse(courseId);
+  }
+
   private getCourses() {
+    this.getAllCourses();
+    this.getSubscribedCourses();
+  }
+
+  private getAllCourses() {
     this.isLoading = true;
     this.learnService
     .fetchPublishedCourses(this.selectedLanguage.code)
@@ -55,9 +70,44 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     .subscribe(
       courses => {
         this.isLoading = false;
-        this.courses = courses;
-        this.coursesReady = true;
+        this.allCourses = courses;
+        this.allCoursesReady = true;
       }
+    );
+  }
+
+  private getSubscribedCourses() {
+    this.learnService
+    .fetchSubscribedCourses()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      courses => {
+        if (courses) {
+          // this.allCourses = courses.subscribed;
+          // this.isDemo = !!courses.isDemo;
+          if (courses.data) {
+            courses.data.forEach((userCourse: UserCourse) => {
+              this.userCourses[userCourse.courseId] = userCourse;
+            });
+          }
+        }
+      }
+    );
+  }
+
+  private unsubscribeCourse(courseId: string) {
+    this.learnService
+    .unSubscribeCourse(courseId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (result: UserCourse) => {
+        for (const id in this.userCourses) {
+          if (id === courseId) {
+            this.userCourses[id] = undefined;
+          }
+        }
+      },
+      error => this.errorService.handleError(error)
     );
   }
 

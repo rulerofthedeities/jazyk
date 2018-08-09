@@ -16,7 +16,7 @@ import {takeWhile} from 'rxjs/operators';
 
 export class FooterComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  private eventMessages: EventMessage[] = [];
+  eventMessages: EventMessage[] = [];
   text: Object;
   isReady = false;
   lastEventMessage: string;

@@ -16,6 +16,7 @@ export const routes: Routes = [
       {path: 'auth', loadChildren: './auth.module#AuthModule'},
       {path: 'learn', loadChildren: './learn.module#LearnModule'},
       {path: 'build', loadChildren: './build.module#BuildModule', canActivate: [AuthGuard]},
+      {path: 'read', loadChildren: './read.module#ReadModule', canActivate: [AuthGuard]},
       {path: 'user', loadChildren: './user.module#UserModule', canActivate: [AuthGuard]},
       {path: 'info', loadChildren: './page.module#PageModule'},
       {path: 'u/:name', component: UserComponent, canActivate: [AuthGuard]},
