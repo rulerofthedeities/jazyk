@@ -1,14 +1,15 @@
-import {NgModule} from '@angular/core';
-import {SharedModule} from './shared.module';
-import {RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { SharedModule } from './shared.module';
+import { RouterModule } from '@angular/router';
 
-import {ReadService} from './services/read.service';
+import { ReadService } from './services/read.service';
 
-import {routes} from './read.routes';
-import {ReadComponent} from './components/read/read.component';
+import { routes } from './read.routes';
+import { ReadComponent } from './components/read/read.component';
+import { BookSummaryComponent } from './components/read/book-summary.component';
 
-import {AuthInterceptor} from './interceptors/auth.interceptor';
-import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   declarations: [
-    ReadComponent
+    ReadComponent,
+    BookSummaryComponent
   ]
 })
 export class ReadModule {}

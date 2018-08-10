@@ -3,6 +3,7 @@ var path = require("path"),
     users = require("./controllers/users"),
     courses = require("./controllers/courses"),
     lessons = require("./controllers/lessons"),
+    books = require("./controllers/books"),
     errors = require("./controllers/errors"),
     words = require("./controllers/words"),
     config = require("./controllers/config"),
@@ -129,6 +130,10 @@ module.exports.initialize = function(app, router) {
   router.get('/user/courses/learn', courses.getSubscribedCourses);
   router.get('/courses/teaching/:userId', courses.getTeachingCourses);
   router.get('/user/courseFollowed/:courseId', courses.checkCourseFollowed);
+
+  /* read */
+
+  router.get('/books/published/:lan', books.getPublishedLanBooks);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

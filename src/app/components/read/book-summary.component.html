@@ -1,0 +1,53 @@
+<article>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="image">
+        <img src="{{book?.img || defaultImage}}" class="book-img">
+        <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
+        <span class="img-author" *ngIf="!book?.img">{{book.author}}</span>
+      </div>
+      <div class="book" [class.img-border]="!!book?.img">
+        <h3>
+          <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag">
+          {{book.title}}
+        </h3>
+        <div class="author">
+          {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
+        </div>
+        <div class="buttons">
+          <button type="button" class="btn btn-success"
+            (click)="onStartReading()">
+            <span class="fa fa-arrow-right fa-spacing"></span>
+            {{text["StartReading"]}}
+          </button>
+        </div>
+        <div class="stop pull-right">
+          <button type="button" class="btn btn-default"
+            (click)="onStopReading()">
+            <span class="fa fa-times-circle fa-spacing"></span>
+            {{text["StopReading"]}}
+          </button>
+        </div>
+        <div class="info">
+          <span class="sentences">{{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}</span>,
+          {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
+        </div>
+        {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
+        ({{difficultyPerc}}%)
+        <div class="progress" [class.progress-min]="percDone < 8">
+          <div
+            class="progress-bar progress-bar-primary progress-bar-striped"
+            role="progressbar"
+            [attr.aria-valuenow]="nrOfSentencesDone"
+            aria-valuemin="0"
+            [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+            [style.width.%]="percDone">
+            <span>
+              {{nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}} ({{percDone}}%)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

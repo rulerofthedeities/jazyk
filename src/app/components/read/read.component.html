@@ -12,11 +12,33 @@
   </div>
   <div class="form-group form-group-lg">
     <div class="col-xs-4 selector tpe-selector">
-      <select class="form-control" (change)="onChangeCourseType($event.target.value)">
-        <option value="all">{{text["Courses"]}}</option>
-        <option value="my">{{text["MyCourses"]}}</option>
+      <select class="form-control" (change)="onChangeBookType($event.target.value)">
+        <option value="all">{{text["AllLecture"]}}</option>
+        <option value="my">{{text["MyLecture"]}}</option>
       </select>
     </div>
   </div>
   <div class="clearfix"></div>
+
+  <!-- BOOKS LIST -->
+  <div *ngIf="IsBooksReady">
+    <ul class="list-unstyled" *ngIf="books?.length">
+      <li *ngFor="let book of books">
+        <km-book-summary
+          [book]="book"
+          [text]="text">
+        </km-book-summary>
+      </li>
+    </ul>
+
+    <!-- No courses found for selected language -->
+    <div *ngIf="!books.length">
+      <km-info-msg [msg]="text['NoBooks']">
+      </km-info-msg>
+    </div>
+  </div>
+
+  <km-loader *ngIf="isLoading && !isError"
+    [msg]="text['LoadingBooks']">
+  </km-loader>
 </section>
