@@ -26,6 +26,7 @@
       <li *ngFor="let book of books">
         <km-book-summary
           [book]="book"
+          [userBook]="userBooks[0]"
           [text]="text">
         </km-book-summary>
       </li>

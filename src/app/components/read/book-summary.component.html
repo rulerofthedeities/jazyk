@@ -1,5 +1,5 @@
 <article>
-  <div class="panel panel-default">
+  <div class="panel panel-default panel-book">
     <div class="panel-body">
       <div class="image">
         <img src="{{book?.img || defaultImage}}" class="book-img">
@@ -18,10 +18,10 @@
           <button type="button" class="btn btn-success"
             (click)="onStartReading()">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{text["StartReading"]}}
+            {{isSubscribed ? text["ContinueReading"]: text["StartReading"]}}
           </button>
         </div>
-        <div class="stop pull-right">
+        <div class="stop pull-right" *ngIf="isSubscribed">
           <button type="button" class="btn btn-default"
             (click)="onStopReading()">
             <span class="fa fa-times-circle fa-spacing"></span>
@@ -34,7 +34,7 @@
         </div>
         {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
         ({{difficultyPerc}}%)
-        <div class="progress" [class.progress-min]="percDone < 8">
+        <div class="progress" [class.progress-min]="percDone < 8" *ngIf="isSubscribed">
           <div
             class="progress-bar progress-bar-primary progress-bar-striped"
             role="progressbar"

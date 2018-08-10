@@ -3,7 +3,7 @@ import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
 import { Language } from '../../models/course.model';
-import { Book } from '../../models/book.model';
+import { Book, UserBook } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -17,6 +17,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   selectedLanguage: Language;
   languages: Language[];
   books: Book[];
+  userBooks: UserBook[] = [];
   isLoading = false;
   isError = false;
   isReady = false;
@@ -42,6 +43,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   }
 
   private getBooks() {
+    this.getUserBooks();
     this.isLoading = true;
     this.readService
     .fetchPublishedBooks(this.selectedLanguage.code)
@@ -52,6 +54,18 @@ export class ReadComponent implements OnInit, OnDestroy {
         this.books = books;
         this.isLoading = false;
         this.IsBooksReady = true;
+      }
+    );
+  }
+
+  private getUserBooks() {
+    this.readService
+    .fetchUserBooks(this.selectedLanguage.code)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      books => {
+        console.log('user books', books);
+        this.userBooks = books;
       }
     );
   }
@@ -84,6 +98,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     console.log('languages', this.languages);
     this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
   }
+
   ngOnDestroy() {
     this.componentActive = false;
   }

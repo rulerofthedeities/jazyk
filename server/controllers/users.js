@@ -4,7 +4,8 @@ const response = require('../response'),
       scrypt = require('scrypt'),
       md5 = require('md5'),
       User = require('../models/user').model,
-      UserCourse = require('../models/usercourse').model;
+      UserCourse = require('../models/usercourse').model,
+      UserBook = require('../models/userbook').userBook;
 
 var setEmailHash = (doc) => {
   if (doc) {
@@ -295,7 +296,7 @@ module.exports = {
       });
     });
   },
-  subscribe: function(req, res) {
+  subscribeToCourse: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
     if (data && data.courseId) {
@@ -305,7 +306,7 @@ module.exports = {
             set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 400, 'Error updating user', function() {
+        response.handleError(err, res, 400, 'Error subscribing to course', function() {
           response.handleSuccess(res, result);
         });
       });
@@ -313,7 +314,7 @@ module.exports = {
       response.handleSuccess(res, {});
     }
   },
-  unsubscribe: function(req, res) {
+  unsubscribeFromCourse: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
     if (data && data.courseId) {
@@ -323,7 +324,49 @@ module.exports = {
             set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
       UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 400, 'Error updating user', function(){
+        response.handleError(err, res, 400, 'Error unsubscribing from course', function(){
+          response.handleSuccess(res, result);
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200);
+    }
+  },
+  subscribeToBook: function(req, res) {
+    const userId = req.decoded.user._id,
+          data = req.body;
+    if (data && data.bookId) {
+      const bookId = mongoose.Types.ObjectId(data.bookId),
+            lanCode = data.lanCode,
+            query = {userId, bookId, lanCode},
+            options = {upsert: true, new: true},
+            insert = {userId, bookId, lanCode, 'dt.dtSubscribed': Date.now()},
+            set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
+            update = {$set: set, $setOnInsert: insert};
+      UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+        response.handleError(err, res, 400, 'Error subscribing to book', function() {
+          response.handleSuccess(res, result);
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200);
+    }
+  },
+  unsubscribeFromBook: function(req, res) {
+    const userId = req.decoded.user._id,
+          data = req.body;
+    console.log('unsubscribe from book', data);
+    if (data && data.bookId) {
+      const bookId = mongoose.Types.ObjectId(data.bookId),
+            lanCode = data.lanCode,
+            query = {userId, bookId, lanCode},
+            options = {upsert: true, new: true},
+            insert = {userId, bookId, lanCode},
+            set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
+            update = {$set: set, $setOnInsert: insert};
+      UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+        console.log('unsubscribed', result);
+        response.handleError(err, res, 400, 'Error unsubscribing from book', function() {
           response.handleSuccess(res, result);
         });
       });

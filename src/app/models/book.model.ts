@@ -1,3 +1,24 @@
+
+
+interface Sentence {
+  text: string;
+  isNewParagraph?: boolean;
+}
+
+export interface Chapter {
+  _id: string;
+  bookId: string;
+  title: string;
+  level: number;
+  sequence: number;
+  content: string;
+  nrOfWords: number;
+  nrOfUniqueWords: number;
+  totalScore: number;
+  chapterNr?: string;
+  sentences: Sentence[];
+}
+
 interface Difficulty {
   bookId: string;
   nrOfSentences: number;
@@ -23,21 +44,16 @@ export interface Book {
   isPublished: boolean;
 }
 
-interface Sentence {
-  text: string;
-  isNewParagraph?: boolean;
+interface UserBookDates {
+  dtSubscribed: Date;
+  dtLastReSubscribed: Date;
+  dtLastUnSubscribed: Date;
 }
 
-export interface Chapter {
-  _id: string;
+export interface UserBook {
   bookId: string;
-  title: string;
-  level: number;
-  sequence: number;
-  content: string;
-  nrOfWords: number;
-  nrOfUniqueWords: number;
-  totalScore: number;
-  chapterNr?: string;
-  sentences: Sentence[];
+  userId: string;
+  lanCode: string;
+  subscribed: boolean;
+  dt: UserBookDates;
 }

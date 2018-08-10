@@ -79,8 +79,10 @@ module.exports.initialize = function(app, router) {
   router.put('/user/profile', users.saveProfile);
   router.patch('/user/lan', users.updateLan);
   router.patch('/user/password', users.updatePassword);
-  router.post('/user/subscribe', users.subscribe);
-  router.post('/user/unsubscribe', users.unsubscribe);
+  router.post('/user/subscribe/course', users.subscribeToCourse);
+  router.post('/user/unsubscribe/course', users.unsubscribeFromCourse);
+  router.post('/user/subscribe/book', users.subscribeToBook);
+  router.post('/user/unsubscribe/book', users.unsubscribeFromBook);
   router.get('/user/refresh', users.refreshToken);
   router.get('/user', users.getUser);
 
@@ -134,6 +136,7 @@ module.exports.initialize = function(app, router) {
   /* read */
 
   router.get('/books/published/:lan', books.getPublishedLanBooks);
+  router.get('/books/user/:lan', books.getUserLanBooks);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

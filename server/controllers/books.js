@@ -1,6 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book;
+      UserBook = require('../models/userbook').userBook;
 
 module.exports = {
   getPublishedLanBooks: function(req, res) {
@@ -19,5 +20,11 @@ module.exports = {
         response.handleSuccess(res, books);
       });
     });
+  },
+  getUserLanBooks: function(req, res) {
+    const languageId = req.params.lan,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId, lanCode: languageId};
+    UserBook.find(query)
   }
 }

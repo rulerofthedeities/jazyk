@@ -1,14 +1,15 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {config} from '../app.config';
-import {User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
-        Profile, Message, PublicProfile, Notification, Network} from '../models/user.model';
-import {Language, Course, UserAccess, AccessLevel, UserCourse} from '../models/course.model';
-import {ExerciseData} from '../models/exercise.model';
-import {CourseScore} from '../models/score.model';
-import {AuthService} from './auth.service';
-import {Observable, Subscription, of} from 'rxjs';
-import {retry, delay, map, tap, takeWhile} from 'rxjs/operators';
+import { Injectable, EventEmitter } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { config } from '../app.config';
+import { User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
+         Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
+import { Language, Course, UserAccess, AccessLevel, UserCourse } from '../models/course.model';
+import { ExerciseData } from '../models/exercise.model';
+import { CourseScore } from '../models/score.model';
+import { UserBook } from '../models/book.model';
+import { AuthService } from './auth.service';
+import { Observable, Subscription, of } from 'rxjs';
+import { retry, delay, map, tap, takeWhile } from 'rxjs/operators';
 
 interface DemoData {
   courseId: string;
@@ -438,6 +439,16 @@ export class UserService {
     }
   }
 
+  subscribeToBook(bookId: string): Observable<UserBook> {
+    return this.http
+    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode: this._user.main.lan}));
+  }
+
+  unSubscribeFromBook(bookId: string): Observable<UserBook> {
+    return this.http
+    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode: this._user.main.lan}));
+  }
+
   subscribeToDemo(courseId: string) {
     if (this.authService.isLoggedIn()) {
       if (courseId && this.demoData && courseId === this.demoData.courseId) {
@@ -478,7 +489,16 @@ export class UserService {
     );
   }
 
-  private updateUserDb(lan: string, courseId: string) {
+  setLanCode(lanCode: string) {
+    // set learn language
+    if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
+      this.http
+      .patch('/api/user/lan', JSON.stringify({lanCode}))
+      .toPromise(); // not lazy
+    }
+  }
+
+  private updateUserDb(lan: string, courseId: string, bookId: string = null) {
     // subscribe + set learn language
     // Update learning lan
     if (lan && this._user.jazyk.learn.lan !== lan) {
@@ -486,10 +506,16 @@ export class UserService {
       .patch('/api/user/lan', JSON.stringify({lan}))
       .toPromise(); // not lazy
     }
-    // Upsert subscription
+    // Upsert course subscription
     if (courseId) {
       this.http
-      .post('/api/user/subscribe', JSON.stringify({courseId}))
+      .post('/api/user/subscribe/course', JSON.stringify({courseId}))
+      .toPromise(); // not lazy
+    }
+    // Upsert book subscription
+    if (bookId) {
+      this.http
+      .post('/api/user/subscribe/book', JSON.stringify({bookId}))
       .toPromise(); // not lazy
     }
   }
