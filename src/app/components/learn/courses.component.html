@@ -24,7 +24,7 @@
     <!-- ALL COURSE LIST -->
     <ul class="list-unstyled">
       <li *ngFor="let course of allCourses">
-        <km-course-summary  *ngIf="courseTpe === 'all' || !!userCourses[course._id]?.subscribed"
+        <km-course-summary *ngIf="courseTpe === 'all' || !!userCourses[course._id]?.subscribed"
           [course]="course"
           [text]="text"
           [tpe]="!!userCourses[course._id]?.subscribed ? listType.Learn : listType.All"

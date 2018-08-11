@@ -1,0 +1,52 @@
+.close-reading {
+  font-size: 36px;
+  color: red;
+  text-shadow: 1px 1px 1px #333;
+  cursor: pointer;
+  margin-right: 5px;
+}
+.reading-header{
+  height: 36px;
+}
+.book-header {
+  padding: 8px 12px;
+  overflow: hidden;
+}
+.book-title {
+  margin: 0;
+}
+.book-chapter {
+  display: block;
+  margin-left: 15px;
+}
+.next {
+  color: #999;
+}
+.sentence {
+  border: 2px dotted darkblue;
+  text-align: center;
+  font-size: 3rem;
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 32px;
+}
+.question {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+.btn-big {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  border-radius: 10%;
+}
+.btn-text-wrapper {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  font-size: 2vw;
+}

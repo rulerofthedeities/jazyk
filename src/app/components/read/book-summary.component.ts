@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook } from '../../models/book.model';
 import { SharedService } from '../../services/shared.service';
@@ -15,12 +15,14 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   @Input() book: Book;
   @Input() userBook: UserBook;
   @Input() text: Object;
+  @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
   difficultyWidth: number;
   difficultyPerc: number;
   nrOfSentencesDone = 10;
   percDone: number;
   isSubscribed = false;
+  isStarted = false;
   defaultImage = 'https://s3.eu-central-1.amazonaws.com/jazyk/books/blankbookcover.png';
 
   constructor(
@@ -31,6 +33,7 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setDifficulty();
+    this.checkIfStarted();
     this.percDone = Math.trunc(this.nrOfSentencesDone / this.book.difficulty.nrOfSentences * 100);
   }
 
@@ -42,14 +45,13 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
-        console.log('books', userBook);
         if (userBook && userBook.subscribed) {
-          this.isSubscribed = true;
+          this.isSubscribed = true; // not really necessary due to route change
         }
       }
     );
     this.log(`Start reading '${this.book.title}'`);
-    // this.router.navigate(['/read/book/' + this.book._id]);
+    this.router.navigate(['/read/book/' + this.book._id]);
   }
 
   onStopReading() {
@@ -62,6 +64,7 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
         console.log('books', userBook);
         if (userBook && !userBook.subscribed) {
           this.isSubscribed = false;
+          this.removedSubscription.emit(this.book);
         }
       }
     );
@@ -75,6 +78,15 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
     difficulty = Math.min(1000, difficulty);
     this.difficultyWidth = Math.round(difficulty / 5);
     this.difficultyPerc = Math.round(difficulty / 10);
+  }
+
+  private checkIfStarted() {
+    if (this.userBook) {
+      this.isStarted = true;
+      if (this.userBook.subscribed) {
+        this.isSubscribed = true;
+      }
+    }
   }
 
   private log(message: string) {

@@ -28,7 +28,7 @@
   text-overflow: ellipsis;
   text-align: center;
   font-family: Tangerine;
-  z-index: 10;
+  z-index: 2;
 }
 .img-author {
   position: absolute;
@@ -41,7 +41,7 @@
   text-overflow: ellipsis;
   text-align: center;
   font-style: italic;
-  z-index: 9;
+  z-index: 1;
 }
 .book {
   margin-left: 180px;

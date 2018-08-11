@@ -24,10 +24,11 @@
   <div *ngIf="IsBooksReady">
     <ul class="list-unstyled" *ngIf="books?.length">
       <li *ngFor="let book of books">
-        <km-book-summary
+        <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
           [book]="book"
-          [userBook]="userBooks[0]"
-          [text]="text">
+          [userBook]="userBooks[book._id]"
+          [text]="text"
+          (removedSubscription)="onRemovedSubscription($event)">
         </km-book-summary>
       </li>
     </ul>

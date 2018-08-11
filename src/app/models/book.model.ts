@@ -1,4 +1,4 @@
-
+export enum SentenceSteps {Question, Answered}
 
 interface Sentence {
   text: string;
@@ -56,4 +56,11 @@ export interface UserBook {
   lanCode: string;
   subscribed: boolean;
   dt: UserBookDates;
+}
+
+export interface SentenceTranslation {
+  lanCode: string;
+  bookId: string;
+  sentence: string;
+  translations: string[];
 }

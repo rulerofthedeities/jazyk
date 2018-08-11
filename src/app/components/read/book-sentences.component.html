@@ -1,0 +1,67 @@
+<section>
+  <div  *ngIf="readingStarted && !isError && !isLoading">
+    <!-- READING MODE HEADER -->
+    <div class="exercise-header">
+      <span class="fa fa-times pull-right close-reading" (click)="onExitReading(confirmexit)"></span>
+      <div class="panel panel-default">
+        <div class="panel-body book-header">
+          <h1 class="book-title">
+            {{book?.title}}
+            <small class="book-chapter">{{currentChapter.title}}</small>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="readingStarted && !isError && !isLoading">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="sentence-count">
+            {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
+          </div>
+          <div class="sentence">
+            {{currentSentence}}
+          </div>
+          <div class="question" *ngIf="currentStep === steps.Question">
+            {{text["DoYouUnderstand"]}}
+          </div>
+          <div class="row sentence-buttons" *ngIf="currentStep === steps.Question">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-success btn-big" (click)="onAnswer('yes')">
+                <div class="btn-text-wrapper">
+                  {{text["Yes"]}}
+                </div>
+              </button>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-warning btn-big" (click)="onAnswer('maybe')">
+                  <div class="btn-text-wrapper">
+                      {{text["Maybe"]}}
+                  </div>
+              </button>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('no')">
+                  <div class="btn-text-wrapper">
+                      {{text["No"]}}
+                  </div>
+              </button>
+            </div>
+            <div class="col-sm-3">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <km-modal-confirm #confirmexit
+    [level]="'warning'"
+    [text]="text"
+    (confirmed)="onExitConfirmed($event)">
+    <div title>{{text["Warning"]}}</div>
+    <div message>{{text["ConfirmStopReading"]}}</div>
+  </km-modal-confirm>
+</section>

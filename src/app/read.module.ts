@@ -7,6 +7,7 @@ import { ReadService } from './services/read.service';
 import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
 import { BookSummaryComponent } from './components/read/book-summary.component';
+import { BookSentencesComponent } from './components/read/book-sentences.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -23,7 +24,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   ],
   declarations: [
     ReadComponent,
-    BookSummaryComponent
+    BookSummaryComponent,
+    BookSentencesComponent
   ]
 })
 export class ReadModule {}

@@ -18,7 +18,7 @@
           <button type="button" class="btn btn-success"
             (click)="onStartReading()">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{isSubscribed ? text["ContinueReading"]: text["StartReading"]}}
+            {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
           </button>
         </div>
         <div class="stop pull-right" *ngIf="isSubscribed">
@@ -34,7 +34,7 @@
         </div>
         {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
         ({{difficultyPerc}}%)
-        <div class="progress" [class.progress-min]="percDone < 8" *ngIf="isSubscribed">
+        <div class="progress" [class.progress-min]="percDone < 8" *ngIf="isStarted">
           <div
             class="progress-bar progress-bar-primary progress-bar-striped"
             role="progressbar"

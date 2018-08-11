@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
-import { Language } from '../../models/course.model';
+import { Language, Map } from '../../models/course.model';
 import { Book, UserBook } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -17,11 +17,12 @@ export class ReadComponent implements OnInit, OnDestroy {
   selectedLanguage: Language;
   languages: Language[];
   books: Book[];
-  userBooks: UserBook[] = [];
+  userBooks: Map<UserBook> = {}; // For sorting
   isLoading = false;
   isError = false;
   isReady = false;
   IsBooksReady = false;
+  listTpe = 'all';
 
   constructor(
     private readService: ReadService,
@@ -40,6 +41,11 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   onChangeBookType(tpe: string) {
     console.log('new tpe', tpe);
+    this.listTpe = tpe;
+  }
+
+  onRemovedSubscription(book: Book) {
+    this.userBooks[book._id].subscribed = false;
   }
 
   private getBooks() {
@@ -60,12 +66,14 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getUserBooks() {
     this.readService
-    .fetchUserBooks(this.selectedLanguage.code)
+    .fetchUserBooks(this.userService.user.main.lan) // interface lan
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
         console.log('user books', books);
-        this.userBooks = books;
+        books.forEach(uBook => {
+          this.userBooks[uBook.bookId] = uBook;
+        });
       }
     );
   }

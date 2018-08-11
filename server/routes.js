@@ -137,6 +137,10 @@ module.exports.initialize = function(app, router) {
 
   router.get('/books/published/:lan', books.getPublishedLanBooks);
   router.get('/books/user/:lan', books.getUserLanBooks);
+  router.get('/book/user/:lan/:bookId', books.getUserBook);
+  router.get('/book/:bookId', books.getBook);
+  router.get('/book/chapter/:bookId/:sequence', books.getChapter);
+  router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);
