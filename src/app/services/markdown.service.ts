@@ -1,7 +1,7 @@
 import {Map} from '../models/course.model';
 import {Alignment, TagOptions, SnippetOptions, ReplaceOptions,
         ColumnOptions} from '../models/markdown.model';
-import {awsPath} from '../services/shared.service';
+import {awsPath} from './shared.service';
 
 export class MarkdownService {
 

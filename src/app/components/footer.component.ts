@@ -5,7 +5,7 @@ import {UtilsService} from '../services/utils.service';
 import {ErrorService} from '../services/error.service';
 import {SharedService} from '../services/shared.service';
 import {EventMessage} from '../models/error.model';
-import {environment} from '../../environments/environment';
+import {environment} from 'environments/environment';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({

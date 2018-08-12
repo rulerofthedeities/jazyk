@@ -52,4 +52,9 @@ export class ReadService {
     .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + interfaceLanCode + '/' + sentence)
     .pipe(retry(3));
   }
+
+  addSentenceTranslation(interfaceLanCode: string, bookId: string, sentence: string, translation: string): Observable<SentenceTranslation> {
+    return this.http
+    .post<SentenceTranslation>('/api/book/translation/', {lanCode: interfaceLanCode, bookId, sentence, translation});
+  }
 }

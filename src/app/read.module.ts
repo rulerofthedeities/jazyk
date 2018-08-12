@@ -8,6 +8,8 @@ import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
 import { BookSummaryComponent } from './components/read/book-summary.component';
 import { BookSentencesComponent } from './components/read/book-sentences.component';
+import { BookTranslationComponent } from './components/read/book-translation.component';
+import { BookContextComponent } from './components/read/book-context.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,7 +27,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   declarations: [
     ReadComponent,
     BookSummaryComponent,
-    BookSentencesComponent
+    BookSentencesComponent,
+    BookTranslationComponent,
+    BookContextComponent
   ]
 })
 export class ReadModule {}

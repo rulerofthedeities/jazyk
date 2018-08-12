@@ -17,7 +17,7 @@
 }
 .book-chapter {
   display: block;
-  margin-left: 15px;
+  margin-left: 75px;
 }
 .next {
   color: #999;
@@ -30,12 +30,13 @@
   color: white;
   border-radius: 6px;
   padding: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 .question {
   text-align: center;
   font-size: 1.6rem;
   margin-bottom: 6px;
+  margin-top: 24px;
 }
 .btn-big {
   position: relative;

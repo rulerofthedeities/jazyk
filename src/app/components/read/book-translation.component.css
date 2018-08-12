@@ -1,0 +1,10 @@
+.translations-container {
+  max-height: 200px;
+  overflow-y: scroll;
+  border: 1px solid #333;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}
+.translation-item {
+  padding: 5px 10px;
+}

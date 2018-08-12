@@ -1,0 +1,47 @@
+<h3>{{text["Translations"]}}</h3>
+
+<div class="translations-container">
+  <ul class="list-group">
+    <li
+      class="list-group-item translation-item"
+      *ngFor="let translation of translations, let i = index"
+      [style.color]="getColor(i)">
+      {{i + 1}}. {{translation.translation}}
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="!translations.length">
+  NO TRANSLATIONS AVAILABLE
+</div>
+
+<div *ngIf="answer==='yes' && !submitted">
+  {{!!translations.length ? "DO YOU HAVE A BETTER TRANSLATION?" : "DO YOU HAVE A GOOD TRANSLATION?"}}
+  ENTER IT HERE:
+  <div class="input-group">
+    <span class="input-group-addon">
+      <img src="/assets/img/flags/{{interfaceLan}}.png" class="flag">
+    </span>
+    <input type="text"
+      class="form-control"
+      autofocus
+      autocomplete=”off”
+      #translation
+    >
+    <span class="input-group-btn">
+      <button
+        type="button"
+        [disabled]="submitting"
+        class="btn btn-success"
+        (click)="onAddTranslation(translation.value)">
+        {{text["SubmitTranslation"]}}
+      </button>
+    </span>
+  </div>
+  <div *ngIf="duplicate">
+    {{text["TranslationExists"]}}
+  </div>
+</div>
+<div *ngIf="submitted">
+  {{text["ThankYouTranslation"]}}!
+</div>

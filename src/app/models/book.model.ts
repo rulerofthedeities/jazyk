@@ -1,6 +1,6 @@
-export enum SentenceSteps {Question, Answered}
+export enum SentenceSteps {Question, Answered, Translations}
 
-interface Sentence {
+export interface Sentence {
   text: string;
   isNewParagraph?: boolean;
 }
@@ -59,8 +59,13 @@ export interface UserBook {
 }
 
 export interface SentenceTranslation {
+  translation: string;
   lanCode: string;
+  score: number;
+}
+
+interface SentenceTranslations {
   bookId: string;
   sentence: string;
-  translations: string[];
+  translations: SentenceTranslation[];
 }

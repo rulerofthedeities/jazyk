@@ -6,6 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
+            <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag">
             {{book?.title}}
             <small class="book-chapter">{{currentChapter.title}}</small>
           </h1>
@@ -13,9 +14,16 @@
       </div>
     </div>
 
+
     <div *ngIf="readingStarted && !isError && !isLoading">
       <div class="panel panel-default">
         <div class="panel-body">
+          <!-- PREVIOUS TEXT -->
+          <km-book-context
+            [sentences]="currentChapter.sentences"
+            [sentenceNr]="sentenceNrObservable">
+          </km-book-context>
+          <!-- SENTENCE -->
           <div class="sentence-count">
             {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
           </div>
@@ -25,6 +33,7 @@
           <div class="question" *ngIf="currentStep === steps.Question">
             {{text["DoYouUnderstand"]}}
           </div>
+          <!-- BUTTONS -->
           <div class="row sentence-buttons" *ngIf="currentStep === steps.Question">
             <div class="col-sm-3">
             </div>
@@ -51,6 +60,24 @@
             </div>
             <div class="col-sm-3">
             </div>
+          </div>
+          <!-- NEXT SENTENCE -->
+          <button *ngIf="currentStep > steps.Question"
+            type="button"
+            class="btn btn-success btn-lg pull-right"
+            (click)="onNextSentence()">
+            {{text["NextSentence"]}}
+          </button>
+          <!-- TRANSLATIONS -->
+          <div *ngIf="currentStep === steps.Translations">
+            <km-sentence-translations
+              [translations]="translations"
+              [answer]="currentAnswer"
+              [text]="text"
+              [bookId]="book._id"
+              [sentence]="currentSentence"
+              >
+            </km-sentence-translations>
           </div>
         </div>
       </div>

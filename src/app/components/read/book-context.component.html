@@ -1,0 +1,3 @@
+<div *ngFor="let sentence of sentences | slice:(nr > 5 ? nr - 6 : 0):nr - 1">
+  {{sentence.text}}
+</div>

@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {CookieService, CookieOptions} from 'ngx-cookie';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {SharedService} from '../services/shared.service';
+import {SharedService} from './shared.service';
 import {User} from '../models/user.model';
 import {Observable} from 'rxjs';
 import {retry} from 'rxjs/operators';

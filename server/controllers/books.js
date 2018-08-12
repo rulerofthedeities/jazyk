@@ -64,10 +64,28 @@ module.exports = {
     const bookId = req.params.bookId,
           lanCode = req.params.lan,
           sentence = req.params.sentence,
-          query = {bookId, lanCode, sentence};
-    Translation.find(query, (err, translations) => {
+          query = {bookId, sentence, 'translations.lanCode': lanCode},
+          projections = {_id: 0, translations: 1};
+    Translation.findOne(query, projections, (err, translations) => {
+      translationsArr = translations ? translations.translations : [];
       response.handleError(err, res, 400, 'Error fetching sentence translations', () => {
-        response.handleSuccess(res, translations);
+        response.handleSuccess(res, translationsArr);
+      });
+    });
+  },
+  addTranslation: (req, res) => {
+    const translation = req.body.translation,
+          lanCode = req.body.lanCode,
+          sentence = req.body.sentence,
+          bookId = req.body.bookId,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          newTranslation = {translation, lanCode, userId},
+          query = {bookId, sentence},
+          options = {upsert: true, new: false},
+          update = {bookId, sentence, $push: {translations: {$each: [ newTranslation ], "$position": 0}}};
+    Translation.findOneAndUpdate(query, update, options, function(err, result) {
+      response.handleError(err, res, 400, 'Error adding translation', function() {
+        response.handleSuccess(res, result);
       });
     });
   }

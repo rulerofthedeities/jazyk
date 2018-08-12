@@ -42,16 +42,23 @@ var chapterSchema = new Schema({
 });
 
 var translationSchema = new Schema({
-  bookId: {type: Schema.Types.ObjectId, required: true},
+  translation: {type: String, required: true},
   lanCode: {type: String, required: true},
+  userId: {type: String, required: true},
+  created: {type: Date, default: new Date()},
+  score: {type: Number, default: 0}
+}, {_id: false});
+
+var translationsSchema = new Schema({
+  bookId: {type: Schema.Types.ObjectId, required: true},
   sentence: {type: String, required: true},
-  translations: [String]
+  translations: [translationSchema]
 });
 
-translationSchema.index({bookId: 1, lanCode: 1, sentence: 1}, {unique: true});
+translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
 
 module.exports = {
   book: mongoose.model('Book', bookSchema),
   chapter: mongoose.model('Bookchapter', chapterSchema),
-  translation: mongoose.model('Booktranslation', translationSchema)
+  translation: mongoose.model('Booktranslation', translationsSchema)
 }

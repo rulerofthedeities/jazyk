@@ -6,9 +6,9 @@ import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
-import { zip } from 'rxjs';
+import { zip, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
-import { UserBook, Book, Chapter, SentenceSteps } from '../../models/book.model';
+import { UserBook, Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
 
 @Component({
   templateUrl: 'book-sentences.component.html',
@@ -24,10 +24,13 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   currentSentence: string;
   currentSentenceNr: number;
   currentSentenceTotal: number;
+  currentStep = SentenceSteps.Question;
+  currentAnswer: string;
   readingStarted = false;
   isLoading = false;
   steps = SentenceSteps;
-  currentStep = SentenceSteps.Question;
+  translations: SentenceTranslation[] = [];
+  sentenceNrObservable: Subject<number> = new Subject<number>();
 
   constructor(
     private route: ActivatedRoute,
@@ -54,9 +57,16 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     }
   }
 
+  onNextSentence() {
+    // this.currentSentenceNr++;
+    this.currentStep = SentenceSteps.Question;
+    this.getSentence();
+  }
+
   onAnswer(answer: string) {
     console.log('answer', answer);
     this.currentStep = SentenceSteps.Answered;
+    this.currentAnswer = answer;
     switch (answer) {
       case 'yes': break;
       case 'no': break;
@@ -131,7 +141,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         if (chapter) {
           this.currentChapter = chapter;
           this.currentSentenceTotal = chapter.sentences.length;
-          this.getNextSentence(chapter, 0);
+          this.currentSentenceNr = 0;
+          this.getSentence();
         } else {
           // chapter not found -> end of book?
         }
@@ -139,17 +150,18 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getNextSentence(currentChapter: Chapter, currentSentenceNr: number) {
-    if (currentChapter.sentences[currentSentenceNr]) {
-      const sentence = currentChapter.sentences[currentSentenceNr].text.trim();
+  private getSentence() {
+    const chapter = this.currentChapter,
+          nr = this.currentSentenceNr;
+    if (chapter.sentences[nr]) {
+      const sentence = chapter.sentences[nr].text.trim();
       if (sentence) {
         this.currentSentence = sentence;
-        this.currentSentenceNr = currentSentenceNr + 1;
-        if (currentSentenceNr === 0) {
+        this.currentSentenceNr++;
+        this.sentenceNrObservable.next(this.currentSentenceNr);
+        if (nr === 0) {
           this.startReading();
         }
-      } else {
-        this.getNextSentence(currentChapter, currentSentenceNr + 1);
       }
     }
   }
@@ -164,6 +176,9 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(
       translations => {
         console.log('translations', translations);
+        this.translations = translations;
+        this.currentStep = SentenceSteps.Translations;
+
       }
     );
   }
