@@ -44,9 +44,10 @@ export class ReadService {
 
   /*** Chapters ***/
 
-  fetchChapter(bookId: string, sequence: number): Observable<Chapter> {
+  fetchChapter(bookId: string, chapterId: string, sequence: number): Observable<Chapter> {
+    const chapter = chapterId ? chapterId : '0';
     return this.http
-    .get<Chapter>('/api/book/chapter/' + bookId + '/' + sequence.toString())
+    .get<Chapter>('/api/book/chapter/' + bookId + '/' + chapter + '/' + sequence.toString())
     .pipe(retry(3));
   }
 

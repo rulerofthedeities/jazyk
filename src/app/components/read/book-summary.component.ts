@@ -98,7 +98,7 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   private log(message: string) {
     this.sharedService.sendEventMessage({
       message,
-      source: 'CourseSummaryComponent'
+      source: 'BookSummaryComponent'
     });
   }
 

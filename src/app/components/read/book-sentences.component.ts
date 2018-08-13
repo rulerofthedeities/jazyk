@@ -31,7 +31,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   isLoading = false;
   steps = SentenceSteps;
   translations: SentenceTranslation[] = [];
-  sentenceNrObservable: Subject<number> = new Subject<number>();
+  sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
   interfaceLan = 'en';
 
@@ -64,7 +64,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   onNextSentence() {
-    // this.currentSentenceNr++;
     this.currentStep = SentenceSteps.Question;
     this.getSentence();
   }
@@ -124,34 +123,31 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private findCurrentChapter(userBook: UserBook) {
     if (userBook) {
-      const hasChapter = false;
-      // TODO: get user progress with current chapter
-      if (hasChapter) {
+      if (userBook.bookmark) {
         // TODO: start with this chapter; if at the end; go to next chapter
+        this.getChapter(userBook.bookId, userBook.bookmark, 1);
       } else {
         // no chapter: get first chapter
-        this.getChapter(userBook.bookId, 1);
+        this.getChapter(userBook.bookId, null, 1);
       }
     }
   }
 
-  private getChapter(bookId: string, sequence: number) {
+  private getChapter(bookId: string, bookmark: Bookmark, sequence: number) {
     this.readService
-    .fetchChapter(bookId, sequence)
+    .fetchChapter(bookId, bookmark ? bookmark.chapterId : null, sequence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
         this.isLoading = false;
         if (chapter) {
+          console.log('get chapter', chapter);
           this.currentChapter = chapter;
-          if (this.chapterObservable) {
-            this.chapterObservable.next(chapter);
-          } else {
-            this.chapterObservable = new BehaviorSubject<Chapter>(chapter);
-          }
+          this.emitChapter(chapter);
           this.currentSentenceTotal = chapter.sentences.length;
-          this.currentSentenceNr = 0;
-          this.sentenceNrObservable.next(this.currentSentenceNr);
+          this.currentSentenceNr = bookmark ? bookmark.sentenceNr : 0;
+          console.log('sentence nr', this.currentSentenceNr);
+          this.emitSentenceNr(this.currentSentenceNr);
           this.getSentence();
         } else {
           // chapter not found -> end of book?
@@ -168,11 +164,29 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       if (sentence) {
         this.currentSentence = sentence;
         this.currentSentenceNr++;
-        this.sentenceNrObservable.next(this.currentSentenceNr);
+        this.emitSentenceNr(this.currentSentenceNr);
         if (nr === 0) {
-          this.startReading();
+          this.startReading(true);
+        } else {
+          this.startReading(false);
         }
       }
+    }
+  }
+
+  private emitSentenceNr(nr: number) {
+    if (this.sentenceNrObservable) {
+      this.sentenceNrObservable.next(nr);
+    } else {
+      this.sentenceNrObservable = new BehaviorSubject<number>(nr);
+    }
+  }
+
+  private emitChapter(chapter: Chapter) {
+    if (this.chapterObservable) {
+      this.chapterObservable.next(chapter);
+    } else {
+      this.chapterObservable = new BehaviorSubject<Chapter>(chapter);
     }
   }
 
@@ -191,30 +205,26 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     );
   }
 
-  private startReading() {
+  private startReading(isNew: boolean) {
+    const status = isNew ? 'Start' : 'Continue';
     this.readingStarted = true;
-    this.log(`Start reading '${this.book.title}'`);
+    this.log(`${status} reading '${this.book.title}'`);
     this.sharedService.changeExerciseMode(true);
     this.errorService.clearError();
   }
 
   private placeBookmark() {
-    console.log('current step', this.currentStep, SentenceSteps.Answered);
     if (this.currentStep < SentenceSteps.Answered) {
-      console.log('current sentence not answered, deduct one for bookmark', this.currentSentenceNr);
       this.currentSentenceNr--;
     }
     let isFinished = false;
     if (this.currentSentenceNr >= this.currentSentenceTotal) {
       isFinished = true;
     }
-    console.log('place bookmark chapter', this.currentChapter);
-    console.log('place bookmark sentencenr', this.currentSentenceNr, this.currentSentenceTotal);
-    console.log('place bookmark finished', isFinished);
     const newBookmark: Bookmark = {
       chapterId: this.currentChapter._id,
       sentenceNr: this.currentSentenceNr,
-      isFinished
+      isChapterFinished: isFinished
     };
     this.readService
     .placeBookmark(this.bookId, newBookmark)
@@ -223,7 +233,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private processResults() {
-    console.log('process results');
     this.currentStep = SentenceSteps.Results;
   }
 

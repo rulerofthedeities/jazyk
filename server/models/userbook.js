@@ -10,7 +10,7 @@ var dateSchema = new Schema({
 var bookmarkSchema = new Schema({
   chapterId: {type: Schema.Types.ObjectId, required: true},
   sentenceNr: {type: Number, required: true},
-  isFinished: {type: Boolean, required: true}
+  isChapterFinished: {type: Boolean, required: true}
 }, {_id : false});
 
 var userBookSchema = new Schema({

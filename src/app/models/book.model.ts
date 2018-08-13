@@ -66,8 +66,8 @@ interface SentenceTranslations {
 
 export interface Bookmark {
   chapterId: string;
-  sentenceNr: number;
-  isFinished: boolean;
+  sentenceNr: number; // sentence within the chapter
+  isChapterFinished: boolean;
 }
 
 export interface UserBook {

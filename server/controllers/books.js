@@ -52,9 +52,11 @@ module.exports = {
   },
   getChapter: (req, res) => {
     const bookId = req.params.bookId,
+          chapterId = req.params.chapterId,
           sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
-          query = {bookId, sequence};
+          query = chapterId === '0' ? {bookId, sequence} : {_id: chapterId};
     Chapter.findOne(query, (err, chapter) => {
+      console.log(chapter, chapter);
       response.handleError(err, res, 400, 'Error fetching chapter', () => {
         response.handleSuccess(res, chapter);
       });
