@@ -1,0 +1,21 @@
+.paragraph {
+  text-indent: 20px;
+}
+:host {
+  /*font-family: 'Times New Roman', Times, serif;*/
+  font-size: 16px;
+}
+.header {
+  font-size: 24px;
+}
+.history {
+  border: 1px solid #999;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 6px;
+}
+.minimize {
+  color: orange;
+  cursor: pointer;
+  margin-right: 2px;
+}

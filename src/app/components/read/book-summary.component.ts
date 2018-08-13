@@ -19,11 +19,11 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   private componentActive = true;
   difficultyWidth: number;
   difficultyPerc: number;
-  nrOfSentencesDone = 10;
+  nrOfSentencesDone = 0;
   percDone: number;
   isSubscribed = false;
   isStarted = false;
-  defaultImage = 'https://s3.eu-central-1.amazonaws.com/jazyk/books/blankbookcover.png';
+  defaultImage = '/assets/img/books/blankcover.png';
 
   constructor(
     private router: Router,
@@ -34,7 +34,6 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setDifficulty();
     this.checkIfStarted();
-    this.percDone = Math.trunc(this.nrOfSentencesDone / this.book.difficulty.nrOfSentences * 100);
   }
 
   onStartReading() {
@@ -85,6 +84,13 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
       this.isStarted = true;
       if (this.userBook.subscribed) {
         this.isSubscribed = true;
+      }
+      if (this.userBook.bookmark) {
+        console.log('bookmark', this.userBook.bookmark);
+        this.nrOfSentencesDone = this.userBook.bookmark.sentenceNr;
+        this.percDone = Math.trunc(this.nrOfSentencesDone / this.book.difficulty.nrOfSentences * 100);
+      } else {
+        this.percDone = 0;
       }
     }
   }

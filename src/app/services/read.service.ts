@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, UserBook, Chapter, SentenceTranslation } from '../models/book.model';
+import { Book, Chapter, SentenceTranslation, UserBook, Bookmark } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -37,6 +37,11 @@ export class ReadService {
     .pipe(retry(3));
   }
 
+  placeBookmark(bookId: string, bookmark: Bookmark): Observable<Bookmark> {
+    return this.http
+    .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
+  }
+
   /*** Chapters ***/
 
   fetchChapter(bookId: string, sequence: number): Observable<Chapter> {
@@ -47,14 +52,24 @@ export class ReadService {
 
   /*** Translations ***/
 
-  fetchSentenceTranslations(interfaceLanCode: string, bookId: string, sentence: string): Observable<SentenceTranslation[]> {
+  fetchSentenceTranslations(
+    interfaceLanCode: string,
+    bookId: string,
+    sentence: string): Observable<SentenceTranslation[]> {
     return this.http
-    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + interfaceLanCode + '/' + sentence)
+    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + interfaceLanCode + '/' + encodeURIComponent(sentence))
     .pipe(retry(3));
   }
 
-  addSentenceTranslation(interfaceLanCode: string, bookId: string, sentence: string, translation: string): Observable<SentenceTranslation> {
+  addSentenceTranslation(
+    interfaceLanCode: string,
+    bookId: string,
+    sentence: string,
+    translation: string,
+    note: string): Observable<SentenceTranslation> {
     return this.http
-    .post<SentenceTranslation>('/api/book/translation/', {lanCode: interfaceLanCode, bookId, sentence, translation});
+    .post<SentenceTranslation>('/api/book/translation/', {
+      lanCode: interfaceLanCode, bookId, sentence, translation, note
+    });
   }
 }

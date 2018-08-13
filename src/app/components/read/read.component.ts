@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { Language, Map } from '../../models/course.model';
 import { Book, UserBook } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
@@ -27,7 +28,8 @@ export class ReadComponent implements OnInit, OnDestroy {
   constructor(
     private readService: ReadService,
     private userService: UserService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -40,7 +42,6 @@ export class ReadComponent implements OnInit, OnDestroy {
   }
 
   onChangeBookType(tpe: string) {
-    console.log('new tpe', tpe);
     this.listTpe = tpe;
   }
 

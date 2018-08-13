@@ -75,18 +75,32 @@ module.exports = {
   },
   addTranslation: (req, res) => {
     const translation = req.body.translation,
+          note = req.body.note,
           lanCode = req.body.lanCode,
           sentence = req.body.sentence,
           bookId = req.body.bookId,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          newTranslation = {translation, lanCode, userId},
+          newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
           options = {upsert: true, new: false},
           update = {bookId, sentence, $push: {translations: {$each: [ newTranslation ], "$position": 0}}};
-    Translation.findOneAndUpdate(query, update, options, function(err, result) {
+    Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', function() {
         response.handleSuccess(res, result);
       });
     });
+  },
+  updateBookmark: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = req.params.bookId,
+          bookmark = req.body.bookmark,
+          query = {bookId, userId},
+          update = {$set: {bookmark}};
+        console.log(bookmark);
+    UserBook.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating bookmark', function() {
+        response.handleSuccess(res, result);
+      });
+    })
   }
 }

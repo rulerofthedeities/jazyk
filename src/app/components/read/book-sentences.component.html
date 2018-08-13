@@ -2,7 +2,10 @@
   <div  *ngIf="readingStarted && !isError && !isLoading">
     <!-- READING MODE HEADER -->
     <div class="exercise-header">
-      <span class="fa fa-times pull-right close-reading" (click)="onExitReading(confirmexit)"></span>
+      <span *ngIf="currentStep < steps.Results"
+        class="fa fa-times pull-right close-reading"
+        (click)="onExitReading(confirmexit)">
+      </span>
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
@@ -14,70 +17,79 @@
       </div>
     </div>
 
-
     <div *ngIf="readingStarted && !isError && !isLoading">
       <div class="panel panel-default">
         <div class="panel-body">
-          <!-- PREVIOUS TEXT -->
-          <km-book-context
-            [sentences]="currentChapter.sentences"
-            [sentenceNr]="sentenceNrObservable">
-          </km-book-context>
-          <!-- SENTENCE -->
-          <div class="sentence-count">
-            {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
-          </div>
-          <div class="sentence">
-            {{currentSentence}}
-          </div>
-          <div class="question" *ngIf="currentStep === steps.Question">
-            {{text["DoYouUnderstand"]}}
-          </div>
-          <!-- BUTTONS -->
-          <div class="row sentence-buttons" *ngIf="currentStep === steps.Question">
-            <div class="col-sm-3">
+          <div *ngIf="currentStep < steps.Results">
+            <!-- PREVIOUS TEXT -->
+            <km-book-context
+              [chapter]="chapterObservable"
+              [sentenceNr]="sentenceNrObservable">
+            </km-book-context>
+            <!-- SENTENCE -->
+            <div class="sentence-count">
+              {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
             </div>
-            <div class="col-sm-2">
-              <button type="button" class="btn btn-success btn-big" (click)="onAnswer('yes')">
-                <div class="btn-text-wrapper">
-                  {{text["Yes"]}}
-                </div>
-              </button>
+            <div class="sentence">
+              {{currentSentence}}
             </div>
-            <div class="col-sm-2">
-              <button type="button" class="btn btn-warning btn-big" (click)="onAnswer('maybe')">
+            <div class="question" *ngIf="currentStep === steps.Question">
+              {{text["DoYouUnderstand"]}}
+            </div>
+            <!-- BUTTONS -->
+            <div class="row sentence-buttons" *ngIf="currentStep === steps.Question">
+              <div class="col-sm-3">
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-success btn-big" (click)="onAnswer('yes')">
                   <div class="btn-text-wrapper">
-                      {{text["Maybe"]}}
+                    {{text["Yes"]}}
                   </div>
-              </button>
+                </button>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-warning btn-big" (click)="onAnswer('maybe')">
+                    <div class="btn-text-wrapper">
+                        {{text["Maybe"]}}
+                    </div>
+                </button>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('no')">
+                    <div class="btn-text-wrapper">
+                        {{text["No"]}}
+                    </div>
+                </button>
+              </div>
+              <div class="col-sm-3">
+              </div>
             </div>
-            <div class="col-sm-2">
-              <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('no')">
-                  <div class="btn-text-wrapper">
-                      {{text["No"]}}
-                  </div>
-              </button>
-            </div>
-            <div class="col-sm-3">
+            <!-- NEXT SENTENCE -->
+            <button *ngIf="currentStep > steps.Question"
+              type="button"
+              class="btn btn-success btn-lg pull-right next-sentence"
+              (click)="onNextSentence()">
+              {{text["NextSentence"]}} <span class="fa fa-chevron-right"></span>
+            </button>
+            <!-- TRANSLATIONS -->
+            <div *ngIf="currentStep === steps.Translations && interfaceLan !== book.lanCode">
+              <h3>{{text["Translations"]}}</h3>
+              <div class="translations">
+                <km-sentence-translations
+                  [translations]="translations"
+                  [answer]="currentAnswer"
+                  [text]="text"
+                  [bookId]="book._id"
+                  [sentence]="currentSentence"
+                  >
+                </km-sentence-translations>
+              </div>
             </div>
           </div>
-          <!-- NEXT SENTENCE -->
-          <button *ngIf="currentStep > steps.Question"
-            type="button"
-            class="btn btn-success btn-lg pull-right"
-            (click)="onNextSentence()">
-            {{text["NextSentence"]}}
-          </button>
-          <!-- TRANSLATIONS -->
-          <div *ngIf="currentStep === steps.Translations">
-            <km-sentence-translations
-              [translations]="translations"
-              [answer]="currentAnswer"
-              [text]="text"
-              [bookId]="book._id"
-              [sentence]="currentSentence"
-              >
-            </km-sentence-translations>
+
+          <!-- RESULTS -->
+          <div *ngIf="currentStep === steps.Results">
+            RESULTS
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@
           {{book.title}}
         </h3>
         <div class="author">
-          {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
+          {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span> {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
         </div>
         <div class="buttons">
           <button type="button" class="btn btn-success"

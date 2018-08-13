@@ -28,7 +28,10 @@ export class BaseComponent implements OnInit, OnDestroy {
     this.showBackground = this.userService.user.main.background;
     this.setBackgroundMonth();
     this.setUpTokenRefresh();
-    this.sharedService.exerciseModeChanged.subscribe(
+    this.sharedService
+    .exerciseModeChanged
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
       started => this.exercisesStarted = started
     );
     this.userService.backgroundChanged.subscribe(

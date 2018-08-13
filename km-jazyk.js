@@ -12,7 +12,7 @@ var express = require('express'),
     https = require('https');
 
 // config
-app.set('port', process.env.PORT || 4801);
+app.set('port', process.env.PORT || 4802);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('token_expiration', 604800);// Token expires after 7 days
 

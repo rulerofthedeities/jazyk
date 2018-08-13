@@ -3,6 +3,7 @@ import {EventMessage} from '../models/error.model';
 import {Level, ProcessedData, ResultData, Map} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, QuestionType} from '../models/exercise.model';
 import {environment} from 'environments/environment';
+import { Subject } from 'rxjs';
 
 export const maxLearnLevel = 20; // maximum learn level
 export const maxStreak = 20; // maximum length of the streak
@@ -13,13 +14,13 @@ export const awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
 export class SharedService {
   private eventMessages: EventMessage[] = [];
   private messageLimit = 10;
-  exerciseModeChanged = new EventEmitter();
+  exerciseModeChanged = new Subject<boolean>();
   justLoggedInOut = new EventEmitter<boolean>();
   eventMessage = new EventEmitter<EventMessage>();
 
   // Cross-lazy loaded module Events
   changeExerciseMode(isStarted: boolean) {
-    this.exerciseModeChanged.emit(isStarted);
+    this.exerciseModeChanged.next(isStarted);
   }
 
   userJustLoggedIn() {

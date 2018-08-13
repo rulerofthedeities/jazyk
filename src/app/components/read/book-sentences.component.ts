@@ -6,9 +6,10 @@ import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
-import { zip, Subject } from 'rxjs';
+import { zip, Subject, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
-import { UserBook, Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
+import { UserBook, Bookmark,
+         Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
 
 @Component({
   templateUrl: 'book-sentences.component.html',
@@ -31,6 +32,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   steps = SentenceSteps;
   translations: SentenceTranslation[] = [];
   sentenceNrObservable: Subject<number> = new Subject<number>();
+  chapterObservable: BehaviorSubject<Chapter>;
+  interfaceLan = 'en';
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +45,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.interfaceLan = this.userService.user.main.lan;
     this.getBookId();
   }
 
@@ -52,8 +56,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.sharedService.changeExerciseMode(false);
-      this.readingStarted = false;
+      // this.readingStarted = false;
       this.log('Reading aborted');
+      this.placeBookmark();
+      this.processResults();
     }
   }
 
@@ -85,10 +91,9 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.bookId = params['id'];
         if (this.bookId) {
           this.isLoading = true;
-          const interfaceLan = this.userService.user.main.lan;
           zip(
-            this.readService.fetchUserBook(interfaceLan, this.bookId),
-            this.utilsService.fetchTranslations(interfaceLan, 'ReadComponent')
+            this.readService.fetchUserBook(this.interfaceLan, this.bookId),
+            this.utilsService.fetchTranslations(this.interfaceLan, 'ReadComponent')
           )
           .pipe(
             takeWhile(() => this.componentActive))
@@ -137,11 +142,16 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(
       chapter => {
         this.isLoading = false;
-        console.log('chapter', chapter);
         if (chapter) {
           this.currentChapter = chapter;
+          if (this.chapterObservable) {
+            this.chapterObservable.next(chapter);
+          } else {
+            this.chapterObservable = new BehaviorSubject<Chapter>(chapter);
+          }
           this.currentSentenceTotal = chapter.sentences.length;
           this.currentSentenceNr = 0;
+          this.sentenceNrObservable.next(this.currentSentenceNr);
           this.getSentence();
         } else {
           // chapter not found -> end of book?
@@ -169,16 +179,14 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private getSentenceTranslations() {
     this.readService
     .fetchSentenceTranslations(
-      this.userService.user.main.lan,
+      this.interfaceLan,
       this.bookId,
       this.currentSentence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
-        console.log('translations', translations);
         this.translations = translations;
         this.currentStep = SentenceSteps.Translations;
-
       }
     );
   }
@@ -188,6 +196,35 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.log(`Start reading '${this.book.title}'`);
     this.sharedService.changeExerciseMode(true);
     this.errorService.clearError();
+  }
+
+  private placeBookmark() {
+    console.log('current step', this.currentStep, SentenceSteps.Answered);
+    if (this.currentStep < SentenceSteps.Answered) {
+      console.log('current sentence not answered, deduct one for bookmark', this.currentSentenceNr);
+      this.currentSentenceNr--;
+    }
+    let isFinished = false;
+    if (this.currentSentenceNr >= this.currentSentenceTotal) {
+      isFinished = true;
+    }
+    console.log('place bookmark chapter', this.currentChapter);
+    console.log('place bookmark sentencenr', this.currentSentenceNr, this.currentSentenceTotal);
+    console.log('place bookmark finished', isFinished);
+    const newBookmark: Bookmark = {
+      chapterId: this.currentChapter._id,
+      sentenceNr: this.currentSentenceNr,
+      isFinished
+    };
+    this.readService
+    .placeBookmark(this.bookId, newBookmark)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(bookmark => console.log('bookmarked'));
+  }
+
+  private processResults() {
+    console.log('process results');
+    this.currentStep = SentenceSteps.Results;
   }
 
   private log(message: string) {

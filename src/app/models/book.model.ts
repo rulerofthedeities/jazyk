@@ -1,4 +1,4 @@
-export enum SentenceSteps {Question, Answered, Translations}
+export enum SentenceSteps {Question, Answered, Translations, Results}
 
 export interface Sentence {
   text: string;
@@ -35,11 +35,12 @@ export interface Book {
   _id: string;
   title: string;
   source: string;
-  category: string;
+  categories: string[];
   lanCode: string;
   author: string;
   year: number;
   img: string;
+  tpe: string;
   difficulty: Difficulty;
   isPublished: boolean;
 }
@@ -50,16 +51,9 @@ interface UserBookDates {
   dtLastUnSubscribed: Date;
 }
 
-export interface UserBook {
-  bookId: string;
-  userId: string;
-  lanCode: string;
-  subscribed: boolean;
-  dt: UserBookDates;
-}
-
 export interface SentenceTranslation {
   translation: string;
+  note: string;
   lanCode: string;
   score: number;
 }
@@ -68,4 +62,19 @@ interface SentenceTranslations {
   bookId: string;
   sentence: string;
   translations: SentenceTranslation[];
+}
+
+export interface Bookmark {
+  chapterId: string;
+  sentenceNr: number;
+  isFinished: boolean;
+}
+
+export interface UserBook {
+  bookId: string;
+  userId: string;
+  lanCode: string;
+  subscribed: boolean;
+  bookmark: Bookmark;
+  dt: UserBookDates;
 }

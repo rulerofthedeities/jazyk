@@ -1,3 +1,14 @@
-<div *ngFor="let sentence of sentences | slice:(nr > 5 ? nr - 6 : 0):nr - 1">
-  {{sentence.text}}
+<div [class.history]="!minimized" *ngIf="nr > 1">
+  <span
+    class="fa fa-window-minimize pull-right minimize"
+    [ngClass]="{
+      'fa-window-minimize':!minimized,
+      'fa-window-maximize':minimized}"
+    (click)="onMinimize(!minimized)">
+  </span>
+<div [style.display]="minimized ? 'none' : 'block'">
+  <div *ngFor="let sentence of currentSentences; let i= index"
+    [class.paragraph]="sentence.isNewParagraph && (i > 0 || title === '')">
+    <span [class.header]="i === 0 && title !==''">{{sentence.text}}</span>
+  </div>
 </div>

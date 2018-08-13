@@ -3,7 +3,8 @@
   color: red;
   text-shadow: 1px 1px 1px #333;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 12px;
+  margin-top: 6px;
 }
 .reading-header{
   height: 36px;
@@ -23,8 +24,7 @@
   color: #999;
 }
 .sentence {
-  border: 2px dotted darkblue;
-  text-align: center;
+  /* font-family: 'Times New Roman', Times, serif; */
   font-size: 3rem;
   background-color: black;
   color: white;
@@ -50,4 +50,10 @@
   left: 0;
   width: 100%;
   font-size: 2vw;
+}
+.translations{
+  clear: right;
+}
+.next-sentence {
+  margin-bottom: 10px;
 }

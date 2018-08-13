@@ -31,32 +31,39 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.interfaceLan = this.userService.user.main.lan;
   }
 
-  onAddTranslation(translation: string) {
+  onAddTranslation(translation: string, translationnote: string) {
     this.submitting = true;
     this.duplicate = false;
     translation = translation.trim();
+    translationnote = translationnote.trim();
     const duplicate = this.translations.find(t => t.translation === translation);
     if (translation && !duplicate) {
-      this.readService
-      .addSentenceTranslation(this.interfaceLan, this.bookId, this.sentence, translation)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(
-        result => {
-          this.submitted = true;
-          this.translations.unshift({translation, lanCode: this.interfaceLan, score: 0});
-        }
-      );
-    } else if (duplicate) {
+      this.addTranslation(translation, translationnote);
+    } else {
       this.submitting = false;
-      this.duplicate = true;
+      if (duplicate) {
+        this.duplicate = true;
+      }
     }
   }
 
-  getColor(i: number): string {
-    const lightness = Math.min(80, i * 10).toString();
-    console.log('lightness', lightness);
-    // return 'hsl(240, 100%, ' + lightness + '%)|sanitizeStyle';
+  getColor(i: number, isNote: boolean): string {
+    const lightness = Math.min(80, (i + 1) * (isNote ? 50 : 10) - 10).toString();
     return 'hsl(200, 0%,' + lightness + '%)';
+  }
+
+  private addTranslation(translation: string, note: string) {
+    this.readService
+    .addSentenceTranslation(this.interfaceLan, this.bookId, this.sentence, translation, note)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      result => {
+        this.submitted = true;
+        const newTranslation = {translation, note, lanCode: this.interfaceLan, score: 0};
+        this.translations.unshift(newTranslation);
+
+      }
+    );
   }
 
   ngOnDestroy() {

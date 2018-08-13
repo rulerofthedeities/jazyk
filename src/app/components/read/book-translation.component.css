@@ -1,5 +1,5 @@
 .translations-container {
-  max-height: 200px;
+  max-height: 100px;
   overflow-y: scroll;
   border: 1px solid #333;
   margin-bottom: 12px;
@@ -7,4 +7,25 @@
 }
 .translation-item {
   padding: 5px 10px;
+}
+.translation-item:nth-child(2n) {
+  background-color:#fafafa;
+}
+.translation-item:hover {
+  background-color: #eee;
+}
+.translation-new-note {
+  height: 26px;
+  padding-top: 0;
+  font-style: italic;
+}
+.translation-send {
+  vertical-align: top;
+}
+.translation-note {
+  font-style: italic;
+  font-size: 12px;
+}
+.new-translation {
+  margin-top: 3px;
 }
