@@ -11,6 +11,7 @@ import { BookSentencesComponent } from './components/read/book-sentences.compone
 import { BookTranslationComponent } from './components/read/book-translation.component';
 import { BookContextComponent } from './components/read/book-context.component';
 import { BookBulletsComponent } from './components/read/book-bullets.component';
+import { BookResultsComponent } from './components/read/book-results.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -31,7 +32,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     BookSentencesComponent,
     BookTranslationComponent,
     BookContextComponent,
-    BookBulletsComponent
+    BookBulletsComponent,
+    BookResultsComponent
   ]
 })
 export class ReadModule {}

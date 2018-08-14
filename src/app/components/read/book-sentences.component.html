@@ -1,5 +1,5 @@
 <section>
-  <km-book-bullets
+  <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
   </km-book-bullets>
   <div  *ngIf="readingStarted && !isError && !isLoading">
@@ -96,8 +96,11 @@
 
           <!-- RESULTS -->
           <div *ngIf="currentStep === steps.Results">
-            RESULTS
           </div>
+          <km-sentences-results
+            [data]="sessionData"
+            [text]="text">
+          </km-sentences-results>
         </div>
       </div>
     </div>

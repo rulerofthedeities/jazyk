@@ -55,7 +55,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.sessionData = {
       answers: '',
       chapters: 0,
-      translations: 0
+      translations: 0,
+      nrYes: 0,
+      nrNo: 0,
+      nrMaybe: 0
     };
     this.getBookId();
   }
@@ -120,9 +123,18 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.currentAnswer = answer;
     this.sessionData.answers += answer.substr(0, 1);
     switch (answer) {
-      case 'yes': break;
-      case 'no': break;
-      case 'maybe': break;
+      case 'yes':
+        this.sessionData.nrYes++;
+        // this.chapterData.nrYes++;
+        break;
+      case 'no':
+        this.sessionData.nrNo++;
+        // this.chapterData.nrNo++;
+        break;
+      case 'maybe':
+        this.sessionData.nrMaybe++;
+        // this.chapterData.nrMaybe++;
+        break;
     }
     this.getSentenceTranslations();
   }

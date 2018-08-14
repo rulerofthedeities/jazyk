@@ -1,0 +1,88 @@
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      {{text["ReadingSessionResults"]}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <!-- GRAPH -->
+    <div class="graph">
+      <div class="row">
+        <div class="col-xs-2 result-label">
+          {{text["Yes"]}}: <span class="total">{{data.nrYes}}</span>
+        </div>
+        <div class="col-xs-10">
+          <div class="bg-green bar" [style.width.%]="percYes">{{percYes}}%</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-2 result-label">
+          {{text["Maybe"]}}: <span class="total">{{data.nrMaybe}}</span>
+        </div>
+        <div class="col-xs-10">
+          <div class="bg-orange bar" [style.width.%]="percMaybe">{{percMaybe}}%</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-2 result-label">
+          {{text["No"]}}: <span class="total">{{data.nrNo}}</span>
+        </div>
+        <div class="col-xs-10">
+          <div class="bg-red bar" [style.width.%]="percNo">{{percNo}}%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAILS -->
+    <button
+      type="button"
+      class="btn btn-info btn-xs"
+      (click)="onShowDetails(!showDetails)">
+      <span
+        class="fa fa-eye"
+        [ngClass]="{'fa-eye':showDetails, 'fa-eye-slash':!showDetails}">
+      </span> {{showDetails ? text["HideDetails"] : text["MoreDetails"]}}
+    </button>
+    <div class="clearfix"></div>
+    <div class="panel panel-info" *ngIf="showDetails">
+      <div class="panel-body panel-details">
+        <div class="details">
+          <!-- TODO: nog te lezen zinnen in boek -->
+          <div class="main-details">
+            <div>{{text["SentencesRead"]}}: {{total}}</div>
+            <div>{{text["ChaptersCompleted"]}}: {{data.chapters}}</div>
+            <div>{{text["TranslationsSubmitted"]}}: {{data.translations}}</div>
+          </div>
+          {{text["AllAnswers"]}}:
+          <div class="bullet-list">
+            <span class="bullet"
+              *ngFor="let answer of data.answers.split(''); let i=index">
+              <span class="fa fa-square"
+              [ngClass]="{
+                'green': answer === 'y',
+                'orange': answer === 'm',
+                'red': answer === 'n'}">
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- RECOMMENDATIONS -->
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      {{text["Recommendations"]}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="recommendations">
+      Recommendations...
+    </div>
+    <button type="button" class="btn btn-primary" (click)="onToRead()">
+      NO THANKS SEND ME BACK TO THE READING LIST
+    </button>
+  </div>
+</div>

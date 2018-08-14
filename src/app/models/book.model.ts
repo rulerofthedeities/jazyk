@@ -84,6 +84,9 @@ export interface UserBook {
 export interface SessionData {
   answers: string;
   chapters: number;
+  nrYes: number;
+  nrNo: number;
+  nrMaybe: number;
   translations: number;
 }
 

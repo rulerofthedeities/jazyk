@@ -1,11 +1,11 @@
 <div class="bullets">
   <span class="bullet"
-    *ngFor="let answer of data.answers.split('').slice(-20); let i=index">
-      <span class="fa fa-square"
-      [ngClass]="{
-        'green': answer === 'y',
-        'orange': answer === 'm',
-        'red': answer === 'n'}">
-      </span>
+    *ngFor="let answer of data.answers.slice(-20).split(''); let i=index">
+    <span class="fa fa-square"
+    [ngClass]="{
+      'green': answer === 'y',
+      'orange': answer === 'm',
+      'red': answer === 'n'}">
     </span>
+  </span>
 </div>

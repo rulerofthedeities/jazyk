@@ -1,0 +1,63 @@
+.graph {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+.row > div {
+  height: 100%;
+  margin-top: 1px;
+}
+.result-label {
+  padding: 4px;
+  text-align: right;
+  font-weight: bold;
+}
+.bg-green {
+  background-color: green;
+}
+.bg-orange {
+  background-color: orange;
+}
+.bg-red {
+  background-color: red;
+}
+.bar {
+  font-style: italic;
+  color: #000;
+  transition: width 1s ease-out;
+  height: 100%;
+  border: 1px solid #666;
+  padding: 4px;
+}
+.total {
+  color: #666;
+}
+.details {
+  font-size: 1.6rem;
+}
+.main-details {
+  margin: 12px 0;
+  border: 1px dotted #999;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+.main-details > div {
+  background-color: #fefefe;
+  padding: 3px 6px;
+  border: 1px dotted #999;
+  border-top: none;
+  margin: 0;
+}
+.panel-details {
+  background-color: #d9edf7;
+}
+.bullet-list {
+  background-color: #fefefe;
+  border: 1px dotted #999;
+  padding: 6px 8px 12px 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.bullet {
+  height: 15px;
+}
