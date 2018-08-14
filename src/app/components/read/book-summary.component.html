@@ -1,6 +1,6 @@
 <article>
   <div class="panel panel-default panel-book">
-    <div class="panel-body">
+    <div class="panel-body" [class.read]="isBookRead">
       <div class="image">
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
@@ -15,17 +15,23 @@
           {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span> {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
         </div>
         <div class="buttons">
-          <button type="button" class="btn btn-success"
+          <button *ngIf="!isBookRead"
+            type="button"
+            class="btn btn-success"
             (click)="onStartReading()">
             <span class="fa fa-arrow-right fa-spacing"></span>
             {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
           </button>
+          <div class="book-read" *ngIf="isBookRead">
+            <span class="fa fa-check"></span>
+            {{text['BookRead']}}
+          </div>
         </div>
         <div class="stop pull-right" *ngIf="isSubscribed">
           <button type="button" class="btn btn-default"
             (click)="onStopReading()">
             <span class="fa fa-times-circle fa-spacing"></span>
-            {{text["StopReading"]}}
+            {{text["RemoveFromList"]}}
           </button>
         </div>
         <div class="info">

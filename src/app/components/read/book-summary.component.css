@@ -87,3 +87,18 @@
 .panel-book {
   min-height: 236px;
 }
+.fa-check {
+  color: green;
+  font-size: 32px;
+}
+.book-read {
+  font-size: 16px;
+  color: green;
+}
+.read {
+  background-color: lightblue;
+}
+.read .stop > button{
+  background-color: #518ec2;
+  color: #eee;
+}

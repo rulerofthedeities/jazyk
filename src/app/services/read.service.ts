@@ -42,6 +42,11 @@ export class ReadService {
     .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
   }
 
+  setBookmarkRead(bookId: string, bookmark: Bookmark): Observable<Bookmark> {
+    return this.http
+    .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
+  }
+
   /*** Chapters ***/
 
   fetchChapter(bookId: string, chapterId: string, sequence: number): Observable<Chapter> {

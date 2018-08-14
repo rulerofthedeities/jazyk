@@ -23,6 +23,7 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   percDone: number;
   isSubscribed = false;
   isStarted = false;
+  isBookRead = false;
   defaultImage = '/assets/img/books/blankcover.png';
 
   constructor(
@@ -87,8 +88,11 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
       }
       if (this.userBook.bookmark) {
         console.log('bookmark', this.userBook.bookmark);
-        this.nrOfSentencesDone = this.userBook.bookmark.sentenceNr;
+        this.nrOfSentencesDone = this.userBook.bookmark.sentenceNrBook;
         this.percDone = Math.trunc(this.nrOfSentencesDone / this.book.difficulty.nrOfSentences * 100);
+        if (this.userBook.bookmark.isBookRead) {
+          this.isBookRead = true;
+        }
       } else {
         this.percDone = 0;
       }

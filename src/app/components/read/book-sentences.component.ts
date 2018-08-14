@@ -27,13 +27,18 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   currentSentenceTotal: number;
   currentStep = SentenceSteps.Question;
   currentAnswer: string;
+  isBookRead = false;
   readingStarted = false;
   isLoading = false;
+  isError = false;
+  showMsg = false;
   steps = SentenceSteps;
   translations: SentenceTranslation[] = [];
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
   interfaceLan = 'en';
+  sessionData: SessionData;
+  chapterData: ChapterData;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,8 +60,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
-      this.sharedService.changeExerciseMode(false);
-      // this.readingStarted = false;
       this.log('Reading aborted');
       this.placeBookmark();
       this.processResults();
@@ -78,6 +81,14 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       case 'maybe': break;
     }
     this.getSentenceTranslations();
+  }
+
+  getBookReadMessage(title: string): string {
+    if (title) {
+      return this.text['AlreadyReadBook'].replace('%s', title);
+    } else {
+      return '';
+    }
   }
 
   private getBookId() {
@@ -124,8 +135,16 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private findCurrentChapter(userBook: UserBook) {
     if (userBook) {
       if (userBook.bookmark) {
-        // TODO: start with this chapter; if at the end; go to next chapter
-        this.getChapter(userBook.bookId, userBook.bookmark, 1);
+        console.log(userBook.bookmark);
+        if (userBook.bookmark.isBookRead) {
+          this.isBookRead = true;
+          this.isError = true;
+          this.showMsg = true;
+          console.log('BOOK READ');
+        } else {
+          // TODO: start with this chapter; if at the end; go to next chapter
+          this.getChapter(userBook.bookId, userBook.bookmark, 1);
+        }
       } else {
         // no chapter: get first chapter
         this.getChapter(userBook.bookId, null, 1);
@@ -141,16 +160,17 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       chapter => {
         this.isLoading = false;
         if (chapter) {
-          console.log('get chapter', chapter);
           this.currentChapter = chapter;
           this.emitChapter(chapter);
           this.currentSentenceTotal = chapter.sentences.length;
-          this.currentSentenceNr = bookmark ? bookmark.sentenceNr : 0;
-          console.log('sentence nr', this.currentSentenceNr);
+          this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
           this.emitSentenceNr(this.currentSentenceNr);
           this.getSentence();
         } else {
           // chapter not found -> end of book?
+          console.log('chapter not found - end of book');
+          this.setBookmarkRead();
+          this.currentStep = SentenceSteps.Results;
         }
       }
     );
@@ -171,6 +191,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.startReading(false);
         }
       }
+    } else {
+      // Chapter finished
+      console.log('finished chapter', this.currentSentenceNr, chapter.sentences);
+      this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
   }
 
@@ -217,14 +241,14 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     if (this.currentStep < SentenceSteps.Answered) {
       this.currentSentenceNr--;
     }
-    let isFinished = false;
+    let isRead = false;
     if (this.currentSentenceNr >= this.currentSentenceTotal) {
-      isFinished = true;
+      isRead = true;
     }
     const newBookmark: Bookmark = {
       chapterId: this.currentChapter._id,
-      sentenceNr: this.currentSentenceNr,
-      isChapterFinished: isFinished
+      sentenceNrChapter: this.currentSentenceNr,
+      isChapterRead: isRead
     };
     this.readService
     .placeBookmark(this.bookId, newBookmark)
@@ -232,7 +256,22 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(bookmark => console.log('bookmarked'));
   }
 
+  private setBookmarkRead() {
+    const newBookmark: Bookmark = {
+      chapterId: this.currentChapter._id,
+      sentenceNrChapter: this.currentSentenceNr,
+      sentenceNrBook: this.book.difficulty.nrOfSentences,
+      isChapterRead: true,
+      isBookRead: true
+    };
+    this.readService
+    .setBookmarkRead(this.bookId, newBookmark)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(bookmark => console.log('set book as read'));
+  }
+
   private processResults() {
+    this.sharedService.changeExerciseMode(false);
     this.currentStep = SentenceSteps.Results;
   }
 

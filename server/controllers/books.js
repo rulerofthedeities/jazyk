@@ -98,11 +98,14 @@ module.exports = {
           bookmark = req.body.bookmark,
           query = {bookId, userId},
           update = {$set: {bookmark}};
-        console.log(bookmark);
+    if (!bookmark.sentenceNrBook) {
+      //TODO -> calculate sentences done
+      bookmark.sentenceNrBook = 0;
+    }
     UserBook.findOneAndUpdate(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating bookmark', function() {
         response.handleSuccess(res, result);
       });
-    })
+    });
   }
 }

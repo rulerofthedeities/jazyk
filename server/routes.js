@@ -142,7 +142,7 @@ module.exports.initialize = function(app, router) {
   router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
   router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
   router.post('/book/translation/', books.addTranslation);
-  router.put('/book/bookmark/:bookId', books.updateBookmark)
+  router.put('/book/bookmark/:bookId', books.updateBookmark);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);
