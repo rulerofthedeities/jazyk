@@ -57,3 +57,10 @@
 .next-sentence {
   margin-bottom: 10px;
 }
+.short-key {
+  font-size: 0.8em;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+}

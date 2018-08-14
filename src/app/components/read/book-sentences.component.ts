@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
@@ -6,9 +6,9 @@ import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
-import { zip, Subject, BehaviorSubject } from 'rxjs';
+import { zip, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
-import { UserBook, Bookmark,
+import { UserBook, Bookmark, SessionData, ChapterData,
          Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
 
 @Component({
@@ -39,6 +39,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   interfaceLan = 'en';
   sessionData: SessionData;
   chapterData: ChapterData;
+  @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,20 +68,38 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   onNextSentence() {
-    this.currentStep = SentenceSteps.Question;
     this.getSentence();
   }
 
   onAnswer(answer: string) {
     console.log('answer', answer);
-    this.currentStep = SentenceSteps.Answered;
-    this.currentAnswer = answer;
-    switch (answer) {
-      case 'yes': break;
-      case 'no': break;
-      case 'maybe': break;
+    this.answer(answer);
+  }
+
+  onKeyPressed(key: string) {
+    console.log('pressed1>', key, '<');
+    switch (key) {
+      case 'Enter':
+        if (this.currentStep === SentenceSteps.Translations) {
+          this.getSentence();
+        }
+        break;
+      case 'Escape':
+        if (this.currentStep < SentenceSteps.Results) {
+          this.confirm.showModal = true;
+        }
+        break;
+      case 'Backspace':
+      if (this.currentStep === SentenceSteps.Question) {
+        this.answer('no');
+      }
+        break;
+      case ' ':
+        if (this.currentStep === SentenceSteps.Question) {
+          this.answer('yes');
+        }
+        break;
     }
-    this.getSentenceTranslations();
   }
 
   getBookReadMessage(title: string): string {
@@ -89,6 +108,17 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+
+  private answer(answer: string) {
+    this.currentStep = SentenceSteps.Answered;
+    this.currentAnswer = answer;
+    switch (answer) {
+      case 'yes': break;
+      case 'no': break;
+      case 'maybe': break;
+    }
+    this.getSentenceTranslations();
   }
 
   private getBookId() {
@@ -180,6 +210,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     const chapter = this.currentChapter,
           nr = this.currentSentenceNr;
     if (chapter.sentences[nr]) {
+      this.currentStep = SentenceSteps.Question;
       const sentence = chapter.sentences[nr].text.trim();
       if (sentence) {
         this.currentSentence = sentence;
