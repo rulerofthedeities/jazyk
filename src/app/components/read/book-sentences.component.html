@@ -1,5 +1,7 @@
 <section>
-  STEP {{this.currentStep}}
+  <km-book-bullets
+    [data]="sessionData">
+  </km-book-bullets>
   <div  *ngIf="readingStarted && !isError && !isLoading">
     <!-- READING MODE HEADER -->
     <div class="exercise-header">

@@ -52,6 +52,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.interfaceLan = this.userService.user.main.lan;
+    this.sessionData = {
+      answers: '',
+      chapters: 0,
+      translations: 0
+    };
     this.getBookId();
   }
 
@@ -113,6 +118,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private answer(answer: string) {
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer;
+    this.sessionData.answers += answer.substr(0, 1);
     switch (answer) {
       case 'yes': break;
       case 'no': break;
@@ -225,6 +231,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     } else {
       // Chapter finished
       console.log('finished chapter', this.currentSentenceNr, chapter.sentences);
+      this.sessionData.chapters++;
       this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
   }

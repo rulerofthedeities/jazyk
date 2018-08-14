@@ -10,6 +10,7 @@ import { BookSummaryComponent } from './components/read/book-summary.component';
 import { BookSentencesComponent } from './components/read/book-sentences.component';
 import { BookTranslationComponent } from './components/read/book-translation.component';
 import { BookContextComponent } from './components/read/book-context.component';
+import { BookBulletsComponent } from './components/read/book-bullets.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -29,7 +30,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     BookSummaryComponent,
     BookSentencesComponent,
     BookTranslationComponent,
-    BookContextComponent
+    BookContextComponent,
+    BookBulletsComponent
   ]
 })
 export class ReadModule {}
