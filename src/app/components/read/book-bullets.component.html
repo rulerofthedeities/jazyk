@@ -1,4 +1,4 @@
-<div class="bullets">
+<div class="bullets" *ngIf="data">
   <span class="bullet"
     *ngFor="let answer of data.answers.slice(-20).split(''); let i=index">
     <span class="fa fa-square"

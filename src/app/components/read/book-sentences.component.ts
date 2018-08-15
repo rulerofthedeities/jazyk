@@ -19,6 +19,7 @@ import { UserBook, Bookmark, SessionData, ChapterData,
 export class BookSentencesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private bookId: string;
+  private saveFrequency = 3;
   text: Object = {};
   book: Book;
   currentChapter: Chapter;
@@ -38,7 +39,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   chapterObservable: BehaviorSubject<Chapter>;
   interfaceLan = 'en';
   sessionData: SessionData;
-  chapterData: ChapterData;
+  startDate = new Date();
+  // chapterData: ChapterData;
   @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
 
   constructor(
@@ -52,14 +54,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.interfaceLan = this.userService.user.main.lan;
-    this.sessionData = {
-      answers: '',
-      chapters: 0,
-      translations: 0,
-      nrYes: 0,
-      nrNo: 0,
-      nrMaybe: 0
-    };
     this.getBookId();
   }
 
@@ -70,22 +64,29 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.log('Reading aborted');
-      this.placeBookmark();
+      this.saveSessionData();
       this.processResults();
     }
   }
 
   onNextSentence() {
     this.getSentence();
+    console.log('save session data?', this.sessionData.answers.length, this.saveFrequency, this.sessionData.answers.length);
+    if (this.sessionData.answers.length % this.saveFrequency === 0) {
+      console.log('save session data', this.sessionData.answers.length);
+      this.saveSessionData();
+    }
   }
 
   onAnswer(answer: string) {
-    console.log('answer', answer);
     this.answer(answer);
   }
 
+  onTranslationAdded() {
+    this.sessionData.translations++;
+  }
+
   onKeyPressed(key: string) {
-    console.log('pressed1>', key, '<');
     switch (key) {
       case 'Enter':
         if (this.currentStep === SentenceSteps.Translations) {
@@ -125,15 +126,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     switch (answer) {
       case 'yes':
         this.sessionData.nrYes++;
-        // this.chapterData.nrYes++;
         break;
       case 'no':
         this.sessionData.nrNo++;
-        // this.chapterData.nrNo++;
         break;
       case 'maybe':
         this.sessionData.nrMaybe++;
-        // this.chapterData.nrMaybe++;
         break;
     }
     this.getSentenceTranslations();
@@ -159,6 +157,15 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
             console.log('zip result', res);
             this.text = this.utilsService.getTranslatedText(res[1]);
             const userBook = res[0];
+            this.sessionData = {
+              bookId: this.bookId,
+              answers: '',
+              chapters: 0,
+              translations: 0,
+              nrYes: 0,
+              nrNo: 0,
+              nrMaybe: 0
+            };
             this.getBook(this.bookId);
             this.findCurrentChapter(userBook);
           });
@@ -234,11 +241,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.currentSentence = sentence;
         this.currentSentenceNr++;
         this.emitSentenceNr(this.currentSentenceNr);
-        if (nr === 0) {
-          this.startReading(true);
-        } else {
-          this.startReading(false);
-        }
+        console.log('SESSION DATA', this.sessionData);
+        this.checkReadingStarted(nr);
       }
     } else {
       // Chapter finished
@@ -279,12 +283,15 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     );
   }
 
-  private startReading(isNew: boolean) {
-    const status = isNew ? 'Start' : 'Continue';
-    this.readingStarted = true;
-    this.log(`${status} reading '${this.book.title}'`);
-    this.sharedService.changeExerciseMode(true);
-    this.errorService.clearError();
+  private checkReadingStarted(sentenceNr: number) {
+    if (this.sessionData.answers.length === 0) {
+      const status = sentenceNr === 0 ? 'Start' : 'Continue';
+      this.readingStarted = true;
+      this.log(`${status} reading '${this.book.title}'`);
+      console.log(status + ' reading');
+      this.sharedService.changeExerciseMode(true);
+      this.errorService.clearError();
+    }
   }
 
   private placeBookmark() {
@@ -321,8 +328,24 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private processResults() {
+    console.log('changing exercise mode to false');
     this.sharedService.changeExerciseMode(false);
     this.currentStep = SentenceSteps.Results;
+  }
+
+  private saveSessionData() {
+    this.readService
+    .saveSessionData(this.sessionData, this.startDate)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      id => {
+        if (!this.sessionData._id && id) {
+          this.sessionData._id = id;
+        }
+        this.placeBookmark();
+        console.log('Session data saved');
+      }
+    );
   }
 
   private log(message: string) {

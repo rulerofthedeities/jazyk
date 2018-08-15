@@ -58,8 +58,27 @@ var translationsSchema = new Schema({
 
 translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
 
+var dtSchema = new Schema({
+  start: Date,
+  end: {type: Date, default: Date.now},
+  diff: Number
+}, {_id: false});
+
+var sessionSchema = new Schema({
+  bookId: {type: Schema.Types.ObjectId, required: true},
+  userId: {type: Schema.Types.ObjectId, required: true},
+  answers: {type: String, required: true},
+  chapters: Number,
+  nrYes: Number,
+  nrNo: Number,
+  nrMaybe: Number,
+  translations: Number,
+  dt: dtSchema
+});
+
 module.exports = {
   book: mongoose.model('Book', bookSchema),
   chapter: mongoose.model('Bookchapter', chapterSchema),
-  translation: mongoose.model('Booktranslation', translationsSchema)
+  translation: mongoose.model('Booktranslation', translationsSchema),
+  session: mongoose.model('UserSession', sessionSchema)
 }

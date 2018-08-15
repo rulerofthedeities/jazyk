@@ -3,8 +3,16 @@ const response = require('../response'),
       Book = require('../models/book').book,
       Chapter = require('../models/book').chapter,
       Translation = require('../models/book').translation,
+      Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook;
 
+const setSessionDt = (startDate) => {
+        return {
+          start: startDate,
+          end: Date.now(),
+          diff: (new Date().getTime() - new Date(startDate).getTime()) / 1000
+        };
+      }
 module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
@@ -54,9 +62,9 @@ module.exports = {
     const bookId = req.params.bookId,
           chapterId = req.params.chapterId,
           sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
-          query = chapterId === '0' ? {bookId, sequence} : {_id: chapterId};
-    Chapter.findOne(query, (err, chapter) => {
-      console.log(chapter, chapter);
+          query = chapterId === '0' ? {bookId, sequence} : {_id: chapterId},
+          projection = {content: 0};
+    Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching chapter', () => {
         response.handleSuccess(res, chapter);
       });
@@ -104,6 +112,41 @@ module.exports = {
     }
     UserBook.findOneAndUpdate(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating bookmark', function() {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  addSession: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          sessionData = req.body.sessionData,
+          startDate = req.body.startDate;
+    sessionData.userId = userId;
+    sessionData.dt = setSessionDt(startDate);
+    console.log('add session', sessionData);
+    session = new Session(sessionData);
+    session.save(function(err, result) {
+      response.handleError(err, res, 400, 'Error saving new session data', function(){
+        response.handleSuccess(res, result._id);
+      });
+    });
+  },
+  updateSession: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          sessionData = req.body.sessionData,
+          startDate = req.body.startDate;
+    sessionData.dt = setSessionDt(startDate);
+    update = {$set: {
+      answers: sessionData.answers,
+      chapters: sessionData.chapters,
+      nrYes: sessionData.nrYes,
+      nrNo: sessionData.nrNo,
+      nrMaybe: sessionData.nrMaybe,
+      translations: sessionData.translations
+    }}
+    console.log('update session', sessionData);
+    Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating session', function() {
+        console.log('result', result);
         response.handleSuccess(res, result);
       });
     });

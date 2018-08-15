@@ -22,15 +22,7 @@ export class BookResultsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('session data', this.data);
-    this.data = {
-      answers: 'yynymyynym',
-      nrYes: 6,
-      nrNo: 3,
-      nrMaybe: 2,
-      chapters: 1,
-      translations: 2
-    };
+    console.log('result session data', this.data);
     this.calculateResults();
   }
 
@@ -44,12 +36,10 @@ export class BookResultsComponent implements OnInit {
 
   private calculateResults() {
     this.total = this.data.nrYes + this.data.nrMaybe + this.data.nrNo;
-    console.log(this.total);
     if (this.total > 0) {
       this.percYes = Math.round(this.data.nrYes / this.total * 1000) / 10;
       this.percMaybe = Math.round(this.data.nrMaybe / this.total * 1000) / 10;
       this.percNo = Math.round(this.data.nrNo / this.total * 1000) / 10;
     }
-    console.log(this.percYes, this.percMaybe, this.percNo);
   }
 }

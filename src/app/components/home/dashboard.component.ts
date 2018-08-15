@@ -35,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoadingCommunication = false;
   isLoadingOverview = false;
   coursesReady = false;
+  isError = false;
   listType = CourseListType;
 
   constructor(

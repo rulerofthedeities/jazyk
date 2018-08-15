@@ -82,6 +82,8 @@ export interface UserBook {
 }
 
 export interface SessionData {
+  _id?: string;
+  bookId: string;
   answers: string;
   chapters: number;
   nrYes: number;

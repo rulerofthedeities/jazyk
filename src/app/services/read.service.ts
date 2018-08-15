@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, SentenceTranslation, UserBook, Bookmark } from '../models/book.model';
+import { Book, Chapter, SentenceTranslation, UserBook, Bookmark, SessionData } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -77,5 +77,19 @@ export class ReadService {
     .post<SentenceTranslation>('/api/book/translation/', {
       lanCode: interfaceLanCode, bookId, sentence, translation, note
     });
+  }
+
+  /*** Session data ***/
+  saveSessionData(sessionData: SessionData, startDate: Date): Observable<string>  {
+    // Date started + current date
+    if (sessionData._id) {
+      // Update session data
+      return this.http
+      .put<string>('/api/book/session', {sessionData, startDate});
+    } else {
+      // New session data
+      return this.http
+      .post<string>('/api/book/session', {sessionData, startDate});
+    }
   }
 }

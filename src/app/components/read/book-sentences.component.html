@@ -88,7 +88,7 @@
                   [text]="text"
                   [bookId]="book._id"
                   [sentence]="currentSentence"
-                  >
+                  (translationAdded)="onTranslationAdded()">
                 </km-sentence-translations>
               </div>
             </div>
@@ -96,11 +96,11 @@
 
           <!-- RESULTS -->
           <div *ngIf="currentStep === steps.Results">
+            <km-sentences-results
+              [data]="sessionData"
+              [text]="text">
+            </km-sentences-results>
           </div>
-          <km-sentences-results
-            [data]="sessionData"
-            [text]="text">
-          </km-sentences-results>
         </div>
       </div>
     </div>

@@ -25,6 +25,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
   isEditMode = false;
   isNewLesson = false;
   isCourseReady = false;
+  isError = false;
   text: Object = {};
   infoMsg: string;
 

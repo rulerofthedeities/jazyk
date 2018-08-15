@@ -23,6 +23,7 @@ export class LearnLessonOverviewComponent implements OnInit, OnDestroy {
   exerciseData: ExerciseData[] = [];
   exType = ExerciseType;
   isLoading = false;
+  isError = false;
   isLearnedLevel: number;
 
   constructor(

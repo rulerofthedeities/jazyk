@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
@@ -16,6 +16,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() bookId: string;
   @Input() sentence: string;
+  @Output() translationAdded = new EventEmitter();
   private componentActive = true;
   interfaceLan = '';
   submitting = false;
@@ -61,7 +62,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.submitted = true;
         const newTranslation = {translation, note, lanCode: this.interfaceLan, score: 0};
         this.translations.unshift(newTranslation);
-
+        this.translationAdded.emit();
       }
     );
   }
