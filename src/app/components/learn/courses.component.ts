@@ -112,7 +112,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
   }
 
   private setActiveLanguages(languages: Language[]) {
-    this.languages = languages.filter(language => language.active);
+    this.languages = languages;
     const allLanguage = this.utilsService.getAllLanguage();
     this.languages.unshift(allLanguage);
     this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
@@ -131,7 +131,7 @@ export class LearnCoursesComponent implements OnInit, OnDestroy {
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
-        this.setActiveLanguages(dependables.languages);
+        this.setActiveLanguages(dependables.courseLanguages);
         this.utilsService.setPageTitle(this.text, 'Courses');
         this.getCourses();
         this.isReady = true;

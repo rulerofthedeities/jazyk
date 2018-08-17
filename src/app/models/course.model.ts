@@ -184,6 +184,8 @@ export interface Dependables {
   translations: Translation[];
   languages: Language[]; // interface languages
   userLanguages: Language[]; // my languages
+  courseLanguages: Language[];
+  bookLanguages: Language[];
 }
 
 export interface DependableOptions {

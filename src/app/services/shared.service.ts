@@ -1,4 +1,3 @@
-import {EventEmitter} from '@angular/core';
 import {EventMessage} from '../models/error.model';
 import {Level, ProcessedData, ResultData, Map} from '../models/course.model';
 import {Exercise, ExerciseData, ExerciseExtraData, ExerciseResult, QuestionType} from '../models/exercise.model';
@@ -15,8 +14,8 @@ export class SharedService {
   private eventMessages: EventMessage[] = [];
   private messageLimit = 10;
   exerciseModeChanged = new Subject<boolean>();
-  justLoggedInOut = new EventEmitter<boolean>();
-  eventMessage = new EventEmitter<EventMessage>();
+  justLoggedInOut = new Subject<boolean>();
+  eventMessage = new Subject<EventMessage>();
 
   // Cross-lazy loaded module Events
   changeExerciseMode(isStarted: boolean) {
@@ -24,18 +23,18 @@ export class SharedService {
   }
 
   userJustLoggedIn() {
-    this.justLoggedInOut.emit(true);
+    this.justLoggedInOut.next(true);
   }
 
   userJustLoggedOut() {
-    this.justLoggedInOut.emit(false);
+    this.justLoggedInOut.next(false);
   }
 
   sendEventMessage(newMessage: EventMessage) {
     newMessage.dt = new Date();
     this.eventMessages.unshift(newMessage);
     this.eventMessages.slice(0, this.messageLimit);
-    this.eventMessage.emit(newMessage);
+    this.eventMessage.next(newMessage);
   }
 
   get lastEventMessage(): string {

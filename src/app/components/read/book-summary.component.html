@@ -8,7 +8,8 @@
       </div>
       <div class="book" [class.img-border]="!!book?.img">
         <h3>
-          <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag">
+          <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+
           {{book.title}}
         </h3>
         <div class="author">

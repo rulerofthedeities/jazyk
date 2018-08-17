@@ -3,16 +3,16 @@
   <div class="form-group form-group-lg">
     <div class="col-xs-4 selector">
       <km-language-selector
-        [languages]="languages"
-        [currentLanguage]="selectedLanguage"
+        [languages]="bookLanguages"
+        [currentLanguage]="bookLanguage"
         [text]="text"
         (languageSelected)="onBookLanguageSelected($event)">
       </km-language-selector>
     </div>
     <div class="col-xs-4 selector">
       <km-language-selector
-        [languages]="languages"
-        [currentLanguage]="selectedLanguage"
+        [languages]="userLanguages"
+        [currentLanguage]="myLanguage"
         [text]="text"
         (languageSelected)="onMyLanguageSelected($event)">
       </km-language-selector>
@@ -36,6 +36,7 @@
           [book]="book"
           [userBook]="userBooks[book._id]"
           [userData]="userData[book._id]"
+          [userLanCode]="myLanguage.code"
           [text]="text"
           (removedSubscription)="onRemovedSubscription($event)">
         </km-book-summary>

@@ -109,10 +109,6 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     return lan;
   }
 
-  private setActiveLanguages(languages: Language[]) {
-    this.activeLanguages = languages.filter(language => language.active);
-  }
-
   private getDependables() {
     const options = {
       lan: this.userService.user.main.lan,
@@ -126,7 +122,7 @@ export class BuildCoursesComponent implements OnInit, OnDestroy {
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
-        this.setActiveLanguages(dependables.languages);
+        this.activeLanguages = dependables.courseLanguages;
         this.utilsService.setPageTitle(this.text, 'Teach');
         this.getCourses();
       },

@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData } from '../../models/book.model';
 import { SharedService } from '../../services/shared.service';
@@ -11,10 +11,11 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['book-summary.component.css']
 })
 
-export class BookSummaryComponent implements OnInit, OnDestroy {
+export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
   @Input() userBook: UserBook;
   @Input() userData: UserData;
+  @Input() userLanCode: string;
   @Input() text: Object;
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
@@ -35,6 +36,9 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setDifficulty();
+  }
+
+  ngOnChanges() {
     this.checkIfStarted();
     this.checkSentencesDone();
   }
@@ -83,6 +87,11 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   }
 
   private checkIfStarted() {
+    this.isStarted = false;
+    this.isSubscribed = false;
+    this.isBookRead = false;
+    this.nrOfSentencesDone = 0;
+    this.percDone = 0;
     if (this.userBook) {
       this.isStarted = true;
       if (this.userBook.subscribed) {

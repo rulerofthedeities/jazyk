@@ -56,6 +56,7 @@ export class AuthService {
             userName: decoded.user.userName
           };
     this.storeUserData(userStorage);
+    this.sharedService.userJustLoggedIn();
     if (reroute) {
       const returnUrl = data.returnUrl || '/home';
       this.router.navigateByUrl(returnUrl);

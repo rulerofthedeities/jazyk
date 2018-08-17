@@ -66,7 +66,7 @@ module.exports = {
             }}
           ],
             userLanguagesPipeline = [
-              {$match: {tpe: 'language'}},
+              {$match: {tpe: 'language', user: true, active: true}},
               {$project: {
                 _id: 0,
                 code: 1,
@@ -75,7 +75,29 @@ module.exports = {
                 active: 1
               }},
             {$sort: {code: 1}}
-          ];
+          ],
+          bookLanguagesPipeline = [
+            {$match: {tpe: 'language', book: true, active: true}},
+            {$project: {
+              _id: 0,
+              code: 1,
+              name: 1,
+              nativeName: 1,
+              active: 1
+            }},
+          {$sort: {code: 1}}
+        ],
+        courseLanguagesPipeline = [
+          {$match: {tpe: 'language', course: true, active: true}},
+          {$project: {
+            _id: 0,
+            code: 1,
+            name: 1,
+            nativeName: 1,
+            active: 1
+          }},
+        {$sort: {code: 1}}
+      ];
     const getData = async () => {
       let translations, languages, userLanguages;
       if (params.getTranslations === 'true') {
@@ -84,8 +106,10 @@ module.exports = {
       if (params.getLanguages === 'true') {
         languages = await Config.aggregate(intLanguagesPipeline);
         userLanguages = await Config.aggregate(userLanguagesPipeline);
+        bookLanguages = await Config.aggregate(bookLanguagesPipeline);
+        courseLanguages = await Config.aggregate(courseLanguagesPipeline);
       }
-      return {translations, languages, userLanguages};
+      return {translations, languages, userLanguages, bookLanguages, courseLanguages};
     };
 
     getData().then((results) => {

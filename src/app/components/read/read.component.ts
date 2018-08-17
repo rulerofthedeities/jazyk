@@ -15,9 +15,10 @@ import { takeWhile } from 'rxjs/operators';
 export class ReadComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
-  selectedLanguage: Language;
+  bookLanguage: Language;
   myLanguage: Language;
-  languages: Language[];
+  bookLanguages: Language[];
+  userLanguages: Language[];
   books: Book[];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};
@@ -39,7 +40,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   }
 
   onBookLanguageSelected(lan: Language) {
-    this.selectedLanguage = lan;
+    this.bookLanguage = lan;
     this.getBooks();
   }
 
@@ -62,7 +63,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.getUserData();
     this.isLoading = true;
     this.readService
-    .fetchPublishedBooks(this.selectedLanguage.code)
+    .fetchPublishedBooks(this.bookLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
@@ -76,10 +77,11 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getUserBooks() {
     this.readService
-    .fetchUserBooks(this.userService.user.main.lan) // interface lan
+    .fetchUserBooks(this.myLanguage.code) // interface lan
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
+        this.userBooks = {};
         console.log('user books', books);
         books.forEach(uBook => {
           this.userBooks[uBook.bookId] = uBook;
@@ -90,10 +92,11 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getUserData() {
     this.readService
-    .fetchSessionData(this.userService.user.main.lan) // interface lan
+    .fetchSessionData(this.myLanguage.code) // interface lan
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       sessionData => {
+        this.userData = {};
         sessionData.forEach(session => {
           this.userData[session.bookId] = session;
         });
@@ -115,7 +118,9 @@ export class ReadComponent implements OnInit, OnDestroy {
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
-        this.setActiveLanguages(dependables.languages);
+        this.setActiveLanguages(dependables.bookLanguages);
+        this.userLanguages = dependables.userLanguages;
+        this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
         this.utilsService.setPageTitle(this.text, 'Read');
         this.getBooks();
         this.isReady = true;
@@ -123,12 +128,12 @@ export class ReadComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setActiveLanguages(languages: Language[]) {
-    this.languages = languages; // .filter(language => language.active);
+  private setActiveLanguages(bookLanguages: Language[]) {
+    this.bookLanguages = bookLanguages;
     const allLanguage = this.utilsService.getAllLanguage();
-    this.languages.unshift(allLanguage);
-    console.log('languages', this.languages);
-    this.selectedLanguage = this.userService.getUserLearnLanguage(this.languages);
+    this.bookLanguages.unshift(allLanguage);
+    console.log('book languages', this.bookLanguages);
+    this.bookLanguage = this.userService.getUserLearnLanguage(this.bookLanguages);
   }
 
   ngOnDestroy() {

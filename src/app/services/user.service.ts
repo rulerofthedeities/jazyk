@@ -70,11 +70,20 @@ export class UserService {
       const userLan = this._user.jazyk.learn.lan;
       learnLan = languages.find(lan => lan.code === userLan);
     }
-    if (!learnLan) {
+    if (!learnLan && languages.length) {
       // Get default language
       learnLan = languages[0];
     }
     return learnLan;
+  }
+
+  getUserLanguage(languages: Language[]): Language {
+    const userLanCode = this._user.main.myLan || this.user.main.lan;
+    let userLan = languages.find(lan => lan.code === userLanCode);
+    if (!userLan && languages.length) {
+      userLan = languages[0];
+    }
+    return userLan;
   }
 
   getDefaultUserData(queryLan: string) {

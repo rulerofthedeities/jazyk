@@ -74,9 +74,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       .signup(user)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
-        data => {
-          this.signIn(user);
-        },
+        data => this.signIn(user),
         error => this.errorService.handleError(error)
       );
     }
