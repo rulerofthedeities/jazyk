@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { Language, Map } from '../../models/course.model';
-import { Book, UserBook } from '../../models/book.model';
+import { Book, UserBook, UserData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -16,9 +16,11 @@ export class ReadComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
   selectedLanguage: Language;
+  myLanguage: Language;
   languages: Language[];
   books: Book[];
   userBooks: Map<UserBook> = {}; // For sorting
+  userData: Map<UserData> = {};
   isLoading = false;
   isError = false;
   isReady = false;
@@ -36,9 +38,15 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.getDependables();
   }
 
-  onLanguageSelected(lan: Language) {
+  onBookLanguageSelected(lan: Language) {
     this.selectedLanguage = lan;
     this.getBooks();
+  }
+
+  onMyLanguageSelected(lan: Language) {
+    this.myLanguage = lan;
+    this.getUserBooks();
+    this.getUserData();
   }
 
   onChangeBookType(tpe: string) {
@@ -51,6 +59,7 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getBooks() {
     this.getUserBooks();
+    this.getUserData();
     this.isLoading = true;
     this.readService
     .fetchPublishedBooks(this.selectedLanguage.code)
@@ -75,6 +84,20 @@ export class ReadComponent implements OnInit, OnDestroy {
         books.forEach(uBook => {
           this.userBooks[uBook.bookId] = uBook;
         });
+      }
+    );
+  }
+
+  private getUserData() {
+    this.readService
+    .fetchSessionData(this.userService.user.main.lan) // interface lan
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      sessionData => {
+        sessionData.forEach(session => {
+          this.userData[session.bookId] = session;
+        });
+        console.log('user data', this.userData);
       }
     );
   }

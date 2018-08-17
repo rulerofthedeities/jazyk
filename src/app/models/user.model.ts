@@ -3,7 +3,8 @@ export interface UserApp {
 }
 
 export interface MainSettings {
-  lan: string;
+  lan: string; // Interface lan
+  myLan: string; // User lan
   background: boolean;
   gender: string;
 }

@@ -47,7 +47,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getNotificationsCount();
     this.checkMessages();
     this.getScoreCount();
-    this.userService.languageChanged.subscribe(
+    this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
     this.userService.notificationRead.subscribe(
@@ -142,7 +142,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     localStorage.setItem('km-jazyk.lan', newLan.code);
     this.intLan = newLan;
     this.showDropDown = false;
-    this.userService.languageChanged.emit(newLan.code);
+    this.userService.interfaceLanguageChanged.next(newLan.code);
   }
 
   private getNotificationsCount() {

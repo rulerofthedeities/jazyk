@@ -52,8 +52,8 @@ module.exports = {
               txt: '$' + lan
             }}
           ],
-          languagesPipeline = [
-            {$match: {tpe: 'language'}},
+          intLanguagesPipeline = [
+            {$match: {tpe: 'language', interface: true}},
             {$project: {
               _id: 0,
               code: 1,
@@ -63,18 +63,29 @@ module.exports = {
               active: 1,
               articles: 1,
               regions: 1
-            }},
+            }}
+          ],
+            userLanguagesPipeline = [
+              {$match: {tpe: 'language'}},
+              {$project: {
+                _id: 0,
+                code: 1,
+                name: 1,
+                nativeName: 1,
+                active: 1
+              }},
             {$sort: {code: 1}}
           ];
     const getData = async () => {
-      let translations, languages;
+      let translations, languages, userLanguages;
       if (params.getTranslations === 'true') {
         translations = await Translation.aggregate(translationPipeline);
       }
       if (params.getLanguages === 'true') {
-        languages = await Config.aggregate(languagesPipeline);
+        languages = await Config.aggregate(intLanguagesPipeline);
+        userLanguages = await Config.aggregate(userLanguagesPipeline);
       }
-      return {translations, languages};
+      return {translations, languages, userLanguages};
     };
 
     getData().then((results) => {

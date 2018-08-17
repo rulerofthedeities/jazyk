@@ -182,7 +182,8 @@ export interface StepData {
 
 export interface Dependables {
   translations: Translation[];
-  languages: Language[];
+  languages: Language[]; // interface languages
+  userLanguages: Language[]; // my languages
 }
 
 export interface DependableOptions {

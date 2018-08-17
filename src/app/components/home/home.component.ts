@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setTitle(this.authService.isLoggedIn());
     this.getTranslations(this.userService.user.main.lan);
-    this.userService.languageChanged.subscribe(
+    this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
     this.sharedService.justLoggedInOut.subscribe(

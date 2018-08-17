@@ -3,19 +3,40 @@
   class="form-horizontal col-xs-9">
   <!-- Interface Lan -->
   <div class="form-group">
-    <label 
-      for="lan" 
+    <label
+      for="lan"
       class="control-label col-xs-4">
       {{text["InterfaceLan"]}}
     </label>
     <div class="col-xs-8">
-      <select 
-        class="form-control" 
+      <select
+        class="form-control"
         id="lan"
         (change)="onChangeField()"
         formControlName="lan">
-        <option 
+        <option
           *ngFor="let lan of formData.lans"
+          [value]="lan.code">
+          {{lan.nativeName}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <!-- My Lan -->
+  <div class="form-group">
+    <label
+      for="mylan"
+      class="control-label col-xs-4">
+      {{text["MyLan"]}}
+    </label>
+    <div class="col-xs-8">
+      <select
+        class="form-control"
+        id="myLan"
+        (change)="onChangeField()"
+        formControlName="myLan">
+        <option
+          *ngFor="let lan of formData.myLans"
           [value]="lan.code">
           {{lan.nativeName}}
         </option>
@@ -24,8 +45,8 @@
   </div>
   <!-- Background -->
   <div class="form-group">
-    <label 
-      for="background" 
+    <label
+      for="background"
       class="control-label col-xs-4">
       {{text["Background"]}}
     </label>
@@ -38,15 +59,15 @@
   </div>
   <!-- Gender -->
   <div class="form-group">
-    <label 
-      for="background" 
+    <label
+      for="background"
       class="control-label col-xs-4">
       {{text["RankGender"]}}
     </label>
     <div class="col-xs-8">
       <span class="fa fa-male fa-spacing-title gender"
         (click)="onSetGender('m')"
-        [class.gen-selected]="mainForm.value.gender === 'm'">    
+        [class.gen-selected]="mainForm.value.gender === 'm'">
       </span>
       <span class="fa fa-female gender"
         (click)="onSetGender('f')"
@@ -64,7 +85,7 @@
       </button>
     </div>
   </div>
-  
+
   <div class="info-msg">
     <km-info-msg [msg]="infoMsg">
     </km-info-msg>

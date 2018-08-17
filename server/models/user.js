@@ -8,6 +8,7 @@ var appSchema = new Schema({
 
 var mainSchema = new Schema({
   lan: {type: String, required: true},
+  myLan: String,
   background: {type: Boolean, default: true},
   gender: String
 }, {_id : false});

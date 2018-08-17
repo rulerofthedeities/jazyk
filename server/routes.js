@@ -145,6 +145,7 @@ module.exports.initialize = function(app, router) {
   router.put('/book/bookmark/:bookId', books.updateBookmark);
   router.post('/book/session', books.addSession);
   router.put('/book/session', books.updateSession);
+  router.get('/book/sessions/:lan', books.getSessions);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

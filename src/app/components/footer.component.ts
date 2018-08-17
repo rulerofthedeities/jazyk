@@ -46,7 +46,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getTranslations(this.userService.user.main.lan);
     this.observeEventMessages();
-    this.userService.languageChanged.subscribe(
+    this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
   }

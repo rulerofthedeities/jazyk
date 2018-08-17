@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
@@ -19,7 +19,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   tab = 'main';
 
   constructor(
-    private formBuilder: FormBuilder,
     private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService
@@ -27,7 +26,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTranslations(this.userService.user.main.lan);
-    this.userService.languageChanged.subscribe(
+    this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getTranslations(newLan)
     );
   }

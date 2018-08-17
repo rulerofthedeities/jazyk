@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, SentenceTranslation, UserBook, Bookmark, SessionData } from '../models/book.model';
+import { Book, Chapter, SentenceTranslation,
+         UserBook, Bookmark, SessionData, UserData } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -32,17 +33,13 @@ export class ReadService {
   }
 
   fetchBook(bookId: string): Observable<Book> {
+    // gets published book only
     return this.http
     .get<Book>('/api/book/' + bookId)
     .pipe(retry(3));
   }
 
   placeBookmark(bookId: string, bookmark: Bookmark): Observable<Bookmark> {
-    return this.http
-    .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
-  }
-
-  setBookmarkRead(bookId: string, bookmark: Bookmark): Observable<Bookmark> {
     return this.http
     .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
   }
@@ -80,8 +77,8 @@ export class ReadService {
   }
 
   /*** Session data ***/
+
   saveSessionData(sessionData: SessionData, startDate: Date): Observable<string>  {
-    // Date started + current date
     if (sessionData._id) {
       // Update session data
       return this.http
@@ -91,5 +88,11 @@ export class ReadService {
       return this.http
       .post<string>('/api/book/session', {sessionData, startDate});
     }
+  }
+
+  fetchSessionData(learnLanCode: string): Observable<UserData[]> {
+    return this.http
+    .get<UserData[]>('/api/book/sessions/' + learnLanCode)
+    .pipe(retry(3));
   }
 }

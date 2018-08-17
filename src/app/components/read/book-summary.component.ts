@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import { Router } from '@angular/router';
-import { Book, UserBook } from '../../models/book.model';
+import { Book, UserBook, UserData } from '../../models/book.model';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { takeWhile } from 'rxjs/operators';
 export class BookSummaryComponent implements OnInit, OnDestroy {
   @Input() book: Book;
   @Input() userBook: UserBook;
+  @Input() userData: UserData;
   @Input() text: Object;
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
@@ -35,6 +36,7 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setDifficulty();
     this.checkIfStarted();
+    this.checkSentencesDone();
   }
 
   onStartReading() {
@@ -72,9 +74,9 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
 
   private setDifficulty() {
     let difficulty = this.book.difficulty.weight;
-    difficulty = difficulty - 250;
-    difficulty = Math.max(50, difficulty);
-    difficulty = difficulty * 1.34;
+    difficulty = difficulty - 300;
+    difficulty = Math.max(10, difficulty);
+    difficulty = difficulty * 1.8;
     difficulty = Math.min(1000, difficulty);
     this.difficultyWidth = Math.round(difficulty / 5);
     this.difficultyPerc = Math.round(difficulty / 10);
@@ -88,13 +90,21 @@ export class BookSummaryComponent implements OnInit, OnDestroy {
       }
       if (this.userBook.bookmark) {
         console.log('bookmark', this.userBook.bookmark);
-        this.nrOfSentencesDone = this.userBook.bookmark.sentenceNrBook;
-        this.percDone = Math.trunc(this.nrOfSentencesDone / this.book.difficulty.nrOfSentences * 100);
         if (this.userBook.bookmark.isBookRead) {
+          this.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
           this.isBookRead = true;
+          this.percDone = 100;
         }
-      } else {
-        this.percDone = 0;
+      }
+    }
+  }
+
+  private checkSentencesDone() {
+    if (this.userData) {
+      if (!this.isBookRead) {
+        console.log('user data', this.book.title, this.userData);
+        this.nrOfSentencesDone = this.userData.nrSentencesDone;
+        this.percDone = Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100);
       }
     }
   }

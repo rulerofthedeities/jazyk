@@ -67,7 +67,6 @@ interface SentenceTranslations {
 export interface Bookmark {
   chapterId: string;
   sentenceNrChapter: number;
-  sentenceNrBook?: number;
   isChapterRead: boolean;
   isBookRead?: boolean;
 }
@@ -84,12 +83,19 @@ export interface UserBook {
 export interface SessionData {
   _id?: string;
   bookId: string;
+  lanCode: string;
   answers: string;
   chapters: number;
   nrYes: number;
   nrNo: number;
   nrMaybe: number;
   translations: number;
+}
+
+// Session data returned for one user
+export interface UserData {
+  nrSentencesDone: number;
+  bookId: string;
 }
 
 export interface ChapterData {

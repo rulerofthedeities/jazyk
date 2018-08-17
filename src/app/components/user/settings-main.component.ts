@@ -9,6 +9,7 @@ import {takeWhile} from 'rxjs/operators';
 
 interface FormData {
   lans: Language[];
+  myLans: Language[];
 }
 
 @Component({
@@ -32,7 +33,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   mainForm: FormGroup;
   isReady = false;
   infoMsg = '';
-  languages: Language[];
+  interfaceLanguages: Language[];
+  myLanguages: Language[];
   formData: FormData;
 
   constructor(
@@ -75,6 +77,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   private buildForm() {
     this.mainForm = this.formBuilder.group({
       'lan': [this.userService.user.main.lan],
+      'myLan': [this.userService.user.main.myLan || this.userService.user.main.lan],
       'background': [this.userService.user.main.background],
       'gender': [this.userService.user.main.gender]
     });
@@ -103,6 +106,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   private buildSettings(formValues: any): MainSettings {
     return {
       lan: formValues['lan'],
+      myLan: formValues['myLan'],
       background: formValues['background'],
       gender: formValues['gender']
     };
@@ -110,12 +114,17 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   private setFormData() {
     this.formData = {
-      lans: this.languages
+      lans: this.interfaceLanguages,
+      myLans: this.myLanguages
     };
   }
 
   private setInterfaceLanguages(languages: Language[]) {
-    this.languages = languages.filter(language => language.interface);
+    this.interfaceLanguages = languages;
+  }
+
+  private setUserLanguages(languages: Language[]) {
+    this.myLanguages = languages;
   }
 
   private getDependables() {
@@ -128,6 +137,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     .subscribe(
       dependables => {
         this.setInterfaceLanguages(dependables.languages);
+        this.setUserLanguages(dependables.userLanguages);
         this.setFormData();
         this.isReady = true;
       },

@@ -64,17 +64,18 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.log('Reading aborted');
-      this.saveSessionData();
-      this.processResults();
+      this.processResults(false);
     }
   }
 
   onNextSentence() {
     this.getSentence();
-    console.log('save session data?', this.sessionData.answers.length, this.saveFrequency, this.sessionData.answers.length);
+    console.log('save session data?', this.sessionData.answers.length,
+    this.saveFrequency, this.sessionData.answers.length % this.saveFrequency);
     if (this.sessionData.answers.length % this.saveFrequency === 0) {
       console.log('save session data', this.sessionData.answers.length);
       this.saveSessionData();
+      this.placeBookmark(false);
     }
   }
 
@@ -159,6 +160,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
             const userBook = res[0];
             this.sessionData = {
               bookId: this.bookId,
+              lanCode: this.interfaceLan,
               answers: '',
               chapters: 0,
               translations: 0,
@@ -195,9 +197,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.isBookRead = true;
           this.isError = true;
           this.showMsg = true;
-          console.log('BOOK READ');
+          console.log('BOOK READ BEFORE');
         } else {
-          // TODO: start with this chapter; if at the end; go to next chapter
           this.getChapter(userBook.bookId, userBook.bookmark, 1);
         }
       } else {
@@ -218,14 +219,13 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.currentChapter = chapter;
           this.emitChapter(chapter);
           this.currentSentenceTotal = chapter.sentences.length;
-          this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
+          this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter - 1 : 0;
           this.emitSentenceNr(this.currentSentenceNr);
           this.getSentence();
         } else {
           // chapter not found -> end of book?
           console.log('chapter not found - end of book');
-          this.setBookmarkRead();
-          this.currentStep = SentenceSteps.Results;
+          this.processResults(true);
         }
       }
     );
@@ -241,7 +241,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.currentSentence = sentence;
         this.currentSentenceNr++;
         this.emitSentenceNr(this.currentSentenceNr);
-        console.log('SESSION DATA', this.sessionData);
         this.checkReadingStarted(nr);
       }
     } else {
@@ -294,18 +293,20 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     }
   }
 
-  private placeBookmark() {
+  private placeBookmark(isBookRead: boolean) {
+    let sentenceNrToBookmark = this.currentSentenceNr;
     if (this.currentStep < SentenceSteps.Answered) {
-      this.currentSentenceNr--;
+      sentenceNrToBookmark--;
     }
     let isRead = false;
-    if (this.currentSentenceNr >= this.currentSentenceTotal) {
+    if (sentenceNrToBookmark >= this.currentSentenceTotal) {
       isRead = true;
     }
     const newBookmark: Bookmark = {
       chapterId: this.currentChapter._id,
-      sentenceNrChapter: this.currentSentenceNr,
-      isChapterRead: isRead
+      sentenceNrChapter: sentenceNrToBookmark,
+      isChapterRead: isBookRead ? true : isRead,
+      isBookRead
     };
     this.readService
     .placeBookmark(this.bookId, newBookmark)
@@ -313,39 +314,28 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(bookmark => console.log('bookmarked'));
   }
 
-  private setBookmarkRead() {
-    const newBookmark: Bookmark = {
-      chapterId: this.currentChapter._id,
-      sentenceNrChapter: this.currentSentenceNr,
-      sentenceNrBook: this.book.difficulty.nrOfSentences,
-      isChapterRead: true,
-      isBookRead: true
-    };
-    this.readService
-    .setBookmarkRead(this.bookId, newBookmark)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(bookmark => console.log('set book as read'));
-  }
-
-  private processResults() {
+  private processResults(isBookRead: boolean) {
     console.log('changing exercise mode to false');
     this.sharedService.changeExerciseMode(false);
     this.currentStep = SentenceSteps.Results;
+    this.saveSessionData();
+    this.placeBookmark(isBookRead);
   }
 
   private saveSessionData() {
-    this.readService
-    .saveSessionData(this.sessionData, this.startDate)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      id => {
-        if (!this.sessionData._id && id) {
-          this.sessionData._id = id;
+    if (this.sessionData.answers) {
+      this.readService
+      .saveSessionData(this.sessionData, this.startDate)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        id => {
+          if (!this.sessionData._id && id) {
+            this.sessionData._id = id;
+          }
+          console.log('Session data saved');
         }
-        this.placeBookmark();
-        console.log('Session data saved');
-      }
-    );
+      );
+    }
   }
 
   private log(message: string) {

@@ -8,7 +8,7 @@ import { ExerciseData } from '../models/exercise.model';
 import { CourseScore } from '../models/score.model';
 import { UserBook } from '../models/book.model';
 import { AuthService } from './auth.service';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, Subject } from 'rxjs';
 import { retry, delay, map, tap, takeWhile } from 'rxjs/operators';
 
 interface DemoData {
@@ -30,7 +30,7 @@ export class UserService {
   private _user: User;
   private demoData: DemoData;
   private subscription: Subscription;
-  languageChanged = new EventEmitter<string>();
+  interfaceLanguageChanged = new Subject<string>();
   backgroundChanged = new EventEmitter<boolean>();
   notificationRead = new EventEmitter<boolean>();
   messageRead = new EventEmitter<boolean>();
@@ -94,7 +94,8 @@ export class UserService {
       emailHash: '',
       userName: 'anonymous',
       main: {
-        lan: userLan,
+        lan: userLan, // interface language
+        myLan: userLan,
         background: true,
         gender: ''
       },
@@ -186,7 +187,7 @@ export class UserService {
 
   interfaceLanChanged(newLan: string) {
     localStorage.setItem('km-jazyk.lan', newLan); // Set current logged in lan also as default lan for when logged out
-    this.languageChanged.emit(newLan);
+    this.interfaceLanguageChanged.next(newLan);
   }
 
   backgroundImgChanged(status: boolean) {

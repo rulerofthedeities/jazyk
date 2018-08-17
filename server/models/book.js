@@ -60,13 +60,14 @@ translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
 
 var dtSchema = new Schema({
   start: Date,
-  end: {type: Date, default: Date.now},
+  end: Date,
   diff: Number
 }, {_id: false});
 
 var sessionSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
+  lanCode: {type: String, required: true},
   answers: {type: String, required: true},
   chapters: Number,
   nrYes: Number,

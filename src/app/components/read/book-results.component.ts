@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionData } from '../../models/book.model';
 
@@ -8,7 +8,7 @@ import { SessionData } from '../../models/book.model';
   styleUrls: ['book-results.component.css', 'book-bullets.component.css']
 })
 
-export class BookResultsComponent implements OnInit {
+export class BookResultsComponent implements OnChanges {
   @Input() data: SessionData;
   @Input() text: Object;
   percYes = 0;
@@ -21,7 +21,7 @@ export class BookResultsComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnChanges() {
     console.log('result session data', this.data);
     this.calculateResults();
   }

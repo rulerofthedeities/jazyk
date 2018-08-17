@@ -7,6 +7,7 @@ const response = require('../response'),
       UserBook = require('../models/userbook').userBook;
 
 const setSessionDt = (startDate) => {
+  console.log('DT',new Date().getTime(), new Date(startDate).getTime(), new Date().getTime() - new Date(startDate).getTime())
         return {
           start: startDate,
           end: Date.now(),
@@ -122,7 +123,6 @@ module.exports = {
           startDate = req.body.startDate;
     sessionData.userId = userId;
     sessionData.dt = setSessionDt(startDate);
-    console.log('add session', sessionData);
     session = new Session(sessionData);
     session.save(function(err, result) {
       response.handleError(err, res, 400, 'Error saving new session data', function(){
@@ -131,24 +131,44 @@ module.exports = {
     });
   },
   updateSession: (req, res) => {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          sessionData = req.body.sessionData,
+    const sessionData = req.body.sessionData,
           startDate = req.body.startDate;
-    sessionData.dt = setSessionDt(startDate);
     update = {$set: {
       answers: sessionData.answers,
       chapters: sessionData.chapters,
       nrYes: sessionData.nrYes,
       nrNo: sessionData.nrNo,
       nrMaybe: sessionData.nrMaybe,
-      translations: sessionData.translations
+      translations: sessionData.translations,
+      dt: setSessionDt(startDate)
     }}
-    console.log('update session', sessionData);
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating session', function() {
-        console.log('result', result);
         response.handleSuccess(res, result);
       });
     });
+  },
+  getSessions: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          lanCode = req.params.lan,
+          query = {userId, lanCode},
+          projection = {
+            _id: 0,
+            bookId: '$_id',
+            nrSentencesDone: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$bookId',
+              nrSentencesDone: {'$sum': { $strLenCP: "$answers" }}
+            }},
+            {$project: projection}
+          ];
+    Session.aggregate(pipeline, (err, sessions) => {
+      response.handleError(err, res, 400, 'Error fetching session daata', function() {
+        response.handleSuccess(res, sessions);
+      });
+    })
   }
 }

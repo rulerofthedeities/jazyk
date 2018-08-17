@@ -47,7 +47,7 @@
         </div>
         {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
         ({{difficultyPerc}}%)
-        <div class="progress" [class.progress-min]="percDone < 8" *ngIf="isStarted">
+        <div class="progress" [class.progress-min]="percDone < 5" *ngIf="isStarted">
           <div
             class="progress-bar progress-bar-primary progress-bar-striped"
             role="progressbar"
@@ -56,7 +56,7 @@
             [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
             [style.width.%]="percDone">
             <span>
-              {{nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}} ({{percDone}}%)
+              {{nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{percDone}}%)
             </span>
           </div>
         </div>
