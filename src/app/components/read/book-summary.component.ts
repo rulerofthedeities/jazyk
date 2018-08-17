@@ -107,13 +107,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         this.percDone = Math.round(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
     }
-    if (this.nrOfSentencesDone > 0) {
-      this.calculatePieChart();
-    }
-  }
-
-  private calculatePieChart() {
-    console.log('calculate pie chart', this.userData);
   }
 
   private log(message: string) {

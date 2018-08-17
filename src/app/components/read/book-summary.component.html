@@ -8,12 +8,9 @@
       </div>
       <div class="book" [class.img-border]="!!book?.img">
         <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
-          <svg
-            viewBox="-1 -1 2 2"
-            width="100px"
-            style="transform: rotate(-90deg)">
-            <path d="M 1 0 A 1 1 0 0 1 0.8 0.59 L 0 0"></path> <!-- A:rx ry x-axis-rotation large-arc-flag sweep-flag x y -->
-          </svg>
+          <km-pie-chart
+            [data]="userData">
+          </km-pie-chart>
         </div>
         <h3>
           <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">

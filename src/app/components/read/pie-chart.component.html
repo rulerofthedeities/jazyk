@@ -1,0 +1,11 @@
+<div *ngIf="chartReady">
+  <svg
+    viewBox="-1 -1 2 2"
+    width="100px"
+    style="transform: rotate(-90deg)">
+    <path [attr.d]="pathData[0]" [attr.fill]="color[0]"></path>
+    <path [attr.d]="pathData[1]" [attr.fill]="color[1]"></path>
+    <path [attr.d]="pathData[2]" [attr.fill]="color[2]"></path>
+    <!-- A:rx ry x-axis-rotation large-arc-flag sweep-flag x y -->
+  </svg>
+</div>
