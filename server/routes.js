@@ -77,7 +77,8 @@ module.exports.initialize = function(app, router) {
   router.get('/user/profileId/:userId', users.getPublicProfileById);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
-  router.patch('/user/lan', users.updateLan);
+  router.patch('/user/lan/learn', users.updateLearnLan);
+  router.patch('/user/lan/user', users.updateUserLan);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe/course', users.subscribeToCourse);
   router.post('/user/unsubscribe/course', users.unsubscribeFromCourse);
@@ -142,7 +143,8 @@ module.exports.initialize = function(app, router) {
   router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
   router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
   router.post('/book/translation/', books.addTranslation);
-  router.put('/book/bookmark/:bookId', books.updateBookmark);
+  router.get('/book/translation/:bookLan/:userLan', books.getBookTranslations);
+  router.put('/book/bookmark/:bookId/:lan', books.updateBookmark);
   router.post('/book/session', books.addSession);
   router.put('/book/session', books.updateSession);
   router.get('/book/sessions/:lan', books.getSessions);

@@ -52,6 +52,7 @@ var translationSchema = new Schema({
 
 var translationsSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
+  lanCode: {type: String, required: true},
   sentence: {type: String, required: true},
   translations: [translationSchema]
 });

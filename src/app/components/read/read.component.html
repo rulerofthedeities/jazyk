@@ -9,7 +9,8 @@
         (languageSelected)="onBookLanguageSelected($event)">
       </km-language-selector>
     </div>
-    <div class="col-xs-4 selector">
+    <div class="col-xs-4 selector my-lan-selector">
+      <span class="fa fa-arrow-right sel-arrow"></span>
       <km-language-selector
         [languages]="userLanguages"
         [currentLanguage]="myLanguage"
@@ -36,6 +37,7 @@
           [book]="book"
           [userBook]="userBooks[book._id]"
           [userData]="userData[book._id]"
+          [translationData]="translationData[book._id]"
           [userLanCode]="myLanguage.code"
           [text]="text"
           (removedSubscription)="onRemovedSubscription($event)">

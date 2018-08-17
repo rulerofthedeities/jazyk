@@ -449,14 +449,16 @@ export class UserService {
     }
   }
 
-  subscribeToBook(bookId: string): Observable<UserBook> {
-    return this.http
-    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode: this._user.main.lan}));
+  subscribeToBook(bookId: string, lanCode: string) {
+    console.log('subscribing to book', bookId);
+    this.http
+    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode}))
+    .toPromise();
   }
 
-  unSubscribeFromBook(bookId: string): Observable<UserBook> {
+  unSubscribeFromBook(bookId: string, lanCode: string): Observable<UserBook> {
     return this.http
-    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode: this._user.main.lan}));
+    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode}));
   }
 
   subscribeToDemo(courseId: string) {
@@ -501,20 +503,37 @@ export class UserService {
 
   setLanCode(lanCode: string) {
     // set learn language
+    console.log('setting learn lan', lanCode);
     if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
       this.http
-      .patch('/api/user/lan', JSON.stringify({lanCode}))
-      .toPromise(); // not lazy
+      .patch('/api/user/lan/learn', JSON.stringify({lanCode}))
+      .subscribe(lan => {
+        this.user.jazyk.learn.lan = lanCode;
+      });
     }
   }
 
-  private updateUserDb(lan: string, courseId: string, bookId: string = null) {
+  setUserLanCode(lanCode: string) {
+    // set user language (my language)
+    console.log('setting user lan', lanCode);
+    if (lanCode && this._user.main.myLan !== lanCode) {
+      this.http
+      .patch('/api/user/lan/user', JSON.stringify({lanCode}))
+      .subscribe(lan => {
+        this.user.main.myLan = lanCode;
+      });
+    }
+  }
+
+  private updateUserDb(lanCode: string, courseId: string, bookId: string = null) {
     // subscribe + set learn language
     // Update learning lan
-    if (lan && this._user.jazyk.learn.lan !== lan) {
+    if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
       this.http
-      .patch('/api/user/lan', JSON.stringify({lan}))
-      .toPromise(); // not lazy
+      .patch('/api/user/lan/learn', JSON.stringify({lanCode}))
+      .subscribe(lan => {
+        this.user.jazyk.learn.lan = lanCode;
+      });
     }
     // Upsert course subscription
     if (courseId) {

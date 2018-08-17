@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, SentenceTranslation,
+import { Book, Chapter, SentenceTranslation, TranslationData,
          UserBook, Bookmark, SessionData, UserData } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -39,9 +39,9 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  placeBookmark(bookId: string, bookmark: Bookmark): Observable<Bookmark> {
+  placeBookmark(bookId: string, bookmark: Bookmark, lanCode: string): Observable<Bookmark> {
     return this.http
-    .put<Bookmark>('/api/book/bookmark/' + bookId, {bookmark});
+    .put<Bookmark>('/api/book/bookmark/' + bookId + '/' + lanCode, {bookmark});
   }
 
   /*** Chapters ***/
@@ -56,24 +56,31 @@ export class ReadService {
   /*** Translations ***/
 
   fetchSentenceTranslations(
-    interfaceLanCode: string,
+    userLanCode: string,
     bookId: string,
     sentence: string): Observable<SentenceTranslation[]> {
     return this.http
-    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + interfaceLanCode + '/' + encodeURIComponent(sentence))
+    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + userLanCode + '/' + encodeURIComponent(sentence))
     .pipe(retry(3));
   }
 
   addSentenceTranslation(
-    interfaceLanCode: string,
+    bookLanCode: string,
+    userLanCode: string,
     bookId: string,
     sentence: string,
     translation: string,
     note: string): Observable<SentenceTranslation> {
     return this.http
     .post<SentenceTranslation>('/api/book/translation/', {
-      lanCode: interfaceLanCode, bookId, sentence, translation, note
+      bookLanCode, userLanCode, bookId, sentence, translation, note
     });
+  }
+
+  fetchTranslationData(bookLanCode: string, userLanCode: string): Observable<TranslationData[]> {
+    // count the # of translations for all books into a specific language
+    return this.http
+    .get<TranslationData[]>('/api/book/translation/' + bookLanCode + '/' + userLanCode);
   }
 
   /*** Session data ***/

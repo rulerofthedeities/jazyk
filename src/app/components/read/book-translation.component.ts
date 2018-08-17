@@ -1,7 +1,6 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
 import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
-import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -10,27 +9,23 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['book-translation.component.css']
 })
 
-export class BookTranslationComponent implements OnInit, OnDestroy {
+export class BookTranslationComponent implements OnDestroy {
   @Input() translations: SentenceTranslation[] = [];
   @Input() answer: string;
+  @Input() userLanCode: string;
+  @Input() bookLanCode: string;
   @Input() text: Object;
   @Input() bookId: string;
   @Input() sentence: string;
   @Output() translationAdded = new EventEmitter();
   private componentActive = true;
-  interfaceLan = '';
   submitting = false;
   submitted = false;
   duplicate = false;
 
   constructor(
-    private readService: ReadService,
-    private userService: UserService
+    private readService: ReadService
   ) {}
-
-  ngOnInit() {
-    this.interfaceLan = this.userService.user.main.lan;
-  }
 
   onAddTranslation(translation: string, translationnote: string) {
     this.submitting = true;
@@ -55,12 +50,12 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
 
   private addTranslation(translation: string, note: string) {
     this.readService
-    .addSentenceTranslation(this.interfaceLan, this.bookId, this.sentence, translation, note)
+    .addSentenceTranslation(this.bookLanCode, this.userLanCode, this.bookId, this.sentence, translation, note)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.submitted = true;
-        const newTranslation = {translation, note, lanCode: this.interfaceLan, score: 0};
+        const newTranslation = {translation, note, lanCode: this.userLanCode, score: 0};
         this.translations.unshift(newTranslation);
         this.translationAdded.emit();
       }

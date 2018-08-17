@@ -58,10 +58,9 @@ export interface SentenceTranslation {
   score: number;
 }
 
-interface SentenceTranslations {
+export interface TranslationData {
   bookId: string;
-  sentence: string;
-  translations: SentenceTranslation[];
+  count: number;
 }
 
 export interface Bookmark {
@@ -94,8 +93,11 @@ export interface SessionData {
 
 // Session data returned for one user
 export interface UserData {
-  nrSentencesDone: number;
   bookId: string;
+  nrSentencesDone: number;
+  nrYes: number;
+  nrNo: number;
+  nrMaybe: number;
 }
 
 export interface ChapterData {

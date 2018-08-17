@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { Language, Map } from '../../models/course.model';
-import { Book, UserBook, UserData } from '../../models/book.model';
+import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -22,6 +22,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   books: Book[];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};
+  translationData: Map<TranslationData> = {};
   isLoading = false;
   isError = false;
   isReady = false;
@@ -40,14 +41,17 @@ export class ReadComponent implements OnInit, OnDestroy {
   }
 
   onBookLanguageSelected(lan: Language) {
+    this.userService.setLanCode(lan.code);
     this.bookLanguage = lan;
     this.getBooks();
   }
 
   onMyLanguageSelected(lan: Language) {
+    this.userService.setUserLanCode(lan.code);
     this.myLanguage = lan;
     this.getUserBooks();
     this.getUserData();
+    this.getBookTranslations();
   }
 
   onChangeBookType(tpe: string) {
@@ -61,6 +65,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   private getBooks() {
     this.getUserBooks();
     this.getUserData();
+    this.getBookTranslations();
     this.isLoading = true;
     this.readService
     .fetchPublishedBooks(this.bookLanguage.code)
@@ -77,7 +82,7 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getUserBooks() {
     this.readService
-    .fetchUserBooks(this.myLanguage.code) // interface lan
+    .fetchUserBooks(this.myLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
@@ -92,7 +97,7 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getUserData() {
     this.readService
-    .fetchSessionData(this.myLanguage.code) // interface lan
+    .fetchSessionData(this.myLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       sessionData => {
@@ -101,6 +106,21 @@ export class ReadComponent implements OnInit, OnDestroy {
           this.userData[session.bookId] = session;
         });
         console.log('user data', this.userData);
+      }
+    );
+  }
+
+  private getBookTranslations() {
+    this.readService
+    .fetchTranslationData(this.bookLanguage.code, this.myLanguage.code)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      translations => {
+        this.translationData = {};
+        translations.forEach(translation => {
+          this.translationData[translation.bookId] = translation;
+        });
+        console.log('translation data', this.translationData);
       }
     );
   }
@@ -121,6 +141,7 @@ export class ReadComponent implements OnInit, OnDestroy {
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
+        console.log('my language', this.myLanguage);
         this.utilsService.setPageTitle(this.text, 'Read');
         this.getBooks();
         this.isReady = true;

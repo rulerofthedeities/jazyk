@@ -282,16 +282,22 @@ module.exports = {
       response.handleError(err, res, 400, err);
     }
   },
-  updateLan: function(req, res) {
+  updateLearnLan: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body,
-          lanObj = {};
-    if (data && data.lan) {
-      lanObj['$set'] = {'jazyk.learn.lan': data.lan}
-    }
-    User.findOneAndUpdate(
-      {_id: userId}, lanObj, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating user', function(){
+          update = {'$set': {'jazyk.learn.lan': data.lanCode}};
+    User.findByIdAndUpdate(userId, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating learn lan', function(){
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  updateUserLan: function(req, res) {
+    const userId = req.decoded.user._id,
+          lanCode = req.body.lanCode,
+          update = {'$set': {'main.myLan': lanCode}};
+    User.findByIdAndUpdate(userId, update, function(err, result) {
+      response.handleError(err, res, 400, 'Error updating user lan', function(){
         response.handleSuccess(res, result);
       });
     });
@@ -355,7 +361,6 @@ module.exports = {
   unsubscribeFromBook: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body;
-    console.log('unsubscribe from book', data);
     if (data && data.bookId) {
       const bookId = mongoose.Types.ObjectId(data.bookId),
             lanCode = data.lanCode,
@@ -365,7 +370,6 @@ module.exports = {
             set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
       UserBook.findOneAndUpdate(query, update, options, function(err, result) {
-        console.log('unsubscribed', result);
         response.handleError(err, res, 400, 'Error unsubscribing from book', function() {
           response.handleSuccess(res, result);
         });

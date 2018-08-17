@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges} from '@angular/core';
 import { Router } from '@angular/router';
-import { Book, UserBook, UserData } from '../../models/book.model';
+import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
@@ -15,6 +15,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
   @Input() userBook: UserBook;
   @Input() userData: UserData;
+  @Input() translationData: TranslationData;
   @Input() userLanCode: string;
   @Input() text: Object;
   @Output() removedSubscription = new EventEmitter<Book>();
@@ -46,24 +47,16 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartReading() {
     console.log('Start reading', this.book);
     this.userService.setLanCode(this.book.lanCode);
-    this.userService
-    .subscribeToBook(this.book._id)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      userBook => {
-        if (userBook && userBook.subscribed) {
-          this.isSubscribed = true; // not really necessary due to route change
-        }
-      }
-    );
+    this.userService.setUserLanCode(this.userLanCode);
+    this.userService.subscribeToBook(this.book._id, this.userLanCode);
     this.log(`Start reading '${this.book.title}'`);
-    this.router.navigate(['/read/book/' + this.book._id]);
+    this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
   }
 
   onStopReading() {
     console.log('Stop reading', this.book);
     this.userService
-    .unSubscribeFromBook(this.book._id)
+    .unSubscribeFromBook(this.book._id, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
@@ -98,7 +91,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         this.isSubscribed = true;
       }
       if (this.userBook.bookmark) {
-        console.log('bookmark', this.userBook.bookmark);
         if (this.userBook.bookmark.isBookRead) {
           this.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
           this.isBookRead = true;
@@ -111,11 +103,17 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   private checkSentencesDone() {
     if (this.userData) {
       if (!this.isBookRead) {
-        console.log('user data', this.book.title, this.userData);
         this.nrOfSentencesDone = this.userData.nrSentencesDone;
-        this.percDone = Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100);
+        this.percDone = Math.round(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
     }
+    if (this.nrOfSentencesDone > 0) {
+      this.calculatePieChart();
+    }
+  }
+
+  private calculatePieChart() {
+    console.log('calculate pie chart', this.userData);
   }
 
   private log(message: string) {

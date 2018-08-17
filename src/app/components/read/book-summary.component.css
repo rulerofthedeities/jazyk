@@ -45,6 +45,7 @@
 }
 .book {
   margin-left: 180px;
+  position: relative;
 }
 .book h3 {
   margin-top: 0;
@@ -56,7 +57,7 @@
   height: 20px;
 }
 .buttons {
-  margin: 17px 0;
+  margin: 8px 0;
 }
 .fa-times-circle {
   color: red;
@@ -74,6 +75,9 @@
 }
 .sentences {
   font-weight: bold;
+}
+.translations {
+  font-weight: 100;
 }
 .progress {
   margin-top: 18px;
@@ -101,4 +105,9 @@
 .read .stop > button{
   background-color: #518ec2;
   color: #eee;
+}
+.pie-chart {
+  position: absolute;
+  top: 60px;
+  left: 320px;
 }

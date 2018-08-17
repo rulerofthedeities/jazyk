@@ -7,13 +7,12 @@ const response = require('../response'),
       UserBook = require('../models/userbook').userBook;
 
 const setSessionDt = (startDate) => {
-  console.log('DT',new Date().getTime(), new Date(startDate).getTime(), new Date().getTime() - new Date(startDate).getTime())
-        return {
-          start: startDate,
-          end: Date.now(),
-          diff: (new Date().getTime() - new Date(startDate).getTime()) / 1000
-        };
-      }
+  return {
+    start: startDate,
+    end: Date.now(),
+    diff: (new Date().getTime() - new Date(startDate).getTime()) / 1000
+  };
+}
 module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
@@ -72,40 +71,79 @@ module.exports = {
     });
   },
   getTranslations: (req, res) => {
-    const bookId = req.params.bookId,
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           lanCode = req.params.lan,
           sentence = req.params.sentence,
           query = {bookId, sentence, 'translations.lanCode': lanCode},
-          projections = {_id: 0, translations: 1};
-    Translation.findOne(query, projections, (err, translations) => {
-      translationsArr = translations ? translations.translations : [];
+          projection = {
+            _id:0,
+            translation: "$translations.translation",
+            note: "$translations.note",
+            lanCode: "$translations.lanCode",
+            score: "$translations.score"
+          },
+          pipeline = [
+            {$match: query},
+            {$unwind: "$translations"},
+            {$match: {'translations.lanCode': lanCode}},
+            {$project: projection}
+          ];
+    Translation.aggregate(pipeline, (err, translations) => {
       response.handleError(err, res, 400, 'Error fetching sentence translations', () => {
-        response.handleSuccess(res, translationsArr);
+        response.handleSuccess(res, translations);
       });
     });
   },
   addTranslation: (req, res) => {
     const translation = req.body.translation,
           note = req.body.note,
-          lanCode = req.body.lanCode,
+          lanCode = req.body.userLanCode,
+          bookLanCode = req.body.bookLanCode,
           sentence = req.body.sentence,
           bookId = req.body.bookId,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
           options = {upsert: true, new: false},
-          update = {bookId, sentence, $push: {translations: {$each: [ newTranslation ], "$position": 0}}};
+          update = {lanCode: bookLanCode, bookId, sentence, $push: {translations: {$each: [ newTranslation ], "$position": 0}}};
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', function() {
         response.handleSuccess(res, result);
       });
     });
   },
+  getBookTranslations: (req, res) => {
+    const bookLan = req.params.bookLan,
+          userLan = req.params.userLan,
+          query = {lanCode: bookLan, 'translations.lanCode': userLan},
+          projection = {
+            _id: 0,
+            bookId: '$_id',
+            count: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$unwind: "$translations"},
+            {$group: {
+              _id: '$bookId',
+              count: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    Translation.aggregate(pipeline, (err, translations) => {
+      console.log('translations data', translations);
+      response.handleError(err, res, 400, 'Error fetching translations count', () => {
+        response.handleSuccess(res, translations);
+      });
+    });
+
+  },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = req.params.bookId,
+          lanCode = req.params.lan,
           bookmark = req.body.bookmark,
-          query = {bookId, userId},
+          query = {bookId, userId, lanCode},
           update = {$set: {bookmark}};
     if (!bookmark.sentenceNrBook) {
       //TODO -> calculate sentences done
@@ -155,13 +193,19 @@ module.exports = {
           projection = {
             _id: 0,
             bookId: '$_id',
-            nrSentencesDone: 1
+            nrSentencesDone: 1,
+            nrYes: 1,
+            nrMaybe: 1,
+            nrNo: 1
           },
           pipeline = [
             {$match: query},
             {$group: {
               _id: '$bookId',
-              nrSentencesDone: {'$sum': { $strLenCP: "$answers" }}
+              nrSentencesDone: {'$sum': { $strLenCP: "$answers" }},
+              nrYes: {'$sum': "$nrYes" },
+              nrMaybe: {'$sum': "$nrMaybe" },
+              nrNo: {'$sum': "$nrNo" }
             }},
             {$project: projection}
           ];

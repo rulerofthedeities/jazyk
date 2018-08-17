@@ -12,7 +12,7 @@
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
-            <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag">
+              <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
             {{book?.title}}
             <small class="book-chapter">{{currentChapter.title}}</small>
           </h1>
@@ -79,12 +79,14 @@
               {{text["NextSentence"]}} <span class="fa fa-chevron-right"></span>
             </button>
             <!-- TRANSLATIONS -->
-            <div *ngIf="currentStep === steps.Translations && interfaceLan !== book.lanCode">
+            <div *ngIf="currentStep === steps.Translations && userLanCode !== book.lanCode">
               <h3>{{text["Translations"]}}</h3>
               <div class="translations">
                 <km-sentence-translations
                   [translations]="translations"
                   [answer]="currentAnswer"
+                  [userLanCode]="userLanCode"
+                  [bookLanCode]="book.lanCode"
                   [text]="text"
                   [bookId]="book._id"
                   [sentence]="currentSentence"

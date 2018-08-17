@@ -7,9 +7,16 @@
         <span class="img-author" *ngIf="!book?.img">{{book.author}}</span>
       </div>
       <div class="book" [class.img-border]="!!book?.img">
+        <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
+          <svg
+            viewBox="-1 -1 2 2"
+            width="100px"
+            style="transform: rotate(-90deg)">
+            <path d="M 1 0 A 1 1 0 0 1 0.8 0.59 L 0 0"></path> <!-- A:rx ry x-axis-rotation large-arc-flag sweep-flag x y -->
+          </svg>
+        </div>
         <h3>
           <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-
           {{book.title}}
         </h3>
         <div class="author">
@@ -43,8 +50,15 @@
           </button>
         </div>
         <div class="info">
-          <span class="sentences">{{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}</span>,
-          {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
+          <div class="sentences">
+            {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
+            <span *ngIf="translationData?.count" class="translations">
+              ({{translationData.count}} {{translationData.count > 1 ? text["translations"] : text["translation"]}})
+            </span>
+          </div>
+          <div class="words">
+            {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
+          </div>
         </div>
         {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
         ({{difficultyPerc}}%)

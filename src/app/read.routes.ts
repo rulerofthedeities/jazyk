@@ -10,7 +10,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'book/:id',
+    path: 'book/:id/:lan',
     component: BookSentencesComponent,
     canActivate: [AuthGuard]
   }

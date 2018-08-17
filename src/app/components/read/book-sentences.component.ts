@@ -37,7 +37,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   translations: SentenceTranslation[] = [];
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
-  interfaceLan = 'en';
+  userLanCode: string;
   sessionData: SessionData;
   startDate = new Date();
   // chapterData: ChapterData;
@@ -53,7 +53,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.interfaceLan = this.userService.user.main.lan;
     this.getBookId();
   }
 
@@ -146,11 +145,13 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         this.bookId = params['id'];
+        this.userLanCode = params['lan'];
+        console.log('user lan code', this.userLanCode);
         if (this.bookId) {
           this.isLoading = true;
           zip(
-            this.readService.fetchUserBook(this.interfaceLan, this.bookId),
-            this.utilsService.fetchTranslations(this.interfaceLan, 'ReadComponent')
+            this.readService.fetchUserBook(this.userLanCode, this.bookId),
+            this.utilsService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent')
           )
           .pipe(
             takeWhile(() => this.componentActive))
@@ -160,7 +161,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
             const userBook = res[0];
             this.sessionData = {
               bookId: this.bookId,
-              lanCode: this.interfaceLan,
+              lanCode: this.userLanCode,
               answers: '',
               chapters: 0,
               translations: 0,
@@ -205,6 +206,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         // no chapter: get first chapter
         this.getChapter(userBook.bookId, null, 1);
       }
+    } else {
+      // no userbook, subscribe and get first chapter
+      this.userService.subscribeToBook(this.bookId, this.userLanCode);
+      this.getChapter(this.bookId, null, 1);
     }
   }
 
@@ -270,7 +275,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private getSentenceTranslations() {
     this.readService
     .fetchSentenceTranslations(
-      this.interfaceLan,
+      this.userLanCode,
       this.bookId,
       this.currentSentence)
     .pipe(takeWhile(() => this.componentActive))
@@ -309,7 +314,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       isBookRead
     };
     this.readService
-    .placeBookmark(this.bookId, newBookmark)
+    .placeBookmark(this.bookId, newBookmark, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(bookmark => console.log('bookmarked'));
   }
