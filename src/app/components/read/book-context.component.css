@@ -1,0 +1,50 @@
+.newline-space {
+  line-height: 8px;
+}
+.paragraph-space {
+  height: 1px;
+  margin: 1px;
+}
+.sentence {
+  line-height: 12px;
+}
+.paragraph::before {
+  content: '\00a0\00a0\00a0'
+}
+.break {
+  line-height: 6px;
+}
+.header {
+  display: block;
+}
+.header1 {
+  font-size: 32px;
+  line-height: 36px;
+}
+.header2 {
+  font-size: 26px;
+  line-height: 30px;
+}
+.header3 {
+  font-size: 20px;
+  line-height: 24px;
+}
+.header4 {
+  font-weight: bold;
+  line-height: 20px;
+}
+:host {
+  /*font-family: 'Times New Roman', Times, serif;*/
+  font-size: 16px;
+}
+.history {
+  border: 1px solid #999;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 6px;
+}
+.minimize {
+  color: orange;
+  cursor: pointer;
+  margin-right: 2px;
+}

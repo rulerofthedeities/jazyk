@@ -6,7 +6,7 @@ import { takeWhile } from 'rxjs/operators';
 @Component({
   selector: 'km-book-context',
   templateUrl: 'book-context.component.html',
-  styleUrls: ['book-content.component.css']
+  styleUrls: ['book-context.component.css']
 })
 
 export class BookContextComponent implements OnInit, OnDestroy {
@@ -42,7 +42,7 @@ export class BookContextComponent implements OnInit, OnDestroy {
   }
 
   private updateCurrentSentences() {
-    const maxNrOfLines = 5,
+    const maxNrOfLines = 10,
           start = this.nr > maxNrOfLines ? this.nr - maxNrOfLines - 1 : 0,
           len = this.nr > maxNrOfLines ? maxNrOfLines : this.nr - 1;
     this.currentSentences = this.sentences ? this.sentences.slice(start, start + len) : [];
