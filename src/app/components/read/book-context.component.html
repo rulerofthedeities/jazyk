@@ -1,4 +1,4 @@
-<div [class.history]="!minimized" *ngIf="nr > 1">
+<div [class.history]="!minimized" *ngIf="nr > 1" class="context">
   <span
     class="fa fa-window-minimize pull-right minimize"
     [ngClass]="{
@@ -6,20 +6,21 @@
       'fa-window-maximize':minimized}"
     (click)="onMinimize(!minimized)">
   </span>
-<div [style.display]="minimized ? 'none' : 'block'">
-  <span  *ngFor="let sentence of currentSentences; let i= index">
-    <p *ngIf="sentence.isEmptyLine" class="newline-space">&nbsp;</p>
-    <p *ngIf="sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
-    <span
-      class="sentence"
-      [ngClass]="{
-        paragraph: sentence.isNewParagraph,
-        header: sentence.isHeader,
-        header1: sentence.isHeader && level === 1,
-        header2: sentence.isHeader && level === 2,
-        header3: sentence.isHeader && level === 3,
-        header4: sentence.isHeader && level === 4
-      }">{{sentence.text}}
+  <div [style.display]="minimized ? 'none' : 'block'">
+    <span  *ngFor="let sentence of currentSentences; let i= index">
+      <p *ngIf="sentence.isEmptyLine" class="newline-space">&nbsp;</p>
+      <p *ngIf="sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
+      <span
+        class="sentence"
+        [ngClass]="{
+          paragraph: sentence.isNewParagraph,
+          header: sentence.isHeader,
+          header1: sentence.isHeader && level === 1,
+          header2: sentence.isHeader && level === 2,
+          header3: sentence.isHeader && level === 3,
+          header4: sentence.isHeader && level === 4
+        }">{{sentence.text}}
+      </span>
     </span>
-  </span>
+  </div>
 </div>

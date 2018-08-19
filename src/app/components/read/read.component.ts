@@ -6,6 +6,7 @@ import { SharedService } from '../../services/shared.service';
 import { Language, Map } from '../../models/course.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
+import { lang } from 'moment';
 
 @Component({
   templateUrl: 'read.component.html',
@@ -18,7 +19,8 @@ export class ReadComponent implements OnInit, OnDestroy {
   bookLanguage: Language;
   myLanguage: Language;
   bookLanguages: Language[];
-  userLanguages: Language[];
+  private userLanguages: Language[];
+  myLanguages: Language[]; // filter out selected book language
   books: Book[];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};
@@ -43,6 +45,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   onBookLanguageSelected(lan: Language) {
     this.userService.setLanCode(lan.code);
     this.bookLanguage = lan;
+    this.filterUserLanguages();
     this.getBooks();
   }
 
@@ -68,7 +71,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.getBookTranslations();
     this.isLoading = true;
     this.readService
-    .fetchPublishedBooks(this.bookLanguage.code)
+    .fetchPublishedBooksByWeight(this.bookLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
@@ -144,6 +147,7 @@ export class ReadComponent implements OnInit, OnDestroy {
         console.log('my language', this.myLanguage);
         this.utilsService.setPageTitle(this.text, 'Read');
         this.getBooks();
+        this.filterUserLanguages();
         this.isReady = true;
       }
     );
@@ -155,6 +159,16 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.bookLanguages.unshift(allLanguage);
     console.log('book languages', this.bookLanguages);
     this.bookLanguage = this.userService.getUserLearnLanguage(this.bookLanguages);
+  }
+
+  private filterUserLanguages() {
+    // filter out selected book language
+    console.log('filter user languages');
+    this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
+    if (this.myLanguage.code === this.bookLanguage.code && this.myLanguages.length > 0) {
+      console.log('change my lan', this.myLanguages[0]);
+      this.myLanguage = this.myLanguages[0];
+    }
   }
 
   ngOnDestroy() {

@@ -12,6 +12,8 @@ import { BookTranslationComponent } from './components/read/book-translation.com
 import { BookContextComponent } from './components/read/book-context.component';
 import { BookBulletsComponent } from './components/read/book-bullets.component';
 import { BookResultsComponent } from './components/read/book-results.component';
+import { BookSuggestionsComponent } from './components/read/book-suggestions.component';
+import { BookTabComponent } from './components/read/book-tab.component';
 import { PieChartComponent } from './components/read/pie-chart.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -35,6 +37,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     BookContextComponent,
     BookBulletsComponent,
     BookResultsComponent,
+    BookSuggestionsComponent,
+    BookTabComponent,
     PieChartComponent
   ]
 })

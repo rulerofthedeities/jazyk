@@ -1,12 +1,12 @@
 <article>
   <div class="panel panel-default panel-book">
     <div class="panel-body" [class.read]="isBookRead">
-      <div class="image">
+      <div class="image" [class.img-border]="!!book?.img">
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
         <span class="img-author" *ngIf="!book?.img">{{book.author}}</span>
       </div>
-      <div class="book" [class.img-border]="!!book?.img">
+      <div class="book">
         <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
           <km-pie-chart
             [data]="userData">
@@ -50,15 +50,15 @@
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
             <span *ngIf="translationData?.count" class="translations">
-              ({{translationData.count}} {{translationData.count > 1 ? text["translations"] : text["translation"]}})
+              ({{translationData.count}} / {{book.difficulty?.nrOfUniqueSentences}} {{text["translated"]}})
             </span>
           </div>
           <div class="words">
             {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
           </div>
+          {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
+          ({{difficultyPerc}}%)
         </div>
-        {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
-        ({{difficultyPerc}}%)
         <div class="progress" [class.progress-min]="percDone < 5" *ngIf="isStarted">
           <div
             class="progress-bar progress-bar-primary progress-bar-striped"

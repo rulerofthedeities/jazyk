@@ -6,9 +6,9 @@ import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
-import { zip, BehaviorSubject } from 'rxjs';
+import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
-import { UserBook, Bookmark, SessionData, ChapterData,
+import { UserBook, Bookmark, SessionData,
          Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
 
 @Component({
@@ -37,10 +37,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   translations: SentenceTranslation[] = [];
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
+  answersObservable: Subject<string>;
   userLanCode: string;
   sessionData: SessionData;
   startDate = new Date();
-  // chapterData: ChapterData;
   @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
 
   constructor(
@@ -54,6 +54,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getBookId();
+    this.answersObservable = new Subject();
   }
 
   onExitReading(confirm: ModalConfirmComponent) {
@@ -135,6 +136,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         break;
     }
     this.getSentenceTranslations();
+    this.answersObservable.next(this.sessionData.answers);
   }
 
   private getBookId() {

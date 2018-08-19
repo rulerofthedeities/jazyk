@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter, HostListener, ElementRef} from '@angular/core';
+import {Component, Input, OnChanges, Output, EventEmitter, HostListener, ElementRef} from '@angular/core';
 import {Language} from '../../models/course.model';
 
 @Component({
@@ -6,7 +6,7 @@ import {Language} from '../../models/course.model';
   templateUrl: 'language-selector.component.html',
   styleUrls: ['selector.css']
 })
-export class LanguageSelectorComponent implements OnInit {
+export class LanguageSelectorComponent implements OnChanges {
   @Input() languages: [Language];
   @Input() private currentLanguage: Language;
   @Input() disabled = false;
@@ -29,7 +29,7 @@ export class LanguageSelectorComponent implements OnInit {
     private elementRef: ElementRef
   ) {}
 
-  ngOnInit() {
+  ngOnChanges() {
     this.selectedLanguage = this.currentLanguage;
     this.dataReady = true;
   }

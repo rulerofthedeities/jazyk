@@ -25,12 +25,15 @@ interface Difficulty {
   bookId: string;
   nrOfSentences: number;
   nrOfUniqueWords: number;
+  nrOfUniqueSentences: number;
   nrOfWords: number;
   totalScore: number;
   avgLengthScore: number;
   avgWordScore: number;
   avgLength: number;
   weight: number;
+  uniqueWordScore: number;
+  uniqueSentenceScore: number;
 }
 
 export interface Book {

@@ -1,0 +1,13 @@
+<div *ngIf="showSuggestions">
+<div *ngIf="showEasierSuggestions">
+  EASIER SUGGESTIONS
+</div>
+<div *ngIf="showHarderSuggestions">
+  HARDER SUGGESTIONS
+  <ul class="list-group"> *ngFor="let book of harderBooks.slice(3)">
+    <km-book-tab
+      [book]="book">
+    </km-book-tab>
+  </ul>
+</div>
+

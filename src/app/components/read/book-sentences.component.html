@@ -103,6 +103,15 @@
               [text]="text">
             </km-sentences-results>
           </div>
+
+          <!-- SUGGESTIONS -->
+          <div *ngIf="!!book && answersObservable">
+            <km-book-suggestions
+              [book]="book"
+              [userLanCode]="userLanCode"
+              [answersReceived]="answersObservable">
+            </km-book-suggestions>
+          </div>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ export class ReadService {
 
   /*** Books ***/
 
-  fetchPublishedBooks(learnLanCode: string): Observable<Book[]> {
+  fetchPublishedBooksByWeight(learnLanCode: string): Observable<Book[]> {
     return this.http
     .get<Book[]>('/api/books/published/' + learnLanCode)
     .pipe(retry(3));
@@ -100,6 +100,12 @@ export class ReadService {
   fetchSessionData(learnLanCode: string): Observable<UserData[]> {
     return this.http
     .get<UserData[]>('/api/book/sessions/' + learnLanCode)
+    .pipe(retry(3));
+  }
+
+  fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
+    return this.http
+    .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
     .pipe(retry(3));
   }
 }

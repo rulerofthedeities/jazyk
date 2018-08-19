@@ -210,9 +210,27 @@ module.exports = {
             {$project: projection}
           ];
     Session.aggregate(pipeline, (err, sessions) => {
-      response.handleError(err, res, 400, 'Error fetching session daata', function() {
+      response.handleError(err, res, 400, 'Error fetching session data', function() {
         response.handleSuccess(res, sessions);
       });
     })
+  },
+  getBookSessions: (req, res) => {
+    console.log('bookId', req.params.bookId);
+    console.log('userLanCode', req.params.lan);
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = req.params.bookId,
+          userLanCode = req.params.lan,
+          query = {userId, bookId, lanCode: userLanCode},
+          projection = {answers: 1, _id: 0},
+          options = {sort: {'dt.end': 1}};
+          console.log('query', query);
+    Session.find(query, projection, options, (err, sessions) => {
+      response.handleError(err, res, 400, 'Error fetching book session data', function() {
+        const answers = sessions.map(s => s.answers);
+        response.handleSuccess(res, answers);
+      });
+    })
+
   }
 }
