@@ -25,15 +25,12 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   @Input() book: Book;
   @Input() private userLanCode: string;
   @Input() private answersReceived: Subject<string>;
+  @Input() text: Object;
   private componentActive = true;
   private books: Book[]; // for suggestions
   private finishedBooks: UserBook[];
   private pastAnswers: string;
-  showSuggestions = false;
-  showHarderSuggestions = false;
-  showEasierSuggestions = false;
-  harderBooks: Book[] = [];
-  easierBooks: Book[] = [];
+  suggestedBooks: Book[] = [];
 
   constructor(
     private readService: ReadService
@@ -94,15 +91,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
             total = answerArr.length,
             nrYes = yes ? yes.length : 0,
             nrNo = no ? no.length : 0;
-      if (nrYes / total < 0.86) {
-        this.showEasierSuggestions = true;
-      }
-      if (nrNo / total < 0.08) {
-        this.showHarderSuggestions = true;
-      }
-      if (this.showEasierSuggestions || this.showHarderSuggestions) {
-        this.findSuggestions({nrYes, nrNo, total});
-      }
+      this.findSuggestions({nrYes, nrNo, total});
     }
   }
 
@@ -111,7 +100,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     const weightCoefficientHarder = this.getWeightCoefficient('harder', answers),
           weightCoefficientEasier = this.getWeightCoefficient('easier', answers);
     console.log('coefficients', weightCoefficientHarder, weightCoefficientEasier);
-    this.showSuggestions = false;
     if (this.finishedBooks) {
       const weightDeltaLargeRange = [50, 100], // Min diff for easier / harder books unless there are none
             weightDeltaLSmallRange = [0, 50], // Only used if Large yields no results
@@ -125,48 +113,58 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
       if (this.books.length > 0) {
         // Find easier / harder books
         harderBooks = this.books.filter(book =>
-          book.difficulty.weight > currentWeight + weightDeltaLargeRange[0] &&
+          book.difficulty.weight > currentWeight + weightDeltaLargeRange[0] * weightCoefficientHarder &&
           book.difficulty.weight < currentWeight + weightDeltaLargeRange[1] * weightCoefficientHarder
         );
         easierBooks = this.books.filter(book =>
-          book.difficulty.weight < currentWeight - weightDeltaLargeRange[0] &&
+          book.difficulty.weight < currentWeight - weightDeltaLargeRange[0] * weightCoefficientEasier &&
           book.difficulty.weight > currentWeight - weightDeltaLargeRange[1] * weightCoefficientEasier
         );
         // If none found, use smaller delta
         if (harderBooks.length < 1) {
           harderBooks = this.books.filter(book =>
             book.difficulty.weight > currentWeight + weightDeltaLSmallRange[0] &&
-            book.difficulty.weight < currentWeight + weightDeltaLSmallRange[1]
+            book.difficulty.weight < currentWeight + weightDeltaLSmallRange[1] * weightCoefficientHarder
           );
         }
         if (easierBooks.length < 1) {
           easierBooks = this.books.filter(book =>
             book.difficulty.weight < currentWeight - weightDeltaLSmallRange[0] &&
-            book.difficulty.weight > currentWeight - weightDeltaLSmallRange[1]
+            book.difficulty.weight > currentWeight - weightDeltaLSmallRange[1] * weightCoefficientEasier
           );
         }
-        this.easierBooks = easierBooks;
-        this.harderBooks = harderBooks;
-        console.log('easier books', easierBooks);
-        console.log('harder books', harderBooks);
+        easierBooks = this.readService.shuffle(easierBooks).slice(0, 3),
+        harderBooks = this.readService.shuffle(harderBooks).slice(0, 3);
+        this.suggestedBooks = easierBooks.concat(harderBooks);
 
-        this.showHarderSuggestions = this.checkIfHarderSuggestions(answers);
-        this.showEasierSuggestions = this.checkIfEasierSuggestions(answers);
-        if (this.showEasierSuggestions || this.showHarderSuggestions) {
-          this.showSuggestions = true;
+        const showHarderSuggestions = this.checkIfHarderSuggestions(answers, !!harderBooks.length),
+              showEasierSuggestions = this.checkIfEasierSuggestions(answers, !!easierBooks.length);
+        if (showEasierSuggestions) {
+          if (showHarderSuggestions) {
+            this.suggestedBooks = easierBooks.concat(harderBooks);
+          } else {
+            this.suggestedBooks = easierBooks;
+          }
+        } else {
+          this.suggestedBooks = harderBooks;
         }
+        console.log('suggested books', this.suggestedBooks);
       }
     }
   }
 
-  private checkIfHarderSuggestions(answers: Answers): boolean {
+  private checkIfHarderSuggestions(answers: Answers, hasHarderBooks: boolean): boolean {
     return answers.nrNo / answers.total < maxNoHarderPerc &&
-           answers.nrYes / answers.total > minYesHarderPerc && !!this.harderBooks.length;
+           answers.nrYes / answers.total > minYesHarderPerc && hasHarderBooks;
   }
 
-  private checkIfEasierSuggestions(answers: Answers): boolean {
+  private checkIfEasierSuggestions(answers: Answers, hasEasierBooks: boolean): boolean {
+    console.log('check',
+      answers.nrYes / answers.total < maxYesEasierPerc,
+      answers.nrNo / answers.total > minNoEasierPerc,
+      hasEasierBooks);
     return answers.nrYes / answers.total < maxYesEasierPerc &&
-           answers.nrNo / answers.total > minNoEasierPerc && !!this.easierBooks.length;
+           answers.nrNo / answers.total > minNoEasierPerc && hasEasierBooks;
   }
 
   private getWeightCoefficient(tpe: string, answers: Answers): number {

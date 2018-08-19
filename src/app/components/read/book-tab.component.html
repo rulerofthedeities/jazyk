@@ -1,3 +1,17 @@
 <li class="list-group-item">
-  {{book.title}}
+  <span class="fa fa-circle"
+    [ngClass]="{
+      green: book.difficulty.weight <= weight,
+      red: book.difficulty.weight > weight}">
+  </span>
+  <km-book-tpe class="tpe"
+    [tpe]="book.tpe">
+  </km-book-tpe>
+  <span class="title">{{book.title}}</span>
+  <span class="details">
+    ({{book.difficulty.nrOfSentences}} {{text["sentences"]}} / {{text["Difficulty"]}} {{difficultyPerc}}%)
+  </span>
+  <button type="button" class="btn btn-primary pull-right start">
+    {{text["StartReading"]}}
+  </button>
 </li>

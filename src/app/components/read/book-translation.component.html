@@ -1,58 +1,69 @@
-<div class="translations-container" *ngIf="translations.length">
-  <ul class="list-group">
-    <li
-      class="list-group-item translation-item"
-      *ngFor="let translation of translations, let i = index"
-      [style.color]="getColor(i, false)">
-      {{i + 1}}. {{translation.translation}}
-      <div *ngIf="translation.note"
-        class="translation-note"
-        [style.color]="getColor(i, true)">
-        ({{translation.note}})
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{text["Translations"]}}</h3>
+  </div>
+  <div class="panel-body">
+    <!-- TRANSLATIONS LIST -->
+    <div class="translations-container" *ngIf="translations.length">
+      <ul class="list-group">
+        <li
+          class="list-group-item translation-item"
+          *ngFor="let translation of translations, let i = index"
+          [style.color]="getColor(i, false)">
+          {{i + 1}}. {{translation.translation}}
+          <div *ngIf="translation.note"
+            class="translation-note"
+            [style.color]="getColor(i, true)">
+            ({{translation.note}})
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="!translations.length">
+      {{text["NoTranslations"]}}
+    </div>
+
+    <!-- SUBMIT TRANSLATION -->
+    <div *ngIf="answer==='yes' && !submitted">
+      {{!!translations.length ? text["BetterTranslation"] : text["GoodTranslation"]}}
+      {{text["EnterBelow"]}}
+      <div class="input-group new-translation">
+        <span class="input-group-addon">
+          <img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+          <div class="translation-new-note"></div>
+        </span>
+        <input type="text"
+          class="form-control"
+          autofocus
+          autocomplete=”off”
+          [placeholder]="text['AddTranslation']"
+          #translation
+        >
+        <input type="text"
+          class="form-control"
+          autofocus
+          [placeholder]="text['AddTranslationNote']"
+          autocomplete=”off”
+          #translationnote
+        >
+        <span class="input-group-btn translation-send">
+          <button
+            type="button"
+            [disabled]="submitting"
+            class="btn btn-primary"
+            (click)="onAddTranslation(translation.value, translationnote.value)">
+            <span class="fa fa-envelope fa-spacing"></span>{{text["SubmitTranslation"]}}
+          </button>
+        </span>
       </div>
-    </li>
-  </ul>
-</div>
-<div *ngIf="!translations.length">
-  {{text["NoTranslations"]}}
+      <div *ngIf="duplicate">
+        {{text["TranslationExists"]}}
+      </div>
+    </div>
+    <div *ngIf="submitted">
+      {{text["ThankYouTranslation"]}}!
+    </div>
+  </div>
 </div>
 
-<div *ngIf="answer==='yes' && !submitted">
-  {{!!translations.length ? text["BetterTranslation"] : text["GoodTranslation"]}}
-  {{text["EnterBelow"]}}
-  <div class="input-group new-translation">
-    <span class="input-group-addon">
-      <img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-      <div class="translation-new-note"></div>
-    </span>
-    <input type="text"
-      class="form-control"
-      autofocus
-      autocomplete=”off”
-      [placeholder]="text['AddTranslation']"
-      #translation
-    >
-    <input type="text"
-      class="form-control"
-      autofocus
-      [placeholder]="text['AddTranslationNote']"
-      autocomplete=”off”
-      #translationnote
-    >
-    <span class="input-group-btn translation-send">
-      <button
-        type="button"
-        [disabled]="submitting"
-        class="btn btn-primary"
-        (click)="onAddTranslation(translation.value, translationnote.value)">
-        <span class="fa fa-envelope fa-spacing"></span>{{text["SubmitTranslation"]}}
-      </button>
-    </span>
-  </div>
-  <div *ngIf="duplicate">
-    {{text["TranslationExists"]}}
-  </div>
-</div>
-<div *ngIf="submitted">
-  {{text["ThankYouTranslation"]}}!
-</div>
+

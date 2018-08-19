@@ -1,13 +1,19 @@
-<div *ngIf="showSuggestions">
-<div *ngIf="showEasierSuggestions">
-  EASIER SUGGESTIONS
-</div>
-<div *ngIf="showHarderSuggestions">
-  HARDER SUGGESTIONS
-  <ul class="list-group"> *ngFor="let book of harderBooks.slice(3)">
-    <km-book-tab
-      [book]="book">
-    </km-book-tab>
-  </ul>
+<div *ngIf="!!suggestedBooks.length && !!book">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        {{text["ReadingSuggestions"]}}
+      </h3>
+    </div>
+    <div class="panel-body">
+      <ul class="list-group">
+        <km-book-tab *ngFor="let sbook of suggestedBooks"
+          [book]="sbook"
+          [weight]="book.difficulty.weight"
+          [text]="text">
+        </km-book-tab>
+      </ul>
+    </div>
+  </div>
 </div>
 

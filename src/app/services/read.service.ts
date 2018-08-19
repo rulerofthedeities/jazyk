@@ -108,4 +108,37 @@ export class ReadService {
     .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
     .pipe(retry(3));
   }
+
+  getBookDifficulty(book): {difficultyWidth: number, difficultyPerc: number} {
+    let difficulty = book.difficulty.weight;
+    difficulty = difficulty - 300;
+    difficulty = Math.max(10, difficulty);
+    difficulty = difficulty * 1.8;
+    difficulty = Math.min(1000, difficulty);
+    const difficultyWidth = Math.round(difficulty / 5),
+          difficultyPerc = Math.round(difficulty / 10);
+    return {difficultyWidth, difficultyPerc};
+  }
+
+  // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html
+  shuffle<T>(array: T[]): T[] {
+    // if it's 1 or 0 items, just return
+    if (!array || array.length <= 1) {
+      return array;
+    }
+    // For each index in array
+    for (let i = 0; i < array.length; i++) {
+      // choose a random not-yet-placed item to place there
+      // must be an item AFTER the current item, because the stuff
+      // before has all already been placed
+      const randomChoiceIndex = this.getRandom(i, array.length - 1);
+      // place the random choice in the spot by swapping
+      [array[i], array[randomChoiceIndex]] = [array[randomChoiceIndex], array[i]];
+    }
+    return array;
+  }
+
+  private getRandom(floor: number, ceiling: number) {
+    return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
+  }
 }

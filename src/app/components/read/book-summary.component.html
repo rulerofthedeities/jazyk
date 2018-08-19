@@ -17,13 +17,9 @@
           {{book.title}}
         </h3>
         <div class="author">
-          <span class="fa" [ngClass]="{
-            'fa-music': book.tpe === 'song',
-            'fa-book': book.tpe === 'book',
-            'fa-file-o': book.tpe === 'shortstory',
-            'fa-newspaper-o': book.tpe === 'report',
-            'fa-align-center': book.tpe === 'poetry'
-          }"></span>
+          <km-book-tpe
+            [tpe]="book.tpe">
+          </km-book-tpe>
           {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span> {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
         </div>
         <div class="buttons">

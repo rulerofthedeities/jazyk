@@ -1,0 +1,25 @@
+.fa-circle {
+  font-size: 1.4em;
+}
+.title {
+  font-size: 1.2em;
+  margin: 0 6px;
+}
+.tpe {
+  font-size: 1.2em;
+  margin-left: 6px;
+}
+.details {
+  font-style: italic;
+}
+.list-group-item {
+  margin-bottom: 2px;
+  padding-right: 1px;
+}
+.list-group-item:hover {
+  background-color: #5bc0de;
+}
+.start {
+  position: relative;
+  top: -5px;
+}

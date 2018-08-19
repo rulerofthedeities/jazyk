@@ -71,6 +71,7 @@
               <div class="col-sm-3">
               </div>
             </div>
+
             <!-- NEXT SENTENCE -->
             <button *ngIf="currentStep > steps.Question"
               type="button"
@@ -78,9 +79,9 @@
               (click)="onNextSentence()">
               {{text["NextSentence"]}} <span class="fa fa-chevron-right"></span>
             </button>
+
             <!-- TRANSLATIONS -->
             <div *ngIf="currentStep === steps.Translations && userLanCode !== book.lanCode">
-              <h3>{{text["Translations"]}}</h3>
               <div class="translations">
                 <km-sentence-translations
                   [translations]="translations"
@@ -96,21 +97,22 @@
             </div>
           </div>
 
+          <!-- SUGGESTIONS -->
+          <div *ngIf="!!book && answersObservable">
+            <km-book-suggestions
+              [book]="book"
+              [userLanCode]="userLanCode"
+              [answersReceived]="answersObservable"
+              [text]="text">
+            </km-book-suggestions>
+          </div>
+
           <!-- RESULTS -->
           <div *ngIf="currentStep === steps.Results">
             <km-sentences-results
               [data]="sessionData"
               [text]="text">
             </km-sentences-results>
-          </div>
-
-          <!-- SUGGESTIONS -->
-          <div *ngIf="!!book && answersObservable">
-            <km-book-suggestions
-              [book]="book"
-              [userLanCode]="userLanCode"
-              [answersReceived]="answersObservable">
-            </km-book-suggestions>
           </div>
         </div>
       </div>
