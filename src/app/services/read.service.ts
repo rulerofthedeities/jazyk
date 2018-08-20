@@ -2,15 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, SentenceTranslation, TranslationData,
          UserBook, Bookmark, SessionData, UserData } from '../models/book.model';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
 @Injectable()
 export class ReadService {
+  readAnotherBook = new Subject<Book>();
 
   constructor(
     private http: HttpClient
   ) {}
+
+  startNewBook(book: Book) {
+    this.readAnotherBook.next(book);
+  }
 
   /*** Books ***/
 
@@ -141,4 +146,5 @@ export class ReadService {
   private getRandom(floor: number, ceiling: number) {
     return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
   }
+
 }

@@ -2,16 +2,19 @@
   <span class="fa fa-circle"
     [ngClass]="{
       green: book.difficulty.weight <= weight,
-      red: book.difficulty.weight > weight}">
+      red: book.difficulty.weight > weight}"
+    [tooltip]="tooltip"
+    [tooltipPlacement]="'top'">
   </span>
   <km-book-tpe class="tpe"
-    [tpe]="book.tpe">
+    [tpe]="book.tpe"
+    [text]="text">
   </km-book-tpe>
   <span class="title">{{book.title}}</span>
   <span class="details">
     ({{book.difficulty.nrOfSentences}} {{text["sentences"]}} / {{text["Difficulty"]}} {{difficultyPerc}}%)
   </span>
-  <button type="button" class="btn btn-primary pull-right start">
-    {{text["StartReading"]}}
+  <button type="button" class="btn btn-primary pull-right start" (click)="onStartNewBook(book)">
+    {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
   </button>
 </li>

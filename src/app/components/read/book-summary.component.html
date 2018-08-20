@@ -18,7 +18,8 @@
         </h3>
         <div class="author">
           <km-book-tpe
-            [tpe]="book.tpe">
+            [tpe]="book.tpe"
+            [text]="text">
           </km-book-tpe>
           {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span> {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
         </div>

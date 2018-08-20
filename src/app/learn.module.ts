@@ -29,7 +29,6 @@ import {LearnBulletsComponent} from './components/learn/bullets.component';
 import {LearnLevelBarComponent} from './components/learn/learnlevel-bar.component';
 import {LearnWordFieldComponent} from './components/learn/exercise-word-field.component';
 import {LearnWordChoicesComponent} from './components/learn/exercise-word-choices.component';
-import {LearnCountdownComponent} from './components/learn/countdown.component';
 import {LearnTimerComponent} from './components/learn/timer.component';
 import {LearnSignUpComponent} from './components/learn/signup.component';
 import {ModalPromotionComponent} from './components/modals/modal-promotion.component';
@@ -72,7 +71,6 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
     LearnLevelBarComponent,
     LearnWordFieldComponent,
     LearnWordChoicesComponent,
-    LearnCountdownComponent,
     LearnTimerComponent,
     LearnSignUpComponent,
     ModalPromotionComponent,

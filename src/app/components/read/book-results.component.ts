@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { Router } from '@angular/router';
 import { SessionData } from '../../models/book.model';
 
 @Component({
@@ -17,10 +16,6 @@ export class BookResultsComponent implements OnChanges {
   total = 0;
   showDetails = false;
 
-  constructor(
-    private router: Router
-  ) {}
-
   ngOnChanges() {
     console.log('result session data', this.data);
     this.calculateResults();
@@ -28,10 +23,6 @@ export class BookResultsComponent implements OnChanges {
 
   onShowDetails(show: boolean) {
     this.showDetails = show;
-  }
-
-  onToRead() {
-    this.router.navigate(['/read']);
   }
 
   private calculateResults() {

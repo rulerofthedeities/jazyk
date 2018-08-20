@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReadService } from '../../services/read.service';
 import { Map } from '../../models/course.model';
 import { Book, UserBook, UserData } from '../../models/book.model';
@@ -24,21 +25,29 @@ interface Answers {
 export class BookSuggestionsComponent implements OnInit, OnDestroy {
   @Input() book: Book;
   @Input() private userLanCode: string;
-  @Input() private answersReceived: Subject<string>;
+  @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
+  @Input() private nextSentence: Subject<string>;
   @Input() text: Object;
   private componentActive = true;
   private books: Book[]; // for suggestions
   private finishedBooks: UserBook[];
   private pastAnswers: string;
+  userBooks: Map<UserBook> = {};
   suggestedBooks: Book[] = [];
+  isResults = false;
 
   constructor(
+    private router: Router,
     private readService: ReadService
   ) {}
 
   ngOnInit() {
     this.getBooks();
     this.observe();
+  }
+
+  onToRead() {
+    this.router.navigate(['/read']);
   }
 
   private getBooks() {
@@ -52,6 +61,11 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
       this.books = res[0];
       this.finishedBooks = this.removeFinishedBooks(res[1]);
       this.pastAnswers = this.processPastAnswers(res[2]);
+      const userBooks: UserBook[] = res[1];
+      this.userBooks = {};
+      userBooks.forEach(uBook => {
+        this.userBooks[uBook.bookId] = uBook;
+      });
       console.log('books', this.books);
       console.log('user books', this.finishedBooks);
       console.log('previous', res[2]);
@@ -61,11 +75,21 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   private observe() {
     this.answersReceived
     .pipe(takeWhile(() => this.componentActive))
-    .subscribe(event => {
-      if (event) {
-        this.processAnswers(event);
+    .subscribe(answers => {
+      if (answers && answers.answers) {
+        this.processAnswers(answers.answers);
+        this.isResults = answers.isResults;
       }
     });
+    this.nextSentence
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(event => {
+      if (event) {
+        // new sentence, don't show suggestions anymore
+        this.suggestedBooks = [];
+      }
+    });
+
   }
 
   private removeFinishedBooks(userBooks: UserBook[]) {
@@ -84,6 +108,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
 
   private processAnswers(answers: string) {
     const allAnswers = (this.pastAnswers + answers).slice(-maxAnswers);
+    console.log('All answers', allAnswers);
     if (allAnswers.length > 4) {
       const answerArr = allAnswers.split(''),
             yes = answerArr.filter(a => a === 'y'),
@@ -106,10 +131,11 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
             currentWeight = this.book.difficulty.weight;
       let harderBooks: Book[] = [],
           easierBooks: Book[] = [];
+      console.log('books before removing finished ones', this.books.length);
       this.finishedBooks.forEach(finishedBook => {
         this.books = this.books.filter(book => book._id !== finishedBook.bookId);
       });
-      console.log('books after removing finished ones', this.books);
+      console.log('books after removing finished ones', this.books.length);
       if (this.books.length > 0) {
         // Find easier / harder books
         harderBooks = this.books.filter(book =>
@@ -135,19 +161,27 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
         }
         easierBooks = this.readService.shuffle(easierBooks).slice(0, 3),
         harderBooks = this.readService.shuffle(harderBooks).slice(0, 3);
-        this.suggestedBooks = easierBooks.concat(harderBooks);
+        let suggestedBooks = easierBooks.concat(harderBooks);
 
         const showHarderSuggestions = this.checkIfHarderSuggestions(answers, !!harderBooks.length),
               showEasierSuggestions = this.checkIfEasierSuggestions(answers, !!easierBooks.length);
         if (showEasierSuggestions) {
           if (showHarderSuggestions) {
-            this.suggestedBooks = easierBooks.concat(harderBooks);
+            suggestedBooks = easierBooks.concat(harderBooks);
           } else {
-            this.suggestedBooks = easierBooks;
+            suggestedBooks = easierBooks;
           }
         } else {
-          this.suggestedBooks = harderBooks;
+          suggestedBooks = harderBooks;
         }
+        if (suggestedBooks) {
+          // Sort books according to weight
+          suggestedBooks.sort(
+            (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
+                      ((b.difficulty.weight > a.difficulty.weight) ? -1 : 0)
+          );
+        }
+        this.suggestedBooks = suggestedBooks;
         console.log('suggested books', this.suggestedBooks);
       }
     }
@@ -159,10 +193,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   }
 
   private checkIfEasierSuggestions(answers: Answers, hasEasierBooks: boolean): boolean {
-    console.log('check',
-      answers.nrYes / answers.total < maxYesEasierPerc,
-      answers.nrNo / answers.total > minNoEasierPerc,
-      hasEasierBooks);
     return answers.nrYes / answers.total < maxYesEasierPerc &&
            answers.nrNo / answers.total > minNoEasierPerc && hasEasierBooks;
   }

@@ -14,13 +14,22 @@
           <h1 class="book-title">
               <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
             {{book?.title}}
-            <small class="book-chapter">{{currentChapter.title}}</small>
+            <small class="book-chapter">
+              {{currentChapter.title}}
+            </small>
           </h1>
         </div>
       </div>
     </div>
 
-    <div *ngIf="readingStarted && !isError && !isLoading"
+    <km-countdown
+      *ngIf="isCountDown"
+      [counter]="3"
+      [mute]="false"
+      (countedDown)="onCountDownFinished()">
+    </km-countdown>
+
+    <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown"
       kmPressed
       (hasKeyPressed)="onKeyPressed($event)">
       <div class="panel panel-default">
@@ -97,16 +106,6 @@
             </div>
           </div>
 
-          <!-- SUGGESTIONS -->
-          <div *ngIf="!!book && answersObservable">
-            <km-book-suggestions
-              [book]="book"
-              [userLanCode]="userLanCode"
-              [answersReceived]="answersObservable"
-              [text]="text">
-            </km-book-suggestions>
-          </div>
-
           <!-- RESULTS -->
           <div *ngIf="currentStep === steps.Results">
             <km-sentences-results
@@ -114,6 +113,15 @@
               [text]="text">
             </km-sentences-results>
           </div>
+
+          <!-- SUGGESTIONS -->
+          <km-book-suggestions
+            [book]="book"
+            [text]="text"
+            [userLanCode]="userLanCode"
+            [answersReceived]="answersObservable"
+            [nextSentence]="nextSentenceObservable">
+          </km-book-suggestions>
         </div>
       </div>
     </div>

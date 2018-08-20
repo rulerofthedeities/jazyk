@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 
 export class BookTpeComponent {
   @Input() tpe: string;
+  @Input() text: Object;
 }

@@ -2,18 +2,21 @@
   <div class="panel panel-info">
     <div class="panel-heading">
       <h3 class="panel-title">
-        {{text["ReadingSuggestions"]}}
+        {{isResults ? text["Recommendations"] : text["ReadingSuggestions"]}}
       </h3>
     </div>
     <div class="panel-body">
       <ul class="list-group">
         <km-book-tab *ngFor="let sbook of suggestedBooks"
           [book]="sbook"
+          [userBook] = "userBooks[sbook._id]"
           [weight]="book.difficulty.weight"
           [text]="text">
         </km-book-tab>
       </ul>
+      <button type="button" class="btn btn-primary" (click)="onToRead()" *ngIf="isResults">
+        {{text["SendMeBackReading"]}}
+      </button>
     </div>
   </div>
 </div>
-
