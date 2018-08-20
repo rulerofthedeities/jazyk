@@ -84,11 +84,11 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.nrOfSentencesDone = 0;
     this.percDone = 0;
     if (this.userBook) {
-      this.isStarted = true;
       if (this.userBook.subscribed) {
         this.isSubscribed = true;
       }
       if (this.userBook.bookmark) {
+        this.isStarted = true;
         if (this.userBook.bookmark.isBookRead) {
           this.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
           this.isBookRead = true;

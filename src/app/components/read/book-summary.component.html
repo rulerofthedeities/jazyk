@@ -21,7 +21,15 @@
             [tpe]="book.tpe"
             [text]="text">
           </km-book-tpe>
-          {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span> {{book.author}}<span *ngIf="book.year">  ({{book.year}})</span>
+          {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span>
+          <span *ngIf="book.link">&nbsp;<a href="{{book.link}}" target="_blank">{{book.author}}</a></span>
+          <span *ngIf="!book.link">&nbsp;{{book.author}}</span>
+          <span *ngIf="book.year">&nbsp;({{book.year}})</span>
+          <span *ngIf="book.license"
+            class="fa fa-copyright"
+            [tooltip]="text[book.license]"
+            [tooltipPlacement]="'top'">
+          </span>
         </div>
         <div class="buttons">
           <button *ngIf="!isBookRead"

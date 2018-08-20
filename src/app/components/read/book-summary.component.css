@@ -49,6 +49,7 @@
   position: relative;
 }
 .book h3 {
+  font-size: 32px;
   margin-top: 0;
   margin-bottom: 2px;
 }
@@ -61,7 +62,7 @@
   margin: 15px 0;
 }
 .info {
-  margin: 26px 0;
+  margin: 21px 0;
 }
 .fa-times-circle {
   color: red;
@@ -120,4 +121,7 @@
   position: absolute;
   top: 60px;
   left: 320px;
+}
+.fa-copyright {
+  margin-left: 6px;
 }

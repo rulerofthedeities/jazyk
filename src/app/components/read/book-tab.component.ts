@@ -22,7 +22,7 @@ export class BookTabComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isStarted = !!this.userBook;
+    this.isStarted = !!this.userBook && !!this.userBook.bookmark;
     this.difficultyPerc = this.readService.getBookDifficulty(this.book).difficultyPerc;
     this.tooltip = this.book.difficulty.weight > this.weight ? this.text['MoreDifficult'] : this.text['LessDifficult'];
   }

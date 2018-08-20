@@ -9,6 +9,7 @@ import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
+import { LearnSettings } from '../../models/user.model';
 import { UserBook, Bookmark, SessionData,
          Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
 
@@ -21,6 +22,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private bookId: string;
   private saveFrequency = 3;
+  settings: LearnSettings;
   text: Object = {};
   book: Book;
   isCountDown = false;
@@ -58,17 +60,27 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.settings = this.userService.user.jazyk.learn;
     this.getBookId();
     this.observe();
   }
 
   onExitReading(confirm: ModalConfirmComponent) {
+    let abortNow = false;
     if (this.isCountDown) {
       this.log('Countdown aborted');
+      abortNow = true;
+    } else {
+      if (this.sessionData.answers) {
+        confirm.showModal = true;
+      } else {
+        this.log('Reading aborted');
+        abortNow = true;
+      }
+    }
+    if (abortNow) {
       this.sharedService.changeExerciseMode(false);
       this.router.navigate(['/read']);
-    } else {
-      confirm.showModal = true;
     }
   }
 
@@ -77,6 +89,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       this.log('Reading aborted');
       this.processResults(false);
     }
+  }
+
+  onBackToList() {
+    this.router.navigate(['/read']);
   }
 
   onNextSentence() {
@@ -92,6 +108,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   onKeyPressed(key: string) {
+    console.log('key pressed', key);
     switch (key) {
       case 'Enter':
         if (this.currentStep === SentenceSteps.Translations) {
@@ -239,10 +256,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           nrNo: 0,
           nrMaybe: 0
         };
-        console.log('SET COUNTDOWN TO TRUE');
-        // if (!userBook) {
+        if (!userBook || (userBook && !userBook.bookmark)) {
+          console.log('SET COUNTDOWN TO TRUE');
           this.isCountDown = true;
-        // }
+        }
         this.getBook(this.bookId);
         this.findCurrentChapter(userBook);
       });
@@ -371,24 +388,26 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private placeBookmark(isBookRead: boolean) {
-    let sentenceNrToBookmark = this.currentSentenceNr;
-    if (this.currentStep < SentenceSteps.Answered) {
-      sentenceNrToBookmark--;
+    if (this.sessionData.answers) {
+      let sentenceNrToBookmark = this.currentSentenceNr;
+      if (this.currentStep < SentenceSteps.Answered) {
+        sentenceNrToBookmark--;
+      }
+      let isRead = false;
+      if (sentenceNrToBookmark >= this.currentSentenceTotal) {
+        isRead = true;
+      }
+      const newBookmark: Bookmark = {
+        chapterId: this.currentChapter._id,
+        sentenceNrChapter: sentenceNrToBookmark,
+        isChapterRead: isBookRead ? true : isRead,
+        isBookRead
+      };
+      this.readService
+      .placeBookmark(this.bookId, newBookmark, this.userLanCode)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(bookmark => console.log('bookmarked'));
     }
-    let isRead = false;
-    if (sentenceNrToBookmark >= this.currentSentenceTotal) {
-      isRead = true;
-    }
-    const newBookmark: Bookmark = {
-      chapterId: this.currentChapter._id,
-      sentenceNrChapter: sentenceNrToBookmark,
-      isChapterRead: isBookRead ? true : isRead,
-      isBookRead
-    };
-    this.readService
-    .placeBookmark(this.bookId, newBookmark, this.userLanCode)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(bookmark => console.log('bookmarked'));
   }
 
   private processResults(isBookRead: boolean) {

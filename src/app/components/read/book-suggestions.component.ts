@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { ReadService } from '../../services/read.service';
 import { Map } from '../../models/course.model';
 import { Book, UserBook, UserData } from '../../models/book.model';
@@ -37,17 +36,12 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   isResults = false;
 
   constructor(
-    private router: Router,
     private readService: ReadService
   ) {}
 
   ngOnInit() {
     this.getBooks();
     this.observe();
-  }
-
-  onToRead() {
-    this.router.navigate(['/read']);
   }
 
   private getBooks() {

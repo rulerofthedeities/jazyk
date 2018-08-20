@@ -34,6 +34,7 @@ interface Difficulty {
   weight: number;
   uniqueWordScore: number;
   uniqueSentenceScore: number;
+  tpeMultiplicator: number;
 }
 
 export interface Book {
@@ -46,6 +47,8 @@ export interface Book {
   year: number;
   img: string;
   tpe: string;
+  license: string;
+  link: string;
   difficulty: Difficulty;
   isPublished: boolean;
 }

@@ -1,11 +1,12 @@
 <span class="fa"
   [ngClass]="{
-  'fa-music': tpe === 'song',
-  'fa-book': tpe === 'book',
-  'fa-file-o': tpe === 'shortstory',
-  'fa-newspaper-o': tpe === 'report',
-  'fa-align-center': tpe === 'poetry'
-}"
+    'fa-music': tpe === 'song',
+    'fa-book': tpe === 'book',
+    'fa-file-o': tpe === 'shortstory',
+    'fa-newspaper-o': tpe === 'report',
+    'fa-align-center': tpe === 'poetry',
+    'fa-child': tpe === 'children'
+  }"
   [tooltip]="text[tpe]"
   [tooltipPlacement]="'top'">
 </span>

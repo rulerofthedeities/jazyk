@@ -119,7 +119,7 @@ export class ReadService {
     difficulty = difficulty - 300;
     difficulty = Math.max(10, difficulty);
     difficulty = difficulty * 1.8;
-    difficulty = Math.min(1000, difficulty);
+    difficulty = (Math.min(1000, difficulty) - 100) * 1.2;
     const difficultyWidth = Math.round(difficulty / 5),
           difficultyPerc = Math.round(difficulty / 10);
     return {difficultyWidth, difficultyPerc};
