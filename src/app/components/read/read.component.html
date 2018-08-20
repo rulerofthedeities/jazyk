@@ -29,10 +29,12 @@
   </div>
   <div class="clearfix"></div>
 
+  <span *ngIf="!!filteredBooks.length">{{filteredBooks.length}}/{{nrOfBooks}} items</span>
+
   <!-- BOOKS LIST -->
   <div *ngIf="IsBooksReady">
-    <ul class="list-unstyled" *ngIf="books?.length">
-      <li *ngFor="let book of books">
+    <ul class="list-unstyled" *ngIf="filteredBooks?.length">
+      <li *ngFor="let book of filteredBooks">
         <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
           [book]="book"
           [userBook]="userBooks[book._id]"

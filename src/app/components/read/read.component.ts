@@ -21,7 +21,8 @@ export class ReadComponent implements OnInit, OnDestroy {
   bookLanguages: Language[];
   private userLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
-  books: Book[];
+  private books: Book[];
+  filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};
   translationData: Map<TranslationData> = {};
@@ -30,6 +31,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   isReady = false;
   IsBooksReady = false;
   listTpe = 'all';
+  nrOfBooks: number;
 
   constructor(
     private readService: ReadService,
@@ -59,10 +61,22 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   onChangeBookType(tpe: string) {
     this.listTpe = tpe;
+    console.log('list type', tpe);
+    this.filterBooks();
   }
 
   onRemovedSubscription(book: Book) {
     this.userBooks[book._id].subscribed = false;
+  }
+
+  private filterBooks() {
+    switch (this.listTpe) {
+      case 'my':
+      this.filteredBooks = this.books.filter(b => !!this.userBooks[b._id] && this.userBooks[b._id].bookmark);
+      break;
+      default:
+        this.filteredBooks = [...this.books];
+    }
   }
 
   private getBooks() {
@@ -77,6 +91,10 @@ export class ReadComponent implements OnInit, OnDestroy {
       books => {
         console.log('books', books);
         this.books = books;
+        if (books) {
+          this.nrOfBooks = books.length;
+          this.filterBooks();
+        }
         this.isLoading = false;
         this.IsBooksReady = true;
       }
