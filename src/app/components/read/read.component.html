@@ -42,7 +42,7 @@
           [translationData]="translationData[book._id]"
           [userLanCode]="myLanguage.code"
           [text]="text"
-          tpe="read"
+          [tpe]="listTpe === 'my' ? 'my' : 'read'"
           (removedSubscription)="onRemovedSubscription($event)">
         </km-book-summary>
       </li>

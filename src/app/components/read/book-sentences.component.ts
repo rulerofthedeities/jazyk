@@ -65,23 +65,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.observe();
   }
 
-  onExitReading(confirm: ModalConfirmComponent) {
-    let abortNow = false;
-    if (this.isCountDown) {
-      this.log('Countdown aborted');
-      abortNow = true;
-    } else {
-      if (this.sessionData.answers) {
-        confirm.showModal = true;
-      } else {
-        this.log('Reading aborted');
-        abortNow = true;
-      }
-    }
-    if (abortNow) {
-      this.sharedService.changeExerciseMode(false);
-      this.router.navigate(['/read']);
-    }
+  onExitReading() {
+    this.exitReading();
   }
 
   onExitConfirmed(exitOk: boolean) {
@@ -117,7 +102,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         break;
       case 'Escape':
         if (this.currentStep < SentenceSteps.Results) {
-          this.confirm.showModal = true;
+          this.exitReading();
         }
         break;
       case 'Backspace':
@@ -144,6 +129,25 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+  private exitReading() {
+    let abortNow = false;
+    if (this.isCountDown) {
+      this.log('Countdown aborted');
+      abortNow = true;
+    } else {
+      if (this.sessionData.answers) {
+        this.confirm.showModal = true;
+      } else {
+        this.log('Reading aborted');
+        abortNow = true;
+      }
+    }
+    if (abortNow) {
+      this.sharedService.changeExerciseMode(false);
+      this.router.navigate(['/read']);
+    }
+
   }
 
   private nextSentence() {
@@ -257,7 +261,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           nrMaybe: 0
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
-          console.log('SET COUNTDOWN TO TRUE');
           this.isCountDown = true;
         }
         this.getBook(this.bookId);
@@ -287,7 +290,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.isBookRead = true;
           this.isError = true;
           this.showMsg = true;
-          console.log('BOOK READ BEFORE');
         } else {
           this.getChapter(userBook.bookId, userBook.bookmark, 1);
         }
@@ -413,10 +415,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private processResults(isBookRead: boolean) {
     console.log('changing exercise mode to false');
     this.sharedService.changeExerciseMode(false);
+    this.saveSessionData();
+    this.placeBookmark(isBookRead); // must be before currentStep change
     this.currentStep = SentenceSteps.Results;
     this.answersObservable.next({answers: this.sessionData.answers, isResults: true}); // Show suggestions also in results
-    this.saveSessionData();
-    this.placeBookmark(isBookRead);
   }
 
   private saveSessionData(book: Book = null) {

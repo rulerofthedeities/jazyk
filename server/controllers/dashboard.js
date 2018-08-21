@@ -190,6 +190,7 @@ module.exports = {
                     tlPipeline = [
                       {$match: tlQuery},
                       {$unwind: "$translations"},
+                      {$match: {'translations.lanCode': userLan}},
                       {$group: {
                         _id: '$bookId',
                         count: {'$sum': 1}
@@ -211,33 +212,11 @@ module.exports = {
           };
 
           getBookData().then((results) => {
-            console.log('RESULTS', results);
             response.handleSuccess(res, results);
           }).catch((err) => {
             console.log(err);
             response.handleError(err, res, 400, 'Error fetching book data');
           });
-
-          /*
-          const query = {_id: {$in: bookIdArr}};
-          Book.find(query, (err, bookResults) => {
-            response.handleError(err, res, 400, 'Error fetching recent books', () => {
-              const recentBooks = [];
-              // Add date bookmark for each book
-              bookResults.forEach((book, i, books) => {
-                id = userBooks.find(result => result.bookId.toString() === book._id.toString());
-                if (id) {
-                  recentBooks.push({
-                    dt: id.bookmark ? id.bookmark.dt : null,
-                    book,
-                    userBook: id,
-                    tpe: 'book'})
-                }
-              });
-              response.handleSuccess(res, recentBooks);
-            });
-          });
-          */
         } else {
           response.handleSuccess(res, []);
         }
