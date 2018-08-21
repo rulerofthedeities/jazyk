@@ -114,17 +114,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  getBookDifficulty(book): {difficultyWidth: number, difficultyPerc: number} {
-    let difficulty = book.difficulty.weight;
-    difficulty = difficulty - 300;
-    difficulty = Math.max(10, difficulty);
-    difficulty = difficulty * 1.8;
-    difficulty = (Math.min(1000, difficulty) - 100) * 1.2;
-    const difficultyWidth = Math.round(difficulty / 5),
-          difficultyPerc = Math.round(difficulty / 10);
-    return {difficultyWidth, difficultyPerc};
-  }
-
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html
   shuffle<T>(array: T[]): T[] {
     // if it's 1 or 0 items, just return

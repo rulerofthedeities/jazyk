@@ -6,7 +6,6 @@ import { ReadService } from './services/read.service';
 
 import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
-import { BookSummaryComponent } from './components/read/book-summary.component';
 import { BookSentencesComponent } from './components/read/book-sentences.component';
 import { BookTranslationComponent } from './components/read/book-translation.component';
 import { BookContextComponent } from './components/read/book-context.component';
@@ -14,8 +13,6 @@ import { BookBulletsComponent } from './components/read/book-bullets.component';
 import { BookResultsComponent } from './components/read/book-results.component';
 import { BookSuggestionsComponent } from './components/read/book-suggestions.component';
 import { BookTabComponent } from './components/read/book-tab.component';
-import { BookTpeComponent } from './components/read/book-tpe.component';
-import { PieChartComponent } from './components/read/pie-chart.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -32,16 +29,13 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   ],
   declarations: [
     ReadComponent,
-    BookSummaryComponent,
     BookSentencesComponent,
     BookTranslationComponent,
     BookContextComponent,
     BookBulletsComponent,
     BookResultsComponent,
     BookSuggestionsComponent,
-    BookTabComponent,
-    BookTpeComponent,
-    PieChartComponent
+    BookTabComponent
   ]
 })
 export class ReadModule {}

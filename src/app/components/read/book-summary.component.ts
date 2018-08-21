@@ -1,7 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
-import { ReadService } from '../../services/read.service';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
@@ -19,6 +18,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() translationData: TranslationData;
   @Input() userLanCode: string;
   @Input() text: Object;
+  @Input() tpe: string; // home or read
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
   difficultyWidth: number;
@@ -32,7 +32,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private router: Router,
-    private readService: ReadService,
     private userService: UserService,
     private sharedService: SharedService
   ) {}
@@ -72,7 +71,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setDifficulty() {
-    const difficulty = this.readService.getBookDifficulty(this.book);
+    const difficulty = this.sharedService.getBookDifficulty(this.book);
     this.difficultyWidth = difficulty.difficultyWidth;
     this.difficultyPerc = difficulty.difficultyPerc;
   }

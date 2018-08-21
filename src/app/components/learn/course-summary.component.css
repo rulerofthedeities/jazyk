@@ -95,7 +95,7 @@ h3 {
   margin-top: 4px;
   margin-right: 6px;
 }
-img.from {
+img.to {
   opacity: 0.7;
 }
 /* override bootstrap */
@@ -111,46 +111,46 @@ img.from {
   height: 40px;
 }
 /* btn-review */
-.btn-review { 
-  color: #ffffff; 
-  background-color: #F2C40F; 
-  border-color: #E2B500; 
-} 
- 
-.btn-review:hover, 
-.btn-review:focus, 
-.btn-review:active, 
-.btn-review.active, 
-.open .dropdown-toggle.btn-review { 
-  color: #ffffff; 
-  background-color: #e8ba00; 
-  border-color: #E2B500; 
-} 
- 
-.btn-review:active, 
-.btn-review.active, 
-.open .dropdown-toggle.btn-review { 
-  background-image: none; 
-} 
- 
-.btn-review.disabled, 
-.btn-review[disabled], 
-fieldset[disabled] .btn-review, 
-.btn-review.disabled:hover, 
-.btn-review[disabled]:hover, 
-fieldset[disabled] .btn-review:hover, 
-.btn-review.disabled:focus, 
-.btn-review[disabled]:focus, 
-fieldset[disabled] .btn-review:focus, 
-.btn-review.disabled:active, 
-.btn-review[disabled]:active, 
-fieldset[disabled] .btn-review:active, 
-.btn-review.disabled.active, 
-.btn-review[disabled].active, 
-fieldset[disabled] .btn-review.active { 
-  background-color: #f2c40f; 
+.btn-review {
+  color: #ffffff;
+  background-color: #F2C40F;
+  border-color: #E2B500;
+}
+
+.btn-review:hover,
+.btn-review:focus,
+.btn-review:active,
+.btn-review.active,
+.open .dropdown-toggle.btn-review {
+  color: #ffffff;
+  background-color: #e8ba00;
+  border-color: #E2B500;
+}
+
+.btn-review:active,
+.btn-review.active,
+.open .dropdown-toggle.btn-review {
+  background-image: none;
+}
+
+.btn-review.disabled,
+.btn-review[disabled],
+fieldset[disabled] .btn-review,
+.btn-review.disabled:hover,
+.btn-review[disabled]:hover,
+fieldset[disabled] .btn-review:hover,
+.btn-review.disabled:focus,
+.btn-review[disabled]:focus,
+fieldset[disabled] .btn-review:focus,
+.btn-review.disabled:active,
+.btn-review[disabled]:active,
+fieldset[disabled] .btn-review:active,
+.btn-review.disabled.active,
+.btn-review[disabled].active,
+fieldset[disabled] .btn-review.active {
+  background-color: #f2c40f;
   border-color: #e2b500;
-} 
+}
 /* demo */
 /* src: https://codepen.io/eode9/pen/twkKm */
 .demo{

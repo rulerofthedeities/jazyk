@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {AuthService} from './auth.service';
-import {SummaryData, CommunicationData, RecentCourse} from '../models/dashboard.model';
+import {SummaryData, CommunicationData, RecentCourse, RecentBook} from '../models/dashboard.model';
 import {StepData} from '../models/course.model';
 import {Observable, of} from 'rxjs';
 import {retry, delay, map} from 'rxjs/operators';
@@ -28,7 +28,13 @@ export class DashboardService {
 
   fetchRecentCourses(): Observable<RecentCourse[]> {
     return this.http
-    .get<RecentCourse[]>('/api/dashboard/courses/3')
+    .get<RecentCourse[]>('/api/dashboard/courses/5')
+    .pipe(retry(3));
+  }
+
+  fetchRecentBooks(): Observable<RecentBook[]> {
+    return this.http
+    .get<RecentBook[]>('/api/dashboard/books/5')
     .pipe(retry(3));
   }
 

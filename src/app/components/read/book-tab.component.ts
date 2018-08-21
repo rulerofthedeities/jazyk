@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Book, UserBook } from '../../models/book.model';
+import { SharedService } from '../../services/shared.service';
 import { ReadService } from '../../services/read.service';
 
 @Component({
@@ -18,12 +19,13 @@ export class BookTabComponent implements OnInit {
   tooltip: string;
 
   constructor(
-    private readService: ReadService
+    private readService: ReadService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
     this.isStarted = !!this.userBook && !!this.userBook.bookmark;
-    this.difficultyPerc = this.readService.getBookDifficulty(this.book).difficultyPerc;
+    this.difficultyPerc = this.sharedService.getBookDifficulty(this.book).difficultyPerc;
     this.tooltip = this.book.difficulty.weight > this.weight ? this.text['MoreDifficult'] : this.text['LessDifficult'];
   }
 

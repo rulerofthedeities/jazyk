@@ -16,8 +16,10 @@
             <a routerLink="/user/score" class="points">{{summaryData.score | score}} {{text["points"]}}</a>
           </div>
           <div class="learning info">
+            {{summaryData.booksReading.total}} {{summaryData.booksReading.total === 1 ? text["bookStarted"] : text["booksStarted"]}}<br>
+            {{summaryData.booksReading.completed}} {{summaryData.booksReading.completed === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
             {{summaryData.coursesLearning.total}} {{summaryData.coursesLearning.total === 1 ? text["courseStarted"] : text["coursesStarted"]}}<br>
-            {{summaryData.coursesLearning.subscribed}} {{summaryData.coursesLearning.subscribed === 1 ? text["courseLearning"] : text["coursesLearning"]}}
+            {{summaryData.coursesLearning.subscribed}} {{summaryData.coursesLearning.subscribed === 1 ? text["courseLearning"] : text["coursesLearning"]}}<br>
           </div>
         </div>
         <km-loader *ngIf="isLoadingOverview && !isError"
@@ -80,22 +82,31 @@
     <div class="panel panel-default courses transparant">
       <div class="panel-heading">
         <span class="fa fa-book fa-spacing-title"></span>
-        {{text["RecentCourses"]}}
+        {{text["RecentStudied"]}}
       </div>
       <div class="panel-body">
-        <div *ngIf="coursesReady">
-          <ul class="list-unstyled" *ngIf="courses?.length">
-            <li *ngFor="let course of courses">
-              <km-course-summary
-                [course]="course.course"
-                [lastActivity]="getFromNow(course.dt)"
+        <div *ngIf="recentReady">
+          <ul class="list-unstyled" *ngIf="recent?.length">
+            <li *ngFor="let item of recent">
+              <km-course-summary *ngIf="item.tpe==='course'"
+                [course]="item['course']"
+                [lastActivity]="getFromNow(item.dt)"
                 [text]="text"
                 [tpe]="listType.Home">
               </km-course-summary>
+              <km-book-summary *ngIf="item.tpe==='book'"
+                [book]="item['book']"
+                [userBook]="item['uBook']"
+                [userData]="item['sessions']"
+                [translationData]="item['translations']"
+                [userLanCode]="item['userLanCode']"
+                [text]="text"
+                tpe="home">
+              </km-book-summary>
             </li>
           </ul>
-          <div *ngIf="!courses?.length">
-            {{text["NoRecentCourses"]}}
+          <div *ngIf="!recent?.length">
+            {{text["NoRecentStudied"]}}
           </div>
         </div>
         <km-loader *ngIf="isLoadingRecent && !isError"

@@ -4,10 +4,11 @@ import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {DashboardService} from '../../services/dashboard.service';
-import {SummaryData, CommunicationData, RecentCourse} from '../../models/dashboard.model';
+import {SummaryData, CommunicationData, RecentCourse, RecentBook} from '../../models/dashboard.model';
 import {CourseListType} from '../../models/course.model';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import * as moment from 'moment';
+import {zip} from 'rxjs';
 import {takeWhile, delay} from 'rxjs/operators';
 
 interface Communication {
@@ -30,11 +31,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private componentActive = true;
   summaryData: SummaryData;
   communications: Communication[];
-  courses: RecentCourse[];
+  recent: (RecentCourse|RecentBook)[];
   isLoadingRecent = false;
   isLoadingCommunication = false;
   isLoadingOverview = false;
-  coursesReady = false;
+  recentReady = false;
   isError = false;
   listType = CourseListType;
 
@@ -48,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getCounts();
-    this.getRecentCourses();
+    this.getRecent();
     this.getNotificationsAndMessages();
     this.subscribe();
   }
@@ -110,20 +111,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
       data => {
         this.isLoadingOverview = false;
         this.summaryData = data;
+        console.log('summary data', data);
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private getRecentCourses() {
+  private getRecent() {
     this.isLoadingRecent = true;
-    this.dashboardService
-    .fetchRecentCourses()
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      data => {
-        this.isLoadingRecent = false;
-        this.processCourses(data);
+    zip(
+      this.dashboardService.fetchRecentCourses(),
+      this.dashboardService.fetchRecentBooks()
+    )
+    .pipe(
+      takeWhile(() => this.componentActive))
+    .subscribe(res => {
+      console.log('zip result', res);
+      this.isLoadingRecent = false;
+      // BOOKS data: userBook is key, not Book!
+      this.processRecent(res[0], res[1]);
       },
       error => this.errorService.handleError(error)
     );
@@ -143,14 +149,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  private processCourses(data: RecentCourse[]) {
-    // Sort courses
-    this.courses = data.sort(function(a, b) {
+  private processRecent(courses: RecentCourse[], books: RecentBook[]) {
+    let data: (RecentCourse|RecentBook)[] = courses;
+    data = data.concat(books);
+    console.log('recent data', data);
+    // Sort courses and books
+    data = data.sort(function(a, b) {
       const dtA = new Date(a.dt),
             dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
-    this.coursesReady = true;
+    this.recent = data.slice(0, 5);
+    this.recentReady = true;
   }
 
   private processCommunication(data: CommunicationData) {

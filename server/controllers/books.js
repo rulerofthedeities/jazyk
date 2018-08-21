@@ -143,8 +143,9 @@ module.exports = {
           bookId = req.params.bookId,
           lanCode = req.params.lan,
           bookmark = req.body.bookmark,
-          query = {bookId, userId, lanCode},
-          update = {$set: {bookmark}};
+          query = {bookId, userId, lanCode};
+    bookmark.dt = Date.now()
+    const update = {$set: {bookmark}};
     if (!bookmark.sentenceNrBook) {
       //TODO -> calculate sentences done
       bookmark.sentenceNrBook = 0;
@@ -216,15 +217,12 @@ module.exports = {
     })
   },
   getBookSessions: (req, res) => {
-    console.log('bookId', req.params.bookId);
-    console.log('userLanCode', req.params.lan);
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = req.params.bookId,
           userLanCode = req.params.lan,
           query = {userId, bookId, lanCode: userLanCode},
           projection = {answers: 1, _id: 0},
           options = {sort: {'dt.end': 1}};
-          console.log('query', query);
     Session.find(query, projection, options, (err, sessions) => {
       response.handleError(err, res, 400, 'Error fetching book session data', function() {
         const answers = sessions.map(s => s.answers);

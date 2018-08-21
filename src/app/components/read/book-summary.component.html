@@ -44,7 +44,7 @@
             {{text['BookRead']}}
           </div>
         </div>
-        <div class="stop pull-right" *ngIf="isSubscribed">
+        <div class="stop pull-right" *ngIf="isSubscribed && tpe!=='home'">
           <button type="button" class="btn btn-default"
             (click)="onStopReading()">
             <span class="fa fa-times-circle fa-spacing"></span>
