@@ -113,9 +113,8 @@ module.exports = {
     });
   },
   getBookTranslations: (req, res) => {
-    const bookLan = req.params.bookLan,
-          userLan = req.params.userLan,
-          query = {lanCode: bookLan, 'translations.lanCode': userLan},
+    const userLan = req.params.lan,
+          query = {'translations.lanCode': userLan},
           projection = {
             _id: 0,
             bookId: '$_id',

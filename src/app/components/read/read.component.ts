@@ -129,7 +129,7 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private getBookTranslations() {
     this.readService
-    .fetchTranslationData(this.bookLanguage.code, this.myLanguage.code)
+    .fetchTranslationData(this.myLanguage.code)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {

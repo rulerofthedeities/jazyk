@@ -82,10 +82,10 @@ export class ReadService {
     });
   }
 
-  fetchTranslationData(bookLanCode: string, userLanCode: string): Observable<TranslationData[]> {
+  fetchTranslationData(userLanCode: string): Observable<TranslationData[]> {
     // count the # of translations for all books into a specific language
     return this.http
-    .get<TranslationData[]>('/api/book/translation/' + bookLanCode + '/' + userLanCode);
+    .get<TranslationData[]>('/api/book/translation/' + userLanCode);
   }
 
   /*** Session data ***/
