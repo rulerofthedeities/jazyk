@@ -73,7 +73,10 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private getLicenseUrl() {
     if (this.licenses) {
-      this.licenseUrl = this.licenses.find(l => this.book.license === l.license).url;
+      const license = this.licenses.find(l => this.book.license === l.license);
+      if (license) {
+        this.licenseUrl = license.url;
+      }
     }
   }
 
