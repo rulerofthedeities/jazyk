@@ -4,8 +4,8 @@
       <img src="/assets/img/flags/{{region}}.png" alt="{{region}}" class="flag">
     </li>
     <ng-template [ngIf]="showDropdown">
-      <li 
-        *ngFor="let r of regions; let i:index"
+      <li
+        *ngFor="let r of regions; let i=index"
         (click)="onSelectRegion(r)"
         (mouseover)="onHoverRegion(i)"
         >
