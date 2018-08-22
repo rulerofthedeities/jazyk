@@ -118,7 +118,6 @@ module.exports = {
     getData().then((results) => {
       response.handleSuccess(res, results);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 400, 'Error fetching dependables');
     });
   }
