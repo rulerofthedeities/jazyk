@@ -1,15 +1,15 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
-import {UtilsService} from '../../services/utils.service';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {DashboardService} from '../../services/dashboard.service';
-import {SummaryData, CommunicationData, RecentCourse, RecentBook} from '../../models/dashboard.model';
-import {CourseListType} from '../../models/course.model';
-import {ModalRanksComponent} from '../modals/modal-ranks.component';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { UtilsService } from '../../services/utils.service';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { SummaryData, CommunicationData, RecentCourse, RecentBook } from '../../models/dashboard.model';
+import { CourseListType, LicenseUrl } from '../../models/course.model';
+import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import * as moment from 'moment';
-import {zip} from 'rxjs';
-import {takeWhile, delay} from 'rxjs/operators';
+import { zip } from 'rxjs';
+import { takeWhile, delay } from 'rxjs/operators';
 
 interface Communication {
   id: string;
@@ -28,6 +28,7 @@ interface Communication {
 
 export class DashboardComponent implements OnInit, OnDestroy {
   @Input() text: Object;
+  @Input() licenses: LicenseUrl[];
   private componentActive = true;
   summaryData: SummaryData;
   communications: Communication[];
@@ -111,7 +112,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       data => {
         this.isLoadingOverview = false;
         this.summaryData = data;
-        console.log('summary data', data);
       },
       error => this.errorService.handleError(error)
     );
@@ -126,7 +126,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(
       takeWhile(() => this.componentActive))
     .subscribe(res => {
-      console.log('zip result', res);
       this.isLoadingRecent = false;
       // BOOKS data: userBook is key, not Book!
       this.processRecent(res[0], res[1]);
@@ -152,7 +151,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private processRecent(courses: RecentCourse[], books: RecentBook[]) {
     let data: (RecentCourse|RecentBook)[] = courses;
     data = data.concat(books);
-    console.log('recent data', data);
     // Sort courses and books
     data = data.sort(function(a, b) {
       const dtA = new Date(a.dt),

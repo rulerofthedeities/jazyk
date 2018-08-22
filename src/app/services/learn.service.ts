@@ -152,7 +152,6 @@ export class LearnService {
 
   fetchToReview(courseId: string, max: number): Observable<CourseResults> {
     const params = {'max': max.toString()};
-    console.log('nr to review', max);
     return this.http
     .get<CourseResults>('/api/user/results/course/toreview/' + courseId, {params})
     .pipe(retry(3));

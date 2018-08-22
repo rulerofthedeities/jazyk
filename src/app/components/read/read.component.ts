@@ -3,10 +3,9 @@ import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
-import { Language, Map } from '../../models/course.model';
+import { Language, Map, LicenseUrl } from '../../models/course.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
-import { lang } from 'moment';
 
 @Component({
   templateUrl: 'read.component.html',
@@ -19,6 +18,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   bookLanguage: Language;
   myLanguage: Language;
   bookLanguages: Language[];
+  licenses: LicenseUrl[];
   private userLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
   private books: Book[];
@@ -61,7 +61,6 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   onChangeBookType(tpe: string) {
     this.listTpe = tpe;
-    console.log('list type', tpe);
     this.filterBooks();
   }
 
@@ -89,7 +88,6 @@ export class ReadComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
-        console.log('books', books);
         this.books = books;
         if (books) {
           this.nrOfBooks = books.length;
@@ -108,7 +106,6 @@ export class ReadComponent implements OnInit, OnDestroy {
     .subscribe(
       books => {
         this.userBooks = {};
-        console.log('user books', books);
         books.forEach(uBook => {
           this.userBooks[uBook.bookId] = uBook;
         });
@@ -126,7 +123,6 @@ export class ReadComponent implements OnInit, OnDestroy {
         sessionData.forEach(session => {
           this.userData[session.bookId] = session;
         });
-        console.log('user data', this.userData);
       }
     );
   }
@@ -141,7 +137,6 @@ export class ReadComponent implements OnInit, OnDestroy {
         translations.forEach(translation => {
           this.translationData[translation.bookId] = translation;
         });
-        console.log('translation data', this.translationData);
       }
     );
   }
@@ -151,18 +146,19 @@ export class ReadComponent implements OnInit, OnDestroy {
       lan: this.userService.user.main.lan,
       component: 'ReadComponent',
       getTranslations: true,
-      getLanguages: true
+      getLanguages: true,
+      getLicenses: true
     };
     this.utilsService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
+        this.licenses = dependables.licenseUrls;
         this.text = this.utilsService.getTranslatedText(dependables.translations);
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        console.log('my language', this.myLanguage);
         this.utilsService.setPageTitle(this.text, 'Read');
         this.getBooks();
         this.filterUserLanguages();
@@ -175,16 +171,13 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.bookLanguages = bookLanguages;
     const allLanguage = this.utilsService.getAllLanguage();
     this.bookLanguages.unshift(allLanguage);
-    console.log('book languages', this.bookLanguages);
     this.bookLanguage = this.userService.getUserLearnLanguage(this.bookLanguages);
   }
 
   private filterUserLanguages() {
     // filter out selected book language
-    console.log('filter user languages');
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
     if (this.myLanguage.code === this.bookLanguage.code && this.myLanguages.length > 0) {
-      console.log('change my lan', this.myLanguages[0]);
       this.myLanguage = this.myLanguages[0];
     }
   }

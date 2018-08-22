@@ -180,12 +180,18 @@ export interface StepData {
   review: number;
 }
 
+export interface LicenseUrl {
+  license: string;
+  url: string;
+}
+
 export interface Dependables {
   translations: Translation[];
   languages: Language[]; // interface languages
   userLanguages: Language[]; // my languages
   courseLanguages: Language[];
   bookLanguages: Language[];
+  licenseUrls: LicenseUrl[];
 }
 
 export interface DependableOptions {

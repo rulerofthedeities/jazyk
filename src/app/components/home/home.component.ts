@@ -1,10 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {SharedService} from '../../services/shared.service';
-import {UserService} from '../../services/user.service';
-import {AuthService} from '../../services/auth.service';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+import { takeWhile } from 'rxjs/operators';
+import { LicenseUrl } from '../../models/course.model';
 
 @Component({
   templateUrl: 'home.component.html',
@@ -14,20 +14,20 @@ import {takeWhile} from 'rxjs/operators';
 export class HomeComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
+  licenses: LicenseUrl[];
 
   constructor(
     private utilsService: UtilsService,
     private sharedService: SharedService,
     private userService: UserService,
-    private errorService: ErrorService,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.setTitle(this.authService.isLoggedIn());
-    this.getTranslations(this.userService.user.main.lan);
+    this.getDependables(this.userService.user.main.lan);
     this.userService.interfaceLanguageChanged.subscribe(
-      newLan => this.getTranslations(newLan)
+      newLan => this.getDependables(newLan)
     );
     this.sharedService.justLoggedInOut.subscribe(
       loggedIn => this.setTitle(loggedIn)
@@ -46,13 +46,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getTranslations(lan) {
+  private getDependables(lan) {
+    const options = {
+      lan,
+      component: 'HomeComponent',
+      getTranslations: true,
+      getLicenses: true
+    };
     this.utilsService
-    .fetchTranslations(lan, 'HomeComponent')
+    .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      translations => this.text = this.utilsService.getTranslatedText(translations),
-      error => this.errorService.handleError(error)
+      dependables => {
+        this.licenses = dependables.licenseUrls;
+        this.text = this.utilsService.getTranslatedText(dependables.translations);
+      }
     );
   }
 

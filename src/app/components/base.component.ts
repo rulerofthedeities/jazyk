@@ -32,7 +32,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     .exerciseModeChanged
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(
-      started => {console.log('exercisemodechanged', started); this.exercisesStarted = started;}
+      started => this.exercisesStarted = started
     );
     this.userService.backgroundChanged.subscribe(
       status => this.showBackground = status

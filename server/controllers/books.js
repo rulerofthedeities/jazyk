@@ -132,7 +132,6 @@ module.exports = {
             {$project: projection}
           ];
     Translation.aggregate(pipeline, (err, translations) => {
-      console.log('translations data', translations);
       response.handleError(err, res, 400, 'Error fetching translations count', () => {
         response.handleSuccess(res, translations);
       });

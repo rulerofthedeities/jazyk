@@ -25,10 +25,21 @@
           <span *ngIf="book.link">&nbsp;<a href="{{book.link}}" target="_blank">{{book.author}}</a></span>
           <span *ngIf="!book.link">&nbsp;{{book.author}}</span>
           <span *ngIf="book.year">&nbsp;({{book.year}})</span>
-          <span *ngIf="book.license"
-            class="fa fa-copyright"
-            [tooltip]="text[book.license]"
-            [tooltipPlacement]="'top'">
+          <a *ngIf="licenseUrl" href="{{licenseUrl}}" target="_blank">
+            <ng-container
+              *ngTemplateOutlet="copyright;context:{
+                license: book.license,
+                tooltip: text[book.license]
+              }">
+            </ng-container>
+          </a>
+          <span *ngIf="!licenseUrl">
+            <ng-container
+              *ngTemplateOutlet="copyright;context:{
+                license: book.license,
+                tooltip: text[book.license]
+              }">
+            </ng-container>
           </span>
         </div>
         <div class="buttons">
@@ -81,3 +92,12 @@
     </div>
   </div>
 </article>
+
+<ng-template #copyright let-license=license let-tooltip=tooltip>
+  <span *ngIf="license"
+    class="fa fa-copyright"
+    [tooltip]="tooltip"
+    [tooltipPlacement]="'top'"
+    >
+</span>
+</ng-template>

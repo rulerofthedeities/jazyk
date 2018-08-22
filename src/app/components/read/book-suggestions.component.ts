@@ -60,9 +60,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
       userBooks.forEach(uBook => {
         this.userBooks[uBook.bookId] = uBook;
       });
-      console.log('books', this.books);
-      console.log('user books', this.finishedBooks);
-      console.log('previous', res[2]);
     });
   }
 
@@ -96,13 +93,11 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     pastSessions.forEach(answer => {
       answers += answer;
     });
-    console.log('past answers', answers);
     return answers;
   }
 
   private processAnswers(answers: string) {
     const allAnswers = (this.pastAnswers + answers).slice(-maxAnswers);
-    console.log('All answers', allAnswers);
     if (allAnswers.length > 4) {
       const answerArr = allAnswers.split(''),
             yes = answerArr.filter(a => a === 'y'),
@@ -115,21 +110,18 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   }
 
   private findSuggestions(answers: Answers) {
-    console.log('answers', answers);
     const weightCoefficientHarder = this.getWeightCoefficient('harder', answers),
           weightCoefficientEasier = this.getWeightCoefficient('easier', answers);
-    console.log('coefficients', weightCoefficientHarder, weightCoefficientEasier);
+    // console.log('weight coefficients', weightCoefficientHarder, weightCoefficientEasier);
     if (this.finishedBooks) {
-      const weightDeltaLargeRange = [50, 100], // Min diff for easier / harder books unless there are none
-            weightDeltaLSmallRange = [0, 50], // Only used if Large yields no results
+      const weightDeltaLargeRange = [40, 80], // Min diff for easier / harder books unless there are none
+            weightDeltaLSmallRange = [0, 40], // Only used if Large yields no results
             currentWeight = this.book.difficulty.weight;
       let harderBooks: Book[] = [],
           easierBooks: Book[] = [];
-      console.log('books before removing finished ones', this.books.length);
       this.finishedBooks.forEach(finishedBook => {
         this.books = this.books.filter(book => book._id !== finishedBook.bookId);
       });
-      console.log('books after removing finished ones', this.books.length);
       if (this.books.length > 0) {
         // Find easier / harder books
         harderBooks = this.books.filter(book =>
@@ -176,7 +168,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
           );
         }
         this.suggestedBooks = suggestedBooks;
-        console.log('suggested books', this.suggestedBooks);
       }
     }
   }
@@ -194,7 +185,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   private getWeightCoefficient(tpe: string, answers: Answers): number {
     if (tpe === 'harder') {
       // the more yes's the larger the coefficient
-      return 1 + Math.max(0, answers.nrYes / answers.total - minYesHarderPerc) * 3.33;
+      return 1 + Math.max(0, answers.nrYes / answers.total - minYesHarderPerc) * 2.5;
     } else {
       // the more no's the larger the coefficient
       return 1 + Math.max(0, answers.nrNo / answers.total - minNoEasierPerc);

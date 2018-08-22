@@ -17,7 +17,6 @@ export class BookResultsComponent implements OnChanges {
   showDetails = false;
 
   ngOnChanges() {
-    console.log('result session data', this.data);
     this.calculateResults();
   }
 

@@ -264,7 +264,6 @@ module.exports = {
               'wordDetailId': wpId
             }}
           };
-          console.log('wpId', wpId);
     const getExercises = async () => {
       const idResult = wpId ? await Lesson.findOne(idQuery, idProjection) : null,
             wordResult = await Lesson.findOne(wordQuery, wordProjection)
@@ -277,10 +276,8 @@ module.exports = {
 
 
     getExercises().then((results) => {
-      console.log('results', results);
       response.handleSuccess(res, results.exercises);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 400, 'Error fetching overview results');
     });
     /*

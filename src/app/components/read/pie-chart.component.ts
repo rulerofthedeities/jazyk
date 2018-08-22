@@ -18,7 +18,6 @@ export class PieChartComponent implements OnInit {
 
   private calculatePieChart() {
     // https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
-    console.log('calculate pie chart', this.data);
     const total = this.data ? this.data.nrYes + this.data.nrNo + this.data.nrMaybe : 0;
     if (total > 0) {
       const slices = [

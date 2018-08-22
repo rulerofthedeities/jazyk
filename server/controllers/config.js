@@ -99,7 +99,7 @@ module.exports = {
         {$sort: {code: 1}}
       ];
     const getData = async () => {
-      let translations, languages, userLanguages;
+      let translations, languages, userLanguages, bookLanguages, courseLanguages, licenseUrls;
       if (params.getTranslations === 'true') {
         translations = await Translation.aggregate(translationPipeline);
       }
@@ -109,12 +109,16 @@ module.exports = {
         bookLanguages = await Config.aggregate(bookLanguagesPipeline);
         courseLanguages = await Config.aggregate(courseLanguagesPipeline);
       }
-      return {translations, languages, userLanguages, bookLanguages, courseLanguages};
+      if (params.getLicenses === 'true') {
+        licenseUrls = await Config.find({tpe: 'license'}, {_id: 0, license: 1, url: 1});
+      }
+      return {translations, languages, userLanguages, bookLanguages, courseLanguages, licenseUrls};
     };
 
     getData().then((results) => {
       response.handleSuccess(res, results);
     }).catch((err) => {
+      console.log(err);
       response.handleError(err, res, 400, 'Error fetching dependables');
     });
   }

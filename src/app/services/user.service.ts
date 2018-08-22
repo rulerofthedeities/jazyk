@@ -450,7 +450,6 @@ export class UserService {
   }
 
   subscribeToBook(bookId: string, lanCode: string) {
-    console.log('subscribing to book', bookId);
     this.http
     .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode}))
     .toPromise();
@@ -503,7 +502,6 @@ export class UserService {
 
   setLanCode(lanCode: string) {
     // set learn language
-    console.log('setting learn lan', lanCode);
     if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
       this.http
       .patch('/api/user/lan/learn', JSON.stringify({lanCode}))
@@ -515,7 +513,6 @@ export class UserService {
 
   setUserLanCode(lanCode: string) {
     // set user language (my language)
-    console.log('setting user lan', lanCode);
     if (lanCode && this._user.main.myLan !== lanCode) {
       this.http
       .patch('/api/user/lan/user', JSON.stringify({lanCode}))

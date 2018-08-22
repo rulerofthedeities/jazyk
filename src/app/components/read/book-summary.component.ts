@@ -1,6 +1,7 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
+import { LicenseUrl } from '../../models/course.model';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
@@ -19,6 +20,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() userLanCode: string;
   @Input() text: Object;
   @Input() tpe: string; // home or read
+  @Input() private licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
   difficultyWidth: number;
@@ -28,6 +30,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isSubscribed = false;
   isStarted = false;
   isBookRead = false;
+  licenseUrl: string;
   defaultImage = '/assets/img/books/blankcover.png';
 
   constructor(
@@ -37,6 +40,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getLicenseUrl();
     this.setDifficulty();
   }
 
@@ -46,7 +50,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onStartReading() {
-    console.log('Start reading', this.book);
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     this.userService.subscribeToBook(this.book._id, this.userLanCode);
@@ -55,19 +58,23 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onStopReading() {
-    console.log('Stop reading', this.book);
     this.userService
     .unSubscribeFromBook(this.book._id, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
-        console.log('books', userBook);
         if (userBook && !userBook.subscribed) {
           this.isSubscribed = false;
           this.removedSubscription.emit(this.book);
         }
       }
     );
+  }
+
+  private getLicenseUrl() {
+    if (this.licenses) {
+      this.licenseUrl = this.licenses.find(l => this.book.license === l.license).url;
+    }
   }
 
   private setDifficulty() {

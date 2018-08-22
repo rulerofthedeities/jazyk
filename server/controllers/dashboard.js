@@ -71,7 +71,6 @@ module.exports = {
     getCount().then((results) => {
       response.handleSuccess(res, results);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
     });
   },
@@ -214,7 +213,6 @@ module.exports = {
           getBookData().then((results) => {
             response.handleSuccess(res, results);
           }).catch((err) => {
-            console.log(err);
             response.handleError(err, res, 400, 'Error fetching book data');
           });
         } else {

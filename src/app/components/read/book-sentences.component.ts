@@ -61,6 +61,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settings = this.userService.user.jazyk.learn;
+    this.chapterObservable = new BehaviorSubject<Chapter>(null);
+    this.sentenceNrObservable = new BehaviorSubject<number>(null);
     this.getBookId();
     this.observe();
   }
@@ -93,7 +95,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   onKeyPressed(key: string) {
-    console.log('key pressed', key);
     switch (key) {
       case 'Enter':
         if (this.currentStep === SentenceSteps.Translations) {
@@ -153,10 +154,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private nextSentence() {
     this.nextSentenceObservable.next(true);
     this.getSentence();
-    console.log('save session data?', this.sessionData.answers.length,
-    this.saveFrequency, this.sessionData.answers.length % this.saveFrequency);
     if (this.sessionData.answers.length % this.saveFrequency === 0) {
-      console.log('save session data', this.sessionData.answers.length);
       this.saveSessionData();
       this.placeBookmark(false);
     }
@@ -167,7 +165,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.readService
     .readAnotherBook.subscribe(
       book => {
-        console.log('start reading new suggestions book', book, this.currentStep);
         if (this.currentStep === SentenceSteps.Results) {
           // Results - already saved
           this.startAnotherBook(book);
@@ -180,7 +177,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private startAnotherBook(book: Book) {
-    console.log('start another book');
     this.bookId = book._id;
     this.book = book;
     this.userService.subscribeToBook(this.bookId, this.userLanCode);
@@ -218,7 +214,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.sessionData.nrMaybe++;
         break;
     }
-    this.getSentenceTranslations();
+    this.getSentenceTranslations(this.currentSentenceNr);
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
 
@@ -231,7 +227,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       params => {
         this.bookId = params['id'];
         this.userLanCode = params['lan'];
-        console.log('user lan code', this.userLanCode);
         this.processNewBookId();
       }
     );
@@ -247,7 +242,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       .pipe(
         takeWhile(() => this.componentActive))
       .subscribe(res => {
-        console.log('zip result', res);
         this.text = this.utilsService.getTranslatedText(res[1]);
         const userBook = res[0];
         this.sessionData = {
@@ -276,7 +270,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(
       book => {
         this.book = book;
-        console.log('book', book);
         this.utilsService.setPageTitle(null, book.title);
       }
     );
@@ -285,7 +278,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private findCurrentChapter(userBook: UserBook) {
     if (userBook) {
       if (userBook.bookmark) {
-        console.log(userBook.bookmark);
         if (userBook.bookmark.isBookRead) {
           this.isBookRead = true;
           this.isError = true;
@@ -320,7 +312,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.getSentence();
         } else {
           // chapter not found -> end of book?
-          console.log('chapter not found - end of book');
           this.processResults(true);
         }
       }
@@ -341,29 +332,20 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       }
     } else {
       // Chapter finished
-      console.log('finished chapter', this.currentSentenceNr, chapter.sentences);
       this.sessionData.chapters++;
       this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
   }
 
   private emitSentenceNr(nr: number) {
-    if (this.sentenceNrObservable) {
-      this.sentenceNrObservable.next(nr);
-    } else {
-      this.sentenceNrObservable = new BehaviorSubject<number>(nr);
-    }
+    this.sentenceNrObservable.next(nr);
   }
 
   private emitChapter(chapter: Chapter) {
-    if (this.chapterObservable) {
-      this.chapterObservable.next(chapter);
-    } else {
-      this.chapterObservable = new BehaviorSubject<Chapter>(chapter);
-    }
+    this.chapterObservable.next(chapter);
   }
 
-  private getSentenceTranslations() {
+  private getSentenceTranslations(sentenceNr: number) {
     this.readService
     .fetchSentenceTranslations(
       this.userLanCode,
@@ -383,7 +365,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       const status = sentenceNr === 0 ? 'Start' : 'Continue';
       this.readingStarted = true;
       this.log(`${status} reading '${this.book.title}'`);
-      console.log(status + ' reading');
       this.sharedService.changeExerciseMode(true);
       this.errorService.clearError();
     }
@@ -408,12 +389,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       this.readService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode)
       .pipe(takeWhile(() => this.componentActive))
-      .subscribe(bookmark => console.log('bookmarked'));
+      .subscribe(bookmark => {});
     }
   }
 
   private processResults(isBookRead: boolean) {
-    console.log('changing exercise mode to false');
     this.sharedService.changeExerciseMode(false);
     this.saveSessionData();
     this.placeBookmark(isBookRead); // must be before currentStep change
@@ -422,7 +402,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private saveSessionData(book: Book = null) {
-    console.log('save session data', this.sessionData.answers);
     if (this.sessionData.answers) {
       this.readService
       .saveSessionData(this.sessionData, this.startDate)
@@ -432,7 +411,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           if (!this.sessionData._id && id) {
             this.sessionData._id = id;
           }
-          console.log('Session data saved');
           if (book) {
             this.startAnotherBook(book);
           }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Sentence, Chapter } from '../../models/book.model';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -10,8 +10,8 @@ import { takeWhile } from 'rxjs/operators';
 })
 
 export class BookContextComponent implements OnInit, OnDestroy {
-  @Input() private chapter: Subject<Chapter>;
-  @Input() private sentenceNr: Subject<number>;
+  @Input() private chapter: BehaviorSubject<Chapter>;
+  @Input() private sentenceNr: BehaviorSubject<number>;
   private componentActive = true;
   private sentences: Sentence[];
   currentSentences: Sentence[] = [];
