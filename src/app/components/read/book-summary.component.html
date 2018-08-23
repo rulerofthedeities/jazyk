@@ -42,7 +42,7 @@
             </ng-container>
           </span>
         </div>
-        <div class="buttons">
+        <div class="buttons" *ngIf="book.lanCode !== userLanCode">
           <button *ngIf="!isBookRead"
             type="button"
             class="btn btn-success"
@@ -99,5 +99,5 @@
     [tooltip]="tooltip"
     [tooltipPlacement]="'top'"
     >
-</span>
+  </span>
 </ng-template>
