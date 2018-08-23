@@ -13,8 +13,13 @@ export class DefaultHomeComponent implements OnChanges {
   title = '';
   giveATry = '';
   lines: string[] = [];
+  showModules = false;
+  showModule: boolean[] = [];
 
   ngOnChanges() {
+    this.showModule['learn'] = false;
+    this.showModule['read'] = false;
+    this.showModule['teach'] = false;
     if (this.text['homeTitle']) {
       let title = this.text['homeTitle'];
       title = title.replace('%s', appTitle);
@@ -30,4 +35,17 @@ export class DefaultHomeComponent implements OnChanges {
       this.giveATry = giveATry.replace('%s', appTitle);
     }
   }
-}
+  onShowModules() {
+    this.showModules = true;
+  }
+  onShowModule(module: string) {
+    console.log('show module', module);
+    this.showModule[module] = true;
+  }
+
+  onHideModule() {
+    console.log('hide module');
+    this.showModule.forEach(m => false);
+  }
+
+ }

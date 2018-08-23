@@ -21,7 +21,7 @@ li {
   color: #eee;
   text-shadow: 1px 1px 1px #333;
   display: block;
-}  
+}
 .btn-mega .btn-sub {
   padding: 25px 32px;
   border-radius: 6px;
@@ -47,17 +47,11 @@ li {
 .btn-mega:active .btn-sub {
   box-shadow: inset 0 8px 12px rgba(20, 20, 20, .25);
 }
-.btn-mega:hover.login .btn-sub, .btn-mega:active.login .btn-sub{
-  border: 1px solid #ff5242;
-}
-.btn-mega:hover.signup .btn-sub, .btn-mega:active.signup .btn-sub{
-  border: 1px solid #ffa412;
-}
-.btn-mega:hover.try .btn-sub, .btn-mega:active.try .btn-sub{
-  border: 1px solid #ffcf0f;
-}
 .btn-mega:hover .fa {
   animation: enlarge 0.4s ease-out;
+}
+.btn-mega~.try:hover .fa {
+  animation: rotate-90 0.4s ease-out forwards;
 }
 .login {
   background-color: rgba(232, 76, 61, 0.2);
@@ -91,6 +85,13 @@ li {
   line-height: 10px;
   padding-left: 0;
 }
+.modules {
+  background-color: white;
+  padding: 12px;
+  position: relative;
+  top: -60px;
+  transition: top 3s ease-out 0s;
+}
 
 /* animation */
 
@@ -103,6 +104,15 @@ li {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes rotate-90 {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotate(90deg);
   }
 }
 
@@ -136,7 +146,7 @@ li {
   .info-column {
     display: none;
   }
-} 
+}
 @media screen and (min-width: 992px) and (max-width: 1200px){
   .btn-text {
     font-size: 46px;

@@ -1,9 +1,9 @@
 <div class="row">
   <div class="col-xs-8 btn-column">
-    <a 
+    <a
       class="btn-mega clearfix login"
       routerLink="/auth/signin">
-      <div class="btn-text btn-sub unselectable"> 
+      <div class="btn-text btn-sub unselectable">
         {{text['Login']}}
       </div>
       <div class="btn-icon btn-sub unselectable">
@@ -11,10 +11,10 @@
       </div>
     </a>
 
-    <a 
+    <a
       class="btn-mega clearfix signup"
       routerLink="/auth/signup">
-      <div class="btn-text btn-sub unselectable"> 
+      <div class="btn-text btn-sub unselectable">
         {{text['Signup']}}
       </div>
       <div class="btn-icon btn-sub unselectable">
@@ -24,13 +24,22 @@
 
     <a class="btn-mega clearfix try"
       routerLink="/learn">
-      <div class="btn-text btn-sub unselectable"> 
-        {{giveATry}}
+      <div class="btn-text btn-sub unselectable">
+        <span class="learn" (mouseover)="onShowModule('learn')" (mouseover)="onShowModules()" (mouseout)="onHideModule()">LEARN</span>
+        <span class="read">READ</span>
+        <span class="teach">TEACH</span>
       </div>
       <div class="btn-icon btn-sub unselectable">
         <span class="fa fa-play"></span>
       </div>
     </a>
+
+    <div class="modules" [ngStyle]="{
+      visibility: showModules ? 'visible' : 'hidden',
+      top: showModules ? '50px' : '-60px'
+    }">
+      MODULES
+    </div>
 
   </div>
   <div class="col-xs-4 info-column">
