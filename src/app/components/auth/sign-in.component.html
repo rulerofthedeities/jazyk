@@ -37,7 +37,7 @@
               autocomplete="off">
           </div>
           <km-field-messages
-            [control]="userForm.controls.email"
+            [control]="userForm.controls['email']"
             [label]="'TheEmail'"
             [text]="text"
             [touchRequired]="!isSubmitted">
@@ -62,7 +62,7 @@
               maxlength="100">
           </div>
           <km-field-messages
-            [control]="userForm.controls.password"
+            [control]="userForm.controls['password']"
             [label]="'ThePassword'"
             [text]="text"
             [touchRequired]="!isSubmitted">

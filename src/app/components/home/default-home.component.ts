@@ -1,5 +1,6 @@
-import {Component, Input, OnChanges} from '@angular/core';
-import {appTitle} from '../../services/shared.service';
+import { Component, Input, OnChanges } from '@angular/core';
+import { Router } from '@angular/router';
+import { appTitle } from '../../services/shared.service';
 
 @Component({
   selector: 'km-home-default',
@@ -8,18 +9,21 @@ import {appTitle} from '../../services/shared.service';
 })
 
 export class DefaultHomeComponent implements OnChanges {
-  private componentActive = true;
   @Input() text: Object;
   title = '';
   giveATry = '';
   lines: string[] = [];
   showModules = false;
-  showModule: boolean[] = [];
+  currentModule: string;
+  moduleText: string;
+
+  constructor(
+    private router: Router
+  ) {}
 
   ngOnChanges() {
-    this.showModule['learn'] = false;
-    this.showModule['read'] = false;
-    this.showModule['teach'] = false;
+    this.currentModule = null;
+    this.moduleText = '';
     if (this.text['homeTitle']) {
       let title = this.text['homeTitle'];
       title = title.replace('%s', appTitle);
@@ -30,22 +34,26 @@ export class DefaultHomeComponent implements OnChanges {
       this.lines.push(line);
       this.lines.push(this.text['homeLine1']);
       this.lines.push(this.text['homeLine2']);
-      this.lines.push(this.text['homeLine3']);
+      this.lines.push(this.text['homeLineRead']);
       const giveATry = this.text['Givejazyk'];
       this.giveATry = giveATry.replace('%s', appTitle);
     }
   }
-  onShowModules() {
+
+  onShowModule(module: string) {
+    this.currentModule = module.toLocaleLowerCase();
+    this.moduleText = this.text[module + 'Text'];
     this.showModules = true;
   }
-  onShowModule(module: string) {
-    console.log('show module', module);
-    this.showModule[module] = true;
+
+  onGoToRoute(route: string) {
+    console.log('go to route', route);
+    this.router.navigate(['/' + route]);
   }
 
-  onHideModule() {
-    console.log('hide module');
-    this.showModule.forEach(m => false);
+  onHideModules() {
+    this.currentModule = null;
+    this.showModules = false;
   }
 
  }

@@ -82,15 +82,66 @@ li {
 }
 .or {
   font-size: 14px;
-  line-height: 10px;
+  line-height: 20px;
   padding-left: 0;
 }
-.modules {
-  background-color: white;
-  padding: 12px;
+.try {
+  margin-bottom: 0;
+}
+.modules-text {
   position: relative;
-  top: -60px;
-  transition: top 3s ease-out 0s;
+  top: -1px; /* for FF */
+  height: 32px;
+  border-left: 1px dotted #333;
+  border-right: 1px dotted #333;
+  background-color: rgb(232, 76, 61);
+  padding: 3px 6px;
+  font-size: 20px;
+  color: white;
+}
+.modules {
+  padding: 0;
+  position: relative;
+  top: -1px; /* for FF */
+}
+.modules > .div {
+  position: absolute;
+  left: -1000px;
+  top: 0;
+}
+.module-child {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  transition: left 0.7s ease-out 0s;
+}
+.preview-texts {
+  font-size: 30px;
+  overflow: hidden;
+  padding: 0 !important;
+}
+.preview-texts:hover {
+  border-bottom: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.preview-text {
+  width: 33%;
+  display: inline-block;
+  height: 100%;
+  padding-top: 40px;
+}
+.preview-text:hover {
+  background-color: rgb(232, 76, 61);
+}
+.preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px dotted #333;
+  border-top: 0;
+}
+.read {
+  width: 34%;
 }
 
 /* animation */
@@ -131,11 +182,19 @@ li {
     font-size: 40px;
     padding-top: 30px !important;
   }
+  .preview-texts {
+    font-size: 26px;
+    padding: 0 !important;
+  }
 }
 @media screen and (min-width: 551px) and (max-width: 767px) {
   .btn-text {
     font-size: 46px;
     padding-top: 30px !important;
+  }
+  .preview-texts {
+    font-size: 26px;
+    padding: 0 !important;
   }
 }
 @media screen and (max-width: 768px) {}
@@ -155,5 +214,9 @@ li {
   .info .panel-body {
     font-size: 20px;
     line-height: 30px;
+  }
+  .preview-texts {
+    font-size: 26px;
+    padding: 0 !important;
   }
 }

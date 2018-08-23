@@ -10,7 +10,7 @@
       <div class="altsign">
         <a routerLink="/auth/signin">{{text["Login"]}}</a>
       </div>
-    </div>  
+    </div>
     <div class="panel-body bg-info">
       <form id="signupform"
           [formGroup]="userForm"
@@ -24,10 +24,10 @@
             <span class="input-group-addon">
               <span class="fa fa-user"></span>
             </span>
-            <input 
-              id="username" 
-              formControlName="userName" 
-              type="text" 
+            <input
+              id="username"
+              formControlName="userName"
+              type="text"
               class="form-control input-lg"
               [placeholder]="text['Enterusername'] || ''"
               minlength="5"
@@ -37,7 +37,7 @@
               autocomplete="off">
           </div>
           <km-field-messages
-            [control]="userForm.controls.userName"
+            [control]="userForm.controls['userName']"
             [label]="'TheUsername'"
             [text]="text">
           </km-field-messages>
@@ -51,10 +51,10 @@
             <span class="input-group-addon">
               <span class="fa fa-pencil"></span>
             </span>
-            <input 
+            <input
               id="email"
               formControlName="email"
-              type="email" 
+              type="email"
               class="form-control input-lg"
               [placeholder]="text['Enteremail'] || ''"
               minlength="5"
@@ -62,8 +62,8 @@
               spellcheck="false"
               autocomplete="off">
           </div>
-          <km-field-messages 
-            [control]="userForm.controls.email"
+          <km-field-messages
+            [control]="userForm.controls['email']"
             [label]="'Email'"
             [text]="text">
           </km-field-messages>
@@ -78,24 +78,24 @@
             <span class="input-group-addon">
               <span class="fa fa-key"></span>
             </span>
-            <input 
+            <input
               id="password"
               formControlName="password"
-              type="password" 
+              type="password"
               class="form-control input-lg"
               [placeholder]="text['Enterpw'] || ''"
               minlength="5"
               maxlength="100">
           </div>
-          <km-field-messages 
-            [control]="userForm.controls.password"
+          <km-field-messages
+            [control]="userForm.controls['password']"
             [label]="'Password'"
             [text]="text">
           </km-field-messages>
         </div>
-                       
-        <button 
-          type="button" 
+
+        <button
+          type="button"
           [disabled]="!userForm.valid"
           (click)="onSubmitForm(userForm.value)"
           class="btn btn-success btn-lg center-block">
@@ -104,7 +104,7 @@
 
         <km-error-msg [text]="text">
         </km-error-msg>
-        
+
       </form>
     </div>
   </div>

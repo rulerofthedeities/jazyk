@@ -22,23 +22,48 @@
       </div>
     </a>
 
-    <a class="btn-mega clearfix try"
-      routerLink="/learn">
-      <div class="btn-text btn-sub unselectable">
-        <span class="learn" (mouseover)="onShowModule('learn')" (mouseover)="onShowModules()" (mouseout)="onHideModule()">LEARN</span>
-        <span class="read">READ</span>
-        <span class="teach">TEACH</span>
+    <div class="btn-mega clearfix try">
+      <div class="btn-text btn-sub unselectable preview-texts" (mouseout)="onHideModules()">
+        <div class="learn preview-text"
+          (mouseover)="onShowModule('Learn')"
+          (click)="onGoToRoute('learn')">
+          {{text["Learn"]}}
+        </div>
+        <div class="read preview-text"
+          (mouseover)="onShowModule('Read')"
+          (click)="onGoToRoute('read')">
+          {{text["Read"]}}
+        </div>
+        <div class="teach preview-text"
+          (mouseover)="onShowModule('Teach')"
+          (click)="onGoToRoute('build/courses')">
+          {{text["Teach"]}}
+        </div>
       </div>
       <div class="btn-icon btn-sub unselectable">
         <span class="fa fa-play"></span>
       </div>
-    </a>
+    </div>
 
-    <div class="modules" [ngStyle]="{
-      visibility: showModules ? 'visible' : 'hidden',
-      top: showModules ? '50px' : '-60px'
-    }">
-      MODULES
+    <div class="modules-text" [style.display]="showModules ? 'block' : 'none'">
+      {{moduleText}}
+    </div>
+    <div class="modules" [style.visibility]="showModules ? 'visible' : 'hidden'">
+      <div class="module-child" [ngStyle]="{
+        left: currentModule === 'learn' ? '0' : '-1000px',
+        visibility: currentModule === 'learn' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/learn.jpg">
+      </div>
+      <div class="module-child" [ngStyle]="{
+        left: currentModule === 'read' ? '0' : '-1000px',
+        visibility: currentModule === 'read' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/read.jpg">
+      </div>
+      <div class="module-child" [ngStyle]="{
+        left: currentModule === 'teach' ? '0' : '-1000px',
+        visibility: currentModule === 'teach' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/teach.jpg">
+      </div>
     </div>
 
   </div>
@@ -55,8 +80,11 @@
           <li>
             <span class="fa fa-arrow-right fa-spacing"></span>{{lines[2]}}
           </li>
+          <li class="or">{{text["or"]}}</li>
+          <li>
+            <span class="fa fa-arrow-right fa-spacing"></span>{{lines[3]}}
+          </li>
         </ul>
-        {{lines[3]}}
       </div>
     </div>
   </div>

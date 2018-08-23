@@ -17,7 +17,7 @@ import {takeWhile} from 'rxjs/operators';
 
 export class SignInComponent implements OnInit, OnDestroy {
   private componentActive = true;
-  private returnUrl: string;
+  returnUrl: string;
   isSubmitted = false;
   userForm: FormGroup;
   text: Object = {};
