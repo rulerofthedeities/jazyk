@@ -13,6 +13,7 @@
 }
 .navbar-earthy a.inactive {
   color: #999;
+  cursor: default;
 }
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: black;
@@ -77,6 +78,7 @@ li.active span.bar {
 }
 .navbar-earthy .nav > li > a.inactive:hover, .nav > li > a.inactive:focus {
   color: #999;
+  cursor: default;
 }
 .navbar a.notifications {
   margin-right: -20px;
