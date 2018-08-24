@@ -22,6 +22,7 @@ var bookSchema = new Schema({
   difficulty: difficultySchema,
   isPublished: {type: Boolean, default: false}
 });
+bookSchema.index({'difficulty.weight': 1, 'difficulty.nrOfSentences': 1});
 
 var sentenceSchema = new Schema({
   text: {type: String, required: true},

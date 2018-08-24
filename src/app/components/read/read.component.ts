@@ -31,6 +31,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   isReady = false;
   IsBooksReady = false;
   listTpe = 'all';
+  sort = 'difficulty1';
   nrOfBooks: number;
 
   constructor(
@@ -64,6 +65,11 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.filterBooks();
   }
 
+  onChangeSort(sort: string) {
+    this.sort = sort;
+    this.getBooks();
+  }
+
   onRemovedSubscription(book: Book) {
     this.userBooks[book._id].subscribed = false;
   }
@@ -84,7 +90,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.getBookTranslations();
     this.isLoading = true;
     this.readService
-    .fetchPublishedBooksByWeight(this.bookLanguage.code)
+    .fetchPublishedBooks(this.bookLanguage.code, this.sort)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {

@@ -111,7 +111,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     if (this.userData) {
       if (!this.isBookRead) {
         this.nrOfSentencesDone = this.userData.nrSentencesDone;
-        this.percDone = Math.round(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
+        this.percDone = Math.trunc(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
     }
   }

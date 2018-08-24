@@ -15,3 +15,11 @@
   top: 14px;
   text-shadow: 1px 1px 1px white;
 }
+.filter-count {
+  padding: 6px;
+  position: relative;
+  top: 4px;
+}
+.sort-control {
+  width: inherit;
+}

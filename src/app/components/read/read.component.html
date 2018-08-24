@@ -29,7 +29,22 @@
   </div>
   <div class="clearfix"></div>
 
-  <span *ngIf="!!filteredBooks.length">{{filteredBooks.length}}/{{nrOfBooks}} items</span>
+  <!-- FILTERS AND SORTING -->
+  <div class="row">
+    <div class="col-xs-12">
+      <span class="label label-info filter-count pull-right" *ngIf="!!filteredBooks.length">
+        SHOWING {{filteredBooks.length}}/{{nrOfBooks}} ITEMS
+      </span>
+      <div class="form-group form-group-sm">
+        <select class="form-control sort-control" (change)="onChangeSort($event.target.value)">
+          <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
+          <option value="difficulty0">{{text["difficulty0"]}}</option>
+          <option value="sentences0">{{text["sentences0"]}}</option>
+          <option value="sentences1">{{text["sentences1"]}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
   <!-- BOOKS LIST -->
   <div *ngIf="IsBooksReady">

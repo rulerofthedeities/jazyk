@@ -16,11 +16,23 @@ const setSessionDt = (startDate) => {
 module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
+          sort = req.params.sort,
           query = {isPublished: true},
-          projection = {},
-          options = {sort: {'difficulty.weight': 1}};
+          projection = {};
+    let options = {sort: {'difficulty.weight': 1}}
     if (languageId !== 'eu') {
       query['lanCode'] = languageId;
+    }
+    switch (sort) {
+      case 'difficulty0':
+        options['sort'] = {'difficulty.weight': -1};
+        break;
+      case 'sentences1':
+        options['sort'] = {'difficulty.nrOfSentences': 1, 'difficulty.weight': 1};
+        break;
+      case 'sentences0':
+        options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
+        break;
     }
     Book.find(query, projection, options, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching books', () => {
