@@ -234,10 +234,9 @@ export class SharedService {
 
   getBookDifficulty(book): {difficultyWidth: number, difficultyPerc: number} {
     let difficulty = book.difficulty.weight;
-    difficulty = difficulty - 300;
-    difficulty = Math.max(10, difficulty);
+    difficulty = Math.max(10, difficulty - 300);
     difficulty = difficulty * 1.8;
-    difficulty = (Math.min(1000, difficulty) - 100) * 1.2;
+    difficulty = Math.min(1000, difficulty);
     const difficultyWidth = Math.round(difficulty / 5),
           difficultyPerc = Math.round(difficulty / 10);
     return {difficultyWidth, difficultyPerc};
