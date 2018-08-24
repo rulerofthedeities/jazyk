@@ -11,6 +11,9 @@
 .navbar-earthy a {
   color: #ddd;
 }
+.navbar-earthy a.inactive {
+  color: #999;
+}
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: black;
 }
@@ -31,6 +34,9 @@ li.active .bar, li > a:hover .bar {
   top: 12px;
   position: relative;
   background-color: white;
+}
+li.active .bar, li > a.inactive:hover .bar {
+  display: none;
 }
 li > a:hover .bar.small {
   width: 26px;
@@ -69,6 +75,9 @@ li.active span.bar {
 .navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
   color: #ddd;
 }
+.navbar-earthy .nav > li > a.inactive:hover, .nav > li > a.inactive:focus {
+  color: #999;
+}
 .navbar a.notifications {
   margin-right: -20px;
 }
@@ -83,7 +92,7 @@ li.active span.bar {
   top: -8px;
   left: -14px;
   background-color: red;
-} 
+}
 .dropdown-menu {
   background-color: #2c3134;
   font-size: 20px;

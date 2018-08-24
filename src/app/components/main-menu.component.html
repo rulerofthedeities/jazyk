@@ -32,6 +32,14 @@
             </span>
           </a>
         </li>
+        <li *ngIf="isLoggedIn">
+          <a class="inactive">
+            <span class="fa fa-volume-up"></span>
+            {{text["Listen"]}}
+            <span class="bar">
+            </span>
+          </a>
+        </li>
         <li routerLinkActive="active" *ngIf="isLoggedIn">
           <a routerLink="/build/courses">
             <span class="fa fa-pencil"></span>
