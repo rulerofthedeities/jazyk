@@ -32,13 +32,14 @@
           <img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
           <div class="translation-new-note"></div>
         </span>
-        <input type="text"
+        <textarea type="text"
           class="form-control"
           autofocus
+          rows="2"
           autocomplete=”off”
           [placeholder]="text['AddTranslation']"
           #translation
-        >
+        ></textarea>
         <input type="text"
           class="form-control"
           autofocus

@@ -6,17 +6,14 @@ import {AuthGuard} from './services/auth-guard.service';
 export const routes: Routes = [
   {
     path: '',
-    component: LearnCoursesComponent,
-    canActivate: [AuthGuard]
+    component: LearnCoursesComponent
   },
   {
     path: 'course/:id',
-    component: LearnCourseComponent,
-    canActivate: [AuthGuard]
+    component: LearnCourseComponent
   },
   {
     path: 'course/:id/:step',
-    component: LearnCourseComponent,
-    canActivate: [AuthGuard]
+    component: LearnCourseComponent
   }
 ];

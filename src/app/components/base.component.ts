@@ -1,9 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {AuthService} from '../services/auth.service';
-import {UserService} from '../services/user.service';
-import {awsPath, SharedService} from '../services/shared.service';
-import {timer} from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
+import { awsPath, SharedService } from '../services/shared.service';
+import { timer } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'base.component.html',
@@ -18,6 +19,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   imagePath: string;
 
   constructor (
+    private route: ActivatedRoute,
     private authService: AuthService,
     private userService: UserService,
     private sharedService: SharedService

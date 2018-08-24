@@ -39,18 +39,7 @@ module.exports.initialize = function(app, router) {
   router.get('/translations/:lan/:component', translations.getTranslations);
   router.get('/dependables', config.getDependables);
 
-  router.get('/courses/demo', courses.getDemoCourses);
-  router.get('/learn/course/:courseId', courses.getCourse);
-
-  router.get('/lessons/:id', lessons.getLessons);
-  router.get('/lesson/:lessonId', lessons.getLesson);
-  router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
-  router.get('/lessons/count/:courseId', lessons.getCountsByLesson);
-  router.get('/lesson/intro/:lessonId', lessons.getIntro);
-  router.get('/lesson/dialogue/:lessonId', lessons.getDialogue);
-
-  router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
-
+  // router.get('/courses/demo', courses.getDemoCourses);
   router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
 
   router.use('/', function(req, res, next) {
@@ -63,6 +52,18 @@ module.exports.initialize = function(app, router) {
   });
 
   /*** authenticated ***/
+
+  router.get('/learn/course/:courseId', courses.getCourse);
+
+  router.get('/lessons/:id', lessons.getLessons);
+  router.get('/lesson/:lessonId', lessons.getLesson);
+  router.get('/lessons/header/:courseId', lessons.getLessonHeaders);
+  router.get('/lessons/count/:courseId', lessons.getCountsByLesson);
+  router.get('/lesson/intro/:lessonId', lessons.getIntro);
+  router.get('/lesson/dialogue/:lessonId', lessons.getDialogue);
+
+  router.get('/choices/course/:courseId/:lans', exercises.getCourseChoices);
+
 
   /* dashboard */
   router.get('/dashboard/count', dashboard.getCount);
