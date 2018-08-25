@@ -5,6 +5,7 @@ const response = require('../response'),
       lessons = require('./lessons'),
       exercisesModule = require('./exercises'),
       ErrorModel = require('../models/error'),
+      Session = require('../models/book').session,
       maxExercises = 120;
 
 hasIntroStep = function(res, results, userId, courseId, lessonId, cb) {
@@ -40,8 +41,8 @@ saveIntroStep = function(res, results, userId, courseId, lessonId) {
 saveStudy = function(res, results, userId, courseId, lessonId) {
   let exerciseId, filterObj;
   if (results.data.length > 0) {
-    const docs = results.data.map(doc => 
-    { 
+    const docs = results.data.map(doc =>
+    {
       exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
       filterObj = {
         userId,
@@ -80,8 +81,8 @@ saveStudy = function(res, results, userId, courseId, lessonId) {
 
 saveStep = function(res, results, userId, courseId, lessonId) {
   let exerciseId, result, dtToReview;
-  const docs = results.data.map(doc => 
-  { 
+  const docs = results.data.map(doc =>
+  {
     exerciseId = new mongoose.Types.ObjectId(doc.exerciseId);
     lessonId = doc.lessonId ? new mongoose.Types.ObjectId(doc.lessonId) : lessonId;
     result = {
@@ -118,8 +119,7 @@ saveStep = function(res, results, userId, courseId, lessonId) {
 
   Result.insertMany(docs, function(err, insertResult) {
     response.handleError(err, res, 400, 'Error saving results', function(){
-      this.getTotalPoints(userId, (err, result) => {
-        score = result && result.length ? result[0].points : 0;
+      this.getTotalPoints(userId, (err, score) => {
         response.handleError(err, res, 400, 'Error getting total', function(){
           response.handleSuccess(res, score.toString());
         });
@@ -134,7 +134,7 @@ getCourseExercisesPipeline = function(courseId, resultData) {
         query = {'exercises._id': {$in: exerciseIds.slice(0, maxExercises)}},
         pipeline = [
           {$match: {courseId}},
-          {$unwind: '$exercises'}, 
+          {$unwind: '$exercises'},
           {$match: query},
           {$project: {_id: 0, lessonId:'$_id', exercise: '$exercises', 'options': '$options'}}
         ];
@@ -149,7 +149,7 @@ getCourseExercises = function(courseId, resultData, cb) {
     let isInResult;
     // Check if exercises are for correct lesson
     exercises.forEach(exercise => {
-      isInResult = resultData.find(data => 
+      isInResult = resultData.find(data =>
         data.exerciseUnid.exerciseId.toString() === exercise.exercise._id.toString() &&
         data.exerciseUnid.lessonId.toString() === exercise.lessonId.toString()
       );
@@ -162,7 +162,7 @@ getCourseExercises = function(courseId, resultData, cb) {
 }
 
 getTotalPoints = function(userId, cb) {
-  const pipeline = [
+  const scoreCoursespipeline = [
           {$match: {userId}},
           {$group: {
             _id: null,
@@ -171,10 +171,37 @@ getTotalPoints = function(userId, cb) {
           {$project: {
             _id: 0,
             points: '$totalPoints'
+          }},
+        ],
+        scoreBooksPipeline = [
+          {$match: {userId}},
+          {$group: {
+            _id: null,
+            totalPointsWords: {'$sum': '$points.words'},
+            totalPointsTranslations: {'$sum': '$points.translations'},
+            totalPointsFinished: {'$sum': '$points.finished'}
+          }},
+          {$project: {
+            _id: 0,
+            points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished' ]}
           }}
         ];
-  Result.aggregate(pipeline, function(err, result) {
-    cb(err, result);
+
+  const getScores = async () => {
+    const courses = await  Result.aggregate(scoreCoursespipeline),
+          books = await Session.aggregate(scoreBooksPipeline);
+
+    let score = 0;
+    scoreCourses = courses ? courses[0].points : 0;
+    scoreBooks = books ? books[0].points : 0;
+    score = scoreCourses + scoreBooks;
+    return {score};
+  };
+
+  getScores().then((result) => {
+    cb(null, result.score);
+  }).catch((err) => {
+    response.handleError(err, res, 400, 'Error fetching total score');
   });
 }
 
@@ -195,14 +222,14 @@ getStepCounts = async (req, res) => {
             courseId,
             isLast: true,
             isRepeat: false,
-            isLearned: true, 
+            isLearned: true,
             isDeleted: false
           },
           reviewQuery = {
             userId,
             courseId,
             isLast: true,
-            isLearned: true, 
+            isLearned: true,
             $or: [{step: 'practise'}, {step: 'review'}],
             isRepeat: false,
             isDeleted: false,
@@ -260,12 +287,11 @@ getStepCounts = async (req, res) => {
   };
 };
 
-module.exports = {  
+module.exports = {
   getTotalScore: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
-    this.getTotalPoints(userId, (err, result) => {
+    this.getTotalPoints(userId, (err, score) => {
       response.handleError(err, res, 400, 'Error fetching total score', function(){
-        score = result && result.length ? result[0].points : 0;
         response.handleSuccess(res, score.toString());
       });
     })
@@ -312,14 +338,63 @@ module.exports = {
       });
     })
   },
+  getBookScores: function(req, res) {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          pipeline = [
+            {$match: {userId}},
+            {$group: {
+              _id: {
+                bookId: '$bookId',
+                lan: '$lanCode'
+              },
+              totalPoints: {'$sum': { $add : [
+                '$points.words',
+                '$points.translations',
+                '$points.finished']
+              }}
+            }},
+            {$sort: {'totalPoints': -1}},
+            {$lookup: {
+              from: 'books',
+              localField: '_id.bookId',
+              foreignField: '_id',
+              as: 'book'
+            }},
+            {$project: {
+              _id: 1,
+              book: 1,
+              points: '$totalPoints'
+            }}
+          ];
+    Session.aggregate(pipeline, function(err, result) {
+      response.handleError(err, res, 400, 'Error fetching score per book', () => {
+        let scores = [];
+        let total = 0;
+        if (result && result.length) {
+          result.forEach(doc => {
+            if (doc.book[0]) {
+              const newDoc = {
+                book: doc.book[0].title,
+                lan: {from: doc.book[0].lanCode, to : doc._id.lan},
+                points: doc.points
+              };
+              total += doc.points;
+              scores.push(newDoc);
+            }
+          })
+        }
+        response.handleSuccess(res, {scores, total});
+      });
+    })
+  },
   saveResults: function(req, res) {
     const results = req.body,
           courseId = new mongoose.Types.ObjectId(results.courseId),
           lessonId = results.lessonId ? new mongoose.Types.ObjectId(results.lessonId) : null,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     switch(results.step) {
-      case 'intro': 
-      case 'dialogue': 
+      case 'intro':
+      case 'dialogue':
         hasIntroStep(res, results, userId, courseId, lessonId, function(hasStep) {
           if (!hasStep) {
             saveIntroStep(res, results, userId, courseId, lessonId);
@@ -532,7 +607,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
-            isLearned: true, 
+            isLearned: true,
             isRepeat: false,
             isDeleted: false
           },
@@ -569,7 +644,7 @@ module.exports = {
             // Remove exercises for which there is no result (for duplicate exerciseIds)
             const uniqueExercises = [];
             difficult.forEach(exercise => {
-              result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() && 
+              result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() &&
                                               exercise.lessonId.toString() === result.exerciseUnid.lessonId.toString());
               if (result) {
                 uniqueExercises.push(exercise);
@@ -593,7 +668,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
-            isLearned: true, 
+            isLearned: true,
             $or: [{step: 'practise'}, {step: 'review'}],
             isRepeat: false,
             isDeleted: false,
@@ -603,7 +678,7 @@ module.exports = {
             userId,
             courseId,
             isLast: true,
-            isLearned: true, 
+            isLearned: true,
             isRepeat: false,
             isDeleted: false
           },
@@ -670,7 +745,7 @@ module.exports = {
       }
       // Remove exercises for which there is no result (for duplicate exerciseIds)
       exercises.forEach(exercise => {
-        result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() && 
+        result = results.find(result => exercise.exercise._id.toString() === result.exerciseUnid.exerciseId.toString() &&
                                         exercise.lessonId.toString() === result.exerciseUnid.lessonId.toString());
         if (result) {
           uniqueExercises.push(exercise);
@@ -680,14 +755,14 @@ module.exports = {
       // Combine data (so that data from difficult tests is added to result)
       let latestOne;
       results.forEach(result => {
-        latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseUnid.exerciseId.toString() && 
+        latestOne = latest.find(l => l._id.exerciseId.toString() === result.exerciseUnid.exerciseId.toString() &&
                                      l._id.lessonId.toString() === result.exerciseUnid.lessonId.toString());
         if (latestOne) {
           result.streak = latestOne.streak;
           result.learnLevel = latestOne.learnLevel;
         }
       })
-      
+
       return {exercises: uniqueExercises || [], latest};
     };
 

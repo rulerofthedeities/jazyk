@@ -4,7 +4,7 @@
     <img src="/assets/img/ranks/rank{{rank}}_64.png" class="img">
     <span class="text">
       <span class="name">{{text['rank' + rank + gender]}}</span>
-      <span class="score">{{total | score}}</span>
+      <span class="score">{{courseTotal + bookTotal | score}}</span>
     </span>
   </div>
 </div>
@@ -21,10 +21,51 @@
   </div>
 </div>
 
-<!-- SCORE -->
+<!-- SCORE BOOKS -->
+<div class="panel panel-default transparant books">
+    <div class="panel-heading">
+      <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverviewBooks"]}}
+    </div>
+    <div class="panel-body">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th>{{text["Book"]}}</th>
+            <th class="text-right">{{text["Points"]}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let score of bookScores; let i = index">
+            <td class="text-right">{{i+1}}.</td>
+            <td class="text-center">
+              <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
+              <span class="fa fa-arrow-right flag-from"></span>
+              <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
+            </td>
+            <td>{{score.book}}</td>
+            <td class="text-right nr">{{score.points | score}}</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-right nr success">
+              <div class="total">
+                {{bookTotal | score}}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<!-- SCORE COURSES -->
 <div class="panel panel-default transparant">
   <div class="panel-heading">
-    <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverview"]}}
+    <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverviewCourses"]}}
   </div>
   <div class="panel-body">
     <table class="table table-hover">
@@ -37,7 +78,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let score of scores; let i = index">
+        <tr *ngFor="let score of courseScores; let i = index">
           <td class="text-right">{{i+1}}.</td>
           <td class="text-center">
             <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
@@ -53,7 +94,7 @@
           <td></td>
           <td class="text-right nr success">
             <div class="total">
-              {{total | score}}
+              {{courseTotal | score}}
             </div>
           </td>
         </tr>

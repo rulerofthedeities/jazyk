@@ -127,6 +127,7 @@ module.exports.initialize = function(app, router) {
   router.post('/user/results/add', results.saveResults);
   router.get('/user/score/total', results.getTotalScore);
   router.get('/user/score/courses', results.getCourseScores);
+  router.get('/user/score/books', results.getBookScores);
   router.get('/user', users.getUser);
 
   /* learn */

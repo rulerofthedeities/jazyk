@@ -92,7 +92,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   onTranslationAdded(translationPoints: number) {
     this.sessionData.translations++;
-    this.sessionData.points.translations += translationPoints;
+    this.sessionData.points.translations += Math.round(translationPoints * this.getScoreMultiplier()) || 0;
   }
 
   onKeyPressed(key: string) {
@@ -222,7 +222,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words.length;
+    return words ? Math.round(words.length * this.getScoreMultiplier()) : 0;
+  }
+
+  private getScoreMultiplier(): number {
+    return 1 + this.book.difficulty.avgWordScore / 1000;
   }
 
   private getBookId() {
@@ -399,7 +403,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         isBookRead
       };
       if (isBookRead) {
-        this.sessionData.points.finished = Math.trunc(this.book.difficulty.nrOfWords * Math.log(this.book.difficulty.nrOfWords));
+        this.sessionData.points.finished =
+          Math.round(this.book.difficulty.nrOfWords *
+          Math.log(this.book.difficulty.nrOfWords) *
+          this.getScoreMultiplier()) || 0;
       }
       this.readService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode)

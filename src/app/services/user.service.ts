@@ -5,7 +5,7 @@ import { User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
 import { Language, Course, UserAccess, AccessLevel, UserCourse } from '../models/course.model';
 import { ExerciseData } from '../models/exercise.model';
-import { CourseScore } from '../models/score.model';
+import { CourseScore, BookScore } from '../models/score.model';
 import { UserBook } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
@@ -343,6 +343,12 @@ export class UserService {
   fetchScoreCourses(): Observable<CourseScore> {
     return this.http
     .get<CourseScore>('/api/user/score/courses')
+    .pipe(retry(3));
+  }
+
+  fetchScoreBooks():  Observable<BookScore> {
+    return this.http
+    .get<BookScore>('/api/user/score/books')
     .pipe(retry(3));
   }
 

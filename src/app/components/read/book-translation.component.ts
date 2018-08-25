@@ -34,7 +34,7 @@ export class BookTranslationComponent implements OnDestroy {
   onKeyPressed(key: string) {
     switch (key) {
       case 'Enter':
-        const translation = this.translation ? this.translation.nativeElement.value.trim() : null
+        const translation = this.translation ? this.translation.nativeElement.value.trim() : null;
         if (translation) {
           const translationnote = this.translationnote.nativeElement.value.trim();
           this.addTranslation(translation, translationnote);

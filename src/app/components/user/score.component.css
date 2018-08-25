@@ -6,12 +6,12 @@
   margin: -8px;
   padding: 7px;
 }
-.trophies {
-  margin-bottom: 30px !important;
+.trophies, .books {
+  margin-bottom: 32px !important;
 }
 .rank {
   font-size: 24px;
-  margin-bottom: 30px !important;
+  margin-bottom: 32px !important;
 }
 .rank .panel-body {
   padding-top: 0;

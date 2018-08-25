@@ -4,7 +4,7 @@ import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
 import {LanPair} from '../../models/course.model';
-import {Score, CourseScore} from '../../models/score.model';
+import {SingleBookScore, SingleCourseScore} from '../../models/score.model';
 import {takeWhile} from 'rxjs/operators';
 
 @Component({
@@ -15,8 +15,10 @@ import {takeWhile} from 'rxjs/operators';
 export class UserScoreComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
-  scores: Score[] = [];
-  total: number;
+  courseScores: SingleCourseScore[] = [];
+  bookScores: SingleBookScore[] = [];
+  courseTotal: number;
+  bookTotal: number;
   rank: number;
   gender: string;
   trophies: string[] = [];
@@ -29,23 +31,41 @@ export class UserScoreComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTranslations();
-    this.fetchScores();
+    this.getCourseScores();
+    this.getBookScores();
   }
 
   onShowRankings(rankings: ModalRanksComponent) {
     rankings.showModal = true;
   }
 
-  private fetchScores() {
+  private getCourseScores() {
     this.userService
     .fetchScoreCourses()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        this.scores = data.scores;
-        this.total = data.total || 0;
+        this.courseScores = data.scores;
+        this.courseTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
-        this.rank = this.utilsService.getRank(this.total);
+        this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getBookScores() {
+    console.log('getting book scores');
+    this.userService
+    .fetchScoreBooks()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      data => {
+        console.log('book scores', data);
+        this.bookScores = data.scores;
+        this.bookTotal = data.total || 0;
+        this.gender = this.userService.user.main.gender || 'm';
+        this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
       },
       error => this.errorService.handleError(error)
     );

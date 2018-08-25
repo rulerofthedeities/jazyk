@@ -13,7 +13,7 @@ const response = require('../response'),
 module.exports = {
   getCount: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          scorePipeline = [
+          scoreCoursesPipeline = [
             {$match: {userId}},
             {$group: {
               _id: null,
@@ -22,6 +22,19 @@ module.exports = {
             {$project: {
               _id: 0,
               points: '$totalPoints'
+            }}
+          ],
+          scoreBooksPipeline = [
+            {$match: {userId}},
+            {$group: {
+              _id: null,
+              totalPointsWords: {'$sum': '$points.words'},
+              totalPointsTranslations: {'$sum': '$points.translations'},
+              totalPointsFinished: {'$sum': '$points.finished'}
+            }},
+            {$project: {
+              _id: 0,
+              points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished' ]}
             }}
           ],
           coursesLearningPipeline = [
@@ -43,7 +56,8 @@ module.exports = {
           ];
 
     const getCount = async () => {
-      const score = await Result.aggregate(scorePipeline),
+      const scoreCourses = await Result.aggregate(scoreCoursesPipeline),
+            scoreBooks = await Session.aggregate(scoreBooksPipeline),
             coursesLearning = await UserCourse.aggregate(coursesLearningPipeline),
             booksReading = await UserBook.aggregate(booksReadingPipeline),
             subscribedCourses = coursesLearning[0] ? coursesLearning[0].countSubscribed || 0 : 0,
@@ -51,9 +65,10 @@ module.exports = {
             startedBooks = booksReading[0] ? booksReading[0].countStarted || 0 : 0,
             unsubscribedBooks = booksReading[0] ? booksReading[0].countNotSubscribed || 0 : 0,
             readBooks = booksReading[0] ? booksReading[0].read || 0 : 0,
-            points = score[0] ? score[0].points || 0 : 0;
+            pointsCourses = scoreCourses[0] ? scoreCourses[0].points || 0 : 0,
+            pointsBooks = scoreBooks[0] ? scoreBooks[0].points || 0 : 0;
       return {
-        score: points,
+        score: pointsCourses + pointsBooks,
         coursesLearning: {
           subscribed: subscribedCourses,
           unsubscribed: unsubscribedCourses,
