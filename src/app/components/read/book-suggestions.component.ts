@@ -46,7 +46,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
 
   private getBooks() {
     zip(
-      this.readService.fetchPublishedBooksByWeight(this.book.lanCode),
+      this.readService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
       this.readService.fetchUserBooks(this.userLanCode),
       this.readService.fetchPreviousAnswers(this.book._id, this.userLanCode)
     )

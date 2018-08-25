@@ -157,7 +157,6 @@ module.exports = {
     bookmark.dt = Date.now()
     const update = {$set: {bookmark}};
     if (!bookmark.sentenceNrBook) {
-      //TODO -> calculate sentences done
       bookmark.sentenceNrBook = 0;
     }
     UserBook.findOneAndUpdate(query, update, (err, result) => {
@@ -189,7 +188,8 @@ module.exports = {
       nrNo: sessionData.nrNo,
       nrMaybe: sessionData.nrMaybe,
       translations: sessionData.translations,
-      dt: setSessionDt(startDate)
+      dt: setSessionDt(startDate),
+      points: sessionData.points
     }}
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating session', function() {

@@ -90,8 +90,9 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.answer(answer);
   }
 
-  onTranslationAdded() {
+  onTranslationAdded(translationPoints: number) {
     this.sessionData.translations++;
+    this.sessionData.points.translations += translationPoints;
   }
 
   onKeyPressed(key: string) {
@@ -155,8 +156,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.nextSentenceObservable.next(true);
     this.getSentence();
     if (this.sessionData.answers.length % this.saveFrequency === 0) {
-      this.saveSessionData();
       this.placeBookmark(false);
+      this.saveSessionData();
     }
   }
 
@@ -169,8 +170,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           // Results - already saved
           this.startAnotherBook(book);
         } else {
-          this.saveSessionData(book);
           this.placeBookmark(false);
+          this.saveSessionData(book);
         }
       }
     );
@@ -203,6 +204,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer;
     this.sessionData.answers += answer.substr(0, 1);
+    this.sessionData.points.words += this.getSentencePoints(this.currentSentence);
     switch (answer) {
       case 'yes':
         this.sessionData.nrYes++;
@@ -216,6 +218,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     }
     this.getSentenceTranslations(this.currentSentenceNr);
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
+  }
+
+  private getSentencePoints(sentence: string): number {
+    const words = sentence.split(' ');
+    return words.length;
   }
 
   private getBookId() {
@@ -252,7 +259,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           translations: 0,
           nrYes: 0,
           nrNo: 0,
-          nrMaybe: 0
+          nrMaybe: 0,
+          points: {
+            words: 0,
+            translations: 0,
+            finished: 0
+          }
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
@@ -386,6 +398,9 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         isChapterRead: isBookRead ? true : isRead,
         isBookRead
       };
+      if (isBookRead) {
+        this.sessionData.points.finished = Math.trunc(this.book.difficulty.nrOfWords * Math.log(this.book.difficulty.nrOfWords));
+      }
       this.readService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode)
       .pipe(takeWhile(() => this.componentActive))
@@ -395,8 +410,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private processResults(isBookRead: boolean) {
     this.sharedService.changeExerciseMode(false);
-    this.saveSessionData();
     this.placeBookmark(isBookRead); // must be before currentStep change
+    this.saveSessionData();
     this.currentStep = SentenceSteps.Results;
     this.answersObservable.next({answers: this.sessionData.answers, isResults: true}); // Show suggestions also in results
   }

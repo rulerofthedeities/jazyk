@@ -17,7 +17,7 @@ export class BookTranslationComponent implements OnDestroy {
   @Input() text: Object;
   @Input() bookId: string;
   @Input() sentence: string;
-  @Output() translationAdded = new EventEmitter();
+  @Output() translationAdded = new EventEmitter<number>();
   private componentActive = true;
   submitting = false;
   submitted = false;
@@ -57,9 +57,20 @@ export class BookTranslationComponent implements OnDestroy {
         this.submitted = true;
         const newTranslation = {translation, note, lanCode: this.userLanCode, score: 0};
         this.translations.unshift(newTranslation);
-        this.translationAdded.emit();
+        const points = this.getTranslationPoints(newTranslation.translation);
+        this.translationAdded.emit(points);
       }
     );
+  }
+
+  private getTranslationPoints(translation: string): number {
+    let points = 0;
+    const wordsTranslation = translation.split(' '),
+          wordsSentence = this.sentence.split(' ');
+    if (wordsTranslation.length >= wordsSentence.length / 2) {
+      points = (wordsTranslation.length + wordsSentence.length) || 0;
+    }
+    return points;
   }
 
   ngOnDestroy() {

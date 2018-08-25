@@ -33,6 +33,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   listTpe = 'all';
   sort = 'difficulty1';
   nrOfBooks: number;
+  itemTxt: string;
 
   constructor(
     private readService: ReadService,
@@ -67,11 +68,14 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   onChangeSort(sort: string) {
     this.sort = sort;
-    this.getBooks();
+    this.getBooks(true);
   }
 
   onRemovedSubscription(book: Book) {
     this.userBooks[book._id].subscribed = false;
+  }
+
+  getFilterCount() {
   }
 
   private filterBooks() {
@@ -82,12 +86,18 @@ export class ReadComponent implements OnInit, OnDestroy {
       default:
         this.filteredBooks = [...this.books];
     }
+    let itemTxt = this.text['ShowingItems'];
+    itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
+    itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
+    this.itemTxt = itemTxt;
   }
 
-  private getBooks() {
-    this.getUserBooks();
-    this.getUserData();
-    this.getBookTranslations();
+  private getBooks(onlyBooks = false) {
+    if (!onlyBooks) { // Not required if resorted
+      this.getUserBooks();
+      this.getUserData();
+      this.getBookTranslations();
+    }
     this.isLoading = true;
     this.readService
     .fetchPublishedBooks(this.bookLanguage.code, this.sort)

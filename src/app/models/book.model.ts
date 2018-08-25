@@ -87,6 +87,12 @@ export interface UserBook {
   dt: UserBookDates;
 }
 
+interface Points {
+  words: number;
+  translations: number;
+  finished: number;
+}
+
 export interface SessionData {
   _id?: string;
   bookId: string;
@@ -97,6 +103,7 @@ export interface SessionData {
   nrNo: number;
   nrMaybe: number;
   translations: number;
+  points: Points;
 }
 
 // Session data returned for one user

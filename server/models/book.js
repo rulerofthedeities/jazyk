@@ -66,6 +66,12 @@ var dtSchema = new Schema({
   diff: Number
 }, {_id: false});
 
+var pointsSchema = new Schema({
+  words: Number,
+  translations: Number,
+  finished: Number
+}, {_id: false});
+
 var sessionSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
@@ -76,7 +82,8 @@ var sessionSchema = new Schema({
   nrNo: Number,
   nrMaybe: Number,
   translations: Number,
-  dt: dtSchema
+  dt: dtSchema,
+  points: pointsSchema
 });
 
 module.exports = {
