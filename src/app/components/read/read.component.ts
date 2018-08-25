@@ -87,8 +87,10 @@ export class ReadComponent implements OnInit, OnDestroy {
         this.filteredBooks = [...this.books];
     }
     let itemTxt = this.text['ShowingItems'];
-    itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
-    itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
+    if (itemTxt) {
+      itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
+      itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
+    }
     this.itemTxt = itemTxt;
   }
 

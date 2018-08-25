@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnDestroy, EventEmitter, ViewChild } from '@angular/core';
 import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
@@ -18,6 +18,10 @@ export class BookTranslationComponent implements OnDestroy {
   @Input() bookId: string;
   @Input() sentence: string;
   @Output() translationAdded = new EventEmitter<number>();
+  @Output() nextSentence = new EventEmitter();
+  @ViewChild('translation') translation;
+  @ViewChild('translationnote') translationnote;
+
   private componentActive = true;
   submitting = false;
   submitted = false;
@@ -27,14 +31,36 @@ export class BookTranslationComponent implements OnDestroy {
     private readService: ReadService
   ) {}
 
+  onKeyPressed(key: string) {
+    switch (key) {
+      case 'Enter':
+        const translation = this.translation ? this.translation.nativeElement.value.trim() : null
+        if (translation) {
+          const translationnote = this.translationnote.nativeElement.value.trim();
+          this.addTranslation(translation, translationnote);
+        } else {
+          this.nextSentence.emit();
+        }
+      break;
+    }
+  }
   onAddTranslation(translation: string, translationnote: string) {
+    this.addTranslation(translation, translationnote);
+  }
+
+  getColor(i: number, isNote: boolean): string {
+    const lightness = Math.min(80, (i + 1) * (isNote ? 50 : 10) - 10).toString();
+    return 'hsl(200, 0%,' + lightness + '%)';
+  }
+
+  private addTranslation(translation: string, translationnote: string) {
     this.submitting = true;
     this.duplicate = false;
     translation = translation.trim();
     translationnote = translationnote.trim();
     const duplicate = this.translations.find(t => t.translation === translation);
     if (translation && !duplicate) {
-      this.addTranslation(translation, translationnote);
+      this.saveTranslation(translation, translationnote);
     } else {
       this.submitting = false;
       if (duplicate) {
@@ -43,12 +69,7 @@ export class BookTranslationComponent implements OnDestroy {
     }
   }
 
-  getColor(i: number, isNote: boolean): string {
-    const lightness = Math.min(80, (i + 1) * (isNote ? 50 : 10) - 10).toString();
-    return 'hsl(200, 0%,' + lightness + '%)';
-  }
-
-  private addTranslation(translation: string, note: string) {
+  private saveTranslation(translation: string, note: string) {
     this.readService
     .addSentenceTranslation(this.bookLanCode, this.userLanCode, this.bookId, this.sentence, translation, note)
     .pipe(takeWhile(() => this.componentActive))

@@ -97,11 +97,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   onKeyPressed(key: string) {
     switch (key) {
-      case 'Enter':
-        if (this.currentStep === SentenceSteps.Translations) {
-          this.nextSentence();
-        }
-        break;
       case 'Escape':
         if (this.currentStep < SentenceSteps.Results) {
           this.exitReading();
@@ -118,6 +113,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         }
         break;
     }
+  }
+
+  onGoToNextSentence() {
+    // Enter pressed in translation
+    this.nextSentence();
   }
 
   onCountDownFinished() {

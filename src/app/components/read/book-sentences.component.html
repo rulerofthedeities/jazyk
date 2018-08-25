@@ -98,7 +98,8 @@
                   [text]="text"
                   [bookId]="book._id"
                   [sentence]="currentSentence"
-                  (translationAdded)="onTranslationAdded($event)">
+                  (translationAdded)="onTranslationAdded($event)"
+                  (nextSentence)="onGoToNextSentence()">
                 </km-sentence-translations>
               </div>
             </div>
