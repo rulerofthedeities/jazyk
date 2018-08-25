@@ -47,16 +47,27 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getNotificationsCount();
     this.checkMessages();
     this.getScoreCount();
-    this.userService.interfaceLanguageChanged.subscribe(
+    this.userService
+    .interfaceLanguageChanged
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
       newLan => this.getTranslations(newLan)
     );
-    this.userService.notificationRead.subscribe(
+    this.userService
+    .notificationRead
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
       isAllRead => this.updateNotificationsUnReadCount(isAllRead)
     );
-    this.userService.messageRead.subscribe(
+    this.userService
+    .messageRead
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
       isAllRead => this.updateMessagesUnReadCount(isAllRead)
     );
-    this.sharedService.justLoggedInOut.subscribe(
+    this.sharedService
+    .justLoggedInOut
+    .subscribe(
       loggedIn => {
         const interfaceLan = this.userService.user.main.lan;
         this.nrOfMessages = 0;

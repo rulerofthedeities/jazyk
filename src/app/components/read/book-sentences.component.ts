@@ -226,7 +226,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private getScoreMultiplier(): number {
-    return 1 + this.book.difficulty.avgWordScore / 1000;
+    return 1.5 + this.book.difficulty.avgWordScore / 1000;
   }
 
   private getBookId() {

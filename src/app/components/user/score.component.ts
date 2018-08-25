@@ -55,13 +55,11 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   }
 
   private getBookScores() {
-    console.log('getting book scores');
     this.userService
     .fetchScoreBooks()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        console.log('book scores', data);
         this.bookScores = data.scores;
         this.bookTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';

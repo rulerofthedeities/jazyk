@@ -192,8 +192,8 @@ getTotalPoints = function(userId, cb) {
           books = await Session.aggregate(scoreBooksPipeline);
 
     let score = 0;
-    scoreCourses = courses ? courses[0].points : 0;
-    scoreBooks = books ? books[0].points : 0;
+    scoreCourses = courses && courses[0] ? courses[0].points : 0;
+    scoreBooks = books && books[0] ? books[0].points : 0;
     score = scoreCourses + scoreBooks;
     return {score};
   };
@@ -201,7 +201,8 @@ getTotalPoints = function(userId, cb) {
   getScores().then((result) => {
     cb(null, result.score);
   }).catch((err) => {
-    response.handleError(err, res, 400, 'Error fetching total score');
+    console.log(err);
+    cb(err, null);
   });
 }
 

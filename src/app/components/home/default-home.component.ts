@@ -47,7 +47,6 @@ export class DefaultHomeComponent implements OnChanges {
   }
 
   onGoToRoute(route: string) {
-    console.log('go to route', route);
     this.router.navigate(['/' + route]);
   }
 
