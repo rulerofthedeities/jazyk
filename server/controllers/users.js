@@ -46,10 +46,10 @@ var findUser = function(body, expiresIn, callback) {
 
   User.findOne(query, projection, function (err, doc) {
     if (err) {
-      callback(err, doc, 401, 'Error finding user')
+      callback(err, doc, 401, 'Error finding e-mail')
     }
     if (!doc) {
-      callback({error: 'Usernamenotfound'}, doc, 401, 'User could not be found')
+      callback({error: 'Usernamenotfound'}, doc, 401, 'This e-mail address could not be found')
     } else {
       scrypt.verifyKdf(new Buffer(doc.password, 'base64'), body.password, function(err, result) {
         if (result !== true) {

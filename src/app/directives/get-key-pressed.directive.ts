@@ -8,6 +8,8 @@ export class GetKeyPressDirective {
   @HostListener('document:keydown', ['$event'])
 
   keypress(e: KeyboardEvent) {
-    this.hasKeyPressed.emit(e.key.toString());
+    if (e.key) {
+      this.hasKeyPressed.emit(e.key.toString());
+    }
   }
 }

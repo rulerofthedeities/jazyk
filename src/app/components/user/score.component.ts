@@ -60,7 +60,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        this.bookScores = data.scores;
+        this.bookScores = data.scores.filter(score => score.points > 0);
         this.bookTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
