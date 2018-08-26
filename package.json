@@ -1,7 +1,7 @@
 {
   "name": "jazyk",
   "description": "language learning tool",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "preinstall": "npm install pm2 -g",
     "ng": "ng",
@@ -41,6 +41,7 @@
     "express": "^4.16.3",
     "express-bearer-token": "^2.1.0",
     "font-awesome": "^4.7.0",
+    "heroku-ssl-redirect": "0.0.4",
     "jsonwebtoken": "^8.2.1",
     "md5": "^2.2.1",
     "moment": "^2.22.1",

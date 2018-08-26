@@ -1,5 +1,6 @@
 'use strict';
 var express = require('express'),
+    sslRedirect = require('heroku-ssl-redirect');
     app = express(),
     compression = require('compression'),
     path = require('path'),
@@ -22,6 +23,7 @@ checks.checkWarnings(app);
 // middleware
 app.use(compression());
 app.use(bearerToken());
+app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 
