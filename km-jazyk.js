@@ -1,7 +1,7 @@
 'use strict';
 var express = require('express'),
-    sslRedirect = require('heroku-ssl-redirect');
     app = express(),
+    sslRedirect = require('heroku-ssl-redirect'),
     compression = require('compression'),
     path = require('path'),
     bodyParser = require('body-parser'),
