@@ -53,7 +53,7 @@ export interface Book {
   isPublished: boolean;
 }
 
-interface UserBookDates {
+export interface UserBookDates {
   dtSubscribed: Date;
   dtLastReSubscribed: Date;
   dtLastUnSubscribed: Date;

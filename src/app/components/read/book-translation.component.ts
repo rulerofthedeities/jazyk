@@ -53,6 +53,11 @@ export class BookTranslationComponent implements OnDestroy {
     return 'hsl(200, 0%,' + lightness + '%)';
   }
 
+  getTranslationPlaceHolder(): string {
+    const lan = this.userLanCode.toUpperCase();
+    return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
+  }
+
   private addTranslation(translation: string, translationnote: string) {
     this.submitting = true;
     this.duplicate = false;

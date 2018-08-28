@@ -86,6 +86,7 @@
               (click)="onNextSentence()">
               {{text["NextSentence"]}} <span class="fa fa-chevron-right"></span>
             </button>
+            <div class="clearfix"></div>
 
             <!-- TRANSLATIONS -->
             <div *ngIf="currentStep === steps.Translations && userLanCode !== book.lanCode">

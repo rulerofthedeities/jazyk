@@ -21,6 +21,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   licenses: LicenseUrl[];
   private userLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
+  switchedLanguage: Language; // user language before it was switched because selected book lan = user lan
   private books: Book[];
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
@@ -49,11 +50,16 @@ export class ReadComponent implements OnInit, OnDestroy {
   onBookLanguageSelected(lan: Language) {
     this.userService.setLanCode(lan.code);
     this.bookLanguage = lan;
+    if (this.switchedLanguage && this.switchedLanguage.code !== lan.code) {
+      this.myLanguage = this.switchedLanguage;
+    }
+    this.switchedLanguage = null;
     this.filterUserLanguages();
     this.getBooks();
   }
 
   onMyLanguageSelected(lan: Language) {
+    this.switchedLanguage = null;
     this.userService.setUserLanCode(lan.code);
     this.myLanguage = lan;
     this.getUserBooks();
@@ -196,6 +202,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     // filter out selected book language
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
     if (this.myLanguage.code === this.bookLanguage.code && this.myLanguages.length > 0) {
+      this.switchedLanguage = this.myLanguage;
       this.myLanguage = this.myLanguages[0];
     }
   }

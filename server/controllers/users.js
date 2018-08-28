@@ -34,7 +34,8 @@ var addUser = function(body, callback) {
 };
 
 var findUser = function(body, expiresIn, callback) {
-  const query = {email: body.email},
+  const email = body.email ? body.email.trim() : '',
+        query = {email},
         projection = {
           _id: 1,
           userName: 1,
