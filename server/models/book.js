@@ -22,7 +22,8 @@ var bookSchema = new Schema({
   difficulty: difficultySchema,
   isPublished: {type: Boolean, default: false}
 });
-bookSchema.index({'difficulty.weight': 1, 'difficulty.nrOfSentences': 1});
+bookSchema.index({'isPublished': 1, 'lanCode': 1, 'difficulty.weight': 1, 'difficulty.nrOfSentences': 1});
+const BookModel = mongoose.model('Book', bookSchema);
 
 var sentenceSchema = new Schema({
   text: {type: String, required: true},
@@ -42,6 +43,9 @@ var chapterSchema = new Schema({
   lanCode: String
 });
 
+chapterSchema.index({bookId: 1, sequence: 1}, {unique: true});
+const ChapterModel = mongoose.model('Bookchapter', chapterSchema);
+
 var translationSchema = new Schema({
   translation: {type: String, required: true},
   note: String,
@@ -59,6 +63,9 @@ var translationsSchema = new Schema({
 });
 
 translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
+translationsSchema.index({'translations.lanCode': 1});
+TranslationModel = mongoose.model('Booktranslation', translationsSchema);
+
 
 var dtSchema = new Schema({
   start: Date,
@@ -86,9 +93,17 @@ var sessionSchema = new Schema({
   points: pointsSchema
 });
 
+sessionSchema.index({userId: 1, bookId: 1, lanCode: 1});
+const SessionModel = mongoose.model('UserSession', sessionSchema);
+
+BookModel.ensureIndexes();
+ChapterModel.ensureIndexes();
+TranslationModel.ensureIndexes();
+SessionModel.ensureIndexes();
+
 module.exports = {
-  book: mongoose.model('Book', bookSchema),
-  chapter: mongoose.model('Bookchapter', chapterSchema),
-  translation: mongoose.model('Booktranslation', translationsSchema),
-  session: mongoose.model('UserSession', sessionSchema)
+  book: BookModel,
+  chapter: ChapterModel,
+  translation: TranslationModel,
+  session: SessionModel
 }

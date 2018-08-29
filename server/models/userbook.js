@@ -24,9 +24,11 @@ var userBookSchema = new Schema({
   dt: {type: dateSchema, required: true}
 });
 
-userBookSchema.index({userId: 1, bookId: 1});
+userBookSchema.index({userId: 1, bookId: 1, lanCode: 1});
+const UserBookModel = mongoose.model('UserBook', userBookSchema);
+UserBookModel.ensureIndexes();
 
 module.exports = {
-  userBook: mongoose.model('UserBook', userBookSchema)
+  userBook: UserBookModel
 };
 

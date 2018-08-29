@@ -134,7 +134,6 @@ module.exports = {
           },
           pipeline = [
             {$match: query},
-            {$match: {'translations.lanCode': userLan}},
             {$group: {
               _id: '$bookId',
               count: {'$sum': 1}

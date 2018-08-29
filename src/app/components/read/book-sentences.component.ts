@@ -362,6 +362,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private getSentenceTranslations(sentenceNr: number) {
+    this.currentStep = SentenceSteps.Translations;
     this.readService
     .fetchSentenceTranslations(
       this.userLanCode,
@@ -371,7 +372,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .subscribe(
       translations => {
         this.translations = translations;
-        this.currentStep = SentenceSteps.Translations;
       }
     );
   }

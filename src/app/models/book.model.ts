@@ -93,6 +93,12 @@ interface Points {
   finished: number;
 }
 
+interface SessionDates {
+  start: Date;
+  end: Date;
+  diff: number;
+}
+
 export interface SessionData {
   _id?: string;
   bookId: string;
@@ -104,6 +110,7 @@ export interface SessionData {
   nrMaybe: number;
   translations: number;
   points: Points;
+  dt?: SessionDates;
 }
 
 // Session data returned for one user
