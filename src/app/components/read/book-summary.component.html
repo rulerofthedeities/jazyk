@@ -1,5 +1,5 @@
 <article>
-  <div class="panel panel-default panel-book">
+  <div class="panel panel-default panel-book" [class.dashboard]="tpe==='home'">
     <div class="panel-body" [class.read]="isBookRead">
       <div class="image" [class.img-border]="!!book?.img">
         <img src="{{book?.img || defaultImage}}" class="book-img">
@@ -9,7 +9,8 @@
       <div class="book">
         <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
           <km-pie-chart
-            [data]="userData">
+            [data]="userData"
+            [width]="tpe==='home' ? '100px' : '120px'">
           </km-pie-chart>
         </div>
         <h3>
@@ -62,7 +63,7 @@
             {{text["RemoveFromList"]}}
           </button>
         </div>
-        <div class="info">
+        <div class="info" *ngIf="tpe !== 'home'">
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
             <span *ngIf="translationData?.count" class="translations">

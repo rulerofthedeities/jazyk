@@ -8,6 +8,7 @@ import { UserData } from '../../models/book.model';
 
 export class PieChartComponent implements OnInit {
   @Input() data: UserData;
+  @Input() width = '120px';
   pathData: string[] = [];
   color: string[] = [];
   chartReady = false;

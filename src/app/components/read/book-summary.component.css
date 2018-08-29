@@ -13,6 +13,14 @@
   margin: 1px;
   position: relative;
 }
+.dashboard .image {
+  width: 81px;
+  height: 121px;
+}
+.image > img {
+  width: 100%;
+  height: 100%;
+}
 .img-border {
   border: 1px solid #333;
   box-shadow: 1px 1px 2px grey;
@@ -31,9 +39,15 @@
   font-family: Tangerine;
   z-index: 2;
 }
+.dashboard .img-text {
+  left: 2px;
+  width: 70px;
+  height: 101px;
+  font-size: 16px;
+}
 .img-author {
   position: absolute;
-  top: 210px;
+  bottom: 20px;
   left: 6px;
   color: #ddd;
   width: 140px;
@@ -44,14 +58,27 @@
   font-style: italic;
   z-index: 1;
 }
+.dashboard .img-author {
+  left: 2px;
+  width: 70px;
+  height: 20px;
+  font-size: 10px;
+  bottom: 12px;
+}
 .book {
   margin-left: 180px;
   position: relative;
+}
+.dashboard .book {
+  margin-left: 96px;
 }
 .book h3 {
   font-size: 32px;
   margin-top: 0;
   margin-bottom: 2px;
+}
+.dashboard .book h3 {
+  margin-top: -8px;
 }
 .author {
   color: #666;
@@ -60,6 +87,9 @@
 }
 .buttons {
   margin: 15px 0;
+}
+.dashboard .buttons {
+  margin: 12px 0;
 }
 .info {
   margin: 21px 0;
@@ -88,6 +118,9 @@
   margin-bottom: 0;
   height: 26px;
 }
+.dashboard .progress {
+  height: 15px;
+}
 .progress-min .progress-bar {
   color: black; /* progress bar not yet big enough */
 }
@@ -95,8 +128,15 @@
   line-height: 26px;
   font-size: 14px;
 }
+.dashboard .progress-bar {
+  line-height: 15px;
+  font-size: 12px;
+}
 .panel-book {
   min-height: 236px;
+}
+.dashboard.panel-book {
+  min-height: 118px;
 }
 .fa-check {
   color: green;
@@ -121,6 +161,12 @@
   position: absolute;
   top: 60px;
   left: 320px;
+}
+.dashboard .pie-chart {
+  position: inherit;
+  top: inherit;
+  left: inherit;
+  float: right;
 }
 .fa-copyright {
   margin-left: 6px;
