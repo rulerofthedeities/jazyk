@@ -209,12 +209,24 @@ export class ReadComponent implements OnInit, OnDestroy {
     }
     isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
     if (!isInList) {
+      // use interface language
+      const interfaceLanCode = this.userService.user.main.lan,
+            interfaceLan = this.myLanguages.find(lan => lan.code === interfaceLanCode);
+      if (interfaceLan) {
+        this.myLanguage = interfaceLan;
+      }
+    }
+    if (!isInList) {
       // use default fr if not book language - most common right now
       if (this.bookLanguage.code !== 'fr') {
         this.myLanguage = this.myLanguages.find(lan => lan.code === 'fr');
       } else {
-        // else use the first in the list
-        this.myLanguage = this.myLanguages[0];
+        // else use the first in the list that if it is not the book language
+        if (this.bookLanguage.code !== this.myLanguages[0].code) {
+          this.myLanguage = this.myLanguages[0];
+        } else if (this.myLanguages.length > 0) {
+          this.myLanguage = this.myLanguages[1];
+        }
       }
     }
   }
