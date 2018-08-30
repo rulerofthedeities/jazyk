@@ -53,7 +53,7 @@ var translationSchema = new Schema({
   userId: {type: String, required: true},
   created: {type: Date, default: new Date()},
   score: {type: Number, default: 0}
-}, {_id: false});
+});
 
 var translationsSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
