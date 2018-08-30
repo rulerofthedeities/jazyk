@@ -47,9 +47,8 @@ export class ReadComponent implements OnInit, OnDestroy {
   onBookLanguageSelected(lan: Language) {
     this.userService.setLanCode(lan.code);
     if (lan.code === this.myLanguage.code) {
-      // book language === user language, swap if book lan is also a user lan
-      this.myLanguage = lan;
-      console.log('switched lan', lan.code, this.myLanguages);
+      // book language === user language, swap
+      this.myLanguage = this.bookLanguage;
     }
     this.bookLanguage = lan;
     this.filterUserLanguages();
@@ -200,22 +199,18 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
     // check if current language is in list
     let isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
-    console.log('is current lan in list', isInList);
     if (!isInList) {
       // use user language
       const userLanCode = this.userService.user.main.myLan,
             userLan = this.myLanguages.find(lan => lan.code === userLanCode);
-            console.log('user lan', userLanCode, userLan);
       if (userLan) {
         this.myLanguage = userLan;
       }
     }
     isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
-    console.log('is user lan in list', isInList);
     if (!isInList) {
       // use default fr if not book language - most common right now
       if (this.bookLanguage.code !== 'fr') {
-        console.log('is fr in list', this.myLanguages.find(lan => lan.code === 'fr'));
         this.myLanguage = this.myLanguages.find(lan => lan.code === 'fr');
       } else {
         // else use the first in the list
