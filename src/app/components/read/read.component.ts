@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
-import { SharedService } from '../../services/shared.service';
 import { Language, Map, LicenseUrl } from '../../models/course.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
@@ -21,7 +20,6 @@ export class ReadComponent implements OnInit, OnDestroy {
   licenses: LicenseUrl[];
   private userLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
-  switchedLanguage: Language; // user language before it was switched because selected book lan = user lan
   private books: Book[];
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
@@ -39,8 +37,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   constructor(
     private readService: ReadService,
     private userService: UserService,
-    private utilsService: UtilsService,
-    private sharedService: SharedService
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
@@ -49,17 +46,17 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   onBookLanguageSelected(lan: Language) {
     this.userService.setLanCode(lan.code);
-    this.bookLanguage = lan;
-    if (this.switchedLanguage && this.switchedLanguage.code !== lan.code) {
-      this.myLanguage = this.switchedLanguage;
+    if (lan.code === this.myLanguage.code) {
+      // book language === user language, swap if book lan is also a user lan
+      this.myLanguage = lan;
+      console.log('switched lan', lan.code, this.myLanguages);
     }
-    this.switchedLanguage = null;
+    this.bookLanguage = lan;
     this.filterUserLanguages();
     this.getBooks();
   }
 
   onMyLanguageSelected(lan: Language) {
-    this.switchedLanguage = null;
     this.userService.setUserLanCode(lan.code);
     this.myLanguage = lan;
     this.getUserBooks();
@@ -201,9 +198,29 @@ export class ReadComponent implements OnInit, OnDestroy {
   private filterUserLanguages() {
     // filter out selected book language
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
-    if (this.myLanguage.code === this.bookLanguage.code && this.myLanguages.length > 0) {
-      this.switchedLanguage = this.myLanguage;
-      this.myLanguage = this.myLanguages[0];
+    // check if current language is in list
+    let isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
+    console.log('is current lan in list', isInList);
+    if (!isInList) {
+      // use user language
+      const userLanCode = this.userService.user.main.myLan,
+            userLan = this.myLanguages.find(lan => lan.code === userLanCode);
+            console.log('user lan', userLanCode, userLan);
+      if (userLan) {
+        this.myLanguage = userLan;
+      }
+    }
+    isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
+    console.log('is user lan in list', isInList);
+    if (!isInList) {
+      // use default fr if not book language - most common right now
+      if (this.bookLanguage.code !== 'fr') {
+        console.log('is fr in list', this.myLanguages.find(lan => lan.code === 'fr'));
+        this.myLanguage = this.myLanguages.find(lan => lan.code === 'fr');
+      } else {
+        // else use the first in the list
+        this.myLanguage = this.myLanguages[0];
+      }
     }
   }
 
