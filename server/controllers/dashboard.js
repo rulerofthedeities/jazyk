@@ -170,7 +170,7 @@ module.exports = {
             bookData = userBooks.map(async (uBook, i) => {
               // Get book & session data
               const userLan = uBook.lanCode,
-                    book = await Book.findOne({_id: uBook.bookId});
+                    book = await Book.findOne({_id: uBook.bookId, isPublished: true});
               // Get session count
 
               const sesQuery = {userId, lanCode: userLan, bookId: uBook.bookId},

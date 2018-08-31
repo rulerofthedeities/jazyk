@@ -150,7 +150,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private processRecent(courses: RecentCourse[], books: RecentBook[]) {
     let data: (RecentCourse|RecentBook)[] = courses;
-    data = data.concat(books);
+    const publishedBooks = books.filter(b => !!b.book.isPublished); // filter out not published anymore
+    data = data.concat(publishedBooks);
     // Sort courses and books
     data = data.sort(function(a, b) {
       const dtA = new Date(a.dt),

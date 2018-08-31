@@ -12,7 +12,7 @@
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
-              <img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+              <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
             {{book?.title}}
             <small class="book-chapter">
               {{currentChapter.title}}
@@ -94,9 +94,9 @@
                 [translations]="translations"
                 [answer]="currentAnswer"
                 [userLanCode]="userLanCode"
-                [bookLanCode]="book.lanCode"
+                [bookLanCode]="book?.lanCode"
                 [text]="text"
-                [bookId]="book._id"
+                [bookId]="book?._id"
                 [sentence]="currentSentence"
                 (translationAdded)="onTranslationAdded($event)"
                 (nextSentence)="onGoToNextSentence()">
@@ -131,7 +131,11 @@
       </div>
     </div>
   </div>
-  <km-info-msg [msg]="getBookReadMessage(book?.title)" *ngIf="showMsg">
+
+  <km-info-msg [msg]="getBookReadMessage(book?.title)" *ngIf="showReadMsg">
+  </km-info-msg>
+
+  <km-info-msg [msg]="msg" *ngIf="msg && !showReadMsg">
   </km-info-msg>
 
   <km-modal-confirm #confirmexit

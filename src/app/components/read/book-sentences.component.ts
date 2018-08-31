@@ -36,7 +36,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   readingStarted = false;
   isLoading = false;
   isError = false;
-  showMsg = false;
+  showReadMsg = false;
   steps = SentenceSteps;
   translations: SentenceTranslation[] = [];
   sentenceNrObservable: BehaviorSubject<number>;
@@ -46,6 +46,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   userLanCode: string;
   sessionData: SessionData;
   startDate = new Date();
+  msg: string;
   @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
 
   constructor(
@@ -194,8 +195,9 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.readingStarted = false;
     this.isLoading = false;
     this.isError = false;
-    this.showMsg = false;
+    this.showReadMsg = false;
     this.sessionData = null;
+    this.msg = null;
     this.startDate = new Date();
     this.processNewBookId();
   }
@@ -284,9 +286,14 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .fetchBook(bookId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      book => {
-        this.book = book;
-        this.utilsService.setPageTitle(null, book.title);
+      (book: Book) => {
+        if (!book) {
+          this.isError = true;
+          this.msg = this.text['ItemNotAvailable'].replace('%s', `'${bookId}'`);
+        } else {
+          this.book = book;
+          this.utilsService.setPageTitle(null, book.title);
+        }
       }
     );
   }
@@ -297,7 +304,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         if (userBook.bookmark.isBookRead) {
           this.isBookRead = true;
           this.isError = true;
-          this.showMsg = true;
+          this.showReadMsg = true;
         } else {
           this.getChapter(userBook.bookId, userBook.bookmark, 1);
         }
@@ -379,10 +386,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private checkReadingStarted(sentenceNr: number) {
     if (this.sessionData.answers.length === 0) {
       const status = sentenceNr === 0 ? 'Start' : 'Continue';
-      this.readingStarted = true;
-      this.log(`${status} reading '${this.book.title}'`);
-      this.sharedService.changeExerciseMode(true);
-      this.errorService.clearError();
+      if (this.book) {
+        this.readingStarted = true;
+        this.log(`${status} reading '${this.book.title}'`);
+        this.sharedService.changeExerciseMode(true);
+        this.errorService.clearError();
+      }
     }
   }
 
