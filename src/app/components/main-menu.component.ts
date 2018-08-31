@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {UtilsService} from '../services/utils.service';
 import {UserService} from '../services/user.service';
@@ -30,6 +30,17 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   isReady = false;
   isLoggedIn = false;
   rankColor = 'w';
+  showMobileMenu = false;
+  @ViewChild('mobile') mobile: ElementRef;
+  @ViewChild('mobiletrigger') mobiletrigger: ElementRef;
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
+        this.mobiletrigger && !this.mobiletrigger.nativeElement.contains(event.target)) {
+      // Outside mobile dropdown, close dropdown
+      this.showMobileMenu = false;
+    }
+  }
 
   constructor(
     private router: Router,
@@ -47,54 +58,29 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.getNotificationsCount();
     this.checkMessages();
     this.getScoreCount();
-    this.userService
-    .interfaceLanguageChanged
-    .pipe(takeWhile( () => this.componentActive))
-    .subscribe(
-      newLan => this.getTranslations(newLan)
-    );
-    this.userService
-    .notificationRead
-    .pipe(takeWhile( () => this.componentActive))
-    .subscribe(
-      isAllRead => this.updateNotificationsUnReadCount(isAllRead)
-    );
-    this.userService
-    .messageRead
-    .pipe(takeWhile( () => this.componentActive))
-    .subscribe(
-      isAllRead => this.updateMessagesUnReadCount(isAllRead)
-    );
-    this.sharedService
-    .justLoggedInOut
-    .subscribe(
-      loggedIn => {
-        const interfaceLan = this.userService.user.main.lan;
-        this.nrOfMessages = 0;
-        this.nrOfNotifications = 0;
-        this.showDropDown = false;
-        this.isLoggedIn = loggedIn;
-        if (loggedIn) {
-          this.setInterfaceLan();
-          this.getNotificationsCount();
-          this.getMessagesCount();
-          this.getScoreCount();
-        } else {
-          // reset cached user data
-          this.userService.getDefaultUserData(interfaceLan);
-        }
-        this.getTranslations(interfaceLan);
-      }
-    );
+    this.observe();
   }
 
   onShowDropDown(show: boolean) {
     this.showDropDown = show;
   }
 
+  onToggleDropDown() {
+    this.showDropDown = ! this.showDropDown;
+  }
+
+  onShowMobileMenu() {
+    this.showMobileMenu = !this.showMobileMenu;
+  }
+
+  onCloseMobileMenu() {
+    this.showMobileMenu = false;
+  }
+
   onGoto(event: MouseEvent, page: string) {
     event.preventDefault();
     this.showDropDown = false;
+    this.showMobileMenu = false;
     this.router.navigate(['/user/', page]);
   }
 
@@ -253,6 +239,48 @@ export class MainMenuComponent implements OnInit, OnDestroy {
         this.isReady = true;
       },
       error => this.errorService.handleError(error)
+    );
+  }
+
+  private observe() {
+    this.userService
+    .interfaceLanguageChanged
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      newLan => this.getTranslations(newLan)
+    );
+    this.userService
+    .notificationRead
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      isAllRead => this.updateNotificationsUnReadCount(isAllRead)
+    );
+    this.userService
+    .messageRead
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      isAllRead => this.updateMessagesUnReadCount(isAllRead)
+    );
+    this.sharedService
+    .justLoggedInOut
+    .subscribe(
+      loggedIn => {
+        const interfaceLan = this.userService.user.main.lan;
+        this.nrOfMessages = 0;
+        this.nrOfNotifications = 0;
+        this.showDropDown = false;
+        this.isLoggedIn = loggedIn;
+        if (loggedIn) {
+          this.setInterfaceLan();
+          this.getNotificationsCount();
+          this.getMessagesCount();
+          this.getScoreCount();
+        } else {
+          // reset cached user data
+          this.userService.getDefaultUserData(interfaceLan);
+        }
+        this.getTranslations(interfaceLan);
+      }
     );
   }
 

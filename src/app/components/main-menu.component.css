@@ -59,37 +59,54 @@ li.active span.bar {
 .gravatar img {
   border: 1px solid #ddd;
 }
-.navbar-nav > li > .dropdown-lan {
+.nav-items {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  float: left;
+}
+.nav-items > li {
+  float: left;
+  position: relative;
+}
+.nav-items > li > a {
+  margin-bottom: 4px;
+  line-height: 20px;
+  position: relative;
+  display: block;
+  padding: 15px 10px;
+}
+.nav-items > li > .dropdown-lan {
   margin-top: -8px;
 }
 /* override bootstrap */
 .dropdown{
   margin-top: 4px;
 }
-.nav > li > a {
+.nav-items > li > a {
   margin-bottom: 4px;
 }
-.nav > li > a:hover, .nav > li > a:focus {
+.nav-items > li > a:hover, .nav-items > li > a:focus {
   text-decoration: none;
   background-color: inherit;
 }
-.navbar-earthy .nav > li > a:hover, .nav > li > a:focus {
+.navbar-earthy .nav-items > li > a:hover, .nav-items > li > a:focus {
   color: #ddd;
 }
-.navbar-earthy .nav > li > a.inactive:hover, .nav > li > a.inactive:focus {
+.navbar-earthy .nav-items > li > a.inactive:hover, .nav-items > li > a.inactive:focus {
   color: #999;
   cursor: default;
 }
-.navbar a.notifications {
+.nav-items a.notifications {
   margin-right: -20px;
 }
-.navbar a.notifications .badge {
+.nav-items a.notifications .badge {
   position: relative;
   top: -8px;
   left: -14px;
   background-color: red;
 }
-.navbar a.messages .badge {
+.nav-items a.messages .badge {
   position: relative;
   top: -8px;
   left: -14px;
@@ -98,4 +115,47 @@ li.active span.bar {
 .dropdown-menu {
   background-color: #2c3134;
   font-size: 20px;
+}
+ul.dropdown-menu {
+  margin-top: 1px;
+}
+/* mobile */
+.mobile {
+  display: none;
+}
+.navbar-mobile {
+  background-color:#41474b;
+  top: 60px;
+}
+.navbar-mobile a.inactive {
+  color: #999;
+  cursor: default;
+}
+.mobile a {
+  color: white;
+}
+.mobile a:hover {
+  color: black;
+}
+.nav-pills {
+  font-size: 24px;
+}
+
+@media screen and (max-width: 991px) {
+  .mobile {display: block;
+    animation: slideInY 0.3s ease-in;}
+  .desktop {display: none;}
+}
+
+@keyframes slideInY {
+  0% {
+    opacity: 0.2;
+    transform: translateY(-500%) scale(1);
+  }
+  50% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 1;
+  }
 }
