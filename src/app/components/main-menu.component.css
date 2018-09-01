@@ -48,6 +48,9 @@ li.active span.bar {
 .fa-caret {
   font-size: 12px;
   width: 12px;
+  position: relative;
+  left: 4px;
+  top: -4px;
 }
 .dropdown, .indicator {
   cursor: pointer;

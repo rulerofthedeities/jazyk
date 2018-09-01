@@ -1,7 +1,9 @@
 <section *ngIf="isReady">
   <!-- LANGUAGES -->
   <div class="form-group form-group-lg">
-    <div class="col-xs-4 selector">
+    <div class="col-xs-4 selector"
+      [tooltip]="text['BookLanguage']"
+      [tooltipPlacement]="'top'">
       <km-language-selector
         [languages]="bookLanguages"
         [currentLanguage]="bookLanguage"
@@ -9,7 +11,9 @@
         (languageSelected)="onBookLanguageSelected($event)">
       </km-language-selector>
     </div>
-    <div class="col-xs-4 selector my-lan-selector">
+    <div class="col-xs-4 selector my-lan-selector"
+      [tooltip]="text['TranslationLanguage']"
+      [tooltipPlacement]="'top'">
       <span class="fa fa-arrow-right sel-arrow"></span>
       <km-language-selector
         [languages]="myLanguages"
@@ -36,7 +40,9 @@
         {{itemTxt}}
       </span>
       <div class="form-group form-group-sm">
-        <select class="form-control sort-control" (change)="onChangeSort($event.target.value)">
+        <select class="form-control sort-control" (change)="onChangeSort($event.target.value)"
+          [tooltip]="text['SortOrder']"
+          [tooltipPlacement]="'top'">
           <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
           <option value="difficulty0">{{text["difficulty0"]}}</option>
           <option value="sentences0">{{text["sentences0"]}}</option>
