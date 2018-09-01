@@ -2,6 +2,7 @@
   <div class="panel panel-default panel-book" [class.dashboard]="tpe==='home'">
     <div class="panel-body" [class.read]="isBookRead">
       <div class="image" [class.img-border]="!!book?.img">
+        <img src="/assets/img/flags/{{book.lanCode}}-circle.png" class="circle-flag">
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
         <span class="img-author" *ngIf="!book?.img">{{book.author}}</span>
