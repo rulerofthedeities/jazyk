@@ -10,6 +10,7 @@
   padding: 4px;
   text-align: right;
   font-weight: bold;
+  white-space: nowrap;
 }
 .bg-green {
   background-color: green;
@@ -60,4 +61,8 @@
 }
 .bullet {
   height: 15px;
+}
+
+@media screen and (max-width: 500px) {
+  .chart-label {display: none;}
 }

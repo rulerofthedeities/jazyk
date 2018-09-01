@@ -184,5 +184,6 @@
   margin-left: 6px;
 }
 @media screen and (max-width: 767px) {
-  .pie-chart {display: none}
+  .pie-chart {display: none;}
+  .stop, .read {position: initial;}
 }

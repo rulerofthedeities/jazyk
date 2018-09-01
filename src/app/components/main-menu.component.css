@@ -122,7 +122,7 @@ li.active span.bar {
   font-size: 20px;
 }
 ul.dropdown-menu {
-  margin-top: 1px;
+  margin-top: -1px;
 }
 /* mobile */
 .mobile {

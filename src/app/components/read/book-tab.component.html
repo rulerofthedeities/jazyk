@@ -10,11 +10,11 @@
     [tpe]="book.tpe"
     [text]="text">
   </km-book-tpe>
+  <button type="button" class="btn btn-primary pull-right start" (click)="onStartNewBook(book)">
+    {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
+  </button>
   <span class="title">{{book.title}}</span>
   <span class="details">
     ({{book.difficulty.nrOfSentences}} {{text["sentences"]}} / {{text["Difficulty"]}} {{difficultyPerc}}%)
   </span>
-  <button type="button" class="btn btn-primary pull-right start" (click)="onStartNewBook(book)">
-    {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
-  </button>
 </li>

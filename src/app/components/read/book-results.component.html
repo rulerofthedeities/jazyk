@@ -8,26 +8,26 @@
     <!-- GRAPH -->
     <div class="graph">
       <div class="row">
-        <div class="col-xs-2 result-label">
-          {{text["Yes"]}}: <span class="total">{{data.nrYes}}</span>
+        <div class="col-xs-3 col-sm-2 result-label">
+          <span class="chart-label">{{text["Yes"]}}: </span><span class="total">{{data.nrYes}}</span>
         </div>
-        <div class="col-xs-10">
+        <div class="col-xs-9 col-sm-10">
           <div class="bg-green bar" [style.width.%]="percYes">{{percYes}}%</div>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-2 result-label">
-          {{text["Maybe"]}}: <span class="total">{{data.nrMaybe}}</span>
+        <div class="col-xs-3 col-sm-2 result-label">
+            <span class="chart-label">{{text["Maybe"]}}: </span><span class="total">{{data.nrMaybe}}</span>
         </div>
-        <div class="col-xs-10">
+        <div class="col-xs-9 col-sm-10">
           <div class="bg-orange bar" [style.width.%]="percMaybe">{{percMaybe}}%</div>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-2 result-label">
-          {{text["No"]}}: <span class="total">{{data.nrNo}}</span>
+        <div class="col-xs-3 col-sm-2 result-label">
+            <span class="chart-label">{{text["No"]}}: </span><span class="total">{{data.nrNo}}</span>
         </div>
-        <div class="col-xs-10">
+        <div class="col-xs-9 col-sm-10">
           <div class="bg-red bar" [style.width.%]="percNo">{{percNo}}%</div>
         </div>
       </div>

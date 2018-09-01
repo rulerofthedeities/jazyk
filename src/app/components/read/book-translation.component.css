@@ -29,3 +29,8 @@
 .new-translation {
   margin-top: 3px;
 }
+
+@media screen and (max-width: 767px) {
+  .translation-send {float: left;width: 100%;}
+  .translation-send > .btn {width: 100%;}
+}

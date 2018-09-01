@@ -50,9 +50,9 @@
             </div>
             <!-- BUTTONS -->
             <div class="row sentence-buttons" *ngIf="currentStep === steps.Question">
-              <div class="col-sm-3">
+              <div class="col-md-3">
               </div>
-              <div class="col-sm-2">
+              <div class="col-md-2 col-xs-4">
                 <button type="button" class="btn btn-success btn-big" (click)="onAnswer('yes')">
                   <div class="btn-text-wrapper">
                     {{text["Yes"]}}
@@ -60,14 +60,14 @@
                   <div class="short-key">[{{text["Space"].toUpperCase()}}]</div>
                 </button>
               </div>
-              <div class="col-sm-2">
+              <div class="col-md-2 col-xs-4">
                 <button type="button" class="btn btn-warning btn-big" (click)="onAnswer('maybe')">
                     <div class="btn-text-wrapper">
                         {{text["Maybe"]}}
                     </div>
                 </button>
               </div>
-              <div class="col-sm-2">
+              <div class="col-md-2 col-xs-4">
                 <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('no')">
                     <div class="btn-text-wrapper">
                         {{text["No"]}}
@@ -75,7 +75,7 @@
                     <div class="short-key">[{{text["Backspace"].toUpperCase()}}]</div>
                 </button>
               </div>
-              <div class="col-sm-3">
+              <div class="col-md-3">
               </div>
             </div>
 

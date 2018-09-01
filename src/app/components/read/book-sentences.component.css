@@ -64,3 +64,14 @@
   left: 0;
   width: 100%;
 }
+
+@media screen and (max-width: 991px) {
+  .btn-text-wrapper {
+    font-size: 3vw;
+  }
+}
+@media screen and (max-width: 767px) {
+  .btn-text-wrapper {
+    font-size: 4vw;
+  }
+}
