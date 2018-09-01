@@ -3,12 +3,17 @@ import { UserData } from '../../models/book.model';
 
 @Component({
   selector: 'km-pie-chart',
-  templateUrl: 'pie-chart.component.html'
+  templateUrl: 'pie-chart.component.html',
+  styles: [`
+    .pie {width: 120px;}
+    @media screen and (max-width: 991px) {
+      .pie {width: 100px;}
+    }`
+  ]
 })
 
 export class PieChartComponent implements OnInit {
   @Input() data: UserData;
-  @Input() width = '120px';
   pathData: string[] = [];
   color: string[] = [];
   chartReady = false;

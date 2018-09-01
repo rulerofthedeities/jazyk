@@ -1,5 +1,5 @@
 .panel {
-  margin: 0 auto;
+  margin: 0 auto 15px auto;
 }
 .panel-heading {
   background-color: rgb(242, 196, 15);
@@ -15,9 +15,7 @@
 }
 .notifications, .status {
   height: 270px;
-}
-.courses {
-  margin-top: 15px;
+  overflow: hidden;
 }
 .rank {
   cursor: pointer;
@@ -66,4 +64,10 @@
 }
 .points {
   color: black;
+}
+
+@media screen and (max-width: 600px) {
+  .notifications span.badge {
+    display: none;
+  }
 }

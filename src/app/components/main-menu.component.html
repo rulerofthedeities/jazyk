@@ -56,7 +56,7 @@
         </li>
       </ul>
 
-      <ul class="pull-right nav-items">
+      <ul class="pull-right nav-items right-menu">
         <!-- Notifications & Messages -->
         <li class="nav-item indicator"
           (click)="onGoto($event, 'notifications')"
@@ -139,7 +139,7 @@
           (click)='onToggleDropDown()'>
           <a
             class="nav-link dropdown-toggle user-action">
-            {{getUser()?.userName}}
+            <span class="user-name">{{getUser()?.userName}}</span>
             <span
               class="fa fa-caret" [ngClass]="{
               'fa-caret-right': !showDropDown,

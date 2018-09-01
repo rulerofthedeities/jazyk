@@ -95,6 +95,7 @@
   color: #666;
   font-style: italic;
   height: 20px;
+  display: inline-block;
 }
 .buttons {
   margin: 15px 0;
@@ -181,4 +182,7 @@
 }
 .fa-copyright {
   margin-left: 6px;
+}
+@media screen and (max-width: 767px) {
+  .pie-chart {display: none}
 }

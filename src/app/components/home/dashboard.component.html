@@ -1,6 +1,6 @@
 <div class="row">
   <!-- Summary -->
-  <div class="col-xs-6">
+  <div class="col-md-6 col-xs-12">
     <div class="panel panel-default status transparant">
       <div class="panel-heading">
         <span class="fa fa-file-o fa-spacing-title"></span>
@@ -30,7 +30,7 @@
     </div>
   </div>
   <!-- Notification -->
-  <div class="col-xs-6">
+  <div class="col-md-6 col-xs-12">
     <div class="panel panel-default notifications transparant">
       <div class="panel-heading">
         <span class="fa fa-envelope-open-o fa-spacing-title"></span>
@@ -66,6 +66,7 @@
             <span class="badge">
               {{getFromNow(message.dt)}}
             </span>
+            <div class="clearfix"></div>
           </a>
         </div>
         <km-loader *ngIf="isLoadingCommunication && !isError"

@@ -59,6 +59,11 @@ li.active span.bar {
 .gravatar img {
   border: 1px solid #ddd;
 }
+.user-name {
+  max-width: 250px;
+  overflow: hidden;
+  display: inline-block;
+}
 .nav-items {
   margin: 0;
   padding-left: 0;
@@ -141,11 +146,31 @@ ul.dropdown-menu {
   font-size: 24px;
 }
 
-@media screen and (max-width: 991px) {
-  .mobile {display: block;
-    animation: slideInY 0.3s ease-in;}
-  .desktop {display: none;}
+@media screen and (max-width: 1200px) {
+  .user-name {
+    max-width: 180px;
+  }
 }
+@media screen and (max-width: 991px) {
+  .mobile {
+    display: block;
+    animation: slideInY 0.3s ease-in;
+  }
+  .desktop {
+    display: none;
+  }
+}
+@media screen and (max-width: 500px) {
+  .user-name {
+    max-width: 100px;
+  }
+}
+@media screen and (max-width: 400px) {
+  .right-menu{
+    display: none;
+  }
+}
+
 
 @keyframes slideInY {
   0% {
