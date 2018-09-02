@@ -102,6 +102,7 @@ interface SessionDates {
 export interface SessionData {
   _id?: string;
   bookId: string;
+  userId?: string;
   lanCode: string;
   answers: string;
   chapters: number;

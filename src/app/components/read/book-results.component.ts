@@ -15,6 +15,7 @@ export class BookResultsComponent implements OnChanges {
   percNo = 0;
   total = 0;
   showDetails = false;
+  points = 0;
 
   ngOnChanges() {
     this.calculateResults();
@@ -31,5 +32,6 @@ export class BookResultsComponent implements OnChanges {
       this.percMaybe = Math.round(this.data.nrMaybe / this.total * 1000) / 10;
       this.percNo = Math.round(this.data.nrNo / this.total * 1000) / 10;
     }
+    this.points = this.data.points.finished + this.data.points.translations + this.data.points.words;
   }
 }

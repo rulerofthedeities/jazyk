@@ -50,7 +50,7 @@ var translationSchema = new Schema({
   translation: {type: String, required: true},
   note: String,
   lanCode: {type: String, required: true},
-  userId: {type: String, required: true},
+  userId: {type: Schema.Types.ObjectId, required: true},
   created: {type: Date, default: new Date()},
   score: {type: Number, default: 0}
 });

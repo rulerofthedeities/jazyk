@@ -44,6 +44,7 @@ export class BookTranslationComponent implements OnDestroy {
       break;
     }
   }
+
   onAddTranslation(translation: string, translationnote: string) {
     this.addTranslation(translation, translationnote);
   }
