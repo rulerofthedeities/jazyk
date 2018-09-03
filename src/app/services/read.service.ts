@@ -82,6 +82,17 @@ export class ReadService {
     });
   }
 
+  updateSentenceTranslation(
+    translationId: string,
+    translationElementId: string,
+    translation: string,
+    note: string): Observable<SentenceTranslation>  {
+    return this.http
+    .put<SentenceTranslation>('/api/book/translation', {
+      translationId, translationElementId, translation, note
+    });
+  }
+
   fetchTranslationData(userLanCode: string): Observable<TranslationData[]> {
     // count the # of translations for all books into a specific language
     return this.http

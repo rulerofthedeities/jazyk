@@ -91,6 +91,7 @@
             <!-- TRANSLATIONS -->
             <div *ngIf="currentStep === steps.Translations && userLanCode !== book.lanCode" class="translations">
               <km-sentence-translations
+                [userId]="userId"
                 [translations]="translations"
                 [answer]="currentAnswer"
                 [userLanCode]="userLanCode"

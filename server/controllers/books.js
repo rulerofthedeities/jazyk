@@ -88,11 +88,13 @@ module.exports = {
           sentence = req.params.sentence,
           query = {bookId, sentence, 'translations.lanCode': lanCode},
           projection = {
-            _id:0,
+            _id: 1,
             translation: "$translations.translation",
             note: "$translations.note",
             lanCode: "$translations.lanCode",
-            score: "$translations.score"
+            score: "$translations.score",
+            userId: "$translations.userId",
+            elementId: "$translations._id"
           },
           pipeline = [
             {$match: query},
@@ -117,12 +119,39 @@ module.exports = {
           newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
           options = {upsert: true, new: false},
-          update = {lanCode: bookLanCode, bookId, sentence, $push: {translations: {$each: [ newTranslation ], "$position": 0}}};
+          update = {
+            lanCode: bookLanCode,
+            bookId,
+            sentence,
+            $push: {translations: {$each: [ newTranslation ], "$position": 0}}
+          };
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', function() {
         response.handleSuccess(res, result);
       });
     });
+  },
+  updateTranslation: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          translationId = new mongoose.Types.ObjectId(req.body.translationId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
+          translation = req.body.translation,
+          note = req.body.note,
+          options = {new: true},
+          query = {
+            _id: translationId,
+            translations: {$elemMatch: {userId, _id: translationElementId}},
+          },
+          update = {$set: {'translations.$.translation': translation, 'translations.$.note': note}};
+    console.log('updating userId', userId);
+    console.log('updating translationId', translationId);
+    console.log('updating translationElementId', translationElementId);
+    console.log('updating query', query);
+    Translation.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating translation', function() {
+        response.handleSuccess(res, true);
+      });
+    })
   },
   getBookTranslations: (req, res) => {
     const userLan = req.params.lan,

@@ -47,6 +47,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   sessionData: SessionData;
   startDate = new Date();
   msg: string;
+  userId: string;
   @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
 
   constructor(
@@ -61,6 +62,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.userId = this.userService.user._id.toString();
     this.settings = this.userService.user.jazyk.learn;
     this.chapterObservable = new BehaviorSubject<Chapter>(null);
     this.sentenceNrObservable = new BehaviorSubject<number>(null);

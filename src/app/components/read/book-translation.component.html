@@ -12,6 +12,13 @@
           class="list-group-item translation-item"
           *ngFor="let translation of translations, let i = index"
           [style.color]="getColor(i, false)">
+          <button *ngIf="translation.userId?.toString() === userId && isEditing !== i"
+            type="button"
+            class="btn btn-primary btn-xs pull-right"
+            (click)="onEditTranslation(i)">
+            <span class="fa fa-pencil"></span>
+          </button>
+          <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
           {{i + 1}}. {{translation.translation}}
           <div *ngIf="translation.note"
             class="translation-note"
@@ -40,21 +47,24 @@
           rows="3"
           autocomplete=”off”
           [placeholder]="getTranslationPlaceHolder()"
-          #translation
+          [ngModel]="translationEdit"
+          #translation="ngModel"
         ></textarea>
         <input type="text"
           class="form-control"
           [placeholder]="text['AddTranslationNote']"
           autocomplete=”off”
-          #translationnote
+          [ngModel]="translationNote"
+          #translationnote="ngModel"
         >
         <span class="input-group-btn translation-send">
           <button
             type="button"
             [disabled]="submitting"
             class="btn btn-primary"
-            (click)="onAddTranslation(translation.value, translationnote.value)">
-            <span class="fa fa-envelope fa-spacing"></span>{{text["SubmitTranslation"]}}
+            (click)="onAddUpdateTranslation(translation.value, translationnote.value)">
+            <span class="fa fa-envelope fa-spacing"></span>
+            {{isEditing !== null ? text["UpdateTranslation"] : text["SubmitTranslation"]}}
           </button>
         </span>
       </div>
@@ -63,7 +73,7 @@
       </div>
     </div>
     <div *ngIf="submitted">
-      {{text["ThankYouTranslation"]}}!
+      {{submitMsg}}
     </div>
   </div>
 </div>

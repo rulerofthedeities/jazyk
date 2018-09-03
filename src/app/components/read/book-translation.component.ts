@@ -3,6 +3,7 @@ import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
 
+
 @Component({
   selector: 'km-sentence-translations',
   templateUrl: 'book-translation.component.html',
@@ -10,6 +11,7 @@ import { takeWhile } from 'rxjs/operators';
 })
 
 export class BookTranslationComponent implements OnDestroy {
+  @Input() userId: string;
   @Input() translations: SentenceTranslation[] = [];
   @Input() answer: string;
   @Input() userLanCode: string;
@@ -26,6 +28,10 @@ export class BookTranslationComponent implements OnDestroy {
   submitting = false;
   submitted = false;
   duplicate = false;
+  isEditing = null;
+  translationEdit: string;
+  translationNote: string;
+  submitMsg: string;
 
   constructor(
     private readService: ReadService
@@ -37,7 +43,7 @@ export class BookTranslationComponent implements OnDestroy {
         const translation = this.translation ? this.translation.nativeElement.value.trim() : null;
         if (translation) {
           const translationnote = this.translationnote.nativeElement.value.trim();
-          this.addTranslation(translation, translationnote);
+          this.addUpdateTranslation(translation, translationnote);
         } else {
           this.nextSentence.emit();
         }
@@ -45,13 +51,25 @@ export class BookTranslationComponent implements OnDestroy {
     }
   }
 
-  onAddTranslation(translation: string, translationnote: string) {
-    this.addTranslation(translation, translationnote);
+  onAddUpdateTranslation(translation: string, translationnote: string) {
+    this.addUpdateTranslation(translation, translationnote);
+  }
+
+  onEditTranslation(i: number) {
+    this.isEditing = i;
+    this.translationEdit = this.translations[i].translation;
+    this.translationNote = this.translations[i].note;
+    this.submitted = false;
+    this.submitting = false;
   }
 
   getColor(i: number, isNote: boolean): string {
-    const lightness = Math.min(80, (i + 1) * (isNote ? 50 : 10) - 10).toString();
-    return 'hsl(200, 0%,' + lightness + '%)';
+    if (this.isEditing === i) {
+      return 'rgb(66,139,202)';
+    } else {
+      const lightness = Math.min(80, (i + 1) * (isNote ? 50 : 10) - 10).toString();
+      return 'hsl(200, 0%,' + lightness + '%)';
+    }
   }
 
   getTranslationPlaceHolder(): string {
@@ -59,14 +77,18 @@ export class BookTranslationComponent implements OnDestroy {
     return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
   }
 
-  private addTranslation(translation: string, translationnote: string) {
+  private addUpdateTranslation(translation: string, translationnote: string) {
     this.submitting = true;
     this.duplicate = false;
     translation = translation.trim();
     translationnote = translationnote.trim();
     const duplicate = this.translations.find(t => t.translation === translation);
     if (translation && !duplicate) {
-      this.saveTranslation(translation, translationnote);
+      if (this.isEditing === null) {
+        this.saveTranslation(translation, translationnote);
+      } else {
+        this.updateTranslation(translation, translationnote);
+      }
     } else {
       this.submitting = false;
       if (duplicate) {
@@ -77,17 +99,53 @@ export class BookTranslationComponent implements OnDestroy {
 
   private saveTranslation(translation: string, note: string) {
     this.readService
-    .addSentenceTranslation(this.bookLanCode, this.userLanCode, this.bookId, this.sentence, translation, note)
+    .addSentenceTranslation(
+      this.bookLanCode,
+      this.userLanCode,
+      this.bookId,
+      this.sentence,
+      translation,
+      note)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
+        this.submitMsg = this.text['ThankYouTranslation'] + '!';
         this.submitted = true;
-        const newTranslation = {translation, note, lanCode: this.userLanCode, score: 0};
+        this.submitting = false;
+        const newTranslation = {
+          translation,
+          note,
+          lanCode: this.userLanCode,
+          score: 0,
+          userId: this.userId
+        };
         this.translations.unshift(newTranslation);
         const points = this.getTranslationPoints(newTranslation.translation);
         this.translationAdded.emit(points);
       }
     );
+  }
+
+  private updateTranslation(translation: string, note: string) {
+    this.readService
+    .updateSentenceTranslation(
+      this.translations[this.isEditing]._id,
+      this.translations[this.isEditing].elementId,
+      translation,
+      note)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      result => {
+        this.submitMsg = '';
+        if (result) {
+          this.submitMsg = this.text['TranslationUpdated'];
+          this.translations[this.isEditing].translation = translation;
+          this.translations[this.isEditing].note = note;
+        }
+        this.submitting = false;
+        this.submitted = true;
+        this.isEditing = null;
+    });
   }
 
   private getTranslationPoints(translation: string): number {

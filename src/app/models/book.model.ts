@@ -60,6 +60,9 @@ export interface UserBookDates {
 }
 
 export interface SentenceTranslation {
+  _id?: string;
+  userId: string;
+  elementId?: string;
   translation: string;
   note: string;
   lanCode: string;

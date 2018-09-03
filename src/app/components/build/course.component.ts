@@ -218,7 +218,7 @@ export class BuildCourseComponent implements OnInit, OnDestroy {
     .subscribe(
       dependables => {
         this.text = this.utilsService.getTranslatedText(dependables.translations);
-        this.setActiveLanguages(dependables.languages);
+        this.setActiveLanguages(dependables.courseLanguages);
         this.getRouteParams();
       },
       error => this.errorService.handleError(error)

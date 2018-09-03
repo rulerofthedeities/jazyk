@@ -94,7 +94,9 @@ module.exports = {
             code: 1,
             name: 1,
             nativeName: 1,
-            active: 1
+            active: 1,
+            articles: 1,
+            regions: 1
           }},
         {$sort: {code: 1}}
       ];
