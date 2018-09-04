@@ -11,7 +11,7 @@ import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
 import { LearnSettings } from '../../models/user.model';
 import { UserBook, Bookmark, SessionData,
-         Book, Chapter, SentenceSteps, SentenceTranslation } from '../../models/book.model';
+         Book, Chapter, SentenceSteps } from '../../models/book.model';
 
 @Component({
   templateUrl: 'book-sentences.component.html',
@@ -38,11 +38,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   isError = false;
   showReadMsg = false;
   steps = SentenceSteps;
-  translations: SentenceTranslation[] = [];
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
   answersObservable: Subject<{answers: string, isResults: boolean}> = new Subject();
-  nextSentenceObservable: Subject<boolean> = new Subject();
+  nextSentenceObservable: Subject<string> = new Subject();
   userLanCode: string;
   sessionData: SessionData;
   startDate = new Date();
@@ -156,7 +155,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private nextSentence() {
-    this.nextSentenceObservable.next(true);
     this.getSentence();
     if (this.sessionData.answers.length % this.saveFrequency === 0) {
       this.placeBookmark(false);
@@ -220,7 +218,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.sessionData.nrMaybe++;
         break;
     }
-    this.getSentenceTranslations(this.currentSentenceNr);
+    this.currentStep = SentenceSteps.Translations;
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
 
@@ -353,6 +351,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.currentSentence = sentence;
         this.currentSentenceNr++;
         this.emitSentenceNr(this.currentSentenceNr);
+        this.nextSentenceObservable.next(sentence);
         this.checkReadingStarted(nr);
       }
     } else {
@@ -368,21 +367,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private emitChapter(chapter: Chapter) {
     this.chapterObservable.next(chapter);
-  }
-
-  private getSentenceTranslations(sentenceNr: number) {
-    this.currentStep = SentenceSteps.Translations;
-    this.readService
-    .fetchSentenceTranslations(
-      this.userLanCode,
-      this.bookId,
-      this.currentSentence)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      translations => {
-        this.translations = translations;
-      }
-    );
   }
 
   private checkReadingStarted(sentenceNr: number) {

@@ -1,7 +1,8 @@
-import { Component, Input, Output, OnDestroy, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild } from '@angular/core';
 import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -10,25 +11,27 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['book-translation.component.css']
 })
 
-export class BookTranslationComponent implements OnDestroy {
+export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() userId: string;
-  @Input() translations: SentenceTranslation[] = [];
-  @Input() answer: string;
   @Input() userLanCode: string;
   @Input() bookLanCode: string;
   @Input() text: Object;
   @Input() bookId: string;
   @Input() sentence: string;
+  @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
+  @Input() private newSentence: Subject<string>;
   @Output() translationAdded = new EventEmitter<number>();
   @Output() nextSentence = new EventEmitter();
   @ViewChild('translation') translation;
   @ViewChild('translationnote') translationnote;
-
   private componentActive = true;
+  translations: SentenceTranslation[] = [];
   submitting = false;
   submitted = false;
   duplicate = false;
-  isEditing = null;
+  isEditing: number = null;
+  showTranslations = false;
+  lastAnswer: string;
   translationEdit: string;
   translationNote: string;
   submitMsg: string;
@@ -36,6 +39,11 @@ export class BookTranslationComponent implements OnDestroy {
   constructor(
     private readService: ReadService
   ) {}
+
+  ngOnInit() {
+    this.observe();
+    this.getSentenceTranslations(this.sentence);
+  }
 
   onKeyPressed(key: string) {
     switch (key) {
@@ -75,6 +83,20 @@ export class BookTranslationComponent implements OnDestroy {
   getTranslationPlaceHolder(): string {
     const lan = this.userLanCode.toUpperCase();
     return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
+  }
+
+  private getSentenceTranslations(sentence: string) {
+    this.readService
+    .fetchSentenceTranslations(
+      this.userLanCode,
+      this.bookId,
+      sentence)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      translations => {
+        this.translations = translations;
+      }
+    );
   }
 
   private addUpdateTranslation(translation: string, translationnote: string) {
@@ -156,6 +178,35 @@ export class BookTranslationComponent implements OnDestroy {
       points = (wordsTranslation.length + wordsSentence.length) || 0;
     }
     return points;
+  }
+
+  private observe() {
+    this.answersReceived
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(answers => {
+      if (answers && answers.answers) {
+        this.lastAnswer = answers.answers.slice(-1);
+        this.showTranslations = true;
+      }
+    });
+    this.newSentence
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(sentence => {
+      if (sentence) {
+        // new sentence, get new data
+        console.log('new sentence', sentence);
+        this.showTranslations = false;
+        this.sentence = sentence;
+        this.submitting = false;
+        this.submitted = false;
+        this.duplicate = false;
+        this.isEditing = null;
+        this.translationEdit = null;
+        this.translationNote = null;
+        this.submitMsg = null;
+        this.getSentenceTranslations(sentence);
+      }
+    });
   }
 
   ngOnDestroy() {

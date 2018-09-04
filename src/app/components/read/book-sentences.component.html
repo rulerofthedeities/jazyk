@@ -89,16 +89,16 @@
             <div class="clearfix"></div>
 
             <!-- TRANSLATIONS -->
-            <div *ngIf="currentStep === steps.Translations && userLanCode !== book.lanCode" class="translations">
+            <div *ngIf="userLanCode !== book.lanCode" class="translations">
               <km-sentence-translations
                 [userId]="userId"
-                [translations]="translations"
-                [answer]="currentAnswer"
                 [userLanCode]="userLanCode"
                 [bookLanCode]="book?.lanCode"
                 [text]="text"
                 [bookId]="book?._id"
                 [sentence]="currentSentence"
+                [answersReceived]="answersObservable"
+                [newSentence]="nextSentenceObservable"
                 (translationAdded)="onTranslationAdded($event)"
                 (nextSentence)="onGoToNextSentence()">
               </km-sentence-translations>

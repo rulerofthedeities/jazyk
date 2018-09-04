@@ -80,7 +80,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
         this.suggestedBooks = [];
       }
     });
-
   }
 
   private removeFinishedBooks(userBooks: UserBook[]) {
