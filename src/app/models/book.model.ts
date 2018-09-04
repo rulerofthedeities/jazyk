@@ -40,9 +40,11 @@ interface Difficulty {
 export interface Book {
   _id: string;
   title: string;
+  series: string;
   source: string;
   categories: string[];
   lanCode: string;
+  lanRegion: string;
   author: string;
   year: number;
   img: string;
