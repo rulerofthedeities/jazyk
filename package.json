@@ -54,6 +54,7 @@
     "ngx-md": "^3.1.1",
     "ngx-tooltip": "0.0.9",
     "path": "^0.12.7",
+    "prerender-node": "^3.2.1",
     "rxjs": "^6.1.0",
     "rxjs-compat": "^6.1.0",
     "script": "^0.1.4",

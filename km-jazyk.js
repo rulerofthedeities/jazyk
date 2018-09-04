@@ -10,7 +10,8 @@ var express = require('express'),
     routes = require('./server/routes'),
     checks = require('./server/checks'),
     {mongoose} = require('./server/mongoose'),
-    https = require('https');
+    https = require('https'),
+    prerender = require('prerender-node');
 
 // config
 app.set('port', process.env.PORT || 4802);
@@ -26,6 +27,7 @@ app.use(bearerToken());
 app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use(prerender);
 
 // routing
 routes.initialize(app, new express.Router());
