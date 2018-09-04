@@ -55,7 +55,7 @@
   <!-- BOOKS LIST -->
   <div *ngIf="IsBooksReady">
     <ul class="list-unstyled" *ngIf="filteredBooks?.length">
-      <li *ngFor="let book of filteredBooks">
+      <li *ngFor="let book of filteredBooks; let i=index">
         <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
           [book]="book"
           [userBook]="userBooks[book._id]"
@@ -63,6 +63,7 @@
           [translationData]="translationData[book._id]"
           [userLanCode]="myLanguage.code"
           [text]="text"
+          [nr]="i + 1"
           [licenses]="licenses"
           [tpe]="listTpe === 'my' ? 'my' : 'read'"
           (removedSubscription)="onRemovedSubscription($event)">

@@ -41,6 +41,7 @@ export interface Book {
   _id: string;
   title: string;
   series: string;
+  intro: string;
   source: string;
   categories: string[];
   lanCode: string;

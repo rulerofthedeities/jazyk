@@ -19,6 +19,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() translationData: TranslationData;
   @Input() userLanCode: string;
   @Input() text: Object;
+  @Input() nr: number;
   @Input() tpe: string; // home or read
   @Input() private licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
@@ -30,6 +31,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isSubscribed = false;
   isStarted = false;
   isBookRead = false;
+  showIntro = false;
   licenseUrl: string;
   defaultImage = '/assets/img/books/blankcover.png';
 
@@ -69,6 +71,10 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     );
+  }
+
+  onToggleIntro() {
+    this.showIntro = !this.showIntro;
   }
 
   private getLicenseUrl() {

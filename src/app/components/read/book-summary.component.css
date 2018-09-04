@@ -26,6 +26,22 @@
   box-shadow: 1px 1px 2px grey;
   margin: 0;
 }
+.index-nr {
+  background: rgba(146, 146, 146, 0.48);
+  color: #fff;
+  border: 1px solid #999;
+  border-right: 0;
+  border-radius: 6px 0 0 6px;
+  font-size: 1.6em;
+  font-style: italic;
+  text-shadow: 1px 1px rgba(93, 0, 255, 0.38);
+  text-align: right;
+  width: 54px;
+  padding-right: 5px;
+  position: relative;
+  left: 16px;
+  top: -8px;
+}
 .circle-flag {
   position: absolute;
   top: -8px;
@@ -186,6 +202,19 @@
 }
 .fa-copyright {
   margin-left: 6px;
+}
+.intro-icon {
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  margin-left: 6px;
+}
+.intro {
+  margin: 6px 0;
+  border: 1px dotted #666;
+  border-radius: 0 6px 0 6px;
+  background-color: #eee;
+  padding: 6px;
 }
 @media screen and (max-width: 767px) {
   .pie-chart {display: none;}
