@@ -82,7 +82,10 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   onThumb(up: boolean, translation: SentenceTranslation) {
     if (this.canThumb) {
       this.setThumbData(translation);
-      if (!this.thumbs.savingUp && !this.thumbs.savingDown) {
+      if (!this.thumbs[translation.elementId].savingUp && !this.thumbs[translation.elementId].savingDown) {
+        if (this.thumbs[translation.elementId].user === up) {
+          up = null; // User undid previous click
+        }
         this.saveThumb(up, translation);
       }
     }
@@ -139,6 +142,13 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
             }
             if (this.thumbs[translation.elementId].user === true && this.thumbs[translation.elementId].nrUp > 0) { // not null
               this.thumbs[translation.elementId].nrUp--;
+            }
+          } else if (up === null) {
+            if (this.thumbs[translation.elementId].user === true) {
+              this.thumbs[translation.elementId].nrUp--;
+            }
+            if (this.thumbs[translation.elementId].user === false) {
+              this.thumbs[translation.elementId].nrDown--;
             }
           }
           this.thumbs[translation.elementId].user = up;

@@ -353,7 +353,7 @@ module.exports = {
             {$group: {
               _id: '$translationElementId',
               nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
-              nrDown: {'$sum': {$cond: ["$up", 0, 1]}}
+              nrDown: {'$sum': {$cond: [{$eq: ["$up", false]}, 1, 0]}} // can be null
             }},
             {$project: projection}
           ],
@@ -362,7 +362,7 @@ module.exports = {
             {$group: {
               _id: '$translationElementId',
               nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
-              nrDown: {'$sum': {$cond: ["$up", 0, 1]}}
+              nrDown: {'$sum': {$cond: [{$eq:["$up", false]}, 1, 0]}} // can be null
             }},
             {$project: projection}
           ];
@@ -382,6 +382,7 @@ module.exports = {
     getThumbs().then((results) => {
       response.handleSuccess(res, results ? results.thumbCount : []);
     }).catch((err) => {
+      console.log(err);
       response.handleError(err, res, 500, 'Error fetching thumbs');
     });
   },
