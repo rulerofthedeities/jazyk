@@ -5,7 +5,9 @@ const response = require('../response'),
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook,
-      UserBookThumb = require('../models/userbook').UserBookThumb;
+      UserBookThumb = require('../models/userbook').UserBookThumb,
+      ErrorModel = require('../models/error'),
+      wilson = require('wilson-score');
 
 const setSessionDt = (startDate) => {
   return {
@@ -14,6 +16,71 @@ const setSessionDt = (startDate) => {
     diff: (new Date().getTime() - new Date(startDate).getTime()) / 1000
   };
 }
+
+const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) => {
+  const translationId = new mongoose.Types.ObjectId(translation_id),
+        translationElementId = new mongoose.Types.ObjectId(translationElement_id),
+        options = {},
+        query = {
+          _id: translationId,
+          translations: {$elemMatch: {_id: translationElementId}},
+        },
+        update = {$set: {'translations.$.score': wilsonScore}};
+  Translation.findOneAndUpdate(query, update, options, (err, result) => {
+    if (err) {
+      console.log(`ERREXE06: Error saving wilson score for ${translationElementId}, ${translationElementId}`);
+      const error = new ErrorModel({
+        code: 'ERREXE06',
+        src: 'updateWilsonScore',
+        msg: `ERREXE06: Error saving wilson score for ${translationElementId}, ${translationElementId}`,
+        module: 'books'});
+      error.save(function(err, result) {});
+    }
+  });
+}
+
+const calculateWilsonScore = (book_id, translation_id, translationElement_id) => {
+  const bookId = new mongoose.Types.ObjectId(book_id),
+        translationId = new mongoose.Types.ObjectId(translation_id),
+        translationElementId = new mongoose.Types.ObjectId(translationElement_id),
+        query = {bookId, translationId, translationElementId},
+        projection = {
+          'translationElementId': '$_id',
+          _id: 0,
+          nrUp: 1,
+          total: 1
+        },
+        countPipeline = [
+          {$match: query},
+          {$group: {
+            _id: '$translationElementId',
+            nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
+            total: {'$sum': 1}
+          }},
+          {$project: projection}
+        ];
+  // Get data for score calculation
+  UserBookThumb.aggregate(countPipeline, (err, result) => {
+    if (err) {
+      console.log(`ERREXE05: Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`);
+      const error = new ErrorModel({
+        code: 'ERREXE05',
+        src: 'calculateWilsonScore',
+        msg: `ERREXE05: Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`,
+        module: 'books'});
+      error.save(function(err, result) {});
+    } else {
+      if (result && result[0]) {
+        // Calculate score
+        const wilsonScore = wilson(result[0].nrUp, result[0].total, 1.644853); // 95%, default is 99%
+        // Update score for translation element
+        updateWilsonScore(translationId, translationElementId, wilsonScore);
+      }
+    }
+  });
+
+}
+
 module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
@@ -101,6 +168,7 @@ module.exports = {
             {$match: query},
             {$unwind: "$translations"},
             {$match: {'translations.lanCode': lanCode}},
+            {$sort: {'translations.score': -1}},
             {$project: projection}
           ];
     Translation.aggregate(pipeline, (err, translations) => {
@@ -144,10 +212,6 @@ module.exports = {
             translations: {$elemMatch: {userId, _id: translationElementId}},
           },
           update = {$set: {'translations.$.translation': translation, 'translations.$.note': note}};
-    console.log('updating userId', userId);
-    console.log('updating translationId', translationId);
-    console.log('updating translationElementId', translationElementId);
-    console.log('updating query', query);
     Translation.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error updating translation', function() {
         response.handleSuccess(res, true);
@@ -302,10 +366,8 @@ module.exports = {
     const getThumbs = async () => {
       const thumbCount = await UserBookThumb.aggregate(countPipeline),
             thumbUser = await UserBookThumb.aggregate(userPipeline);
-            console.log(thumbCount, thumbUser);
       thumbUser.forEach(tu => {
         thumb = thumbCount.find( tc => tc.translationElementId.toString() === tu.translationElementId.toString());
-        console.log(thumb);
         if (thumb) {
           thumb.user = tu.nrUp > 0 ? true : (tu.nrDown > 0 ? false : null);
         }
@@ -314,10 +376,8 @@ module.exports = {
     };
 
     getThumbs().then((results) => {
-      console.log(results);
       response.handleSuccess(res, results ? results.thumbCount : []);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 500, 'Error fetching thumbs');
     });
   },
@@ -332,6 +392,7 @@ module.exports = {
           options = {upsert: true, new: true};
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error saving thumb', function() {
+        calculateWilsonScore(bookId, translationId, translationElementId);
         response.handleSuccess(res, result);
       });
     });

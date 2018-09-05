@@ -60,6 +60,7 @@
     "script": "^0.1.4",
     "scrypt": "^6.0.3",
     "typescript": "^2.7.2",
+    "wilson-score": "^1.0.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

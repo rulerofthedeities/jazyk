@@ -52,7 +52,7 @@ var translationSchema = new Schema({
   lanCode: {type: String, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   created: {type: Date, default: new Date()},
-  score: {type: Number, default: 0}
+  score: {type: Number, default: 0} // Wilson score
 });
 
 var translationsSchema = new Schema({
