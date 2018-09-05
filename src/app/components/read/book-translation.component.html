@@ -14,12 +14,30 @@
           [style.color]="getColor(i, false)">
           <button *ngIf="lastAnswer==='y' && translation.userId?.toString() === userId && isEditing !== i"
             type="button"
-            class="btn btn-primary btn-xs pull-right"
+            class="btn btn-primary btn-xs pull-right edit-button"
             (click)="onEditTranslation(i)">
             <span class="fa fa-pencil"></span>
           </button>
           <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
-          {{i + 1}}. {{translation.translation}}
+          {{i + 1}}.
+
+          <span *ngIf="thumbs[i]">
+            {{thumbs[i]?.up}}
+            <button *ngIf="this.thumbs[i]?.thumb === null && (lastAnswer==='y' || lastAnswer==='m')"
+              type="button"
+              class="btn btn-primary btn-xs btn-up"
+              (click)="onThumb(true, translation)">
+              <span class="fa fa-thumbs-up"></span>
+            </button>
+            {{thumbs[i]?.down}}
+            <button *ngIf="this.thumbs[i]?.thumb === null && (lastAnswer==='y' || lastAnswer==='m')"
+              type="button"
+              class="btn btn-primary btn-xs btn-down"
+              (click)="onThumb(false, translation)">
+              <span class="fa fa-thumbs-down"></span>
+            </button>
+          </span>
+            {{translation.translation}}
           <div *ngIf="translation.note"
             class="translation-note"
             [style.color]="getColor(i, true)">
@@ -33,7 +51,7 @@
     </div>
 
     <!-- SUBMIT TRANSLATION -->
-    <div *ngIf="answer==='yes' && !submitted">
+    <div *ngIf="lastAnswer==='y' && !submitted">
       {{!!translations.length ? text["BetterTranslation"] : text["GoodTranslation"]}}
       {{text["EnterBelow"]}}
       <div class="input-group new-translation">
@@ -47,22 +65,22 @@
           rows="3"
           autocomplete=”off”
           [placeholder]="getTranslationPlaceHolder()"
-          [ngModel]="translationEdit"
+          [(ngModel)]="translationEdit"
           #translation="ngModel"
         ></textarea>
         <input type="text"
           class="form-control"
           [placeholder]="text['AddTranslationNote']"
           autocomplete=”off”
-          [ngModel]="translationNote"
-          #translationnote="ngModel"
+          [(ngModel)]="translationNote"
+          #tlnote="ngModel"
         >
         <span class="input-group-btn translation-send">
           <button
             type="button"
             [disabled]="submitting"
             class="btn btn-primary"
-            (click)="onAddUpdateTranslation(translation.value, translationnote.value)">
+            (click)="onAddUpdateTranslation(translation.value, tlnote.value)">
             <span class="fa fa-envelope fa-spacing"></span>
             {{isEditing !== null ? text["UpdateTranslation"] : text["SubmitTranslation"]}}
           </button>

@@ -4,7 +4,8 @@ const response = require('../response'),
       Chapter = require('../models/book').chapter,
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
-      UserBook = require('../models/userbook').userBook;
+      UserBook = require('../models/userbook').userBook,
+      UserBookThumb = require('../models/userbook').UserBookThumb;
 
 const setSessionDt = (startDate) => {
   return {
@@ -151,7 +152,7 @@ module.exports = {
       response.handleError(err, res, 400, 'Error updating translation', function() {
         response.handleSuccess(res, true);
       });
-    })
+    });
   },
   getBookTranslations: (req, res) => {
     const userLan = req.params.lan,
@@ -174,7 +175,6 @@ module.exports = {
         response.handleSuccess(res, translations);
       });
     });
-
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -252,7 +252,7 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching session data', function() {
         response.handleSuccess(res, sessions);
       });
-    })
+    });
   },
   getBookSessions: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -266,7 +266,47 @@ module.exports = {
         const answers = sessions.map(s => s.answers);
         response.handleSuccess(res, answers);
       });
-    })
-
+    });
+  },
+  getThumbs: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId =new mongoose.Types.ObjectId( req.params.bookId),
+          translationId = new mongoose.Types.ObjectId(req.params.translationId),
+          query = {bookId, translationId},
+          countProjection = {
+            'translationElementId': '$_id',
+            _id: 0,
+            nrUp: 1,
+            nrDown: 1
+          },
+          countPipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$translationElementId',
+              nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
+              nrDown: {'$sum': {$cond: ["$up", 0, 1]}}
+            }},
+            {$project: countProjection}
+          ];
+    UserBookThumb.aggregate(countPipeline, (err, thumbs) => {
+      response.handleError(err, res, 400, 'Error fetching thumbs', function() {
+        response.handleSuccess(res, thumbs);
+      });
+    });
+  },
+  addThumb: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          up = req.body.up,
+          bookId = req.body.bookId,
+          translationId = req.body.translationId,
+          translationElementId = req.body.translationElementId,
+          query = {userId, bookId, translationId, translationElementId},
+          update = {up},
+          options = {upsert: true, new: true};
+    UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
+      response.handleError(err, res, 400, 'Error saving thumb', function() {
+        response.handleSuccess(res, result);
+      });
+    });
   }
 }

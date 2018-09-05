@@ -27,7 +27,7 @@ app.use(bearerToken());
 app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use(prerender);
+app.use(prerender.set('protocol', 'https'));
 
 // routing
 routes.initialize(app, new express.Router());

@@ -1,9 +1,16 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { SentenceTranslation } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+interface Thumbs {
+  up: number;
+  down: number;
+  thumb: string;
+  savingUp: boolean; // clicked up, saving now
+  savingDown: boolean; // clicked down, saving now
+}
 
 @Component({
   selector: 'km-sentence-translations',
@@ -22,8 +29,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() private newSentence: Subject<string>;
   @Output() translationAdded = new EventEmitter<number>();
   @Output() nextSentence = new EventEmitter();
-  @ViewChild('translation') translation;
-  @ViewChild('translationnote') translationnote;
   private componentActive = true;
   translations: SentenceTranslation[] = [];
   submitting = false;
@@ -35,6 +40,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   translationEdit: string;
   translationNote: string;
   submitMsg: string;
+  thumbs: Thumbs[] = [];
 
   constructor(
     private readService: ReadService
@@ -48,10 +54,8 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   onKeyPressed(key: string) {
     switch (key) {
       case 'Enter':
-        const translation = this.translation ? this.translation.nativeElement.value.trim() : null;
-        if (translation) {
-          const translationnote = this.translationnote.nativeElement.value.trim();
-          this.addUpdateTranslation(translation, translationnote);
+        if (this.translationEdit) {
+          this.addUpdateTranslation(this.translationEdit, this.translationNote || '');
         } else {
           this.nextSentence.emit();
         }
@@ -71,6 +75,13 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.submitting = false;
   }
 
+  onThumb(up: boolean, translation: SentenceTranslation) {
+    if (!this.thumbs[0].savingUp && !this.thumbs[0].savingDown) {
+      this.saveThumb(up, translation);
+      this.thumbs[0].thumb = up ? 'up' : 'down'; // do this after successful thumb
+    }
+  }
+
   getColor(i: number, isNote: boolean): string {
     if (this.isEditing === i) {
       return 'rgb(66,139,202)';
@@ -85,6 +96,20 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
   }
 
+  private saveThumb(up: boolean, translation: SentenceTranslation) {
+    this.thumbs[0].savingDown = !up;
+    this.thumbs[0].savingUp = up;
+    this.readService
+    .saveThumb(up,  this.bookId, translation._id, translation.elementId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      thumb => {
+        this.thumbs[0].savingDown = false;
+        this.thumbs[0].savingUp = false;
+      }
+    );
+  }
+
   private getSentenceTranslations(sentence: string) {
     this.readService
     .fetchSentenceTranslations(
@@ -95,6 +120,20 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     .subscribe(
       translations => {
         this.translations = translations;
+        if (this.translations.length) {
+          this.getTranslationThumbs(this.translations[0]._id);
+        }
+      }
+    );
+  }
+
+  private getTranslationThumbs(translationId: string) {
+    this.readService
+    .fetchThumbs(this.bookId, translationId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      thumbs => {
+        // console.log('thumbs', thumbs);
       }
     );
   }
@@ -103,6 +142,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.submitting = true;
     this.duplicate = false;
     translation = translation.trim();
+    translationnote = translationnote || '';
     translationnote = translationnote.trim();
     const duplicate = this.translations.find(t => t.translation === translation);
     if (translation && !duplicate) {
@@ -194,7 +234,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     .subscribe(sentence => {
       if (sentence) {
         // new sentence, get new data
-        console.log('new sentence', sentence);
         this.showTranslations = false;
         this.sentence = sentence;
         this.submitting = false;

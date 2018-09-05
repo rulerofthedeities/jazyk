@@ -67,28 +67,6 @@ getCourseWordCount = function(id) {
     console.log(`ERREXE01: Error getting total number of exercises for course '${courseId}'`)
     console.log(err);
   });
-
-  /*
-  const pipeline = [
-    {$match: {courseId, isDeleted: false}},
-    {$unwind: {
-      path : "$exercises",
-      includeArrayIndex : "arrayIndex",
-      preserveNullAndEmptyArrays : false
-    }},
-    {$group: {_id: '$exercises.tpe', 'total': {$sum: 1}}}
-  ];
-
-  Lesson.aggregate(pipeline, function(err, count) {
-    if (!err) {
-      if (count[0]) {
-        updateCourseWordCount(courseId, count);
-      }
-    } else {
-      console.log('ERREXE01: Error getting total number of exercise for course "' + courseId + '"')
-    }
-  });
-  */
 }
 
 setResultExercisesAsDeleted = function(userId, lessonId, exerciseId) {

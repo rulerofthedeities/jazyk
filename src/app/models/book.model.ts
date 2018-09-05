@@ -139,3 +139,9 @@ export interface ChapterData {
   nrSentences: number;
   translations: number;
 }
+
+export interface Thumbs {
+  up: number;
+  down: number;
+  user: boolean;
+}

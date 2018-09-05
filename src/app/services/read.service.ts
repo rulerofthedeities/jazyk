@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, SentenceTranslation, TranslationData,
-         UserBook, Bookmark, SessionData, UserData } from '../models/book.model';
+         UserBook, Bookmark, SessionData, UserData, Thumbs } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -123,6 +123,30 @@ export class ReadService {
     return this.http
     .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
     .pipe(retry(3));
+  }
+
+  /*** Thumbs ***/
+
+  fetchThumbs(bookId: string, translationId: string): Observable<Thumbs[]> {
+    return this.http
+    .get<Thumbs[]>('/api/book/thumb/' + bookId + '/' + translationId)
+    .pipe(retry(3));
+  }
+
+  saveThumb(
+    up: boolean,
+    bookId: string,
+    translationId: string,
+    translationElementId: string
+  ): Observable<boolean> {
+    console.log('saving thumb');
+    return this.http
+    .post<boolean>('/api/book/thumb', {
+      up,
+      bookId,
+      translationId,
+      translationElementId
+    });
   }
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html

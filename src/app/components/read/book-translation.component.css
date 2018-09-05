@@ -33,7 +33,12 @@
   float: right;
   color: #428bca;
 }
-
+.btn-up:hover {
+  background-color: #32CD32;
+}
+.btn-down:hover {
+  background-color: red;
+}
 @media screen and (max-width: 767px) {
   .translation-send {float: left;width: 100%;}
   .translation-send > .btn {width: 100%;}
