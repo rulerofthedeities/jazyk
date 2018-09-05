@@ -12,7 +12,7 @@
           class="list-group-item translation-item"
           *ngFor="let translation of translations, let i = index"
           [style.color]="getColor(i, false)">
-          <button *ngIf="lastAnswer==='y' && translation.userId?.toString() === userId && isEditing !== i"
+          <button *ngIf="canEdit && translation.userId?.toString() === userId && isEditing !== i"
             type="button"
             class="btn btn-primary btn-xs pull-right edit-button"
             (click)="onEditTranslation(i)">
@@ -20,23 +20,25 @@
           </button>
           <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
           {{i + 1}}.
-
-          <span *ngIf="thumbs[i]">
-            {{thumbs[i]?.up}}
-            <button *ngIf="this.thumbs[i]?.thumb === null && (lastAnswer==='y' || lastAnswer==='m')"
+            <!-- Thumbs -->
+            <button
               type="button"
-              class="btn btn-primary btn-xs btn-up"
+              class="btn btn-primary btn-sm btn-thumb"
+              [class.btn-up]="canThumb"
+              [class.thumbed-up]="thumbs[translation.elementId]?.user===true"
               (click)="onThumb(true, translation)">
-              <span class="fa fa-thumbs-up"></span>
+              {{thumbs[translation.elementId]?.nrUp}}
+              <span class="fa fa-thumbs-up" *ngIf="canThumb"></span>
             </button>
-            {{thumbs[i]?.down}}
-            <button *ngIf="this.thumbs[i]?.thumb === null && (lastAnswer==='y' || lastAnswer==='m')"
+            <button
               type="button"
-              class="btn btn-primary btn-xs btn-down"
+              class="btn btn-primary btn-sm btn-thumb"
+              [class.btn-down]="canThumb"
+              [class.thumbed-down]="thumbs[translation.elementId]?.user===false"
               (click)="onThumb(false, translation)">
-              <span class="fa fa-thumbs-down"></span>
+              {{thumbs[translation.elementId]?.nrDown}}
+              <span class="fa fa-thumbs-down" *ngIf="canThumb"></span>
             </button>
-          </span>
             {{translation.translation}}
           <div *ngIf="translation.note"
             class="translation-note"
@@ -51,7 +53,7 @@
     </div>
 
     <!-- SUBMIT TRANSLATION -->
-    <div *ngIf="lastAnswer==='y' && !submitted">
+    <div *ngIf="canEdit && !submitted">
       {{!!translations.length ? text["BetterTranslation"] : text["GoodTranslation"]}}
       {{text["EnterBelow"]}}
       <div class="input-group new-translation">

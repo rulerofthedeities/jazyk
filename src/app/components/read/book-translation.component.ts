@@ -1,9 +1,11 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { SentenceTranslation } from '../../models/book.model';
+import { Map } from '../../models/course.model';
+import { SentenceTranslation, Thumbs } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+/*
 interface Thumbs {
   up: number;
   down: number;
@@ -11,6 +13,7 @@ interface Thumbs {
   savingUp: boolean; // clicked up, saving now
   savingDown: boolean; // clicked down, saving now
 }
+*/
 
 @Component({
   selector: 'km-sentence-translations',
@@ -36,11 +39,12 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   duplicate = false;
   isEditing: number = null;
   showTranslations = false;
-  lastAnswer: string;
+  canThumb = false;
+  canEdit = false;
   translationEdit: string;
   translationNote: string;
   submitMsg: string;
-  thumbs: Thumbs[] = [];
+  thumbs: Map<Thumbs> = {};
 
   constructor(
     private readService: ReadService
@@ -76,9 +80,20 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   onThumb(up: boolean, translation: SentenceTranslation) {
-    if (!this.thumbs[0].savingUp && !this.thumbs[0].savingDown) {
-      this.saveThumb(up, translation);
-      this.thumbs[0].thumb = up ? 'up' : 'down'; // do this after successful thumb
+    if (this.canThumb) {
+      if (!this.thumbs[translation.elementId]) {
+        this.thumbs[translation.elementId] = {
+          nrUp: 0,
+          nrDown: 0,
+          user: null,
+          translationElementId: translation.elementId,
+          savingUp: false,
+          savingDown: false
+        };
+      }
+      if (!this.thumbs.savingUp && !this.thumbs.savingDown) {
+        this.saveThumb(up, translation);
+      }
     }
   }
 
@@ -97,15 +112,33 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private saveThumb(up: boolean, translation: SentenceTranslation) {
-    this.thumbs[0].savingDown = !up;
-    this.thumbs[0].savingUp = up;
+    this.thumbs[translation.elementId].savingDown = !up;
+    this.thumbs[translation.elementId].savingUp = up;
     this.readService
     .saveThumb(up,  this.bookId, translation._id, translation.elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       thumb => {
-        this.thumbs[0].savingDown = false;
-        this.thumbs[0].savingUp = false;
+        this.thumbs[translation.elementId].savingDown = false;
+        this.thumbs[translation.elementId].savingUp = false;
+        if (this.thumbs[translation.elementId].user !== up) {
+          if (up === true) {
+            if (this.thumbs[translation.elementId].user !== true) {
+              this.thumbs[translation.elementId].nrUp++;
+            }
+            if (this.thumbs[translation.elementId].user === false && this.thumbs[translation.elementId].nrDown > 0) { // not null
+              this.thumbs[translation.elementId].nrDown--;
+            }
+          } else if (up === false) {
+            if (this.thumbs[translation.elementId].user !== false) {
+              this.thumbs[translation.elementId].nrDown++;
+            }
+            if (this.thumbs[translation.elementId].user === true && this.thumbs[translation.elementId].nrUp > 0) { // not null
+              this.thumbs[translation.elementId].nrUp--;
+            }
+          }
+          this.thumbs[translation.elementId].user = up;
+        }
       }
     );
   }
@@ -132,8 +165,10 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     .fetchThumbs(this.bookId, translationId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      thumbs => {
-        // console.log('thumbs', thumbs);
+      (thumbs: Thumbs[]) => {
+        thumbs.forEach(thumb => {
+          this.thumbs[thumb.translationElementId] = thumb;
+        });
       }
     );
   }
@@ -224,8 +259,16 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.answersReceived
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(answers => {
+      this.canThumb = false;
+      this.canEdit = false;
       if (answers && answers.answers) {
-        this.lastAnswer = answers.answers.slice(-1);
+        const lastAnswer = answers.answers.slice(-1);
+        if (lastAnswer === 'y' || lastAnswer === 'm') {
+          this.canThumb = true;
+          if (lastAnswer === 'y') {
+            this.canEdit = true;
+          }
+        }
         this.showTranslations = true;
       }
     });

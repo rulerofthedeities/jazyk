@@ -33,11 +33,19 @@
   float: right;
   color: #428bca;
 }
-.btn-up:hover {
-  background-color: #32CD32;
+.btn-thumb {
+  cursor: default;
 }
-.btn-down:hover {
+.btn-up:hover, .thumbed-up {
+  background-color: #32CD32;
+  border-color: #32CD32;
+}
+.btn-down:hover, .thumbed-down {
   background-color: red;
+  border-color: red;
+}
+.btn-up, .btn-down {
+  cursor: pointer;
 }
 @media screen and (max-width: 767px) {
   .translation-send {float: left;width: 100%;}

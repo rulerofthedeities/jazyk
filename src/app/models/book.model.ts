@@ -141,7 +141,10 @@ export interface ChapterData {
 }
 
 export interface Thumbs {
-  up: number;
-  down: number;
+  translationElementId: string;
+  nrUp: number;
+  nrDown: number;
   user: boolean;
+  savingUp?: boolean; // clicked up, saving now
+  savingDown?: boolean; // clicked down, saving now
 }

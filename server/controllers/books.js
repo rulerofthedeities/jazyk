@@ -272,26 +272,53 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId =new mongoose.Types.ObjectId( req.params.bookId),
           translationId = new mongoose.Types.ObjectId(req.params.translationId),
-          query = {bookId, translationId},
-          countProjection = {
+          countQuery = {bookId, translationId},
+          userQuery = {bookId, userId, translationId},
+          projection = {
             'translationElementId': '$_id',
             _id: 0,
             nrUp: 1,
             nrDown: 1
           },
           countPipeline = [
-            {$match: query},
+            {$match: countQuery},
             {$group: {
               _id: '$translationElementId',
               nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
               nrDown: {'$sum': {$cond: ["$up", 0, 1]}}
             }},
-            {$project: countProjection}
+            {$project: projection}
+          ],
+          userPipeline = [
+            {$match: userQuery},
+            {$group: {
+              _id: '$translationElementId',
+              nrUp: {'$sum': {$cond: ["$up", 1, 0]}},
+              nrDown: {'$sum': {$cond: ["$up", 0, 1]}}
+            }},
+            {$project: projection}
           ];
-    UserBookThumb.aggregate(countPipeline, (err, thumbs) => {
-      response.handleError(err, res, 400, 'Error fetching thumbs', function() {
-        response.handleSuccess(res, thumbs);
+
+    const getThumbs = async () => {
+      const thumbCount = await UserBookThumb.aggregate(countPipeline),
+            thumbUser = await UserBookThumb.aggregate(userPipeline);
+            console.log(thumbCount, thumbUser);
+      thumbUser.forEach(tu => {
+        thumb = thumbCount.find( tc => tc.translationElementId.toString() === tu.translationElementId.toString());
+        console.log(thumb);
+        if (thumb) {
+          thumb.user = tu.nrUp > 0 ? true : (tu.nrDown > 0 ? false : null);
+        }
       });
+      return {thumbCount};
+    };
+
+    getThumbs().then((results) => {
+      console.log(results);
+      response.handleSuccess(res, results ? results.thumbCount : []);
+    }).catch((err) => {
+      console.log(err);
+      response.handleError(err, res, 500, 'Error fetching thumbs');
     });
   },
   addThumb: (req, res) => {
