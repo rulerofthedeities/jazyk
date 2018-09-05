@@ -81,16 +81,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
 
   onThumb(up: boolean, translation: SentenceTranslation) {
     if (this.canThumb) {
-      if (!this.thumbs[translation.elementId]) {
-        this.thumbs[translation.elementId] = {
-          nrUp: 0,
-          nrDown: 0,
-          user: null,
-          translationElementId: translation.elementId,
-          savingUp: false,
-          savingDown: false
-        };
-      }
+      this.setThumbData(translation);
       if (!this.thumbs.savingUp && !this.thumbs.savingDown) {
         this.saveThumb(up, translation);
       }
@@ -109,6 +100,19 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   getTranslationPlaceHolder(): string {
     const lan = this.userLanCode.toUpperCase();
     return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
+  }
+
+  private setThumbData(translation: SentenceTranslation) {
+    if (!this.thumbs[translation.elementId]) {
+      this.thumbs[translation.elementId] = {
+        nrUp: 0,
+        nrDown: 0,
+        user: null,
+        translationElementId: translation.elementId,
+        savingUp: false,
+        savingDown: false
+      };
+    }
   }
 
   private saveThumb(up: boolean, translation: SentenceTranslation) {
@@ -205,20 +209,18 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       note)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      result => {
+      (newTranslationData: {translation: SentenceTranslation, translationsId: string}) => {
         this.submitMsg = this.text['ThankYouTranslation'] + '!';
         this.submitted = true;
         this.submitting = false;
-        const newTranslation = {
-          translation,
-          note,
-          lanCode: this.userLanCode,
-          score: 0,
-          userId: this.userId
-        };
+        const newTranslation = newTranslationData.translation;
+        newTranslation.elementId = newTranslation._id;
+        newTranslation._id = newTranslationData.translationsId;
         this.translations.unshift(newTranslation);
         const points = this.getTranslationPoints(newTranslation.translation);
         this.translationAdded.emit(points);
+        this.setThumbData(newTranslation);
+        this.saveThumb(true, newTranslation);
       }
     );
   }

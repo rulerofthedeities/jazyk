@@ -75,9 +75,9 @@ export class ReadService {
     bookId: string,
     sentence: string,
     translation: string,
-    note: string): Observable<SentenceTranslation> {
+    note: string): Observable<{translation: SentenceTranslation, translationsId: string}> {
     return this.http
-    .post<SentenceTranslation>('/api/book/translation/', {
+    .post<{translation: SentenceTranslation, translationsId: string}>('/api/book/translation/', {
       bookLanCode, userLanCode, bookId, sentence, translation, note
     });
   }

@@ -187,7 +187,7 @@ module.exports = {
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
-          options = {upsert: true, new: false},
+          options = {upsert: true, new: true},
           update = {
             lanCode: bookLanCode,
             bookId,
@@ -196,7 +196,11 @@ module.exports = {
           };
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', function() {
-        response.handleSuccess(res, result);
+        const translationData = {
+          translation: result.translations[0],
+          translationsId: result._id
+        }
+        response.handleSuccess(res, translationData);
       });
     });
   },
@@ -390,7 +394,9 @@ module.exports = {
           query = {userId, bookId, translationId, translationElementId},
           update = {up},
           options = {upsert: true, new: true};
+    console.log('adding thumb', query);
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
+      console.log('added thumb', result)
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);
         response.handleSuccess(res, result);
