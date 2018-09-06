@@ -47,6 +47,12 @@
 .btn-up, .btn-down {
   cursor: pointer;
 }
+.vote-block {
+  float: left;
+}
+.translation-block {
+  display: block;
+}
 @media screen and (max-width: 767px) {
   .translation-send {float: left;width: 100%;}
   .translation-send > .btn {width: 100%;}

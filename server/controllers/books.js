@@ -382,7 +382,6 @@ module.exports = {
     getThumbs().then((results) => {
       response.handleSuccess(res, results ? results.thumbCount : []);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 500, 'Error fetching thumbs');
     });
   },
@@ -395,9 +394,7 @@ module.exports = {
           query = {userId, bookId, translationId, translationElementId},
           update = {up},
           options = {upsert: true, new: true};
-    console.log('adding thumb', query);
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
-      console.log('added thumb', result)
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);
         response.handleSuccess(res, result);

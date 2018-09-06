@@ -14,12 +14,13 @@
           [style.color]="getColor(i, false)">
           <button *ngIf="canEdit && translation.userId?.toString() === userId && isEditing !== i"
             type="button"
-            class="btn btn-primary btn-xs pull-right edit-button"
+            class="btn btn-primary btn-sm pull-right edit-button"
             (click)="onEditTranslation(i)">
             <span class="fa fa-pencil"></span>
           </button>
-          <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
-          {{i + 1}}.
+          <div class="vote-block">
+            <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
+            {{i + 1}}.
             <!-- Thumbs -->
             <button
               type="button"
@@ -27,7 +28,7 @@
               [class.btn-up]="canThumb"
               [class.thumbed-up]="thumbs[translation.elementId]?.user===true"
               (click)="onThumb(true, translation)">
-              {{thumbs[translation.elementId]?.nrUp}}
+              {{thumbs[translation.elementId]?.nrUp || 0}}
               <span class="fa fa-thumbs-up" *ngIf="canThumb"></span>
             </button>
             <button
@@ -36,15 +37,19 @@
               [class.btn-down]="canThumb"
               [class.thumbed-down]="thumbs[translation.elementId]?.user===false"
               (click)="onThumb(false, translation)">
-              {{thumbs[translation.elementId]?.nrDown}}
+              {{thumbs[translation.elementId]?.nrDown || 0}}
               <span class="fa fa-thumbs-down" *ngIf="canThumb"></span>
             </button>
-            {{translation.translation}}
-          <div *ngIf="translation.note"
-            class="translation-note"
-            [style.color]="getColor(i, true)">
-            ({{translation.note}})
           </div>
+          <div class="translation-block">
+            {{translation.translation}}
+            <div *ngIf="translation.note"
+              class="translation-note"
+              [style.color]="getColor(i, true)">
+              ({{translation.note}})
+            </div>
+          </div>
+          <div class="clearfix"></div>
         </li>
       </ul>
     </div>

@@ -139,7 +139,6 @@ export class ReadService {
     translationId: string,
     translationElementId: string
   ): Observable<boolean> {
-    console.log('saving thumb');
     return this.http
     .post<boolean>('/api/book/thumb', {
       up,
