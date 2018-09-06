@@ -11,11 +11,6 @@
         <div class="index-nr pull-right">
           {{nr}}
         </div>
-        <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
-          <km-pie-chart
-            [data]="userData">
-          </km-pie-chart>
-        </div>
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
           {{book.title}}<span class="fa fa-info-circle intro-icon" *ngIf="book.intro" (click)="onToggleIntro()"></span>
@@ -23,6 +18,13 @@
         </h3>
         <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
           {{book.intro}}
+        </div>
+        <div class="pie-content" style="position:relative;">
+          <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
+            <km-pie-chart
+              [data]="userData">
+            </km-pie-chart>
+          </div>
         </div>
         <div class="author">
           <km-book-tpe
