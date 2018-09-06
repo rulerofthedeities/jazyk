@@ -32,6 +32,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isStarted = false;
   isBookRead = false;
   showIntro = false;
+  isNewBook = false;
   licenseUrl: string;
   defaultImage = '/assets/img/books/blankcover.png';
 
@@ -43,6 +44,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.getLicenseUrl();
+    this.checkIfNew();
     this.setDifficulty();
   }
 
@@ -82,6 +84,20 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       const license = this.licenses.find(l => this.book.license === l.license);
       if (license) {
         this.licenseUrl = license.url;
+      }
+    }
+  }
+
+  private checkIfNew() {
+    const published = this.book.dt ? this.book.dt.published : null;
+    if (published) {
+      const oneDay = 24 * 60 * 60 * 1000, // hours * minutes * seconds * milliseconds
+            dtPublished = new Date(published),
+            dtNow = new Date(),
+            diffInDays = Math.round(Math.abs((dtNow.getTime() - dtPublished.getTime()) / (oneDay)));
+      console.log('days since publishing', diffInDays);
+      if (diffInDays < 14) {
+        this.isNewBook = true;
       }
     }
   }

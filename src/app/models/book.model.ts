@@ -37,6 +37,11 @@ interface Difficulty {
   tpeMultiplicator: number;
 }
 
+export interface BookDates {
+  published?: Date;
+  created?: Date;
+}
+
 export interface Book {
   _id: string;
   title: string;
@@ -54,6 +59,7 @@ export interface Book {
   link: string;
   difficulty: Difficulty;
   isPublished: boolean;
+  dt: BookDates;
 }
 
 export interface UserBookDates {

@@ -216,6 +216,38 @@
   background-color: #eee;
   padding: 6px;
 }
+.panel-body {
+  position: relative !important;
+  overflow: hidden;
+}
+/* ribbon */
+/* src: https://codepen.io/eode9/pen/twkKm */
+.corner-ribbon{
+  width: 200px;
+  position: absolute;
+  top: 45px;
+  left: -50px;
+  text-align: center;
+  line-height: 30px;
+  letter-spacing: 1px;
+  color: black;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  z-index: 9000;
+}
+.corner-ribbon.shadow{
+  box-shadow: 1px 1px 3px rgba(0,0,0,.5);
+}
+.corner-ribbon.top-right{
+  top: 25px;
+  right: -50px;
+  left: auto;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.corner-ribbon.yellow{
+  background: rgb(255, 255, 173);
+}
 @media screen and (max-width: 767px) {
   .pie-chart {display: none;}
   .stop, .read {position: initial;}

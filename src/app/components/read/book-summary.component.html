@@ -1,6 +1,9 @@
 <article>
   <div class="panel panel-default panel-book" [class.dashboard]="tpe==='home'">
     <div class="panel-body" [class.read]="isBookRead">
+      <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
+        {{text["New"]}}!
+      </div>
       <div class="image" [class.img-border]="!!book?.img">
         <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
         <img src="{{book?.img || defaultImage}}" class="book-img">
@@ -8,7 +11,7 @@
         <span class="img-author" *ngIf="!book?.img">{{book.author}}</span>
       </div>
       <div class="book">
-        <div class="index-nr pull-right">
+        <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
           {{nr}}
         </div>
         <h3>

@@ -1,7 +1,9 @@
 <div [class.background]="!showBackground">
+  <!--
   <div class="corner-ribbon top-right sticky red shadow" *ngIf="!exercisesStarted">
     alpha version
   </div>
+  -->
   <img src="https://{{imagePath + month}}.jpg" *ngIf="showBackground">
   <div class="container">
     <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
