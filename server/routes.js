@@ -156,6 +156,7 @@ module.exports.initialize = function(app, router) {
   router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
   router.post('/book/thumb', books.addThumb);
   router.get('/book/trophies/user', books.getTrophies);
+  router.post('/book/trophies', books.saveTrophies);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

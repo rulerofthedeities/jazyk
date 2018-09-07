@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, SentenceTranslation, TranslationData,
-         UserBook, Bookmark, SessionData, UserData, Thumbs } from '../models/book.model';
+         UserBook, Bookmark, SessionData, UserData, Thumbs, Trophy } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -150,10 +150,15 @@ export class ReadService {
 
   /*** Trophies ***/
 
-  fetchTrophies(): Observable<string[]> {
+  fetchTrophies(): Observable<Trophy[]> {
     return this.http
-    .get<string[]>('/api/book/trophies/user')
+    .get<Trophy[]>('/api/book/trophies/user')
     .pipe(retry(3));
+  }
+
+  saveTrophies(trophies: string[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies', {trophies});
   }
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html

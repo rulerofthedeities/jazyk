@@ -160,3 +160,9 @@ export interface Thumbs {
   savingUp?: boolean; // clicked up, saving now
   savingDown?: boolean; // clicked down, saving now
 }
+
+export interface Trophy {
+  userId: string;
+  trophy: string;
+  created?: Date;
+}

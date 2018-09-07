@@ -410,5 +410,17 @@ module.exports = {
         response.handleSuccess(res, trophies);
       });
     });
+  },
+  saveTrophies: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          trophies = req.body.trophies;
+    console.log('saving trophies', trophies);
+    const trophyDocs = trophies.map(trophy => {return {userId, trophy};});
+    console.log('trophy docs to save', trophyDocs);
+    UserTrophy.insertMany(trophyDocs, (err, result) => {
+      response.handleError(err, res, 400, 'Error saving trophies', function() {
+        response.handleSuccess(res, result);
+      });
+    });
   }
 }

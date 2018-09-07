@@ -74,8 +74,10 @@
 }
 .trophy {
   height: 40px;
+  margin-right: 12px;
 }
 .trophies {
+  min-height: 46px;
   padding: 3px 15px;
 }
 @media screen and (max-width: 500px) {

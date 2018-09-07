@@ -46,7 +46,7 @@ var trophySchema = new Schema({
   created: {type: Date, default: new Date()}
 });
 
-trophySchema.index({userId: 1});
+trophySchema.index({userId: 1, trophy: 1}, {unique: true});
 const trophyModel = mongoose.model('UserTrophy', trophySchema);
 trophyModel.ensureIndexes();
 

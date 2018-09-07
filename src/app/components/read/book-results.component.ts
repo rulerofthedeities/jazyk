@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
-import { SessionData, ResultData } from '../../models/book.model';
+import { SessionData, ResultData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadService } from '../../services/read.service';
 
@@ -71,19 +71,36 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     .fetchTrophies()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      (existingTrophies: string[]) => {
+      (existingTrophies: Trophy[]) => {
+        const newTrophies: string[] = [];
         console.log('saved trophies', existingTrophies);
-        // The difference between existingTrophies and trophiesThisSession are new trophies; save these and show them
-        let exists: boolean;
+        // The difference between existingTrophies and trophiesThisSession are new trophies
+        let exists: Trophy;
         trophiesThisSession.forEach(trophy => {
-          exists = !!existingTrophies.find(eTrophy => eTrophy === trophy);
+          console.log(trophy, existingTrophies[0]);
+          exists = existingTrophies.find(eTrophy => eTrophy.trophy === trophy);
+          console.log('exists', exists);
           if (!exists) {
-            this.newTrophies.push(trophy);
+            newTrophies.push(trophy);
           }
         });
-        console.log('newTrophies', this.newTrophies);
+        // Save the new trophies and show them
+        if (newTrophies.length) {
+          this.saveTrophies(newTrophies);
+        }
       }
     );
+  }
+
+  private saveTrophies(trophies: string[]) {
+    console.log('trophies to save', trophies);
+    this.readService
+    .saveTrophies(trophies)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      result => {
+        this.newTrophies = trophies;
+    });
   }
 
   ngOnDestroy() {
