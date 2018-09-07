@@ -270,6 +270,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
             words: 0,
             translations: 0,
             finished: 0
+          },
+          resultData: {
+            isFinished: false,
+            totalBookSentences: null
           }
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
@@ -292,6 +296,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.msg = this.text['ItemNotAvailable'].replace('%s', `'${bookId}'`);
         } else {
           this.book = book;
+          this.sessionData.resultData.totalBookSentences = this.book.difficulty.nrOfSentences;
           this.utilsService.setPageTitle(null, book.title);
         }
       }
@@ -334,7 +339,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
           this.emitSentenceNr(this.currentSentenceNr);
           this.getSentence();
         } else {
-          // chapter not found -> end of book?
+          // chapter not found -> end of book
+          this.sessionData.resultData.isFinished = true;
           this.processResults(true);
         }
       }

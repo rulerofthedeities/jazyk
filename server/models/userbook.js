@@ -40,8 +40,19 @@ userBookThumbSchema.index({userId: 1, bookId: 1, translationId: 1, translationEl
 const UserBookThumbModel = mongoose.model('UserBookThumb', userBookThumbSchema);
 UserBookThumbModel.ensureIndexes();
 
+var trophySchema = new Schema({
+  userId: {type: Schema.Types.ObjectId, required: true},
+  trophy: {type: String, required: true},
+  created: {type: Date, default: new Date()}
+});
+
+trophySchema.index({userId: 1});
+const trophyModel = mongoose.model('UserTrophy', trophySchema);
+trophyModel.ensureIndexes();
+
 module.exports = {
   userBook: UserBookModel,
-  UserBookThumb: UserBookThumbModel
+  userBookThumb: UserBookThumbModel,
+  userTrophy: trophyModel
 };
 

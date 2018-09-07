@@ -5,7 +5,8 @@ const response = require('../response'),
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook,
-      UserBookThumb = require('../models/userbook').UserBookThumb,
+      UserBookThumb = require('../models/userbook').userBookThumb,
+      UserTrophy = require('../models/userbook').userTrophy,
       ErrorModel = require('../models/error'),
       wilson = require('wilson-score');
 
@@ -398,6 +399,15 @@ module.exports = {
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);
         response.handleSuccess(res, result);
+      });
+    });
+  },
+  getTrophies: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId};
+    UserTrophy.find(query, (err, trophies) =>  {
+      response.handleError(err, res, 400, 'Error fetching trophies', function() {
+        response.handleSuccess(res, trophies);
       });
     });
   }

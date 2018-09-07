@@ -148,6 +148,14 @@ export class ReadService {
     });
   }
 
+  /*** Trophies ***/
+
+  fetchTrophies(): Observable<string[]> {
+    return this.http
+    .get<string[]>('/api/book/trophies/user')
+    .pipe(retry(3));
+  }
+
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html
   shuffle<T>(array: T[]): T[] {
     // if it's 1 or 0 items, just return

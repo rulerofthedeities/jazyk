@@ -111,6 +111,11 @@ interface SessionDates {
   diff: number;
 }
 
+export interface ResultData {
+  isFinished: boolean;
+  totalBookSentences: number;
+}
+
 export interface SessionData {
   _id?: string;
   bookId: string;
@@ -124,6 +129,7 @@ export interface SessionData {
   translations: number;
   points: Points;
   dt?: SessionDates;
+  resultData?: ResultData; // For results page
 }
 
 // Session data returned for one user

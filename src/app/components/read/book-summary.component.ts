@@ -95,7 +95,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
             dtPublished = new Date(published),
             dtNow = new Date(),
             diffInDays = Math.round(Math.abs((dtNow.getTime() - dtPublished.getTime()) / (oneDay)));
-      console.log('days since publishing', diffInDays);
       if (diffInDays < 14) {
         this.isNewBook = true;
       }
