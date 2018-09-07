@@ -404,8 +404,9 @@ module.exports = {
   },
   getTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId};
-    UserTrophy.find(query, (err, trophies) =>  {
+          query = {userId},
+          options = {sort: {trophy: 1}};
+    UserTrophy.find(query, {}, options, (err, trophies) =>  {
       response.handleError(err, res, 400, 'Error fetching trophies', function() {
         response.handleSuccess(res, trophies);
       });
@@ -414,9 +415,7 @@ module.exports = {
   saveTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           trophies = req.body.trophies;
-    console.log('saving trophies', trophies);
     const trophyDocs = trophies.map(trophy => {return {userId, trophy};});
-    console.log('trophy docs to save', trophyDocs);
     UserTrophy.insertMany(trophyDocs, (err, result) => {
       response.handleError(err, res, 400, 'Error saving trophies', function() {
         response.handleSuccess(res, result);

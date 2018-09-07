@@ -18,6 +18,9 @@
     <div *ngIf="!trophies.length">
       {{text["NoTrophies"]}}
     </div>
+    <span *ngFor="let trophy of trophies">
+      <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png" class="trophy">
+    </span>
   </div>
 </div>
 

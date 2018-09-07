@@ -3,7 +3,7 @@ import {UserService} from '../../services/user.service';
 import {ErrorService} from '../../services/error.service';
 import {UtilsService} from '../../services/utils.service';
 import {ModalRanksComponent} from '../modals/modal-ranks.component';
-import {LanPair} from '../../models/course.model';
+import {Trophy} from '../../models/book.model';
 import {SingleBookScore, SingleCourseScore} from '../../models/score.model';
 import {takeWhile} from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   bookTotal: number;
   rank: number;
   gender: string;
-  trophies: string[] = [];
+  trophies: Trophy[] = [];
 
   constructor(
     private utilsService: UtilsService,
@@ -33,6 +33,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     this.getTranslations();
     this.getCourseScores();
     this.getBookScores();
+    this.getTrophies();
   }
 
   onShowRankings(rankings: ModalRanksComponent) {
@@ -66,6 +67,18 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
       },
       error => this.errorService.handleError(error)
+    );
+  }
+
+  private getTrophies() {
+    this.userService
+    .fetchTrophies()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (trophies) => {
+        this.trophies = trophies;
+        console.log('trophies', trophies);
+      }
     );
   }
 

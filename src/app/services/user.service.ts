@@ -6,7 +6,7 @@ import { User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
 import { Language, Course, UserAccess, AccessLevel, UserCourse } from '../models/course.model';
 import { ExerciseData } from '../models/exercise.model';
 import { CourseScore, BookScore } from '../models/score.model';
-import { UserBook } from '../models/book.model';
+import { UserBook, Trophy } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { retry, delay, map, tap, takeWhile } from 'rxjs/operators';
@@ -351,6 +351,13 @@ export class UserService {
     .get<BookScore>('/api/user/score/books')
     .pipe(retry(3));
   }
+
+  fetchTrophies(): Observable<Trophy[]> {
+    return this.http
+    .get<Trophy[]>('/api/book/trophies/user')
+    .pipe(retry(3));
+  }
+
 
   followUser(userId: string): Observable<boolean> {
     return this.http
