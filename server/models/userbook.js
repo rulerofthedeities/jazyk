@@ -31,12 +31,15 @@ UserBookModel.ensureIndexes();
 var userBookThumbSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
   bookId: {type: Schema.Types.ObjectId, required: true},
+  translatorId: {type: Schema.Types.ObjectId, required: true},
   translationId: {type: Schema.Types.ObjectId, required: true},
   translationElementId: {type: Schema.Types.ObjectId, required: true},
-  up: {type: Boolean, required: true}
+  up: {type: Boolean, required: true},
+  isOwnTranslation: {type: Boolean, required: true}
 });
 
 userBookThumbSchema.index({userId: 1, bookId: 1, translationId: 1, translationElementId: 1}, {unique: true});
+userBookThumbSchema.index({translatorId: 1, isOwnTranslation: 1});
 const UserBookThumbModel = mongoose.model('UserBookThumb', userBookThumbSchema);
 UserBookThumbModel.ensureIndexes();
 

@@ -122,7 +122,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.thumbs[translation.elementId].savingDown = !up;
     this.thumbs[translation.elementId].savingUp = up;
     this.readService
-    .saveThumb(up,  this.bookId, translation._id, translation.elementId)
+    .saveThumb(up,  this.bookId, translation.userId, translation._id, translation.elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       thumb => {

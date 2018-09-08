@@ -136,6 +136,7 @@ export class ReadService {
   saveThumb(
     up: boolean,
     bookId: string,
+    translatorId: string,
     translationId: string,
     translationElementId: string
   ): Observable<boolean> {
@@ -143,6 +144,7 @@ export class ReadService {
     .post<boolean>('/api/book/thumb', {
       up,
       bookId,
+      translatorId,
       translationId,
       translationElementId
     });

@@ -6,6 +6,7 @@ const response = require('../response'),
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook,
       UserBookThumb = require('../models/userbook').userBookThumb,
+      UserThumbsReceived = require('../models/userbook').thumbsReceived,
       UserTrophy = require('../models/userbook').userTrophy,
       ErrorModel = require('../models/error'),
       wilson = require('wilson-score');
@@ -440,11 +441,14 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           up = req.body.up,
           bookId = req.body.bookId,
+          translatorId = req.body.translatorId,
           translationId = req.body.translationId,
           translationElementId = req.body.translationElementId,
+          isOwnTranslation = userId.toString() === translationId.toString();
           query = {userId, bookId, translationId, translationElementId},
-          update = {up},
+          update = {up, translatorId, isOwnTranslation},
           options = {upsert: true, new: true};
+          console.log('thumb update', update);
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);
