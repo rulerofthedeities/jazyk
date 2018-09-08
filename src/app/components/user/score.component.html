@@ -15,19 +15,21 @@
     <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
   </div>
   <div class="panel-body">
-    <span *ngFor="let trophy of trophies">
-      <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
-        class="trophy"
-        [tooltip]="text['trophy' + trophy.trophy] || ''"
-        [tooltipPlacement]="'top'">
-    </span>
-    <br>
-    <button
-      type="button"
-      class="btn btn-info btn-xs btn-trophies"
-      (click)="onShowTrophies(trophiesModal)">
-      <span class="fa fa-eye"></span> {{text["ShowTrophies"]}}
-    </button>
+    <div *ngIf="!loadingTrophies else loading">
+      <span *ngFor="let trophy of trophies">
+        <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
+          class="trophy"
+          [tooltip]="text['trophy' + trophy.trophy] || ''"
+          [tooltipPlacement]="'top'">
+      </span>
+      <br>
+      <button
+        type="button"
+        class="btn btn-info btn-xs btn-trophies"
+        (click)="onShowTrophies(trophiesModal)">
+        <span class="fa fa-eye"></span> {{text["ShowTrophies"]}}
+      </button>
+    </div>
   </div>
 </div>
 
@@ -37,7 +39,7 @@
       <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverviewBooks"]}}
     </div>
     <div class="panel-body">
-      <table class="table table-hover">
+      <table class="table table-hover" *ngIf="!loadingBookScores else loading">
         <thead>
           <tr>
             <th></th>
@@ -78,7 +80,7 @@
     <span class="fa fa-star fa-spacing-title"></span>{{text["ScoreOverviewCourses"]}}
   </div>
   <div class="panel-body">
-    <table class="table table-hover">
+    <table class="table table-hover" *ngIf="!loadingCourseScores else loading">
       <thead>
         <tr>
           <th></th>
@@ -122,3 +124,11 @@
   [trophies]="trophies"
   [text]="text">
 </km-modal-trophies>
+
+<ng-template #loading>
+  <km-loader
+    [msg]="''"
+    [showBackground]="false">
+  </km-loader>
+</ng-template>
+

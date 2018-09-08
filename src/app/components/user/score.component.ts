@@ -23,6 +23,9 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   rank: number;
   gender: string;
   trophies: Trophy[] = [];
+  loadingTrophies: boolean;
+  loadingBookScores: boolean;
+  loadingCourseScores: boolean;
 
   constructor(
     private utilsService: UtilsService,
@@ -46,6 +49,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   }
 
   private getCourseScores() {
+    this.loadingCourseScores = true;
     this.userService
     .fetchScoreCourses()
     .pipe(takeWhile(() => this.componentActive))
@@ -55,12 +59,14 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.courseTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
+        this.loadingCourseScores = false;
       },
       error => this.errorService.handleError(error)
     );
   }
 
   private getBookScores() {
+    this.loadingBookScores = true;
     this.userService
     .fetchScoreBooks()
     .pipe(takeWhile(() => this.componentActive))
@@ -70,12 +76,14 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.bookTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
+        this.loadingBookScores = false;
       },
       error => this.errorService.handleError(error)
     );
   }
 
   private getTrophies() {
+    this.loadingTrophies = true;
     this.userService
     .fetchTrophies()
     .pipe(takeWhile(() => this.componentActive))
@@ -84,8 +92,8 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         trophies.sort(
           (a, b) => (parseInt(a.trophy, 10) > parseInt(b.trophy, 10) ? 1 : ((parseInt(b.trophy, 10) > parseInt(a.trophy, 10)) ? -1 : 0))
         );
-        console.log(trophies);
         this.trophies = trophies;
+        this.loadingTrophies = false;
       }
     );
   }
