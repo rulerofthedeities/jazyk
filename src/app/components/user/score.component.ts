@@ -76,8 +76,11 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (trophies) => {
+        trophies.sort(
+          (a, b) => (parseInt(a.trophy, 10) > parseInt(b.trophy, 10) ? 1 : ((parseInt(b.trophy, 10) > parseInt(a.trophy, 10)) ? -1 : 0))
+        );
+        console.log(trophies);
         this.trophies = trophies;
-        console.log('trophies', trophies);
       }
     );
   }

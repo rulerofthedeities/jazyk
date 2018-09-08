@@ -36,7 +36,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   }
 
   private calculateResults() {
-    console.log('resultsdata', this.data);
     this.newTrophies = [];
     this.isFinished = this.data.resultData.isFinished;
     this.checkSessionTrophies(this.data);
@@ -114,7 +113,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
               newOverallThumbTrophies = data[1],
               newTrophies: string[] = newOverallSessionTrophies.concat(newOverallThumbTrophies);
         // The difference between existingTrophies and trophiesThisSession are new trophies
-        console.log('newTrophies1', newTrophies);
         let exists: Trophy;
         trophiesThisSession.forEach(trophy => {
           exists = existingTrophies.find(eTrophy => eTrophy.trophy === trophy);
@@ -122,7 +120,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
             newTrophies.push(trophy);
           }
         });
-        console.log('newTrophies2', newTrophies);
         // Save the new trophies and show them
         if (newTrophies.length) {
           this.saveTrophies(newTrophies);
@@ -132,7 +129,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   }
 
   private saveTrophies(trophies: string[]) {
-    console.log('trophies to save', trophies);
     this.readService
     .saveTrophies(trophies)
     .pipe(takeWhile(() => this.componentActive))

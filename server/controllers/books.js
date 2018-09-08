@@ -6,7 +6,6 @@ const response = require('../response'),
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook,
       UserBookThumb = require('../models/userbook').userBookThumb,
-      UserThumbsReceived = require('../models/userbook').thumbsReceived,
       UserTrophy = require('../models/userbook').userTrophy,
       ErrorModel = require('../models/error'),
       wilson = require('wilson-score');
@@ -94,13 +93,12 @@ const getExistingTrophies = (body, userId) => {
 
 const checkTotalSessionTrophies = (res, userId, existingTrophies) => {
   // trophies 111, 112, 113
-  if (!isInArray('111', existingTrophies) &&
-      !isInArray('112', existingTrophies) &&
+  if (!isInArray('111', existingTrophies) ||
+      !isInArray('112', existingTrophies) ||
       !isInArray('113', existingTrophies)) {
     const query = {userId};
     Session.count(query, (err, count) => {
       response.handleError(err, res, 400, `Error counting total sessions for ${userId}`, () => {
-        console.log('count sessions', count);
         const trophiesToSave = [];
         if (count > 50 && !isInArray('111', existingTrophies)) {
           trophiesToSave.push('111');
@@ -119,12 +117,26 @@ const checkTotalSessionTrophies = (res, userId, existingTrophies) => {
 
 const checkTotalThumbTrophies = (res, userId, existingTrophies) => {
   // trophies 121, 122, 123
-  if (!isInArray('121', existingTrophies) &&
-      !isInArray('122', existingTrophies) &&
+  if (!isInArray('121', existingTrophies) ||
+      !isInArray('122', existingTrophies) ||
       !isInArray('123', existingTrophies)) {
-    const query = {userId};
-    // Todo : get all thumbs for one user
-    response.handleSuccess(res, []);
+    const query = {translatorId: userId, isOwnTranslation: false};
+    // get all thumbs for one user
+    UserBookThumb.count(query, (err, count) => {
+      response.handleError(err, res, 400, `Error counting total thumbs for ${userId}`, () => {
+        const trophiesToSave = [];
+        if (count > 100 && !isInArray('121', existingTrophies)) {
+          trophiesToSave.push('121');
+        }
+        if (count > 500 && !isInArray('122', existingTrophies)) {
+          trophiesToSave.push('122');
+        }
+        if (count > 2000 && !isInArray('123', existingTrophies)) {
+          trophiesToSave.push('123');
+        }
+        response.handleSuccess(res, trophiesToSave);
+      });
+    })
   }
 }
 
@@ -446,9 +458,8 @@ module.exports = {
           translationElementId = req.body.translationElementId,
           isOwnTranslation = userId.toString() === translationId.toString();
           query = {userId, bookId, translationId, translationElementId},
-          update = {up, translatorId, isOwnTranslation},
+          update = {$set: {up, isOwnTranslation}, $setOnInsert: {translatorId}},
           options = {upsert: true, new: true};
-          console.log('thumb update', update);
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);
@@ -459,7 +470,7 @@ module.exports = {
   getTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId},
-          options = {sort: {trophy: 1}};
+          options = {};
     UserTrophy.find(query, {}, options, (err, trophies) =>  {
       response.handleError(err, res, 400, 'Error fetching trophies', function() {
         response.handleSuccess(res, trophies);
@@ -479,13 +490,11 @@ module.exports = {
   getSessionTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           existingTrophies = getExistingTrophies(req.body, userId);
-    console.log('checking existing trophies session', userId, existingTrophies);
     checkTotalSessionTrophies(res, userId, existingTrophies);
   },
   getThumbTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           existingTrophies = getExistingTrophies(req.body, userId);
-    console.log('checking existing trophies thumb', userId, existingTrophies);
     checkTotalThumbTrophies(res, userId, existingTrophies);
   }
 }

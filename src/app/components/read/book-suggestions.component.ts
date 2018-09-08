@@ -111,7 +111,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   private findSuggestions(answers: Answers) {
     const weightCoefficientHarder = this.getWeightCoefficient('harder', answers),
           weightCoefficientEasier = this.getWeightCoefficient('easier', answers);
-    // console.log('weight coefficients', weightCoefficientHarder, weightCoefficientEasier);
     if (this.finishedBooks) {
       const weightDeltaLargeRange = [40, 80], // Min diff for easier / harder books unless there are none
             weightDeltaLSmallRange = [0, 40], // Only used if Large yields no results
