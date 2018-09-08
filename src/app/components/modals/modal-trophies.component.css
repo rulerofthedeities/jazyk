@@ -1,0 +1,14 @@
+.list-group {
+  max-height: calc(100vh - 225px);
+  overflow-y: scroll;
+}
+.closeModal {
+  cursor: pointer;
+  font-size: 24px;
+  margin-bottom: 32px;
+}
+.trophy {
+  width: 80px;
+  display: inline-block;
+  margin: 6px 12px;
+}

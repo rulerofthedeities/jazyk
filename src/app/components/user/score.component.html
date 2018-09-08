@@ -1,6 +1,6 @@
 <!-- RANK -->
 <div class="panel panel-default rank transparant">
-  <div class="panel-body" (click)="onShowRankings(ranks)">
+  <div class="panel-body" (click)="onShowRankings(ranksModal)">
     <img src="/assets/img/ranks/rank{{rank}}_64.png" class="img">
     <span class="text">
       <span class="name">{{text['rank' + rank + gender]}}</span>
@@ -15,15 +15,19 @@
     <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
   </div>
   <div class="panel-body">
-    <div *ngIf="!trophies.length">
-      {{text["NoTrophies"]}}
-    </div>
     <span *ngFor="let trophy of trophies">
       <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
         class="trophy"
         [tooltip]="text['trophy' + trophy.trophy] || ''"
         [tooltipPlacement]="'top'">
     </span>
+    <br>
+    <button
+      type="button"
+      class="btn btn-info btn-xs btn-trophies"
+      (click)="onShowTrophies(trophiesModal)">
+      <span class="fa fa-eye"></span> {{text["ShowTrophies"]}}
+    </button>
   </div>
 </div>
 
@@ -109,7 +113,12 @@
   </div>
 </div>
 
-<km-modal-ranks #ranks
+<km-modal-ranks #ranksModal
   [rank]="rank"
   [text]="text">
 </km-modal-ranks>
+
+<km-modal-trophies #trophiesModal
+  [trophies]="trophies"
+  [text]="text">
+</km-modal-trophies>

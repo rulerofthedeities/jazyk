@@ -1,0 +1,29 @@
+<div class="modal" tabindex="-1" role="dialog"
+  [ngStyle]="{'display': showModal ? 'block' : 'none'}"
+  kmPressed (hasKeyPressed)="onKeyPressed($event)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="closeModal" (click)="onClose()">
+          <span class="fa fa-times pull-right"></span>
+        </div>
+        <div class="clearfix"></div>
+        <div class="list-group">
+          <div *ngFor="let trophies of trophyList; let i=index">
+            <span *ngFor="let trophy of trophies; let j=index" class="trophy">
+              <img src="/assets/img/trophies/trophy{{trophy}}.png"
+              [tooltip]="text['trophy' + trophyListAll[i][j]] || text['TBD'] || ''"
+              [tooltipPlacement]="'right'">
+            </span>
+          </div>
+        </div>
+        <button type="button"
+          class="btn btn-warning pull-right"
+          (click)="onClose()">
+          {{text["Close"]}}
+        </button>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</div>

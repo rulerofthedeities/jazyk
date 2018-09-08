@@ -1,11 +1,12 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {ModalRanksComponent} from '../modals/modal-ranks.component';
-import {Trophy} from '../../models/book.model';
-import {SingleBookScore, SingleCourseScore} from '../../models/score.model';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { ModalRanksComponent } from '../modals/modal-ranks.component';
+import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
+import { Trophy } from '../../models/book.model';
+import { SingleBookScore, SingleCourseScore } from '../../models/score.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'score.component.html',
@@ -36,8 +37,12 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     this.getTrophies();
   }
 
-  onShowRankings(rankings: ModalRanksComponent) {
-    rankings.showModal = true;
+  onShowRankings(rankingsModal: ModalRanksComponent) {
+    rankingsModal.showModal = true;
+  }
+
+  onShowTrophies(trophiesModal: ModalTrophiesComponent) {
+    trophiesModal.showModal = true;
   }
 
   private getCourseScores() {
