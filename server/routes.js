@@ -157,6 +157,8 @@ module.exports.initialize = function(app, router) {
   router.post('/book/thumb', books.addThumb);
   router.get('/book/trophies/user', books.getTrophies);
   router.post('/book/trophies', books.saveTrophies);
+  router.post('/book/trophies/session', books.getSessionTrophies);
+  router.post('/book/trophies/thumb', books.getThumbTrophies);
 
   /* build */
   router.get('/build/courses', courses.getAuthorCourses);

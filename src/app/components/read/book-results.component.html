@@ -100,7 +100,10 @@
       </div>
       <div class="panel-body trophies">
         <span *ngFor="let trophy of newTrophies">
-          <img src="/assets/img/trophies/trophy{{trophy}}.png" class="trophy">
+          <img src="/assets/img/trophies/trophy{{trophy}}.png"
+            class="trophy"
+            [tooltip]="text['trophy' + trophy] || ''"
+            [tooltipPlacement]="'top'">
         </span>
       </div>
     </div>

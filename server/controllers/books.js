@@ -79,8 +79,58 @@ const calculateWilsonScore = (book_id, translation_id, translationElement_id) =>
       }
     }
   });
-
 }
+
+const getExistingTrophies = (body, userId) => {
+  const trophies = body.existingTrophies;
+  existingTrophies = [];
+  if (trophies && trophies.length) {
+    userIdOnly = trophies.filter(t => t.userId.toString() === userId.toString());
+    existingTrophies = userIdOnly.map(t => t.trophy);
+  }
+  return existingTrophies;
+}
+
+const checkTotalSessionTrophies = (res, userId, existingTrophies) => {
+  // trophies 111, 112, 113
+  if (!isInArray('111', existingTrophies) &&
+      !isInArray('112', existingTrophies) &&
+      !isInArray('113', existingTrophies)) {
+    const query = {userId};
+    Session.count(query, (err, count) => {
+      response.handleError(err, res, 400, `Error counting total sessions for ${userId}`, () => {
+        console.log('count sessions', count);
+        const trophiesToSave = [];
+        if (count > 50 && !isInArray('111', existingTrophies)) {
+          trophiesToSave.push('111');
+        }
+        if (count > 200 && !isInArray('112', existingTrophies)) {
+          trophiesToSave.push('112');
+        }
+        if (count > 1000 && !isInArray('113', existingTrophies)) {
+          trophiesToSave.push('113');
+        }
+        response.handleSuccess(res, trophiesToSave);
+      });
+    });
+  }
+}
+
+const checkTotalThumbTrophies = (res, userId, existingTrophies) => {
+  // trophies 121, 122, 123
+  if (!isInArray('121', existingTrophies) &&
+      !isInArray('122', existingTrophies) &&
+      !isInArray('123', existingTrophies)) {
+    const query = {userId};
+    // Todo : get all thumbs for one user
+    response.handleSuccess(res, []);
+  }
+}
+
+const isInArray = (value, array) => {
+  return array.indexOf(value) > -1;
+}
+
 
 module.exports = {
   getPublishedLanBooks: (req, res) => {
@@ -421,5 +471,17 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     });
+  },
+  getSessionTrophies: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          existingTrophies = getExistingTrophies(req.body, userId);
+    console.log('checking existing trophies session', userId, existingTrophies);
+    checkTotalSessionTrophies(res, userId, existingTrophies);
+  },
+  getThumbTrophies: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          existingTrophies = getExistingTrophies(req.body, userId);
+    console.log('checking existing trophies thumb', userId, existingTrophies);
+    checkTotalThumbTrophies(res, userId, existingTrophies);
   }
 }

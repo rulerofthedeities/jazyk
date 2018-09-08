@@ -150,9 +150,21 @@ export class ReadService {
 
   /*** Trophies ***/
 
-  fetchTrophies(): Observable<Trophy[]> {
+  fetchSessionTrophies(): Observable<Trophy[]> {
     return this.http
     .get<Trophy[]>('/api/book/trophies/user')
+    .pipe(retry(3));
+  }
+
+  fetchOverallSessionTrophies(existingTrophies: Trophy[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies/session', {existingTrophies})
+    .pipe(retry(3));
+  }
+
+  fetchOverallThumbTrophies(existingTrophies: Trophy[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies/thumb', {existingTrophies})
     .pipe(retry(3));
   }
 
@@ -160,6 +172,9 @@ export class ReadService {
     return this.http
     .post<string[]>('/api/book/trophies', {trophies});
   }
+
+
+
 
   // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html
   shuffle<T>(array: T[]): T[] {

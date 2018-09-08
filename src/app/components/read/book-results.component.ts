@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { SessionData, ResultData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadService } from '../../services/read.service';
+import { zip } from 'rxjs';
 
 @Component({
   selector: 'km-sentences-results',
@@ -38,7 +39,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     console.log('resultsdata', this.data);
     this.newTrophies = [];
     this.isFinished = this.data.resultData.isFinished;
-    this.checkTrophies(this.data.resultData);
+    this.checkSessionTrophies(this.data);
     this.total = this.data.nrYes + this.data.nrMaybe + this.data.nrNo;
     if (this.total > 0) {
       this.percYes = Math.round(this.data.nrYes / this.total * 1000) / 10;
@@ -48,17 +49,41 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     this.points = this.data.points.finished + this.data.points.translations + this.data.points.words;
   }
 
-  private checkTrophies(resultData: ResultData) {
+  private checkSessionTrophies(data: SessionData) {
     // First check if trophies were earned in this session
-    const trophies: string[] = [];
+    const resultData = data.resultData,
+          readInSession = data.answers.length,
+          translations = data.translations,
+          trophies: string[] = [];
+    // # of sentences read in whole book
     if (resultData.isFinished) {
-      trophies.push('11');
+      trophies.push('01');
       if (resultData.totalBookSentences >= 100) {
-        trophies.push('12');
+        trophies.push('02');
       }
       if (resultData.totalBookSentences >= 1000) {
-        trophies.push('13');
+        trophies.push('03');
       }
+    }
+    // # of sentences read in this session
+    if (readInSession >= 10) {
+      trophies.push('11');
+    }
+    if (readInSession >= 50) {
+      trophies.push('12');
+    }
+    if (readInSession >= 200) {
+      trophies.push('13');
+    }
+    // # of translations in this session
+    if (translations >= 5) {
+      trophies.push('21');
+    }
+    if (translations >= 25) {
+      trophies.push('22');
+    }
+    if (translations >= 50) {
+      trophies.push('23');
     }
     if (trophies.length) {
       // If there are any, check which trophies were earned before
@@ -68,22 +93,36 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
 
   private getTrophies(trophiesThisSession: string[]) {
     this.readService
-    .fetchTrophies()
+    .fetchSessionTrophies()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (existingTrophies: Trophy[]) => {
-        const newTrophies: string[] = [];
-        console.log('saved trophies', existingTrophies);
+        this.getOverallTrophies(existingTrophies, trophiesThisSession);
+      }
+    );
+  }
+
+  private getOverallTrophies(existingTrophies: Trophy[], trophiesThisSession: string[]) {
+    zip(
+      this.readService.fetchOverallSessionTrophies(existingTrophies),
+      this.readService.fetchOverallThumbTrophies(existingTrophies)
+    )
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (data) => {
+        const newOverallSessionTrophies = data[0],
+              newOverallThumbTrophies = data[1],
+              newTrophies: string[] = newOverallSessionTrophies.concat(newOverallThumbTrophies);
         // The difference between existingTrophies and trophiesThisSession are new trophies
+        console.log('newTrophies1', newTrophies);
         let exists: Trophy;
         trophiesThisSession.forEach(trophy => {
-          console.log(trophy, existingTrophies[0]);
           exists = existingTrophies.find(eTrophy => eTrophy.trophy === trophy);
-          console.log('exists', exists);
           if (!exists) {
             newTrophies.push(trophy);
           }
         });
+        console.log('newTrophies2', newTrophies);
         // Save the new trophies and show them
         if (newTrophies.length) {
           this.saveTrophies(newTrophies);
