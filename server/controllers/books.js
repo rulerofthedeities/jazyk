@@ -165,7 +165,11 @@ module.exports = {
       case 'sentences0':
         options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
         break;
+      case 'newest0':
+        options['sort'] = {'dt.published': -1};
+        break;
     }
+    console.log(options['sort']);
     Book.find(query, projection, options, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching books', () => {
         response.handleSuccess(res, books);
