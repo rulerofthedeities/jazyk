@@ -14,7 +14,7 @@ var express = require('express'),
     prerender = require('prerender-node');
 
 // config
-app.set('port', process.env.PORT || 4802);
+app.set('port', process.env.PORT || 4800);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('token_expiration', 604800);// Token expires after 7 days
 

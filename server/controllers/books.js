@@ -456,10 +456,13 @@ module.exports = {
           translatorId = req.body.translatorId,
           translationId = req.body.translationId,
           translationElementId = req.body.translationElementId,
-          isOwnTranslation = userId.toString() === translationId.toString();
+          isOwnTranslation = userId.toString() === translatorId.toString();
           query = {userId, bookId, translationId, translationElementId},
           update = {$set: {up, isOwnTranslation}, $setOnInsert: {translatorId}},
           options = {upsert: true, new: true};
+    console.log('userId', userId);
+    console.log('translatorId', translatorId);
+    console.log('isOwnTranslation', isOwnTranslation);
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error saving thumb', function() {
         calculateWilsonScore(bookId, translationId, translationElementId);

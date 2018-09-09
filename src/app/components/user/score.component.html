@@ -22,6 +22,9 @@
           [tooltip]="text['trophy' + trophy.trophy] || ''"
           [tooltipPlacement]="'top'">
       </span>
+      <div *ngIf="!trophies.length">
+        {{text["NoTrophies"]}}
+      </div>
       <br>
       <button
         type="button"

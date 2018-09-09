@@ -58,7 +58,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   onKeyPressed(key: string) {
     switch (key) {
       case 'Enter':
-        if (this.translationEdit) {
+        if (this.translationEdit && !this.submitted) {
           this.addUpdateTranslation(this.translationEdit, this.translationNote || '');
         } else {
           this.nextSentence.emit();
