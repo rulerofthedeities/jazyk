@@ -47,8 +47,8 @@ chapterSchema.index({bookId: 1, sequence: 1}, {unique: true});
 const ChapterModel = mongoose.model('Bookchapter', chapterSchema);
 
 var translationSchema = new Schema({
-  translation: {type: String, required: true},
-  note: String,
+  translation: {type: String, required: true, trim: true},
+  note: {type: String, trim: true},
   lanCode: {type: String, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   created: {type: Date, default: new Date()},

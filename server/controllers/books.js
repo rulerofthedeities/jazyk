@@ -169,7 +169,6 @@ module.exports = {
         options['sort'] = {'dt.published': -1};
         break;
     }
-    console.log(options['sort']);
     Book.find(query, projection, options, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching books', () => {
         response.handleSuccess(res, books);
@@ -331,20 +330,23 @@ module.exports = {
   },
   addSession: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          sessionData = req.body.sessionData,
-          startDate = req.body.startDate;
+          sessionData = req.body.sessionData;
     sessionData.userId = userId;
-    sessionData.dt = setSessionDt(startDate);
+    sessionData.dt = {
+      start: Date.now(),
+      end: Date.now(),
+      diff: 0
+    }
     session = new Session(sessionData);
     session.save(function(err, result) {
       response.handleError(err, res, 400, 'Error saving new session data', function(){
-        response.handleSuccess(res, result._id);
+        response.handleSuccess(res, result);
       });
     });
   },
   updateSession: (req, res) => {
-    const sessionData = req.body.sessionData,
-          startDate = req.body.startDate;
+    const sessionData = req.body.sessionData;
+    console.log(sessionData);
     update = {$set: {
       answers: sessionData.answers,
       chapters: sessionData.chapters,
@@ -352,7 +354,8 @@ module.exports = {
       nrNo: sessionData.nrNo,
       nrMaybe: sessionData.nrMaybe,
       translations: sessionData.translations,
-      dt: setSessionDt(startDate),
+      'dt.end': Date.now(),
+      'dt.diff': (new Date().getTime() - new Date(sessionData.dt.start).getTime()) / 1000,
       points: sessionData.points
     }}
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {

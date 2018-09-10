@@ -156,7 +156,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private nextSentence() {
     this.getSentence();
-    if (this.sessionData.answers.length % this.saveFrequency === 0) {
+    if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
       this.placeBookmark(false);
       this.saveSessionData();
     }
@@ -430,9 +430,10 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       .saveSessionData(this.sessionData, this.startDate)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
-        id => {
-          if (!this.sessionData._id && id) {
-            this.sessionData._id = id;
+        (sessionData: SessionData) => {
+          if (!this.sessionData._id && sessionData._id) {
+            this.sessionData._id = sessionData._id;
+            this.sessionData.dt = sessionData.dt;
           }
           if (book) {
             this.startAnotherBook(book);
