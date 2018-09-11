@@ -101,15 +101,15 @@ export class ReadService {
 
   /*** Session data ***/
 
-  saveSessionData(sessionData: SessionData, startDate: Date): Observable<SessionData>  {
+  saveSessionData(sessionData: SessionData): Observable<SessionData>  {
     if (sessionData._id) {
       // Update session data
       return this.http
-      .put<SessionData>('/api/book/session', {sessionData, startDate});
+      .put<SessionData>('/api/book/session', {sessionData});
     } else {
       // New session data
       return this.http
-      .post<SessionData>('/api/book/session', {sessionData, startDate});
+      .post<SessionData>('/api/book/session', {sessionData});
     }
   }
 

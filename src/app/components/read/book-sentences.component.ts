@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
+import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
@@ -8,7 +8,7 @@ import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
-import { takeWhile, filter } from 'rxjs/operators';
+import { takeWhile, filter, delay } from 'rxjs/operators';
 import { LearnSettings } from '../../models/user.model';
 import { UserBook, Bookmark, SessionData,
          Book, Chapter, SentenceSteps } from '../../models/book.model';
@@ -44,7 +44,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   nextSentenceObservable: Subject<string> = new Subject();
   userLanCode: string;
   sessionData: SessionData;
-  startDate = new Date();
   msg: string;
   userId: string;
   @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
@@ -53,6 +52,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private platformLocation: PlatformLocation,
     private readService: ReadService,
     private sharedService: SharedService,
     private userService: UserService,
@@ -61,6 +61,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('init sentences');
     this.userId = this.userService.user._id.toString();
     this.settings = this.userService.user.jazyk.learn;
     this.chapterObservable = new BehaviorSubject<Chapter>(null);
@@ -134,6 +135,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       return '';
     }
   }
+
   private exitReading() {
     let abortNow = false;
     if (this.isCountDown) {
@@ -151,7 +153,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       this.sharedService.changeExerciseMode(false);
       this.router.navigate(['/read']);
     }
-
   }
 
   private nextSentence() {
@@ -176,6 +177,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         }
       }
     );
+    // If back button, show header
+    this.platformLocation.onPopState(() => {
+      console.log('pressed back!');
+      this.sharedService.changeExerciseMode(false);
+    });
   }
 
   private startAnotherBook(book: Book) {
@@ -198,7 +204,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.showReadMsg = false;
     this.sessionData = null;
     this.msg = null;
-    this.startDate = new Date();
     this.processNewBookId();
   }
 
@@ -232,12 +237,14 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private getBookId() {
+    console.log('getting book id');
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),
       filter(params => params.id))
     .subscribe(
       params => {
+        console.log('got book id', params['id']);
         this.bookId = params['id'];
         this.userLanCode = params['lan'];
         this.processNewBookId();
@@ -255,6 +262,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       .pipe(
         takeWhile(() => this.componentActive))
       .subscribe(res => {
+        console.log('got book data', res);
         this.text = this.utilsService.getTranslatedText(res[1]);
         const userBook = res[0];
         this.sessionData = {
@@ -279,18 +287,20 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
         }
-        this.getBook(this.bookId);
-        this.findCurrentChapter(userBook);
+        this.getBook(this.bookId, userBook);
       });
     }
   }
 
-  private getBook(bookId: string) {
+  private getBook(bookId: string, userBook: UserBook) {
+    console.log('getting book', bookId);
     this.readService
     .fetchBook(bookId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (book: Book) => {
+        this.findCurrentChapter(userBook);
+        console.log('got book', book);
         if (!book) {
           this.isError = true;
           this.msg = this.text['ItemNotAvailable'].replace('%s', `'${bookId}'`);
@@ -304,6 +314,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private findCurrentChapter(userBook: UserBook) {
+    console.log('find current chapter', userBook);
     if (userBook) {
       if (userBook.bookmark) {
         if (userBook.bookmark.isBookRead) {
@@ -325,11 +336,13 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private getChapter(bookId: string, bookmark: Bookmark, sequence: number) {
+    console.log('getting chapter');
     this.readService
     .fetchChapter(bookId, bookmark ? bookmark.chapterId : null, sequence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
+        console.log('got chapter');
         this.isLoading = false;
         if (chapter) {
           this.currentChapter = chapter;
@@ -427,7 +440,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private saveSessionData(book: Book = null) {
     if (this.sessionData.answers) {
       this.readService
-      .saveSessionData(this.sessionData, this.startDate)
+      .saveSessionData(this.sessionData)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (sessionData: SessionData) => {
@@ -451,6 +464,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('sentences destroyed');
     this.componentActive = false;
   }
 }

@@ -29,7 +29,7 @@
       (countedDown)="onCountDownFinished()">
     </km-countdown>
 
-    <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown">
+    <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown else loading">
       <div class="panel panel-default">
         <div class="panel-body">
           <div *ngIf="currentStep < steps.Results">
@@ -147,3 +147,10 @@
     <div message>{{text["ConfirmStopReading"]}}</div>
   </km-modal-confirm>
 </section>
+
+<ng-template #loading>
+    <km-loader
+      [msg]="''"
+      [showBackground]="false">
+    </km-loader>
+  </ng-template>
