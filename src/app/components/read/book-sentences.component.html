@@ -2,7 +2,7 @@
   <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
   </km-book-bullets>
-  <div *ngIf="readingStarted && !isError && !isLoading">
+  <div *ngIf="(readingStarted && !isError && !isLoading) else loading">
     <!-- READING MODE HEADER -->
     <div class="exercise-header">
       <span *ngIf="currentStep < steps.Results"
@@ -28,8 +28,7 @@
       [mute]="settings.mute"
       (countedDown)="onCountDownFinished()">
     </km-countdown>
-
-    <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown else loading">
+    <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown">
       <div class="panel panel-default">
         <div class="panel-body">
           <div *ngIf="currentStep < steps.Results">
@@ -149,8 +148,7 @@
 </section>
 
 <ng-template #loading>
-    <km-loader
-      [msg]="''"
-      [showBackground]="false">
-    </km-loader>
-  </ng-template>
+  <km-loader
+    [msg]="text['LoadingSentence'] || ''">
+  </km-loader>
+</ng-template>
