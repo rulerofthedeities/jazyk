@@ -52,11 +52,13 @@ export interface Book {
   lanCode: string;
   lanRegion: string;
   author: string;
+  author2: string;
   year: number;
   img: string;
   tpe: string;
   license: string;
   link: string;
+  link2: string;
   difficulty: Difficulty;
   isPublished: boolean;
   dt: BookDates;
