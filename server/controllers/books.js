@@ -346,7 +346,6 @@ module.exports = {
   },
   updateSession: (req, res) => {
     const sessionData = req.body.sessionData;
-    console.log(sessionData);
     update = {$set: {
       answers: sessionData.answers,
       chapters: sessionData.chapters,

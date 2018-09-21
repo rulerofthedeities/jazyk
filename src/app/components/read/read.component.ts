@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
 import { Language, Map, LicenseUrl } from '../../models/course.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
-import { takeWhile } from 'rxjs/operators';
+import { takeWhile, delay } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'read.component.html',
@@ -169,6 +169,7 @@ export class ReadComponent implements OnInit, OnDestroy {
       getLanguages: true,
       getLicenses: true
     };
+    this.isLoading = true;
     this.utilsService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))

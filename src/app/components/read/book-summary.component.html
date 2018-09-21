@@ -8,7 +8,7 @@
         <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
-        <span class="img-author" *ngIf="!book?.img">{{book.author}}{{book.author2 ? ' & ' + book.author2 : ''}}</span>
+        <span class="img-author" *ngIf="!book?.img">{{book.author}}{{!!book.author2 ? ' & ' + book.author2 : ''}}</span>
       </div>
       <div class="book">
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
@@ -35,11 +35,11 @@
             [text]="text">
           </km-book-tpe>
           {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span>
-          <span *ngIf="book.link">&nbsp;<a href="{{book.link}}" target="_blank">{{book.author}}</a></span>
+          <span *ngIf="!!book.link">&nbsp;<a href="{{book.link}}" target="_blank">{{book.author}}</a></span>
           <span *ngIf="!book.link">&nbsp;{{book.author}}</span>
-          <span *ngIf="book.link2">&nbsp;&&nbsp;<a href="{{book.link2}}" target="_blank">{{book.author2}}</a></span>
-          <span *ngIf="!book.link2">&nbsp;&&nbsp;{{book.author2}}</span>
-          <span *ngIf="book.year">&nbsp;({{book.year}})</span>
+          <span *ngIf="!!book.link2">&nbsp;&&nbsp;<a href="{{book.link2}}" target="_blank">{{book.author2}}</a></span>
+          <span *ngIf="!!book.author2 && !book.link2">&nbsp;&&nbsp;{{book.author2}}</span>
+          <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>
           <a *ngIf="licenseUrl" href="{{licenseUrl}}" target="_blank">
             <ng-container
               *ngTemplateOutlet="copyright;context:{
