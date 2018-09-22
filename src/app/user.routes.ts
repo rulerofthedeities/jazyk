@@ -1,10 +1,10 @@
-import {Routes} from '@angular/router';
-import {UserNotificationsComponent} from './components/user/notifications.component';
-import {UserMessagesComponent} from './components/user/messages.component';
-import {UserProfileComponent} from './components/user/profile.component';
-import {UserSettingsComponent} from './components/user/settings.component';
-import {UserScoreComponent} from './components/user/score.component';
-import {UserComponent} from './components/user/user.component';
+import { Routes } from '@angular/router';
+import { UserNotificationsComponent } from './components/user/notifications.component';
+import { UserMessagesComponent } from './components/user/messages.component';
+import { UserProfileComponent } from './components/user/profile.component';
+import { UserSettingsComponent } from './components/user/settings.component';
+import { UserScoreComponent } from './components/user/score.component';
+import { UserComponent } from './components/user/user.component';
 
 export const routes: Routes = [
   {

@@ -1,9 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'settings.component.html',

@@ -1,11 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Router} from '@angular/router';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {Profile} from '../../models/user.model';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { Profile } from '../../models/user.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'profile.component.html',

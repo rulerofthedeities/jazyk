@@ -1,12 +1,12 @@
-import {Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild} from '@angular/core';
-import {isDevMode} from '@angular/core';
-import {UserService} from '../services/user.service';
-import {UtilsService} from '../services/utils.service';
-import {ErrorService} from '../services/error.service';
-import {SharedService} from '../services/shared.service';
-import {EventMessage} from '../models/error.model';
-import {environment} from 'environments/environment';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { isDevMode } from '@angular/core';
+import { UserService } from '../services/user.service';
+import { UtilsService } from '../services/utils.service';
+import { ErrorService } from '../services/error.service';
+import { SharedService } from '../services/shared.service';
+import { EventMessage } from '../models/error.model';
+import { environment } from 'environments/environment';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-footer',

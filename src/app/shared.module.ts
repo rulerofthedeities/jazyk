@@ -12,15 +12,12 @@ import { ModalConfirmComponent } from './components/modals/modal-confirm.compone
 import { FieldMessagesComponent } from './components/msg/field-messages.component';
 import { UserComponent } from './components/user/user.component';
 import { UserCompactProfileComponent } from './components/user/compact-profile.component';
-import { UserCourseBarComponent } from './components/user/course-bar.component';
 import { MailFieldComponent } from './components/fields/message.component';
 import { GravatarDirective } from './directives/gravatar.directive';
 import { GetKeyPressDirective } from './directives/get-key-pressed.directive';
 import { ToggleComponent } from './components/fields/toggle.component';
 import { LoaderComponent } from './components/loader.component';
 import { BookSummaryComponent } from './components/read/book-summary.component';
-import { LearnCourseSummaryComponent } from './components/learn/course-summary.component';
-import { LearnCountdownComponent } from './components/learn/countdown.component';
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
@@ -42,15 +39,12 @@ import { BookTpeComponent } from './components/read/book-tpe.component';
     FieldMessagesComponent,
     UserComponent,
     UserCompactProfileComponent,
-    UserCourseBarComponent,
     MailFieldComponent,
     GravatarDirective,
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    LearnCourseSummaryComponent,
     BookSummaryComponent,
-    LearnCountdownComponent,
     ModalRanksComponent,
     ScorePipe,
     SanitizeHtmlPipe,
@@ -70,15 +64,12 @@ import { BookTpeComponent } from './components/read/book-tpe.component';
     FieldMessagesComponent,
     UserComponent,
     UserCompactProfileComponent,
-    UserCourseBarComponent,
     MailFieldComponent,
     GravatarDirective,
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    LearnCourseSummaryComponent,
     BookSummaryComponent,
-    LearnCountdownComponent,
     ModalRanksComponent,
     ScorePipe,
     SanitizeHtmlPipe,

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from './shared.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ReadnListenModule } from './readnlisten.module';
 
 import { ReadService } from './services/read.service';
 
@@ -23,7 +24,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
-    FormsModule
+    FormsModule,
+    ReadnListenModule
   ],
   providers: [
     ReadService,

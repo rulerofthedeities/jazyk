@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
-import {LogService} from '../services/log.service';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { LogService } from '../services/log.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-jazyk',

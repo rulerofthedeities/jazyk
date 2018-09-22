@@ -1,7 +1,7 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges} from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
-import { LicenseUrl } from '../../models/course.model';
+import { LicenseUrl } from '../../models/main.model';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';

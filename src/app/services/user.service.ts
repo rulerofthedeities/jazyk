@@ -3,32 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { config } from '../app.config';
 import { User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
-import { Language, Course, UserAccess, AccessLevel, UserCourse } from '../models/course.model';
-import { ExerciseData } from '../models/exercise.model';
-import { CourseScore, BookScore } from '../models/score.model';
+import { Language, UserAccess, AccessLevel } from '../models/main.model';
+import { BookScore } from '../models/score.model';
 import { UserBook, Trophy } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
-import { retry, delay, map, tap, takeWhile } from 'rxjs/operators';
-
-interface DemoData {
-  courseId: string;
-  lessonId: string;
-  lan: string;
-  study?: ExerciseData[];
-  practise?: ExerciseData[];
-}
-
-interface CourseData {
-  isDemo: boolean;
-  subscribed: Course[];
-  data: UserCourse[];
-}
+import { retry, tap, takeWhile } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
   private _user: User;
-  private demoData: DemoData;
   private subscription: Subscription;
   interfaceLanguageChanged = new Subject<string>();
   backgroundChanged = new EventEmitter<boolean>();
@@ -123,57 +107,6 @@ export class UserService {
     }
   }
 
-  // DEMO DATA
-
-  storeDemoData(data: ExerciseData[], step: string, courseId: string, lessonId: string) {
-    if (!this.demoData || this.demoData.courseId !== courseId || this.demoData.lessonId !== lessonId) {
-      const lan = data && data[0] ? data[0].exercise.foreign.region : '';
-      this.demoData = {courseId, lessonId, lan};
-    }
-    if (step === 'intro' || step === 'dialogue' || step === 'study' || step === 'practise') {
-      this.demoData[step] = data;
-    }
-  }
-
-  clearDemoData() {
-    this.demoData = {courseId: null, lessonId: null, lan: ''};
-  }
-
-  getDemoData(step: string, courseId: string): ExerciseData[] {
-    if (courseId && this.demoData && courseId === this.demoData.courseId) {
-      return this.demoData[step];
-    } else {
-      return null;
-    }
-  }
-
-  getDemoLessonId(courseId: string): string {
-    if (courseId && this.demoData && courseId === this.demoData.courseId) {
-      return this.demoData.lessonId;
-    } else {
-      return null;
-    }
-  }
-
-  getDemoCourseId(): string {
-    if (this.demoData && this.demoData.courseId) {
-      if (this.demoData['study'] || this.demoData['practise']) {
-        return this.demoData.courseId;
-      } else {
-        return null;
-      }
-    }
-  }
-
-  saveDemoResults(data: string): Observable<number> {
-    if (this.authService.isLoggedIn()) {
-      return this.http
-      .post<number>('/api/user/results/add', data);
-    } else {
-      return of(null);
-    }
-  }
-
   // ACCESS LEVELS
 
   hasAccessLevel(access: UserAccess[], level: AccessLevel): boolean {
@@ -209,14 +142,6 @@ export class UserService {
 
   updateUnreadMessagesCount(allUnread: boolean) {
     this.messageRead.emit(allUnread);
-  }
-
-  continueCourse(course: Course) {
-    // Check if it is a logged in user
-    if (this.authService.isLoggedIn() && this._user) {
-      this.updateUserDb(course.languagePair.to, null);
-      this._user.jazyk.learn.lan = course.languagePair.to;
-    }
   }
 
   getDefaultSettings(lan: string, isAnonymous: boolean): JazykConfig {
@@ -340,12 +265,6 @@ export class UserService {
     .pipe(retry(3));
   }
 
-  fetchScoreCourses(): Observable<CourseScore> {
-    return this.http
-    .get<CourseScore>('/api/user/score/courses')
-    .pipe(retry(3));
-  }
-
   fetchScoreBooks():  Observable<BookScore> {
     return this.http
     .get<BookScore>('/api/user/score/books')
@@ -379,18 +298,6 @@ export class UserService {
     userIds.join(',');
     return this.http
     .get<CompactProfile[]>('/api/user/profiles/' + userIds)
-    .pipe(retry(3));
-  }
-
-  getCoursesTeaching(userId: string): Observable<Course[]> {
-    return this.http
-    .get<Course[]>('/api/courses/teaching/' + userId)
-    .pipe(retry(3));
-  }
-
-  getCoursesFollowing(): Observable<CourseData> {
-    return this.http
-    .get<CourseData>('/api/user/courses/learn')
     .pipe(retry(3));
   }
 
@@ -453,15 +360,6 @@ export class UserService {
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
-  subscribeToCourse(course: Course) {
-    // Only subscribe if it is a loggedin user
-    if (this.authService.isLoggedIn() && this._user) {
-      const lan = course.languagePair.to;
-      this.updateUserDb(lan, course._id);
-      this.updateUserCache(lan);
-    }
-  }
-
   subscribeToBook(bookId: string, lanCode: string) {
     this.http
     .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode}))
@@ -471,17 +369,6 @@ export class UserService {
   unSubscribeFromBook(bookId: string, lanCode: string): Observable<UserBook> {
     return this.http
     .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode}));
-  }
-
-  subscribeToDemo(courseId: string) {
-    if (this.authService.isLoggedIn()) {
-      if (courseId && this.demoData && courseId === this.demoData.courseId) {
-        if (this.demoData.lan) {
-          this.updateUserDb(this.demoData.lan, courseId);
-          this.updateUserCache(this.demoData.lan);
-        }
-      }
-    }
   }
 
   fetchWelcomeNotification(user: User) {
@@ -533,35 +420,6 @@ export class UserService {
         this.user.main.myLan = lanCode;
       });
     }
-  }
-
-  private updateUserDb(lanCode: string, courseId: string, bookId: string = null) {
-    // subscribe + set learn language
-    // Update learning lan
-    if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
-      this.http
-      .patch('/api/user/lan/learn', JSON.stringify({lanCode}))
-      .subscribe(lan => {
-        this.user.jazyk.learn.lan = lanCode;
-      });
-    }
-    // Upsert course subscription
-    if (courseId) {
-      this.http
-      .post('/api/user/subscribe/course', JSON.stringify({courseId}))
-      .toPromise(); // not lazy
-    }
-    // Upsert book subscription
-    if (bookId) {
-      this.http
-      .post('/api/user/subscribe/book', JSON.stringify({bookId}))
-      .toPromise(); // not lazy
-    }
-  }
-
-  private updateUserCache(lan: string) {
-    // Add learn language to cached user data
-    this._user.jazyk.learn.lan = lan;
   }
 
   updateUserSettings(settings: LearnSettings) {

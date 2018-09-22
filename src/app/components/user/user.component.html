@@ -12,7 +12,7 @@
     </div>
     <!-- Follow / Unfollow button -->
     <div class="pull-right" *ngIf="!isCurrentUser && profile">
-      <button 
+      <button
         *ngIf="!isCurrentlyFollowing"
         type="button"
         class="btn btn-success"
@@ -41,8 +41,8 @@
       </div>
       <div class="col-xs-10 data">
         <div class="row " *ngIf="profile?.profile?.realName">
-          <label 
-            for="bio" 
+          <label
+            for="bio"
             class="control-label col-xs-3">
             {{text['RealName']}}
           </label>
@@ -51,8 +51,8 @@
           </div>
         </div>
         <div class="row" *ngIf="profile?.profile?.location">
-          <label 
-            for="location" 
+          <label
+            for="location"
             class="control-label col-xs-3">
             {{text['Location']}}
           </label>
@@ -61,8 +61,8 @@
           </div>
         </div>
         <div class="row" *ngIf="profile?.profile?.nativeLan">
-          <label 
-            for="language" 
+          <label
+            for="language"
             class="control-label col-xs-3">
             {{text['NativeLanguage']}}
           </label>
@@ -71,8 +71,8 @@
           </div>
         </div>
         <div class="row" *ngIf="profile?.profile?.bio">
-          <label 
-            for="bio" 
+          <label
+            for="bio"
             class="control-label col-xs-3">
             {{text['Bio']}}
           </label>
@@ -81,63 +81,8 @@
           </div>
         </div>
         <div class="row">
-          <label 
-            for="courses" 
-            class="control-label col-xs-3">
-            {{text['ProfileCourses']}}
-          </label>
-          <div class="col-xs-9">
-            {{text["Learning"]}}: {{courses.learning?.length || '-'}}
-            <button 
-              *ngIf="courses.learning?.length > 0 && !showCoursesLearning"
-              type="button"
-              class="btn btn-info btn-xs"
-              (click)="onShowCourses('learning')">
-              <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
-            </button>
-            <button *ngIf="showCoursesLearning"
-              type="button"
-              class="btn btn-warning btn-xs"
-              (click)="onCloseCourses('learning')">
-              <span class="fa fa-times"></span> {{text["Close"]}}
-            </button>
-            <div *ngIf="showCoursesLearning">
-              <div *ngFor="let course of courses.learning">
-                <km-course-bar
-                  [course]="course"
-                  [text]="text">
-                </km-course-bar>
-              </div>
-            </div>
-          </div>
-          <div class="col-xs-9 col-xs-offset-3">
-            {{text["Created"]}}:  {{courses.teaching?.length || '-'}}
-            <button 
-              *ngIf="courses.teaching?.length > 0 && !showCoursesTeaching"
-              type="button"
-              class="btn btn-info btn-xs"
-              (click)="onShowCourses('teaching')">
-              <span class="fa fa-eye"></span> {{text["ShowCourses"]}}
-            </button>
-            <button *ngIf="showCoursesTeaching"
-              type="button"
-              class="btn btn-warning btn-xs"
-              (click)="onCloseCourses('teaching')">
-              <span class="fa fa-times"></span> {{text["Close"]}}
-            </button>
-            <div *ngIf="showCoursesTeaching">
-              <div *ngFor="let course of courses.teaching">
-                <km-course-bar
-                  [course]="course"
-                  [text]="text">
-                </km-course-bar>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <label 
-            for="joinDate" 
+          <label
+            for="joinDate"
             class="control-label col-xs-3">
             {{text['JoinDate']}}
           </label>
@@ -146,8 +91,8 @@
           </div>
         </div>
         <div class="row" *ngIf="network">
-          <label 
-            for="network" 
+          <label
+            for="network"
             class="control-label col-xs-3">
             {{text['Network']}}
           </label>
@@ -173,7 +118,7 @@
                   [text]="text">
               </km-compact-profile>
               <div class="clearfix"></div>
-              <button 
+              <button
                 type="button"
                 class="btn btn-warning btn-xs"
                 (click)="onCloseNetwork()">

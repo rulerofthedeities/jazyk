@@ -4,11 +4,10 @@ import { UtilsService } from '../../services/utils.service';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { SummaryData, CommunicationData, RecentCourse, RecentBook } from '../../models/dashboard.model';
-import { CourseListType, LicenseUrl } from '../../models/course.model';
+import { SummaryData, CommunicationData, RecentBook } from '../../models/dashboard.model';
+import { LicenseUrl } from '../../models/main.model';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import * as moment from 'moment';
-import { zip } from 'rxjs';
 import { takeWhile, delay } from 'rxjs/operators';
 
 interface Communication {
@@ -32,13 +31,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private componentActive = true;
   summaryData: SummaryData;
   communications: Communication[];
-  recent: (RecentCourse|RecentBook)[];
+  recent: RecentBook[];
   isLoadingRecent = false;
   isLoadingCommunication = false;
   isLoadingOverview = false;
   recentReady = false;
   isError = false;
-  listType = CourseListType;
 
   constructor(
     private router: Router,
@@ -119,16 +117,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getRecent() {
     this.isLoadingRecent = true;
-    zip(
-      this.dashboardService.fetchRecentCourses(),
-      this.dashboardService.fetchRecentBooks()
-    )
+    this.dashboardService.fetchRecentBooks()
     .pipe(
       takeWhile(() => this.componentActive))
-    .subscribe(res => {
+    .subscribe(books => {
       this.isLoadingRecent = false;
-      // BOOKS data: userBook is key, not Book!
-      this.processRecent(res[0], res[1]);
+      this.processRecent(books);
       },
       error => this.errorService.handleError(error)
     );
@@ -148,17 +142,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  private processRecent(courses: RecentCourse[], books: RecentBook[]) {
-    let data: (RecentCourse|RecentBook)[] = courses;
+  private processRecent(books: RecentBook[]) {
+    // userBook is key, not Book!
     const publishedBooks = books.filter(b => b.book && b.book.isPublished); // filter out not published anymore
-    data = data.concat(publishedBooks);
-    // Sort courses and books
-    data = data.sort(function(a, b) {
+    const recentBooks = publishedBooks.sort(function(a, b) {
       const dtA = new Date(a.dt),
             dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
-    this.recent = data.slice(0, 5);
+    this.recent = recentBooks.slice(0, 5);
     this.recentReady = true;
   }
 

@@ -1,9 +1,9 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ValidationService} from '../../services/validation.service';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {takeWhile} from 'rxjs/operators';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidationService } from '../../services/validation.service';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-user-settings-password',

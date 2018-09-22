@@ -1,8 +1,8 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Page} from '../models/page.model';
-import {Observable} from 'rxjs';
-import {retry} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Page } from '../models/page.model';
+import { Observable } from 'rxjs';
+import { retry } from 'rxjs/operators';
 
 @Injectable()
 export class PageService {

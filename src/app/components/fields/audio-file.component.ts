@@ -1,6 +1,5 @@
-import {Component, OnChanges, Input} from '@angular/core';
-import {File} from '../../models/word.model';
-import {RegionAudio} from '../../models/exercise.model';
+import { Component, OnChanges, Input } from '@angular/core';
+import { RegionAudio } from '../../models/main.model';
 
 @Component({
   selector: 'km-audio-file',

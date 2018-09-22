@@ -1,4 +1,4 @@
-export enum SentenceSteps {Question, Answered, Translations, Results}
+export enum SentenceSteps { Question, Answered, Translations, Results }
 
 export interface Sentence {
   text: string;

@@ -1,19 +1,9 @@
-import {LanPair} from './course.model';
+import { LanPair } from './main.model';
 
-export interface SingleCourseScore {
-  course: string;
-  lan: LanPair;
-  points: number;
-}
 export interface SingleBookScore {
   book: string;
   lan: LanPair;
   points: number;
-}
-
-export interface CourseScore {
-  scores: SingleCourseScore[];
-  total: number;
 }
 
 export interface BookScore {

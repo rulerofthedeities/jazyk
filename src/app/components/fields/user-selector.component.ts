@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, Output, EventEmitter, HostListener, ElementRef} from '@angular/core';
-import {CompactProfile} from '../../models/user.model';
+import { Component, Input, OnInit, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { CompactProfile } from '../../models/user.model';
 
 @Component({
   selector: 'km-user-selector',

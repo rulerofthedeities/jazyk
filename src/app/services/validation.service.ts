@@ -1,6 +1,6 @@
-import {FormControl, FormGroup, FormArray, AbstractControl} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
-import {retry, delay, map} from 'rxjs/operators';
+import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 export class ValidationService {
 

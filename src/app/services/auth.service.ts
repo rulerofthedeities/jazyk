@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {CookieService, CookieOptions} from 'ngx-cookie';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {JwtHelperService} from '@auth0/angular-jwt';
-import {SharedService} from './shared.service';
-import {User} from '../models/user.model';
-import {Observable} from 'rxjs';
-import {retry} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService, CookieOptions } from 'ngx-cookie';
+import { HttpClient } from '@angular/common/http';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { SharedService } from './shared.service';
+import { User } from '../models/user.model';
+import { Observable } from 'rxjs';
+import { retry } from 'rxjs/operators';
 
 interface UserStorage {
   token: string;

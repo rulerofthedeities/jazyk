@@ -19,17 +19,6 @@
             <span class="fa fa-bars"></span>
           </a>
         </li>
-        <li *ngIf="isLoggedIn"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}"
-          class="desktop">
-          <a routerLink="/learn">
-            <span class="fa fa-list-alt"></span>
-            {{text["Learn"]}}
-            <span class="bar">
-            </span>
-          </a>
-        </li>
         <li routerLinkActive="active" class="desktop" *ngIf="isLoggedIn">
           <a routerLink="/read">
             <span class="fa fa-book"></span>
@@ -42,14 +31,6 @@
           <a class="inactive">
             <span class="fa fa-volume-up"></span>
             {{text["Listen"]}}
-            <span class="bar">
-            </span>
-          </a>
-        </li>
-        <li routerLinkActive="active" class="desktop" *ngIf="isLoggedIn">
-          <a routerLink="/build/courses">
-            <span class="fa fa-pencil"></span>
-            {{text["Teach"]}}
             <span class="bar">
             </span>
           </a>
@@ -196,21 +177,9 @@
         </a>
       </li>
       <li *ngIf="isLoggedIn">
-        <a routerLink="/read" (click)="onCloseMobileMenu()">
-          <span class="fa fa-book"></span>
-          {{text["Read"]}}
-        </a>
-      </li>
-      <li *ngIf="isLoggedIn">
         <a class="inactive">
           <span class="fa fa-volume-up"></span>
           {{text["Listen"]}}
-        </a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/build/courses" (click)="onCloseMobileMenu()">
-          <span class="fa fa-pencil"></span>
-          {{text["Teach"]}}
         </a>
       </li>
     </ul>

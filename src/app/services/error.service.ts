@@ -1,7 +1,7 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Error, UserError} from '../models/error.model';
-import {throwError} from 'rxjs';
+import { Injectable, EventEmitter } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Error, UserError } from '../models/error.model';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class ErrorService {
@@ -46,11 +46,6 @@ export class ErrorService {
         'nl': 'Fout: Ongekende foutcode (' + errorCode + ')',
         'en': 'Error: Unknown error code (' + errorCode + ')',
         'fr': 'Erreur: Code d\'erreur inconnu (' + errorCode + ')'
-      },
-      learn01 : {
-        'nl': 'Fout: De cursus met id "%s" kan niet gevonden worden',
-        'en': 'Error: The course with id "%s" cannot be found',
-        'fr': 'Erreur: Le cours avec le id "%s" ne peut être trouvé'
       }
     };
     let msg = 'unknown error';

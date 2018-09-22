@@ -4,7 +4,7 @@ import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { takeWhile } from 'rxjs/operators';
-import { LicenseUrl } from '../../models/course.model';
+import { LicenseUrl } from '../../models/main.model';
 
 @Component({
   templateUrl: 'home.component.html',

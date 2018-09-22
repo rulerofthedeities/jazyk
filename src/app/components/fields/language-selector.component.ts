@@ -1,5 +1,5 @@
-import {Component, Input, OnChanges, Output, EventEmitter, HostListener, ElementRef} from '@angular/core';
-import {Language} from '../../models/course.model';
+import { Component, Input, OnChanges, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { Language } from '../../models/main.model';
 
 @Component({
   selector: 'km-language-selector',

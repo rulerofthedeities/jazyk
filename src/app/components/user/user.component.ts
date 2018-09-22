@@ -1,17 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {SharedService} from '../../services/shared.service';
-import {PublicProfile, CompactProfile, Message, Followed, Follower, Network} from '../../models/user.model';
-import {Course} from '../../models/course.model';
-import {takeWhile, filter} from 'rxjs/operators';
-
-interface Courses {
-  learning: Course[];
-  teaching: Course[];
-}
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
+import { PublicProfile, CompactProfile, Message, Followed, Follower, Network } from '../../models/user.model';
+import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'user.component.html',
@@ -27,9 +21,6 @@ export class UserComponent implements OnInit, OnDestroy {
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
   isCurrentlyFollowed: boolean;
-  courses: Courses;
-  showCoursesLearning: boolean;
-  showCoursesTeaching: boolean;
   networkShown: boolean;
   messageShown: boolean;
   message: string;
@@ -110,24 +101,6 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  onShowCourses(tpe: string) {
-    this.infoMsg = '';
-    if (!this.courses[tpe]) {
-      this.fetchCourses(tpe, true);
-    } else {
-      this.showCourses(tpe);
-    }
-  }
-
-  onCloseCourses(tpe: string) {
-    this.infoMsg = '';
-    if (tpe === 'teaching') {
-      this.showCoursesTeaching = false;
-    } else {
-      this.showCoursesLearning = false;
-    }
-  }
-
   onShowNetwork() {
     this.infoMsg = '';
     this.showNetwork();
@@ -160,12 +133,6 @@ export class UserComponent implements OnInit, OnDestroy {
       follows: [],
       followed: []
     };
-    this.courses = {
-      learning: [],
-      teaching: []
-    };
-    this.showCoursesLearning = false;
-    this.showCoursesTeaching = false;
     this.networkShown = false;
     this.messageShown = false;
     this.infoMsg = '';
@@ -181,46 +148,6 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  private showCourses(tpe: string) {
-    if (tpe === 'teaching') {
-      this.showCoursesTeaching = true;
-    } else {
-      this.showCoursesLearning = true;
-    }
-  }
-
-  private fetchCourses(tpe: string, show = false) {
-    if (tpe === 'teaching') {
-      this.fetchCoursesTeaching(show);
-    } else {
-      this.fetchCoursesFollowing(show);
-    }
-  }
-
-  private fetchCoursesTeaching(show: boolean) {
-    this.userService
-    .getCoursesTeaching(this.profile._id)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      courses => {
-        this.courses.teaching = courses;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private fetchCoursesFollowing(show: boolean) {
-    this.userService
-    .getCoursesFollowing()
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      courseData => {
-        this.courses.learning = courseData.subscribed;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
   private fetchPublicProfile(user: string) {
     this.userService
     .getPublicProfile(user)
@@ -230,8 +157,6 @@ export class UserComponent implements OnInit, OnDestroy {
         this.isCurrentUser = this.userService.user._id === profile._id;
         this.profile = profile;
         this.fetchFollowers(profile._id);
-        this.fetchCourses('teaching');
-        this.fetchCourses('following');
       },
       error => {
         if (error.status === 404) {

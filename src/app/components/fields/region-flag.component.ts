@@ -1,11 +1,10 @@
-import {Component, Input} from '@angular/core';
-import {ExerciseWord} from '../../models/exercise.model';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'km-region-flag',
   template: `
     <img
-      src="/assets/img/flags/{{getRegion()}}.png"
+      src="/assets/img/flags/{{lan}}.png"
       class="flag"
       [class.thumb]="thumb" *ngIf="lan">
   `,
@@ -19,14 +18,5 @@ import {ExerciseWord} from '../../models/exercise.model';
 
 export class RegionFlagComponent {
   @Input() lan: string; // default lan for flag
-  @Input() word: ExerciseWord;
   @Input() thumb = false;
-
-  getRegion() {
-    if (this.word && this.word.region) {
-      return this.word.region;
-    } else {
-      return this.lan;
-    }
-  }
 }

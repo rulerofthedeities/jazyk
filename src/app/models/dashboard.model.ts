@@ -1,4 +1,3 @@
-import { Course } from './course.model';
 import { Message, Notification } from './user.model';
 import { Book, UserBook, TranslationData, UserData } from './book.model';
 
@@ -11,19 +10,12 @@ interface Learning {
 
 export interface SummaryData {
   score: number;
-  coursesLearning: Learning;
   booksReading: Learning;
 }
 
 export interface CommunicationData {
   messages: Message[];
   notifications: Notification[];
-}
-
-export interface RecentCourse {
-  dt: Date;
-  course: Course;
-  tpe: string;
 }
 
 export interface RecentBook {

@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
-import {ErrorService} from '../../services/error.service';
-import {Error} from '../../models/error.model';
-import {takeWhile} from 'rxjs/operators';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { ErrorService } from '../../services/error.service';
+import { Error } from '../../models/error.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-error-msg',

@@ -5,7 +5,7 @@ import { UtilsService } from '../../services/utils.service';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
 import { Trophy } from '../../models/book.model';
-import { SingleBookScore, SingleCourseScore } from '../../models/score.model';
+import { SingleBookScore } from '../../models/score.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -16,16 +16,13 @@ import { takeWhile } from 'rxjs/operators';
 export class UserScoreComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
-  courseScores: SingleCourseScore[] = [];
   bookScores: SingleBookScore[] = [];
-  courseTotal: number;
   bookTotal: number;
   rank: number;
   gender: string;
   trophies: Trophy[] = [];
   loadingTrophies: boolean;
   loadingBookScores: boolean;
-  loadingCourseScores: boolean;
 
   constructor(
     private utilsService: UtilsService,
@@ -35,7 +32,6 @@ export class UserScoreComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTranslations();
-    this.getCourseScores();
     this.getBookScores();
     this.getTrophies();
   }
@@ -48,23 +44,6 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     trophiesModal.showModal = true;
   }
 
-  private getCourseScores() {
-    this.loadingCourseScores = true;
-    this.userService
-    .fetchScoreCourses()
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      data => {
-        this.courseScores = data.scores;
-        this.courseTotal = data.total || 0;
-        this.gender = this.userService.user.main.gender || 'm';
-        this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
-        this.loadingCourseScores = false;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
   private getBookScores() {
     this.loadingBookScores = true;
     this.userService
@@ -75,7 +54,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.bookScores = data.scores.filter(score => score.points > 0);
         this.bookTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
-        this.rank = this.utilsService.getRank(this.courseTotal + this.bookTotal);
+        this.rank = this.utilsService.getRank(this.bookTotal);
         this.loadingBookScores = false;
       },
       error => this.errorService.handleError(error)

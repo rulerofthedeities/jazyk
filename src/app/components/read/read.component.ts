@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { UtilsService } from '../../services/utils.service';
-import { Language, Map, LicenseUrl } from '../../models/course.model';
+import { Language, Map, LicenseUrl } from '../../models/main.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile, delay } from 'rxjs/operators';
 
@@ -13,14 +13,14 @@ import { takeWhile, delay } from 'rxjs/operators';
 
 export class ReadComponent implements OnInit, OnDestroy {
   private componentActive = true;
+  private userLanguages: Language[];
+  private books: Book[];
   text: Object = {};
   bookLanguage: Language;
   myLanguage: Language;
   bookLanguages: Language[];
   licenses: LicenseUrl[];
-  private userLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
-  private books: Book[];
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};

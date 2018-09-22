@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
-import {filter} from 'rxjs/operators';
-import {UtilsService} from '../services/utils.service';
+import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { UtilsService } from '../services/utils.service';
 
 @Component({
   template: `

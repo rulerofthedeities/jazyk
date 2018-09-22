@@ -1,10 +1,10 @@
-import {Component, OnInit, OnDestroy, ViewChild, HostListener, ElementRef} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UserService} from '../../services/user.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {Notification} from '../../models/user.model';
-import {takeWhile, filter} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, HostListener, ElementRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { Notification } from '../../models/user.model';
+import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'notifications.component.html',

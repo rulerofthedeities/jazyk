@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {UtilsService} from '../../services/utils.service';
-import {UserService} from '../../services/user.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { UtilsService } from '../../services/utils.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'km-modal-ranks',

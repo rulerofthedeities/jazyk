@@ -1,5 +1,4 @@
-import {Directive, ElementRef, Input, OnInit} from '@angular/core';
-import * as md5 from 'md5';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[kmGravatar]'

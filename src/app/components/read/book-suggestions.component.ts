@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
-import { Map } from '../../models/course.model';
-import { Book, UserBook, UserData } from '../../models/book.model';
+import { Map } from '../../models/main.model';
+import { Book, UserBook } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip, Subject } from 'rxjs';
 

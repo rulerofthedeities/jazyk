@@ -1,19 +1,9 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { Map } from '../../models/course.model';
+import { Map } from '../../models/main.model';
 import { SentenceTranslation, Thumbs } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-
-/*
-interface Thumbs {
-  up: number;
-  down: number;
-  thumb: string;
-  savingUp: boolean; // clicked up, saving now
-  savingDown: boolean; // clicked down, saving now
-}
-*/
 
 @Component({
   selector: 'km-sentence-translations',

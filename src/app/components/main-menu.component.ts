@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
-import {UtilsService} from '../services/utils.service';
-import {UserService} from '../services/user.service';
-import {SharedService} from '../services/shared.service';
-import {AuthService} from '../services/auth.service';
-import {ErrorService} from '../services/error.service';
-import {User} from '../models/user.model';
-import {Language} from '../models/course.model';
-import {timer} from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { UtilsService } from '../services/utils.service';
+import { UserService } from '../services/user.service';
+import { SharedService } from '../services/shared.service';
+import { AuthService } from '../services/auth.service';
+import { ErrorService } from '../services/error.service';
+import { User } from '../models/user.model';
+import { Language } from '../models/main.model';
+import { timer } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-main-menu',

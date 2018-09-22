@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
-import { SessionData, ResultData, Trophy } from '../../models/book.model';
+import { SessionData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadService } from '../../services/read.service';
 import { zip } from 'rxjs';

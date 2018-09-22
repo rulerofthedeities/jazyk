@@ -33,7 +33,6 @@ export interface Profile {
 
 export interface PublicProfile {
   profile: Profile;
-  courses: string[];
   userName: string;
   dtJoined: Date;
   emailHash: string;
@@ -56,7 +55,6 @@ interface AppDates {
 }
 
 export interface JazykConfig {
-  courses?: string[];
   learn: LearnSettings;
   profile: Profile;
   dt: AppDates;

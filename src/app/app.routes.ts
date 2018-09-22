@@ -5,7 +5,6 @@ import { UserComponent } from './components/user/user.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
-import { CanDeactivateGuard } from './guards/deacivate.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -22,16 +21,6 @@ export const routes: Routes = [
       {
         path: 'auth',
         loadChildren: './auth.module#AuthModule'
-      },
-      {
-        path: 'learn',
-        loadChildren: './learn.module#LearnModule',
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'build',
-        loadChildren: './build.module#BuildModule',
-        canActivate: [AuthGuard]
       },
       {
         path: 'read',

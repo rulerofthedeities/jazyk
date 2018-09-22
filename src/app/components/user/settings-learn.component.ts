@@ -1,10 +1,10 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../services/user.service';
-import {UtilsService} from '../../services/utils.service';
-import {ErrorService} from '../../services/error.service';
-import {LearnSettings} from '../../models/user.model';
-import {takeWhile} from 'rxjs/operators';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { UtilsService } from '../../services/utils.service';
+import { ErrorService } from '../../services/error.service';
+import { LearnSettings } from '../../models/user.model';
+import { takeWhile } from 'rxjs/operators';
 
 interface FormData {
   nrofwords: number[];

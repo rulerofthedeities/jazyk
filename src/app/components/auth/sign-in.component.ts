@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
-import {ErrorService} from '../../services/error.service';
-import {UtilsService} from '../../services/utils.service';
-import {UserService} from '../../services/user.service';
-import {SharedService} from '../../services/shared.service';
-import {ValidationService} from '../../services/validation.service';
-import {User} from '../../models/user.model';
-import {takeWhile} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { ErrorService } from '../../services/error.service';
+import { UtilsService } from '../../services/utils.service';
+import { UserService } from '../../services/user.service';
+import { SharedService } from '../../services/shared.service';
+import { ValidationService } from '../../services/validation.service';
+import { User } from '../../models/user.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'sign-in.component.html',

@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, OnChanges, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
-import {CompactProfile} from '../../models/user.model';
-import {UserService} from '../../services/user.service';
-import {takeWhile} from 'rxjs/operators';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { CompactProfile } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-compact-profile',

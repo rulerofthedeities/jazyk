@@ -1,11 +1,11 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Title} from '@angular/platform-browser';
-import {Language, LanPair, Step, Level, DependableOptions} from '../models/course.model';
-import {appTitle, awsPath} from './shared.service';
-import {Observable} from 'rxjs';
-import {Course, Translation, Dependables} from '../models/course.model';
-import {retry, delay, map} from 'rxjs/operators';
+import { Injectable, EventEmitter } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
+import { Language, DependableOptions } from '../models/main.model';
+import { appTitle } from './shared.service';
+import { Observable } from 'rxjs';
+import { Translation, Dependables } from '../models/main.model';
+import { retry } from 'rxjs/operators';
 
 @Injectable()
 export class UtilsService {
@@ -81,25 +81,6 @@ export class UtilsService {
     return text;
   }
 
-  insertKey(inputElement: any, key: string) {
-    if (inputElement) {
-      // Inserts letter from virtual keyboard the current field
-      inputElement.focus();
-      // Set new value
-      const start: number = inputElement.selectionStart,
-            end: number = inputElement.selectionEnd,
-            value: string = inputElement.value,
-            left = value ? value.substring(0, start) : '',
-            right = value ? value.substr(end, value.length - end) : '',
-            newValue = left + key + right,
-            newPosition = left.length + key.length;
-      inputElement.value = newValue;
-      // Set new cursor position
-      inputElement.selectionStart = newPosition;
-      inputElement.selectionEnd = newPosition;
-    }
-  }
-
   getRank(score: number): number {
     let i;
     for (i = 0; i < this._rankScores.length && score >= this._rankScores[i]; i++) {}
@@ -108,23 +89,6 @@ export class UtilsService {
 
   get rankScores(): number[] {
     return this._rankScores;
-  }
-
-  getDefaultCourseImagePath(course: Course): string {
-    const from = course.languagePair.from,
-          path = awsPath + 'images/courses/default/',
-          regionTo = this.getRegionTo(course);
-    return 'https://' + path + from + '-' + regionTo + '-course.jpg';
-  }
-
-  getRegionTo(course: Course): string {
-    if (course) {
-      if (course.defaults) {
-        return course.defaults.region || course.languagePair.to;
-      } else {
-        return course.languagePair.to;
-      }
-    }
   }
 
   getAllLanguage(): Language {
@@ -164,59 +128,6 @@ export class UtilsService {
       'abbreviation',
       'wordpart',
       'article'
-    ];
-  }
-
-  getSteps(): Step[] {
-    return [
-      {
-        name: 'overview',
-        level: Level.Lesson,
-        alwaysShown: true,
-        hasCounter: false
-      },
-      {
-        name: 'intro',
-        level: Level.Lesson,
-        alwaysShown: false,
-        hasCounter: false
-      },
-      {
-        name: 'dialogue',
-        level: Level.Lesson,
-        alwaysShown: false,
-        hasCounter: false
-      },
-      {
-        name: 'study',
-        level: Level.Lesson,
-        alwaysShown: false,
-        hasCounter: true
-      },
-      {
-        name: 'practise',
-        level: Level.Lesson,
-        alwaysShown: false,
-        hasCounter: true
-      },
-      {
-        name: 'exam',
-        level: Level.Course,
-        alwaysShown: false,
-        hasCounter: true
-      },
-      {
-        name: 'difficult',
-        level: Level.Course,
-        alwaysShown: true,
-        hasCounter: true
-      },
-      {
-        name: 'review',
-        level: Level.Course,
-        alwaysShown: true,
-        hasCounter: true
-      }
     ];
   }
 

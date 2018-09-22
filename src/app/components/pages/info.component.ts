@@ -1,13 +1,13 @@
-import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Meta} from '@angular/platform-browser';
-import {PageService} from '../../services/page.service';
-import {UserService} from '../../services/user.service';
-import {UtilsService} from '../../services/utils.service';
-import {AuthService} from '../../services/auth.service';
-import {ErrorService} from '../../services/error.service';
-import {Page} from '../../models/page.model';
-import {takeWhile, filter} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
+import { PageService } from '../../services/page.service';
+import { UserService } from '../../services/user.service';
+import { UtilsService } from '../../services/utils.service';
+import { AuthService } from '../../services/auth.service';
+import { ErrorService } from '../../services/error.service';
+import { Page } from '../../models/page.model';
+import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
   template: `
