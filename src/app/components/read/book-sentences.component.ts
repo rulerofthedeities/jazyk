@@ -3,13 +3,12 @@ import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
-import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ModalConfirmComponent } from '../modals/modal-confirm.component';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
-import { LearnSettings } from '../../models/user.model';
+import { ReadSettings } from '../../models/user.model';
 import { UserBook, Bookmark, SessionData,
          Book, Chapter, SentenceSteps } from '../../models/book.model';
 
@@ -22,7 +21,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private componentActive = true;
   private bookId: string;
   private saveFrequency = 3;
-  settings: LearnSettings;
+  settings: ReadSettings;
   text: Object = {};
   book: Book;
   isCountDown = false;
@@ -61,7 +60,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userId = this.userService.user._id.toString();
-    this.settings = this.userService.user.jazyk.learn;
+    this.settings = this.userService.user.jazyk.read;
     this.chapterObservable = new BehaviorSubject<Chapter>(null);
     this.sentenceNrObservable = new BehaviorSubject<number>(null);
     this.getBookId();

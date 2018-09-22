@@ -9,18 +9,15 @@ export interface MainSettings {
   gender: string;
 }
 
-export interface LearnSettings {
+export interface ReadSettings {
   lan: string;
-  nrOfWordsStudy: number;
-  nrOfWordsLearn: number;
-  nrOfWordsReview: number;
-  nrOfWordsStudyRepeat: number;
-  nrOfWordsLearnRepeat: number;
   countdown: boolean;
-  mute: boolean;
-  color: boolean;
-  delay: number; // # of seconds before local word appears
-  keyboard: boolean;
+  delay: number; // countdown
+}
+
+export interface AppSettings {
+  main: MainSettings;
+  read: ReadSettings;
 }
 
 export interface Profile {
@@ -55,7 +52,7 @@ interface AppDates {
 }
 
 export interface JazykConfig {
-  learn: LearnSettings;
+  read: ReadSettings;
   profile: Profile;
   dt: AppDates;
 }

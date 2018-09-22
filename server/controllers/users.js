@@ -21,9 +21,7 @@ var addUser = function(body, callback) {
           password: hash.toString('base64'),
           email: body.email.toLowerCase(),
           main: body.main,
-          jazyk: body.jazyk,
-          vocabulator: {learnLan: body.vocabulator.learnLan},
-          grammator: {learnLan: body.grammator.learnLan}
+          jazyk: body.jazyk
         });
     user.save(function(err, result) {
       setEmailHash(result);
@@ -41,7 +39,7 @@ var findUser = function(body, expiresIn, callback) {
           email: 1,
           password: 1,
           main: 1,
-          'jazyk.learn': 1
+          'jazyk.read': 1
         };
 
   User.findOne(query, projection, function (err, doc) {
@@ -119,7 +117,7 @@ var getUserData = function(userId, callback) {
           email: 1,
           userName: 1,
           main: 1,
-          'jazyk.learn': 1
+          'jazyk.read': 1
         };
   User.findOne(query, projection, function(err, doc) {
     setEmailHash(doc);
@@ -204,34 +202,17 @@ module.exports = {
       });
     })
   },
-  getLearnSettings: function(req, res) {
+  saveSettings: function(req, res) {
     const userId = req.decoded.user._id,
+          mainSettings = req.body.main,
+          readSettings = req.body.read,
           query = {_id: userId},
-          projection = {_id: 0, 'jazyk.learn': 1};
-    User.findOne(query, projection, function(err, result) {
-      response.handleError(err, res, 400, 'Error fetching learn settings', function(){
-        response.handleSuccess(res, result.jazyk.learn);
-      });
-    });
-  },
-  saveLearnSettings: function(req, res) {
-    const userId = req.decoded.user._id,
-          settings = req.body,
-          query = {_id: userId},
-          updateObj = {$set: {'jazyk.learn': settings}};
+          updateObj = {$set: {
+            'main': mainSettings,
+            'jazyk.read': readSettings}
+          };
     User.findOneAndUpdate(query, updateObj, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating learn settings', function(){
-        response.handleSuccess(res, true);
-      });
-    });
-  },
-  saveMainSettings: function(req, res) {
-    const userId = req.decoded.user._id,
-          settings = req.body,
-          query = {_id: userId},
-          updateObj = {$set: {'main': settings}};
-    User.findOneAndUpdate(query, updateObj, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating main settings', function(){
+      response.handleError(err, res, 400, 'Error updating settings', function(){
         response.handleSuccess(res, true);
       });
     });
@@ -282,12 +263,12 @@ module.exports = {
       response.handleError(err, res, 400, err);
     }
   },
-  updateLearnLan: function(req, res) {
+  updateReadLan: function(req, res) {
     const userId = req.decoded.user._id,
           data = req.body,
-          update = {'$set': {'jazyk.learn.lan': data.lanCode}};
+          update = {'$set': {'jazyk.read.lan': data.lanCode}};
     User.findByIdAndUpdate(userId, update, function(err, result) {
-      response.handleError(err, res, 400, 'Error updating learn lan', function(){
+      response.handleError(err, res, 400, 'Error updating read lan', function(){
         response.handleSuccess(res, result);
       });
     });

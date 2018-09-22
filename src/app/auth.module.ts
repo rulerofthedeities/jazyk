@@ -9,10 +9,10 @@ import { SignInComponent } from './components/auth/sign-in.component';
 
 @NgModule({
   imports: [
-    SharedModule,
     RouterModule.forChild(routes),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   providers: [
     ValidationService

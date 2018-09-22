@@ -57,6 +57,44 @@
       </km-toggle>
     </div>
   </div>
+  <!-- Countdown -->
+  <div class="form-group">
+    <label
+      for="countdown"
+      class="control-label col-xs-4">
+      {{text["Countdown"]}}
+    </label>
+    <div class="col-xs-8">
+      <km-toggle id="countdown"
+        [toggle]="mainForm.value.countDown"
+        (toggled)="onSetFlag('countDown', $event)">
+      </km-toggle>
+    </div>
+  </div>
+  <!-- Delay -->
+  <div class="form-group" *ngIf="mainForm.value.countDown">
+    <label
+      for="delay"
+      class="control-label col-xs-4">
+    </label>
+    <div class="col-xs-8">
+      <div class="input-group ig-fixed">
+        <select
+          class="form-control"
+          id="delay"
+          formControlName="delay">
+          <option
+            *ngFor="let nr of formData.delays"
+            [value]="nr">
+            {{nr}}
+          </option>
+        </select>
+        <span class="input-group-addon">
+          {{mainForm.value.delay.toString() === "1" ? text["second"] : text["seconds"]}}
+        </span>
+      </div>
+    </div>
+  </div>
   <!-- Gender -->
   <div class="form-group">
     <label

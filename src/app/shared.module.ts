@@ -1,9 +1,8 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { TooltipModule } from 'ngx-tooltip';
-import { UtilsService } from './services/utils.service';
 
 import { ErrorMessageComponent } from './components/msg/error-message.component';
 import { InfoMessageComponent } from './components/msg/info-message.component';
@@ -29,7 +28,7 @@ import { BookTpeComponent } from './components/read/book-tpe.component';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    TooltipModule
+    TooltipModule,
   ],
   declarations: [
     ErrorMessageComponent,
@@ -50,9 +49,6 @@ import { BookTpeComponent } from './components/read/book-tpe.component';
     SanitizeHtmlPipe,
     PieChartComponent,
     BookTpeComponent
-  ],
-  providers: [
-    UtilsService
   ],
   exports: [
     CommonModule,
@@ -77,13 +73,4 @@ import { BookTpeComponent } from './components/read/book-tpe.component';
     BookTpeComponent
   ]
 })
-export class SharedModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: SharedModule,
-      providers: [
-        UtilsService
-      ]
-    };
-  }
-}
+export class SharedModule {}

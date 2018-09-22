@@ -28,7 +28,7 @@
           </a>
         </li>
         <li class="desktop" *ngIf="isLoggedIn">
-          <a class="inactive">
+          <a routerLink="/listen">
             <span class="fa fa-volume-up"></span>
             {{text["Listen"]}}
             <span class="bar">
@@ -171,13 +171,13 @@
   <nav *ngIf="showMobileMenu" class="navbar-mobile navbar-fixed-top">
     <ul class="nav nav-pills nav-stacked mobile">
       <li *ngIf="isLoggedIn">
-        <a routerLink="/learn" (click)="onCloseMobileMenu()">
+        <a routerLink="/read" (click)="onCloseMobileMenu()">
           <span class="fa fa-list-alt"></span>
-          {{text["Learn"]}}
+          {{text["Read"]}}
         </a>
       </li>
       <li *ngIf="isLoggedIn">
-        <a class="inactive">
+        <a routerLink="/listen" (click)="onCloseMobileMenu()">
           <span class="fa fa-volume-up"></span>
           {{text["Listen"]}}
         </a>

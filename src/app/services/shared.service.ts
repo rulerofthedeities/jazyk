@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { EventMessage } from '../models/error.model';
@@ -9,6 +10,7 @@ import { retry } from 'rxjs/operators';
 export const appTitle = 'Jazyk';
 export const awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
 
+@Injectable()
 export class SharedService {
   private eventMessages: EventMessage[] = [];
   private messageLimit = 10;

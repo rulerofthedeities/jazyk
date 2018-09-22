@@ -2,10 +2,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     mongooseUniqueValidator = require('mongoose-unique-validator');
 
-var appSchema = new Schema({
-  learnLan: {type: String, required: true},
-}, {_id : false});
-
 var mainSchema = new Schema({
   lan: {type: String, required: true},
   myLan: String,
@@ -13,18 +9,10 @@ var mainSchema = new Schema({
   gender: String
 }, {_id : false});
 
-var jazykLearnSchema = new Schema({
+var jazykReadSchema = new Schema({
   lan: {type: String, required: true},
-  nrOfWordsStudy: Number,
-  nrOfWordsLearn: Number,
-  nrOfWordsReview: Number,
-  nrOfWordsStudyRepeat: Number,
-  nrOfWordsLearnRepeat: Number,
   countdown: Boolean,
-  mute: Boolean,
-  color: Boolean,
-  delay: Number,
-  keyboard: Boolean
+  delay: Number
 }, {_id : false});
 
 var JazykProfileSchema = new Schema({
@@ -41,7 +29,7 @@ var dtSchema = new Schema({
 }, {_id : false});
 
 var jazykSchema = new Schema({
-  learn: {type: jazykLearnSchema, required: true},
+  read: {type: jazykReadSchema, required: true},
   profile: {type: JazykProfileSchema, required: true},
   dt: dtSchema
 }, {_id : false});
@@ -53,8 +41,6 @@ var userSchema = new Schema({
   main: {type: mainSchema, required: true},
   emailHash: {type: String},
   jazyk: jazykSchema,
-  vocabulator: appSchema,
-  grammator: appSchema,
   dtCreated: {type: Date, default: Date.now}
 });
 

@@ -4,27 +4,19 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { Language } from '../../models/main.model';
-import { MainSettings } from '../../models/user.model';
+import { MainSettings, ReadSettings, AppSettings } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
 interface FormData {
   lans: Language[];
   myLans: Language[];
+  delays: number[];
 }
 
 @Component({
   selector: 'km-user-settings-main',
   templateUrl: 'settings-main.component.html',
-  styles: [`
-    .gender {
-      font-size: 24px;
-      color: grey;
-      cursor: pointer;
-    }
-    .gen-selected {
-      color: green;
-    }
-  `]
+  styleUrls: ['settings-main.component.css']
 })
 
 export class UserSettingsMainComponent implements OnInit, OnDestroy {
@@ -64,7 +56,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   onUpdateSettings(form: any) {
     if (form.valid) {
       const settings = this.buildSettings(form.value);
-      this.updateMainSettings(settings);
+      this.updateSettings(settings);
     }
   }
 
@@ -75,47 +67,59 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
+    const user = this.userService.user;
     this.mainForm = this.formBuilder.group({
-      'lan': [this.userService.user.main.lan],
-      'myLan': [this.userService.user.main.myLan || this.userService.user.main.lan],
-      'background': [this.userService.user.main.background],
-      'gender': [this.userService.user.main.gender]
+      lan: [user.main.lan],
+      myLan: [user.main.myLan || user.main.lan],
+      background: [user.main.background],
+      gender: [user.main.gender],
+      countDown: [user.jazyk.read.countdown],
+      delay: [user.jazyk.read.delay || 3],
     });
   }
 
-  private updateMainSettings(settings: MainSettings) {
+  private updateSettings(settings: AppSettings) {
     this.userService
-    .saveMainSettings(settings)
+    .saveSettings(settings)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
         this.infoMsg = this.text['SettingsUpdated'];
         this.mainForm.markAsPristine();
-        if (this.userService.user.main.lan !== settings.lan) {
-          this.userService.interfaceLanChanged(settings.lan);
+        if (this.userService.user.main.lan !== settings.main.lan) {
+          this.userService.interfaceLanChanged(settings.main.lan);
         }
-        if (this.userService.user.main.background !== settings.background) {
-          this.userService.backgroundImgChanged(settings.background);
+        if (this.userService.user.main.background !== settings.main.background) {
+          this.userService.backgroundImgChanged(settings.main.background);
         }
-        this.userService.user.main = settings;
+        this.userService.user.main = settings.main;
+        this.userService.user.jazyk.read = settings.read;
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private buildSettings(formValues: any): MainSettings {
+  private buildSettings(formValues: any): {main: MainSettings, read: ReadSettings} {
     return {
-      lan: formValues['lan'],
-      myLan: formValues['myLan'],
-      background: formValues['background'],
-      gender: formValues['gender']
+      main: {
+        lan: formValues['lan'],
+        myLan: formValues['myLan'],
+        background: formValues['background'],
+        gender: formValues['gender']
+      },
+      read: {
+        lan: this.userService.user.jazyk.read.lan,
+        countdown: formValues['countDown'],
+        delay: formValues['delay']
+      }
     };
   }
 
   private setFormData() {
     this.formData = {
       lans: this.interfaceLanguages,
-      myLans: this.myLanguages
+      myLans: this.myLanguages,
+      delays: [1, 2, 3, 5, 9]
     };
   }
 

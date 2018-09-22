@@ -27,11 +27,6 @@
         <span class="fa fa-cog"></span> {{text["Main"]}}
       </li>
       <li class="list-group-item"
-        (click)="onChangeTab('config')"
-        [class.active]="tab==='config'">
-        <span class="fa fa-book"></span> {{text["ReadnListen"]}}
-      </li>
-      <li class="list-group-item"
         (click)="onChangeTab('password')"
         [class.active]="tab==='password'">
         <span class="fa fa-key"></span> {{text["Password"]}}
@@ -49,11 +44,6 @@
     </ul>
     <div [ngSwitch]="tab">
       <!-- CONFIG TAB -->
-      <div *ngSwitchCase="'config'">
-        <km-user-settings-read
-          [text]="text">
-        </km-user-settings-read>
-      </div>
       <div *ngSwitchCase="'main'">
         <km-user-settings-main
           [text]="text">

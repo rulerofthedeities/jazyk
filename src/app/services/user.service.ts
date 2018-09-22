@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { config } from '../app.config';
-import { User, LearnSettings, MainSettings, JazykConfig, CompactProfile,
+import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
@@ -47,11 +47,11 @@ export class UserService {
     }
   }
 
-  getUserLearnLanguage(languages: Language[]): Language {
+  getUserReadLanguage(languages: Language[]): Language {
     let learnLan: Language;
     if (this._user.jazyk) {
       // Get language currently learning
-      const userLan = this._user.jazyk.learn.lan;
+      const userLan = this._user.jazyk.read.lan;
       learnLan = languages.find(lan => lan.code === userLan);
     }
     if (!learnLan && languages.length) {
@@ -146,18 +146,10 @@ export class UserService {
 
   getDefaultSettings(lan: string, isAnonymous: boolean): JazykConfig {
     return {
-      learn: {
+      read: {
         lan: lan,
         countdown: true,
-        nrOfWordsStudy: 5,
-        nrOfWordsLearn: 5,
-        nrOfWordsReview: 10,
-        nrOfWordsStudyRepeat: 10,
-        nrOfWordsLearnRepeat: 10,
-        mute: false,
-        delay: 3,
-        color: true,
-        keyboard: true
+        delay: 3
       },
       profile: {
         realName: '',
@@ -170,20 +162,9 @@ export class UserService {
     };
   }
 
-  getLearnSettings(): Observable<LearnSettings> {
+  saveSettings(settings: AppSettings): Observable<boolean> {
     return this.http
-    .get<LearnSettings>('/api/user/settings/learn')
-    .pipe(retry(3));
-  }
-
-  saveLearnSettings(settings: LearnSettings): Observable<boolean> {
-    return this.http
-    .put<boolean>('/api/user/settings/learn', JSON.stringify(settings));
-  }
-
-  saveMainSettings(settings: MainSettings): Observable<boolean> {
-    return this.http
-    .put<boolean>('/api/user/settings/main', JSON.stringify(settings));
+    .put<boolean>('/api/user/settings', settings);
   }
 
   getProfile(): Observable<Profile> {
@@ -401,12 +382,12 @@ export class UserService {
   }
 
   setLanCode(lanCode: string) {
-    // set learn language
-    if (lanCode && this._user.jazyk.learn.lan !== lanCode) {
+    // set read language
+    if (lanCode && this._user.jazyk.read.lan !== lanCode) {
       this.http
-      .patch('/api/user/lan/learn', JSON.stringify({lanCode}))
+      .patch('/api/user/lan/read', JSON.stringify({lanCode}))
       .subscribe(lan => {
-        this.user.jazyk.learn.lan = lanCode;
+        this.user.jazyk.read.lan = lanCode;
       });
     }
   }
@@ -420,10 +401,6 @@ export class UserService {
         this.user.main.myLan = lanCode;
       });
     }
-  }
-
-  updateUserSettings(settings: LearnSettings) {
-    this._user.jazyk.learn = settings;
   }
 
   private getUserLan(queryLan: string): string {

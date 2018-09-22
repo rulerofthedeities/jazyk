@@ -46,15 +46,13 @@ module.exports.initialize = function(app, router) {
   router.get('/dashboard/books/:max', dashboard.recentBooks);
 
   /* user */
-  router.put('/user/settings/learn', users.saveLearnSettings);
-  router.get('/user/settings/learn', users.getLearnSettings);
-  router.put('/user/settings/main', users.saveMainSettings);
+  router.put('/user/settings', users.saveSettings);
   router.get('/user/profiles/:userIds', users.getCompactProfiles);
   router.get('/user/profile/:userName', users.getPublicProfile);
   router.get('/user/profileId/:userId', users.getPublicProfileById);
   router.get('/user/profile', users.getProfile);
   router.put('/user/profile', users.saveProfile);
-  router.patch('/user/lan/learn', users.updateLearnLan);
+  router.patch('/user/lan/read', users.updateReadLan);
   router.patch('/user/lan/user', users.updateUserLan);
   router.patch('/user/password', users.updatePassword);
   router.post('/user/subscribe/book', users.subscribeToBook);

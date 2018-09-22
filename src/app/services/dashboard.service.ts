@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from './auth.service';
 import { SummaryData, CommunicationData, RecentBook } from '../models/dashboard.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -9,8 +8,7 @@ import { retry } from 'rxjs/operators';
 export class DashboardService {
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService
+    private http: HttpClient
   ) {}
 
   fetchCounts(): Observable<SummaryData> {

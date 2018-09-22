@@ -1,0 +1,14 @@
+.gender {
+  font-size: 24px;
+  color: grey;
+  cursor: pointer;
+}
+.gen-selected {
+  color: green;
+}
+.ig-fixed .form-control {
+  width: 68px;
+}
+.ig-fixed .input-group-addon {
+  width: inherit;
+}

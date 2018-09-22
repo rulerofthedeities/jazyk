@@ -192,7 +192,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.bookLanguages = bookLanguages;
     const allLanguage = this.sharedService.getAllLanguage();
     this.bookLanguages.unshift(allLanguage);
-    this.bookLanguage = this.userService.getUserLearnLanguage(this.bookLanguages);
+    this.bookLanguage = this.userService.getUserReadLanguage(this.bookLanguages);
   }
 
   private filterUserLanguages() {

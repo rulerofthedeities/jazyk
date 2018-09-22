@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from './shared.module';
 import { CoreModule } from './core.module';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { SharedModule } from './shared.module';
 
 import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
