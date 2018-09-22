@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
 import { Trophy } from '../../models/book.model';
@@ -25,7 +25,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   loadingBookScores: boolean;
 
   constructor(
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -54,7 +54,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.bookScores = data.scores.filter(score => score.points > 0);
         this.bookTotal = data.total || 0;
         this.gender = this.userService.user.main.gender || 'm';
-        this.rank = this.utilsService.getRank(this.bookTotal);
+        this.rank = this.sharedService.getRank(this.bookTotal);
         this.loadingBookScores = false;
       },
       error => this.errorService.handleError(error)
@@ -78,14 +78,14 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-          this.utilsService.setPageTitle(this.text, 'Score');
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'Score');
         }
       },
       error => this.errorService.handleError(error)

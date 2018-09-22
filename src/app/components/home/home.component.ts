@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UtilsService } from '../../services/utils.service';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
@@ -17,7 +16,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   licenses: LicenseUrl[];
 
   constructor(
-    private utilsService: UtilsService,
     private sharedService: SharedService,
     private userService: UserService,
     private authService: AuthService
@@ -40,9 +38,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private setTitle(isLoggedIn: boolean) {
     if (isLoggedIn) {
-      this.utilsService.setPageTitle(null, 'Dashboard');
+      this.sharedService.setPageTitle(null, 'Dashboard');
     } else {
-      this.utilsService.setPageTitle(null, '');
+      this.sharedService.setPageTitle(null, '');
     }
   }
 
@@ -53,13 +51,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       getTranslations: true,
       getLicenses: true
     };
-    this.utilsService
+    this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.licenses = dependables.licenseUrls;
-        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
       }
     );
   }

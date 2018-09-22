@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { Profile } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -22,7 +22,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -100,14 +100,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-          this.utilsService.setPageTitle(this.text, 'Profile');
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'Profile');
         }
       },
       error => this.errorService.handleError(error)

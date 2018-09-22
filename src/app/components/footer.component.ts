@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { isDevMode } from '@angular/core';
 import { UserService } from '../services/user.service';
-import { UtilsService } from '../services/utils.service';
 import { ErrorService } from '../services/error.service';
 import { SharedService } from '../services/shared.service';
 import { EventMessage } from '../models/error.model';
@@ -37,7 +36,6 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService,
     private sharedService: SharedService
@@ -77,13 +75,13 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations(lan) {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(lan, 'FooterComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
+          this.text = this.sharedService.getTranslatedText(translations);
           this.isReady = true;
         }
       },

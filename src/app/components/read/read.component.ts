@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { Language, Map, LicenseUrl } from '../../models/main.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile, delay } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class ReadComponent implements OnInit, OnDestroy {
   constructor(
     private readService: ReadService,
     private userService: UserService,
-    private utilsService: UtilsService
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -170,17 +170,17 @@ export class ReadComponent implements OnInit, OnDestroy {
       getLicenses: true
     };
     this.isLoading = true;
-    this.utilsService
+    this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
         this.licenses = dependables.licenseUrls;
-        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        this.utilsService.setPageTitle(this.text, 'Read');
+        this.sharedService.setPageTitle(this.text, 'Read');
         this.getBooks();
         this.filterUserLanguages();
         this.isReady = true;
@@ -190,7 +190,7 @@ export class ReadComponent implements OnInit, OnDestroy {
 
   private setActiveLanguages(bookLanguages: Language[]) {
     this.bookLanguages = bookLanguages;
-    const allLanguage = this.utilsService.getAllLanguage();
+    const allLanguage = this.sharedService.getAllLanguage();
     this.bookLanguages.unshift(allLanguage);
     this.bookLanguage = this.userService.getUserLearnLanguage(this.bookLanguages);
   }

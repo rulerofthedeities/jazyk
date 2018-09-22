@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { UtilsService } from '../services/utils.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { AuthService } from '../services/auth.service';
@@ -44,7 +43,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private utilsService: UtilsService,
     private userService: UserService,
     private sharedService: SharedService,
     private authService: AuthService,
@@ -174,7 +172,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       .subscribe(
         score => {
           this.score = score || 0;
-          this.rank = this.utilsService.getRank(this.score);
+          this.rank = this.sharedService.getRank(this.score);
         },
         error => this.errorService.handleError(error)
       );
@@ -208,11 +206,11 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations(lan: string) {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(lan, 'MainMenuComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      translations => this.text = this.utilsService.getTranslatedText(translations),
+      translations => this.text = this.sharedService.getTranslatedText(translations),
       error => this.errorService.handleError(error)
     );
   }
@@ -229,12 +227,12 @@ export class MainMenuComponent implements OnInit, OnDestroy {
       getTranslations: true,
       getLanguages: true
     };
-    this.utilsService
+    this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
-        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.setInterfaceLanguages(dependables.languages);
         this.isReady = true;
       },

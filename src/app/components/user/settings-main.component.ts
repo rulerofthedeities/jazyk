@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { Language } from '../../models/main.model';
 import { MainSettings } from '../../models/user.model';
@@ -39,7 +39,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -131,7 +131,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     const options = {
       getLanguages: true
     };
-    this.utilsService
+    this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(

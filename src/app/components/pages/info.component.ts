@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { PageService } from '../../services/page.service';
 import { UserService } from '../../services/user.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
 import { Page } from '../../models/page.model';
@@ -43,7 +43,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private pageService: PageService,
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private errorService: ErrorService
   ) {}
 
@@ -83,7 +83,7 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   private setPage(page: Page) {
     this.page = page;
-    this.utilsService.setPageTitle(null, page.title);
+    this.sharedService.setPageTitle(null, page.title);
     if (page.index === false) {
       this.meta.addTag({name: 'robots', content: 'noindex'});
     }

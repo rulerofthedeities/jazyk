@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { UtilsService } from '../../services/utils.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { AuthService } from '../../services/auth.service';
@@ -28,7 +27,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private sharedService: SharedService,
-    private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService,
     private http: HttpClient,
@@ -126,14 +124,14 @@ export class SignUpComponent implements OnInit, OnDestroy {
       getTranslations: true,
       getLanguages: true
     };
-    this.utilsService
+    this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
-        this.text = this.utilsService.getTranslatedText(dependables.translations);
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.languages = dependables.languages;
-        this.utilsService.setPageTitle(this.text, 'Signup');
+        this.sharedService.setPageTitle(this.text, 'Signup');
         this.isReady = true;
       },
       error => this.errorService.handleError(error)

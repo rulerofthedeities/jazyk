@@ -56,7 +56,6 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     private readService: ReadService,
     private sharedService: SharedService,
     private userService: UserService,
-    private utilsService: UtilsService,
     private errorService: ErrorService
   ) {}
 
@@ -253,12 +252,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       zip(
         this.readService.fetchUserBook(this.userLanCode, this.bookId),
-        this.utilsService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent')
+        this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent')
       )
       .pipe(
         takeWhile(() => this.componentActive))
       .subscribe(res => {
-        this.text = this.utilsService.getTranslatedText(res[1]);
+        this.text = this.sharedService.getTranslatedText(res[1]);
         const userBook = res[0];
         this.sessionData = {
           bookId: this.bookId,
@@ -328,7 +327,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     } else {
       this.book = book;
       this.sessionData.resultData.totalBookSentences = this.book.difficulty.nrOfSentences;
-      this.utilsService.setPageTitle(null, book.title);
+      this.sharedService.setPageTitle(null, book.title);
     }
   }
 

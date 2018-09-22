@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -16,12 +16,12 @@ export class ModalRanksComponent implements OnInit {
   showModal = false;
 
   constructor(
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService
   ) {}
 
   ngOnInit() {
-    this.rankScores = this.utilsService.rankScores;
+    this.rankScores = this.sharedService.rankScores;
     this.gender = this.userService.user.main.gender || 'm';
   }
 

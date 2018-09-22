@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -8,7 +8,7 @@ import { SummaryData, CommunicationData, RecentBook } from '../../models/dashboa
 import { LicenseUrl } from '../../models/main.model';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import * as moment from 'moment';
-import { takeWhile, delay } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 
 interface Communication {
   id: string;
@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private dashboardService: DashboardService,
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getRank(): number {
-    return this.utilsService.getRank(this.getTotal());
+    return this.sharedService.getRank(this.getTotal());
   }
 
   getRankName(): string {

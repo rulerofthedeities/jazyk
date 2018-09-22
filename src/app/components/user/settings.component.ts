@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -19,7 +19,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   tab = 'main';
 
   constructor(
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -36,14 +36,14 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations(lan: string) {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(lan, 'UserComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-          this.utilsService.setPageTitle(this.text, 'Settings');
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'Settings');
         }
       },
       error => this.errorService.handleError(error)

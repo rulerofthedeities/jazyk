@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } fro
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
-import { UtilsService } from '../../services/utils.service';
+import { SharedService } from '../../services/shared.service';
 import { Message, CompactProfile } from '../../models/user.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
@@ -38,7 +38,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private utilsService: UtilsService,
+    private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
@@ -341,14 +341,14 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations() {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-          this.utilsService.setPageTitle(this.text, 'PrivateMessages');
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'PrivateMessages');
         }
       },
       error => this.errorService.handleError(error)

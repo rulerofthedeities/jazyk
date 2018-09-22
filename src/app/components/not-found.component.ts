@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { UtilsService } from '../services/utils.service';
+import { SharedService } from '../services/shared.service';
 
 @Component({
   template: `
@@ -18,14 +18,14 @@ export class PageNotFoundComponent {
 
   constructor (
     private router: Router,
-    private utilsService: UtilsService
+    private sharedService: SharedService
   ) {
     router.events
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe((nav: NavigationEnd) => {
       this.previousPath = nav.url;
       this.showError = true;
-      this.utilsService.setPageTitle(null, '404');
+      this.sharedService.setPageTitle(null, '404');
     });
   }
 }
