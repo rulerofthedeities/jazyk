@@ -1,6 +1,6 @@
 <div class="panel panel-default transparant">
   <div class="panel-heading">
-    <span class="fa fa-sliders fa-spacing-title"></span>{{text["Settings"]}} - 
+    <span class="fa fa-sliders fa-spacing-title"></span>{{text["Settings"]}} -
     <span [ngSwitch]="tab">
       <span *ngSwitchCase="'main'">
         {{text["Main"]}}
@@ -29,13 +29,13 @@
       <li class="list-group-item"
         (click)="onChangeTab('config')"
         [class.active]="tab==='config'">
-        <span class="fa fa-book"></span> {{text["Learn"]}}
+        <span class="fa fa-book"></span> {{text["ReadnListen"]}}
       </li>
       <li class="list-group-item"
         (click)="onChangeTab('password')"
         [class.active]="tab==='password'">
         <span class="fa fa-key"></span> {{text["Password"]}}
-      </li>        
+      </li>
       <li class="list-group-item"
         (click)="onChangeTab('email')"
         [class.active]="tab==='email'">
@@ -50,9 +50,9 @@
     <div [ngSwitch]="tab">
       <!-- CONFIG TAB -->
       <div *ngSwitchCase="'config'">
-        <km-user-settings-learn
+        <km-user-settings-read
           [text]="text">
-        </km-user-settings-learn>
+        </km-user-settings-read>
       </div>
       <div *ngSwitchCase="'main'">
         <km-user-settings-main
@@ -67,11 +67,11 @@
       </div>
       <!-- EMAIL TAB -->
       <div *ngSwitchCase="'email'">
-        
+
       </div>
       <!-- DEACTIVATE TAB -->
       <div *ngSwitchCase="'deactivate'">
-        
+
       </div>
     </div>
   </div>

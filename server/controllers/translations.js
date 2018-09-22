@@ -1,5 +1,4 @@
 const response = require('../response'),
-      mongoose = require('mongoose'),
       Translation = require('../models/translation');
 
 module.exports = {

@@ -4,7 +4,6 @@ const response = require('../response'),
       scrypt = require('scrypt'),
       md5 = require('md5'),
       User = require('../models/user').model,
-      UserCourse = require('../models/usercourse').model,
       UserBook = require('../models/userbook').userBook;
 
 var setEmailHash = (doc) => {
@@ -302,42 +301,6 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     });
-  },
-  subscribeToCourse: function(req, res) {
-    const userId = req.decoded.user._id,
-          data = req.body;
-    if (data && data.courseId) {
-      const courseId = mongoose.Types.ObjectId(data.courseId),
-            query = {userId, courseId},
-            insert = {userId, courseId, 'dt.dtSubscribed': Date.now()},
-            set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
-            update = {$set: set, $setOnInsert: insert};
-      UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 400, 'Error subscribing to course', function() {
-          response.handleSuccess(res, result);
-        });
-      });
-    } else {
-      response.handleSuccess(res, {});
-    }
-  },
-  unsubscribeFromCourse: function(req, res) {
-    const userId = req.decoded.user._id,
-          data = req.body;
-    if (data && data.courseId) {
-      const courseId = mongoose.Types.ObjectId(data.courseId),
-            query = {userId, courseId},
-            insert = {userId, courseId},
-            set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
-            update = {$set: set, $setOnInsert: insert};
-      UserCourse.findOneAndUpdate(query, update, {upsert: true}, function(err, result) {
-        response.handleError(err, res, 400, 'Error unsubscribing from course', function(){
-          response.handleSuccess(res, result);
-        });
-      });
-    } else {
-      response.handleSuccess(res, {}, 200);
-    }
   },
   subscribeToBook: function(req, res) {
     const userId = req.decoded.user._id,

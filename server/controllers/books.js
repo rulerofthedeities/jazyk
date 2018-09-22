@@ -10,14 +10,6 @@ const response = require('../response'),
       ErrorModel = require('../models/error'),
       wilson = require('wilson-score');
 
-const setSessionDt = (startDate) => {
-  return {
-    start: startDate,
-    end: Date.now(),
-    diff: (new Date().getTime() - new Date(startDate).getTime()) / 1000
-  };
-}
-
 const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) => {
   const translationId = new mongoose.Types.ObjectId(translation_id),
         translationElementId = new mongoose.Types.ObjectId(translationElement_id),

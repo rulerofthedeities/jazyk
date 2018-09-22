@@ -13,7 +13,7 @@ import { UserProfileComponent } from './components/user/profile.component';
 import { UserScoreComponent } from './components/user/score.component';
 import { UserSettingsComponent } from './components/user/settings.component';
 import { UserSettingsMainComponent } from './components/user/settings-main.component';
-import { UserSettingsLearnComponent } from './components/user/settings-learn.component';
+import { UserSettingsReadnListenComponent } from './components/user/settings-read.component';
 import { UserSettingsPasswordComponent } from './components/user/settings-password.component';
 import { UserSelectorComponent } from './components/fields/user-selector.component';
 import { ModalTrophiesComponent } from './components/modals/modal-trophies.component';
@@ -36,7 +36,7 @@ import { ModalTrophiesComponent } from './components/modals/modal-trophies.compo
     UserScoreComponent,
     UserSettingsComponent,
     UserSettingsMainComponent,
-    UserSettingsLearnComponent,
+    UserSettingsReadnListenComponent,
     UserSettingsPasswordComponent,
     UserSelectorComponent,
     ModalTrophiesComponent

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
-import { UtilsService } from '../../services/utils.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ValidationService } from '../../services/validation.service';
@@ -26,7 +25,6 @@ export class SignInComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private utilsService: UtilsService,
     private userService: UserService,
     private sharedService: SharedService,
     private errorService: ErrorService,
@@ -93,14 +91,14 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   private getTranslations(lan: string) {
-    this.utilsService
+    this.sharedService
     .fetchTranslations(lan, 'AuthComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
-          this.text = this.utilsService.getTranslatedText(translations);
-          this.utilsService.setPageTitle(this.text, 'Login');
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'Login');
         }
       },
       error => this.errorService.handleError(error)

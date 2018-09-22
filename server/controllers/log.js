@@ -1,5 +1,4 @@
 const response = require('../response'),
-      mongoose = require('mongoose'),
       Log = require('../models/log');
 
 module.exports = {

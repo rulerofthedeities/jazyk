@@ -1,16 +1,9 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var lanSchema = new Schema({
-  de: String,
-  en: String,
-  fr: String,
-  nl: String
-}, {_id : false});
-
 var caseSchema = new Schema({code: String,value: String});
 
-var lanConfigSchema = new Schema({
+var configSchema = new Schema({
     _id: String,
     tpe: {type: String, required: true},
     code: {type: String, required: true},
@@ -23,4 +16,8 @@ var lanConfigSchema = new Schema({
   }, {collection: 'config'}
 );
 
-module.exports = mongoose.model('Config', lanConfigSchema);
+configSchema.index({tpe: 1});
+const configModel = mongoose.model('Config', configSchema);
+configModel.ensureIndexes();
+
+module.exports = configModel;

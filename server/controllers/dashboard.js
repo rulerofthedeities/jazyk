@@ -4,26 +4,12 @@ const response = require('../response'),
       UserBook = require('../models/userbook').userBook,
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
-      Result = require('../models/result'),
-      Course = require('../models/course').model,
-      UserCourse = require('../models/usercourse').model,
       Message = require('../models/message'),
       Notification = require('../models/notification');
 
 module.exports = {
   getCount: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          scoreCoursesPipeline = [
-            {$match: {userId}},
-            {$group: {
-              _id: null,
-              totalPoints: {'$sum': '$points'}
-            }},
-            {$project: {
-              _id: 0,
-              points: '$totalPoints'
-            }}
-          ],
           scoreBooksPipeline = [
             {$match: {userId}},
             {$group: {
@@ -37,14 +23,6 @@ module.exports = {
               points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished' ]}
             }}
           ],
-          coursesLearningPipeline = [
-            {$match: {userId}},
-            {$group: {
-              _id: null,
-              countSubscribed: {'$sum': {$cond: ["$subscribed", 1, 0]}},
-              countNotSubscribed: {'$sum': {$cond: ["$subscribed", 0, 1]}}
-            }}
-          ],
           booksReadingPipeline = [
             {$match: {userId}},
             {$group: {
@@ -56,24 +34,14 @@ module.exports = {
           ];
 
     const getCount = async () => {
-      const scoreCourses = await Result.aggregate(scoreCoursesPipeline),
-            scoreBooks = await Session.aggregate(scoreBooksPipeline),
-            coursesLearning = await UserCourse.aggregate(coursesLearningPipeline),
+      const scoreBooks = await Session.aggregate(scoreBooksPipeline),
             booksReading = await UserBook.aggregate(booksReadingPipeline),
-            subscribedCourses = coursesLearning[0] ? coursesLearning[0].countSubscribed || 0 : 0,
-            unsubscribedCourses = coursesLearning[0] ? coursesLearning[0].countNotSubscribed || 0 : 0,
             startedBooks = booksReading[0] ? booksReading[0].countStarted || 0 : 0,
             unsubscribedBooks = booksReading[0] ? booksReading[0].countNotSubscribed || 0 : 0,
             readBooks = booksReading[0] ? booksReading[0].read || 0 : 0,
-            pointsCourses = scoreCourses[0] ? scoreCourses[0].points || 0 : 0,
             pointsBooks = scoreBooks[0] ? scoreBooks[0].points || 0 : 0;
       return {
-        score: pointsCourses + pointsBooks,
-        coursesLearning: {
-          subscribed: subscribedCourses,
-          unsubscribed: unsubscribedCourses,
-          total: subscribedCourses + unsubscribedCourses
-        },
+        score: pointsBooks,
         booksReading: {
           subscribed: startedBooks,
           unsubscribed: unsubscribedBooks,
@@ -110,51 +78,6 @@ module.exports = {
       response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard communications data');
-    });
-  },
-  recentCourses: function(req, res) {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          max = req.params.max || '3',
-          resultsPipeline = [
-            {$match: {userId}},
-            {$sort: {dt: -1, sequence: -1}},
-            {$group: {
-              _id: '$courseId',
-              firstDate: {'$first': '$dt'},
-            }},
-            {$sort: {firstDate: -1}},
-            {$limit: parseInt(max, 10)},
-            {$project: {
-              _id: 0,
-              courseId: '$_id',
-              dt: '$firstDate'
-            }}
-          ];
-    Result.aggregate(resultsPipeline, function(err, idResults) {
-      response.handleError(err, res, 400, 'Error fetching recent courseIds from results', function() {
-        if (idResults) {
-          const courseIdArr = [];
-          idResults.forEach(result => {
-            courseIdArr.push(new mongoose.Types.ObjectId(result.courseId));
-          });
-          const query = {_id: {$in: courseIdArr}};
-          Course.find(query, function(err, courseResults) {
-            response.handleError(err, res, 400, 'Error fetching recent courses', function() {
-              const recentCourses = [];
-              // Add date last result for each course
-              courseResults.forEach((course, i, courses) => {
-                id = idResults.find(result => result.courseId.toString() === course._id.toString());
-                if (id) {
-                  recentCourses.push({dt: id.dt, course, tpe: 'course'})
-                }
-              });
-              response.handleSuccess(res, recentCourses);
-            });
-          });
-        } else {
-          response.handleSuccess(res, []);
-        }
-      });
     });
   },
   recentBooks: function(req, res) {

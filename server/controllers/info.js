@@ -1,5 +1,4 @@
 const response = require('../response'),
-      mongoose = require('mongoose'),
       Page = require('../models/page');
 
 module.exports = {

@@ -9,4 +9,8 @@ var translationSchema = new Schema({
   fr: String
 });
 
-module.exports = mongoose.model('Translation', translationSchema);
+translationSchema.index({components: 1});
+const translationModel = mongoose.model('Translation', translationSchema);
+translationModel.ensureIndexes();
+
+module.exports = translationModel;

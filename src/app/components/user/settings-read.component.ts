@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UtilsService } from '../../services/utils.service';
 import { ErrorService } from '../../services/error.service';
 import { LearnSettings } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
@@ -12,12 +11,12 @@ interface FormData {
 }
 
 @Component({
-  selector: 'km-user-settings-learn',
-  templateUrl: 'settings-learn.component.html',
+  selector: 'km-user-settings-read',
+  templateUrl: 'settings-read.component.html',
   styleUrls: ['user.css']
 })
 
-export class UserSettingsLearnComponent implements OnInit, OnDestroy {
+export class UserSettingsReadnListenComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   private componentActive = true;
   learnForm: FormGroup;
@@ -27,7 +26,6 @@ export class UserSettingsLearnComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private utilsService: UtilsService,
     private userService: UserService,
     private errorService: ErrorService
   ) {}
