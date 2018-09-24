@@ -28,6 +28,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'listen',
+        loadChildren: './listen.module#ListenModule',
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'user',
         loadChildren: './user.module#UserModule',
         canActivate: [AuthGuard]

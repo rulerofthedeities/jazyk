@@ -4,23 +4,21 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { Language, Map, LicenseUrl } from '../../models/main.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
-import { takeWhile, delay } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
+import { ReadnListenComponent } from '../readnlisten/readnListen.component';
+import { ReadnListenService } from '../../services/readnlisten.service';
 
 @Component({
   templateUrl: 'read.component.html',
   styleUrls: ['read.component.css']
 })
 
-export class ReadComponent implements OnInit, OnDestroy {
-  private componentActive = true;
-  private userLanguages: Language[];
+export class ReadComponent extends ReadnListenComponent implements OnInit, OnDestroy {
   private books: Book[];
   text: Object = {};
   bookLanguage: Language;
-  myLanguage: Language;
   bookLanguages: Language[];
   licenses: LicenseUrl[];
-  myLanguages: Language[]; // filter out selected book language
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
   userData: Map<UserData> = {};
@@ -35,13 +33,12 @@ export class ReadComponent implements OnInit, OnDestroy {
   itemTxt: string;
 
   constructor(
-    private readService: ReadService,
-    private userService: UserService,
-    private sharedService: SharedService
-  ) {}
-
-  ngOnInit() {
-    this.getDependables();
+    readService: ReadService,
+    readnListenService: ReadnListenService,
+    userService: UserService,
+    sharedService: SharedService
+  ) {
+    super(readService, readnListenService, userService, sharedService);
   }
 
   onBookLanguageSelected(lan: Language) {
@@ -96,7 +93,7 @@ export class ReadComponent implements OnInit, OnDestroy {
     this.itemTxt = itemTxt;
   }
 
-  private getBooks(onlyBooks = false) {
+  protected getBooks(onlyBooks = false) {
     if (!onlyBooks) { // Not required if resorted
       this.getUserBooks();
       this.getUserData();
@@ -161,41 +158,14 @@ export class ReadComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getDependables() {
-    const options = {
-      lan: this.userService.user.main.lan,
-      component: 'ReadComponent',
-      getTranslations: true,
-      getLanguages: true,
-      getLicenses: true
-    };
-    this.isLoading = true;
-    this.sharedService
-    .fetchDependables(options)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      dependables => {
-        this.licenses = dependables.licenseUrls;
-        this.text = this.sharedService.getTranslatedText(dependables.translations);
-        this.setActiveLanguages(dependables.bookLanguages);
-        this.userLanguages = dependables.userLanguages;
-        this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        this.sharedService.setPageTitle(this.text, 'Read');
-        this.getBooks();
-        this.filterUserLanguages();
-        this.isReady = true;
-      }
-    );
-  }
-
-  private setActiveLanguages(bookLanguages: Language[]) {
+  protected setActiveLanguages(bookLanguages: Language[]) {
     this.bookLanguages = bookLanguages;
     const allLanguage = this.sharedService.getAllLanguage();
     this.bookLanguages.unshift(allLanguage);
     this.bookLanguage = this.userService.getUserReadLanguage(this.bookLanguages);
   }
 
-  private filterUserLanguages() {
+  protected filterUserLanguages() {
     // filter out selected book language
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
     // check if current language is in list
@@ -232,7 +202,4 @@ export class ReadComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    this.componentActive = false;
-  }
 }
