@@ -9,15 +9,18 @@ import { SharedService } from '../../services/shared.service';
 import { Language, LicenseUrl } from '../../models/main.model';
 import { takeWhile } from 'rxjs/operators';
 
-export abstract class ReadnListenComponent implements OnInit, OnDestroy {
+export abstract class ReadnListenComponent implements OnDestroy {
   protected componentActive = true;
   protected userLanguages: Language[];
+  bookLanguage: Language;
+  bookLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
   myLanguage: Language;
   text: Object = {};
   licenses: LicenseUrl[];
   isReady = false;
   isLoading = false;
+  tpe: string; // read or listen
 
   constructor(
     protected readService: ReadService,
@@ -26,11 +29,7 @@ export abstract class ReadnListenComponent implements OnInit, OnDestroy {
     protected sharedService: SharedService
   ) {}
 
-  ngOnInit() {
-    this.getDependables();
-  }
-
-  private getDependables() {
+  protected getDependables() {
     const options = {
       lan: this.userService.user.main.lan,
       component: 'ReadComponent',
@@ -49,7 +48,7 @@ export abstract class ReadnListenComponent implements OnInit, OnDestroy {
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        this.sharedService.setPageTitle(this.text, 'Read');
+        this.sharedService.setPageTitle(this.text, this.tpe === 'listen' ? 'Listen' : 'Read');
         this.getBooks();
         this.filterUserLanguages();
         this.isReady = true;

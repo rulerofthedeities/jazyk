@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { Language, Map, LicenseUrl } from '../../models/main.model';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadnListenComponent } from '../readnlisten/readnListen.component';
-import { ReadnListenService } from '../../services/readnlisten.service';
 
 @Component({
   templateUrl: 'read.component.html',
@@ -16,8 +16,6 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 export class ReadComponent extends ReadnListenComponent implements OnInit, OnDestroy {
   private books: Book[];
   text: Object = {};
-  bookLanguage: Language;
-  bookLanguages: Language[];
   licenses: LicenseUrl[];
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
@@ -39,6 +37,11 @@ export class ReadComponent extends ReadnListenComponent implements OnInit, OnDes
     sharedService: SharedService
   ) {
     super(readService, readnListenService, userService, sharedService);
+  }
+
+  ngOnInit() {
+    this.tpe = 'read';
+    this.getDependables();
   }
 
   onBookLanguageSelected(lan: Language) {

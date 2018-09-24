@@ -1,1 +1,12 @@
-LISTEN
+<section *ngIf="isReady">
+  <km-languages-bar
+    [text]="text"
+    [bookLanguages]="bookLanguages"
+    [bookLanguage]="bookLanguage"
+    [myLanguages]="myLanguages"
+    [myLanguage]="myLanguage"
+  ></km-languages-bar>
+</section>
+<km-loader *ngIf="isLoading && !isError"
+  [msg]="text['LoadingBooks']">
+</km-loader>

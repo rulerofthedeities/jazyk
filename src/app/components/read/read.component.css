@@ -1,20 +1,4 @@
-.selector {
-  padding: 0;
-  margin-bottom: 4px;
-}
-.tpe-selector {
-  padding-left: 4px;
-}
-.my-lan-selector {
-  padding-left: 20px;
-  position: relative;
-}
-.sel-arrow {
-  position: absolute;
-  left: 5px;
-  top: 14px;
-  text-shadow: 1px 1px 1px white;
-}
+
 .filter-count {
   padding: 6px;
   position: relative;

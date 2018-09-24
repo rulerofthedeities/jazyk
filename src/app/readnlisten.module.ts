@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReadnListenService } from './services/readnlisten.service';
 import { RegionFlagSelectorComponent } from './components/fields/region-flag-selector.component';
 import { CountdownComponent } from './components/readnlisten/countdown.component';
+import { LanguagesBarComponent } from './components/readnlisten/languages-bar.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
@@ -22,6 +23,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     AudioFileComponent,
     RegionFlagComponent,
     CountdownComponent,
+    LanguagesBarComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ],
@@ -33,6 +35,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     AudioFileComponent,
     RegionFlagComponent,
     CountdownComponent,
+    LanguagesBarComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ]
