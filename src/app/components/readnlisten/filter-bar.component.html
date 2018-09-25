@@ -1,0 +1,19 @@
+<!-- FILTERS AND SORTING -->
+<div class="row">
+    <div class="col-xs-12">
+      <span class="label label-info filter-count pull-right" *ngIf="hasBooks">
+        {{itemTxt}}
+      </span>
+      <div class="form-group form-group-sm">
+        <select class="form-control sort-control" (change)="onChangeSort($event.target.value)"
+          [tooltip]="text['SortOrder']"
+          [tooltipPlacement]="'top'">
+          <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
+          <option value="difficulty0">{{text["difficulty0"]}}</option>
+          <option value="sentences0">{{text["sentences0"]}}</option>
+          <option value="sentences1">{{text["sentences1"]}}</option>
+          <option value="newest0">{{text["newest0"]}}</option>
+        </select>
+      </div>
+    </div>
+  </div>

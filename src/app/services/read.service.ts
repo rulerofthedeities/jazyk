@@ -19,9 +19,9 @@ export class ReadService {
 
   /*** Books ***/
 
-  fetchPublishedBooks(learnLanCode: string, sort: string): Observable<Book[]> {
+  fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
     return this.http
-    .get<Book[]>('/api/books/published/' + learnLanCode + '/' + sort)
+    .get<Book[]>('/api/books/published/' + readLanCode + '/' + sort)
     .pipe(retry(3));
   }
 

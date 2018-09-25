@@ -1,5 +1,5 @@
 <article>
-  <div class="panel panel-default panel-book" [class.dashboard]="tpe==='home'">
+  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:mainTpe==='audio'}">
     <div class="panel-body" [class.read]="isBookRead">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
         {{text["New"]}}!
@@ -8,9 +8,16 @@
         <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
-        <span class="img-author" *ngIf="!book?.img">{{book.author}}{{!!book.author2 ? ' & ' + book.author2 : ''}}</span>
+        <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
       </div>
       <div class="book">
+        <div class="book-type">
+          <span class="fa"
+            [ngClass]="{'fa-book':mainTpe==='book', 'fa-volume-up': mainTpe==='audio'}"
+            [tooltip]="text[mainTpe==='audio' ? 'Audiobook' : 'book']"
+            tooltipPlacement="left">
+        </span>
+        </div>
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
           {{nr}}
         </div>
@@ -34,11 +41,8 @@
             [tpe]="book.tpe"
             [text]="text">
           </km-book-tpe>
-          {{text[book.tpe]}} <span *ngIf="book.author">{{text["by"]}}</span>
-          <span *ngIf="!!book.link">&nbsp;<a href="{{book.link}}" target="_blank">{{book.author}}</a></span>
-          <span *ngIf="!book.link">&nbsp;{{book.author}}</span>
-          <span *ngIf="!!book.link2">&nbsp;&&nbsp;<a href="{{book.link2}}" target="_blank">{{book.author2}}</a></span>
-          <span *ngIf="!!book.author2 && !book.link2">&nbsp;&&nbsp;{{book.author2}}</span>
+          {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
+          <span *ngIf="authorsTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
           <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>
           <a *ngIf="licenseUrl" href="{{licenseUrl}}" target="_blank">
             <ng-container
@@ -63,7 +67,16 @@
             class="btn btn-success"
             (click)="onStartReading()">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
+            {{isStarted ? (mainTpe=== 'audio' ? text["ContinueListening"] : text["ContinueReading"])
+                        : (mainTpe=== 'audio' ? text["StartListening"] : text["StartReading"])
+            }}
+          </button>
+          <button *ngIf="!isBookRead && mainTpe=== 'audio'"
+            type="button"
+            class="btn btn-warning"
+            (click)="onStartReading()">
+            <span class="fa fa-flask fa-spacing"></span>
+            {{isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
           </button>
           <div class="book-read" *ngIf="isBookRead">
             <span class="fa fa-check"></span>

@@ -7,7 +7,8 @@ import { Language } from '../../models/main.model';
   styleUrls: ['languages-bar.component.css']
 })
 
-export class LanguagesBarComponent {
+export class BookLanguagesBarComponent {
+  @Input() mainTpe = 'book'; // book or audio
   @Input() text: Object = {};
   @Input() bookLanguages: Language[];
   @Input() bookLanguage: Language;

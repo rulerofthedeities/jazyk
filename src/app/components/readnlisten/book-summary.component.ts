@@ -14,6 +14,7 @@ import { takeWhile } from 'rxjs/operators';
 
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
+  @Input() mainTpe = 'book'; // book or audio
   @Input() userBook: UserBook;
   @Input() userData: UserData;
   @Input() translationData: TranslationData;
@@ -34,7 +35,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   showIntro = false;
   isNewBook = false;
   licenseUrl: string;
-  defaultImage = '/assets/img/books/blankcover.png';
+  defaultImage: string;
+  authorsTxt: string;
+  linksTxt: string;
 
   constructor(
     private router: Router,
@@ -43,6 +46,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.setDefaultImg();
+    this.setAuthors();
     this.getLicenseUrl();
     this.checkIfNew();
     this.setDifficulty();
@@ -135,6 +140,30 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         this.percDone = Math.trunc(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
     }
+  }
+
+  private setAuthors() {
+    const authors: string[] = this.book.authors ? this.book.authors.split(';') : [],
+          links: string[] = this.book.links ? this.book.links.split(';') : [];
+    // Set author string for blank book image
+    this.authorsTxt = authors[0];
+    if (links[0]) {
+      this.linksTxt = `<a href="${links[0]}">${authors[0]}</a>`;
+    } else {
+      this.linksTxt = this.authorsTxt;
+    }
+    if (authors.length > 1) {
+      this.authorsTxt += ' & ' + authors[1];
+      if (links.length > 1) {
+        this.linksTxt += ` & <a href="${links[1]}">${authors[1]}</a>`;
+      } else {
+        this.linksTxt += ' & ' + authors[1];
+      }
+    }
+  }
+
+  private setDefaultImg() {
+    this.defaultImage = this.mainTpe === 'audio' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
   }
 
   private log(message: string) {

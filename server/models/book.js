@@ -23,7 +23,8 @@ var bookSchema = new Schema({
   isPublished: {type: Boolean, default: false}
 });
 bookSchema.index({'isPublished': 1, 'lanCode': 1, 'difficulty.weight': 1, 'difficulty.nrOfSentences': 1});
-const BookModel = mongoose.model('Book', bookSchema);
+const BookModel = mongoose.model('Book', bookSchema),
+      AudioBookModel = mongoose.model('Audiobook', bookSchema);
 
 var sentenceSchema = new Schema({
   text: {type: String, required: true},
@@ -97,12 +98,14 @@ sessionSchema.index({userId: 1, bookId: 1, lanCode: 1});
 const SessionModel = mongoose.model('UserSession', sessionSchema);
 
 BookModel.ensureIndexes();
+AudioBookModel.ensureIndexes();
 ChapterModel.ensureIndexes();
 TranslationModel.ensureIndexes();
 SessionModel.ensureIndexes();
 
 module.exports = {
   book: BookModel,
+  audiobook: AudioBookModel,
   chapter: ChapterModel,
   translation: TranslationModel,
   session: SessionModel

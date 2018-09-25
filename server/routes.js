@@ -2,6 +2,7 @@ var path = require("path"),
     jwt = require('jsonwebtoken'),
     users = require("./controllers/users"),
     books = require("./controllers/books"),
+    audio = require("./controllers/audiobooks"),
     errors = require("./controllers/errors"),
     config = require("./controllers/config"),
     translations = require("./controllers/translations"),
@@ -107,6 +108,8 @@ module.exports.initialize = function(app, router) {
   router.post('/book/trophies', books.saveTrophies);
   router.post('/book/trophies/session', books.getSessionTrophies);
   router.post('/book/trophies/thumb', books.getThumbTrophies);
+
+  router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
 
   app.use('/api/', router);
 

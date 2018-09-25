@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { ReadnListenComponent } from '../readnlisten/readnListen.component';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'listen.component.html',
@@ -24,5 +25,28 @@ export class ListenComponent extends ReadnListenComponent implements OnInit, OnD
   ngOnInit() {
     this.tpe = 'listen';
     this.getDependables();
+  }
+
+  protected getBooks(onlyBooks = false) {
+    if (!onlyBooks) { // Not required if resorted
+      // this.getUserBooks();
+      // this.getUserData();
+      // this.getBookTranslations();
+    }
+    this.isLoading = true;
+    this.readnListenService
+    .fetchPublishedAudioBooks(this.bookLanguage.code, this.sort)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      books => {
+        this.books = books;
+        if (books) {
+          this.nrOfBooks = books.length;
+          this.filterBooks();
+        }
+        this.isLoading = false;
+        this.IsBooksReady = true;
+      }
+    );
   }
 }

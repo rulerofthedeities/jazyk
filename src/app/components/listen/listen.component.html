@@ -1,11 +1,47 @@
 <section *ngIf="isReady">
   <km-languages-bar
+    mainTpe='audio'
     [text]="text"
     [bookLanguages]="bookLanguages"
     [bookLanguage]="bookLanguage"
     [myLanguages]="myLanguages"
     [myLanguage]="myLanguage"
+    (newBookLanguage)="onBookLanguageSelected($event)"
+    (newMyLanguage)="onMyLanguageSelected($event)"
+    (newBookType)="onChangeBookType($event)"
   ></km-languages-bar>
+  <km-filter-bar
+    [text]="text"
+    [hasBooks]="!!filteredBooks.length"
+    [itemTxt]="itemTxt"
+    (newSort)="onChangeSort($event)">
+  </km-filter-bar>
+  <!-- BOOKS LIST -->
+  <div *ngIf="IsBooksReady">
+    <ul class="list-unstyled" *ngIf="filteredBooks?.length">
+      <li *ngFor="let book of filteredBooks; let i=index">
+        <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
+          [book]="book"
+          mainTpe="audio"
+          [userBook]="userBooks[book._id]"
+          [userData]="userData[book._id]"
+          [translationData]="translationData[book._id]"
+          [userLanCode]="myLanguage.code"
+          [text]="text"
+          [nr]="i + 1"
+          [licenses]="licenses"
+          [tpe]="listTpe === 'my' ? 'my' : 'read'"
+          (removedSubscription)="onRemovedSubscription($event)">
+        </km-book-summary>
+      </li>
+    </ul>
+
+    <!-- No books found for selected language -->
+    <div *ngIf="!books.length">
+      <km-info-msg [msg]="text['NoBooks']">
+      </km-info-msg>
+    </div>
+  </div>
 </section>
 <km-loader *ngIf="isLoading && !isError"
   [msg]="text['LoadingBooks']">
