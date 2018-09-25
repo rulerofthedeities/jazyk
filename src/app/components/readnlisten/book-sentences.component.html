@@ -1,3 +1,4 @@
+{{bookType}}
 <section kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
@@ -25,7 +26,6 @@
     <km-countdown
       *ngIf="isCountDown"
       [counter]="settings.delay"
-      [mute]="settings.mute"
       (countedDown)="onCountDownFinished()">
     </km-countdown>
     <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown">
@@ -148,7 +148,7 @@
 </section>
 
 <ng-template #loading>
-  <km-loader
+  <km-loader *ngIf="!isError"
     [msg]="text['LoadingSentence'] || ''">
   </km-loader>
 </ng-template>

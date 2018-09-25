@@ -110,6 +110,8 @@ module.exports.initialize = function(app, router) {
   router.post('/book/trophies/thumb', books.getThumbTrophies);
 
   router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
+  router.get('/audiobook/:bookId', audio.getBook);
+  router.get('/audiobook/chapter/:bookId/:chapterId/:sequence', audio.getChapter);
 
   app.use('/api/', router);
 

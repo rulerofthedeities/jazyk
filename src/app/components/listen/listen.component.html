@@ -22,7 +22,7 @@
       <li *ngFor="let book of filteredBooks; let i=index">
         <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
           [book]="book"
-          mainTpe="audio"
+          mainTpe="listen"
           [userBook]="userBooks[book._id]"
           [userData]="userData[book._id]"
           [translationData]="translationData[book._id]"

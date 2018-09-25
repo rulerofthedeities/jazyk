@@ -14,7 +14,7 @@ import { takeWhile } from 'rxjs/operators';
 
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
-  @Input() mainTpe = 'book'; // book or audio
+  @Input() mainTpe = 'read'; // read or listen
   @Input() userBook: UserBook;
   @Input() userData: UserData;
   @Input() translationData: TranslationData;
@@ -62,8 +62,22 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     this.userService.subscribeToBook(this.book._id, this.userLanCode);
-    this.log(`Start reading '${this.book.title}'`);
-    this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
+    if (this.mainTpe === 'listen') {
+      console.log('start listen');
+      this.log(`Start listening to '${this.book.title}'`);
+      this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
+    } else {
+      console.log('start reading');
+      this.log(`Start reading '${this.book.title}'`);
+      this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
+    }
+  }
+
+  onStartListening() {
+    console.log('start listening');
+    this.userService.setLanCode(this.book.lanCode);
+    this.userService.setUserLanCode(this.userLanCode);
+    this.userService.subscribeToBook(this.book._id, this.userLanCode);
   }
 
   onStopReading() {
@@ -163,7 +177,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setDefaultImg() {
-    this.defaultImage = this.mainTpe === 'audio' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
+    this.defaultImage = this.mainTpe === 'listen' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
   }
 
   private log(message: string) {

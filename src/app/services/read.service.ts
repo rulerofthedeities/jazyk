@@ -37,13 +37,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  fetchBook(bookId: string): Observable<Book> {
-    // gets published book only
-    return this.http
-    .get<Book>('/api/book/' + bookId)
-    .pipe(retry(3));
-  }
-
   placeBookmark(bookId: string, bookmark: Bookmark, lanCode: string): Observable<Bookmark> {
     return this.http
     .put<Bookmark>('/api/book/bookmark/' + bookId + '/' + lanCode, {bookmark});

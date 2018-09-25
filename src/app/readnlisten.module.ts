@@ -8,6 +8,13 @@ import { RegionFlagSelectorComponent } from './components/fields/region-flag-sel
 import { CountdownComponent } from './components/readnlisten/countdown.component';
 import { BookLanguagesBarComponent } from './components/readnlisten/languages-bar.component';
 import { BookFilterBarComponent } from './components/readnlisten/filter-bar.component';
+import { BookSentencesComponent } from './components/readnlisten/book-sentences.component';
+import { BookBulletsComponent } from './components/readnlisten/book-bullets.component';
+import { BookResultsComponent } from './components/readnlisten/book-results.component';
+import { BookTranslationComponent } from './components/readnlisten/book-translation.component';
+import { BookContextComponent } from './components/readnlisten/book-context.component';
+import { BookSuggestionsComponent } from './components/readnlisten/book-suggestions.component';
+import { BookTabComponent } from './components/readnlisten/book-tab.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
@@ -26,6 +33,13 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     CountdownComponent,
     BookLanguagesBarComponent,
     BookFilterBarComponent,
+    BookSentencesComponent,
+    BookBulletsComponent,
+    BookResultsComponent,
+    BookTranslationComponent,
+    BookContextComponent,
+    BookSuggestionsComponent,
+    BookTabComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ],
@@ -39,6 +53,13 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     CountdownComponent,
     BookLanguagesBarComponent,
     BookFilterBarComponent,
+    BookSentencesComponent,
+    BookBulletsComponent,
+    BookResultsComponent,
+    BookTranslationComponent,
+    BookContextComponent,
+    BookSuggestionsComponent,
+    BookTabComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ]

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReadService } from '../../services/read.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
@@ -24,6 +25,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   settings: ReadSettings;
   text: Object = {};
   book: Book;
+  bookType = 'read'; // read or listen
   isCountDown = false;
   currentChapter: Chapter;
   currentSentence: string;
@@ -53,6 +55,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     private location: Location,
     private platformLocation: PlatformLocation,
     private readService: ReadService,
+    private readnListenService: ReadnListenService,
     private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService
@@ -63,6 +66,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.settings = this.userService.user.jazyk.read;
     this.chapterObservable = new BehaviorSubject<Chapter>(null);
     this.sentenceNrObservable = new BehaviorSubject<number>(null);
+    this.getBookType(); // read or listen
     this.getBookId();
     this.observe();
   }
@@ -232,6 +236,16 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     return 1.5 + this.book.difficulty.avgWordScore / 1000;
   }
 
+  private getBookType() {
+    // read or listen
+    this.route
+    .data
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(data => {
+      this.bookType = data.tpe;
+    });
+  }
+
   private getBookId() {
     this.route.params
     .pipe(
@@ -308,11 +322,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
 
   private getBookAndChapter(bookId: string, bookmark: Bookmark, sequence: number) {
     zip(
-      this.readService.fetchBook(bookId),
-      this.readService.fetchChapter(bookId, bookmark ? bookmark.chapterId : null, sequence)
+      this.readnListenService.fetchBook(bookId, this.bookType),
+      this.readnListenService.fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
+      console.log('DATA', data);
       this.processBook(data[0]);
       this.processChapter(data[1], bookmark);
       this.isLoading = false;
