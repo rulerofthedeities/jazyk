@@ -7,7 +7,7 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { Map, Language, LicenseUrl } from '../../models/main.model';
-import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
+import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 export abstract class ReadnListenComponent implements OnDestroy {
@@ -28,8 +28,10 @@ export abstract class ReadnListenComponent implements OnDestroy {
   isLoading = false;
   IsBooksReady = false;
   itemTxt: string;
+  filterTxt: string;
   nrOfBooks: number;
   sort = 'difficulty1';
+  filter: ViewFilter;
   tpe: string; // read or listen
   listTpe = 'all';
 
@@ -43,6 +45,11 @@ export abstract class ReadnListenComponent implements OnDestroy {
   protected onChangeSort(sort: string) {
     this.sort = sort;
     this.getBooks(true);
+  }
+
+  protected onChangeFilter(filter: ViewFilter) {
+    this.filter = filter;
+    this.filterBooks();
   }
 
   protected onBookLanguageSelected(lan: Language) {
@@ -140,6 +147,7 @@ export abstract class ReadnListenComponent implements OnDestroy {
   }
 
   protected filterBooks() {
+    // List type: my list or all
     switch (this.listTpe) {
       case 'my':
       this.filteredBooks = this.books.filter(b => !!this.userBooks[b._id] && this.userBooks[b._id].bookmark);
@@ -147,12 +155,32 @@ export abstract class ReadnListenComponent implements OnDestroy {
       default:
         this.filteredBooks = [...this.books];
     }
+    // Apply filters
+    const filters: string[] = [];
+    if (this.filter) {
+      if (this.filter.hideCompleted) {
+        this.filteredBooks = this.filteredBooks.filter(b =>
+          !(this.userBooks[b._id] && this.userBooks[b._id].bookmark && this.userBooks[b._id].bookmark.isBookRead));
+        filters.push(this.text['CompletedOnly']);
+      }
+      if (this.filter.hideNotTranslated) {
+        this.filteredBooks = this.filteredBooks.filter(b =>
+          this.translationData[b._id] && this.translationData[b._id].count >= b.difficulty.nrOfUniqueSentences);
+        filters.push(this.text['TranslatedOnly']);
+      }
+    }
+    // Set display text
     let itemTxt = this.text['ShowingItems'];
     if (itemTxt) {
       itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
       itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
     }
     this.itemTxt = itemTxt;
+    this.filterTxt = this.text['NoFilter'];
+    if (filters.length) {
+      this.filterTxt = this.text['Only'] + ' ';
+      this.filterTxt += filters.join(', ');
+    }
   }
 
   protected onRemovedSubscription(book: Book) {

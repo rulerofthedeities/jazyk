@@ -4,8 +4,9 @@
       <span class="label label-info filter-count pull-right" *ngIf="hasBooks">
         {{itemTxt}}
       </span>
-      <div class="form-group form-group-sm">
-        <select class="form-control sort-control" (change)="onChangeSort($event.target.value)"
+      <div class="form-group form-group-sm pull-left">
+        <select class="form-control sort-control"
+          (change)="onChangeSort($event.target.value)"
           [tooltip]="text['SortOrder']"
           [tooltipPlacement]="'top'">
           <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
@@ -14,6 +15,39 @@
           <option value="sentences1">{{text["sentences1"]}}</option>
           <option value="newest0">{{text["newest0"]}}</option>
         </select>
+      </div>
+      <div class="form-group form-group-sm pull-left filter">
+        <div class="form-control"
+            on-mouseover='onShowDropDown(true)'
+            on-mouseout='onShowDropDown(false)'
+            (click)='onToggleDropDown()'
+            [tooltip]="text['Filter']"
+            [tooltipPlacement]="'top'">
+          <span class="fa fa-filter fa-spacing"></span>{{filterTxt}}
+          <ul
+            class="dropdown-menu"
+            (click)="onSelectDropdown()"
+            [style.display]="showDropDown ? 'block' : 'none'">
+            <li>
+              <label class="container">
+                {{text["HideCompletedRead"]}}
+                <input type="checkbox"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideCompleted">
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            <li>
+              <label class="container">
+                {{text["HideNotTranslated"]}}
+                <input type="checkbox"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideNotTranslated">
+                <span class="checkmark"></span>
+              </label>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

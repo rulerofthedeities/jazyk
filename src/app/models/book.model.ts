@@ -169,3 +169,8 @@ export interface Trophy {
   trophy: string;
   created?: Date;
 }
+
+export  interface ViewFilter {
+  hideCompleted: boolean;
+  hideNotTranslated: boolean;
+}
