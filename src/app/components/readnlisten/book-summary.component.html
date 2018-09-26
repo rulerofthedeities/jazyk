@@ -1,5 +1,7 @@
 <article>
   <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:mainTpe==='listen'}">
+    <div class="read-bar" *ngIf="isBookRead">
+    </div>
     <div class="panel-body" [class.read]="isBookRead">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
         {{text["New"]}}!

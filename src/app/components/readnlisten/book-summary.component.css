@@ -183,6 +183,7 @@
 }
 .panel-book {
   min-height: 236px;
+  position: relative;
 }
 .dashboard.panel-book {
   min-height: 118px;
@@ -195,10 +196,21 @@
   font-size: 16px;
   color: green;
 }
-.read {
+.read-bar {
+  background-color: green;
+  float: left;
+  width: 13px;
+  height: 100%;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border: 1px solid green;
+  box-sizing: content-box;
+}
+.audiobook {
   background-color: lightblue;
 }
-.read .stop > button{
+.audiobook .stop > button{
   background-color: #518ec2;
   color: #eee;
 }
