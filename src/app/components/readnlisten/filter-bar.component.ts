@@ -10,15 +10,12 @@ import { ViewFilter } from '../../models/book.model';
 export class BookFilterBarComponent {
   @Input() text: Object = {};
   @Input() hasBooks: boolean;
+  @Input() filter: ViewFilter;
   @Input() itemTxt: string;
   @Input() filterTxt: string;
   @Output() newSort = new EventEmitter<string>();
   @Output() newFilter = new EventEmitter<ViewFilter>();
   showDropDown = false;
-  filter: ViewFilter = {
-      hideCompleted: false,
-      hideNotTranslated: false
-    };
 
   onChangeSort(sort: string) {
     this.newSort.emit(sort);

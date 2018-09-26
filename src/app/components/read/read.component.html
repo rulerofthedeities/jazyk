@@ -13,6 +13,7 @@
   <km-filter-bar
     [text]="text"
     [hasBooks]="!!filteredBooks.length"
+    [filter]="filter"
     [itemTxt]="itemTxt"
     [filterTxt]="filterTxt"
     (newSort)="onChangeSort($event)"
@@ -43,6 +44,16 @@
       <km-info-msg [msg]="text['NoBooks']">
       </km-info-msg>
     </div>
+
+    <km-filter-bar *ngIf="books.length"
+      [text]="text"
+      [hasBooks]="!!filteredBooks.length"
+      [filter]="filter"
+      [itemTxt]="itemTxt"
+      [filterTxt]="filterTxt"
+      (newSort)="onChangeSort($event)"
+      (newFilter)="onChangeFilter($event)">
+  </km-filter-bar>
   </div>
 
 </section>

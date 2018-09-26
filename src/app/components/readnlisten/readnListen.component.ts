@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 
 // TMP: remove later?
 import { ReadService } from '../../services/read.service';
@@ -31,7 +31,10 @@ export abstract class ReadnListenComponent implements OnDestroy {
   filterTxt: string;
   nrOfBooks: number;
   sort = 'difficulty1';
-  filter: ViewFilter;
+  filter: ViewFilter = {
+    hideCompleted: false,
+    hideNotTranslated: false
+  };
   tpe: string; // read or listen
   listTpe = 'all';
 
