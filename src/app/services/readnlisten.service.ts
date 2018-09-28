@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, UserBook, UserData } from '../models/book.model';
+import { Book, Chapter, UserBook, UserData, TranslationData } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -51,6 +51,14 @@ export class ReadnListenService {
     return this.http
     .get<UserData[]>('/api/book/sessions/' + learnLanCode + '/' + bookType)
     .pipe(retry(3));
+  }
+
+  /*** Translations ***/
+
+  fetchTranslationData(userLanCode: string, bookType: string): Observable<TranslationData[]> {
+    // count the # of translations for all books into a specific language
+    return this.http
+    .get<TranslationData[]>('/api/book/translation/' + userLanCode + '/' + bookType);
   }
 
 }

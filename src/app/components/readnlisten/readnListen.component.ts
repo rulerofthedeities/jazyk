@@ -142,6 +142,20 @@ export abstract class ReadnListenComponent implements OnDestroy {
     );
   }
 
+  protected getBookTranslations() {
+    this.readnListenService
+    .fetchTranslationData(this.myLanguage.code, this.bookType)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      translations => {
+        this.translationData = {};
+        translations.forEach(translation => {
+          this.translationData[translation.bookId] = translation;
+        });
+      }
+    );
+  }
+
   protected filterUserLanguages() {
     // filter out selected book language
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);

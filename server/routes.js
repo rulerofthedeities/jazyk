@@ -96,7 +96,7 @@ module.exports.initialize = function(app, router) {
   router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
   router.post('/book/translation/', books.addTranslation);
   router.put('/book/translation/', books.updateTranslation);
-  router.get('/book/translation/:lan', books.getBookTranslations);
+  router.get('/book/translation/:lan/:bookType', books.getBookTranslations);
   router.put('/book/bookmark/:bookId/:lan', books.updateBookmark);
   router.post('/book/session', books.addSession);
   router.put('/book/session', books.updateSession);

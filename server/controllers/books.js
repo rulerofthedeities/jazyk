@@ -285,7 +285,8 @@ module.exports = {
   },
   getBookTranslations: (req, res) => {
     const userLan = req.params.lan,
-          query = {'translations.lanCode': userLan},
+          bookType = req.params.bookType,
+          query = {'translations.lanCode': userLan, bookType},
           projection = {
             _id: 0,
             bookId: '$_id',

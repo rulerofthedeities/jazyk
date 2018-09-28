@@ -66,20 +66,4 @@ export class ReadComponent extends ReadnListenComponent implements OnInit, OnDes
       }
     );
   }
-
-  private getBookTranslations() {
-    this.readService
-    .fetchTranslationData(this.myLanguage.code)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      translations => {
-        this.translationData = {};
-        translations.forEach(translation => {
-          this.translationData[translation.bookId] = translation;
-        });
-      }
-    );
-  }
-
-
 }
