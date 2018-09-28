@@ -8,13 +8,15 @@ import { RegionAudio } from '../../models/main.model';
 })
 
 export class AudioFileComponent implements OnChanges {
-  @Input() regionAudio: RegionAudio;
+  @Input() fileUrl: string;
+  @Input() size = '24';
   @Input() autoPlay = false;
   @Input() active = true;
   audio: any;
 
   ngOnChanges() {
-    if (this.audio && this.regionAudio.s3 !== this.audio.src) {
+    console.log('audio changed', this.fileUrl);
+    if (this.audio && this.fileUrl !== this.audio.src) {
       this.audio = null;
     }
     if (this.autoPlay) {
@@ -31,7 +33,7 @@ export class AudioFileComponent implements OnChanges {
     if (this.active) {
       if (!this.audio) {
         this.audio = new Audio();
-        this.audio.src = this.regionAudio.s3;
+        this.audio.src = this.fileUrl;
         this.audio.load();
       } else {
         if (this.audio.ended || this.audio.paused) {

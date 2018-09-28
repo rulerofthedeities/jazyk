@@ -11,7 +11,7 @@ import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter } from 'rxjs/operators';
 import { ReadSettings } from '../../models/user.model';
 import { UserBook, Bookmark, SessionData,
-         Book, Chapter, SentenceSteps } from '../../models/book.model';
+         Book, Chapter, Sentence, SentenceSteps } from '../../models/book.model';
 
 @Component({
   templateUrl: 'book-sentences.component.html',
@@ -28,7 +28,8 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   bookType = 'read'; // read or listen
   isCountDown = false;
   currentChapter: Chapter;
-  currentSentence: string;
+  currentSentence: Sentence;
+  currentSentenceTxt: string;
   currentSentenceNr: number;
   currentSentenceTotal: number;
   currentStep = SentenceSteps.Question;
@@ -193,6 +194,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.isCountDown = false;
     this.currentChapter = null;
     this.currentSentence = null;
+    this.currentSentenceTxt = null;
     this.currentSentenceNr = null;
     this.currentSentenceTotal = null;
     this.currentStep = null;
@@ -211,7 +213,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer;
     this.sessionData.answers += answer.substr(0, 1);
-    this.sessionData.points.words += this.getSentencePoints(this.currentSentence);
+    this.sessionData.points.words += this.getSentencePoints(this.currentSentence.text);
     switch (answer) {
       case 'yes':
         this.sessionData.nrYes++;
@@ -348,9 +350,17 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private processChapter(chapter: Chapter, bookmark: Bookmark) {
     if (chapter) {
       this.currentChapter = chapter;
+      const activeSentences = chapter.sentences.filter(s => !s.isDisabled);
+      console.log('active sentences', activeSentences);
+      activeSentences.sort(
+        (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
+      );
+      chapter.activeSentences = activeSentences;
       this.emitChapter(chapter);
-      this.currentSentenceTotal = chapter.sentences.length;
+      console.log('current sentences', chapter.activeSentences);
+      this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
+      console.log('current sentence nr', this.currentSentenceNr);
       this.emitSentenceNr(this.currentSentenceNr);
       this.getSentence();
     } else {
@@ -372,16 +382,18 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   private getSentence() {
-    const chapter = this.currentChapter,
-          nr = this.currentSentenceNr;
-    if (chapter.sentences[nr]) {
+    const nr = this.currentSentenceNr,
+          sentences = this.currentChapter.activeSentences;
+    console.log('nr', sentences[nr]);
+    if (sentences[nr]) {
       this.currentStep = SentenceSteps.Question;
-      const sentence = chapter.sentences[nr].text.trim();
-      if (sentence) {
-        this.currentSentence = sentence;
+      const sentenceTxt = sentences[nr].text.trim();
+      if (sentenceTxt) {
+        this.currentSentence = sentences[nr];
+        this.currentSentenceTxt = sentenceTxt;
         this.currentSentenceNr++;
         this.emitSentenceNr(this.currentSentenceNr);
-        this.nextSentenceObservable.next(sentence);
+        this.nextSentenceObservable.next(sentenceTxt);
         this.checkReadingStarted(nr);
       }
     } else {

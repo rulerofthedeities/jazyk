@@ -5,6 +5,10 @@ export interface Sentence {
   isNewParagraph?: boolean;
   isEmptyLine?: boolean;
   isHeader?: boolean;
+  fileName?: string;
+  s3?: string;
+  isDisabled?: boolean;
+  sequence?: String; // For sorting
 }
 
 export interface Chapter {
@@ -19,6 +23,7 @@ export interface Chapter {
   totalScore: number;
   chapterNr?: string;
   sentences: Sentence[];
+  activeSentences?: Sentence[];
 }
 
 interface Difficulty {

@@ -1,0 +1,13 @@
+.sentence {
+  /* font-family: 'Times New Roman', Times, serif; */
+  font-size: 3rem;
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 12px;
+}
+.audio {
+  margin: auto;
+  width: 120px;
+}

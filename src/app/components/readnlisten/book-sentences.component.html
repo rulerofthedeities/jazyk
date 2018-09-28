@@ -1,4 +1,3 @@
-{{bookType}}
 <section kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
@@ -13,7 +12,7 @@
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
-              <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+            <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
             {{book?.title}}
             <small class="book-chapter">
               {{currentChapter.title}}
@@ -41,9 +40,13 @@
             <div class="sentence-count">
               {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
             </div>
-            <div class="sentence">
-              {{currentSentence}}
-            </div>
+            <km-sentence
+              [sentence]="currentSentence"
+              [bookType]="bookType"
+              [directory]="book.directory || ''"
+              [lanCode]="book.lanCode"
+              [showSentence]="currentStep >= steps.Answered">
+            </km-sentence>
             <div class="question" *ngIf="currentStep === steps.Question">
               {{text["DoYouUnderstand"]}}
             </div>
@@ -95,7 +98,7 @@
                 [bookLanCode]="book?.lanCode"
                 [text]="text"
                 [bookId]="book?._id"
-                [sentence]="currentSentence"
+                [sentence]="currentSentenceTxt"
                 [answersReceived]="answersObservable"
                 [newSentence]="nextSentenceObservable"
                 (translationAdded)="onTranslationAdded($event)"

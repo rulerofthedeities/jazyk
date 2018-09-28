@@ -15,6 +15,7 @@ import { BookTranslationComponent } from './components/readnlisten/book-translat
 import { BookContextComponent } from './components/readnlisten/book-context.component';
 import { BookSuggestionsComponent } from './components/readnlisten/book-suggestions.component';
 import { BookTabComponent } from './components/readnlisten/book-tab.component';
+import { SentenceComponent } from './components/readnlisten/sentence.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
@@ -40,6 +41,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     BookContextComponent,
     BookSuggestionsComponent,
     BookTabComponent,
+    SentenceComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ],
@@ -60,6 +62,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     BookContextComponent,
     BookSuggestionsComponent,
     BookTabComponent,
+    SentenceComponent,
     ModalPromotionComponent,
     ScrollToDirective
   ]

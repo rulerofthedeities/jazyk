@@ -13,6 +13,7 @@
   <km-filter-bar
     [text]="text"
     [hasBooks]="!!filteredBooks.length"
+    [filter]="filter"
     [itemTxt]="itemTxt"
     [filterTxt]="filterTxt"
     (newSort)="onChangeSort($event)"
