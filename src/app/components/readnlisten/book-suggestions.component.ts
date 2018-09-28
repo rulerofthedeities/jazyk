@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ReadService } from '../../services/read.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { Map } from '../../models/main.model';
 import { Book, UserBook } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
@@ -23,6 +24,7 @@ interface Answers {
 
 export class BookSuggestionsComponent implements OnInit, OnDestroy {
   @Input() book: Book;
+  @Input() bookType: string;
   @Input() private userLanCode: string;
   @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
   @Input() private nextSentence: Subject<string>;
@@ -36,7 +38,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   isResults = false;
 
   constructor(
-    private readService: ReadService
+    private readService: ReadService,
+    private readnListenService: ReadnListenService
   ) {}
 
   ngOnInit() {
@@ -47,7 +50,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   private getBooks() {
     zip(
       this.readService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
-      this.readService.fetchUserBooks(this.userLanCode),
+      this.readnListenService.fetchUserBooks(this.userLanCode, this.bookType),
       this.readService.fetchPreviousAnswers(this.book._id, this.userLanCode)
     )
     .pipe(takeWhile(() => this.componentActive))

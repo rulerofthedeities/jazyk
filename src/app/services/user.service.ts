@@ -341,15 +341,15 @@ export class UserService {
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
-  subscribeToBook(bookId: string, lanCode: string) {
+  subscribeToBook(bookId: string, lanCode: string, bookType: string) {
     this.http
-    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode}))
+    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode, bookType}))
     .toPromise();
   }
 
-  unSubscribeFromBook(bookId: string, lanCode: string): Observable<UserBook> {
+  unSubscribeFromBook(bookId: string, lanCode: string, bookType: string): Observable<UserBook> {
     return this.http
-    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode}));
+    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode, bookType}));
   }
 
   fetchWelcomeNotification(user: User) {

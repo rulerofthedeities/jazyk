@@ -33,9 +33,10 @@ export abstract class ReadnListenComponent implements OnDestroy {
   sort = 'difficulty1';
   filter: ViewFilter = {
     hideCompleted: false,
-    hideNotTranslated: false
+    hideNotTranslated: false,
+    hideOld: false
   };
-  tpe: string; // read or listen
+  bookType: string; // read or listen
   listTpe = 'all';
 
   constructor(
@@ -93,7 +94,7 @@ export abstract class ReadnListenComponent implements OnDestroy {
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        this.sharedService.setPageTitle(this.text, this.tpe === 'listen' ? 'Listen' : 'Read');
+        this.sharedService.setPageTitle(this.text, this.bookType === 'listen' ? 'Listen' : 'Read');
         this.getBooks();
         this.filterUserLanguages();
         this.isReady = true;
@@ -110,6 +111,35 @@ export abstract class ReadnListenComponent implements OnDestroy {
 
   protected getBooks(onlyBooks = false) {
 
+  }
+
+  protected getUserBooks() {
+    this.readnListenService
+    .fetchUserBooks(this.myLanguage.code, this.bookType)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      books => {
+        this.userBooks = {};
+        books.forEach(uBook => {
+          this.userBooks[uBook.bookId] = uBook;
+        });
+      }
+    );
+  }
+
+  protected getUserData() {
+    this.readnListenService
+    .fetchSessionData(this.myLanguage.code, this.bookType)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      sessionData => {
+        this.userData = {};
+        sessionData.forEach(session => {
+          this.userData[session.bookId] = session;
+        });
+        console.log('userdata', this.userData);
+      }
+    );
   }
 
   protected filterUserLanguages() {
@@ -170,6 +200,10 @@ export abstract class ReadnListenComponent implements OnDestroy {
         this.filteredBooks = this.filteredBooks.filter(b =>
           this.translationData[b._id] && this.translationData[b._id].count >= b.difficulty.nrOfUniqueSentences);
         filters.push(this.text['TranslatedOnly']);
+      }
+      if (this.filter.hideOld) {
+        this.filteredBooks = this.filteredBooks.filter(b => b.year >= 1945);
+        filters.push(this.text['ModernOnly']);
       }
     }
     // Set display text

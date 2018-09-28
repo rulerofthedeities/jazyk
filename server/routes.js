@@ -89,7 +89,7 @@ module.exports.initialize = function(app, router) {
   /* read */
 
   router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
-  router.get('/books/user/:lan', books.getUserLanBooks);
+  router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
   router.get('/book/user/:lan/:bookId', books.getUserBook);
   router.get('/book/:bookId', books.getBook);
   router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
@@ -100,7 +100,7 @@ module.exports.initialize = function(app, router) {
   router.put('/book/bookmark/:bookId/:lan', books.updateBookmark);
   router.post('/book/session', books.addSession);
   router.put('/book/session', books.updateSession);
-  router.get('/book/sessions/:lan', books.getSessions);
+  router.get('/book/sessions/:lan/:bookType', books.getSessions);
   router.get('/book/sessions/book/:bookId/:lan', books.getBookSessions);
   router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
   router.post('/book/thumb', books.addThumb);

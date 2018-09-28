@@ -23,14 +23,14 @@ export class ListenComponent extends ReadnListenComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.tpe = 'listen';
+    this.bookType = 'listen';
     this.getDependables();
   }
 
   protected getBooks(onlyBooks = false) {
     if (!onlyBooks) { // Not required if resorted
-      // this.getUserBooks();
-      // this.getUserData();
+      this.getUserBooks();
+      this.getUserData();
       // this.getBookTranslations();
     }
     this.isLoading = true;

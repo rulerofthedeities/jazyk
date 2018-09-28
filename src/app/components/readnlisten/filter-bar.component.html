@@ -46,6 +46,15 @@
                 <span class="checkmark"></span>
               </label>
             </li>
+            <li>
+              <label class="container">
+                {{text["HideOld"]}}
+                <input type="checkbox"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideOld">
+                <span class="checkmark"></span>
+              </label>
+            </li>
           </ul>
         </div>
       </div>

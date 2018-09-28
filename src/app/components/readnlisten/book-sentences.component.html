@@ -118,6 +118,7 @@
           <!-- SUGGESTIONS -->
           <km-book-suggestions
             [book]="book"
+            [bookType]="bookType"
             [text]="text"
             [userLanCode]="userLanCode"
             [answersReceived]="answersObservable"
@@ -128,7 +129,7 @@
           <button type="button" *ngIf="currentStep === steps.Results"
             class="btn btn-primary"
             (click)="onBackToList()">
-            {{text["BackReading"]}}
+            {{text[bookType === 'listen' ? "BackListening" : "BackReading"]}}
           </button>
         </div>
       </div>
@@ -146,7 +147,7 @@
     [text]="text"
     (confirmed)="onExitConfirmed($event)">
     <div title>{{text["Warning"]}}</div>
-    <div message>{{text["ConfirmStopReading"]}}</div>
+    <div message>{{text[bookType==='listen' ? "ConfirmStopListening" : "ConfirmStopReading"]}}</div>
   </km-modal-confirm>
 </section>
 

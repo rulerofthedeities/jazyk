@@ -178,8 +178,10 @@ module.exports = {
   },
   getUserLanBooks: (req, res) => {
     const lanCode = req.params.lan,
+          bookType = req.params.bookType,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId, lanCode};
+          query = {userId, lanCode, bookType};
+          console.log('query', query);
     UserBook.find(query, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching user books', () => {
         response.handleSuccess(res, books);
@@ -358,7 +360,8 @@ module.exports = {
   getSessions: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lanCode = req.params.lan,
-          query = {userId, lanCode},
+          bookType = req.params.bookType,
+          query = {userId, lanCode, bookType},
           projection = {
             _id: 0,
             bookId: '$_id',

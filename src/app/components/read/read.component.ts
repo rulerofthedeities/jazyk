@@ -25,7 +25,7 @@ export class ReadComponent extends ReadnListenComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.tpe = 'read';
+    this.bookType = 'read';
     this.getDependables();
   }
 
@@ -63,34 +63,6 @@ export class ReadComponent extends ReadnListenComponent implements OnInit, OnDes
         }
         this.isLoading = false;
         this.IsBooksReady = true;
-      }
-    );
-  }
-
-  private getUserBooks() {
-    this.readService
-    .fetchUserBooks(this.myLanguage.code)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      books => {
-        this.userBooks = {};
-        books.forEach(uBook => {
-          this.userBooks[uBook.bookId] = uBook;
-        });
-      }
-    );
-  }
-
-  private getUserData() {
-    this.readService
-    .fetchSessionData(this.myLanguage.code)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      sessionData => {
-        this.userData = {};
-        sessionData.forEach(session => {
-          this.userData[session.bookId] = session;
-        });
       }
     );
   }

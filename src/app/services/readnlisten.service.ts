@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, ViewFilter } from '../models/book.model';
+import { Book, Chapter, UserBook, UserData } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -10,6 +10,8 @@ export class ReadnListenService {
   constructor(
     private http: HttpClient
   ) {}
+
+  /*** Books ***/
 
   fetchPublishedAudioBooks(readLanCode: string, sort: string): Observable<Book[]> {
     return this.http
@@ -25,6 +27,8 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
+  /*** Chapters ***/
+
   fetchChapter(bookId: string, bookType: string, chapterId: string, sequence: number): Observable<Chapter> {
     const chapter = chapterId ? chapterId : '0',
           bookPath = bookType === 'listen' ? 'audiobook' : 'book';
@@ -32,4 +36,21 @@ export class ReadnListenService {
     .get<Chapter>(`/api/${bookPath}/chapter/${bookId}/${chapter}/${sequence.toString()}`)
     .pipe(retry(3));
   }
+
+  /*** Subscriptions ***/
+
+  fetchUserBooks(interfaceLanCode: string, bookType: string): Observable<UserBook[]> {
+    return this.http
+    .get<UserBook[]>('/api/books/user/' + interfaceLanCode + '/' + bookType)
+    .pipe(retry(3));
+  }
+
+  /*** Session Data ***/
+
+  fetchSessionData(learnLanCode: string, bookType: string): Observable<UserData[]> {
+    return this.http
+    .get<UserData[]>('/api/book/sessions/' + learnLanCode + '/' + bookType)
+    .pipe(retry(3));
+  }
+
 }

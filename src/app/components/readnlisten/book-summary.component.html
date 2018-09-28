@@ -1,5 +1,5 @@
 <article>
-  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:mainTpe==='listen'}">
+  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen'}">
     <div class="read-bar" *ngIf="isBookRead">
     </div>
     <div class="panel-body" [class.read]="isBookRead">
@@ -15,8 +15,8 @@
       <div class="book">
         <div class="book-type">
           <span class="fa"
-            [ngClass]="{'fa-book':mainTpe==='read', 'fa-volume-up': mainTpe==='listen'}"
-            [tooltip]="text[mainTpe==='listen' ? 'Audiobook' : 'book']"
+            [ngClass]="{'fa-book':bookType==='read', 'fa-volume-up': bookType==='listen'}"
+            [tooltip]="text[bookType==='listen' ? 'Audiobook' : 'book']"
             tooltipPlacement="left">
         </span>
         </div>
@@ -69,11 +69,11 @@
             class="btn btn-success"
             (click)="onStartReading()">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{isStarted ? (mainTpe=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
-                        : (mainTpe=== 'listen' ? text["StartListening"] : text["StartReading"])
+            {{isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
+                        : (bookType=== 'listen' ? text["StartListening"] : text["StartReading"])
             }}
           </button>
-          <button *ngIf="!isBookRead && mainTpe=== 'listen'"
+          <button *ngIf="!isBookRead && bookType=== 'listen'"
             type="button"
             class="btn btn-warning"
             (click)="onStartReading()">

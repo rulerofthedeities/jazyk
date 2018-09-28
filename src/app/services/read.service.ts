@@ -25,12 +25,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  fetchUserBooks(interfaceLanCode: string): Observable<UserBook[]> {
-    return this.http
-    .get<UserBook[]>('/api/books/user/' + interfaceLanCode)
-    .pipe(retry(3));
-  }
-
   fetchUserBook(interfaceLanCode: string, bookId: string): Observable<UserBook> {
     return this.http
     .get<UserBook>('/api/book/user/' + interfaceLanCode + '/' + bookId)
@@ -104,12 +98,6 @@ export class ReadService {
       return this.http
       .post<SessionData>('/api/book/session', {sessionData});
     }
-  }
-
-  fetchSessionData(learnLanCode: string): Observable<UserData[]> {
-    return this.http
-    .get<UserData[]>('/api/book/sessions/' + learnLanCode)
-    .pipe(retry(3));
   }
 
   fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {

@@ -102,6 +102,7 @@ export interface UserBook {
   bookId: string;
   userId: string;
   lanCode: string;
+  bookType: string;
   subscribed: boolean;
   bookmark: Bookmark;
   dt: UserBookDates;
@@ -129,6 +130,7 @@ export interface SessionData {
   bookId: string;
   userId?: string;
   lanCode: string;
+  bookType: string;
   answers: string;
   chapters: number;
   nrYes: number;
@@ -178,4 +180,5 @@ export interface Trophy {
 export  interface ViewFilter {
   hideCompleted: boolean;
   hideNotTranslated: boolean;
+  hideOld: boolean;
 }

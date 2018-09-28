@@ -84,7 +84,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   }
 
   onBackToList() {
-    this.router.navigate(['/read']);
+    this.router.navigate(['/' + this.bookType]);
   }
 
   onNextSentence() {
@@ -188,7 +188,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
   private startAnotherBook(book: Book) {
     this.bookId = book._id;
     this.book = book;
-    this.userService.subscribeToBook(this.bookId, this.userLanCode);
+    this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType);
     this.location.go('/read/book/' + this.bookId + '/' + this.userLanCode);
     this.log(`Start reading '${this.book.title}'`);
     this.isCountDown = false;
@@ -277,6 +277,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.sessionData = {
           bookId: this.bookId,
           lanCode: this.userLanCode,
+          bookType: this.bookType,
           answers: '',
           chapters: 0,
           translations: 0,
@@ -317,7 +318,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       }
     } else {
       // no userbook, subscribe and get first chapter
-      this.userService.subscribeToBook(this.bookId, this.userLanCode);
+      this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType);
       this.getBookAndChapter(this.bookId, null, 1);
     }
   }
@@ -365,6 +366,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
       this.getSentence();
     } else {
       // chapter not found -> end of book
+      console.log('no chapter, end of book');
       this.sessionData.resultData.isFinished = true;
       this.processResults(true);
     }
@@ -376,6 +378,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
+        console.log('fetched chapter', chapter);
         this.processChapter(chapter, bookmark);
       }
     );
@@ -385,9 +388,11 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     const nr = this.currentSentenceNr,
           sentences = this.currentChapter.activeSentences;
     console.log('nr', sentences[nr]);
+    let sentenceOk = false;
     if (sentences[nr]) {
       this.currentStep = SentenceSteps.Question;
-      const sentenceTxt = sentences[nr].text.trim();
+      const sentenceTxt = sentences[nr].text ? sentences[nr].text.trim() : null;
+      console.log('sentenceTxt', sentenceTxt);
       if (sentenceTxt) {
         this.currentSentence = sentences[nr];
         this.currentSentenceTxt = sentenceTxt;
@@ -395,9 +400,12 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
         this.emitSentenceNr(this.currentSentenceNr);
         this.nextSentenceObservable.next(sentenceTxt);
         this.checkReadingStarted(nr);
+        sentenceOk = true;
       }
-    } else {
+    }
+    if (!sentenceOk) {
       // Chapter finished
+      console.log('chapter finished');
       this.sessionData.chapters++;
       this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
@@ -457,6 +465,7 @@ export class BookSentencesComponent implements OnInit, OnDestroy {
     this.placeBookmark(isBookRead); // must be before currentStep change
     this.saveSessionData();
     this.currentStep = SentenceSteps.Results;
+    this.readingStarted = true; // in case nothing was done, otherwise it shows loading
     this.answersObservable.next({answers: this.sessionData.answers, isResults: true}); // Show suggestions also in results
   }
 

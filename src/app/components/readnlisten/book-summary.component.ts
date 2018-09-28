@@ -14,7 +14,7 @@ import { takeWhile } from 'rxjs/operators';
 
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
-  @Input() mainTpe = 'read'; // read or listen
+  @Input() bookType = 'read'; // read or listen
   @Input() userBook: UserBook;
   @Input() userData: UserData;
   @Input() translationData: TranslationData;
@@ -61,8 +61,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartReading() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode);
-    if (this.mainTpe === 'listen') {
+    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'read');
+    if (this.bookType === 'listen') {
       console.log('start listen');
       this.log(`Start listening to '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
@@ -77,12 +77,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     console.log('start listening');
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode);
+    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'listen');
   }
 
   onStopReading() {
     this.userService
-    .unSubscribeFromBook(this.book._id, this.userLanCode)
+    .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
@@ -177,7 +177,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setDefaultImg() {
-    this.defaultImage = this.mainTpe === 'listen' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
+    this.defaultImage = this.bookType === 'listen' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
   }
 
   private log(message: string) {

@@ -8,7 +8,7 @@ import { Language } from '../../models/main.model';
 })
 
 export class BookLanguagesBarComponent {
-  @Input() mainTpe = 'book'; // book or audio
+  @Input() bookType = 'read'; // read or listen
   @Input() text: Object = {};
   @Input() bookLanguages: Language[];
   @Input() bookLanguage: Language;
