@@ -67,18 +67,18 @@
           <button *ngIf="!isBookRead"
             type="button"
             class="btn btn-success"
-            (click)="onStartReading()">
+            (click)="onStartReadingListening()">
             <span class="fa fa-arrow-right fa-spacing"></span>
             {{isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
                         : (bookType=== 'listen' ? text["StartListening"] : text["StartReading"])
             }}
           </button>
-          <button *ngIf="!isBookRead && bookType=== 'listen'"
+          <button *ngIf="!isBookRead && bookType==='listen'"
             type="button"
             class="btn btn-warning"
-            (click)="onStartReading()">
+            (click)="onStartListeningTest()">
             <span class="fa fa-flask fa-spacing"></span>
-            {{isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
+            {{isStartedTest ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
           </button>
           <div class="book-read" *ngIf="isBookRead">
             <span class="fa fa-check"></span>

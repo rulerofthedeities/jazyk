@@ -31,11 +31,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  placeBookmark(bookId: string, bookmark: Bookmark, lanCode: string): Observable<Bookmark> {
-    return this.http
-    .put<Bookmark>('/api/book/bookmark/' + bookId + '/' + lanCode, {bookmark});
-  }
-
   /*** Chapters ***/
 
   fetchChapter(bookId: string, chapterId: string, sequence: number): Observable<Chapter> {
@@ -56,19 +51,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  addSentenceTranslation(
-    bookLanCode: string,
-    userLanCode: string,
-    bookId: string,
-    sentence: string,
-    translation: string,
-    note: string): Observable<{translation: SentenceTranslation, translationsId: string}> {
-    return this.http
-    .post<{translation: SentenceTranslation, translationsId: string}>('/api/book/translation/', {
-      bookLanCode, userLanCode, bookId, sentence, translation, note
-    });
-  }
-
   updateSentenceTranslation(
     translationId: string,
     translationElementId: string,
@@ -81,18 +63,6 @@ export class ReadService {
   }
 
   /*** Session data ***/
-
-  saveSessionData(sessionData: SessionData): Observable<SessionData>  {
-    if (sessionData._id) {
-      // Update session data
-      return this.http
-      .put<SessionData>('/api/book/session', {sessionData});
-    } else {
-      // New session data
-      return this.http
-      .post<SessionData>('/api/book/session', {sessionData});
-    }
-  }
 
   fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
     return this.http

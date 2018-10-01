@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Sentence } from '../../models/book.model';
 import { awsPath } from '../../services/shared.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 
 @Component({
   selector: 'km-sentence',
@@ -16,7 +17,15 @@ export class SentenceComponent implements OnChanges {
   @Input() showSentence: boolean;
   awsPath = awsPath;
 
+  constructor(
+    private readnListenService: ReadnListenService
+  ) {}
+
   ngOnChanges() {
 
+  }
+
+  onAudioEnded(isEnded: boolean) {
+    this.readnListenService.audioHasEnded(isEnded);
   }
 }

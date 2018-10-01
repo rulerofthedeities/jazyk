@@ -59,13 +59,12 @@ var translationSchema = new Schema({
 var translationsSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   lanCode: {type: String, required: true},
-  bookType: {type: String, required: true},
   sentence: {type: String, required: true},
   translations: [translationSchema]
 });
 
 translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
-translationsSchema.index({'translations.lanCode': 1, bookType: 1});
+translationsSchema.index({'translations.lanCode': 1});
 TranslationModel = mongoose.model('Booktranslation', translationsSchema);
 
 

@@ -341,9 +341,9 @@ export class UserService {
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
-  subscribeToBook(bookId: string, lanCode: string, bookType: string) {
+  subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest = false) {
     this.http
-    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode, bookType}))
+    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode, bookType, isTest}))
     .toPromise();
   }
 

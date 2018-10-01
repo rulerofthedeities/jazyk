@@ -31,6 +31,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   percDone: number;
   isSubscribed = false;
   isStarted = false;
+  isStartedTest = false;
   isBookRead = false;
   showIntro = false;
   isNewBook = false;
@@ -58,12 +59,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkSentencesDone();
   }
 
-  onStartReading() {
+  onStartReadingListening() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'read');
+    this.userService.subscribeToBook(this.book._id, this.userLanCode, this.bookType);
     if (this.bookType === 'listen') {
-      console.log('start listen');
+      console.log('start listening');
       this.log(`Start listening to '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
     } else {
@@ -73,11 +74,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onStartListening() {
-    console.log('start listening');
+  onStartListeningTest() {
+    console.log('start listening test');
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'listen');
+    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'listen', true);
+    this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
   onStopReading() {
@@ -128,6 +130,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private checkIfStarted() {
     this.isStarted = false;
+    this.isStartedTest = false;
     this.isSubscribed = false;
     this.isBookRead = false;
     this.nrOfSentencesDone = 0;

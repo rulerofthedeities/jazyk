@@ -3,7 +3,7 @@ import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
-import { ReadnListenComponent } from '../readnlisten/readnListen.component';
+import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -11,7 +11,7 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['listen.component.css']
 })
 
-export class ListenComponent extends ReadnListenComponent implements OnInit, OnDestroy {
+export class ListenComponent extends ReadnListenListComponent implements OnInit, OnDestroy {
 
   constructor(
     readService: ReadService,

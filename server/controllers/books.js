@@ -285,8 +285,7 @@ module.exports = {
   },
   getBookTranslations: (req, res) => {
     const userLan = req.params.lan,
-          bookType = req.params.bookType,
-          query = {'translations.lanCode': userLan, bookType},
+          query = {'translations.lanCode': userLan},
           projection = {
             _id: 0,
             bookId: '$_id',
@@ -310,8 +309,9 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = req.params.bookId,
           lanCode = req.params.lan,
+          bookType = req.params.bookType,
           bookmark = req.body.bookmark,
-          query = {bookId, userId, lanCode};
+          query = {bookId, userId, lanCode, bookType};
     bookmark.dt = Date.now()
     const update = {$set: {bookmark}};
     if (!bookmark.sentenceNrBook) {

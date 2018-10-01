@@ -1,16 +1,16 @@
 import { OnDestroy } from '@angular/core';
 
 // TMP: remove later?
-import { ReadService } from '../../services/read.service';
+import { ReadService } from '../services/read.service';
 
-import { ReadnListenService } from '../../services/readnlisten.service';
-import { UserService } from '../../services/user.service';
-import { SharedService } from '../../services/shared.service';
-import { Map, Language, LicenseUrl } from '../../models/main.model';
-import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../../models/book.model';
+import { ReadnListenService } from '../services/readnlisten.service';
+import { UserService } from '../services/user.service';
+import { SharedService } from '../services/shared.service';
+import { Map, Language, LicenseUrl } from '../models/main.model';
+import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
-export abstract class ReadnListenComponent implements OnDestroy {
+export abstract class ReadnListenListComponent implements OnDestroy {
   protected componentActive = true;
   protected userLanguages: Language[];
   protected books: Book[];

@@ -1,0 +1,33 @@
+.sentence {
+  padding-top: 10px;
+}
+.split-sentence {
+  float: left;
+  position: relative;
+  font-size: 3rem;
+  background-color: black;
+  color: white;
+  padding: 8px;
+  vertical-align: middle;
+}
+.split-sentence-wrapper {
+  white-space: nowrap;
+}
+.word {
+  top: 6px;
+  position: relative;
+  float: left;
+  width: inherit;
+  font-size: 3rem;
+}
+.answered {
+  color: white;
+  border-color: black;
+}
+.correct {
+  background-color: green;
+}
+.incorrect {
+  background-color: red;
+}
+

@@ -1,7 +1,13 @@
 export enum SentenceSteps { Question, Answered, Translations, Results }
 
+export interface Word {
+  word: string;
+  score: number;
+}
+
 export interface Sentence {
   text: string;
+  words: Word[];
   isNewParagraph?: boolean;
   isEmptyLine?: boolean;
   isHeader?: boolean;
@@ -103,6 +109,7 @@ export interface UserBook {
   userId: string;
   lanCode: string;
   bookType: string;
+  isTest: boolean;
   subscribed: boolean;
   bookmark: Bookmark;
   dt: UserBookDates;
@@ -131,6 +138,7 @@ export interface SessionData {
   userId?: string;
   lanCode: string;
   bookType: string;
+  isTest: boolean;
   answers: string;
   chapters: number;
   nrYes: number;

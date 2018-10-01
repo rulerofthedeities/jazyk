@@ -19,13 +19,14 @@ var userBookSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   bookType: {type: String, required: true},
+  isTest: {type: Boolean, required: true},
   lanCode: {type: String, required: true},
   subscribed: {type: Boolean, default: true},
   bookmark: bookmarkSchema,
   dt: {type: dateSchema, required: true}
 });
 
-userBookSchema.index({userId: 1, bookId: 1, lanCode: 1, bookType: 1});
+userBookSchema.index({userId: 1, bookId: 1, lanCode: 1, bookType: 1, isTest: 1});
 const UserBookModel = mongoose.model('UserBook', userBookSchema);
 UserBookModel.ensureIndexes();
 

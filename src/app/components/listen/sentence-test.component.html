@@ -1,0 +1,35 @@
+<div kmPressed (hasKeyPressed)="onKeyPressed($event)">
+  <div *ngIf="showSentence" class="sentence">
+    {{sentence.text}}
+  </div>
+  {{word|json}}
+  <div *ngIf="showSentence" class="sentence">
+    <span class="split-sentence-wrapper" *ngIf="sentenceSections[0]">
+      <span class="split-sentence">{{sentenceSections[0]}}</span>
+    </span>
+    <input
+      type="text"
+      class="form-control input-lg word"
+      id="answer"
+      maxlength="100"
+      autofocus
+      autocomplete="off"
+      spellcheck="false"
+      [attr.disabled]="isAnswered ? '' : null"
+      [ngClass]="{answered: isAnswered ,correct: isAnswered && isCorrect, incorrect: isAnswered && !isCorrect}"
+      #answer>
+    <span class="split-sentence-wrapper">
+      <span class="split-sentence ">{{sentenceSections[1]}}</span>
+    </span>
+    <div class="clearfix"></div>
+  </div>
+
+  <!-- Check WORD -->
+  <button *ngIf="showSentence && !isAnswered"
+    type="button"
+    class="btn btn-success btn-lg pull-right next-sentence"
+    (click)="onCheckWord()">
+    {{text["Check"]}}CHECK <span class="fa fa-chevron-right"></span>
+  </button>
+  <div class="clearfix"></div>
+</div>

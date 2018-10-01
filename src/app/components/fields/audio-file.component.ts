@@ -1,5 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core';
-import { RegionAudio } from '../../models/main.model';
+import { Component, OnChanges, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'km-audio-file',
@@ -12,6 +11,7 @@ export class AudioFileComponent implements OnChanges {
   @Input() size = '24';
   @Input() autoPlay = false;
   @Input() active = true;
+  @Output() ended = new EventEmitter<boolean>();
   audio: any;
 
   ngOnChanges() {
@@ -44,6 +44,7 @@ export class AudioFileComponent implements OnChanges {
       }
       this.audio.onended = () => {
         // The audio has ended
+        this.ended.emit(true);
       };
       this.audio.onloadeddata = () => {
         // The audio has loaded

@@ -2,6 +2,7 @@ import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angu
 import { Map } from '../../models/main.model';
 import { SentenceTranslation, Thumbs } from '../../models/book.model';
 import { ReadService } from '../../services/read.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -37,7 +38,8 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   thumbs: Map<Thumbs> = {};
 
   constructor(
-    private readService: ReadService
+    private readService: ReadService,
+    private readnListenService: ReadnListenService
   ) {}
 
   ngOnInit() {
@@ -199,7 +201,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private saveTranslation(translation: string, note: string) {
-    this.readService
+    this.readnListenService
     .addSentenceTranslation(
       this.bookLanCode,
       this.userLanCode,

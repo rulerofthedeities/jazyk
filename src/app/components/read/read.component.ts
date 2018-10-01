@@ -3,17 +3,17 @@ import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
-import { Language, Map, LicenseUrl } from '../../models/main.model';
-import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
+import { Language } from '../../models/main.model';
+import { Book } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
-import { ReadnListenComponent } from '../readnlisten/readnListen.component';
+import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 
 @Component({
   templateUrl: 'read.component.html',
   styleUrls: ['read.component.css']
 })
 
-export class ReadComponent extends ReadnListenComponent implements OnInit, OnDestroy {
+export class ReadComponent extends ReadnListenListComponent implements OnInit, OnDestroy {
 
   constructor(
     readService: ReadService,
