@@ -7,9 +7,7 @@
     {{text["EnterMissingWord"]}}
   </div>
   <div *ngIf="showSentence" class="sentence">
-    <span class="split-sentence-wrapper" *ngIf="sentenceSections[0]">
-      <span class="split-sentence">{{sentenceSections[0]}}</span>
-    </span>
+    <span class="split-sentence">{{sentenceSections[0]}}</span>
     <input
       type="text"
       class="form-control input-lg word"
@@ -26,16 +24,13 @@
         incorrect: isAnswered && answerletter==='n'
       }"
       #answer>
-    <span class="split-sentence-wrapper">
-      <span class="split-sentence ">{{sentenceSections[1]}}</span>
-    </span>
+    <span class="split-sentence ">{{sentenceSections[1]}}</span>
     <div class="clearfix"></div>
   </div>
 
   <div class="solution" *ngIf="isAnswered && answerletter!=='y'">
     <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{word.word}}</span>
   </div>
-
 
   <!-- Check WORD -->
   <button *ngIf="showSentence && !isAnswered"

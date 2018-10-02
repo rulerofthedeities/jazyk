@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Sentence, Word, TestAnswer } from '../../models/book.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 
@@ -8,7 +8,7 @@ import { ReadnListenService } from '../../services/readnlisten.service';
   styleUrls: ['../readnlisten/sentence.component.css', 'sentence-test.component.css']
 })
 
-export class SentenceTestComponent implements OnInit {
+export class SentenceTestComponent implements OnInit, OnChanges {
   @Input() text: Object;
   @Input() sentence: Sentence;
   @Output() answered = new EventEmitter<TestAnswer>();
@@ -25,9 +25,15 @@ export class SentenceTestComponent implements OnInit {
 
   ngOnInit() {
     this.observe();
+  }
+
+  ngOnChanges() {
+    this.showSentence = false;
+    this.isAnswered = false;
     this.selectWord();
     this.splitSentence();
   }
+
   onKeyPressed(key: string) {
     switch (key) {
       case 'Enter':

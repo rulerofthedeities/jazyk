@@ -2,7 +2,6 @@
   padding-top: 10px;
 }
 .split-sentence {
-  float: left;
   position: relative;
   font-size: 3rem;
   background-color: black;
@@ -10,15 +9,13 @@
   padding: 8px;
   vertical-align: middle;
 }
-.split-sentence-wrapper {
-  white-space: nowrap;
-}
 .word {
   top: 6px;
   position: relative;
-  float: left;
   width: inherit;
   font-size: 3rem;
+  margin-bottom: 8px;
+  display: inline-block;
 }
 .answered {
   color: white;

@@ -404,8 +404,37 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     });
   }
 
+
   protected startAnotherBook(book: Book) {
-    // TODO
+    this.bookId = book._id;
+    this.book = book;
+    this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest);
+    this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode);
+    this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
+    this.isCountDown = false;
+    this.currentChapter = null;
+    this.currentSentence = null;
+    this.currentSentenceTxt = null;
+    this.currentSentenceNr = null;
+    this.currentSentenceTotal = null;
+    this.currentStep = null;
+    this.currentAnswer = null;
+    this.isBookRead = false;
+    this.readingStarted = false;
+    this.isLoading = false;
+    this.isError = false;
+    this.showReadMsg = false;
+    this.sessionData = null;
+    this.msg = null;
+    this.processNewBookId();
+  }
+
+  getBookReadMessage(title: string): string {
+    if (title) {
+      return this.text[this.bookType === 'listen' ? 'AlreadyListenedBook' : 'AlreadyReadBook'].replace('%s', title);
+    } else {
+      return '';
+    }
   }
 
   ngOnDestroy() {

@@ -72,14 +72,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     }
   }
 
-  getBookReadMessage(title: string): string {
-    if (title) {
-      return this.text['AlreadyReadBook'].replace('%s', title);
-    } else {
-      return '';
-    }
-  }
-
   private observe() {
     // New book started from suggestions?
     this.readService
@@ -98,30 +90,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     this.platformLocation.onPopState(() => {
       this.sharedService.changeExerciseMode(false);
     });
-  }
-
-  protected startAnotherBook(book: Book) {
-    this.bookId = book._id;
-    this.book = book;
-    this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType);
-    this.location.go('/read/book/' + this.bookId + '/' + this.userLanCode);
-    this.log(`Start reading '${this.book.title}'`);
-    this.isCountDown = false;
-    this.currentChapter = null;
-    this.currentSentence = null;
-    this.currentSentenceTxt = null;
-    this.currentSentenceNr = null;
-    this.currentSentenceTotal = null;
-    this.currentStep = null;
-    this.currentAnswer = null;
-    this.isBookRead = false;
-    this.readingStarted = false;
-    this.isLoading = false;
-    this.isError = false;
-    this.showReadMsg = false;
-    this.sessionData = null;
-    this.msg = null;
-    this.processNewBookId();
   }
 
   private answer(answer: string) {
