@@ -90,14 +90,14 @@ module.exports.initialize = function(app, router) {
 
   router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
   router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
-  router.get('/book/user/:lan/:bookId', books.getUserBook);
+  router.get('/book/user/:lan/:bookId/:isTest', books.getUserBook);
   router.get('/book/:bookId', books.getBook);
   router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
   router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
   router.post('/book/translation/', books.addTranslation);
   router.put('/book/translation/', books.updateTranslation);
   router.get('/book/translation/:lan', books.getBookTranslations);
-  router.put('/book/bookmark/:bookId/:lan/:bookType', books.updateBookmark);
+  router.put('/book/bookmark', books.updateBookmark);
   router.post('/book/session', books.addSession);
   router.put('/book/session', books.updateSession);
   router.get('/book/sessions/:lan/:bookType', books.getSessions);

@@ -13,6 +13,7 @@ import { zip } from 'rxjs';
 export class BookResultsComponent implements OnChanges, OnDestroy {
   @Input() data: SessionData;
   @Input() text: Object;
+  @Input() bookType: string;
   private componentActive = true;
   percYes = 0;
   percMaybe = 0;

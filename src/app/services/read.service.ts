@@ -25,12 +25,6 @@ export class ReadService {
     .pipe(retry(3));
   }
 
-  fetchUserBook(interfaceLanCode: string, bookId: string): Observable<UserBook> {
-    return this.http
-    .get<UserBook>('/api/book/user/' + interfaceLanCode + '/' + bookId)
-    .pipe(retry(3));
-  }
-
   /*** Chapters ***/
 
   fetchChapter(bookId: string, chapterId: string, sequence: number): Observable<Chapter> {

@@ -9,7 +9,7 @@
 <div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">
-      {{text["ReadingSessionResults"]}}
+      {{text[bookType==='listen' ? "ListeningSessionResults" : "ReadingSessionResults"]}}
     </h3>
   </div>
   <div class="panel-body">
@@ -57,8 +57,7 @@
         <div class="details">
           <!-- TODO: nog te lezen zinnen in boek -->
           <div class="main-details">
-            <div>{{text["SentencesRead"]}}: {{total}}</div>
-            <div>{{text["ChaptersCompleted"]}}: {{data.chapters}}</div>
+            <div>{{text[bookType==='listen' ? "SentencesListened" : "SentencesRead"]}}: {{total}}</div>
             <div>{{text["TranslationsSubmitted"]}}: {{data.translations}}</div>
           </div>
           {{text["AllAnswers"]}}:

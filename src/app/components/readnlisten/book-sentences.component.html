@@ -111,7 +111,8 @@
           <div *ngIf="currentStep === steps.Results">
             <km-sentences-results
               [data]="sessionData"
-              [text]="text">
+              [text]="text"
+              [bookType]="bookType">
             </km-sentences-results>
           </div>
 
@@ -124,7 +125,6 @@
             [answersReceived]="answersObservable"
             [nextSentence]="nextSentenceObservable">
           </km-book-suggestions>
-
 
           <button type="button" *ngIf="currentStep === steps.Results"
             class="btn btn-primary"

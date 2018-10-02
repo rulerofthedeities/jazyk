@@ -16,6 +16,7 @@ import { zip, BehaviorSubject, Subject } from 'rxjs';
 export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy {
   protected componentActive = true;
   protected bookId: string;
+  private saveFrequency = 3;
   text: Object = {};
   settings: ReadSettings;
   book: Book;
@@ -25,6 +26,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   currentSentenceNr: number;
   currentSentence: Sentence;
   currentSentenceTxt: string;
+  currentAnswer: string;
   currentStep = SentenceSteps.Question;
   steps = SentenceSteps;
   bookType = 'read'; // read or listen
@@ -93,6 +95,32 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.isCountDown = false;
   }
 
+  onTranslationAdded(translationPoints: number) {
+    this.sessionData.translations++;
+    this.sessionData.points.translations += Math.round(translationPoints * this.getScoreMultiplier()) || 0;
+  }
+
+  onGoToNextSentence() {
+    // Enter pressed in translation
+    this.nextSentence();
+  }
+
+  onNextSentence() {
+    this.nextSentence();
+  }
+
+  onBackToList() {
+    this.router.navigate(['/' + this.bookType]);
+  }
+
+  private nextSentence() {
+    this.getSentence();
+    if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
+      this.placeBookmark(false);
+      this.saveSessionData();
+    }
+  }
+
   private getBookType() {
     // read or listen
     this.route
@@ -122,7 +150,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (this.bookId) {
       this.isLoading = true;
       zip(
-        this.readService.fetchUserBook(this.userLanCode, this.bookId),
+        this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, this.isTest),
         this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent')
       )
       .pipe(
@@ -311,10 +339,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           Math.log(this.book.difficulty.nrOfWords) *
           this.getScoreMultiplier()) || 0;
       }
+      console.log('place bookmark', newBookmark);
       this.readnListenService
-      .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType)
+      .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)
       .pipe(takeWhile(() => this.componentActive))
-      .subscribe(bookmark => {});
+      .subscribe(bookmark => {console.log('bookmarked', bookmark); });
     }
   }
 

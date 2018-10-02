@@ -1,8 +1,11 @@
 <div kmPressed (hasKeyPressed)="onKeyPressed($event)">
-  <div *ngIf="showSentence" class="sentence">
-    {{sentence.text}}
-  </div>
   {{word|json}}
+  <div *ngIf="showSentence"
+    class="instruction"
+    [style.display]="isAnswered ? 'none' : 'block'">
+    <span class="fa fa-info-circle"></span>
+    {{text["EnterMissingWord"]}}
+  </div>
   <div *ngIf="showSentence" class="sentence">
     <span class="split-sentence-wrapper" *ngIf="sentenceSections[0]">
       <span class="split-sentence">{{sentenceSections[0]}}</span>
@@ -16,7 +19,12 @@
       autocomplete="off"
       spellcheck="false"
       [attr.disabled]="isAnswered ? '' : null"
-      [ngClass]="{answered: isAnswered ,correct: isAnswered && isCorrect, incorrect: isAnswered && !isCorrect}"
+      [ngClass]="{
+        answered: isAnswered,
+        correct: isAnswered && answerletter==='y',
+        almostcorrect: isAnswered && answerletter==='m',
+        incorrect: isAnswered && answerletter==='n'
+      }"
       #answer>
     <span class="split-sentence-wrapper">
       <span class="split-sentence ">{{sentenceSections[1]}}</span>
@@ -24,12 +32,17 @@
     <div class="clearfix"></div>
   </div>
 
+  <div class="solution" *ngIf="isAnswered && answerletter!=='y'">
+    <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{word.word}}</span>
+  </div>
+
+
   <!-- Check WORD -->
   <button *ngIf="showSentence && !isAnswered"
     type="button"
     class="btn btn-success btn-lg pull-right next-sentence"
     (click)="onCheckWord()">
-    {{text["Check"]}}CHECK <span class="fa fa-chevron-right"></span>
+    {{text["Check"]}} <span class="fa fa-chevron-right"></span>
   </button>
   <div class="clearfix"></div>
 </div>

@@ -269,7 +269,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         const lastAnswer = answers.answers.slice(-1);
         if (lastAnswer === 'y' || lastAnswer === 'm') {
           this.canThumb = true;
-          if (lastAnswer === 'y') {
+          if (lastAnswer !== 'm') {
             this.canEdit = true;
           }
         }

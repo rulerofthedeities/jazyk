@@ -27,7 +27,24 @@
 .correct {
   background-color: green;
 }
+.almostcorrect {
+  background-color: orange;
+}
 .incorrect {
   background-color: red;
+}
+.solution {
+  font-size: 3rem;
+}
+.solution .answer {
+  color: green;
+}
+.instruction {
+  text-align: left;
+  margin-bottom: 2px;
+  margin-left: 6px;
+  font-size: 1.6rem;
+  font-style: italic;
+  color: #bbb;
 }
 

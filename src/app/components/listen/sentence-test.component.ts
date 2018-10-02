@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Sentence, Word } from '../../models/book.model';
+import { Component, Input, OnInit, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Sentence, Word, TestAnswer } from '../../models/book.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 
 @Component({
@@ -11,12 +11,13 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 export class SentenceTestComponent implements OnInit {
   @Input() text: Object;
   @Input() sentence: Sentence;
+  @Output() answered = new EventEmitter<TestAnswer>();
   @ViewChild('answer') answer: ElementRef;
   sentenceSections: string[];
   word: Word;
   showSentence = false;
   isAnswered = false;
-  isCorrect = false;
+  answerletter: string;
 
   constructor(
     private readnListenService: ReadnListenService
@@ -59,11 +60,29 @@ export class SentenceTestComponent implements OnInit {
   }
 
   private checkWord() {
-    const answer = this.answer.nativeElement.value.trim().toLowerCase();
-    const word = this.word.word.toLowerCase();
+    const answer = this.answer.nativeElement.value.trim().toLowerCase(),
+          word = this.word.word.toLowerCase();
     console.log('answer', answer, word);
-    this.isCorrect = answer === word;
+    this.answerletter = answer === word ? 'y' : 'n';
+    if (this.answerletter === 'n' && this.isAlmostCorrect(answer, word)) {
+      this.answerletter = 'm';
+    }
     this.isAnswered = true;
+    this.answered.emit({
+      word,
+      score: this.word.score,
+      answerLetter: this.answerletter
+    });
+  }
+
+  private isAlmostCorrect(answer: string, solution: string): boolean {
+    let isCorrect = false;
+    if (solution) {
+      const DL = this.readnListenService.getDamerauLevenshteinDistance(answer, solution);
+      const errPerc = DL / solution.length * 100;
+      isCorrect = errPerc > 20 ? false : true;
+    }
+    return isCorrect;
   }
 
   private splitSentence() {

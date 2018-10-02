@@ -191,8 +191,9 @@ module.exports = {
   getUserBook: (req, res) => {
     const bookId = req.params.bookId,
           lanCode = req.params.lan,
+          isTest = req.params.isTest === '1' ? true : false,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId, bookId, lanCode};
+          query = {userId, bookId, lanCode, isTest};
     UserBook.findOne(query, (err, book) => {
       response.handleError(err, res, 400, 'Error fetching user book', () => {
         response.handleSuccess(res, book);
@@ -307,13 +308,16 @@ module.exports = {
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          bookId = req.params.bookId,
-          lanCode = req.params.lan,
-          bookType = req.params.bookType,
+          bookId = req.body.bookId,
+          lanCode = req.body.lanCode,
+          isTest = req.body.isTest,
+          bookType = req.body.bookType,
           bookmark = req.body.bookmark,
-          query = {bookId, userId, lanCode, bookType};
+          query = {bookId, userId, lanCode, bookType, isTest};
+    console.log('query', query);
     bookmark.dt = Date.now()
     const update = {$set: {bookmark}};
+    console.log('update', update);
     if (!bookmark.sentenceNrBook) {
       bookmark.sentenceNrBook = 0;
     }

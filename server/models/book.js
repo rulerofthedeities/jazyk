@@ -85,6 +85,7 @@ var sessionSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
   lanCode: {type: String, required: true},
   bookType: {type: String, required: true},
+  isTest: {type: Boolean, required: true},
   answers: {type: String, required: true},
   chapters: Number,
   nrYes: Number,

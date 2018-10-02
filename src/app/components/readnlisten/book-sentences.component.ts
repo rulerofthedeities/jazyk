@@ -19,8 +19,6 @@ import { ReadnListenSentencesComponent } from '../../abstracts/readnlisten-sente
 })
 
 export class BookSentencesComponent extends ReadnListenSentencesComponent implements OnInit, OnDestroy {
-  private saveFrequency = 3;
-  currentAnswer: string;
 
   constructor(
     route: ActivatedRoute,
@@ -50,21 +48,8 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     this.observe();
   }
 
-  onBackToList() {
-    this.router.navigate(['/' + this.bookType]);
-  }
-
-  onNextSentence() {
-    this.nextSentence();
-  }
-
   onAnswer(answer: string) {
     this.answer(answer);
-  }
-
-  onTranslationAdded(translationPoints: number) {
-    this.sessionData.translations++;
-    this.sessionData.points.translations += Math.round(translationPoints * this.getScoreMultiplier()) || 0;
   }
 
   onKeyPressed(key: string) {
@@ -87,25 +72,11 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     }
   }
 
-  onGoToNextSentence() {
-    // Enter pressed in translation
-    this.nextSentence();
-  }
-
   getBookReadMessage(title: string): string {
     if (title) {
       return this.text['AlreadyReadBook'].replace('%s', title);
     } else {
       return '';
-    }
-  }
-
-
-  private nextSentence() {
-    this.getSentence();
-    if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
-      this.placeBookmark(false);
-      this.saveSessionData();
     }
   }
 
@@ -177,15 +148,5 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     const words = sentence.split(' ');
     return words ? Math.round(words.length * this.getScoreMultiplier()) : 0;
   }
-
-
-
-
-
-
-
-
-
-
 
 }

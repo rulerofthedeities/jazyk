@@ -17,6 +17,12 @@ export interface Sentence {
   sequence?: String; // For sorting
 }
 
+export interface TestAnswer {
+  word: string;
+  score: number;
+  answerLetter: string;
+}
+
 export interface Chapter {
   _id: string;
   bookId: string;
