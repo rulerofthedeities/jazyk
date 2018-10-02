@@ -77,6 +77,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.log('Reading aborted');
+      this.sharedService.stopAudio(true);
       this.processResults(false);
     }
   }
@@ -114,6 +115,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private nextSentence() {
+    this.sharedService.stopAudio(true);
     this.getSentence();
     if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
       this.placeBookmark(false);
@@ -381,6 +383,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (abortNow) {
       this.sharedService.changeExerciseMode(false);
+      this.sharedService.stopAudio(true);
       this.router.navigate(['/' + this.bookType]);
     }
   }

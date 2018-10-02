@@ -40,6 +40,7 @@ export class SharedService {
   exerciseModeChanged = new Subject<boolean>();
   justLoggedInOut = new Subject<boolean>();
   eventMessage = new Subject<EventMessage>();
+  audioEvent = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -87,6 +88,10 @@ export class SharedService {
     this.eventMessages.unshift(newMessage);
     this.eventMessages.slice(0, this.messageLimit);
     this.eventMessage.next(newMessage);
+  }
+
+  stopAudio(stop: boolean) {
+    this.audioEvent.next(stop);
   }
 
   get lastEventMessage(): string {

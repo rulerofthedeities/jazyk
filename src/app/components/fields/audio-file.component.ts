@@ -1,4 +1,6 @@
-import { Component, OnChanges, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, Input, EventEmitter, Output } from '@angular/core';
+import { SharedService } from '../../services/shared.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-audio-file',
@@ -6,16 +8,36 @@ import { Component, OnChanges, Input, EventEmitter, Output } from '@angular/core
   styleUrls: ['./files.css']
 })
 
-export class AudioFileComponent implements OnChanges {
+export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   @Input() fileUrl: string;
   @Input() size = '24';
   @Input() autoPlay = false;
   @Input() active = true;
   @Output() ended = new EventEmitter<boolean>();
+  private componentActive = true;
   audio: any;
 
+  constructor(
+    private sharedService: SharedService
+  ) {}
+
+  ngOnInit() {
+    this.sharedService
+    .audioEvent
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      stop => {
+        if (stop) {
+          if (this.audio) {
+            this.audio.pause();
+            this.audio = null;
+          }
+        }
+      }
+    );
+  }
+
   ngOnChanges() {
-    console.log('audio changed', this.fileUrl);
     if (this.audio && this.fileUrl !== this.audio.src) {
       this.audio = null;
     }
@@ -56,5 +78,9 @@ export class AudioFileComponent implements OnChanges {
         // The audio is now playing
       };
     }
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }
