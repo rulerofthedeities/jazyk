@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Sentence, Word, TestAnswer } from '../../models/book.model';
-import { ReadnListenService } from '../../services/readnlisten.service';
+import { ReadnListenService, minWordScore, maxWordScore } from '../../services/readnlisten.service';
 
 @Component({
   selector: 'km-sentence-test',
@@ -54,7 +54,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     let words = this.sentence.words;
     if (words.length > 1) {
       // skip rarest and most common words
-      words = words.filter(w => w.score > 150 && w.score < 900);
+      words = words.filter(w => w.score > minWordScore && w.score < maxWordScore);
       if (words.length > 0) {
         const nr = Math.floor((Math.random() * words.length));
         this.word = words[nr];

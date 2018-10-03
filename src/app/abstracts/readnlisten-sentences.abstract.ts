@@ -117,6 +117,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private nextSentence() {
     this.sharedService.stopAudio(true);
     this.getSentence();
+  }
+
+  protected saveBookmarkAndSession() {
     if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
       this.placeBookmark(false);
       this.saveSessionData();

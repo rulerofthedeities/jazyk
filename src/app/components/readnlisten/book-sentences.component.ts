@@ -108,6 +108,7 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
         this.sessionData.nrMaybe++;
         break;
     }
+    this.saveBookmarkAndSession();
     this.currentStep = SentenceSteps.Translations;
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }

@@ -5,6 +5,9 @@ import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark,
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
+export const minWordScore = 150; // only use words with min this score in listen test
+export const maxWordScore = 900; // only use words with max this score in listen test
+
 @Injectable()
 export class ReadnListenService {
   audioEnded = new Subject<boolean>();

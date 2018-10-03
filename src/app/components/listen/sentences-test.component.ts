@@ -50,6 +50,7 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
     this.sessionData.nrNo += answer.answerLetter === 'n' ? 1 : 0 ;
     this.currentStep = SentenceSteps.Translations;
     console.log(this.sessionData);
+    this.saveBookmarkAndSession();
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
 
