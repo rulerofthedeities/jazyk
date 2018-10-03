@@ -163,6 +163,7 @@ export interface UserData {
   nrYes: number;
   nrNo: number;
   nrMaybe: number;
+  isTest: boolean;
 }
 
 export interface ChapterData {

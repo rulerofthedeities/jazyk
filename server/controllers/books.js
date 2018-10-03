@@ -369,7 +369,8 @@ module.exports = {
           query = {userId, lanCode, bookType},
           projection = {
             _id: 0,
-            bookId: '$_id',
+            bookId: '$_id.bookId',
+            isTest: '$_id.isTest',
             nrSentencesDone: 1,
             nrYes: 1,
             nrMaybe: 1,
@@ -378,7 +379,7 @@ module.exports = {
           pipeline = [
             {$match: query},
             {$group: {
-              _id: '$bookId',
+              _id: {bookId: '$bookId', isTest: '$isTest'},
               nrSentencesDone: {'$sum': { $strLenCP: "$answers" }},
               nrYes: {'$sum': "$nrYes" },
               nrMaybe: {'$sum': "$nrMaybe" },

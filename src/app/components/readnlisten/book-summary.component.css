@@ -166,12 +166,17 @@
 .progress {
   margin-bottom: 0;
   height: 26px;
+  background-color: #5cb85c;
+}
+.progress.test {
+  margin-top: 3px;
+  background-color: #f0ad4e;
 }
 .dashboard .progress {
   height: 15px;
 }
 .progress-min .progress-bar {
-  color: black; /* progress bar not yet big enough */
+  /* color: black; */ /* progress bar not yet big enough */
 }
 .progress-bar {
   line-height: 26px;

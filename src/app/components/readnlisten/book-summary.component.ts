@@ -6,6 +6,14 @@ import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
 
+interface UserBookStatus {
+  isSubscribed: boolean;
+  isStarted: boolean;
+  nrOfSentencesDone: number;
+  isBookRead: boolean;
+  percDone: number;
+}
+
 @Component({
   selector: 'km-book-summary',
   templateUrl: 'book-summary.component.html',
@@ -16,7 +24,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
   @Input() bookType = 'read'; // read or listen
   @Input() userBook: UserBook;
+  @Input() userBookTest: UserBook;
   @Input() userData: UserData;
+  @Input() userDataTest: UserData;
   @Input() translationData: TranslationData;
   @Input() userLanCode: string;
   @Input() text: Object;
@@ -25,14 +35,16 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() private licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
+  // nrOfSentencesDone = 0;
+  // percDone: number;
+  // isSubscribed = false;
+  // isStarted = false;
+  // isStartedTest = false;
+  // isBookRead = false;
+  userBookStatus: UserBookStatus;
+  userBookStatusTest: UserBookStatus;
   difficultyWidth: number;
   difficultyPerc: number;
-  nrOfSentencesDone = 0;
-  percDone: number;
-  isSubscribed = false;
-  isStarted = false;
-  isStartedTest = false;
-  isBookRead = false;
   showIntro = false;
   isNewBook = false;
   licenseUrl: string;
@@ -89,7 +101,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     .subscribe(
       userBook => {
         if (userBook && !userBook.subscribed) {
-          this.isSubscribed = false;
+          this.userBookStatus.isSubscribed = false;
           this.removedSubscription.emit(this.book);
         }
       }
@@ -129,32 +141,48 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIfStarted() {
-    this.isStarted = false;
-    this.isStartedTest = false;
-    this.isSubscribed = false;
-    this.isBookRead = false;
-    this.nrOfSentencesDone = 0;
-    this.percDone = 0;
-    if (this.userBook) {
-      if (this.userBook.subscribed) {
-        this.isSubscribed = true;
+    this.userBookStatus = this.resetBook();
+    this.userBookStatusTest = this.resetBook();
+    this.initBook(this.userBookStatus, this.userBook);
+    this.initBook(this.userBookStatusTest, this.userBookTest);
+  }
+
+  private initBook(status: UserBookStatus, userBook: UserBook) {
+    if (userBook) {
+      if (userBook.subscribed) {
+        status.isSubscribed = true;
       }
-      if (this.userBook.bookmark) {
-        this.isStarted = true;
-        if (this.userBook.bookmark.isBookRead) {
-          this.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
-          this.isBookRead = true;
-          this.percDone = 100;
+      if (userBook.bookmark) {
+        status.isStarted = true;
+        if (userBook.bookmark.isBookRead) {
+          status.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
+          status.isBookRead = true;
+          status.percDone = 100;
         }
       }
     }
   }
 
+  private resetBook() {
+    return {
+      isSubscribed: false,
+      isStarted: false,
+      isBookRead: false,
+      nrOfSentencesDone: 0,
+      percDone: 0
+    };
+  }
+
   private checkSentencesDone() {
-    if (this.userData) {
-      if (!this.isBookRead) {
-        this.nrOfSentencesDone = this.userData.nrSentencesDone;
-        this.percDone = Math.trunc(Math.min(100, (this.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
+    this.checkSentencesDoneEach(this.userData, this.userBookStatus);
+    this.checkSentencesDoneEach(this.userDataTest, this.userBookStatusTest);
+  }
+
+  checkSentencesDoneEach(userData: UserData, status: UserBookStatus) {
+    if (userData) {
+      if (!status.isBookRead) {
+        status.nrOfSentencesDone = userData.nrSentencesDone;
+        status.percDone = Math.trunc(Math.min(100, (status.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
     }
   }

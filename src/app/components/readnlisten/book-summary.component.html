@@ -64,28 +64,28 @@
           </span>
         </div>
         <div class="buttons" *ngIf="book.lanCode !== userLanCode">
-          <button *ngIf="!isBookRead"
+          <button *ngIf="!userBookStatus.isBookRead"
             type="button"
             class="btn btn-success"
             (click)="onStartReadingListening()">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
+            {{userBookStatus.isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
                         : (bookType=== 'listen' ? text["StartListening"] : text["StartReading"])
             }}
           </button>
-          <button *ngIf="!isBookRead && bookType==='listen'"
+          <button *ngIf="!userBookStatusTest.isBookRead && bookType==='listen'"
             type="button"
             class="btn btn-warning"
             (click)="onStartListeningTest()">
             <span class="fa fa-flask fa-spacing"></span>
-            {{isStartedTest ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
+            {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
           </button>
-          <div class="book-read" *ngIf="isBookRead">
+          <div class="book-read" *ngIf="userBookStatus.isBookRead">
             <span class="fa fa-check"></span>
             {{text['BookRead']}}
           </div>
         </div>
-        <div class="stop pull-right" *ngIf="isSubscribed && tpe==='my'">
+        <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
           <button type="button" class="btn btn-default"
             (click)="onStopReading()">
             <span class="fa fa-times-circle fa-spacing"></span>
@@ -105,16 +105,29 @@
           {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
           ({{difficultyPerc}}%)
         </div>
-        <div class="progress" [class.progress-min]="percDone < 5" *ngIf="isStarted">
+        <div class="progress" [class.progress-min]="userBookStatus.percDone < 5" *ngIf="userBookStatus.isStarted">
           <div
             class="progress-bar progress-bar-primary progress-bar-striped"
             role="progressbar"
-            [attr.aria-valuenow]="nrOfSentencesDone"
+            [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
             aria-valuemin="0"
             [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
-            [style.width.%]="percDone">
+            [style.width.%]="userBookStatus.percDone">
             <span>
-              {{nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{percDone}}%)
+              {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
+            </span>
+          </div>
+        </div>
+        <div class="progress test" [class.progress-min]="userBookStatusTest.percDone < 5" *ngIf="userBookStatusTest.isStarted">
+          <div
+            class="progress-bar progress-bar-primary progress-bar-striped"
+            role="progressbar"
+            [attr.aria-valuenow]="userBookStatusTest.nrOfSentencesDone"
+            aria-valuemin="0"
+            [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+            [style.width.%]="userBookStatusTest.percDone">
+            <span>
+              {{userBookStatusTest.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatusTest.percDone}}%)
             </span>
           </div>
         </div>

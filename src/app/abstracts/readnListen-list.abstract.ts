@@ -16,7 +16,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected books: Book[];
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
+  userBooksTest: Map<UserBook> = {};
   userData: Map<UserData> = {};
+  userDataTest: Map<UserData> = {};
   translationData: Map<TranslationData> = {};
   bookLanguage: Language;
   bookLanguages: Language[];
@@ -118,11 +120,18 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     .fetchUserBooks(this.myLanguage.code, this.bookType)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      books => {
+      uBooks => {
         this.userBooks = {};
-        books.forEach(uBook => {
-          this.userBooks[uBook.bookId] = uBook;
+        this.userBooksTest = {};
+        uBooks.forEach(uBook => {
+          if (uBook.isTest) {
+            this.userBooksTest[uBook.bookId] = uBook;
+          } else {
+            this.userBooks[uBook.bookId] = uBook;
+          }
         });
+        console.log('user books', this.userBooks);
+        console.log('user books test', this.userBooksTest);
       }
     );
   }
@@ -134,10 +143,17 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     .subscribe(
       sessionData => {
         this.userData = {};
+        this.userDataTest = {};
         sessionData.forEach(session => {
-          this.userData[session.bookId] = session;
+          console.log('session', session);
+          if (session.isTest) {
+            this.userDataTest[session.bookId] = session;
+          } else {
+            this.userData[session.bookId] = session;
+          }
         });
         console.log('userdata', this.userData);
+        console.log('userdata test', this.userDataTest);
       }
     );
   }
