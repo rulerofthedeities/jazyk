@@ -347,9 +347,9 @@ export class UserService {
     .toPromise();
   }
 
-  unSubscribeFromBook(bookId: string, lanCode: string, bookType: string): Observable<UserBook> {
+  unSubscribeFromBook(bookId: string, lanCode: string, bookType: string, isTest: boolean): Observable<UserBook> {
     return this.http
-    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode, bookType}));
+    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode, bookType, isTest}));
   }
 
   fetchWelcomeNotification(user: User) {

@@ -94,18 +94,35 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
-  onStopReading() {
-    this.userService
-    .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      userBook => {
-        if (userBook && !userBook.subscribed) {
-          this.userBookStatus.isSubscribed = false;
-          this.removedSubscription.emit(this.book);
+  onStopReadingListening() {
+    // Unsubscribe from non-test
+    if (this.userBookStatus && this.userBookStatus.isSubscribed) {
+      this.userService
+      .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType, false)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        userBook => {
+          if (userBook && !userBook.subscribed) {
+            this.userBookStatus.isSubscribed = false;
+            this.removedSubscription.emit(this.book);
+          }
         }
-      }
-    );
+      );
+    }
+    // Unsubscribe from test and non-test
+    if (this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
+      this.userService
+      .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType, true)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        userBook => {
+          if (userBook && !userBook.subscribed) {
+            this.userBookStatusTest.isSubscribed = false;
+            this.removedSubscription.emit(this.book);
+          }
+        }
+      );
+    }
   }
 
   onToggleIntro() {

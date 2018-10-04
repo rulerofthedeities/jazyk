@@ -313,9 +313,10 @@ module.exports = {
       const bookId = mongoose.Types.ObjectId(data.bookId),
             lanCode = data.lanCode,
             bookType = data.bookType,
-            query = {userId, bookId, lanCode, bookType},
+            isTest = data.isTest,
+            query = {userId, bookId, lanCode, bookType, isTest},
             options = {upsert: true, new: true},
-            insert = {userId, bookId, lanCode, bookType},
+            insert = {userId, bookId, lanCode, bookType, isTest},
             set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
       UserBook.findOneAndUpdate(query, update, options, function(err, result) {

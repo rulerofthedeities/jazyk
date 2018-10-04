@@ -1,8 +1,8 @@
 <article>
   <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen'}">
-    <div class="read-bar" *ngIf="isBookRead">
+    <div class="read-bar" *ngIf="userBookStatus.isBookRead">
     </div>
-    <div class="panel-body" [class.read]="isBookRead">
+    <div class="panel-body" [class.read]="userBookStatus.isBookRead">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
         {{text["New"]}}!
       </div>
@@ -32,7 +32,7 @@
           {{book.intro}}
         </div>
         <div class="pie-content" style="position:relative;">
-          <div class="pie-chart" *ngIf="nrOfSentencesDone > 0">
+          <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0">
             <km-pie-chart
               [data]="userData">
             </km-pie-chart>
@@ -87,7 +87,7 @@
         </div>
         <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
           <button type="button" class="btn btn-default"
-            (click)="onStopReading()">
+            (click)="onStopReadingListening()">
             <span class="fa fa-times-circle fa-spacing"></span>
             {{text["RemoveFromList"]}}
           </button>
