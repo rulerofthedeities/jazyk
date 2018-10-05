@@ -117,9 +117,10 @@
   margin-left: 96px;
 }
 .book h3 {
-  font-size: 32px;
-  margin-top: 0;
+  font-size: 42px;
+  margin-top: -6px;
   margin-bottom: 2px;
+  margin-right: 42px;
 }
 .book h3 small {
   margin-left: 10px;
@@ -127,11 +128,13 @@
 }
 .dashboard .book h3 {
   margin-top: -8px;
+  font-size: 32px;
 }
 .author {
   color: #666;
   font-style: italic;
   height: 20px;
+  margin-left: 90px;
   display: inline-block;
 }
 .buttons {
@@ -141,7 +144,7 @@
   margin: 12px 0;
 }
 .info {
-  margin: 21px 0;
+  margin: 13px 0;
 }
 .fa-times-circle {
   color: red;
@@ -166,21 +169,24 @@
 .progress {
   margin-bottom: 0;
   height: 26px;
-  background-color: #5cb85c;
+  border: 1px solid #428bca;
 }
 .progress.test {
   margin-top: 3px;
-  background-color: #f0ad4e;
+  border: 1px solid #f0ad4e;
 }
 .dashboard .progress {
   height: 15px;
 }
 .progress-min .progress-bar {
-  /* color: black; */ /* progress bar not yet big enough */
+  color: black; /* progress bar not yet big enough */
 }
 .progress-bar {
   line-height: 26px;
   font-size: 14px;
+}
+.progress-bar > span {
+  padding-left: 2px;
 }
 .dashboard .progress-bar {
   line-height: 15px;
@@ -198,8 +204,9 @@
   font-size: 32px;
 }
 .book-read {
-  font-size: 16px;
+  font-size: 25px;
   color: green;
+  padding: 5px 0;
 }
 .read-bar {
   background-color: green;
@@ -212,8 +219,11 @@
   border: 1px solid green;
   box-sizing: content-box;
 }
+.readbook {
+  background: linear-gradient(to bottom, #d9edf4, #d9edf4 30px, white 200px, white);
+}
 .audiobook {
-  background-color: lightblue;
+  background: linear-gradient(to bottom, #fcfbee, #fcfbee 30px, white 200px, white);
 }
 .audiobook .stop > button{
   background-color: #518ec2;
@@ -226,13 +236,12 @@
 .pie-chart {
   position: absolute;
   top: 32px;
-  left: 320px;
+  right: 100px;
 }
 .dashboard .pie-chart {
-  position: inherit;
-  top: inherit;
-  left: inherit;
-  float: right;
+  position: absolute;
+  top: -43px;
+  right: 50px;
 }
 .fa-copyright {
   margin-left: 6px;
@@ -244,10 +253,11 @@
   margin-left: 6px;
 }
 .intro {
-  margin: 6px 0;
+  margin: 6px 0 6px 90px;
   border: 1px dotted #666;
   border-radius: 0 6px 0 6px;
   background-color: #eee;
+  margin-right: 42px;
   padding: 6px;
 }
 .panel-body {
@@ -282,7 +292,13 @@
 .corner-ribbon.yellow{
   background: rgb(255, 255, 173);
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 991px) {
   .pie-chart {display: none;}
+  .book h3 {
+    font-size: 32px;
+    margin-top: 4px;
+  }
+}
+@media screen and (max-width: 767px) {
   .stop, .read {position: initial;}
 }

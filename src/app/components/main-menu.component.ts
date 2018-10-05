@@ -102,10 +102,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.rankColor = event.type === 'mouseover' ? 'b' : 'w';
   }
 
-  getRankColor(): string {
-    return this.rank < 5 ? this.rankColor : '';
-  }
-
   private getUrl() {
     this.url = this.filterUrl(this.router.url);
     this.router.events

@@ -23,6 +23,7 @@ interface UserBookStatus {
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
   @Input() bookType = 'read'; // read or listen
+  @Input() isTest = false;
   @Input() userBook: UserBook;
   @Input() userBookTest: UserBook;
   @Input() userData: UserData;
@@ -225,7 +226,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setDefaultImg() {
-    this.defaultImage = this.bookType === 'listen' ? '/assets/img/books/blankrecord.jpg' : '/assets/img/books/blankcover.png';
+    this.defaultImage = this.bookType === 'listen' ? '/assets/img/books/blankrecord.png' : '/assets/img/books/blankcover.png';
   }
 
   private log(message: string) {

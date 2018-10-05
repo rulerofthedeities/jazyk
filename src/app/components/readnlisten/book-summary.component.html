@@ -1,5 +1,5 @@
 <article>
-  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen'}">
+  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen', readbook:bookType==='read'}">
     <div class="read-bar" *ngIf="userBookStatus.isBookRead">
     </div>
     <div class="panel-body" [class.read]="userBookStatus.isBookRead">
@@ -64,18 +64,20 @@
           </span>
         </div>
         <div class="buttons" *ngIf="book.lanCode !== userLanCode">
-          <button *ngIf="!userBookStatus.isBookRead"
+          <button *ngIf="!userBookStatus.isBookRead && (!isTest || tpe!=='home')"
             type="button"
-            class="btn btn-success"
+            class="btn btn-primary"
+            [class.btn-lg]="tpe!=='home'"
             (click)="onStartReadingListening()">
             <span class="fa fa-arrow-right fa-spacing"></span>
             {{userBookStatus.isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
                         : (bookType=== 'listen' ? text["StartListening"] : text["StartReading"])
             }}
           </button>
-          <button *ngIf="!userBookStatusTest.isBookRead && bookType==='listen'"
+          <button *ngIf="!userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
             type="button"
             class="btn btn-warning"
+            [class.btn-lg]="tpe!=='home'"
             (click)="onStartListeningTest()">
             <span class="fa fa-flask fa-spacing"></span>
             {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
@@ -120,7 +122,7 @@
         </div>
         <div class="progress test" [class.progress-min]="userBookStatusTest.percDone < 5" *ngIf="userBookStatusTest.isStarted">
           <div
-            class="progress-bar progress-bar-primary progress-bar-striped"
+            class="progress-bar progress-bar-warning progress-bar-striped"
             role="progressbar"
             [attr.aria-valuenow]="userBookStatusTest.nrOfSentencesDone"
             aria-valuemin="0"

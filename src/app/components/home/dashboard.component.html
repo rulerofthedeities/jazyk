@@ -89,8 +89,12 @@
             <li *ngFor="let item of recent">
               <km-book-summary
                 [book]="item['book']"
-                [userBook]="item['uBook']"
-                [userData]="item['sessions']"
+                [bookType]="item['uBook'].bookType"
+                [isTest]="item['uBook'].isTest"
+                [userBook]="item['uBook'].isTest ? null : item['uBook']"
+                [userData]="item['uBook'].isTest ? null : item['sessions']"
+                [userBookTest]="item['uBook'].isTest ? item['uBook'] : null"
+                [userDataTest]="item['uBook'].isTest ? item['sessions'] : null"
                 [translationData]="item['translations']"
                 [userLanCode]="item['userLanCode']"
                 [text]="text"

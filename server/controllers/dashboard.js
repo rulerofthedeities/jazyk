@@ -1,6 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
+      AudioBook = require('../models/book').audiobook,
       UserBook = require('../models/userbook').userBook,
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
@@ -92,11 +93,22 @@ module.exports = {
           const getBookData = async () => {
             bookData = userBooks.map(async (uBook, i) => {
               // Get book & session data
-              const userLan = uBook.lanCode,
-                    book = await Book.findOne({_id: uBook.bookId, isPublished: true});
+              const userLan = uBook.lanCode;
+              let book = null;
+              if (uBook.bookType === 'listen') {
+                book = await AudioBook.findOne({_id: uBook.bookId, isPublished: true});
+              } else {
+                book = await Book.findOne({_id: uBook.bookId, isPublished: true});
+              }
               // Get session count
 
-              const sesQuery = {userId, lanCode: userLan, bookId: uBook.bookId},
+              const sesQuery = {
+                      userId,
+                      lanCode: userLan,
+                      bookId: uBook.bookId,
+                      bookType: uBook.bookType,
+                      isTest: uBook.isTest
+                    },
                     sesProjection = {
                       _id: 0,
                       bookId: '$_id',
