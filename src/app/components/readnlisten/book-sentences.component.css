@@ -15,6 +15,9 @@
 }
 .book-title {
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .book-chapter {
   display: block;
@@ -54,6 +57,26 @@
   bottom: 10px;
   left: 0;
   width: 100%;
+}
+.fa-book {
+  font-size: 32px;
+  margin: 14px 0 0 4px;
+  color: #428bca;
+}
+.fa-volume-up {
+  font-size: 32px;
+  margin: 14px 0 0 4px;
+  color: #ffa500;
+}
+.panel-type {
+  float: left;
+  padding-left: 2px;
+  height: 58px;
+  width: 42px;
+}
+.panel-header {
+  margin-left: 46px;
+  height: 58px;
 }
 
 @media screen and (max-width: 991px) {

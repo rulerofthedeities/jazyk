@@ -1,4 +1,3 @@
-<h1>TEST</h1>
 <section kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
@@ -13,6 +12,11 @@
       <div class="panel panel-default">
         <div class="panel-body book-header">
           <h1 class="book-title">
+            <span
+              class="fa fa-volume-up"
+              [tooltip]="text['ListeningSession']"
+              tooltipPlacement="bottom">
+            </span>
             <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
             {{book?.title}}
             <small class="book-chapter">
@@ -83,6 +87,7 @@
           <div *ngIf="currentStep === steps.Results">
             <km-sentences-results
               [data]="sessionData"
+              [bookType]="bookType"
               [text]="text">
             </km-sentences-results>
           </div>
