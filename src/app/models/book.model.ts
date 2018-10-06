@@ -3,6 +3,7 @@ export enum SentenceSteps { Question, Answered, Translations, Results }
 export interface Word {
   word: string;
   score: number;
+  pos: number;
 }
 
 export interface Sentence {

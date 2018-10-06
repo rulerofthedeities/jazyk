@@ -11,6 +11,7 @@ import { ReadnListenService, minWordScore, maxWordScore } from '../../services/r
 export class SentenceTestComponent implements OnInit, OnChanges {
   @Input() text: Object;
   @Input() sentence: Sentence;
+  @Input() difficulty: number;
   @Output() answered = new EventEmitter<TestAnswer>();
   @ViewChild('answer') answer: ElementRef;
   sentenceSections: string[];
@@ -50,18 +51,35 @@ export class SentenceTestComponent implements OnInit, OnChanges {
 
   private selectWord() {
     this.word = null;
+    let nr;
     // select the word the user has to enter
     let words = this.sentence.words;
     if (words.length > 1) {
       // skip rarest and most common words
-      words = words.filter(w => w.score > minWordScore && w.score < maxWordScore);
+      let minScore = minWordScore;
+      let maxScore = maxWordScore;
+      const minIncrease = this.difficulty < 400 ? 150 : (this.difficulty < 500 ? 100 : 0);
+      minScore += minIncrease;
+      words = words.filter(w => w.score > minScore && w.score < maxScore);
+      // if words are found, select a random word
       if (words.length > 0) {
-        const nr = Math.floor((Math.random() * words.length));
+        nr = Math.floor((Math.random() * words.length));
         this.word = words[nr];
+      } else {
+        // if no words are found, include rarer and more common words
+        minScore -= minIncrease;
+        maxScore += 50;
+        words = words.filter(w => w.score > minScore && w.score < maxScore);
+        if (words.length > 0) {
+          nr = Math.floor((Math.random() * words.length));
+          this.word = words[nr];
+        }
       }
     }
+    // Nothing found, select a random word without any filter
     if (!this.word && words.length) {
-      this.word = words[0];
+      nr = Math.floor((Math.random() * words.length));
+      this.word = words[nr];
     }
   }
 
@@ -93,14 +111,13 @@ export class SentenceTestComponent implements OnInit, OnChanges {
 
   private splitSentence() {
     this.sentenceSections = [null, null];
-    const pos = this.sentence.text.indexOf(this.word.word);
-    if (pos > -1) {
-      this.sentenceSections[0] = this.sentence.text.substr(0, pos).trim();
-      if (pos + this.word.word.length < this.sentence.text.length) {
-        this.sentenceSections[1] = this.sentence.text.substring(pos + this.word.word.length, this.sentence.text.length).trim();
-      }
+    const word = this.word.word,
+          pos = this.word.pos,
+          txt = this.sentence.text;
+    this.sentenceSections[0] = txt.substr(0, pos).trim();
+    if (pos + word.length < txt.length) {
+      this.sentenceSections[1] = txt.substring(pos + word.length, txt.length).trim();
     }
-    console.log('pos', pos, this.sentenceSections);
   }
 
   private observe() {
