@@ -11,7 +11,7 @@
     <!-- Collection of nav links and other content for toggling -->
     <div>
       <ul class="nav-items">
-        <li  *ngIf="isLoggedIn"
+        <li *ngIf="isLoggedIn"
           class="nav-item indicator mobile"
           (click)="onShowMobileMenu()"
           #mobiletrigger>
@@ -19,7 +19,9 @@
             <span class="fa fa-bars"></span>
           </a>
         </li>
-        <li routerLinkActive="active" class="desktop" *ngIf="isLoggedIn">
+        <li *ngIf="isLoggedIn"
+          routerLinkActive="active"
+          class="desktop">
           <a routerLink="/read">
             <span class="fa fa-book"></span>
             {{text["Read"]}}
@@ -27,7 +29,9 @@
             </span>
           </a>
         </li>
-        <li class="desktop" *ngIf="isLoggedIn">
+        <li *ngIf="isLoggedIn"
+          routerLinkActive="active"
+          class="desktop">
           <a routerLink="/listen">
             <span class="fa fa-volume-up"></span>
             {{text["Listen"]}}
@@ -39,10 +43,10 @@
 
       <ul class="pull-right nav-items right-menu">
         <!-- Notifications & Messages -->
-        <li class="nav-item indicator"
-          (click)="onGoto($event, 'notifications')"
-          *ngIf="isLoggedIn">
-          <a class="nav-link notifications">
+        <li *ngIf="isLoggedIn"
+          class="nav-item indicator"
+          routerLinkActive="active">
+          <a class="nav-link notifications" routerLink="/user/notifications">
             <i class="fa fa-bell-o"></i>
             <span class="badge"
               [style.visibility]="nrOfNotifications > 0 ? 'visible': 'hidden'">
@@ -51,10 +55,10 @@
             <span class="bar small"></span>
           </a>
         </li>
-        <li class="nav-item indicator"
-          (click)="onGoto($event, 'messages')"
-          *ngIf="isLoggedIn">
-          <a class="nav-link messages">
+        <li *ngIf="isLoggedIn"
+          class="nav-item indicator"
+          routerLinkActive="active">
+          <a class="nav-link messages" routerLink="/user/messages">
             <i class="fa fa-envelope-o"></i>
             <span class="badge"
               [style.visibility]="nrOfMessages > 0 ? 'visible': 'hidden'">
@@ -171,13 +175,17 @@
   <nav *ngIf="showMobileMenu" class="navbar-mobile navbar-fixed-top">
     <ul class="nav nav-pills nav-stacked mobile">
       <li *ngIf="isLoggedIn">
-        <a routerLink="/read" (click)="onCloseMobileMenu()">
+        <a routerLink="/read"
+          routerLinkActive="active"
+          (click)="onCloseMobileMenu()">
           <span class="fa fa-list-alt"></span>
           {{text["Read"]}}
         </a>
       </li>
       <li *ngIf="isLoggedIn">
-        <a routerLink="/listen" (click)="onCloseMobileMenu()">
+        <a routerLink="/listen"
+          routerLinkActive="active"
+          (click)="onCloseMobileMenu()">
           <span class="fa fa-volume-up"></span>
           {{text["Listen"]}}
         </a>

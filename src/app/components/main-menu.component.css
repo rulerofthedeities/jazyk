@@ -36,10 +36,10 @@ li.active .bar, li > a:hover .bar {
   position: relative;
   background-color: white;
 }
-li.active .bar, li > a.inactive:hover .bar {
+li > a.inactive:hover .bar {
   display: none;
 }
-li > a:hover .bar.small {
+li > a .bar.small {
   width: 26px;
 }
 li.active span.bar {
