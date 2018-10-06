@@ -20,8 +20,8 @@ import { BookSummaryComponent } from './components/readnlisten/book-summary.comp
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
-import { PieChartComponent } from './components/read/pie-chart.component';
-import { BookTpeComponent } from './components/read/book-tpe.component';
+import { PieChartComponent } from './components/readnlisten/pie-chart.component';
+import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
 
 @NgModule({
   imports: [

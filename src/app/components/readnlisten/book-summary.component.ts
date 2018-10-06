@@ -36,12 +36,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() private licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
-  // nrOfSentencesDone = 0;
-  // percDone: number;
-  // isSubscribed = false;
-  // isStarted = false;
-  // isStartedTest = false;
-  // isBookRead = false;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
   difficultyWidth: number;

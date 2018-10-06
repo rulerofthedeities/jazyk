@@ -13,23 +13,38 @@ import { UserData } from '../../models/book.model';
 })
 
 export class PieChartComponent implements OnInit {
-  @Input() data: UserData;
+  @Input() private data: UserData;
+  @Input() private testData: UserData;
   pathData: string[] = [];
   color: string[] = [];
   chartReady = false;
+  totalData: UserData;
 
   ngOnInit() {
     this.calculatePieChart();
   }
 
   private calculatePieChart() {
+    if (this.testData) {
+      // Add data from test to read/listen test
+      this.totalData = {
+        bookId: this.data.bookId,
+        nrSentencesDone: this.data.nrSentencesDone + this.testData.nrSentencesDone,
+        nrYes: this.data.nrYes + this.testData.nrYes,
+        nrNo: this.data.nrNo + this.testData.nrNo,
+        nrMaybe: this.data.nrMaybe + this.testData.nrMaybe,
+        isTest: true
+      };
+    } else {
+      this.totalData = this.data;
+    }
     // https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
-    const total = this.data ? this.data.nrYes + this.data.nrNo + this.data.nrMaybe : 0;
+    const total = this.totalData ? this.totalData.nrYes + this.totalData.nrNo + this.totalData.nrMaybe : 0;
     if (total > 0) {
       const slices = [
-        { percent: this.data.nrYes / total, color: 'green' },
-        { percent: this.data.nrMaybe / total, color: 'orange' },
-        { percent: this.data.nrNo / total, color: 'red' },
+        { percent: this.totalData.nrYes / total, color: 'green' },
+        { percent: this.totalData.nrMaybe / total, color: 'orange' },
+        { percent: this.totalData.nrNo / total, color: 'red' },
       ];
 
       let cumulativePercent = 0;

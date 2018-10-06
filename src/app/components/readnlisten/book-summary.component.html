@@ -34,7 +34,8 @@
         <div class="pie-content" style="position:relative;">
           <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0">
             <km-pie-chart
-              [data]="userData">
+              [data]="userData"
+              [testData]="userDataTest">
             </km-pie-chart>
           </div>
         </div>
@@ -84,7 +85,7 @@
           </button>
           <div class="book-read" *ngIf="userBookStatus.isBookRead">
             <span class="fa fa-check"></span>
-            {{text['BookRead']}}
+            {{text[bookType=== 'listen' ? 'AudioListened' : 'BookRead']}}
           </div>
         </div>
         <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
