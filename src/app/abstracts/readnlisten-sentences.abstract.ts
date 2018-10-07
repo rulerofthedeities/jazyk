@@ -290,8 +290,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private getChapter(bookId: string, bookmark: Bookmark, sequence: number) {
-    this.readService
-    .fetchChapter(bookId, bookmark ? bookmark.chapterId : null, sequence)
+    this.readnListenService
+    .fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {

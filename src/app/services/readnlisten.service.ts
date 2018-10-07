@@ -88,10 +88,13 @@ export class ReadnListenService {
 
   /*** Translations ***/
 
-  fetchTranslationData(userLanCode: string, bookType: string): Observable<TranslationData[]> {
-    // count the # of translations for all books into a specific language
+  fetchSentenceTranslations(
+    userLanCode: string,
+    bookId: string,
+    sentence: string): Observable<SentenceTranslation[]> {
     return this.http
-    .get<TranslationData[]>('/api/book/translation/' + userLanCode);
+    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + userLanCode + '/' + encodeURIComponent(sentence))
+    .pipe(retry(3));
   }
 
   addSentenceTranslation(
@@ -105,6 +108,23 @@ export class ReadnListenService {
     .post<{translation: SentenceTranslation, translationsId: string}>('/api/book/translation/', {
       bookLanCode, userLanCode, bookId, sentence, translation, note
     });
+  }
+
+  updateSentenceTranslation(
+    translationId: string,
+    translationElementId: string,
+    translation: string,
+    note: string): Observable<SentenceTranslation>  {
+    return this.http
+    .put<SentenceTranslation>('/api/book/translation', {
+      translationId, translationElementId, translation, note
+    });
+  }
+
+  fetchTranslationData(userLanCode: string, bookType: string): Observable<TranslationData[]> {
+    // count the # of translations for all books into a specific language
+    return this.http
+    .get<TranslationData[]>('/api/book/translation/' + userLanCode);
   }
 
   // https://gist.github.com/IceCreamYou/8396172

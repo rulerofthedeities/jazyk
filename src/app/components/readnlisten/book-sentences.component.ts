@@ -6,11 +6,7 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
-import { zip, BehaviorSubject, Subject } from 'rxjs';
-import { takeWhile, filter } from 'rxjs/operators';
-import { ReadSettings } from '../../models/user.model';
-import { UserBook, Bookmark, SessionData,
-         Book, Chapter, Sentence, SentenceSteps } from '../../models/book.model';
+import { SentenceSteps } from '../../models/book.model';
 import { ReadnListenSentencesComponent } from '../../abstracts/readnlisten-sentences.abstract';
 
 @Component({

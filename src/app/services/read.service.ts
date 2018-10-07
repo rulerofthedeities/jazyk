@@ -26,35 +26,15 @@ export class ReadService {
   }
 
   /*** Chapters ***/
-
+/*
   fetchChapter(bookId: string, chapterId: string, sequence: number): Observable<Chapter> {
     const chapter = chapterId ? chapterId : '0';
     return this.http
     .get<Chapter>('/api/book/chapter/' + bookId + '/' + chapter + '/' + sequence.toString())
     .pipe(retry(3));
   }
-
+*/
   /*** Translations ***/
-
-  fetchSentenceTranslations(
-    userLanCode: string,
-    bookId: string,
-    sentence: string): Observable<SentenceTranslation[]> {
-    return this.http
-    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + userLanCode + '/' + encodeURIComponent(sentence))
-    .pipe(retry(3));
-  }
-
-  updateSentenceTranslation(
-    translationId: string,
-    translationElementId: string,
-    translation: string,
-    note: string): Observable<SentenceTranslation>  {
-    return this.http
-    .put<SentenceTranslation>('/api/book/translation', {
-      translationId, translationElementId, translation, note
-    });
-  }
 
   /*** Session data ***/
 

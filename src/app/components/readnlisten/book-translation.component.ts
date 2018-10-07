@@ -150,7 +150,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private getSentenceTranslations(sentence: string) {
-    this.readService
+    this.readnListenService
     .fetchSentenceTranslations(
       this.userLanCode,
       this.bookId,
@@ -228,7 +228,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private updateTranslation(translation: string, note: string) {
-    this.readService
+    this.readnListenService
     .updateSentenceTranslation(
       this.translations[this.isEditing]._id,
       this.translations[this.isEditing].elementId,

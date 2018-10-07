@@ -6,9 +6,6 @@
   margin-right: 12px;
   margin-top: 6px;
 }
-.reading-header{
-  height: 36px;
-}
 .book-header {
   padding: 8px 12px;
   overflow: hidden;
@@ -18,10 +15,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.book-chapter {
-  display: block;
-  margin-left: 75px;
 }
 .next {
   color: #999;
@@ -68,6 +61,11 @@
   margin: 14px 0 0 4px;
   color: #ffa500;
 }
+.book-chapter {
+  display: block;
+  margin-left: 90px;
+  margin-top: 2px;
+}
 .panel-type {
   float: left;
   padding-left: 2px;
@@ -77,6 +75,10 @@
 .panel-header {
   margin-left: 46px;
   height: 58px;
+}
+.has-chapter .panel-type,
+.has-chapter .panel-header {
+  height: 80px;
 }
 
 @media screen and (max-width: 991px) {

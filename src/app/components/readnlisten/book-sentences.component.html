@@ -4,7 +4,7 @@
   </km-book-bullets>
   <div *ngIf="(readingStarted && !isError && !isLoading) else loading">
     <!-- READING MODE HEADER -->
-    <div class="exercise-header">
+    <div class="exercise-header" [class.has-chapter]="currentChapter.title?.trim()">
       <span *ngIf="currentStep < steps.Results"
         class="fa fa-times pull-right close-reading"
         (click)="onExitReading()">
