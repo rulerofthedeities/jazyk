@@ -45,8 +45,9 @@ module.exports = {
   },
   getBookScores: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookType = req.params.bookType;
           pipeline = [
-            {$match: {userId}},
+            {$match: {userId, bookType}},
             {$group: {
               _id: {
                 bookId: '$bookId',
@@ -60,7 +61,7 @@ module.exports = {
             }},
             {$sort: {'totalPoints': -1}},
             {$lookup: {
-              from: 'books',
+              from: bookType === 'listen' ? 'audiobooks' : 'books',
               localField: '_id.bookId',
               foreignField: '_id',
               as: 'book'
@@ -78,11 +79,12 @@ module.exports = {
         if (result && result.length) {
           result.forEach(doc => {
             if (doc.book[0]) {
-              const newDoc = {
-                book: doc.book[0].title,
-                lan: {from: doc.book[0].lanCode, to : doc._id.lan},
-                points: doc.points
-              };
+              const book = doc.book[0],
+                    newDoc = {
+                      book: book.title,
+                      lan: {from: book.lanCode, to : doc._id.lan},
+                      points: doc.points
+                    };
               total += doc.points;
               scores.push(newDoc);
             }
@@ -90,6 +92,6 @@ module.exports = {
         }
         response.handleSuccess(res, {scores, total});
       });
-    })
+    });
   }
 }

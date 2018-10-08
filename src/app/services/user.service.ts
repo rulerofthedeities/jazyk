@@ -247,9 +247,9 @@ export class UserService {
     .pipe(retry(3));
   }
 
-  fetchScoreBooks():  Observable<BookScore> {
+  fetchScoreBooks(bookType: string):  Observable<BookScore> {
     return this.http
-    .get<BookScore>('/api/user/score/books')
+    .get<BookScore>('/api/user/score/books/' + bookType)
     .pipe(retry(3));
   }
 

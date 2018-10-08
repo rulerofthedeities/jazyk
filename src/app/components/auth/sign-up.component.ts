@@ -53,7 +53,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmitForm(user: User) {
-    const learnLan = this.getDefaultLanguage();
     user.main = {
       lan: this.userService.user.main.lan,
       myLan: this.userService.user.main.myLan,
@@ -61,8 +60,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
       gender: ''
     };
     user.jazyk = this.userService.getDefaultSettings(user.main.lan, false);
-    user.grammator = {learnLan};
-    user.vocabulator = {learnLan};
     if (this.userForm.valid) {
       this.authService
       .signup(user)

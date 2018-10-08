@@ -27,7 +27,6 @@ export class PieChartComponent implements OnInit {
   private calculatePieChart() {
     if (this.testData) {
       // Add data from test to read/listen test
-      console.log('testdata ok');
       if (this.data) {
         this.totalData = {
           bookId: this.data.bookId,
@@ -45,7 +44,6 @@ export class PieChartComponent implements OnInit {
       // there is only none-test data
       this.totalData = this.data;
     }
-    console.log('total data', this.totalData);
     // https://hackernoon.com/a-simple-pie-chart-in-svg-dbdd653b6936
     const total = this.totalData ? this.totalData.nrYes + this.totalData.nrNo + this.totalData.nrMaybe : 0;
     if (total > 0) {

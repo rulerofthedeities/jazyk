@@ -7,6 +7,7 @@ import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
 import { Trophy } from '../../models/book.model';
 import { SingleBookScore } from '../../models/score.model';
 import { takeWhile } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 @Component({
   templateUrl: 'score.component.html',
@@ -17,7 +18,10 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
   bookScores: SingleBookScore[] = [];
+  audiobookScores: SingleBookScore[] = [];
   bookTotal: number;
+  audiobookTotal: number;
+  overallTotal: number;
   rank: number;
   gender: string;
   trophies: Trophy[] = [];
@@ -46,13 +50,22 @@ export class UserScoreComponent implements OnInit, OnDestroy {
 
   private getBookScores() {
     this.loadingBookScores = true;
-    this.userService
-    .fetchScoreBooks()
+    zip(
+      this.userService.fetchScoreBooks('read'),
+      this.userService.fetchScoreBooks('listen')
+    )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        this.bookScores = data.scores.filter(score => score.points > 0);
-        this.bookTotal = data.total || 0;
+        const readData = data[0],
+              listenData = data[1];
+              console.log('readData', readData);
+              console.log('listenData', listenData);
+        this.bookScores = readData.scores.filter(score => score.points > 0);
+        this.audiobookScores = listenData.scores.filter(score => score.points > 0);
+        this.bookTotal = readData.total || 0;
+        this.audiobookTotal = listenData.total || 0;
+        this.overallTotal = this.bookTotal + this.audiobookTotal;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.sharedService.getRank(this.bookTotal);
         this.loadingBookScores = false;
