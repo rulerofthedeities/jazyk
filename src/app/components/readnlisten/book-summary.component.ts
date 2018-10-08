@@ -42,6 +42,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   difficultyPerc: number;
   showIntro = false;
   isNewBook = false;
+  isFinished = false;
   licenseUrl: string;
   defaultImage: string;
   authorsTxt: string;
@@ -54,6 +55,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.checkIfFinished();
     this.setDefaultImg();
     this.setAuthors();
     this.getLicenseUrl();
@@ -122,6 +124,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   onToggleIntro() {
     this.showIntro = !this.showIntro;
+  }
+
+  private checkIfFinished() {
+    if (this.tpe === 'home') {
+      this.isFinished = (this.userBook && this.userBookStatus.isBookRead) || (this.userBookTest && this.userBookStatusTest.isBookRead);
+    } else {
+      this.isFinished = this.userBookStatus.isBookRead && this.userBookStatusTest.isBookRead;
+    }
   }
 
   private getLicenseUrl() {

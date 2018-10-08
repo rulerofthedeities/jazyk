@@ -1,6 +1,6 @@
 <article>
   <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen', readbook:bookType==='read'}">
-    <div class="read-bar" *ngIf="userBookStatus.isBookRead">
+    <div class="read-bar" *ngIf="isFinished">
     </div>
     <div class="panel-body" [class.read]="userBookStatus.isBookRead">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
@@ -32,7 +32,7 @@
           {{book.intro}}
         </div>
         <div class="pie-content" style="position:relative;">
-          <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0">
+          <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
             <km-pie-chart
               [data]="userData"
               [testData]="userDataTest">
@@ -83,7 +83,7 @@
             <span class="fa fa-flask fa-spacing"></span>
             {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
           </button>
-          <div class="book-read" *ngIf="userBookStatus.isBookRead">
+          <div class="book-read" *ngIf="isFinished">
             <span class="fa fa-check"></span>
             {{text[bookType=== 'listen' ? 'AudioListened' : 'BookRead']}}
           </div>

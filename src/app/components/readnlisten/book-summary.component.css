@@ -85,6 +85,9 @@
   height: 101px;
   font-size: 16px;
 }
+.dashboard.audiobook .img-text {
+  top: 0;
+}
 .img-author {
   position: absolute;
   bottom: 20px;
@@ -98,16 +101,19 @@
   font-style: italic;
   z-index: 1;
 }
-.audiobook .img-author {
-  bottom: 2px;
-  color: black;
-}
 .dashboard .img-author {
   left: 2px;
   width: 70px;
   height: 20px;
   font-size: 10px;
   bottom: 12px;
+}
+.audiobook .img-author {
+  bottom: 2px;
+  color: black;
+}
+.dashboard.audiobook .img-author {
+  bottom: 0;
 }
 .book {
   margin-left: 180px;
