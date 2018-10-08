@@ -129,7 +129,7 @@
           </div>
           -->
         </div>
-        <div class="row" *ngIf="!isCurrentUser && isCurrentlyFollowing && isCurrentlyFollowed && profile">
+        <div class="row" *ngIf="!isCurrentUser && (isAdmin || (isCurrentlyFollowing && isCurrentlyFollowed && profile))">
           <button [style.display]="messageShown ? 'none' : 'inline-block'"
             type="button"
             (click)="onCreateMessage(msgField)"

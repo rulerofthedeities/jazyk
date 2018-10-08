@@ -24,6 +24,7 @@ export class UserComponent implements OnInit, OnDestroy {
   messageShown: boolean;
   message: string;
   infoMsg: string;
+  isAdmin: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +35,8 @@ export class UserComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log(this.userService.user);
+    this.isAdmin = !!this.userService.user.isAdmin;
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),
@@ -63,9 +66,11 @@ export class UserComponent implements OnInit, OnDestroy {
           this.isCurrentlyFollowing = true;
           this.network.followed.push({userId: id});
           this.addFollowed({userId: id});
+          /*
           if (this.networkShown) {
             this.showNetwork();
           }
+          */
         },
         error => this.errorService.handleError(error)
       );
@@ -99,11 +104,13 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
+  /*
   onShowNetwork() {
     this.infoMsg = '';
     this.showNetwork();
     this.networkShown = true;
   }
+  */
 
   onCloseNetwork() {
     this.networkShown = false;
@@ -136,15 +143,17 @@ export class UserComponent implements OnInit, OnDestroy {
     this.infoMsg = '';
   }
 
+  /*
   private showNetwork() {
     const maxPerCall = 10,
           followers = this.publicNetwork.filter(follower => !follower.userName),
           users: string[] = followers.map(follower => follower._id);
     if (users.length > 0) {
-      users.slice(0, 10);
+      users.slice(0, maxPerCall);
       this.fetchUserData(users);
     }
   }
+*/
 
   private fetchPublicProfile(user: string) {
     this.userService

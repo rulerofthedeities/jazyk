@@ -41,6 +41,7 @@ var userSchema = new Schema({
   main: {type: mainSchema, required: true},
   emailHash: {type: String},
   jazyk: jazykSchema,
+  isAdmin: {type: Boolean, default: false},
   dtCreated: {type: Date, default: Date.now}
 });
 

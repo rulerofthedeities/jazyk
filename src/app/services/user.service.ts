@@ -90,9 +90,10 @@ export class UserService {
         lan: userLan, // interface language
         myLan: userLan,
         background: true,
-        gender: ''
+        gender: '',
       },
-      jazyk: this.getDefaultSettings(userLan, true)
+      jazyk: this.getDefaultSettings(userLan, true),
+      isAdmin: false
     };
     return user;
   }

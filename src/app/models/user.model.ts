@@ -65,8 +65,7 @@ export interface User {
   userName: string;
   main: MainSettings;
   jazyk?: JazykConfig;
-  grammator?: UserApp;
-  vocabulator?: UserApp;
+  isAdmin: boolean;
 }
 
 export interface Notification {

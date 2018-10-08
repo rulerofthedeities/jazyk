@@ -117,7 +117,8 @@ var getUserData = function(userId, callback) {
           email: 1,
           userName: 1,
           main: 1,
-          'jazyk.read': 1
+          'jazyk.read': 1,
+          isAdmin: 1
         };
   User.findOne(query, projection, function(err, doc) {
     setEmailHash(doc);
@@ -139,7 +140,8 @@ var getPublicProfile = function(query, res) {
     'jazyk.profile': 1,
     'jazyk.dt': 1,
     userName: 1,
-    email: 1}
+    email: 1
+  }
   User.findOne(query, projection, (err, result) => {
     let errCode = 400;
     if (!result) {
