@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReadService } from '../../services/read.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
@@ -16,12 +15,11 @@ import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstr
 export class ReadComponent extends ReadnListenListComponent implements OnInit, OnDestroy {
 
   constructor(
-    readService: ReadService,
     readnListenService: ReadnListenService,
     userService: UserService,
     sharedService: SharedService
   ) {
-    super(readService, readnListenService, userService, sharedService);
+    super(readnListenService, userService, sharedService);
   }
 
   ngOnInit() {
@@ -51,7 +49,7 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
       this.getBookTranslations();
     }
     this.isLoading = true;
-    this.readService
+    this.readnListenService
     .fetchPublishedBooks(this.bookLanguage.code, this.sort)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { SessionData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
-import { ReadService } from '../../services/read.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { zip } from 'rxjs';
 
 @Component({
@@ -25,7 +25,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   newTrophies: string[] = [];
 
   constructor(
-    private readService: ReadService
+    private readnListenService: ReadnListenService
   ) {}
 
   ngOnChanges() {
@@ -92,7 +92,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   }
 
   private getTrophies(trophiesThisSession: string[]) {
-    this.readService
+    this.readnListenService
     .fetchSessionTrophies()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
@@ -104,8 +104,8 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
 
   private getOverallTrophies(existingTrophies: Trophy[], trophiesThisSession: string[]) {
     zip(
-      this.readService.fetchOverallSessionTrophies(existingTrophies),
-      this.readService.fetchOverallThumbTrophies(existingTrophies)
+      this.readnListenService.fetchOverallSessionTrophies(existingTrophies),
+      this.readnListenService.fetchOverallThumbTrophies(existingTrophies)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
@@ -130,7 +130,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   }
 
   private saveTrophies(trophies: string[]) {
-    this.readService
+    this.readnListenService
     .saveTrophies(trophies)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(

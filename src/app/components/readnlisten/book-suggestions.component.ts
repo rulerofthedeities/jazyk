@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { ReadService } from '../../services/read.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { Map } from '../../models/main.model';
 import { Book, UserBook } from '../../models/book.model';
@@ -38,7 +37,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   isResults = false;
 
   constructor(
-    private readService: ReadService,
     private readnListenService: ReadnListenService
   ) {}
 
@@ -51,9 +49,9 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     zip(
       this.bookType === 'listen' ?
         this.readnListenService.fetchPublishedAudioBooks(this.book.lanCode, 'difficulty1') :
-        this.readService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
+        this.readnListenService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
       this.readnListenService.fetchUserBooks(this.userLanCode, this.bookType),
-      this.readService.fetchPreviousAnswers(this.book._id, this.userLanCode)
+      this.readnListenService.fetchPreviousAnswers(this.book._id, this.userLanCode)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
@@ -148,8 +146,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
             book.difficulty.weight > currentWeight - weightDeltaLSmallRange[1] * weightCoefficientEasier
           );
         }
-        easierBooks = this.readService.shuffle(easierBooks).slice(0, 3),
-        harderBooks = this.readService.shuffle(harderBooks).slice(0, 3);
+        easierBooks = this.readnListenService.shuffle(easierBooks).slice(0, 3),
+        harderBooks = this.readnListenService.shuffle(harderBooks).slice(0, 3);
         let suggestedBooks = easierBooks.concat(harderBooks);
 
         const showHarderSuggestions = this.checkIfHarderSuggestions(answers, !!harderBooks.length),

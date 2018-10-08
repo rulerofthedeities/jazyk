@@ -1,7 +1,6 @@
 import { OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReadService } from '../services/read.service';
 import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
@@ -51,7 +50,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     protected router: Router,
     protected location: Location,
     protected platformLocation: PlatformLocation,
-    protected readService: ReadService,
     protected readnListenService: ReadnListenService,
     protected sharedService: SharedService,
     protected userService: UserService,

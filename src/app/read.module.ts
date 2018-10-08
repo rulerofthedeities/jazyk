@@ -4,8 +4,6 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ReadnListenModule } from './readnlisten.module';
 
-import { ReadService } from './services/read.service';
-
 import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
 
@@ -21,7 +19,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     ReadnListenModule
   ],
   providers: [
-    ReadService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   declarations: [

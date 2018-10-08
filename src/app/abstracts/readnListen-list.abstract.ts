@@ -1,8 +1,4 @@
 import { OnDestroy } from '@angular/core';
-
-// TMP: remove later?
-import { ReadService } from '../services/read.service';
-
 import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
@@ -42,7 +38,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   listTpe = 'all';
 
   constructor(
-    protected readService: ReadService,
     protected readnListenService: ReadnListenService,
     protected userService: UserService,
     protected sharedService: SharedService

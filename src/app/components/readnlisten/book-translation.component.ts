@@ -1,7 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Map } from '../../models/main.model';
 import { SentenceTranslation, Thumbs } from '../../models/book.model';
-import { ReadService } from '../../services/read.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -38,7 +37,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   thumbs: Map<Thumbs> = {};
 
   constructor(
-    private readService: ReadService,
     private readnListenService: ReadnListenService
   ) {}
 
@@ -113,7 +111,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   private saveThumb(up: boolean, translation: SentenceTranslation) {
     this.thumbs[translation.elementId].savingDown = !up;
     this.thumbs[translation.elementId].savingUp = up;
-    this.readService
+    this.readnListenService
     .saveThumb(up,  this.bookId, translation.userId, translation._id, translation.elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
@@ -167,7 +165,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private getTranslationThumbs(translationId: string) {
-    this.readService
+    this.readnListenService
     .fetchThumbs(this.bookId, translationId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(

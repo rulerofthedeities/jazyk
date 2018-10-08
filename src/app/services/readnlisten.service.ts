@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark,
-         SessionData, SentenceTranslation } from '../models/book.model';
+         SessionData, SentenceTranslation, Thumbs, Trophy } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ export const maxWordScore = 900; // only use words with max this score in listen
 @Injectable()
 export class ReadnListenService {
   audioEnded = new Subject<boolean>();
+  readAnotherBook = new Subject<Book>();
 
   constructor(
     private http: HttpClient
@@ -21,6 +22,12 @@ export class ReadnListenService {
   }
 
   /*** Books ***/
+
+  fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
+    return this.http
+    .get<Book[]>('/api/books/published/' + readLanCode + '/' + sort)
+    .pipe(retry(3));
+  }
 
   fetchPublishedAudioBooks(readLanCode: string, sort: string): Observable<Book[]> {
     return this.http
@@ -40,6 +47,10 @@ export class ReadnListenService {
     return this.http
     .get<UserBook>('/api/book/user/' + interfaceLanCode + '/' + bookId + '/' + (isTest ? '1' : '0'))
     .pipe(retry(3));
+  }
+
+  startNewBook(book: Book) {
+    this.readAnotherBook.next(book);
   }
 
   /*** Chapters ***/
@@ -86,6 +97,12 @@ export class ReadnListenService {
     }
   }
 
+  fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
+    return this.http
+    .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
+    .pipe(retry(3));
+  }
+
   /*** Translations ***/
 
   fetchSentenceTranslations(
@@ -125,6 +142,56 @@ export class ReadnListenService {
     // count the # of translations for all books into a specific language
     return this.http
     .get<TranslationData[]>('/api/book/translation/' + userLanCode);
+  }
+
+  /*** Thumbs ***/
+
+  fetchThumbs(bookId: string, translationId: string): Observable<Thumbs[]> {
+    return this.http
+    .get<Thumbs[]>('/api/book/thumb/' + bookId + '/' + translationId)
+    .pipe(retry(3));
+  }
+
+  saveThumb(
+    up: boolean,
+    bookId: string,
+    translatorId: string,
+    translationId: string,
+    translationElementId: string
+  ): Observable<boolean> {
+    return this.http
+    .post<boolean>('/api/book/thumb', {
+      up,
+      bookId,
+      translatorId,
+      translationId,
+      translationElementId
+    });
+  }
+
+  /*** Trophies ***/
+
+  fetchSessionTrophies(): Observable<Trophy[]> {
+    return this.http
+    .get<Trophy[]>('/api/book/trophies/user')
+    .pipe(retry(3));
+  }
+
+  fetchOverallSessionTrophies(existingTrophies: Trophy[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies/session', {existingTrophies})
+    .pipe(retry(3));
+  }
+
+  fetchOverallThumbTrophies(existingTrophies: Trophy[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies/thumb', {existingTrophies})
+    .pipe(retry(3));
+  }
+
+  saveTrophies(trophies: string[]): Observable<string[]> {
+    return this.http
+    .post<string[]>('/api/book/trophies', {trophies});
   }
 
   // https://gist.github.com/IceCreamYou/8396172
@@ -174,4 +241,25 @@ export class ReadnListenService {
     return score[sourceLength + 1][targetLength + 1];
   }
 
+  // https://basarat.gitbooks.io/algorithms/content/docs/shuffling.html
+  shuffle<T>(array: T[]): T[] {
+    // if it's 1 or 0 items, just return
+    if (!array || array.length <= 1) {
+      return array;
+    }
+    // For each index in array
+    for (let i = 0; i < array.length; i++) {
+      // choose a random not-yet-placed item to place there
+      // must be an item AFTER the current item, because the stuff
+      // before has all already been placed
+      const randomChoiceIndex = this.getRandom(i, array.length - 1);
+      // place the random choice in the spot by swapping
+      [array[i], array[randomChoiceIndex]] = [array[randomChoiceIndex], array[i]];
+    }
+    return array;
+  }
+
+  private getRandom(floor: number, ceiling: number) {
+    return Math.floor(Math.random() * (ceiling - floor + 1)) + floor;
+  }
 }

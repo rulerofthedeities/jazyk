@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReadService } from '../../services/read.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
@@ -21,7 +20,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     router: Router,
     location: Location,
     platformLocation: PlatformLocation,
-    readService: ReadService,
     readnListenService: ReadnListenService,
     sharedService: SharedService,
     userService: UserService,
@@ -32,7 +30,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
       router,
       location,
       platformLocation,
-      readService,
       readnListenService,
       sharedService,
       userService,
@@ -70,7 +67,7 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
 
   private observe() {
     // New book started from suggestions?
-    this.readService
+    this.readnListenService
     .readAnotherBook.subscribe(
       book => {
         if (this.currentStep === SentenceSteps.Results) {

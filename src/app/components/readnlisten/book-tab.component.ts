@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Book, UserBook } from '../../models/book.model';
 import { SharedService } from '../../services/shared.service';
-import { ReadService } from '../../services/read.service';
+import { ReadnListenService } from '../../services/readnlisten.service';
 
 @Component({
   selector: 'km-book-tab',
@@ -19,7 +19,7 @@ export class BookTabComponent implements OnInit {
   tooltip: string;
 
   constructor(
-    private readService: ReadService,
+    private readnListenService: ReadnListenService,
     private sharedService: SharedService
   ) {}
 
@@ -30,6 +30,6 @@ export class BookTabComponent implements OnInit {
   }
 
   onStartNewBook(book: Book) {
-    this.readService.startNewBook(book);
+    this.readnListenService.startNewBook(book);
   }
 }
