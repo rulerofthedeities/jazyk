@@ -76,7 +76,27 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (exitOk) {
       this.log('Reading aborted');
       this.sharedService.stopAudio(true);
-      this.processResults(false);
+      // Check if book is finished - in case abort right before end
+      if (this.currentSentenceNr >= this.currentSentenceTotal) {
+        this.sessionData.chapters++;
+        this.readnListenService
+        .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
+        .pipe(takeWhile(() => this.componentActive))
+        .subscribe(
+          chapter => {
+            if (!chapter) {
+              // Quit book right at the finish!
+              this.sessionData.resultData.isFinished = true;
+              this.processResults(true);
+            } else {
+              // There is another chapter
+              this.processResults(false);
+            }
+          }
+        );
+      } else {
+        this.processResults(false);
+      }
     }
   }
 

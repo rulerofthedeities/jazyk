@@ -65,7 +65,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.audiobookTotal = listenData.total || 0;
         this.overallTotal = this.bookTotal + this.audiobookTotal;
         this.gender = this.userService.user.main.gender || 'm';
-        this.rank = this.sharedService.getRank(this.bookTotal);
+        this.rank = this.sharedService.getRank(this.overallTotal);
         this.loadingBookScores = false;
       },
       error => this.errorService.handleError(error)

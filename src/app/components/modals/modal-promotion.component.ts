@@ -31,10 +31,10 @@ export class ModalPromotionComponent implements OnInit {
   doShowModal() {
     this.showModal = true;
     this.cheer.play();
-    // Close modal after 10 secs
+    // Close modal after 5 secs
     setTimeout(() => {
       this.showModal = false;
-    }, 10000);
+    }, 5000);
   }
 
   private loadAudio(file: string): any {

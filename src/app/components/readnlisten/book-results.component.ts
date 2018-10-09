@@ -1,10 +1,12 @@
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { SessionData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
+import { ModalPromotionComponent } from '../modals/modal-promotion.component';
 import { zip } from 'rxjs';
+import { cpus } from 'os';
 
 @Component({
   selector: 'km-sentences-results',
@@ -16,6 +18,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   @Input() data: SessionData;
   @Input() text: Object;
   @Input() bookType: string;
+  @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   percYes = 0;
   percMaybe = 0;
@@ -26,6 +29,8 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   bonus = 0;
   isFinished = false;
   newTrophies: string[] = [];
+  rankKey: string;
+  rankNr: number;
 
   constructor(
     private readnListenService: ReadnListenService,
@@ -41,6 +46,10 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     this.showDetails = show;
   }
 
+  getGender(): string {
+    return this.userService.user.main.gender || 'm';
+  }
+
   private calculateResults() {
     this.newTrophies = [];
     this.isFinished = this.data.resultData.isFinished;
@@ -53,7 +62,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     }
     this.points = this.data.points.finished + this.data.points.translations + this.data.points.words;
     this.bonus = this.data.points.finished;
-    console.log('FINISHED POINTS', this.data.points.finished);
     this.checkNewRank();
   }
 
@@ -68,8 +76,22 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
         previousRank = this.sharedService.getRank(scoreTotal - this.points);
         console.log('total score', scoreTotal, this.points);
         console.log('rank', rank, previousRank);
+        if (rank > previousRank) {
+          console.log('NEW RANK !!!');
+          this.newRankPromotion(rank);
+        }
       }
     );
+  }
+
+  private newRankPromotion(newRank: number) {
+    if (this.promotionComponent) {
+      // Show promotion modal
+      this.rankNr = newRank || 0;
+      this.rankKey = 'rank' + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
+      this.promotionComponent.doShowModal();
+      console.log(this.rankKey, this.text[this.rankKey]);
+    }
   }
 
   private checkSessionTrophies(data: SessionData) {
