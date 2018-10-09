@@ -6,6 +6,7 @@ import { SharedModule } from './shared.module';
 
 import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
+import { ReadnListenService } from './services/readnlisten.service';
 import { DashboardService } from './services/dashboard.service';
 import { LogService } from './services/log.service';
 
@@ -27,6 +28,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
   ],
   providers: [
     UserResolver,
+    ReadnListenService,
     DashboardService,
     LogService
   ],

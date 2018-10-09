@@ -17,6 +17,8 @@ export class BookTabComponent implements OnInit {
   difficultyPerc: number;
   isStarted: boolean;
   tooltip: string;
+  bookType: string;
+  isTest: boolean;
 
   constructor(
     private readnListenService: ReadnListenService,
@@ -24,6 +26,8 @@ export class BookTabComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.bookType = this.userBook.bookType;
+    this.isTest = this.userBook.isTest;
     this.isStarted = !!this.userBook && !!this.userBook.bookmark;
     this.difficultyPerc = this.sharedService.getBookDifficulty(this.book).difficultyPerc;
     this.tooltip = this.book.difficulty.weight > this.weight ? this.text['MoreDifficult'] : this.text['LessDifficult'];

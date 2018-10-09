@@ -11,7 +11,8 @@
     [text]="text">
   </km-book-tpe>
   <button type="button" class="btn btn-primary pull-right start" (click)="onStartNewBook(book)">
-    {{isStarted ? text["ContinueReading"]: text["StartReading"]}}
+    {{isStarted ? text[bookType === "listen" ? (isTest ? "ContinueListeningTest" : "ContinueListening") : "ContinueReading"] :
+                  text[bookType === "listen" ? (isTest ? "StartListeningTest" : "StartListening") : "StartReading"]}}
   </button>
   <span class="title">{{book.title}}</span>
   <span class="details">

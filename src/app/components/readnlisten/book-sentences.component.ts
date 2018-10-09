@@ -38,7 +38,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
 
   ngOnInit() {
     super.ngOnInit();
-    this.observe();
   }
 
   onAnswer(answer: string) {
@@ -63,26 +62,6 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
         }
       break;
     }
-  }
-
-  private observe() {
-    // New book started from suggestions?
-    this.readnListenService
-    .readAnotherBook.subscribe(
-      book => {
-        if (this.currentStep === SentenceSteps.Results) {
-          // Results - already saved
-          this.startAnotherBook(book);
-        } else {
-          this.placeBookmark(false);
-          this.saveSessionData(book);
-        }
-      }
-    );
-    // If back button, show header
-    this.platformLocation.onPopState(() => {
-      this.sharedService.changeExerciseMode(false);
-    });
   }
 
   private answer(answer: string) {

@@ -24,6 +24,7 @@ interface Answers {
 export class BookSuggestionsComponent implements OnInit, OnDestroy {
   @Input() book: Book;
   @Input() bookType: string;
+  @Input() isTest: boolean;
   @Input() private userLanCode: string;
   @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
   @Input() private nextSentence: Subject<string>;
@@ -56,7 +57,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
       this.books = res[0];
-      this.finishedBooks = this.removeFinishedBooks(res[1]);
+      const uBooks = res[1].filter(book => book.isTest === this.isTest);
+      this.finishedBooks = this.getFinishedBooks(uBooks);
       this.pastAnswers = this.processPastAnswers(res[2]);
       const userBooks: UserBook[] = res[1];
       this.userBooks = {};
@@ -85,8 +87,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private removeFinishedBooks(userBooks: UserBook[]) {
-    // Remove finished books from list
+  private getFinishedBooks(userBooks: UserBook[]) {
+    // Keep track finished books so it can be removed from the book list
     return userBooks.filter(book => book.bookmark && book.bookmark.isBookRead);
   }
 
@@ -113,63 +115,64 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
 
   private findSuggestions(answers: Answers) {
     const weightCoefficientHarder = this.getWeightCoefficient('harder', answers),
-          weightCoefficientEasier = this.getWeightCoefficient('easier', answers);
-    if (this.finishedBooks) {
-      const weightDeltaLargeRange = [40, 80], // Min diff for easier / harder books unless there are none
-            weightDeltaLSmallRange = [0, 40], // Only used if Large yields no results
-            currentWeight = this.book.difficulty.weight;
-      let harderBooks: Book[] = [],
-          easierBooks: Book[] = [];
-      this.finishedBooks.forEach(finishedBook => {
-        this.books = this.books.filter(book => book._id !== finishedBook.bookId);
-      });
-      if (this.books.length > 0) {
-        // Find easier / harder books
+          weightCoefficientEasier = this.getWeightCoefficient('easier', answers); // 10
+    const weightDeltaLargeRange = [40, 80], // Min diff for easier / harder books unless there are none
+          weightDeltaLSmallRange = [0, 40], // Only used if Large yields no results
+          currentWeight = this.book.difficulty.weight;
+    let harderBooks: Book[] = [],
+        easierBooks: Book[] = [];
+    // Remove current book
+    this.books = this.books.filter(book => book._id.toString() !== this.book._id.toString());
+    // Remove finished books
+    this.finishedBooks.forEach(finishedBook => {
+      this.books = this.books.filter(book => book._id !== finishedBook.bookId);
+    });
+    if (this.books.length > 0) {
+      // Find easier / harder books
+      harderBooks = this.books.filter(book =>
+        book.difficulty.weight > currentWeight + weightDeltaLargeRange[0] * weightCoefficientHarder &&
+        book.difficulty.weight < currentWeight + weightDeltaLargeRange[1] * weightCoefficientHarder
+      );
+      easierBooks = this.books.filter(book =>
+        book.difficulty.weight < currentWeight - weightDeltaLargeRange[0] * weightCoefficientEasier &&
+        book.difficulty.weight > currentWeight - weightDeltaLargeRange[1] * weightCoefficientEasier
+      );
+      // If none found, use smaller delta
+      if (harderBooks.length < 1) {
         harderBooks = this.books.filter(book =>
-          book.difficulty.weight > currentWeight + weightDeltaLargeRange[0] * weightCoefficientHarder &&
-          book.difficulty.weight < currentWeight + weightDeltaLargeRange[1] * weightCoefficientHarder
+          book.difficulty.weight > currentWeight + weightDeltaLSmallRange[0] &&
+          book.difficulty.weight < currentWeight + weightDeltaLSmallRange[1] * weightCoefficientHarder
         );
-        easierBooks = this.books.filter(book =>
-          book.difficulty.weight < currentWeight - weightDeltaLargeRange[0] * weightCoefficientEasier &&
-          book.difficulty.weight > currentWeight - weightDeltaLargeRange[1] * weightCoefficientEasier
-        );
-        // If none found, use smaller delta
-        if (harderBooks.length < 1) {
-          harderBooks = this.books.filter(book =>
-            book.difficulty.weight > currentWeight + weightDeltaLSmallRange[0] &&
-            book.difficulty.weight < currentWeight + weightDeltaLSmallRange[1] * weightCoefficientHarder
-          );
-        }
-        if (easierBooks.length < 1) {
-          easierBooks = this.books.filter(book =>
-            book.difficulty.weight < currentWeight - weightDeltaLSmallRange[0] &&
-            book.difficulty.weight > currentWeight - weightDeltaLSmallRange[1] * weightCoefficientEasier
-          );
-        }
-        easierBooks = this.readnListenService.shuffle(easierBooks).slice(0, 3),
-        harderBooks = this.readnListenService.shuffle(harderBooks).slice(0, 3);
-        let suggestedBooks = easierBooks.concat(harderBooks);
-
-        const showHarderSuggestions = this.checkIfHarderSuggestions(answers, !!harderBooks.length),
-              showEasierSuggestions = this.checkIfEasierSuggestions(answers, !!easierBooks.length);
-        if (showEasierSuggestions) {
-          if (showHarderSuggestions) {
-            suggestedBooks = easierBooks.concat(harderBooks);
-          } else {
-            suggestedBooks = easierBooks;
-          }
-        } else {
-          suggestedBooks = harderBooks;
-        }
-        if (suggestedBooks) {
-          // Sort books according to weight
-          suggestedBooks.sort(
-            (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
-                      ((b.difficulty.weight > a.difficulty.weight) ? -1 : 0)
-          );
-        }
-        this.suggestedBooks = suggestedBooks;
       }
+      if (easierBooks.length < 1) {
+        easierBooks = this.books.filter(book =>
+          book.difficulty.weight < currentWeight - weightDeltaLSmallRange[0] &&
+          book.difficulty.weight > currentWeight - weightDeltaLSmallRange[1] * weightCoefficientEasier
+        );
+      }
+      easierBooks = this.readnListenService.shuffle(easierBooks).slice(0, 3),
+      harderBooks = this.readnListenService.shuffle(harderBooks).slice(0, 3);
+      let suggestedBooks = easierBooks.concat(harderBooks);
+
+      const showHarderSuggestions = this.checkIfHarderSuggestions(answers, !!harderBooks.length),
+            showEasierSuggestions = this.checkIfEasierSuggestions(answers, !!easierBooks.length);
+      if (showEasierSuggestions) {
+        if (showHarderSuggestions) {
+          suggestedBooks = easierBooks.concat(harderBooks);
+        } else {
+          suggestedBooks = easierBooks;
+        }
+      } else {
+        suggestedBooks = harderBooks;
+      }
+      if (suggestedBooks) {
+        // Sort books according to weight
+        suggestedBooks.sort(
+          (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
+                    ((b.difficulty.weight > a.difficulty.weight) ? -1 : 0)
+        );
+      }
+      this.suggestedBooks = suggestedBooks;
     }
   }
 

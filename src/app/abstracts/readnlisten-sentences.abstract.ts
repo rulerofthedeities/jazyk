@@ -58,6 +58,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   ngOnInit() {
     console.log('abstract init');
+    this.observe();
     this.userId = this.userService.user._id.toString();
     this.settings = this.userService.user.jazyk.read;
     this.chapterObservable = new BehaviorSubject<Chapter>(null);
@@ -389,6 +390,26 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
+  protected observe() {
+    // New book started from suggestions?
+    this.readnListenService
+    .readAnotherBook.subscribe(
+      book => {
+        if (this.currentStep === SentenceSteps.Results) {
+          // Results - already saved
+          this.startAnotherBook(book);
+        } else {
+          this.placeBookmark(false);
+          this.saveSessionData(book);
+        }
+      }
+    );
+    // If back button, show header
+    this.platformLocation.onPopState(() => {
+      this.sharedService.changeExerciseMode(false);
+    });
+  }
+
   protected exitReading() {
     let abortNow = false;
     if (this.isCountDown) {
@@ -433,7 +454,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.bookId = book._id;
     this.book = book;
     this.readnListenService.subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest);
-    this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode);
+    this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode + (this.isTest ? '/test' : ''));
     this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
     this.isCountDown = false;
     this.currentChapter = null;

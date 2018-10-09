@@ -149,7 +149,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     if (this.tpe === 'home') {
       this.isFinished = (this.userBook && this.userBookStatus.isBookRead) || (this.userBookTest && this.userBookStatusTest.isBookRead);
     } else {
-      console.log('ubook', this.userBook, this.userBookTest);
       if (this.userBook && this.userBookTest) {
         // test + no test -> both must be finished
         this.isFinished = this.userBookStatus.isBookRead && this.userBookStatusTest.isBookRead;
