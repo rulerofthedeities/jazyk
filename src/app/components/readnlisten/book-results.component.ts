@@ -2,6 +2,8 @@ import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { SessionData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadnListenService } from '../../services/readnlisten.service';
+import { UserService } from '../../services/user.service';
+import { SharedService } from '../../services/shared.service';
 import { zip } from 'rxjs';
 
 @Component({
@@ -21,11 +23,14 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   total = 0;
   showDetails = false;
   points = 0;
+  bonus = 0;
   isFinished = false;
   newTrophies: string[] = [];
 
   constructor(
-    private readnListenService: ReadnListenService
+    private readnListenService: ReadnListenService,
+    private userService: UserService,
+    private sharedService: SharedService
   ) {}
 
   ngOnChanges() {
@@ -47,6 +52,24 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
       this.percNo = Math.round(this.data.nrNo / this.total * 1000) / 10;
     }
     this.points = this.data.points.finished + this.data.points.translations + this.data.points.words;
+    this.bonus = this.data.points.finished;
+    console.log('FINISHED POINTS', this.data.points.finished);
+    this.checkNewRank();
+  }
+
+  private checkNewRank() {
+    this.userService
+    .fetchScoreTotal()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      score => {
+        const scoreTotal = score || 0,
+        rank = this.sharedService.getRank(scoreTotal),
+        previousRank = this.sharedService.getRank(scoreTotal - this.points);
+        console.log('total score', scoreTotal, this.points);
+        console.log('rank', rank, previousRank);
+      }
+    );
   }
 
   private checkSessionTrophies(data: SessionData) {

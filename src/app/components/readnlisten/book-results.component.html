@@ -78,19 +78,43 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-xs-12" [class.col-sm-4]="newTrophies.length">
+  <div class="col-xs-12" [class.col-sm-8]="newTrophies.length">
     <div class="panel panel-info">
       <div class="panel-heading">
         <h3 class="panel-title ">
           {{text["PointsEarned"]}}
         </h3>
       </div>
-      <div class="panel-body points">
-        {{points | score}}
+      <div class="panel-body">
+        <div class="points" *ngIf="!isFinished">
+          {{points | score}}
+        </div>
+        <div class="points col-md-6" *ngIf="isFinished">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td>{{text[bookType==='listen' ? "SentencesListened" : "SentencesRead"]}}</td>
+                <td class="text-right nr">{{(points - bonus) | score}}</td>
+              </tr>
+              <tr>
+                <td>{{text["CompletionBonus"]}}</td>
+                <td class="text-right nr">{{bonus | score}}</td>
+              </tr>
+              <tr class="success">
+                <td>{{text["Total"]}}</td>
+                <td class="text-right nr">
+                  <div class="total">
+                    {{points | score}}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-xs-12 col-sm-8" *ngIf="newTrophies.length">
+  <div class="col-xs-12 col-sm-4" *ngIf="newTrophies.length">
     <div class="panel panel-info">
       <div class="panel-heading">
         <h3 class="panel-title ">
