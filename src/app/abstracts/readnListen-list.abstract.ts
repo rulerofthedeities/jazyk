@@ -125,8 +125,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
             this.userBooks[uBook.bookId] = uBook;
           }
         });
-        console.log('user books', this.userBooks);
-        console.log('user books test', this.userBooksTest);
       }
     );
   }
@@ -140,15 +138,12 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         this.userData = {};
         this.userDataTest = {};
         sessionData.forEach(session => {
-          console.log('session', session);
           if (session.isTest) {
             this.userDataTest[session.bookId] = session;
           } else {
             this.userData[session.bookId] = session;
           }
         });
-        console.log('userdata', this.userData);
-        console.log('userdata test', this.userDataTest);
       }
     );
   }

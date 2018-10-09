@@ -2,12 +2,14 @@ import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges } 
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
 import { LicenseUrl } from '../../models/main.model';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
 
 interface UserBookStatus {
   isSubscribed: boolean;
+  isRecommended: boolean;
   isStarted: boolean;
   nrOfSentencesDone: number;
   isBookRead: boolean;
@@ -51,6 +53,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private router: Router,
     private userService: UserService,
+    private readnListenService: ReadnListenService,
     private sharedService: SharedService
   ) {}
 
@@ -71,31 +74,29 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartReadingListening() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode, this.bookType);
+    this.readnListenService.subscribeToBook(this.book._id, this.userLanCode, this.bookType);
     if (this.bookType === 'listen') {
-      console.log('start listening');
       this.log(`Start listening to '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
     } else {
-      console.log('start reading');
       this.log(`Start reading '${this.book.title}'`);
       this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
     }
   }
 
   onStartListeningTest() {
-    console.log('start listening test');
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.userService.subscribeToBook(this.book._id, this.userLanCode, 'listen', true);
+    this.readnListenService.subscribeToBook(this.book._id, this.userLanCode, 'listen', true);
+    this.log(`Start listening test for '${this.book.title}'`);
     this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
   onStopReadingListening() {
     // Unsubscribe from non-test
     if (this.userBookStatus && this.userBookStatus.isSubscribed) {
-      this.userService
-      .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType, false)
+      this.readnListenService
+      .unSubscribeFromBook(this.userBook._id)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         userBook => {
@@ -108,8 +109,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
     // Unsubscribe from test and non-test
     if (this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
-      this.userService
-      .unSubscribeFromBook(this.book._id, this.userLanCode, this.bookType, true)
+      this.readnListenService
+      .unSubscribeFromBook(this.userBookTest._id)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         userBook => {
@@ -124,6 +125,24 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   onToggleIntro() {
     this.showIntro = !this.showIntro;
+  }
+
+  onRecommend() {
+    if (this.userBookStatus.isBookRead) {
+      this.saveRecommend();
+    }
+  }
+
+  private saveRecommend() {
+    this.readnListenService
+    .recommendBook(this.userBook._id, !this.userBookStatus.isRecommended)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      updated => {
+        this.userBookStatus.isRecommended = !this.userBookStatus.isRecommended;
+        this.userBook.recommended = this.userBookStatus.isRecommended;
+      }
+    );
   }
 
   private checkIfFinished() {
@@ -178,9 +197,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private initBook(status: UserBookStatus, userBook: UserBook) {
     if (userBook) {
-      if (userBook.subscribed) {
-        status.isSubscribed = true;
-      }
+      status.isSubscribed = !!userBook.subscribed;
+      status.isRecommended = !!userBook.recommended;
       if (userBook.bookmark) {
         status.isStarted = true;
         if (userBook.bookmark.isBookRead) {
@@ -195,6 +213,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   private resetBook() {
     return {
       isSubscribed: false,
+      isRecommended: false,
       isStarted: false,
       isBookRead: false,
       nrOfSentencesDone: 0,

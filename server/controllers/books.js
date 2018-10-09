@@ -503,5 +503,55 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           existingTrophies = getExistingTrophies(req.body, userId);
     checkTotalThumbTrophies(res, userId, existingTrophies);
+  },
+  subscribeToBook: function(req, res) {
+    const userId = req.decoded.user._id,
+          data = req.body;
+    if (data && data.bookId) {
+      const bookId = mongoose.Types.ObjectId(data.bookId),
+            lanCode = data.lanCode,
+            bookType = data.bookType,
+            isTest = data.isTest,
+            query = {userId, bookId, lanCode, bookType, isTest},
+            options = {upsert: true, new: true},
+            insert = {userId, bookId, lanCode, bookType, isTest, 'dt.dtSubscribed': Date.now()},
+            set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
+            update = {$set: set, $setOnInsert: insert};
+      console.log('subscribe', insert);
+      UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+        response.handleError(err, res, 400, 'Error subscribing to book', function() {
+          response.handleSuccess(res, result);
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200);
+    }
+  },
+  unsubscribeFromBook: function(req, res) {
+    const userId = req.decoded.user._id,
+          ubookId = req.body.ubookId,
+          query = {_id: ubookId, userId},
+          options = {new: true},
+          set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
+          update = {$set: set};
+    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+      response.handleError(err, res, 400, 'Error unsubscribing from book', function() {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  recommend: function(req, res) {
+    const userId = req.decoded.user._id,
+          ubookId = req.body.ubookId,
+          recommended = req.body.recommend,
+          query = {_id: ubookId, userId},
+          options = {},
+          update = {$set: {recommended}};
+    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+      response.handleError(err, res, 400, 'Error recommending book', function() {
+        response.handleSuccess(res, result);
+      });
+    });
+
   }
 }

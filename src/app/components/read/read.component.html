@@ -41,12 +41,12 @@
     </ul>
 
     <!-- No books found for selected language -->
-    <div *ngIf="!books.length">
+    <div *ngIf="!filteredBooks.length">
       <km-info-msg [msg]="text['NoBooks']">
       </km-info-msg>
     </div>
 
-    <km-filter-bar *ngIf="books.length"
+    <km-filter-bar *ngIf="filteredBooks.length > 1"
       [text]="text"
       [hasBooks]="!!filteredBooks.length"
       [filter]="filter"

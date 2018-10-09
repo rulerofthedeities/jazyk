@@ -239,8 +239,7 @@
   color: #eee;
 }
 .stop {
-  position: relative;
-  top: 46px;
+  margin-top: 12px;
 }
 .pie-chart {
   position: absolute;
@@ -272,6 +271,13 @@
 .panel-body {
   position: relative !important;
   overflow: hidden;
+}
+.recommended > span {
+  font-size: 3rem;
+  color: #428bca;
+}
+span.canrecommend:hover {
+  cursor: pointer;
 }
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */
@@ -307,7 +313,4 @@
     font-size: 32px;
     margin-top: 4px;
   }
-}
-@media screen and (max-width: 767px) {
-  .stop, .read {position: initial;}
 }

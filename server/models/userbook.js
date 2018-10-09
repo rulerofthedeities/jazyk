@@ -22,6 +22,7 @@ var userBookSchema = new Schema({
   isTest: {type: Boolean, required: true},
   lanCode: {type: String, required: true},
   subscribed: {type: Boolean, default: true},
+  recommended: Boolean,
   bookmark: bookmarkSchema,
   dt: {type: dateSchema, required: true}
 });

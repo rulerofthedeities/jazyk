@@ -206,7 +206,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       }
     } else {
       // no userbook, subscribe and get first chapter
-      this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType);
+      this.readnListenService.subscribeToBook(this.bookId, this.userLanCode, this.bookType);
       this.getBookAndChapter(this.bookId, null, 1);
     }
   }
@@ -412,7 +412,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   protected startAnotherBook(book: Book) {
     this.bookId = book._id;
     this.book = book;
-    this.userService.subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest);
+    this.readnListenService.subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest);
     this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode);
     this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
     this.isCountDown = false;

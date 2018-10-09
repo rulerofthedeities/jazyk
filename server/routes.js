@@ -56,8 +56,6 @@ module.exports.initialize = function(app, router) {
   router.patch('/user/lan/read', users.updateReadLan);
   router.patch('/user/lan/user', users.updateUserLan);
   router.patch('/user/password', users.updatePassword);
-  router.post('/user/subscribe/book', users.subscribeToBook);
-  router.post('/user/unsubscribe/book', users.unsubscribeFromBook);
   router.get('/user/refresh', users.refreshToken);
   router.get('/user', users.getUser);
   router.post('/user/follow', follows.followUser);
@@ -109,6 +107,9 @@ module.exports.initialize = function(app, router) {
   router.post('/book/trophies', books.saveTrophies);
   router.post('/book/trophies/session', books.getSessionTrophies);
   router.post('/book/trophies/thumb', books.getThumbTrophies);
+  router.post('/book/subscribe', books.subscribeToBook);
+  router.post('/book/unsubscribe', books.unsubscribeFromBook);
+  router.put('/book/recommend', books.recommend);
 
   router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
   router.get('/audiobook/:bookId', audio.getBook);

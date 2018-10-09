@@ -44,12 +44,13 @@
     </ul>
 
     <!-- No books found for selected language -->
-    <div *ngIf="!books.length">
-      <km-info-msg [msg]="text['NoBooks']">
+    <div *ngIf="!filteredBooks.length">
+      <km-info-msg [msg]="text['NoAudioBooks']">
       </km-info-msg>
     </div>
   </div>
 </section>
+
 <km-loader *ngIf="isLoading && !isError"
   [msg]="text['LoadingBooks']">
 </km-loader>

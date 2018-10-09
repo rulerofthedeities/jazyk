@@ -112,12 +112,14 @@ export interface Bookmark {
 }
 
 export interface UserBook {
+  _id?: string;
   bookId: string;
   userId: string;
   lanCode: string;
   bookType: string;
   isTest: boolean;
   subscribed: boolean;
+  recommended: boolean;
   bookmark: Bookmark;
   dt: UserBookDates;
 }

@@ -342,17 +342,6 @@ export class UserService {
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
-  subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest = false) {
-    this.http
-    .post<UserBook>('/api/user/subscribe/book', JSON.stringify({bookId, lanCode, bookType, isTest}))
-    .toPromise();
-  }
-
-  unSubscribeFromBook(bookId: string, lanCode: string, bookType: string, isTest: boolean): Observable<UserBook> {
-    return this.http
-    .post<UserBook>('/api/user/unsubscribe/book', JSON.stringify({bookId, lanCode, bookType, isTest}));
-  }
-
   fetchWelcomeNotification(user: User) {
     let notificationLoaded = false;
     this.subscription = this

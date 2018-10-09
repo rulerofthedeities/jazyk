@@ -76,6 +76,22 @@ export class ReadnListenService {
     .put<Bookmark>('/api/book/bookmark/', {bookmark, bookId, lanCode, bookType, isTest});
   }
 
+  subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest = false) {
+    this.http
+    .post<UserBook>('/api/book/subscribe', JSON.stringify({bookId, lanCode, bookType, isTest}))
+    .toPromise();
+  }
+
+  unSubscribeFromBook(ubookId: string): Observable<UserBook> {
+    return this.http
+    .post<UserBook>('/api/book/unsubscribe', {ubookId});
+  }
+
+  recommendBook(ubookId: string, recommend: Boolean): Observable<UserBook> {
+    return this.http
+    .put<UserBook>('/api/book/recommend', {ubookId, recommend});
+  }
+
   /*** Session Data ***/
 
   fetchSessionData(learnLanCode: string, bookType: string): Observable<UserData[]> {

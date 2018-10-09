@@ -88,13 +88,6 @@
             {{text[bookType=== 'listen' ? 'AudioListened' : 'BookRead']}}
           </div>
         </div>
-        <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
-          <button type="button" class="btn btn-default"
-            (click)="onStopReadingListening()">
-            <span class="fa fa-times-circle fa-spacing"></span>
-            {{text["RemoveFromList"]}}
-          </button>
-        </div>
         <div class="info" *ngIf="tpe !== 'home'">
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
@@ -104,6 +97,15 @@
           </div>
           <div class="words">
             {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
+          </div>
+          <div class="recommended pull-right" *ngIf="userBookStatus.isBookRead">
+            <span class="fa"
+              [ngClass]="{
+                'fa-thumbs-o-up': !userBookStatus.isRecommended,
+                'fa-thumbs-up': userBookStatus.isRecommended,
+                'canrecommend': userBookStatus.isBookRead
+              }"
+              (click)="onRecommend()"></span>
           </div>
           {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
           ({{difficultyPerc}}%)
@@ -133,6 +135,13 @@
               {{userBookStatusTest.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatusTest.percDone}}%)
             </span>
           </div>
+        </div>
+        <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
+          <button type="button" class="btn btn-default"
+            (click)="onStopReadingListening()">
+            <span class="fa fa-times-circle fa-spacing"></span>
+            {{text["RemoveFromList"]}}
+          </button>
         </div>
       </div>
     </div>
