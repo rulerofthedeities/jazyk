@@ -76,7 +76,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   onExitConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.log('Reading aborted');
-      this.sharedService.stopAudio(true);
+      this.sharedService.stopAudio();
       // Check if book is finished - in case abort right before end
       if (this.currentSentenceNr >= this.currentSentenceTotal) {
         this.sessionData.chapters++;
@@ -98,16 +98,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       } else {
         this.processResults(false);
       }
-    }
-  }
-
-  onKeyPressed(key: string) {
-    switch (key) {
-      case 'Escape':
-        if (this.currentStep < SentenceSteps.Results) {
-          this.exitReading();
-        }
-      break;
     }
   }
 
@@ -134,7 +124,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private nextSentence() {
-    this.sharedService.stopAudio(true);
+    this.sharedService.stopAudio();
     this.getSentence();
   }
 
@@ -431,7 +421,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (abortNow) {
       this.sharedService.changeExerciseMode(false);
-      this.sharedService.stopAudio(true);
+      this.sharedService.stopAudio();
       this.router.navigate(['/' + this.bookType]);
     }
   }

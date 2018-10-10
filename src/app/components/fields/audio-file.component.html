@@ -2,8 +2,8 @@
   (click)="onPlay($event)"
   class="audio fa fa-play-circle"
   [ngClass]="{
-    'fa-play-circle': !audio || audio.ended ? true : false,
-    'fa-pause-circle': audio && !audio.ended ? true : false,
+    'fa-play-circle': !audio || audio.ended || audio.paused ? true : false,
+    'fa-pause-circle': audio && !audio.ended && !audio.paused ? true : false,
     inactive: !active
   }"
   [style.font-size.px]="size">

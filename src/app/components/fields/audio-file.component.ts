@@ -22,19 +22,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.sharedService
-    .audioEvent
-    .pipe(takeWhile( () => this.componentActive))
-    .subscribe(
-      stop => {
-        if (stop) {
-          if (this.audio) {
-            this.audio.pause();
-            this.audio = null;
-          }
-        }
-      }
-    );
+    this.observe();
   }
 
   ngOnChanges() {
@@ -78,6 +66,33 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         // The audio is now playing
       };
     }
+  }
+
+  private observe() {
+    this.sharedService
+    .audioEvent
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      event => {
+        switch (event) {
+          case 'stop':
+            if (this.audio) {
+              this.audio.pause();
+              this.audio = null;
+            }
+          break;
+          case 'pause':
+            if (this.audio) {
+              if (this.audio.paused) {
+                this.audio.play();
+              } else {
+                this.audio.pause();
+              }
+            }
+          break;
+        }
+      }
+    );
   }
 
   ngOnDestroy() {

@@ -17,6 +17,8 @@ export class ReadnListenService {
     private http: HttpClient
   ) {}
 
+  /*** Audio ***/
+
   audioHasEnded(ended: boolean) {
     this.audioEnded.next(ended);
   }

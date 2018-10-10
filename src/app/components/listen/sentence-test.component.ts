@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnChanges, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { Sentence, Word, TestAnswer } from '../../models/book.model';
 import { ReadnListenService, minWordScore, maxWordScore } from '../../services/readnlisten.service';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'km-sentence-test',
@@ -21,7 +22,8 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   answerletter: string;
 
   constructor(
-    private readnListenService: ReadnListenService
+    private readnListenService: ReadnListenService,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -41,6 +43,9 @@ export class SentenceTestComponent implements OnInit, OnChanges {
         if (!this.isAnswered) {
           this.checkWord();
         }
+      break;
+      case ' ':
+        this.sharedService.pauseAudio();
       break;
     }
   }

@@ -66,6 +66,9 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
         this.answer('no');
       }
       break;
+      case ' ':
+        this.sharedService.pauseAudio();
+      break;
     }
   }
 
