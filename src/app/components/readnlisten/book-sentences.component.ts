@@ -51,15 +51,20 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
           this.exitReading();
         }
       break;
-      case 'Backspace':
-      if (this.currentStep === SentenceSteps.Question) {
-        this.answer('no');
-      }
-      break;
-      case ' ':
+      case '1':
         if (this.currentStep === SentenceSteps.Question) {
           this.answer('yes');
         }
+      break;
+      case '2':
+        if (this.currentStep === SentenceSteps.Question) {
+          this.answer('maybe');
+        }
+      break;
+      case '3':
+      if (this.currentStep === SentenceSteps.Question) {
+        this.answer('no');
+      }
       break;
     }
   }
