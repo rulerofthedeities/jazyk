@@ -196,6 +196,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           points: {
             words: 0,
             translations: 0,
+            test: 0,
             finished: 0
           },
           resultData: {
@@ -209,6 +210,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.findCurrentChapter(userBook);
       });
     }
+  }
+
+  protected getSentencePoints(sentence: string): number {
+    const words = sentence.split(' ');
+    return words ? Math.round(words.length * this.getScoreMultiplier()) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {

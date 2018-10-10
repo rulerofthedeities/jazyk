@@ -127,6 +127,7 @@ export interface UserBook {
 interface Points {
   words: number;
   translations: number;
+  test: number;
   finished: number;
 }
 

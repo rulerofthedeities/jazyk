@@ -41,7 +41,8 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer.word;
     this.sessionData.answers += answer.answerLetter;
-    this.sessionData.points.words += this.getSentencePoints(answer);
+    this.sessionData.points.words += this.getSentencePoints(this.currentSentenceTxt);
+    this.sessionData.points.test += this.getSentenceTestPoints(answer);
     this.sessionData.nrYes += answer.answerLetter === 'y' ? 1 : 0 ;
     this.sessionData.nrMaybe += answer.answerLetter === 'm' ? 1 : 0 ;
     this.sessionData.nrNo += answer.answerLetter === 'n' ? 1 : 0 ;
@@ -51,16 +52,16 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
 
-  getSentencePoints(answer: TestAnswer) {
+  getSentenceTestPoints(answer: TestAnswer) {
     let points = 0;
     if (answer.answerLetter === 'y') {
-      points += 2;
-      points += Math.round((1000 - answer.score) / 100); // difficulty
-      points += answer.word.length; // word length
+      points += 3;
+      points += (1000 - answer.score) / 80; // difficulty
+      points += answer.word.length * 1.2; // word length
     } else if (answer.answerLetter === 'm') {
       points += 1;
-      points += Math.round((1000 - answer.score) / 200); // difficulty
+      points += (1000 - answer.score) / 160; // difficulty
     }
-    return points;
+    return Math.round(points);
   }
 }

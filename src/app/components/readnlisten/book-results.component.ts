@@ -26,7 +26,9 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   total = 0;
   showDetails = false;
   points = 0;
+  test = 0;
   bonus = 0;
+  basic = 0;
   isFinished = false;
   newTrophies: string[] = [];
   rankKey: string;
@@ -60,8 +62,15 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
       this.percMaybe = Math.round(this.data.nrMaybe / this.total * 1000) / 10;
       this.percNo = Math.round(this.data.nrNo / this.total * 1000) / 10;
     }
-    this.points = this.data.points.finished + this.data.points.translations + this.data.points.words;
+    console.log(this.data.points);
+    this.points = this.data.points.finished + this.data.points.test + this.data.points.translations + this.data.points.words;
+    this.basic = this.data.points.translations + this.data.points.words;
+    this.test = this.data.points.test;
     this.bonus = this.data.points.finished;
+    console.log('points', this.points);
+    console.log('basic', this.basic);
+    console.log('test', this.test);
+    console.log('bonus', this.bonus);
     this.checkNewRank();
   }
 

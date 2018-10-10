@@ -86,17 +86,21 @@
         </h3>
       </div>
       <div class="panel-body">
-        <div class="points" *ngIf="!isFinished">
+        <div class="points" *ngIf="!(isFinished || test)">
           {{points | score}}
         </div>
-        <div class="points col-md-6" *ngIf="isFinished">
+        <div class="points col-md-6" *ngIf="isFinished || test">
           <table class="table table-bordered">
             <tbody>
               <tr>
                 <td>{{text[bookType==='listen' ? "SentencesListened" : "SentencesRead"]}}</td>
-                <td class="text-right nr">{{(points - bonus) | score}}</td>
+                <td class="text-right nr">{{basic | score}}</td>
               </tr>
-              <tr>
+              <tr *ngIf="!!test">
+                <td>{{text["TestPoints"]}}</td>
+                <td class="text-right nr">{{test | score}}</td>
+              </tr>
+              <tr *ngIf="!!bonus">
                 <td>{{text["CompletionBonus"]}}</td>
                 <td class="text-right nr">{{bonus | score}}</td>
               </tr>

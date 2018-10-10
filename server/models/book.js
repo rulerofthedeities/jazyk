@@ -77,6 +77,7 @@ var dtSchema = new Schema({
 var pointsSchema = new Schema({
   words: Number,
   translations: Number,
+  test: Number,
   finished: Number
 }, {_id: false});
 

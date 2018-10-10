@@ -84,10 +84,4 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
     this.currentStep = SentenceSteps.Translations;
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
-
-  private getSentencePoints(sentence: string): number {
-    const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier()) : 0;
-  }
-
 }
