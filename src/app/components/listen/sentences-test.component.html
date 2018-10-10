@@ -91,8 +91,9 @@
           <div *ngIf="currentStep === steps.Results">
             <km-sentences-results
               [data]="sessionData"
+              [text]="text"
               [bookType]="bookType"
-              [text]="text">
+              [isTest]="true">
             </km-sentences-results>
           </div>
 

@@ -18,6 +18,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   @Input() data: SessionData;
   @Input() text: Object;
   @Input() bookType: string;
+  @Input() isTest: boolean;
   @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   percYes = 0;
@@ -67,10 +68,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     this.basic = this.data.points.translations + this.data.points.words;
     this.test = this.data.points.test;
     this.bonus = this.data.points.finished;
-    console.log('points', this.points);
-    console.log('basic', this.basic);
-    console.log('test', this.test);
-    console.log('bonus', this.bonus);
     this.checkNewRank();
   }
 
@@ -110,24 +107,27 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
           translations = data.translations,
           trophies: string[] = [];
     // # of sentences read in whole book
+    let trophyBase: string;
     if (resultData.isFinished) {
-      trophies.push('01');
+      trophyBase = this.bookType === 'listen' ? (this.isTest ? '5' : '4') : '0';
+      trophies.push(trophyBase + '1');
       if (resultData.totalBookSentences >= 100) {
-        trophies.push('02');
+        trophies.push(trophyBase + '2');
       }
       if (resultData.totalBookSentences >= 1000) {
-        trophies.push('03');
+        trophies.push(trophyBase + '3');
       }
     }
     // # of sentences read in this session
+    trophyBase  = this.bookType === 'listen' ? (this.isTest ? '7' : '6') : '1';
     if (readInSession >= 10) {
-      trophies.push('11');
+      trophies.push(trophyBase + '1');
     }
     if (readInSession >= 50) {
-      trophies.push('12');
+      trophies.push(trophyBase + '2');
     }
     if (readInSession >= 200) {
-      trophies.push('13');
+      trophies.push(trophyBase + '3');
     }
     // # of translations in this session
     if (translations >= 5) {

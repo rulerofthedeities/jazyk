@@ -62,6 +62,6 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
       points += 1;
       points += (1000 - answer.score) / 160; // difficulty
     }
-    return Math.round(points);
+    return Math.round(points * 1.5);
   }
 }

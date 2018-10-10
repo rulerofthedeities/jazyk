@@ -16,13 +16,17 @@ export class ModalTrophiesComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     const trophyList: string[][] = [];
-    trophyList[0] = ['01', '02', '03'];
-    trophyList[1] = ['11', '12', '13'];
-    trophyList[2] = ['21', '22', '23'];
-    trophyList[3] = ['31', '32', '33'];
-    trophyList[4] = ['111', '112', '113'];
-    trophyList[5] = ['121', '122', '123'];
-    trophyList[6] = ['131', '132', '133'];
+    trophyList.push(['01', '02', '03']);
+    trophyList.push(['41', '42', '43']);
+    trophyList.push(['51', '52', '53']);
+    trophyList.push(['11', '12', '13']);
+    trophyList.push(['61', '62', '63']);
+    trophyList.push(['71', '72', '73']);
+    trophyList.push(['21', '22', '23']);
+    trophyList.push(['31', '32', '33']);
+    trophyList.push(['111', '112', '113']);
+    trophyList.push(['121', '122', '123']);
+    trophyList.push(['131', '132', '133']);
     this.trophyListAll = trophyList;
   }
 
