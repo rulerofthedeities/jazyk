@@ -22,7 +22,7 @@
   </km-filter-bar>
 
   <!-- BOOKS LIST -->
-  <div *ngIf="IsBooksReady">
+  <div *ngIf="isBooksReady">
     <ul class="list-unstyled" *ngIf="filteredBooks?.length">
       <li *ngFor="let book of filteredBooks; let i=index">
         <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"

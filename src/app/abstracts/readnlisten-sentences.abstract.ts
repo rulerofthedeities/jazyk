@@ -101,6 +101,16 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
+  onKeyPressed(key: string) {
+    switch (key) {
+      case 'Escape':
+        if (this.currentStep < SentenceSteps.Results) {
+          this.exitReading();
+        }
+      break;
+    }
+  }
+
   onCountDownFinished() {
     this.isCountDown = false;
   }
@@ -280,12 +290,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   protected getSentence() {
     const nr = this.currentSentenceNr,
           sentences = this.currentChapter.activeSentences;
-    console.log('nr', sentences[nr]);
     let sentenceOk = false;
     if (sentences[nr]) {
       this.currentStep = SentenceSteps.Question;
       const sentenceTxt = sentences[nr].text ? sentences[nr].text.trim() : null;
-      console.log('sentenceTxt', sentenceTxt);
       if (sentenceTxt) {
         this.currentSentence = sentences[nr];
         this.currentSentenceTxt = sentenceTxt;

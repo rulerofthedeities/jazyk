@@ -3,6 +3,7 @@ export enum SentenceSteps { Question, Answered, Translations, Results }
 export interface Word {
   word: string;
   score: number;
+  unselectable: boolean;
   pos: number;
 }
 

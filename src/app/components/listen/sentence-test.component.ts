@@ -58,7 +58,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     this.word = null;
     let nr;
     // select the word the user has to enter
-    let words = this.sentence.words;
+    let words = this.sentence.words.filter(w => !w.unselectable);
     if (words.length > 1) {
       // skip rarest and most common words
       let minScore = minWordScore;
@@ -90,7 +90,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
 
   private checkWord() {
     const answer = this.answer.nativeElement.value.trim().toLowerCase(),
-          word = this.word.word.toLowerCase();
+          word = this.word.word.replace('’', '\'').toLowerCase();
     console.log('answer', answer, word);
     this.answerletter = answer === word ? 'y' : 'n';
     if (this.answerletter === 'n' && this.isAlmostCorrect(answer, word)) {

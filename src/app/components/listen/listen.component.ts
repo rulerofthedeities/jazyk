@@ -43,7 +43,7 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
           this.filterBooks();
         }
         this.isLoading = false;
-        this.IsBooksReady = true;
+        this.isBooksReady = true;
       }
     );
   }

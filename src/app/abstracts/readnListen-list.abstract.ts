@@ -24,7 +24,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   licenses: LicenseUrl[];
   isReady = false;
   isLoading = false;
-  IsBooksReady = false;
+  isError = false;
+  isBooksReady = false;
   itemTxt: string;
   filterTxt: string;
   nrOfBooks: number;

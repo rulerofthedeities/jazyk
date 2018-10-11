@@ -60,7 +60,7 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
           this.filterBooks();
         }
         this.isLoading = false;
-        this.IsBooksReady = true;
+        this.isBooksReady = true;
       }
     );
   }
