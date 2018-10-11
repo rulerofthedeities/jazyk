@@ -34,7 +34,7 @@ export class DefaultHomeComponent implements OnChanges {
       this.lines.push(line);
       this.lines.push(this.text['homeLine1']);
       this.lines.push(this.text['homeLine2']);
-      this.lines.push(this.text['homeLineRead']);
+      this.lines.push(this.text['homeLine3']);
       const giveATry = this.text['Givejazyk'];
       this.giveATry = giveATry.replace('%s', appTitle);
     }

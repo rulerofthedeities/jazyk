@@ -112,6 +112,7 @@ li {
 .module-child {
   width: 100%;
   position: absolute;
+  border: 6px solid rgb(232, 76, 61);
   top: 0;
   transition: left 0.7s ease-out 0s;
 }

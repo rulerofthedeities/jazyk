@@ -25,19 +25,19 @@
     <div class="btn-mega clearfix try">
       <div class="btn-text btn-sub unselectable preview-texts" (mouseout)="onHideModules()">
         <div class="learn preview-text"
-          (mouseover)="onShowModule('Learn')"
-          (click)="onGoToRoute('learn')">
-          {{text["Learn"]}}
-        </div>
-        <div class="read preview-text"
           (mouseover)="onShowModule('Read')"
           (click)="onGoToRoute('read')">
           {{text["Read"]}}
         </div>
+        <div class="read preview-text"
+          (mouseover)="onShowModule('Listen')"
+          (click)="onGoToRoute('listen')">
+          {{text["Listen"]}}
+        </div>
         <div class="teach preview-text"
-          (mouseover)="onShowModule('Teach')"
-          (click)="onGoToRoute('build/courses')">
-          {{text["Teach"]}}
+          (mouseover)="onShowModule('Test')"
+          (click)="onGoToRoute('listen')">
+          {{text["Test"]}}
         </div>
       </div>
       <div class="btn-icon btn-sub unselectable">
@@ -50,19 +50,19 @@
     </div>
     <div class="modules" [style.visibility]="showModules ? 'visible' : 'hidden'">
       <div class="module-child" [ngStyle]="{
-        left: currentModule === 'learn' ? '0' : '-1000px',
-        visibility: currentModule === 'learn' ? 'visible': 'hidden'}">
-        <img class="preview-img" src="/assets/img/screenshots/learn.jpg">
-      </div>
-      <div class="module-child" [ngStyle]="{
         left: currentModule === 'read' ? '0' : '-1000px',
         visibility: currentModule === 'read' ? 'visible': 'hidden'}">
         <img class="preview-img" src="/assets/img/screenshots/read.jpg">
       </div>
       <div class="module-child" [ngStyle]="{
-        left: currentModule === 'teach' ? '0' : '-1000px',
-        visibility: currentModule === 'teach' ? 'visible': 'hidden'}">
-        <img class="preview-img" src="/assets/img/screenshots/teach.jpg">
+        left: currentModule === 'listen' ? '0' : '-1000px',
+        visibility: currentModule === 'listen' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/listen.jpg">
+      </div>
+      <div class="module-child" [ngStyle]="{
+        left: currentModule === 'test' ? '0' : '-1000px',
+        visibility: currentModule === 'test' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/test.jpg">
       </div>
     </div>
 
