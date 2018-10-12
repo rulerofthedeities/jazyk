@@ -263,9 +263,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (chapter) {
       this.currentChapter = chapter;
       const activeSentences = chapter.sentences.filter(s => !s.isDisabled);
+      /*
       activeSentences.sort(
         (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
       );
+      */
       chapter.activeSentences = activeSentences;
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
