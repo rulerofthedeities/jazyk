@@ -57,7 +57,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   ) {}
 
   ngOnInit() {
-    console.log('abstract init');
     this.observe();
     this.userId = this.userService.user._id.toString();
     this.settings = this.userService.user.jazyk.read;
@@ -65,8 +64,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.sentenceNrObservable = new BehaviorSubject<number>(null);
     this.getBookType(); // read or listen
     this.getBookId();
-    console.log('booktype', this.bookType);
-    console.log('is test', this.isTest);
   }
 
   onExitReading() {
@@ -245,7 +242,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      console.log('DATA', data);
       this.processBook(data[0]);
       this.processChapter(data[1], bookmark);
       this.isLoading = false;
@@ -267,21 +263,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (chapter) {
       this.currentChapter = chapter;
       const activeSentences = chapter.sentences.filter(s => !s.isDisabled);
-      console.log('active sentences', activeSentences);
       activeSentences.sort(
         (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
       );
       chapter.activeSentences = activeSentences;
       this.emitChapter(chapter);
-      console.log('current sentences', chapter.activeSentences);
       this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
-      console.log('current sentence nr', this.currentSentenceNr);
       this.emitSentenceNr(this.currentSentenceNr);
       this.getSentence();
     } else {
       // chapter not found -> end of book
-      console.log('no chapter, end of book');
       this.sessionData.resultData.isFinished = true;
       this.processResults(true);
     }
@@ -306,7 +298,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (!sentenceOk) {
       // Chapter finished
-      console.log('chapter finished');
       this.sessionData.chapters++;
       this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
@@ -318,7 +309,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
-        console.log('fetched chapter', chapter);
         this.processChapter(chapter, bookmark);
       }
     );
@@ -367,11 +357,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           Math.log(this.book.difficulty.nrOfWords) *
           this.getScoreMultiplier()) || 0;
       }
-      console.log('place bookmark', newBookmark);
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)
       .pipe(takeWhile(() => this.componentActive))
-      .subscribe(bookmark => {console.log('bookmarked', bookmark); });
+      .subscribe(bookmark => {});
     }
   }
 

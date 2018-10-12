@@ -103,7 +103,6 @@ export class ReadnListenService {
   }
 
   saveSessionData(sessionData: SessionData): Observable<SessionData>  {
-    console.log('saving session data', sessionData);
     if (sessionData._id) {
       // Update session data
       return this.http

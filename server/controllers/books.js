@@ -181,7 +181,6 @@ module.exports = {
           bookType = req.params.bookType,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, lanCode, bookType};
-          console.log('query', query);
     UserBook.find(query, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching user books', () => {
         response.handleSuccess(res, books);
@@ -314,10 +313,8 @@ module.exports = {
           bookType = req.body.bookType,
           bookmark = req.body.bookmark,
           query = {bookId, userId, lanCode, bookType, isTest};
-    console.log('query', query);
     bookmark.dt = Date.now()
     const update = {$set: {bookmark}};
-    console.log('update', update);
     if (!bookmark.sentenceNrBook) {
       bookmark.sentenceNrBook = 0;
     }
@@ -517,7 +514,6 @@ module.exports = {
             insert = {userId, bookId, lanCode, bookType, isTest, 'dt.dtSubscribed': Date.now()},
             set = {subscribed: true, 'dt.dtLastReSubscribed': Date.now()},
             update = {$set: set, $setOnInsert: insert};
-      console.log('subscribe', insert);
       UserBook.findOneAndUpdate(query, update, options, function(err, result) {
         response.handleError(err, res, 400, 'Error subscribing to book', function() {
           response.handleSuccess(res, result);

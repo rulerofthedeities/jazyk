@@ -10,6 +10,8 @@
         <km-book-tab *ngFor="let sbook of suggestedBooks"
           [book]="sbook"
           [userBook] = "userBooks[sbook._id]"
+          [bookType] = "bookType"
+          [isTest] = "isTest"
           [weight]="book.difficulty.weight"
           [text]="text">
         </km-book-tab>

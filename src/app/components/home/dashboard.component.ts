@@ -143,7 +143,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private processRecent(books: RecentBook[]) {
-    console.log('recent books 1', books);
     // userBook is key, not Book!
     const publishedBooks = books.filter(b => b.book && b.book.isPublished); // filter out not published anymore
     const recentBooks = publishedBooks.sort(function(a, b) {
@@ -151,7 +150,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
-    console.log('recent books2', recentBooks);
     this.recent = recentBooks.slice(0, 5);
     this.recentReady = true;
   }

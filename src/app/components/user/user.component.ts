@@ -35,7 +35,6 @@ export class UserComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log(this.userService.user);
     this.isAdmin = !!this.userService.user.isAdmin;
     this.route.params
     .pipe(

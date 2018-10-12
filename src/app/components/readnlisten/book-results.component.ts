@@ -63,7 +63,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
       this.percMaybe = Math.round(this.data.nrMaybe / this.total * 1000) / 10;
       this.percNo = Math.round(this.data.nrNo / this.total * 1000) / 10;
     }
-    console.log(this.data.points);
     this.points = this.data.points.finished + this.data.points.test + this.data.points.translations + this.data.points.words;
     this.basic = this.data.points.translations + this.data.points.words;
     this.test = this.data.points.test;
@@ -80,10 +79,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
         const scoreTotal = score || 0,
         rank = this.sharedService.getRank(scoreTotal),
         previousRank = this.sharedService.getRank(scoreTotal - this.points);
-        console.log('total score', scoreTotal, this.points);
-        console.log('rank', rank, previousRank);
         if (rank > previousRank) {
-          console.log('NEW RANK !!!');
           this.newRankPromotion(rank);
         }
       }
@@ -96,7 +92,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
       this.rankNr = newRank || 0;
       this.rankKey = 'rank' + (this.rankNr).toString() + this.userService.user.main.gender || 'm';
       this.promotionComponent.doShowModal();
-      console.log(this.rankKey, this.text[this.rankKey]);
     }
   }
 

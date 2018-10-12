@@ -22,7 +22,6 @@ export class SentenceComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
-    console.log('>> CHANGED sentence', this.sentence);
   }
 
   onAudioEnded(isEnded: boolean) {

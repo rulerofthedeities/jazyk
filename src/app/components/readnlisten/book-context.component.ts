@@ -30,7 +30,6 @@ export class BookContextComponent implements OnInit, OnDestroy {
     this.chapter
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(chapter => {
-      console.log(chapter);
       this.sentences = chapter.activeSentences;
       this.level = chapter.level;
       this.title = chapter.title.trim();

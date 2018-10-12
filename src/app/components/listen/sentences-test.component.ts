@@ -37,7 +37,6 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
   }
 
   onAnswered(answer: TestAnswer) {
-    console.log('answer parent', answer);
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer.word;
     this.sessionData.answers += answer.answerLetter;
@@ -47,7 +46,6 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
     this.sessionData.nrMaybe += answer.answerLetter === 'm' ? 1 : 0 ;
     this.sessionData.nrNo += answer.answerLetter === 'n' ? 1 : 0 ;
     this.currentStep = SentenceSteps.Translations;
-    console.log(this.sessionData);
     this.saveBookmarkAndSession();
     this.answersObservable.next({answers: this.sessionData.answers, isResults: false});
   }
