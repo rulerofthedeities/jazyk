@@ -27,19 +27,8 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
     this.getDependables();
   }
 
-  onMyLanguageSelected(lan: Language) {
-    this.userService.setUserLanCode(lan.code);
-    this.myLanguage = lan;
-    this.getUserBooks();
-    this.getUserData();
-    this.getBookTranslations();
-  }
-
   onRemovedSubscription(book: Book) {
     this.userBooks[book._id].subscribed = false;
-  }
-
-  getFilterCount() {
   }
 
   protected getBooks(onlyBooks = false) {
