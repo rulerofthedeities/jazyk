@@ -211,7 +211,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 1.5) : 0;
+    return words ? Math.round(words.length * this.getScoreMultiplier() * 1.2) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {
@@ -263,11 +263,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (chapter) {
       this.currentChapter = chapter;
       const activeSentences = chapter.sentences.filter(s => !s.isDisabled);
-      /*
-      activeSentences.sort(
-        (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
-      );
-      */
+      if (this.bookType === 'listen') {
+        activeSentences.sort(
+          (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
+        );
+      }
       chapter.activeSentences = activeSentences;
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
