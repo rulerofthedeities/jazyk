@@ -71,7 +71,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     this.getUserBooks();
     this.getUserData();
     this.getBookTranslations();
-    console.log('my lan changed - filter books');
   }
 
   protected onChangeBookType(tpe: string) {
@@ -221,7 +220,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       default:
         this.filteredBooks = [...this.books];
     }
-    console.log('before filters', this.filter, this.filteredBooks);
     // Apply filters
     const filters: string[] = [];
     if (this.filter) {
@@ -231,10 +229,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         filters.push(this.text['CompletedOnly']);
       }
       if (this.filter.hideNotTranslated) {
-        console.log('hide not translated');
         this.filteredBooks = this.filteredBooks.filter(b =>
           this.translationData[b._id] && this.translationData[b._id].count >= b.difficulty.nrOfUniqueSentences);
-        console.log('after  filter translated', this.filteredBooks);
         filters.push(this.text['TranslatedOnly']);
       }
       if (this.filter.hideOld) {

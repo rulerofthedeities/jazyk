@@ -113,8 +113,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
   }
 
   private startCountDown() {
-    const startDate = new Date(),
-          intervalMs = 50,
+    const intervalMs = 50,
           steps = 1000 / intervalMs,
           timerObservable = timer(0, intervalMs);
     this.playSound(false);

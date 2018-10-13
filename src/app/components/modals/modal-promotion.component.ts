@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs/rx';
 
 @Component({
   selector: 'km-modal-promotion',
@@ -6,11 +7,12 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['modal-promotion.component.css']
 })
 
-export class ModalPromotionComponent implements OnInit {
+export class ModalPromotionComponent implements OnInit, OnDestroy {
   @Input() rankNr: number;
   @Input() rankName: string;
   @Input() gender: string;
   @Input() text: Object;
+  private subscription: Subscription;
   showModal = false;
   cheer: any;
 
@@ -32,9 +34,8 @@ export class ModalPromotionComponent implements OnInit {
     this.showModal = true;
     this.cheer.play();
     // Close modal after 5 secs
-    setTimeout(() => {
-      this.showModal = false;
-    }, 5000);
+    const timer = Observable.timer(5000, 0);
+    this.subscription = timer.subscribe(t => this.showModal = false);
   }
 
   private loadAudio(file: string): any {
@@ -47,5 +48,9 @@ export class ModalPromotionComponent implements OnInit {
 
   private close() {
     this.showModal = false;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

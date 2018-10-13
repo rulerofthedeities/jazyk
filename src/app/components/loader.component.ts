@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs/rx';
 
 @Component({
   selector: 'km-loader',
@@ -6,10 +7,11 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['loader.component.css']
 })
 
-export class LoaderComponent implements OnInit {
-  show = false;
+export class LoaderComponent implements OnInit, OnDestroy {
   @Input() msg = '';
   @Input() showBackground = true;
+  private subscription: Subscription;
+  show = false;
 
   ngOnInit() {
     this.delay();
@@ -17,8 +19,11 @@ export class LoaderComponent implements OnInit {
 
   private delay() {
     // only show the loader after 200ms
-    setTimeout(() => {
-      this.show = true;
-    }, 200);
+    const timer = Observable.timer(200, 0);
+    this.subscription = timer.subscribe(t => this.show = true);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
