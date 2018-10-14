@@ -5,9 +5,9 @@
     <span class="fa fa-info-circle"></span>
     {{text["EnterMissingWord"]}}
   </div>
-  <div *ngIf="showSentence" class="sentence">
+  <div class="sentence" *ngIf="showSentence">
     <span class="split-sentence">{{sentenceSections[0]}}</span>
-    <input
+    <input *ngIf="!isAnswered"
       type="text"
       class="form-control input-lg word"
       id="answer"
@@ -16,13 +16,16 @@
       autocomplete="off"
       spellcheck="false"
       [attr.disabled]="isAnswered ? '' : null"
+      [(ngModel)]="answer">
+    <span *ngIf="isAnswered" class="answer"
       [ngClass]="{
         answered: isAnswered,
         correct: isAnswered && answerletter==='y',
         almostcorrect: isAnswered && answerletter==='m',
         incorrect: isAnswered && answerletter==='n'
-      }"
-      #answer>
+      }">
+      {{answer}}
+    </span>
     <span class="split-sentence ">{{sentenceSections[1]}}</span>
     <div class="clearfix"></div>
   </div>
@@ -30,7 +33,6 @@
   <div class="solution" *ngIf="isAnswered && answerletter!=='y'">
     <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{word.word}}</span>
   </div>
-
   <!-- Check WORD -->
   <button *ngIf="showSentence && !isAnswered"
     type="button"

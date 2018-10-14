@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnChanges, Output, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output,
+         EventEmitter, Renderer2, ViewChild, ElementRef } from '@angular/core';
 import { Sentence, Word, TestAnswer } from '../../models/book.model';
 import { ReadnListenService, minWordScore, maxWordScore } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
@@ -14,16 +15,18 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   @Input() sentence: Sentence;
   @Input() difficulty: number;
   @Output() answered = new EventEmitter<TestAnswer>();
-  @ViewChild('answer') answer: ElementRef;
+  // @ViewChild('answer') answer: ElementRef;
   sentenceSections: string[];
   word: Word;
   showSentence = false;
   isAnswered = false;
   answerletter: string;
+  answer: string;
 
   constructor(
     private readnListenService: ReadnListenService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
@@ -33,6 +36,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   ngOnChanges() {
     this.showSentence = false;
     this.isAnswered = false;
+    this.answer = '';
     this.selectWord();
     this.splitSentence();
   }
@@ -89,7 +93,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   }
 
   private checkWord() {
-    const answer = this.answer.nativeElement.value.trim().toLowerCase(),
+    const answer = this.answer,
           word = this.word.word.replace('’', '\'').toLowerCase();
     this.answerletter = answer === word ? 'y' : 'n';
     if (this.answerletter === 'n' && this.isAlmostCorrect(answer, word)) {

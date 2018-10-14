@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { CompactProfile } from '../../models/user.model';
 
 @Component({
@@ -17,17 +17,17 @@ export class UserSelectorComponent implements OnInit {
   gravatarSelected = 0; // To force recaching of gravatar
   selectedDropdown: string; // For color indicator of hovered language in dropdown
 
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      // Outside dropdown, close dropdown
-      this.showDropdown = false;
-    }
-  }
-
   constructor(
-    private elementRef: ElementRef
-  ) {}
+    elementRef: ElementRef,
+    renderer: Renderer2
+  ) {
+    renderer.listen(document, 'click', (event) => {
+      if (!elementRef.nativeElement.contains(event.target)) {
+        // Outside dropdown, close dropdown
+        this.showDropdown = false;
+      }
+    });
+  }
 
   ngOnInit() {
     if (!this.selectedUser) {

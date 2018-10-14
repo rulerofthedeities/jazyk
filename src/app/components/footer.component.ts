@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { isDevMode } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ErrorService } from '../services/error.service';
@@ -24,23 +24,23 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   @ViewChild('log') logElement: ElementRef;
   @ViewChild('message') messageElement: ElementRef;
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if (this.logElement && this.messageElement && !this.logElement.nativeElement.contains(event.target)) {
-      // Check if the last log message is clicked
-      if (!this.messageElement.nativeElement.contains(event.target)) {
-        // Outside log, close log
-        this.showLog = false;
-      }
-    }
-  }
 
   constructor(
     private userService: UserService,
     private errorService: ErrorService,
-    private sharedService: SharedService
-  ) {}
-
+    private sharedService: SharedService,
+    renderer: Renderer2
+  ) {
+    renderer.listen(document, 'click', (event) => {
+      if (this.logElement && this.messageElement && !this.logElement.nativeElement.contains(event.target)) {
+        // Check if the last log message is clicked
+        if (!this.messageElement.nativeElement.contains(event.target)) {
+          // Outside log, close log
+          this.showLog = false;
+        }
+      }
+    });
+  }
   ngOnInit() {
     this.getTranslations(this.userService.user.main.lan);
     this.observeEventMessages();

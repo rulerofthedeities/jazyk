@@ -31,7 +31,7 @@ var addUser = function(body, callback) {
 };
 
 var findUser = function(body, expiresIn, callback) {
-  const email = body.email ? body.email.trim() : '',
+  const email = body.email ? body.email.trim().toLowerCase() : '',
         query = {email},
         projection = {
           _id: 1,
@@ -41,7 +41,6 @@ var findUser = function(body, expiresIn, callback) {
           main: 1,
           'jazyk.read': 1
         };
-
   User.findOne(query, projection, function (err, doc) {
     if (err) {
       callback(err, doc, 401, 'Error finding e-mail')

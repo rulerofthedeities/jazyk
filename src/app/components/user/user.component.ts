@@ -118,7 +118,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
   onCreateMessage(msgField: any) {
     this.infoMsg = '';
-    msgField.clearField();
     this.messageShown = true;
   }
 

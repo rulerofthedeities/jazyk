@@ -64,7 +64,6 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onCreateReply(replyField: any) {
     this.infoMsg = '';
-    replyField.clearField();
     this.showReply = true;
   }
 
@@ -97,7 +96,6 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
 
   onRecipientSelected(user: CompactProfile, msgField: any) {
     this.selectedRecipient = user;
-    msgField.clearField();
   }
 
   onMarkAllRead() {

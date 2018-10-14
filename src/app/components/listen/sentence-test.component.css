@@ -21,6 +21,12 @@
   color: white;
   border-color: black;
 }
+.answer {
+  border-radius: 6px;
+  padding: 6px;
+  position: relative;
+  top: 2px;
+}
 .correct {
   background-color: green;
 }

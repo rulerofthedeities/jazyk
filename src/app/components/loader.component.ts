@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs/rx';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'km-loader',
@@ -19,11 +19,13 @@ export class LoaderComponent implements OnInit, OnDestroy {
 
   private delay() {
     // only show the loader after 200ms
-    const timer = Observable.timer(200, 0);
-    this.subscription = timer.subscribe(t => this.show = true);
+    const timerObservable = timer(200, 0);
+    this.subscription = timerObservable.subscribe(t => this.show = true);
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

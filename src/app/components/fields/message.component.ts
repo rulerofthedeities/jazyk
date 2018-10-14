@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'km-message',
@@ -20,14 +20,14 @@ export class MailFieldComponent {
   maxLength = 140;
   message: string;
 
+  constructor(
+    private renderer: Renderer2
+  ) {}
+
   onSendMessage(msg: string) {
     const message = msg.trim();
     if (message.length >= this.minLength) {
       this.send.emit(message);
     }
-  }
-
-  clearField() {
-    this.msg.nativeElement.value = '';
   }
 }
