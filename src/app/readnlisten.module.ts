@@ -19,7 +19,6 @@ import { SentenceComponent } from './components/readnlisten/sentence.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
-import { ScrollToDirective } from './directives/scroll-to.directive';
 
 @NgModule({
   imports: [
@@ -42,8 +41,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     BookSuggestionsComponent,
     BookTabComponent,
     SentenceComponent,
-    ModalPromotionComponent,
-    ScrollToDirective
+    ModalPromotionComponent
   ],
   providers: [
     ReadnListenService
@@ -63,8 +61,7 @@ import { ScrollToDirective } from './directives/scroll-to.directive';
     BookSuggestionsComponent,
     BookTabComponent,
     SentenceComponent,
-    ModalPromotionComponent,
-    ScrollToDirective
+    ModalPromotionComponent
   ]
 })
 export class ReadnListenModule {

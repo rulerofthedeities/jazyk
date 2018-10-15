@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, OnChanges, Output,
-         EventEmitter, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Sentence, Word, TestAnswer } from '../../models/book.model';
 import { ReadnListenService, minWordScore, maxWordScore } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
@@ -15,7 +14,6 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   @Input() sentence: Sentence;
   @Input() difficulty: number;
   @Output() answered = new EventEmitter<TestAnswer>();
-  // @ViewChild('answer') answer: ElementRef;
   sentenceSections: string[];
   word: Word;
   showSentence = false;
@@ -25,8 +23,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
 
   constructor(
     private readnListenService: ReadnListenService,
-    private sharedService: SharedService,
-    private renderer: Renderer2
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {

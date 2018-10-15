@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Renderer2, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
@@ -19,23 +19,23 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   infoMsg: string;
   showActions = false;
   isFromDashboard = false;
-
-  @ViewChild('dropdown') el: ElementRef;
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if (this.el && !this.el.nativeElement.contains(event.target)) {
-      // Outside dropdown, close dropdown
-      this.showActions = false;
-    }
-  }
+  @ViewChild('dropdown') dropdown: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private sharedService: SharedService,
     private userService: UserService,
-    private errorService: ErrorService
-  ) {}
+    private errorService: ErrorService,
+    renderer: Renderer2
+  ) {
+    renderer.listen(document, 'click', (event) => {
+      if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
+        // Outside dropdown, close dropdown
+        this.showActions = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.getTranslations();

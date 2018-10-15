@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnDestroy, ElementRef, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild, EventEmitter } from '@angular/core';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -35,17 +35,21 @@ export class CountdownComponent implements OnInit, OnDestroy {
   beep1: any;
   beep2: any;
 
+  constructor(
+    renderer: Renderer2
+  ) {
+    renderer.listen(window, 'resize', (event) => {
+      if (this.countdown && this.countdown.nativeElement.clientWidth !== this.boxWidth) {
+        // size changed
+        this.calculateWidth();
+        this.calculatePath();
+      }
+    });
+  }
+
   ngOnInit() {
     this.initialize();
     this.startCountDown();
-  }
-
-  onResize(event) {
-    if (this.countdown.nativeElement.clientWidth !== this.boxWidth) {
-      // size changed
-      this.calculateWidth();
-      this.calculatePath();
-    }
   }
 
   private initialize() {

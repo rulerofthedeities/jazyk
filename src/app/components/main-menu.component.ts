@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
@@ -32,22 +32,23 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   showMobileMenu = false;
   @ViewChild('mobile') mobile: ElementRef;
   @ViewChild('mobiletrigger') mobiletrigger: ElementRef;
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
-        this.mobiletrigger && !this.mobiletrigger.nativeElement.contains(event.target)) {
-      // Outside mobile dropdown, close dropdown
-      this.showMobileMenu = false;
-    }
-  }
 
   constructor(
     private router: Router,
     private userService: UserService,
     private sharedService: SharedService,
     private authService: AuthService,
-    private errorService: ErrorService
-  ) {}
+    private errorService: ErrorService,
+    renderer: Renderer2
+  ) {
+    renderer.listen(document, 'click', (event) => {
+      if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
+      this.mobiletrigger && !this.mobiletrigger.nativeElement.contains(event.target)) {
+        // Outside mobile dropdown, close dropdown
+        this.showMobileMenu = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();

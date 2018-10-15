@@ -5,7 +5,7 @@ import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
-import { UserBook, Trophy } from '../models/book.model';
+import { Trophy } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { retry, tap, takeWhile } from 'rxjs/operators';

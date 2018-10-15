@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
 
 @Directive({
   selector: '[kmGravatar]'
@@ -9,10 +9,15 @@ export class GravatarDirective implements OnInit {
   @Input() fallback = 'identicon';
 
   constructor(
-    private elementRef: ElementRef
+    private renderer: Renderer2,
+    private element: ElementRef
   ) {}
 
   ngOnInit() {
-    this.elementRef.nativeElement.src = `//www.gravatar.com/avatar/${this.hash}?s=${this.width}&d=${this.fallback}`;
+    this.renderer.setAttribute(
+      this.element.nativeElement,
+      'src',
+      `//www.gravatar.com/avatar/${this.hash}?s=${this.width}&d=${this.fallback}`
+    );
   }
 }
