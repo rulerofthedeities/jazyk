@@ -29,6 +29,7 @@ module.exports.initialize = function(app, router) {
   router.get('/translations/:lan/:component', translations.getTranslations);
   router.get('/dependables', config.getDependables);
   router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
+  router.get('/home/stats', dashboard.getHomeStats);
 
   router.use('/', function(req, res, next) {
     jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {

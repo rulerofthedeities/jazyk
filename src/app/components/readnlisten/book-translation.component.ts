@@ -254,7 +254,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     if (wordsTranslation.length >= wordsSentence.length / 2) {
       points = (wordsTranslation.length + wordsSentence.length) || 0;
     }
-    return points * 1.5;
+    return points * 2;
   }
 
   private observe() {

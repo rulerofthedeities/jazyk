@@ -33,9 +33,9 @@ export class SharedService {
     31000000,
     46000000,
     70000000,
-    111000000,
-    200000000,
-    400000000
+    125000000,
+    250000000,
+    500000000
   ];
   exerciseModeChanged = new Subject<boolean>();
   justLoggedInOut = new Subject<boolean>();

@@ -27,3 +27,9 @@ export interface RecentBook {
   userLanCode: string;
   tpe: string;
 }
+
+export interface HomeStats {
+  nrOfBooks: number;
+  nrOfSentences: number;
+  nrOfTranslations: number;
+}

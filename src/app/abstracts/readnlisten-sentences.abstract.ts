@@ -211,7 +211,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 1.2) : 0;
+    return words ? Math.round(words.length * this.getScoreMultiplier() * 1.5) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {
@@ -434,7 +434,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected getScoreMultiplier(): number {
-    return 1.2 + this.book.difficulty.avgWordScore / 1000;
+    return 1.1 + this.book.difficulty.avgWordScore / 1000;
   }
 
   protected log(message: string) {

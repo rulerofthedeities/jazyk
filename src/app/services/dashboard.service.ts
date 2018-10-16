@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SummaryData, CommunicationData, RecentBook } from '../models/dashboard.model';
+import { SummaryData, CommunicationData, RecentBook, HomeStats } from '../models/dashboard.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -26,6 +26,12 @@ export class DashboardService {
   fetchRecentBooks(): Observable<RecentBook[]> {
     return this.http
     .get<RecentBook[]>('/api/dashboard/books/5')
+    .pipe(retry(3));
+  }
+
+  fetchHomeStats(): Observable<HomeStats> {
+    return this.http
+    .get<HomeStats>('/api/home/stats')
     .pipe(retry(3));
   }
 }

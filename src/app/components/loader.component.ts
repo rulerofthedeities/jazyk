@@ -10,6 +10,7 @@ import { Subscription, timer } from 'rxjs';
 export class LoaderComponent implements OnInit, OnDestroy {
   @Input() msg = '';
   @Input() showBackground = true;
+  @Input() margin = '60px';
   private subscription: Subscription;
   show = false;
 

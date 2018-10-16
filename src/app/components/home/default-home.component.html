@@ -44,6 +44,25 @@
         <span class="fa fa-play"></span>
       </div>
     </div>
+    <div class="panel panel-default stats" [style.display]="showModules ? 'none' : 'block'">
+      <div class="panel-body">
+        <div *ngIf="!isLoadingStats">
+          <span class="stat">
+            {{text["Books"]}}: <strong>{{stats.nrOfBooks | score}}</strong>
+          </span>
+          <span class="stat middle">
+            {{text["Sentences"]}}: <strong>{{stats.nrOfSentences | score}}</strong>
+          </span>
+            <span class="stat">
+            {{text["Translations"]}}: <strong>{{stats.nrOfTranslations | score}}</strong>
+          </span>
+        </div>
+        <km-loader *ngIf="isLoadingStats" style="height: 20px;"
+          [margin]="0"
+          [showBackground]="false">
+        </km-loader>
+      </div>
+    </div>
 
     <div class="modules-text" [style.display]="showModules ? 'block' : 'none'">
       {{moduleText}}
@@ -64,8 +83,8 @@
         visibility: currentModule === 'test' ? 'visible': 'hidden'}">
         <img class="preview-img" src="/assets/img/screenshots/test.jpg">
       </div>
+      <div class="clearfix"></div>
     </div>
-
   </div>
   <div class="col-xs-4 info-column">
     <div class="panel panel-default info">

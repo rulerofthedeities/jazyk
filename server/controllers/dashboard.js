@@ -1,6 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
+      BookChapter = require('../models/book').chapter,
       AudioBook = require('../models/book').audiobook,
       UserBook = require('../models/userbook').userBook,
       Translation = require('../models/book').translation,
@@ -169,6 +170,62 @@ module.exports = {
           response.handleSuccess(res, []);
         }
       });
+    });
+  },
+  getHomeStats: (req, res) => {
+    const sentencePipeline = [
+            {$group: {
+                _id: '$bookId',
+                sentencesCount: {$sum: { $size: "$sentences" }}
+            }},
+            {$project: {
+              _id: 0,
+              bookId: '$_id',
+              sentencesCount: 1
+            }},
+          ],
+          translationPipeline = [
+            {$group: {
+                _id: null,
+                translationCount: {$sum: { $size: "$translations" }}
+            }},
+            {$project: {
+              _id: 0,
+              translationCount: 1
+            }},
+          ];
+
+    const getStats = async () => {
+      const books = await Book.find({isPublished: true}, {_id: 1}),
+            sentencesCount = await BookChapter.aggregate(sentencePipeline),
+            translationsCount = await Translation.aggregate(translationPipeline);
+      return {
+        books,
+        sentencesCount,
+        translationsCount
+      };
+    };
+
+    getStats().then((results) => {
+      const books = results.books,
+            sentencesCount = results.sentencesCount
+            translationsCount = results.translationsCount;
+      let nrOfSentences = 0;
+      books.forEach(book => {
+        count = sentencesCount.find(count => count.bookId.toString() === book._id.toString());
+        if (count) {
+          nrOfSentences += count.sentencesCount;
+        }
+      });
+      stats = {
+        nrOfBooks: books.length,
+        nrOfSentences,
+        nrOfTranslations: translationsCount[0].translationCount
+      }
+      response.handleSuccess(res, stats);
+    }).catch((err) => {
+      console.log(err);
+      response.handleError(err, res, 500, 'Error fetching home stats');
     });
   }
 }

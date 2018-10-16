@@ -1,6 +1,9 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { appTitle } from '../../services/shared.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { HomeStats } from '../../models/dashboard.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-home-default',
@@ -8,18 +11,26 @@ import { appTitle } from '../../services/shared.service';
   styleUrls: ['default-home.component.css']
 })
 
-export class DefaultHomeComponent implements OnChanges {
+export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
   @Input() text: Object;
+  private componentActive = true;
   title = '';
   giveATry = '';
   lines: string[] = [];
   showModules = false;
   currentModule: string;
   moduleText: string;
+  isLoadingStats = false;
+  stats: HomeStats;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private dashboardService: DashboardService
   ) {}
+
+  ngOnInit() {
+    this.getStats();
+  }
 
   ngOnChanges() {
     this.currentModule = null;
@@ -55,4 +66,20 @@ export class DefaultHomeComponent implements OnChanges {
     this.showModules = false;
   }
 
+  private getStats() {
+    this.isLoadingStats = true;
+    this.dashboardService
+    .fetchHomeStats()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (stats: HomeStats) => {
+        this.isLoadingStats = false;
+        this.stats = stats;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
+  }
  }
