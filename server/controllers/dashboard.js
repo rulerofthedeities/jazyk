@@ -224,7 +224,6 @@ module.exports = {
       }
       response.handleSuccess(res, stats);
     }).catch((err) => {
-      console.log(err);
       response.handleError(err, res, 500, 'Error fetching home stats');
     });
   }

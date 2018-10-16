@@ -29,7 +29,6 @@ const getTotalPoints = function(userId, cb) {
   getScores().then((result) => {
     cb(null, result.score);
   }).catch((err) => {
-    console.log(err);
     cb(err, null);
   });
 }
