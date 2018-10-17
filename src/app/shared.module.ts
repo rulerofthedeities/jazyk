@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { TooltipModule } from 'ngx-tooltip';
+import { TooltipModule } from 'ng2-tooltip-directive';
 
 import { ErrorMessageComponent } from './components/msg/error-message.component';
 import { InfoMessageComponent } from './components/msg/info-message.component';

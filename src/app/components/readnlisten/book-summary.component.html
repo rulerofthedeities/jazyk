@@ -17,7 +17,7 @@
           <span class="fa"
             [ngClass]="{'fa-book':bookType==='read', 'fa-volume-up': bookType==='listen'}"
             [tooltip]="text[bookType==='listen' ? 'Audiobook' : 'book']"
-            tooltipPlacement="left">
+            placement="left">
         </span>
         </div>
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
@@ -152,7 +152,7 @@
   <span *ngIf="license"
     class="fa fa-copyright"
     [tooltip]="tooltip"
-    [tooltipPlacement]="'top'"
+    placement="top"
     >
   </span>
 </ng-template>

@@ -2,7 +2,8 @@
 <div class="form-group form-group-lg">
     <div class="col-xs-4 selector"
       [tooltip]="text[bookType==='audio' ? 'AudioLanguage' : 'BookLanguage']"
-      [tooltipPlacement]="'top'">
+      placement="top"
+      z-index="9000">
       <km-language-selector
         [languages]="bookLanguages"
         [currentLanguage]="bookLanguage"
@@ -12,7 +13,8 @@
     </div>
     <div class="col-xs-4 selector my-lan-selector"
       [tooltip]="text['TranslationLanguage']"
-      [tooltipPlacement]="'top'">
+      placement="top"
+      z-index="9000">
       <span class="fa fa-arrow-right sel-arrow"></span>
       <km-language-selector
         [languages]="myLanguages"

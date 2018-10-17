@@ -8,7 +8,7 @@
         <select class="form-control sort-control"
           (change)="onChangeSort($event.target.value)"
           [tooltip]="text['SortOrder']"
-          [tooltipPlacement]="'top'">
+          placement="top">
           <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
           <option value="difficulty0">{{text["difficulty0"]}}</option>
           <option value="sentences0">{{text["sentences0"]}}</option>
@@ -22,7 +22,7 @@
             on-mouseout='onShowDropDown(false)'
             (click)='onToggleDropDown()'
             [tooltip]="text['Filter']"
-            [tooltipPlacement]="'top'">
+            placement="top">
           <span class="fa fa-filter fa-spacing"></span>{{filterTxt}}
           <ul
             class="dropdown-menu"

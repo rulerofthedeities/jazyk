@@ -21,7 +21,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({appId: 'km-jazyk'}),
     SharedModule,
     RouterModule.forRoot(routes),
     CoreModule.forRoot()
