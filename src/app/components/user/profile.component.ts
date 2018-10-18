@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -24,7 +25,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private sharedService: SharedService,
     private userService: UserService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
@@ -41,7 +43,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   onEditGravatar() {
     // Redirect to gravatar page
-    window.open('https://gravatar.com/emails/', '_blank');
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      window.open('https://gravatar.com/emails/', '_blank');
+    }
+    if (isPlatformServer(this.platformId)) {
+      // Server only code.
+    }
   }
 
   onGoToPublicProfile() {

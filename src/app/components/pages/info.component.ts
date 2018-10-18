@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { PageService } from '../../services/page.service';
@@ -26,15 +26,6 @@ import { takeWhile, filter } from 'rxjs/operators';
 export class InfoComponent implements OnInit, OnDestroy {
   private componentActive = true;
   page: Page;
-
-  // Listen for route link events
-  @HostListener('window:route-event', ['$event', '$event.detail.route'])
-  updateNodes(event, route) {
-    if (route) {
-      route = route.substr(0, 1) === '/' ? route : '/' + route;
-      this.router.navigate([route]);
-    }
-  }
 
   constructor(
     private route: ActivatedRoute,

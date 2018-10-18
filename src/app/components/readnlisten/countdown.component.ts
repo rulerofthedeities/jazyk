@@ -1,4 +1,6 @@
-import { Component, Input, Output, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy,
+         ElementRef, Renderer2, ViewChild, EventEmitter, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -36,15 +38,19 @@ export class CountdownComponent implements OnInit, OnDestroy {
   beep2: any;
 
   constructor(
-    renderer: Renderer2
+    renderer: Renderer2,
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
-    renderer.listen(window, 'resize', (event) => {
-      if (this.countdown && this.countdown.nativeElement.clientWidth !== this.boxWidth) {
-        // size changed
-        this.calculateWidth();
-        this.calculatePath();
-      }
-    });
+    if (isPlatformBrowser(platformId)) {
+      // Client only code.
+      renderer.listen(window, 'resize', (event) => {
+        if (this.countdown && this.countdown.nativeElement.clientWidth !== this.boxWidth) {
+          // size changed
+          this.calculateWidth();
+          this.calculatePath();
+        }
+      });
+    }
   }
 
   ngOnInit() {

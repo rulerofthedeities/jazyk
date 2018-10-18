@@ -21,16 +21,5 @@ export class PageService {
 
   loadRouteScript() {
     // for routes in sanitized html
-    const body = <HTMLDivElement>document.body,
-          script = document.createElement('script');
-    script.innerHTML = `
-    function goToRoute(route) {
-      var event = new CustomEvent(
-        'route-event',
-        {detail: {route: route}}
-      );
-      window.dispatchEvent(event);
-    }`;
-    body.appendChild(script);
   }
 }
