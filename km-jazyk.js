@@ -27,10 +27,10 @@ app.use(bearerToken());
 app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(prerender.set('protocol', 'https'));
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist/browser')));
 
 // routing
-routes.initialize(app, new express.Router());
+routes.apiEndpoints(app, new express.Router());
 
 // server
 if (app.get('env') === 'development') {

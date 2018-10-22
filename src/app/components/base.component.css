@@ -1,6 +1,6 @@
-img { 
+img {
   background-color: #fff;
-  background-size: cover; 
+  background-size: cover;
   position: fixed;
   min-width: 100%;
   min-height: 100%;
@@ -39,7 +39,7 @@ img {
   color: #f0f0f0;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
-  z-index: 9000;
+  z-index: 1000;
 }
 .corner-ribbon.sticky{
   position: fixed;

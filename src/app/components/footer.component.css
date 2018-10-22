@@ -57,7 +57,8 @@ a:hover, a:active {
   color: white;
   text-decoration: underline;
 }
-.version {
+.version, .platform {
   font-size: 10px;
   color: grey;
+  margin-left: 6px;
 }

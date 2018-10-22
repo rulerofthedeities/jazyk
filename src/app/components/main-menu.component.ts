@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { AuthService } from '../services/auth.service';
@@ -39,7 +40,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private authService: AuthService,
     private errorService: ErrorService,
-    renderer: Renderer2
+    renderer: Renderer2,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     renderer.listen(document, 'click', (event) => {
       if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
@@ -131,7 +133,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private updateInterfaceLan(newLan: Language) {
     this.userService.user.main.lan = newLan.code;
-    localStorage.setItem('km-jazyk.lan', newLan.code);
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      localStorage.setItem('km-jazyk.lan', newLan.code);
+    }
     this.intLan = newLan;
     this.showDropDown = false;
     this.userService.interfaceLanguageChanged.next(newLan.code);

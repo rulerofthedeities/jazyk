@@ -127,6 +127,13 @@
   margin-top: -6px;
   margin-bottom: 2px;
   margin-right: 42px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book h3:hover {
+  overflow: visible;
+  white-space: normal;
 }
 .book h3 small {
   margin-left: 10px;

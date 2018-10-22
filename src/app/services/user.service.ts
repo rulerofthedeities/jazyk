@@ -1,5 +1,6 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
@@ -21,7 +22,8 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   // USER DATA
@@ -399,10 +401,13 @@ export class UserService {
     let lan = this.validateLan(queryLan);
     if (!lan) {
       // if not in url parm, check if the lan is set in the browser
-      lan = localStorage.getItem('km-jazyk.lan');
+      if (isPlatformBrowser(this.platformId)) {
+        // Client only code.
+        lan = localStorage.getItem('km-jazyk.lan');
       // if not set in browser, get from navigator
-      if (!lan) {
-        lan = this.validateLan(navigator.language.slice(0, 2));
+        if (!lan) {
+          lan = this.validateLan(navigator.language.slice(0, 2));
+        }
       }
       // if not in navigator, get from config
       lan = lan || config.language;

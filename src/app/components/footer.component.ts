@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
 import { isDevMode } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { UserService } from '../services/user.service';
 import { ErrorService } from '../services/error.service';
 import { SharedService } from '../services/shared.service';
@@ -20,6 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   isReady = false;
   lastEventMessage: string;
   showLog = false;
+  platform: string;
   appVersion = environment.version;
 
   @ViewChild('log') logElement: ElementRef;
@@ -29,6 +31,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private errorService: ErrorService,
     private sharedService: SharedService,
+    @Inject(PLATFORM_ID) private platformId: Object,
     renderer: Renderer2
   ) {
     renderer.listen(document, 'click', (event) => {
@@ -42,6 +45,14 @@ export class FooterComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      this.platform = 'CLIENT';
+    }
+    if (isPlatformServer(this.platformId)) {
+      // Server only code.
+      this.platform = 'SERVER';
+    }
     this.getTranslations(this.userService.user.main.lan);
     this.observeEventMessages();
     this.userService.interfaceLanguageChanged.subscribe(

@@ -1,12 +1,14 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path'),
+      webpack = require('webpack'),
+      nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   mode: 'none',
   entry: {
     server: './server.ts',
   },
-  target: 'node',
+  target: 'node', // in order to ignore built-in modules like path, fs, etc.
+  externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
   resolve: { extensions: ['.ts', '.js'] },
   optimization: {
     minimize: false
@@ -24,7 +26,7 @@ module.exports = {
         // Removing this will cause deprecation warnings to appear.
         test: /(\\|\/)@angular(\\|\/)core(\\|\/).+\.js$/,
         parser: { system: true },
-      },
+      }
     ]
   },
   plugins: [

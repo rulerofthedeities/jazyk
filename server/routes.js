@@ -1,21 +1,21 @@
-var path = require("path"),
-    jwt = require('jsonwebtoken'),
-    users = require("./controllers/users"),
-    books = require("./controllers/books"),
-    audio = require("./controllers/audiobooks"),
-    errors = require("./controllers/errors"),
-    config = require("./controllers/config"),
-    translations = require("./controllers/translations"),
-    notifications = require("./controllers/notifications"),
-    messages = require("./controllers/messages"),
-    follows = require("./controllers/follows"),
-    scores = require("./controllers/scores"),
-    info = require("./controllers/info"),
-    dashboard = require("./controllers/dashboard"),
-    log = require("./controllers/log"),
-    response = require("./response");
+const path = require('path'),
+      jwt = require('jsonwebtoken'),
+      users = require('./controllers/users'),
+      books = require('./controllers/books'),
+      audio = require('./controllers/audiobooks'),
+      errors = require('./controllers/errors'),
+      config = require('./controllers/config'),
+      translations = require('./controllers/translations'),
+      notifications = require('./controllers/notifications'),
+      messages = require('./controllers/messages'),
+      follows = require('./controllers/follows'),
+      scores = require('./controllers/scores'),
+      info = require('./controllers/info'),
+      dashboard = require('./controllers/dashboard'),
+      log = require('./controllers/log'),
+      response = require('./response');
 
-module.exports.initialize = function(app, router) {
+module.exports.apiEndpoints = function(app, router) {
   router.use(['/user/refresh', '/user/signin'], (req, res, next) => {
     req.expiresIn = app.get('token_expiration') || 86400;
     next();
@@ -33,7 +33,7 @@ module.exports.initialize = function(app, router) {
 
   router.use('/', function(req, res, next) {
     jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
-      response.handleError(err, res, 401, 'Authentication failed', function(){
+      response.handleError(err, res, 401, 'Authentication failed', () => {
         req.decoded = decoded;
         next();
       });
@@ -119,7 +119,8 @@ module.exports.initialize = function(app, router) {
   app.use('/api/', router);
 
   app.use(function (req, res) {
-    var home = path.resolve(__dirname + '/../dist/index.html');
+    const home = path.resolve(__dirname + '/../dist/browser/index.html');
+    console.log(__dirname, home);
     res.sendFile(home);
   });
 };

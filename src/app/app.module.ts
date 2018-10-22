@@ -3,6 +3,7 @@ import { CoreModule } from './core.module';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { SharedModule } from './shared.module';
+import { CookieModule } from 'ngx-cookie';
 
 import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
@@ -24,7 +25,8 @@ import { PageNotFoundComponent } from './components/not-found.component';
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
     SharedModule,
     RouterModule.forRoot(routes),
-    CoreModule.forRoot()
+    CoreModule.forRoot(),
+    CookieModule.forRoot()
   ],
   providers: [
     UserResolver,
