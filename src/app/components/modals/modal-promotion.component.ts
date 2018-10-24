@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Subscription, timer } from 'rxjs';
 
 @Component({
@@ -16,6 +17,10 @@ export class ModalPromotionComponent implements OnInit, OnDestroy {
   showModal = false;
   cheer: any;
 
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
   ngOnInit() {
     this.cheer = this.loadAudio('/assets/audio/cheer.ogg');
   }
@@ -31,11 +36,13 @@ export class ModalPromotionComponent implements OnInit, OnDestroy {
   }
 
   doShowModal() {
-    this.showModal = true;
-    this.cheer.play();
-    // Close modal after 5 secs
-    const timerObservable = timer(5000, 0);
-    this.subscription = timerObservable.subscribe(t => this.showModal = false);
+    if (isPlatformBrowser(this.platformId)) {
+      this.showModal = true;
+      this.cheer.play();
+      // Close modal after 5 secs
+      const timerObservable = timer(5000, 0);
+      this.subscription = timerObservable.subscribe(t => this.showModal = false);
+    }
   }
 
   private loadAudio(file: string): any {

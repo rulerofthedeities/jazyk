@@ -1,4 +1,4 @@
-import { NgModule, Inject, Injectable } from '@angular/core';
+import { NgModule, Inject } from '@angular/core';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
@@ -25,11 +25,10 @@ import { AppComponent } from './components/app.component';
   // imported AppModule, it needs to be repeated here.
   bootstrap: [AppComponent]
 })
-@Injectable()
 export class AppServerModule {
   constructor(
     @Inject('request') private request: Request
   ) {
-    console.log(this.request);
+    // console.log(this.request);
   }
 }

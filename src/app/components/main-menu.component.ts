@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
+         Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user.service';
@@ -182,9 +183,11 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private checkMessages() {
-    timer(0, 900000) // Start immediately, then check every 15 minutes
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(t => this.getMessagesCount());
+    if (isPlatformBrowser(this.platformId)) {
+      timer(0, 900000) // Start immediately, then check every 15 minutes
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(t => this.getMessagesCount());
+    }
   }
 
   private updateNotificationsUnReadCount(isAllRead: boolean) {

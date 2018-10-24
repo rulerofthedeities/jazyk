@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { awsPath, SharedService } from '../services/shared.service';
@@ -20,7 +21,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   constructor (
     private authService: AuthService,
     private userService: UserService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
@@ -56,14 +58,16 @@ export class BaseComponent implements OnInit, OnDestroy {
   }
 
   private setUpTokenRefresh() {
-    const timerObservable = timer(30000, 3600000); // Start after 30 secs, then check every hour
-    timerObservable
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(t => {
-      if (this.authService.isLoggedIn()) {
-        this.authService.keepTokenFresh();
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      const timerObservable = timer(30000, 3600000); // Start after 30 secs, then check every hour
+      timerObservable
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(t => {
+        if (this.authService.isLoggedIn()) {
+          this.authService.keepTokenFresh();
+        }
+      });
+    }
   }
 
   ngOnDestroy() {

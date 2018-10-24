@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CoreModule } from './core.module';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { TransferHttpCacheModule } from '@nguniversal/common';
 import { SharedModule } from './shared.module';
 import { CookieModule } from 'ngx-cookie';
 
@@ -9,7 +10,6 @@ import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
 import { ReadnListenService } from './services/readnlisten.service';
 import { DashboardService } from './services/dashboard.service';
-import { LogService } from './services/log.service';
 
 import { AppComponent } from './components/app.component';
 import { BaseComponent } from './components/base.component';
@@ -26,13 +26,13 @@ import { PageNotFoundComponent } from './components/not-found.component';
     SharedModule,
     RouterModule.forRoot(routes),
     CoreModule.forRoot(),
-    CookieModule.forRoot()
+    CookieModule.forRoot(),
+    TransferHttpCacheModule
   ],
   providers: [
     UserResolver,
     ReadnListenService,
-    DashboardService,
-    LogService
+    DashboardService
   ],
   declarations: [
     AppComponent,

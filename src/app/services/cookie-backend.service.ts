@@ -5,7 +5,7 @@ import { CookieOptionsProvider } from 'ngx-cookie';
 
 import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
-// Change Inject 'REQUEST' per REQUEST and 'RESPONSE' per RESPONSE
+/*Change Inject 'REQUEST' per REQUEST and 'RESPONSE' per RESPONSE*/
 
 @Injectable()
 export class CookieBackendService extends CookieService {

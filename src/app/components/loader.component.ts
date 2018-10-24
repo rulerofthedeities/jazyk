@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Subscription, timer } from 'rxjs';
 
 @Component({
@@ -14,14 +15,20 @@ export class LoaderComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   show = false;
 
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
   ngOnInit() {
     this.delay();
   }
 
   private delay() {
     // only show the loader after 200ms
-    const timerObservable = timer(200, 0);
-    this.subscription = timerObservable.subscribe(t => this.show = true);
+    if (isPlatformBrowser(this.platformId)) {
+      const timerObservable = timer(200, 0);
+      this.subscription = timerObservable.subscribe(t => this.show = true);
+    }
   }
 
   ngOnDestroy() {

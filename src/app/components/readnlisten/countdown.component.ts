@@ -39,9 +39,9 @@ export class CountdownComponent implements OnInit, OnDestroy {
 
   constructor(
     renderer: Renderer2,
-    @Inject(PLATFORM_ID) platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    if (isPlatformBrowser(platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
       // Client only code.
       renderer.listen(window, 'resize', (event) => {
         if (this.countdown && this.countdown.nativeElement.clientWidth !== this.boxWidth) {
@@ -123,26 +123,31 @@ export class CountdownComponent implements OnInit, OnDestroy {
   }
 
   private startCountDown() {
-    const intervalMs = 50,
-          steps = 1000 / intervalMs,
-          timerObservable = timer(0, intervalMs);
-    this.playSound(false);
-    timerObservable
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(t => {
-      this.updateAngle(t, steps);
-      if (t > 0 && t % steps === 0) {
-        this.counter--;
-        if (this.counter === 0) {
-          this.playSound(true);
-          this.updateAngle(0, 1);
-          this.countedDown.next();
-          this.componentActive = false;
-        } else {
-          this.playSound(false);
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only
+      const intervalMs = 50,
+            steps = 1000 / intervalMs,
+            timerObservable = timer(0, intervalMs);
+      this.playSound(false);
+      timerObservable
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(t => {
+        this.updateAngle(t, steps);
+        if (t > 0 && t % steps === 0) {
+          this.counter--;
+          if (this.counter === 0) {
+            this.playSound(true);
+            this.updateAngle(0, 1);
+            this.countedDown.next();
+            this.componentActive = false;
+          } else {
+            this.playSound(false);
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.componentActive = false;
+    }
   }
 
   private loadAudio(file: string): any {

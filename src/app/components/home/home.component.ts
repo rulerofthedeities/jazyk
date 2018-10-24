@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setTitle(this.authService.isLoggedIn());
+    /*
     this.getDependables(this.userService.user.main.lan);
     this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getDependables(newLan)
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.sharedService.justLoggedInOut.subscribe(
       loggedIn => this.setTitle(loggedIn)
     );
+    */
   }
 
   isLoggedIn(): boolean {

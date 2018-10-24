@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { EventMessage } from '../models/error.model';
 import { Language, Translation, Dependables, DependableOptions } from '../models/main.model';
-import { environment } from 'environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
