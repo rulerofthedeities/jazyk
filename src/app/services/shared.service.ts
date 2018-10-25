@@ -60,7 +60,7 @@ export class SharedService {
   fetchDependables(options: DependableOptions): Observable<Dependables> {
     const params = this.objToSearchParams(options);
     return this.http
-    .get<Dependables>('/api/dependables/', {params})
+    .get<Dependables>('/api/dependables', {params})
     .pipe(retry(3));
   }
 

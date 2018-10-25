@@ -10,14 +10,12 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import checks = require('./server/checks.js');
 import routes = require('./server/routes');
+import mongoose = require('./server/mongoose-ssr');
 import sslRedirect = require('heroku-ssl-redirect');
 import compression = require('compression');
 import bodyParser = require('body-parser');
 import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
-import {mongoose} from './server/mongoose';
-import https = require('https');
-import fs = require('fs');
 import { join } from 'path';
 import { readFileSync } from 'fs';
 
@@ -91,8 +89,7 @@ app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
 // Routes
-// routes.apiEndpoints(app, new express.Router(), DIST_FOLDER);
-
+routes.apiEndpoints(app, new express.Router());
 
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
@@ -115,6 +112,7 @@ app.get('*', (req, res) => {
 });
 
 // server
+/*
 if (app.get('env') === 'development') {
   const options = {
     key: fs.readFileSync('../ssl/jazyk.key'),
@@ -128,3 +126,11 @@ if (app.get('env') === 'development') {
     console.log('Server running on port ' + app.get('port'));
   });
 }
+*/
+
+// Connect to db and start server
+mongoose.runServer(app, err => {
+  if (err) {
+    console.error(err);
+  }
+});

@@ -29,7 +29,7 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // this.getStats();
+    this.getStats();
   }
 
   ngOnChanges() {

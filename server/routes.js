@@ -48,6 +48,7 @@ module.exports.apiEndpoints = function(app, router) {
   router.get('/dashboard/books/:max', dashboard.recentBooks);
 
   /* user */
+
   router.put('/user/settings', users.saveSettings);
   router.get('/user/profiles/:userIds', users.getCompactProfiles);
   router.get('/user/profile/:userName', users.getPublicProfile);
@@ -118,9 +119,10 @@ module.exports.apiEndpoints = function(app, router) {
 
   app.use('/api/', router);
 
+  /*
   app.use(function (req, res) {
-    const home = path.resolve(__dirname + '/../dist/browser/index.html');
-    console.log(__dirname, home);
-    res.sendFile(home);
+    // res.sendFile('browser/index.html', {root: DIST_FOLDER});
+    res.sendFile(path.resolve(DIST_FOLDER + '/browser/index.html'));
   });
+  */
 };

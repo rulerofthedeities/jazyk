@@ -53,7 +53,7 @@ export class FooterComponent implements OnInit, OnDestroy {
       // Server only code.
       this.platform = 'SERVER';
     }
-    this.getTranslations(this.userService.user.main.lan);
+    // this.getTranslations(this.userService.user.main.lan);
     this.observeEventMessages();
     this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getTranslations(newLan)

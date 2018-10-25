@@ -72,6 +72,7 @@ module.exports = {
       if (params.getLicenses === 'true') {
         licenseUrls = await Config.find({tpe: 'license'}, {_id: 0, license: 1, url: 1});
       }
+
       return {translations, languages, userLanguages, bookLanguages, licenseUrls};
     };
 
