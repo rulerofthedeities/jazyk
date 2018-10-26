@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Location } from '@angular/common';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
@@ -18,7 +19,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private sharedService: SharedService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -42,8 +44,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   private setTitle(isLoggedIn: boolean) {
     if (isLoggedIn) {
       this.sharedService.setPageTitle(null, 'Dashboard');
+      this.location.go('/dashboard');
+
     } else {
       this.sharedService.setPageTitle(null, '');
+      this.location.go('/home');
     }
   }
 

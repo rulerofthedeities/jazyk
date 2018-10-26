@@ -2,11 +2,11 @@
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 
-import { renderModuleFactory } from '@angular/platform-server';
+// import { renderModuleFactory } from '@angular/platform-server';
 import { provideModuleMap, ModuleMapNgFactoryLoader} from '@nguniversal/module-map-ngfactory-loader'; // Import module map for lazy loading
 import { enableProdMode, NgModuleFactoryLoader, Compiler, InjectionToken } from '@angular/core';
 import { ngExpressEngine } from '@nguniversal/express-engine';
-import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
+// import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
 import * as express from 'express';
 import checks = require('./server/checks.js');
@@ -19,9 +19,9 @@ import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { ModuleMap } from './src/module-map';
+// import { ModuleMap } from './module-map';
 
-export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
+// export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
 
 // Faster server renders w/ Prod mode
 enableProdMode();
@@ -54,30 +54,6 @@ const win = domino.createWindow(template);
 global['window'] = win;
 global['document'] = win.document;
 
-/*
-app.engine('html', (_, options, callback) => {
-  renderModuleFactory(AppServerModuleNgFactory, {
-    // Our index.html
-    document: template,
-    url: options.req.url,
-    // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
-    extraProviders: [
-      provideModuleMap(LAZY_MODULE_MAP),
-      {
-        provide: 'REQUEST',
-        useValue: options.req
-      },
-      {
-        provide: 'RESPONSE',
-        useValue: options.req.res
-      }
-    ]
-  }).then(html => {
-    callback(null, html);
-  });
-});
-*/
-
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
 
 app.engine('html', ngExpressEngine({
@@ -104,13 +80,12 @@ app.set('views', join(DIST_FOLDER, 'browser'));
 routes.apiEndpoints(app, express.Router()); // API routing
 routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
 
-
-
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
   maxAge: '1y'
 }));
 
+// Server render
 app.get('*', (req, res) => {
   res.render('index', {
     req,
