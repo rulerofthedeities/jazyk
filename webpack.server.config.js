@@ -11,7 +11,8 @@ module.exports = {
   externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
   resolve: { extensions: ['.ts', '.js'] },
   optimization: {
-    minimize: false
+    minimize: false,
+    nodeEnv: false
   },
   output: {
     // Puts the output at the root of the dist folder

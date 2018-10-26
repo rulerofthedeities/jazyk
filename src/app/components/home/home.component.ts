@@ -22,16 +22,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('setting title');
     this.setTitle(this.authService.isLoggedIn());
-    /*
+    console.log('getting dependables');
     this.getDependables(this.userService.user.main.lan);
+    console.log('observables');
     this.userService.interfaceLanguageChanged.subscribe(
       newLan => this.getDependables(newLan)
     );
     this.sharedService.justLoggedInOut.subscribe(
       loggedIn => this.setTitle(loggedIn)
     );
-    */
   }
 
   isLoggedIn(): boolean {

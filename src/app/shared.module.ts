@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 import { TooltipModule } from 'ng2-tooltip-directive';
 
@@ -26,6 +27,7 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
 @NgModule({
   imports: [
     CommonModule,
+    HttpModule,
     HttpClientModule,
     FormsModule,
     TooltipModule,

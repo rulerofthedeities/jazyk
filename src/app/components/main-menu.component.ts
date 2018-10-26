@@ -56,7 +56,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();
     this.getUrl();
-    // this.getDependables();
+    this.getDependables();
     this.getNotificationsCount();
     this.checkMessages();
     this.getScoreCount();

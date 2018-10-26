@@ -1,5 +1,7 @@
 const mongoose = require('mongoose'),
       uriFormat = require('mongodb-uri'),
+      fs = require('fs'),
+      https = require('https'),
       db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk',
       options = {
         autoIndex: true,
@@ -27,12 +29,25 @@ module.exports = {
     .then(() => {
       console.log(`Connected to db at ${db_url}.`);
       // Start server
-      app.listen(app.get('port'), () => {
-        console.log(`Listen to port ${app.get('port')}`);
-        if (callback) {
-          callback();
-        }
-      });
+      if (app.get('env') === 'development') {
+        const options = {
+          key: fs.readFileSync('../ssl/jazyk.key'),
+          cert: fs.readFileSync('../ssl/jazyk.cer')
+        };
+        https.createServer(options, app).listen(app.get('port'), () => {
+          console.log('Local https server running on port ' + app.get('port'));
+          if (callback) {
+            callback();
+          }
+        });
+      } else {
+        app.listen(app.get('port'), () => {
+          console.log('Server running on port ' + app.get('port'));
+          if (callback) {
+            callback();
+          }
+        });
+      }
     })
     .catch((err) => {
       console.log('Error connecting to database.');

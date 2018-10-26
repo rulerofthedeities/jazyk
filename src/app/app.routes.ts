@@ -5,6 +5,7 @@ import { UserComponent } from './components/user/user.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
+import { DashboardComponent } from './components/home/dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,6 +18,11 @@ export const routes: Routes = [
       {
         path: 'home',
         component: HomeComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'auth',

@@ -3,9 +3,10 @@ import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 
 import { renderModuleFactory } from '@angular/platform-server';
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader'; // Import module map for lazy loading
-import { enableProdMode } from '@angular/core';
+import { provideModuleMap, ModuleMapNgFactoryLoader} from '@nguniversal/module-map-ngfactory-loader'; // Import module map for lazy loading
+import { enableProdMode, NgModuleFactoryLoader, Compiler, InjectionToken } from '@angular/core';
 import { ngExpressEngine } from '@nguniversal/express-engine';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
 import * as express from 'express';
 import checks = require('./server/checks.js');
@@ -18,8 +19,11 @@ import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { ModuleMap } from './src/module-map';
 
-// Faster server renders w/ Prod mode (dev mode never needed)
+export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
+
+// Faster server renders w/ Prod mode
 enableProdMode();
 
 const DIST_FOLDER = join(process.cwd(), 'dist');
@@ -33,7 +37,6 @@ app.set('token_expiration', 604800); // Token expires after 7 days
 // check for warnings
 checks.checkWarnings(app);
 // middleware
-
 app.use(compression());
 app.use(bearerToken());
 app.use(sslRedirect());
@@ -59,7 +62,15 @@ app.engine('html', (_, options, callback) => {
     url: options.req.url,
     // DI so that we can get lazy-loading to work differently (since we need it to just instantly render it)
     extraProviders: [
-      provideModuleMap(LAZY_MODULE_MAP)
+      provideModuleMap(LAZY_MODULE_MAP),
+      {
+        provide: 'REQUEST',
+        useValue: options.req
+      },
+      {
+        provide: 'RESPONSE',
+        useValue: options.req.res
+      }
     ]
   }).then(html => {
     callback(null, html);
@@ -68,6 +79,7 @@ app.engine('html', (_, options, callback) => {
 */
 
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+
 app.engine('html', ngExpressEngine({
   bootstrap: AppServerModuleNgFactory,
   providers: [
@@ -75,12 +87,12 @@ app.engine('html', ngExpressEngine({
     // In case you want to use an AppShell with SSR and Lazy loading
     // you'd need to uncomment the below. (see: https://github.com/angular/angular-cli/issues/9202)
     // {
-    //   provide: NgModuleFactoryLoader,
-    //   useClass: ModuleMapNgFactoryLoader,
-    //   deps: [
-    //     Compiler,
-    //     MODULE_MAP
-    //   ],
+    //  provide: NgModuleFactoryLoader,
+    //  useClass: ModuleMapNgFactoryLoader,
+    //  deps: [
+    //   Compiler,
+    //   MODULE_MAP
+    // ],
     // },
   ]
 }));
@@ -89,7 +101,10 @@ app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
 // Routes
-routes.apiEndpoints(app, new express.Router());
+routes.apiEndpoints(app, express.Router()); // API routing
+routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
+
+
 
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
@@ -98,35 +113,12 @@ app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
 
 app.get('*', (req, res) => {
   res.render('index', {
-    req: req,
-    res: res,
-    providers: [
-      {
-        provide: 'REQUEST', useValue: (req)
-      },
-      {
-        provide: 'RESPONSE', useValue: (res)
-      }
-    ]
+    req,
+    res
+  }, (err: Error, html: string) => {
+    res.status(html ? 200 : 500).send(html || err.message);
   });
 });
-
-// server
-/*
-if (app.get('env') === 'development') {
-  const options = {
-    key: fs.readFileSync('../ssl/jazyk.key'),
-    cert: fs.readFileSync('../ssl/jazyk.cer')
-  };
-  https.createServer(options, app).listen(app.get('port'), () => {
-    console.log('Local https server running on port ' + app.get('port'));
-  });
-} else {
-  app.listen(app.get('port'), () => {
-    console.log('Server running on port ' + app.get('port'));
-  });
-}
-*/
 
 // Connect to db and start server
 mongoose.runServer(app, err => {

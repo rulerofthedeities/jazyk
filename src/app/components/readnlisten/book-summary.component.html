@@ -92,7 +92,7 @@
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
             <span *ngIf="translationData?.count" class="translations">
-              ({{translationData.count}} / {{book.difficulty?.nrOfUniqueSentences}} {{text["translated"]}})
+              {{getTranslated(translationData, book)}} {{text["translated"]}})
             </span>
           </div>
           <div class="words">

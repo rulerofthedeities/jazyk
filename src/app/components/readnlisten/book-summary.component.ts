@@ -133,6 +133,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  getTranslated(translationData: TranslationData, book: Book): string {
+    const translated = translationData.count || 0,
+          unique = book.difficulty ? book.difficulty.nrOfUniqueSentences || 0 : 0,
+          maxTranslated = translated > unique ? unique : translated;
+
+    return `${maxTranslated} / ${unique}`;
+  }
+
   private saveRecommend() {
     this.readnListenService
     .recommendBook(this.userBook._id, !this.userBookStatus.isRecommended)

@@ -29,6 +29,6 @@ export class AppServerModule {
   constructor(
     @Inject('request') private request: Request
   ) {
-    // console.log(this.request);
+    // console.log('Request', this.request);
   }
 }

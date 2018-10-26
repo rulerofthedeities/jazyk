@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { CookieService, CookieOptions } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -33,7 +34,8 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private cookie: CookieService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   signup(user: User): Observable<User>  {
@@ -49,17 +51,20 @@ export class AuthService {
   }
 
   signedIn(data: SignedInData, reroute = true) {
-    const decoded = this.jwtHelper.decodeToken(data.token),
-          userStorage: UserStorage = {
-            token: data.token,
-            userId: decoded.user._id,
-            userName: decoded.user.userName
-          };
-    this.storeUserData(userStorage);
-    this.sharedService.userJustLoggedIn();
-    if (reroute) {
-      const returnUrl = data.returnUrl || '/home';
-      this.router.navigateByUrl(returnUrl);
+    console.log('signing in');
+    if (isPlatformBrowser(this.platformId)) {
+      const decoded = this.jwtHelper.decodeToken(data.token),
+            userStorage: UserStorage = {
+              token: data.token,
+              userId: decoded.user._id,
+              userName: decoded.user.userName
+            };
+      this.storeUserData(userStorage);
+      this.sharedService.userJustLoggedIn();
+      if (reroute) {
+        const returnUrl = data.returnUrl || '/home';
+        this.router.navigateByUrl(returnUrl);
+      }
     }
   }
 
@@ -70,29 +75,38 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    console.log('check if logged in');
     const token = this.getToken();
     if (token) {
-      return !this.jwtHelper.isTokenExpired(token);
+      if (isPlatformBrowser(this.platformId)) {
+        console.log('check if logged in - client');
+        return !this.jwtHelper.isTokenExpired(token);
+      } else {
+        console.log('check if logged in - server');
+        return false;
+      }
     } else {
       return false;
     }
   }
 
   keepTokenFresh() {
-    const token = this.getToken();
-    if (token) {
-      const decoded = this.jwtHelper.decodeToken(token),
-            initialSecs = decoded.exp - decoded.iat,
-            currentSecs = decoded.exp - Math.floor(Date.now() / 1000);
+    if (isPlatformBrowser(this.platformId)) {
+      const token = this.getToken();
+      if (token) {
+        const decoded = this.jwtHelper.decodeToken(token),
+              initialSecs = decoded.exp - decoded.iat,
+              currentSecs = decoded.exp - Math.floor(Date.now() / 1000);
 
-      if (initialSecs - currentSecs >= 3600) {
-        // renew token if it is older than an hour
-        this.refreshToken().subscribe(
-          newToken => {
-            this.sharedService.log('Token', 'refreshing token');
-            this.cookie.put('km-jazyk.token', newToken.token, this.getCookieOptions());
-          }
-        );
+        if (initialSecs - currentSecs >= 3600) {
+          // renew token if it is older than an hour
+          this.refreshToken().subscribe(
+            newToken => {
+              this.sharedService.log('Token', 'refreshing token');
+              this.cookie.put('km-jazyk.token', newToken.token, this.getCookieOptions());
+            }
+          );
+        }
       }
     }
   }
