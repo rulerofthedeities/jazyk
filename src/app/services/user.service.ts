@@ -6,7 +6,7 @@ import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
-import { Trophy } from '../models/book.model';
+import { Trophy, UserBook } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { retry, tap, takeWhile } from 'rxjs/operators';
@@ -261,6 +261,11 @@ export class UserService {
     .pipe(retry(3));
   }
 
+  fetchFinishedBooks(): Observable<UserBook[]> {
+    return this.http
+    .get<UserBook[]>('/api/user/finishedbooks/')
+    .pipe(retry(3));
+  }
 
   followUser(userId: string): Observable<boolean> {
     return this.http

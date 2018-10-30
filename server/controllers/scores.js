@@ -1,8 +1,9 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Session = require('../models/book').session;
+      Session = require('../models/book').session,
+      UserBook = require('../models/userbook').userBook;
 
-const getTotalPoints = function(userId, cb) {
+const getTotalPoints = (userId, cb) => {
   const scoreBooksPipeline = [
           {$match: {userId}},
           {$group: {
@@ -34,15 +35,15 @@ const getTotalPoints = function(userId, cb) {
 }
 
 module.exports = {
-  getTotalScore: function(req, res) {
+  getTotalScore: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id);
     getTotalPoints(userId, (err, score) => {
-      response.handleError(err, res, 400, 'Error fetching total score', function(){
+      response.handleError(err, res, 400, 'Error fetching total score', () => {
         response.handleSuccess(res, score.toString());
       });
     })
   },
-  getBookScores: function(req, res) {
+  getBookScores: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookType = req.params.bookType;
           pipeline = [
@@ -80,7 +81,8 @@ module.exports = {
             if (doc.book[0]) {
               const book = doc.book[0],
                     newDoc = {
-                      book: book.title,
+                      bookTitle: book.title,
+                      bookId: book._id,
                       lan: {from: book.lanCode, to : doc._id.lan},
                       points: doc.points
                     };
@@ -92,5 +94,15 @@ module.exports = {
         response.handleSuccess(res, {scores, total});
       });
     });
+  },
+  getFinishedBooks: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId, 'bookmark.isBookRead': true};
+    UserBook.find(query, (err, result) => {
+      console.log('finished books', result);
+      response.handleError(err, res, 400, 'Error fetching finished books', () => {
+        response.handleSuccess(res, result);
+      });
+    })
   }
 }

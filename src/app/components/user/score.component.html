@@ -41,19 +41,25 @@
   title: text['ScoreOverviewBooks'],
   bookScores: bookScores,
   bookTotal: bookTotal,
-  loadingBookScores: loadingBookScores
+  loadingBookScores: loadingBookScores,
+  bookType: 'read'
 }">
 </ng-container>
 <ng-container *ngTemplateOutlet="scoreTemplate;context:{
   title: text['ScoreOverviewAudiobooks'],
   bookScores: audiobookScores,
   bookTotal: audiobookTotal,
-  loadingBookScores: loadingBookScores
+  loadingBookScores: loadingBookScores,
+  bookType: 'listen'
 }">
 </ng-container>
 
-
-<ng-template #scoreTemplate let-title=title let-scores=bookScores let-total=bookTotal let-loadingScores=loadingBookScores>
+<ng-template #scoreTemplate
+  let-title=title
+  let-scores=bookScores
+  let-type=bookType
+  let-total=bookTotal
+  let-loadingScores=loadingBookScores>
   <div class="panel panel-default transparant books">
     <div class="panel-heading">
       <span class="fa fa-star fa-spacing-title"></span>{{title}}
@@ -72,11 +78,17 @@
           <tr *ngFor="let score of scores; let i = index">
             <td class="text-right">{{i+1}}.</td>
             <td class="text-center">
+              <span class="finished">
+                <span *ngIf="score.isFinished"
+                  class="fa fa-check"
+                  [tooltip]="text[type === 'listen' ? 'AudioListened' : 'BookRead'] || ''">
+                </span>
+              </span>
               <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
               <span class="fa fa-arrow-right flag-from"></span>
               <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
             </td>
-            <td>{{score.book}}</td>
+            <td>{{score.bookTitle}}</td>
             <td class="text-right nr">{{score.points | score}}</td>
           </tr>
           <tr>

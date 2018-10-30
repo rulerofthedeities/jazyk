@@ -16,7 +16,7 @@ const path = require('path'),
       response = require('./response');
 
 module.exports = {
-  apiEndpoints: (app, router) => {
+  apiEndpoints: (app, router, isSSR = false) => {
     router.use(['/user/refresh', '/user/signin'], (req, res, next) => {
       req.expiresIn = app.get('token_expiration') || 86400;
       next();
@@ -85,6 +85,7 @@ module.exports = {
     router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
     router.get('/user/score/total', scores.getTotalScore);
     router.get('/user/score/books/:bookType', scores.getBookScores);
+    router.get('/user/finishedbooks', scores.getFinishedBooks);
     router.get('/user', users.getUser);
 
     /* read */
@@ -119,6 +120,13 @@ module.exports = {
     router.get('/audiobook/chapter/:bookId/:chapterId/:sequence', audio.getChapter);
 
     app.use('/api/', router);
+
+    if  (!isSSR) {
+      app.use(function (req, res) {
+        var home = path.resolve(__dirname + '/../dist/browser/index.html');
+        res.sendFile(home);
+      });
+    }
   },
   clientRendering: (app, router, DIST_FOLDER) => {
     const indexFile = path.join(DIST_FOLDER, 'browser', 'index.html'),
@@ -134,7 +142,6 @@ module.exports = {
           ];
     routes.forEach(route => {
       router.get(route,  (req, res) => {
-        console.log('CLIENT RENDER');
         res.sendFile(indexFile);
       });
     });

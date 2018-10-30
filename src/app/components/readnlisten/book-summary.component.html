@@ -13,7 +13,7 @@
         <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
       </div>
       <div class="book">
-        <div class="book-type">
+        <div class="book-type" *ngIf="tpe === 'home'">
           <span class="fa"
             [ngClass]="{'fa-book':bookType==='read', 'fa-volume-up': bookType==='listen'}"
             [tooltip]="text[bookType==='listen' ? 'Audiobook' : 'book']"

@@ -4,8 +4,8 @@ import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
-import { Trophy } from '../../models/book.model';
-import { SingleBookScore } from '../../models/score.model';
+import { Trophy, UserBook, Book } from '../../models/book.model';
+import { SingleBookScore, BookScore } from '../../models/score.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 
@@ -67,6 +67,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.sharedService.getRank(this.overallTotal);
         this.loadingBookScores = false;
+        this.getFinishedBooks();
       },
       error => this.errorService.handleError(error)
     );
@@ -86,6 +87,26 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         this.loadingTrophies = false;
       }
     );
+  }
+
+  private getFinishedBooks() {
+    this.userService
+    .fetchFinishedBooks()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (books: UserBook[]) => {
+        if (books && books.length) {
+          books.forEach(book => {
+            let result: SingleBookScore;
+            const scores = book.isTest ? this.audiobookScores : this.bookScores;
+            result = scores.find(score => score.bookId.toString() === book.bookId.toString());
+            if (result) {
+              result.isFinished = true;
+            }
+          });
+        }
+        console.log('finished', books, this.bookScores);
+    });
   }
 
   private getTranslations() {

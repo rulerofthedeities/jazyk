@@ -1,9 +1,11 @@
 import { LanPair } from './main.model';
 
 export interface SingleBookScore {
-  book: string;
+  bookId: string;
+  bookTitle: string;
   lan: LanPair;
   points: number;
+  isFinished?: boolean;
 }
 
 export interface BookScore {

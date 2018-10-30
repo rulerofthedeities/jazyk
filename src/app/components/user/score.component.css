@@ -40,3 +40,9 @@
 .btn-trophies {
   margin-top: 6px;
 }
+.finished {
+  color: green;
+  font-size: 20px;
+  width: 26px;
+  display: inline-block;
+}

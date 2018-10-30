@@ -117,7 +117,7 @@ app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
 // Routes
-routes.apiEndpoints(app, express.Router()); // API routing
+routes.apiEndpoints(app, express.Router(), true); // API routing
 routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
 
 // Server static files from /browser
