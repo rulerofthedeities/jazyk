@@ -6,7 +6,7 @@ import 'reflect-metadata';
 import { provideModuleMap, ModuleMapNgFactoryLoader} from '@nguniversal/module-map-ngfactory-loader'; // Import module map for lazy loading
 import { enableProdMode, NgModuleFactoryLoader, Compiler, InjectionToken } from '@angular/core';
 import { ngExpressEngine } from '@nguniversal/express-engine';
-// import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
 import * as express from 'express';
 import checks = require('./server/checks.js');
@@ -19,9 +19,9 @@ import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import { join } from 'path';
 import { readFileSync } from 'fs';
-// import { ModuleMap } from './module-map';
+import { ModuleMap } from './module-map';
 
-// export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
+export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
 
 // Faster server renders w/ Prod mode
 enableProdMode();
@@ -54,6 +54,46 @@ const win = domino.createWindow(template);
 global['window'] = win;
 global['document'] = win.document;
 
+/*
+const redirectowww = false;
+const redirectohttps = true;
+const wwwredirecto = true;
+app.use((req, res, next) => {
+  // for domain/index.html
+  if (req.url === '/index.html') {
+    res.redirect(301, 'https://' + req.hostname);
+  }
+
+  // check if it is a secure (https) request
+  // if not redirect to the equivalent https url
+
+  if (
+    redirectohttps &&
+    req.headers['x-forwarded-proto'] !== 'https'
+  ) {
+    // special for robots.txt
+    if (req.url === '/robots.txt') {
+      next();
+      return;
+    }
+    res.redirect(301, 'https://' + req.hostname + req.url);
+  }
+
+  // www or not
+  if (redirectowww && !req.hostname.startsWith('www.')) {
+    res.redirect(301, 'https://www.' + req.hostname + req.url);
+  }
+
+  // www or not
+  if (wwwredirecto && req.hostname.startsWith('www.')) {
+    const host = req.hostname.slice(4, req.hostname.length);
+    res.redirect(301, 'https://' + host + req.url);
+  }
+
+  next();
+});
+*/
+
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
 
 app.engine('html', ngExpressEngine({
@@ -66,9 +106,9 @@ app.engine('html', ngExpressEngine({
     //  provide: NgModuleFactoryLoader,
     //  useClass: ModuleMapNgFactoryLoader,
     //  deps: [
-    //   Compiler,
-    //   MODULE_MAP
-    // ],
+    //    Compiler,
+    //    MODULE_MAP
+    //  ],
     // },
   ]
 }));
@@ -89,7 +129,18 @@ app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
 app.get('*', (req, res) => {
   res.render('index', {
     req,
-    res
+    res,
+    providers: [
+      {
+        provide: REQUEST,
+        useValue: req,
+      },
+      {
+        provide: RESPONSE,
+        useValue: res,
+      }
+    ],
+    async: true
   }, (err: Error, html: string) => {
     res.status(html ? 200 : 500).send(html || err.message);
   });

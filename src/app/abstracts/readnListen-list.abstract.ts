@@ -3,8 +3,9 @@ import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { Map, Language, LicenseUrl } from '../models/main.model';
-import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../models/book.model';
+import { Book, UserBook, UserData, TranslationData, ViewFilter, SessionData } from '../models/book.model';
 import { takeWhile } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 export abstract class ReadnListenListComponent implements OnDestroy {
   protected componentActive = true;
@@ -68,9 +69,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected onMyLanguageSelected(lan: Language) {
     this.userService.setUserLanCode(lan.code);
     this.myLanguage = lan;
-    this.getUserBooks();
-    this.getUserData();
-    this.getBookTranslations();
+    this.getAllUserData();
   }
 
   protected onChangeBookType(tpe: string) {
@@ -116,62 +115,59 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   }
 
-  protected getUserBooks() {
-    this.readnListenService
-    .fetchUserBooks(this.myLanguage.code, this.bookType)
+  protected getAllUserData() {
+    this.isBooksReady = false;
+    zip(
+      this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
+      this.readnListenService.fetchSessionData(this.myLanguage.code, this.bookType),
+      this.readnListenService.fetchTranslationData(this.myLanguage.code, this.bookType)
+    )
     .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      uBooks => {
-        this.userBooks = {};
-        this.userBooksTest = {};
-        uBooks.forEach(uBook => {
-          if (uBook.isTest) {
-            this.userBooksTest[uBook.bookId] = uBook;
-          } else {
-            this.userBooks[uBook.bookId] = uBook;
-          }
-        });
-        if (this.filter.hideCompleted) {
-          this.filterBooks();
-        }
+    .subscribe(data => {
+      if (data && data.length) {
+        this.processUserBooks(data[0]);
+        this.processUserData(data[1]);
+        this.processTranslations(data[2]);
       }
-    );
+      this.isBooksReady = true;
+    });
   }
 
-  protected getUserData() {
-    this.readnListenService
-    .fetchSessionData(this.myLanguage.code, this.bookType)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      sessionData => {
-        this.userData = {};
-        this.userDataTest = {};
-        sessionData.forEach(session => {
-          if (session.isTest) {
-            this.userDataTest[session.bookId] = session;
-          } else {
-            this.userData[session.bookId] = session;
-          }
-        });
+  private processUserBooks(uBooks: UserBook[]) {
+    this.userBooks = {};
+    this.userBooksTest = {};
+    uBooks.forEach(uBook => {
+      if (uBook.isTest) {
+        this.userBooksTest[uBook.bookId] = uBook;
+      } else {
+        this.userBooks[uBook.bookId] = uBook;
       }
-    );
+    });
+    if (this.filter.hideCompleted) {
+      this.filterBooks();
+    }
   }
 
-  protected getBookTranslations() {
-    this.readnListenService
-    .fetchTranslationData(this.myLanguage.code, this.bookType)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      translations => {
-        this.translationData = {};
-        translations.forEach(translation => {
-          this.translationData[translation.bookId] = translation;
-        });
-        if (this.filter.hideNotTranslated) {
-          this.filterBooks();
-        }
+  private processUserData(sessionData: UserData[]) {
+    this.userData = {};
+    this.userDataTest = {};
+    sessionData.forEach(session => {
+      if (session.isTest) {
+        this.userDataTest[session.bookId] = session;
+      } else {
+        this.userData[session.bookId] = session;
       }
-    );
+    });
+  }
+
+  private processTranslations(translations: TranslationData[]) {
+    this.translationData = {};
+    translations.forEach(translation => {
+      this.translationData[translation.bookId] = translation;
+    });
+    if (this.filter.hideNotTranslated) {
+      this.filterBooks();
+    }
   }
 
   protected filterUserLanguages() {

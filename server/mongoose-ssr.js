@@ -2,6 +2,7 @@ const mongoose = require('mongoose'),
       uriFormat = require('mongodb-uri'),
       fs = require('fs'),
       https = require('https'),
+      http = require('http'),
       db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk',
       options = {
         autoIndex: true,
@@ -40,6 +41,15 @@ module.exports = {
             callback();
           }
         });
+        // FOR TESTING ONLY !!!
+        /*
+        http.createServer(app).listen((app.get('port') + 1), () => {
+          console.log('Local http server running on port ' + (app.get('port') + 1));
+          if (callback) {
+            callback();
+          }
+        });
+        */
       } else {
         app.listen(app.get('port'), () => {
           console.log('Server running on port ' + app.get('port'));

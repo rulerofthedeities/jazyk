@@ -11,7 +11,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     let newHeaders = req.headers.set('Content-Type', 'application/json');
     const authToken = this.authService.getToken();
-    if (authToken && this.authService.isLoggedIn()) {
+    if (!!authToken && this.authService.isLoggedIn()) {
       newHeaders = newHeaders.set('Authorization', 'Bearer ' + authToken);
     }
     const newRequest = req.clone({

@@ -33,9 +33,7 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
 
   protected getBooks(onlyBooks = false) {
     if (!onlyBooks) { // Not required if resorted
-      this.getUserBooks();
-      this.getUserData();
-      this.getBookTranslations();
+      this.getAllUserData();
     }
     this.isLoading = true;
     this.readnListenService

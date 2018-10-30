@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Router } from '@angular/router';
 import { appTitle } from '../../services/shared.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -25,7 +26,8 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private router: Router,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
@@ -67,16 +69,24 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getStats() {
-    this.isLoadingStats = true;
-    this.dashboardService
-    .fetchHomeStats()
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      (stats: HomeStats) => {
-        this.isLoadingStats = false;
-        this.stats = stats;
-      }
-    );
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      this.isLoadingStats = true;
+      console.log('getting stats');
+      this.dashboardService
+      .fetchHomeStats()
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        (stats: HomeStats) => {
+          console.log('got stats');
+          this.isLoadingStats = false;
+          this.stats = stats;
+        },
+        error => {
+          console.log('error getting stats', error);
+        }
+      );
+    }
   }
 
   ngOnDestroy() {

@@ -55,6 +55,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {
+        console.log('page fetched', fetchedPage);
         if (fetchedPage) {
           this.setPage(fetchedPage);
         } else if (lan !== 'en') {
@@ -63,6 +64,7 @@ export class InfoComponent implements OnInit, OnDestroy {
         }
       },
       error => {
+        console.log('error getting info', error);
         if (error.status === 404) {
           this.router.navigate(['/404']);
         } else {

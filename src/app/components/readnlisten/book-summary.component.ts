@@ -58,7 +58,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.checkIfFinished();
     this.setDefaultImg();
     this.setAuthors();
     this.getLicenseUrl();
@@ -68,6 +67,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges() {
     this.checkIfStarted();
+    this.checkIfFinished();
     this.checkSentencesDone();
   }
 
@@ -204,6 +204,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private initBook(status: UserBookStatus, userBook: UserBook) {
     if (userBook) {
+      // console.log('init userbook', this.book.title, this.userBook);
       status.isSubscribed = !!userBook.subscribed;
       status.isRecommended = !!userBook.recommended;
       if (userBook.bookmark) {

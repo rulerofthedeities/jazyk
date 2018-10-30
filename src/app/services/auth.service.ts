@@ -75,14 +75,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    console.log('check if logged in');
     const token = this.getToken();
     if (token) {
       if (isPlatformBrowser(this.platformId)) {
-        console.log('check if logged in - client');
         return !this.jwtHelper.isTokenExpired(token);
       } else {
-        console.log('check if logged in - server');
         return false;
       }
     } else {
