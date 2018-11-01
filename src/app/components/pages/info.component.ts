@@ -19,6 +19,7 @@ import { takeWhile, filter } from 'rxjs/operators';
       <div [innerHTML]="page?.html | sanitizeHtml">
     </div>
   </div>
+  PAGE: {{testPage}}
   `,
   styleUrls: ['page.component.css']
 })
@@ -26,6 +27,7 @@ import { takeWhile, filter } from 'rxjs/operators';
 export class InfoComponent implements OnInit, OnDestroy {
   private componentActive = true;
   page: Page;
+  testPage: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +41,17 @@ export class InfoComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.pageService.fetchTestInfoPage()
+    .subscribe(
+      fetchedPage => {
+        console.log('page fetched', fetchedPage);
+        this.testPage = fetchedPage.html;
+      },
+      error => {
+        console.log('error getting test info', error);
+      }
+    );
+
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),

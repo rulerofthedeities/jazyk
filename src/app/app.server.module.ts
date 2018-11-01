@@ -15,7 +15,7 @@ import { AppComponent } from './components/app.component';
     AppModule,
     ServerModule,
     ModuleMapLoaderModule, // <-- *Important* to have lazy-loaded routes work
-    ServerTransferStateModule
+    // ServerTransferStateModule
   ],
   providers: [
     { provide: CookieService, useClass: CookieBackendService },

@@ -60,13 +60,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       getLicenses: true
     };
 
-    if (isPlatformBrowser(this.platformId)) {
+    // if (isPlatformBrowser(this.platformId)) {
       // Client only code.
       this.sharedService
       .fetchDependables(options)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         dependables => {
+          console.log('dependables', dependables);
           this.licenses = dependables.licenseUrls;
           this.text = this.sharedService.getTranslatedText(dependables.translations);
         },
@@ -74,14 +75,16 @@ export class HomeComponent implements OnInit, OnDestroy {
           console.log('error getting dependables home', error);
         }
       );
-    }
-
+    // }
+/*
     this.getData(options).then((results) => {
       console.log('Fetched dependables async', results);
     }).catch((err) => {
       console.log('Error fetching dependables async', err);
     });
+    */
   }
+
 
   private async getData(options: DependableOptions): Promise<Dependables> {
     const data = await this.sharedService

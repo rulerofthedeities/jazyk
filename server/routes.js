@@ -49,7 +49,6 @@ module.exports = {
     router.get('/dashboard/books/:max', dashboard.recentBooks);
 
     /* user */
-
     router.put('/user/settings', users.saveSettings);
     router.get('/user/profiles/:userIds', users.getCompactProfiles);
     router.get('/user/profile/:userName', users.getPublicProfile);
@@ -89,7 +88,6 @@ module.exports = {
     router.get('/user', users.getUser);
 
     /* read */
-
     router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/book/user/:lan/:bookId/:isTest', books.getUserBook);
@@ -122,7 +120,7 @@ module.exports = {
     app.use('/api/', router);
 
     if  (!isSSR) {
-      app.use(function (req, res) {
+      app.use( (req, res) => {
         var home = path.resolve(__dirname + '/../dist/browser/index.html');
         res.sendFile(home);
       });

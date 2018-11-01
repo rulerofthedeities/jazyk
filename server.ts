@@ -19,9 +19,9 @@ import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { ModuleMap } from './module-map';
+// import { ModuleMap } from './module-map';
 
-export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
+// export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_MAP');
 
 // Faster server renders w/ Prod mode
 enableProdMode();
@@ -43,56 +43,17 @@ app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_TOKEN_SECRET));
 
+// Our index.html we'll use as our template
+const template = readFileSync(join(DIST_FOLDER, 'browser', 'index.html')).toString();
+
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
 const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
 
-// Our index.html we'll use as our template
-const template = readFileSync(join(DIST_FOLDER, 'browser', 'index.html')).toString();
 // allow window and document
 const domino = require('domino');
 const win = domino.createWindow(template);
 global['window'] = win;
 global['document'] = win.document;
-
-/*
-const redirectowww = false;
-const redirectohttps = true;
-const wwwredirecto = true;
-app.use((req, res, next) => {
-  // for domain/index.html
-  if (req.url === '/index.html') {
-    res.redirect(301, 'https://' + req.hostname);
-  }
-
-  // check if it is a secure (https) request
-  // if not redirect to the equivalent https url
-
-  if (
-    redirectohttps &&
-    req.headers['x-forwarded-proto'] !== 'https'
-  ) {
-    // special for robots.txt
-    if (req.url === '/robots.txt') {
-      next();
-      return;
-    }
-    res.redirect(301, 'https://' + req.hostname + req.url);
-  }
-
-  // www or not
-  if (redirectowww && !req.hostname.startsWith('www.')) {
-    res.redirect(301, 'https://www.' + req.hostname + req.url);
-  }
-
-  // www or not
-  if (wwwredirecto && req.hostname.startsWith('www.')) {
-    const host = req.hostname.slice(4, req.hostname.length);
-    res.redirect(301, 'https://' + host + req.url);
-  }
-
-  next();
-});
-*/
 
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
 
@@ -118,7 +79,7 @@ app.set('views', join(DIST_FOLDER, 'browser'));
 
 // Routes
 routes.apiEndpoints(app, express.Router(), true); // API routing
-routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
+// routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
 
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {

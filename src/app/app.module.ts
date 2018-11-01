@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CoreModule } from './core.module';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { SharedModule } from './shared.module';
 import { CookieModule } from 'ngx-cookie';
@@ -23,10 +24,11 @@ import { PageNotFoundComponent } from './components/not-found.component';
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
-    SharedModule,
+    HttpClientModule,
     RouterModule.forRoot(routes),
     CoreModule.forRoot(),
     CookieModule.forRoot(),
+    SharedModule,
     TransferHttpCacheModule
   ],
   providers: [
