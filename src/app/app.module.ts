@@ -25,7 +25,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
   imports: [
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
     HttpClientModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
     CoreModule.forRoot(),
     CookieModule.forRoot(),
     SharedModule,

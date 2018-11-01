@@ -33,6 +33,7 @@ const app = express();
 // config
 app.set('port', process.env.PORT || 9000);
 app.set('env', process.env.NODE_ENV || 'development');
+app.set('host', process.env.BACKEND_URL || '');
 app.set('token_expiration', 604800); // Token expires after 7 days
 // check for warnings
 checks.checkWarnings(app);
@@ -42,6 +43,8 @@ app.use(bearerToken());
 app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_TOKEN_SECRET));
+
+// console.log('NODE_TLS_REJECT_UNAUTHORIZED', process.env.NODE_TLS_REJECT_UNAUTHORIZED);
 
 // Our index.html we'll use as our template
 const template = readFileSync(join(DIST_FOLDER, 'browser', 'index.html')).toString();
@@ -77,9 +80,10 @@ app.engine('html', ngExpressEngine({
 app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
-// Routes
-routes.apiEndpoints(app, express.Router(), true); // API routing
-// routes.clientRendering(app, express.Router(), DIST_FOLDER); // Use client rendering for all routes that require authorization!
+// API routes
+routes.apiEndpoints(app, express.Router(), true);
+// Use client rendering for all routes that require authorization -> shows app loader i.o. login
+routes.clientRendering(app, express.Router(), DIST_FOLDER);
 
 // Server static files from /browser
 app.get('*.*', express.static(join(DIST_FOLDER, 'browser'), {
@@ -91,6 +95,7 @@ app.get('*', (req, res) => {
   res.render('index', {
     req,
     res,
+    originUrl: app.get('host'),
     providers: [
       {
         provide: REQUEST,
@@ -99,6 +104,10 @@ app.get('*', (req, res) => {
       {
         provide: RESPONSE,
         useValue: res,
+      },
+      {
+        provide: 'ORIGIN_URL',
+        useValue: app.get('host')
       }
     ],
     async: true

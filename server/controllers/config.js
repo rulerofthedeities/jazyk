@@ -3,7 +3,7 @@ const response = require('../response'),
       Translation = require('../models/translation');
 
 module.exports = {
-  getWelcomeMessage: function(req, res) {
+  getWelcomeMessage: (req, res) => {
     const lanCode = req.params.lan,
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
           projection = {_id: 0, title: 1, message: 1};
@@ -13,7 +13,7 @@ module.exports = {
       });
     });
   },
-  getDependables: function(req, res) {
+  getDependables: (req, res) => {
     const params = req.query,
           lan = params.lan,
           translationPipeline = [

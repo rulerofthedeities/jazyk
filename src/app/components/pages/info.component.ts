@@ -41,17 +41,6 @@ export class InfoComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.pageService.fetchTestInfoPage()
-    .subscribe(
-      fetchedPage => {
-        console.log('page fetched', fetchedPage);
-        this.testPage = fetchedPage.html;
-      },
-      error => {
-        console.log('error getting test info', error);
-      }
-    );
-
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),

@@ -41,13 +41,6 @@ module.exports = {
             callback();
           }
         });
-        // FOR TESTING ONLY !!!
-        http.createServer(app).listen((app.get('port') + 1), () => {
-          console.log('Local http server running on port ' + (app.get('port') + 1));
-          if (callback) {
-            callback();
-          }
-        });
       } else {
         app.listen(app.get('port'), () => {
           console.log('Server running on port ' + app.get('port'));

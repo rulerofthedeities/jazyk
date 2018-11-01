@@ -16,6 +16,7 @@ module.exports = {
     } else {
       query.loggedOut = true;
     }
+    console.log('query page', query);
     Page.findOne(query, function(err, result) {
       response.handleError(err, res, 400, 'Error getting info page "' + page +'"', function() {
         response.handleSuccess(res, result);
