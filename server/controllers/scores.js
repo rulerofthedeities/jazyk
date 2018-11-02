@@ -99,7 +99,6 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, 'bookmark.isBookRead': true};
     UserBook.find(query, (err, result) => {
-      console.log('finished books', result);
       response.handleError(err, res, 400, 'Error fetching finished books', () => {
         response.handleSuccess(res, result);
       });

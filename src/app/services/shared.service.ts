@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { EventMessage } from '../models/error.model';
@@ -14,6 +14,7 @@ export const awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
 export class SharedService {
   private eventMessages: EventMessage[] = [];
   private messageLimit = 10;
+  private _hostName = '';
   private _rankScores = [
     0,
     500,
@@ -38,14 +39,18 @@ export class SharedService {
     500000000
   ];
   exerciseModeChanged = new Subject<boolean>();
+  notificationModeChanged = new Subject<boolean>();
   justLoggedInOut = new Subject<boolean>();
   eventMessage = new Subject<EventMessage>();
   audioEvent = new Subject<string>();
 
   constructor(
     private http: HttpClient,
-    private titleService: Title
-  ) {}
+    private titleService: Title,
+    @Optional() @Inject('ORIGIN_URL') private originUrl: string
+  ) {
+    this._hostName = this.originUrl || '';
+  }
 
   private objToSearchParams(obj: Object): HttpParams {
     let params = new HttpParams();
@@ -60,19 +65,23 @@ export class SharedService {
   fetchDependables(options: DependableOptions): Observable<Dependables> {
     const params = this.objToSearchParams(options);
     return this.http
-    .get<Dependables>('/api/dependables', {params})
+    .get<Dependables>(this._hostName + '/api/dependables', {params})
     .pipe(retry(3));
   }
 
   fetchTranslations(lan: string, component: string): Observable<Translation[]> {
     return this.http
-    .get<Translation[]>('/api/translations/' + lan + '/' + component)
+    .get<Translation[]>(this._hostName + '/api/translations/' + lan + '/' + component)
     .pipe(retry(3));
   }
 
   // Cross-lazy loaded module Events
   changeExerciseMode(isStarted: boolean) {
     this.exerciseModeChanged.next(isStarted);
+  }
+
+  closeNotification() {
+    this.notificationModeChanged.next(false);
   }
 
   userJustLoggedIn() {

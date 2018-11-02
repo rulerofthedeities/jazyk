@@ -1,0 +1,40 @@
+.notification {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 60px;
+  z-index: 10;
+  padding: 4px 15px 0 15px;
+  font-size: 2rem;
+  border: 1px solid #333;
+  text-align: center;
+}
+.danger {
+  background-color: red;
+  color: white;
+}
+.warning {
+  background-color: #d58512;
+  color: white;
+}
+.info {
+  background-color: #269abc;
+  color: black;
+}
+.msg {
+  position: relative;
+  top: -2px;
+  display: inline-block;
+}
+.closeNotfication {
+  font-size: 2.5rem;
+  color: white;
+  text-shadow: 1px 1px 1px #333;
+  cursor: pointer;
+}
+.btn {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-left: 6px;
+  margin-top: -7px;
+}

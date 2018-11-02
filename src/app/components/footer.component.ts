@@ -47,12 +47,10 @@ export class FooterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       // Client only code.
-      console.log('client rendering');
       this.platform = 'CLIENT';
     }
     if (isPlatformServer(this.platformId)) {
       // Server only code.
-      console.log('server rendering');
       this.platform = 'SERVER';
     }
     this.getTranslations(this.userService.user.main.lan);

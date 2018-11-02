@@ -3,11 +3,21 @@ const response = require('../response'),
       Translation = require('../models/translation');
 
 module.exports = {
+  getAppVersion: (req, res) => {
+    const query = {tpe: 'version'},
+          projection = {_id: 0, code: 1};
+    Config.findOne(query, projection, (err, version) => {
+      console.log('version', version)
+      response.handleError(err, res, 400, 'Error fetching app version', function(){
+        response.handleSuccess(res, version);
+      });
+    });
+  },
   getWelcomeMessage: (req, res) => {
     const lanCode = req.params.lan,
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
           projection = {_id: 0, title: 1, message: 1};
-    Config.findOne(query, projection, function(err, message) {
+    Config.findOne(query, projection, (err, message) => {
       response.handleError(err, res, 400, 'Error fetching notification message', function(){
         response.handleSuccess(res, message);
       });

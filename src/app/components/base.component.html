@@ -7,7 +7,16 @@
   <img src="https://{{imagePath + month}}.jpg" *ngIf="showBackground">
   <div class="container">
     <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
-    <div class="main" [class.margin]="!exercisesStarted">
+    <km-notification *ngIf="showNotification"
+      [notification]="notification"
+      level="danger"
+      tpe="refresh"
+      [lan]="interfaceLan">
+    </km-notification>
+    <div class="main" [ngClass]="{
+        margin: !exercisesStarted,
+        marginwide: !exercisesStarted && showNotification
+      }">
       <router-outlet></router-outlet>
       <!-- <km-error-msg></km-error-msg> -->
     </div>

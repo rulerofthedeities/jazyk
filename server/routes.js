@@ -21,10 +21,7 @@ module.exports = {
       req.expiresIn = app.get('token_expiration') || 86400;
       next();
     });
-    router.get('/backend', (req, res) => {
-      // Return backend host name for (SSR must have full path)
-      response.handleSuccess(res, {url: app.get('host')});
-    });
+    router.get('/version', config.getAppVersion);
     router.post('/error', errors.addError);
     router.post('/log/page', log.logPage);
     router.get('/user/check', users.check);

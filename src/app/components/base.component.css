@@ -21,6 +21,9 @@ img {
 .main.margin {
   margin-top: 72px;
 }
+.main.marginwide {
+  margin-top: 108px;
+}
 .background {
   background-color: #41474b;
   height: 100%;

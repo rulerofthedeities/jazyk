@@ -19,7 +19,6 @@ import { takeWhile, filter } from 'rxjs/operators';
       <div [innerHTML]="page?.html | sanitizeHtml">
     </div>
   </div>
-  PAGE: {{testPage}}
   `,
   styleUrls: ['page.component.css']
 })
@@ -27,7 +26,6 @@ import { takeWhile, filter } from 'rxjs/operators';
 export class InfoComponent implements OnInit, OnDestroy {
   private componentActive = true;
   page: Page;
-  testPage: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,7 +55,6 @@ export class InfoComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {
-        console.log('page fetched', fetchedPage);
         if (fetchedPage) {
           this.setPage(fetchedPage);
         } else if (lan !== 'en') {
@@ -66,7 +63,6 @@ export class InfoComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        console.log('error getting info', error);
         if (error.status === 404) {
           this.router.navigate(['/404']);
         } else {

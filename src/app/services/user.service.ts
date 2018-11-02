@@ -26,6 +26,12 @@ export class UserService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  // APP VERSION
+  fetchAppVersion(): Observable<{code: string}> {
+    return this.http
+    .get<{code: string}>('/api/version');
+  }
+
   // USER DATA
 
   getUserData(): Observable<User> {
