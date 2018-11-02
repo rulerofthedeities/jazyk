@@ -64,8 +64,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   private checkVersion() {
     if (isPlatformBrowser(this.platformId)) {
       // Client only code.
-      // const timerObservable = timer(3600000, 10800000); // First check after one hour, then check every three hours
-      const timerObservable = timer(1000, 30000); // TEMP
+      const timerObservable = timer(3600000, 10800000); // First check after one hour, then check every three hours
       timerObservable
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(t => {
