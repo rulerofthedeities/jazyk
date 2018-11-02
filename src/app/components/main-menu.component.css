@@ -21,6 +21,9 @@
 .navbar-earthy .dropdown-menu > li > a:hover {
   color: black;
 }
+.navbar-brand {
+  font-size: 3rem;
+}
 nav {
   box-shadow: 0px 4px 6px rgba(20, 20, 20, 0.3);
 }

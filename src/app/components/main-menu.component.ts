@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
 import { Router, NavigationEnd } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user.service';
-import { SharedService } from '../services/shared.service';
+import { SharedService, appTitle } from '../services/shared.service';
 import { AuthService } from '../services/auth.service';
 import { ErrorService } from '../services/error.service';
 import { User } from '../models/user.model';
@@ -32,6 +32,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   rankColor = 'w';
   showMobileMenu = false;
+  appTitle = appTitle;
   @ViewChild('mobile') mobile: ElementRef;
   @ViewChild('mobiletrigger') mobiletrigger: ElementRef;
 
