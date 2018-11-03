@@ -139,6 +139,10 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     return isRecipient;
   }
 
+  isFromAdmin(message: Message): boolean {
+    return message.sender.userName === 'admin';
+  }
+
   getActionCount() {
     return this.tab === 'inbox' ? 3 : (this.tab === 'sent' ? 1 : 2);
   }

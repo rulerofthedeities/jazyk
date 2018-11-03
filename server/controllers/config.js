@@ -16,10 +16,8 @@ module.exports = {
     const lanCode = req.params.lan,
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
           projection = {_id: 0, message: 1};
-    console.log('welcome query', query);
     Config.findOne(query, projection, (err, welcome) => {
       response.handleError(err, res, 400, 'Error fetching welcome message', () => {
-        console.log('welcome message2', welcome);
         response.handleSuccess(res, welcome);
       });
     });

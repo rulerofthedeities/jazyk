@@ -48,18 +48,6 @@
         <li *ngIf="isLoggedIn"
           class="nav-item indicator"
           routerLinkActive="active">
-          <a class="nav-link notifications" routerLink="/user/notifications">
-            <i class="fa fa-bell-o"></i>
-            <span class="badge"
-              [style.visibility]="nrOfNotifications > 0 ? 'visible': 'hidden'">
-              {{nrOfNotifications}}
-            </span>
-            <span class="bar small"></span>
-          </a>
-        </li>
-        <li *ngIf="isLoggedIn"
-          class="nav-item indicator"
-          routerLinkActive="active">
           <a class="nav-link messages" routerLink="/user/messages">
             <i class="fa fa-envelope-o"></i>
             <span class="badge"

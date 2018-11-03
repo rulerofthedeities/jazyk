@@ -356,7 +356,6 @@ export class UserService {
   }
 
   fetchWelcomeMessage(user: User) {
-    console.log('fetching welcome message', user.main.lan);
     let messageLoaded = false;
     this.getWelcomeMessage(user.main.lan)
     .pipe(takeWhile(() => !messageLoaded))
@@ -372,7 +371,6 @@ export class UserService {
   }
 
   private createMessage(content: string) {
-    console.log('creating message');
     let messageCreated = false;
     const newMessage: Message = {
       recipient: {
@@ -387,13 +385,11 @@ export class UserService {
       },
       message: content
     };
-    console.log('saving message', newMessage);
     this.subscription = this
     .saveMessage(newMessage)
     .pipe(takeWhile(() => !messageCreated))
     .subscribe(
       result => {
-        console.log('message saved');
         messageCreated = true;
         this.updateUnreadMessagesCount(null);
       }

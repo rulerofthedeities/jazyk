@@ -59,6 +59,7 @@ module.exports = {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
     });
   },
+  /*
   getCommunication: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = req.params.max || '5',
@@ -80,6 +81,21 @@ module.exports = {
       response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard communications data');
+    });
+  },*/
+  getRecentMail: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          max = req.params.max || '5',
+          options = {limit: parseInt(max, 10), sort: {dt: -1}},
+          query = {
+            'recipient.id': userId,
+            'recipient.trash': false,
+            'recipient.deleted': false
+          };
+    Message.find(query, {}, options, (err, mails) => {
+      response.handleError(err, res, 400, 'Error fetching recent mails', () => {
+        response.handleSuccess(res, mails);
+      });
     });
   },
   recentBooks: function(req, res) {

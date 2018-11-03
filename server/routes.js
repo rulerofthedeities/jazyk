@@ -45,7 +45,7 @@ module.exports = {
 
     /* dashboard */
     router.get('/dashboard/count', dashboard.getCount);
-    router.get('/dashboard/communication/:max', dashboard.getCommunication);
+    router.get('/dashboard/communication/:max', dashboard.getRecentMail);
     router.get('/dashboard/books/:max', dashboard.recentBooks);
 
     /* user */

@@ -253,12 +253,14 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .subscribe(
       newLan => this.getTranslations(newLan)
     );
+    /*
     this.userService
     .notificationRead
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(
       isAllRead => this.updateNotificationsUnReadCount(isAllRead)
     );
+    */
     this.userService
     .messageRead
     .pipe(takeWhile( () => this.componentActive))

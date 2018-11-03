@@ -180,7 +180,7 @@
     </div>
     <!-- BUTTONS -->
     <div class="row buttons" *ngIf="!showReply">
-      <button type="button" *ngIf="isRecipient(currentMessage)"
+      <button type="button" *ngIf="isRecipient(currentMessage) && !isFromAdmin(currentMessage)"
         class="btn btn-primary" (click)="onCreateReply(replyField)">
         <span class="fa fa-reply"></span> {{text["Reply"]}}
       </button>

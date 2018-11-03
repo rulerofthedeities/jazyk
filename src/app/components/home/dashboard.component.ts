@@ -4,7 +4,8 @@ import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { SummaryData, CommunicationData, RecentBook } from '../../models/dashboard.model';
+import { SummaryData, RecentBook } from '../../models/dashboard.model';
+import { Message } from '../../models/user.model';
 import { LicenseUrl } from '../../models/main.model';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import * as moment from 'moment';
@@ -50,7 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getCounts();
     this.getRecent();
     this.getNotificationsAndMessages();
-    this.subscribe();
+    this.observe();
   }
 
   onSelectMessage(i: number) {
@@ -134,9 +135,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .fetchCommunication()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      data => {
+      messages => {
         this.isLoadingCommunication = false;
-        this.processCommunication(data);
+        this.processCommunication(messages);
       },
       error => this.errorService.handleError(error)
     );
@@ -154,10 +155,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.recentReady = true;
   }
 
-  private processCommunication(data: CommunicationData) {
+  private processCommunication(messages: Message[]) {
     const communications = [];
     // Combine messages and notifcations
-    data.messages.forEach(message => {
+    messages.forEach(message => {
       communications.push({
         id: message._id,
         tpe: 'message',
@@ -167,6 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         read: message.recipient.read
       });
     });
+    /*
     data.notifications.forEach(notification => {
       communications.push({
         id: notification._id,
@@ -177,6 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         read: notification.read
       });
     });
+    */
     // Sort communications
     this.communications = communications.sort(function(a, b) {
       const dtA = new Date(a.dt),
@@ -185,13 +188,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }).slice(0, 4);
   }
 
-  private subscribe() {
-    this.userService.notificationRead
+  private observe() {
+    /*
+    this.userService
+    .notificationRead
     .subscribe(
       isAllRead => {
         // Refetch notification in case of a new welcome message
         this.getNotificationsAndMessages();
       }
+    );
+    */
+    this.userService
+    .messageRead
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      update => this.getNotificationsAndMessages()
     );
   }
 
