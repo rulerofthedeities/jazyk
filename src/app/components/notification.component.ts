@@ -36,19 +36,15 @@ export class NotificationComponent implements OnInit, OnDestroy {
   }
 
   getTranslations() {
-    console.log('lan', this.lan);
     this.sharedService
     .fetchTranslations(this.lan, 'NotificationComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
-        console.log('translations', translations);
         if (translations) {
           const text = this.sharedService.getTranslatedText(translations);
-          console.log('translations text', text);
           this.msg = text[this.notification];
           this.btnText = text['UpdateApp'];
-          console.log(this.notification, text[this.notification], text['UpdateApp']);
           this.isReady = true;
         }
       }

@@ -28,8 +28,7 @@
           <a routerLink="/read">
             <span class="fa fa-book"></span>
             {{text["Read"]}}
-            <span class="bar">
-            </span>
+            <span class="bar"></span>
           </a>
         </li>
         <li *ngIf="isLoggedIn"
@@ -38,9 +37,9 @@
           <a routerLink="/listen">
             <span class="fa fa-volume-up"></span>
             {{text["Listen"]}}
-            <span class="bar">
-            </span>
+            <span class="bar"></span>
           </a>
+          <span class="alpha">alpha</span>
         </li>
       </ul>
 
@@ -191,6 +190,7 @@
           (click)="onCloseMobileMenu()">
           <span class="fa fa-volume-up"></span>
           {{text["Listen"]}}
+          <span class="alpha">alpha</span>
         </a>
       </li>
     </ul>

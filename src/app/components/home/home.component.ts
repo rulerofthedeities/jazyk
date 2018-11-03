@@ -58,9 +58,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       dependables => {
         this.licenses = dependables.licenseUrls;
         this.text = this.sharedService.getTranslatedText(dependables.translations);
-      },
-      error => {
-        console.log('error getting dependables home', error);
       }
     );
   }

@@ -72,18 +72,13 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       // Client only code.
       this.isLoadingStats = true;
-      console.log('getting stats');
       this.dashboardService
       .fetchHomeStats()
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (stats: HomeStats) => {
-          console.log('got stats');
           this.isLoadingStats = false;
           this.stats = stats;
-        },
-        error => {
-          console.log('error getting stats', error);
         }
       );
     }

@@ -7,7 +7,6 @@ module.exports = {
     const query = {tpe: 'version'},
           projection = {_id: 0, code: 1};
     Config.findOne(query, projection, (err, version) => {
-      console.log('version', version)
       response.handleError(err, res, 400, 'Error fetching app version', function(){
         response.handleSuccess(res, version);
       });

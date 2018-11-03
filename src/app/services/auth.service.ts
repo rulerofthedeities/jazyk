@@ -51,7 +51,6 @@ export class AuthService {
   }
 
   signedIn(data: SignedInData, reroute = true) {
-    console.log('signing in');
     if (isPlatformBrowser(this.platformId)) {
       const decoded = this.jwtHelper.decodeToken(data.token),
             userStorage: UserStorage = {

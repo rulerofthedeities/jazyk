@@ -27,6 +27,19 @@
 nav {
   box-shadow: 0px 4px 6px rgba(20, 20, 20, 0.3);
 }
+.alpha {
+  color: red;
+  font-size: 10px;
+}
+.desktop .alpha {
+  position: absolute;
+  display: block;
+  top: 37px;
+  left: 77px;
+}
+.mobile .alpha {
+
+}
 .login {
   margin-right: 15px;
 }

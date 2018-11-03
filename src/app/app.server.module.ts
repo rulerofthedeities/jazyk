@@ -28,7 +28,5 @@ import { AppComponent } from './components/app.component';
 export class AppServerModule {
   constructor(
     @Inject('request') private request: Request
-  ) {
-    // console.log('Request', this.request);
-  }
+  ) {}
 }

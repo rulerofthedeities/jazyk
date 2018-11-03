@@ -105,7 +105,6 @@ export class UserScoreComponent implements OnInit, OnDestroy {
             }
           });
         }
-        console.log('finished', books, this.bookScores);
     });
   }
 

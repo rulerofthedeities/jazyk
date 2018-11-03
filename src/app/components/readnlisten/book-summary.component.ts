@@ -204,7 +204,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private initBook(status: UserBookStatus, userBook: UserBook) {
     if (userBook) {
-      // console.log('init userbook', this.book.title, this.userBook);
       status.isSubscribed = !!userBook.subscribed;
       status.isRecommended = !!userBook.recommended;
       if (userBook.bookmark) {
