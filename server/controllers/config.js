@@ -7,7 +7,7 @@ module.exports = {
     const query = {tpe: 'version'},
           projection = {_id: 0, code: 1};
     Config.findOne(query, projection, (err, version) => {
-      response.handleError(err, res, 400, 'Error fetching app version', function(){
+      response.handleError(err, res, 400, 'Error fetching app version', () => {
         response.handleSuccess(res, version);
       });
     });
@@ -15,10 +15,12 @@ module.exports = {
   getWelcomeMessage: (req, res) => {
     const lanCode = req.params.lan,
           query = {tpe:'notification', code: lanCode, name: 'welcome'},
-          projection = {_id: 0, title: 1, message: 1};
-    Config.findOne(query, projection, (err, message) => {
-      response.handleError(err, res, 400, 'Error fetching notification message', function(){
-        response.handleSuccess(res, message);
+          projection = {_id: 0, message: 1};
+    console.log('welcome query', query);
+    Config.findOne(query, projection, (err, welcome) => {
+      response.handleError(err, res, 400, 'Error fetching welcome message', () => {
+        console.log('welcome message2', welcome);
+        response.handleSuccess(res, welcome);
       });
     });
   },

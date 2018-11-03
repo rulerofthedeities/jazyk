@@ -52,6 +52,12 @@ export class SignUpComponent implements OnInit, OnDestroy {
     return className;
   }
 
+  onKeyPressed(key: string, user: User) {
+    if (key === 'Enter') {
+      this.onSubmitForm(user);
+    }
+  }
+
   onSubmitForm(user: User) {
     user.main = {
       lan: this.userService.user.main.lan,
@@ -81,7 +87,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         signInData.returnUrl = '';
         this.authService.signedIn(signInData, false);
         this.userService.user = signInData.user;
-        this.userService.fetchWelcomeNotification(signInData.user);
+        this.userService.fetchWelcomeMessage(signInData.user);
         this.log(`Logged in as ${signInData.user.userName}`);
         this.goToDashboard();
       },
@@ -103,15 +109,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
         validators: [Validators.required, ValidationService.passwordValidator]
       }]
     });
-  }
-
-  private getDefaultLanguage(): string {
-    const languages = this.languages.filter(language => language.active);
-    let lan = '';
-    if (languages.length > 0) {
-      lan = languages[0].code;
-    }
-    return lan;
   }
 
   private getDependables() {

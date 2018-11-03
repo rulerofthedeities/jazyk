@@ -243,9 +243,9 @@ export class UserService {
     .patch<boolean>('/api/user/notificationsread', JSON.stringify({}));
   }
 
-  getWelcomeNotification(lan: string): Observable<Notification> {
+  getWelcomeMessage(lan: string): Observable<{message: string}> {
     return this.http
-    .get<Notification>('/api/user/config/welcome/' + lan)
+    .get<{message: string}>('/api/user/config/welcome/' + lan)
     .pipe(retry(3));
   }
 
@@ -355,31 +355,47 @@ export class UserService {
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));
   }
 
-  fetchWelcomeNotification(user: User) {
-    let notificationLoaded = false;
-    this.subscription = this
-    .getWelcomeNotification(user.main.lan)
-    .pipe(takeWhile(() => !notificationLoaded))
+  fetchWelcomeMessage(user: User) {
+    console.log('fetching welcome message', user.main.lan);
+    let messageLoaded = false;
+    this.getWelcomeMessage(user.main.lan)
+    .pipe(takeWhile(() => !messageLoaded))
     .subscribe(
-      notification => {
-        notificationLoaded = true;
-        if (notification) {
-          notification.userId = user._id;
-          this.createNotification(notification);
+      welcome => {
+        messageLoaded = true;
+        if (welcome && welcome.message) {
+          console.log(welcome);
+          this.createMessage(welcome.message);
         }
       }
     );
   }
 
-  private createNotification(notification: Notification) {
-    let notificationCreated = false;
+  private createMessage(content: string) {
+    console.log('creating message');
+    let messageCreated = false;
+    const newMessage: Message = {
+      recipient: {
+        id: this.user._id,
+        userName: this.user.userName,
+        emailHash: this.user.emailHash
+      },
+      sender: {
+        id: '5af559281c30bb3eb80a7ad0',
+        userName: 'admin',
+        emailHash: '3857587e906eb30baac237dcafa312d4'
+      },
+      message: content
+    };
+    console.log('saving message', newMessage);
     this.subscription = this
-    .saveNotification(notification)
-    .pipe(takeWhile(() => !notificationCreated))
+    .saveMessage(newMessage)
+    .pipe(takeWhile(() => !messageCreated))
     .subscribe(
       result => {
-        notificationCreated = true;
-        this.updateUnreadNotificationsCount(null);
+        console.log('message saved');
+        messageCreated = true;
+        this.updateUnreadMessagesCount(null);
       }
     );
   }
