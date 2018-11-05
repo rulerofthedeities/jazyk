@@ -27,8 +27,4 @@ export class PageService {
     .get<BooksByLan[]>(hostName + '/api/pages/booklist/' + tpe)
     .pipe(retry(3));
   }
-
-  loadRouteScript() {
-    // for routes in sanitized html
-  }
 }

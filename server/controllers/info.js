@@ -43,7 +43,6 @@ module.exports = {
             }}
           ];
     Model.aggregate(pipeline, (err, books) => {
-      console.log(err);
       response.handleError(err, res, 400, `Error getting book list for type "${tpe}"`, () => {
         response.handleSuccess(res, books);
       });

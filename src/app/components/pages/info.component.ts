@@ -37,7 +37,6 @@ export class InfoComponent implements OnInit, OnDestroy {
     .subscribe(
       params => this.fetchInfoPage(params['page'].toLowerCase(), this.userService.user.main.lan)
     );
-    // this.pageService.loadRouteScript(); // For route links
   }
 
   private fetchInfoPage(pageId: string, lan: string) {
