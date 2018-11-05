@@ -55,7 +55,7 @@ module.exports = {
             {$match: {"_id.b": mongoose.Types.ObjectId(userId)}},
             {$project: {_id:0, recipient: '$_id.a'}}
           ];
-    Follow.aggregate(pipeline, function(err, recipients) {
+    Follow.aggregate(pipeline, (err, recipients) => {
       response.handleError(err, res, 400, 'Error fetching recipients', () => {
         users.getMailData(req, res, recipients);
       });

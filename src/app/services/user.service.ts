@@ -363,7 +363,6 @@ export class UserService {
       welcome => {
         messageLoaded = true;
         if (welcome && welcome.message) {
-          console.log(welcome);
           this.createMessage(welcome.message);
         }
       }

@@ -16,6 +16,7 @@ import { GetKeyPressDirective } from './directives/get-key-pressed.directive';
 import { ToggleComponent } from './components/fields/toggle.component';
 import { LoaderComponent } from './components/loader.component';
 import { BookSummaryComponent } from './components/readnlisten/book-summary.component';
+import { BookLicenseComponent } from './components/readnlisten/book-license.component';
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
@@ -42,6 +43,7 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     ToggleComponent,
     LoaderComponent,
     BookSummaryComponent,
+    BookLicenseComponent,
     ModalRanksComponent,
     ScorePipe,
     SanitizeHtmlPipe,
@@ -64,6 +66,7 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     ToggleComponent,
     LoaderComponent,
     BookSummaryComponent,
+    BookLicenseComponent,
     ModalRanksComponent,
     ScorePipe,
     SanitizeHtmlPipe,

@@ -2,6 +2,7 @@ import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { EventMessage } from '../models/error.model';
+import { Book } from '../models/book.model';
 import { Language, Translation, Dependables, DependableOptions } from '../models/main.model';
 import { environment } from '../../environments/environment';
 import { Observable, Subject } from 'rxjs';
@@ -168,6 +169,29 @@ export class SharedService {
       active: true,
       article: false
     };
+  }
+
+  getAuthorsLinksTxt(book: Book): {authorsTxt: string, linksTxt: string} {
+    // Creates authors and links string for book summary and book list
+    const authors: string[] = book.authors ? book.authors.split(';') : [],
+          links: string[] = book.links ? book.links.split(';') : [];
+    let linksTxt = '',
+        authorsTxt = authors[0]; // Set author string for blank book image
+
+    if (links[0]) {
+      linksTxt = `<a href="${links[0]}">${authors[0]}</a>`;
+    } else {
+      linksTxt = authorsTxt;
+    }
+    if (authors.length > 1) {
+      authorsTxt += ' & ' + authors[1];
+      if (links.length > 1) {
+        linksTxt += ` & <a href="${links[1]}">${authors[1]}</a>`;
+      } else {
+        linksTxt += ' & ' + authors[1];
+      }
+    }
+    return {authorsTxt, linksTxt};
   }
 
   getBookDifficulty(book): {difficultyWidth: number, difficultyPerc: number} {

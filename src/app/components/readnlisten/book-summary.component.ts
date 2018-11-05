@@ -35,7 +35,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() text: Object;
   @Input() nr: number;
   @Input() tpe: string; // home or read
-  @Input() private licenses: LicenseUrl[];
+  @Input() licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
   userBookStatus: UserBookStatus;
@@ -45,7 +45,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   showIntro = false;
   isNewBook = false;
   isFinished = false;
-  licenseUrl: string;
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
@@ -60,7 +59,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.setDefaultImg();
     this.setAuthors();
-    this.getLicenseUrl();
     this.checkIfNew();
     this.setDifficulty();
   }
@@ -167,15 +165,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private getLicenseUrl() {
-    if (this.licenses) {
-      const license = this.licenses.find(l => this.book.license === l.license);
-      if (license) {
-        this.licenseUrl = license.url;
-      }
-    }
-  }
-
   private checkIfNew() {
     const published = this.book.dt ? this.book.dt.published : null;
     if (published) {
@@ -243,23 +232,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setAuthors() {
-    const authors: string[] = this.book.authors ? this.book.authors.split(';') : [],
-          links: string[] = this.book.links ? this.book.links.split(';') : [];
-    // Set author string for blank book image
-    this.authorsTxt = authors[0];
-    if (links[0]) {
-      this.linksTxt = `<a href="${links[0]}">${authors[0]}</a>`;
-    } else {
-      this.linksTxt = this.authorsTxt;
-    }
-    if (authors.length > 1) {
-      this.authorsTxt += ' & ' + authors[1];
-      if (links.length > 1) {
-        this.linksTxt += ` & <a href="${links[1]}">${authors[1]}</a>`;
-      } else {
-        this.linksTxt += ' & ' + authors[1];
-      }
-    }
+    const authorsLinksTxt = this.sharedService.getAuthorsLinksTxt(this.book);
+    this.authorsTxt = authorsLinksTxt.authorsTxt;
+    this.linksTxt = authorsLinksTxt.linksTxt;
   }
 
   private setDefaultImg() {

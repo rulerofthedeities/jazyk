@@ -1,0 +1,25 @@
+<a *ngIf="licenseUrl" href="{{licenseUrl}}" target="_blank">
+  <ng-container
+    *ngTemplateOutlet="copyright;context:{
+      license: book.license,
+      tooltip: text[book.license]
+    }">
+  </ng-container>
+</a>
+<span *ngIf="!licenseUrl">
+  <ng-container
+    *ngTemplateOutlet="copyright;context:{
+      license: book.license,
+      tooltip: text[book.license]
+    }">
+  </ng-container>
+</span>
+
+<ng-template #copyright let-license=license let-tooltip=tooltip>
+  <span *ngIf="license"
+    class="fa fa-copyright"
+    [tooltip]="tooltip"
+    placement="top"
+    >
+  </span>
+</ng-template>

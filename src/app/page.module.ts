@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { routes } from './page.routes';
 import { PageService } from './services/page.service';
 import { InfoComponent } from './components/pages/info.component';
+import { BooklistComponent } from './components/pages/book-list.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { InfoComponent } from './components/pages/info.component';
     PageService
   ],
   declarations: [
-    InfoComponent
+    InfoComponent,
+    BooklistComponent
   ]
 })
 export class PageModule {}

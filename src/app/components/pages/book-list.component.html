@@ -1,0 +1,73 @@
+<section *ngIf="isReady">
+  <ng-container *ngTemplateOutlet="listTemplate;context:{
+    isLoading: isLoadingBooks,
+    lanbooks: books,
+    title:'BookListOverview',
+    total: nrOfBooks,
+    tpe: 'read'
+  }"></ng-container>
+
+  <ng-container *ngTemplateOutlet="listTemplate;context:{
+    isLoading: isLoadingAudio,
+    lanbooks: audiobooks,
+    title:'AudioListOverview',
+    total: nrOfAudio,
+    tpe: 'listen'
+  }"></ng-container>
+</section>
+
+<ng-template #listTemplate let-isLoading=isLoading let-lanbooks=lanbooks let-title=title let-total=total let-tpe=tpe>
+<div class="panel panel-default more-transparant">
+  <div class="panel-heading">
+    <span class="fa fa-book"></span>
+    {{text[title]}}
+    <span *ngIf="!isLoading">({{total}})</span>
+  </div>
+  <div class="panel-body">
+    <div class="books" *ngIf="!isLoading">
+      <div *ngFor="let lan of lanbooks; let i=index">
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading lan-heading" (click)='onSelect(i, tpe)'>
+              <h4 class="panel-title">
+                <span class="fa" [ngClass]="{
+                  'fa-chevron-right': selected[tpe] !== i,
+                  'fa-chevron-down': selected[tpe] === i
+                }"></span>
+                <img src="/assets/img/flags/{{lan.lanCode}}.png" alt="{{lan.lanName}}" class="flag" />
+                <span>
+                  {{lan.lanName}} ({{lan.total}})
+                </span>
+              </h4>
+            </div>
+            <div class="panel-body" [style.display]="selected[tpe] === i ? 'block' : 'none'">
+              <div *ngFor="let book of lan.books; let j=index" class="item">
+                <span class="nr">{{j+1}}.</span>
+                <div class="book-summary">
+                  <h3>
+                    <a routerLink="/read/book/{{book._id}}/{{userLan}}" *ngIf="userLan !== lan.lanCode">{{book.title}}</a>
+                    <span *ngIf="userLan === lan.lanCode">{{book.title}}</span>
+                  </h3>
+                  <div class="info">
+                    <span *ngIf="lan.links[j]" [innerHTML]="lan.links[j] | sanitizeHtml"></span>
+                    <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+                    <km-license
+                      [licenses]="licenses"
+                      [book]="book"
+                      [text]="text">
+                    </km-license>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <km-loader *ngIf="isLoading && !isError"
+      [msg]="text['Loading']"
+      [showBackground]="false">
+    </km-loader>
+  </div>
+</div>
+</ng-template>

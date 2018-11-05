@@ -29,6 +29,7 @@ module.exports = {
     router.post('/user/signup', users.signup);
     router.get('/translations/:lan/:component', translations.getTranslations);
     router.get('/dependables', config.getDependables);
+    router.get('/pages/booklist/:tpe', info.getBooklist);
     router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
     router.get('/home/stats', dashboard.getHomeStats);
 

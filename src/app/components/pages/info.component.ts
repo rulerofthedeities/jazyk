@@ -10,17 +10,8 @@ import { Page } from '../../models/page.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
-  template: `
-  <div class="panel panel-default transparant">
-    <div class="panel-heading">
-      <span class="fa fa-info-circle fa-spacing-title"></span>{{page?.title}}
-    </div>
-    <div class="panel-body">
-      <div [innerHTML]="page?.html | sanitizeHtml">
-    </div>
-  </div>
-  `,
-  styleUrls: ['page.component.css']
+  templateUrl: 'info.component.html',
+  styleUrls: ['info.component.css']
 })
 
 export class InfoComponent implements OnInit, OnDestroy {
@@ -46,7 +37,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     .subscribe(
       params => this.fetchInfoPage(params['page'].toLowerCase(), this.userService.user.main.lan)
     );
-    this.pageService.loadRouteScript(); // For route links
+    // this.pageService.loadRouteScript(); // For route links
   }
 
   private fetchInfoPage(pageId: string, lan: string) {

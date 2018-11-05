@@ -1,3 +1,5 @@
+import { Book } from './book.model';
+
 export interface Page {
   tpe: string;
   lan: string;
@@ -9,3 +11,11 @@ export interface Page {
   loggedIn: boolean;
   loggedOut: boolean;
 }
+
+export interface BooksByLan {
+   lanCode: string;
+   lanName?: string;
+   books: Book[];
+   links?: string[];
+   total: number;
+ }

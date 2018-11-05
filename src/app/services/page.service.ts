@@ -1,6 +1,6 @@
 import { Injectable, Inject, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Page } from '../models/page.model';
+import { Page, BooksByLan } from '../models/page.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -14,11 +14,17 @@ export class PageService {
 
   fetchInfoPage(page: string, lan: string, loggedIn: boolean): Observable<Page> {
     const filteredPage = page.replace(/\W/g, ''),
-          hostName = this.originUrl || '',
+          hostName = this.originUrl || '', // for ssr
           url = hostName + '/api/pages/info/' + filteredPage + '/' + lan + '/' + loggedIn.toString();
-
     return this.http
     .get<Page>(url)
+    .pipe(retry(3));
+  }
+
+  getBookList(tpe: string): Observable<BooksByLan[]> {
+    const hostName = this.originUrl || ''; // for ssr
+    return this.http
+    .get<BooksByLan[]>(hostName + '/api/pages/booklist/' + tpe)
     .pipe(retry(3));
   }
 

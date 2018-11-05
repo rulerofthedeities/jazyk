@@ -45,24 +45,13 @@
             [text]="text">
           </km-book-tpe>
           {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
-          <span *ngIf="authorsTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
-          <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>
-          <a *ngIf="licenseUrl" href="{{licenseUrl}}" target="_blank">
-            <ng-container
-              *ngTemplateOutlet="copyright;context:{
-                license: book.license,
-                tooltip: text[book.license]
-              }">
-            </ng-container>
-          </a>
-          <span *ngIf="!licenseUrl">
-            <ng-container
-              *ngTemplateOutlet="copyright;context:{
-                license: book.license,
-                tooltip: text[book.license]
-              }">
-            </ng-container>
-          </span>
+          <span *ngIf="linksTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
+          <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+          <km-license
+            [licenses]="licenses"
+            [book]="book"
+            [text]="text">
+          </km-license>
         </div>
         <div class="buttons" *ngIf="book.lanCode !== userLanCode">
           <button *ngIf="!userBookStatus.isBookRead && (!isTest || tpe!=='home')"
@@ -147,12 +136,3 @@
     </div>
   </div>
 </article>
-
-<ng-template #copyright let-license=license let-tooltip=tooltip>
-  <span *ngIf="license"
-    class="fa fa-copyright"
-    [tooltip]="tooltip"
-    placement="top"
-    >
-  </span>
-</ng-template>

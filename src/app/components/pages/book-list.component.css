@@ -1,0 +1,33 @@
+.panel-heading {
+  background-color: #60727e;
+  border-color: #505d66;
+  color: snow;
+  font-size: 24px;
+}
+.lan-heading {
+  background-color: #9ac2d6;
+  color : black;
+  cursor: pointer;
+}
+.fa-chevron-right, .fa-chevron-down {
+  width: 24px;
+}
+h3 {
+  margin: 0;
+}
+a:link, a:visited, a:active {
+  color: black;
+}
+.item {
+  display: flex;
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
+.nr {
+  color: grey;
+  font-size: 24px;
+}
+.book-summary {
+  flex: 1;
+  padding: 3px;
+}
