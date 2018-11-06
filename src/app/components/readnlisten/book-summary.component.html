@@ -87,14 +87,28 @@
           <div class="words">
             {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
           </div>
-          <div class="recommended pull-right" *ngIf="userBookStatus.isBookRead">
-            <span class="fa"
-              [ngClass]="{
-                'fa-thumbs-o-up': !userBookStatus.isRecommended,
-                'fa-thumbs-up': userBookStatus.isRecommended,
-                'canrecommend': userBookStatus.isBookRead
-              }"
-              (click)="onRecommend()"></span>
+          <div *ngIf="tpe!=='home'" class="icons pull-right">
+            <div *ngIf="tpe!=='my'"
+              class="subscribe"
+              [class.mylist]="userBookStatus.isSubscribed"
+              (click)="onToggleSubscription()"
+              [tooltip]="text[userBookStatus.isSubscribed ? 'RemoveFromList' : 'AddToList']"
+              placement="left"
+              hide-delay="50">
+              <span class="fa fa-thumb-tack"></span>
+            </div>
+            <div class="recommended" *ngIf="userBookStatus.isBookRead"
+              [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
+              placement="left"
+              hide-delay="50">
+              <span class="fa"
+                [ngClass]="{
+                  'fa-thumbs-o-up': !userBookStatus.isRecommended,
+                  'fa-thumbs-up': userBookStatus.isRecommended,
+                  'canrecommend': userBookStatus.isBookRead
+                }"
+                (click)="onToggleRecommend()"></span>
+            </div>
           </div>
           {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
           ({{difficultyPerc}}%)

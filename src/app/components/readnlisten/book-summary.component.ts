@@ -48,6 +48,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
+  someTooltip: any;
 
   constructor(
     private router: Router,
@@ -72,7 +73,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartReadingListening() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.readnListenService.subscribeToBook(this.book._id, this.userLanCode, this.bookType);
+    this.readnListenService.saveSubscription(this.book._id, this.userLanCode, this.bookType);
     if (this.bookType === 'listen') {
       this.log(`Start listening to '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
@@ -85,49 +86,40 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartListeningTest() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.readnListenService.subscribeToBook(this.book._id, this.userLanCode, 'listen', true);
+    this.readnListenService.saveSubscription(this.book._id, this.userLanCode, 'listen', true);
     this.log(`Start listening test for '${this.book.title}'`);
     this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
   onStopReadingListening() {
-    // Unsubscribe from non-test
-    if (this.userBookStatus && this.userBookStatus.isSubscribed) {
-      this.readnListenService
-      .unSubscribeFromBook(this.userBook._id)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(
-        userBook => {
-          if (userBook && !userBook.subscribed) {
-            this.userBookStatus.isSubscribed = false;
-            this.removedSubscription.emit(this.book);
-          }
-        }
-      );
-    }
-    // Unsubscribe from test and non-test
-    if (this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
-      this.readnListenService
-      .unSubscribeFromBook(this.userBookTest._id)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(
-        userBook => {
-          if (userBook && !userBook.subscribed) {
-            this.userBookStatusTest.isSubscribed = false;
-            this.removedSubscription.emit(this.book);
-          }
-        }
-      );
-    }
+    this.unsubscribe();
+    this.unsubscribeTest();
   }
 
   onToggleIntro() {
     this.showIntro = !this.showIntro;
   }
 
-  onRecommend() {
-    if (this.userBookStatus.isBookRead) {
+  onToggleRecommend() {
+    if (this.userBookStatus && this.userBookStatus.isBookRead) {
       this.saveRecommend();
+    }
+  }
+
+  onToggleSubscription() {
+    if ((this.userBookStatus && !this.userBookStatus.isSubscribed) || !this.userBookStatus) {
+      this.readnListenService
+      .subscribeToBook(this.book._id, this.userLanCode, this.bookType)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        userBook => {
+          if (userBook && userBook.subscribed) {
+            this.userBookStatus.isSubscribed = true;
+          }
+        }
+      );
+    } else {
+      this.unsubscribe();
     }
   }
 
@@ -149,6 +141,40 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         this.userBook.recommended = this.userBookStatus.isRecommended;
       }
     );
+  }
+
+  private unsubscribe() {
+    // Unsubscribe from non-test
+    if (this.userBookStatus && this.userBookStatus.isSubscribed) {
+      this.readnListenService
+      .unSubscribeFromBook(this.userBook._id)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        userBook => {
+          if (userBook && !userBook.subscribed) {
+            this.userBookStatus.isSubscribed = false;
+            this.removedSubscription.emit(this.book);
+          }
+        }
+      );
+    }
+  }
+
+  private unsubscribeTest() {
+    // Unsubscribe from test and non-test
+    if (this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
+      this.readnListenService
+      .unSubscribeFromBook(this.userBookTest._id)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        userBook => {
+          if (userBook && !userBook.subscribed) {
+            this.userBookStatusTest.isSubscribed = false;
+            this.removedSubscription.emit(this.book);
+          }
+        }
+      );
+    }
   }
 
   private checkIfFinished() {
@@ -222,7 +248,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkSentencesDoneEach(this.userDataTest, this.userBookStatusTest);
   }
 
-  checkSentencesDoneEach(userData: UserData, status: UserBookStatus) {
+  private checkSentencesDoneEach(userData: UserData, status: UserBookStatus) {
     if (userData) {
       if (!status.isBookRead) {
         status.nrOfSentencesDone = userData.nrSentencesDone;

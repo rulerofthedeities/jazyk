@@ -158,6 +158,8 @@
 }
 .info {
   margin: 13px 0;
+  overflow: hidden;
+  height: 66px;
 }
 .fa-times-circle {
   color: red;
@@ -279,9 +281,27 @@
   position: relative !important;
   overflow: hidden;
 }
-.recommended > span {
+.icons {
+  position: relative;
+  top: -12px;
+}
+.icons > div {
+  display: inline-block;
+}
+.subscribe {
   font-size: 3rem;
+  color: grey;
+  margin-right: 12px;
+  cursor: pointer;
+}
+.mylist, .fa-thumbs-up {
   color: #428bca;
+}
+.fa-thumbs-o-up {
+  color: grey;
+}
+.recommended {
+  font-size: 3rem;
 }
 span.canrecommend:hover {
   cursor: pointer;

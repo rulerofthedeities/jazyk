@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CoreModule } from './core.module';
-import { RouterModule } from '@angular/router';
+import { RouterModule, PreloadAllModules } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
@@ -26,7 +26,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
   imports: [
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
     HttpClientModule,
-    RouterModule.forRoot(routes, {initialNavigation: 'enabled'}),
+    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules, initialNavigation: 'enabled'}),
     CoreModule.forRoot(),
     CookieModule.forRoot(),
     SharedModule,
