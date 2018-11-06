@@ -171,6 +171,19 @@ export class SharedService {
     };
   }
 
+  getContentLanguageCode(lanCode: string): string {
+    let contentLan = lanCode;
+
+    switch (lanCode) {
+      case 'en': contentLan = 'en-us'; break;
+      case 'de': contentLan = 'de-de'; break;
+      case 'fr': contentLan = 'fr-fr'; break;
+      case 'nl': contentLan = 'nl-nl'; break;
+    }
+
+    return contentLan;
+  }
+
   getAuthorsLinksTxt(book: Book): {authorsTxt: string, linksTxt: string} {
     // Creates authors and links string for book summary and book list
     const authors: string[] = book.authors ? book.authors.split(';') : [],

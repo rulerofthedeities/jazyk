@@ -16,6 +16,7 @@ import { takeWhile, filter } from 'rxjs/operators';
 
 export class InfoComponent implements OnInit, OnDestroy {
   private componentActive = true;
+  private lanCode: string;
   page: Page;
 
   constructor(
@@ -30,24 +31,25 @@ export class InfoComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.lanCode = this.userService.user.main.lan;
     this.route.params
     .pipe(
       takeWhile(() => this.componentActive),
       filter(params => params.page))
     .subscribe(
-      params => this.fetchInfoPage(params['page'].toLowerCase(), this.userService.user.main.lan)
+      params => this.fetchInfoPage(params['page'].toLowerCase(), this.lanCode)
     );
   }
 
-  private fetchInfoPage(pageId: string, lan: string) {
+  private fetchInfoPage(pageId: string, lanCode: string) {
     this.pageService
-    .fetchInfoPage(pageId, lan, this.authService.isLoggedIn())
+    .fetchInfoPage(pageId, lanCode, this.authService.isLoggedIn())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       fetchedPage => {
         if (fetchedPage) {
-          this.setPage(fetchedPage);
-        } else if (lan !== 'en') {
+          this.setMetaTags(fetchedPage);
+        } else if (lanCode !== 'en') {
           // No info page available in the user's interface language
           this.fetchInfoPage(pageId.toLowerCase(), 'en');
         }
@@ -62,12 +64,15 @@ export class InfoComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setPage(page: Page) {
+  private setMetaTags(page: Page) {
     this.page = page;
     this.sharedService.setPageTitle(null, page.title);
+    // Add meta tags
     if (page.index === false) {
       this.meta.addTag({name: 'robots', content: 'noindex'});
     }
+    const isoCode = this.sharedService.getContentLanguageCode(this.lanCode);
+    this.meta.addTag({'http-equiv': 'Content-Language', content: isoCode});
   }
 
   ngOnDestroy() {

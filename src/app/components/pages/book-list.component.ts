@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { PageService } from '../../services/page.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
@@ -36,12 +37,14 @@ export class BooklistComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private sharedService: SharedService,
-    private pageService: PageService
+    private pageService: PageService,
+    private meta: Meta
   ) {}
 
   ngOnInit() {
     this.userLan = this.userService.user.main.lan;
     this.getDependables();
+    this.setMetaTags();
   }
 
   onSelect(i: number, tpe: string) {
@@ -150,6 +153,11 @@ export class BooklistComponent implements OnInit, OnDestroy {
     let total = 0;
     lans.forEach(lan => total += lan.books.length);
     return total;
+  }
+
+  private setMetaTags() {
+    const isoCode = this.sharedService.getContentLanguageCode(this.userLan);
+    this.meta.addTag({'http-equiv': 'Content-Language', content: isoCode});
   }
 
   ngOnDestroy() {
