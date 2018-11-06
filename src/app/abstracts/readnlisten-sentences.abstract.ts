@@ -1,4 +1,4 @@
-import { OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { OnDestroy, OnInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReadnListenService } from '../services/readnlisten.service';
@@ -9,6 +9,7 @@ import { SessionData, UserBook, Bookmark, Book, Chapter,
          Sentence, SentenceSteps } from '../models/book.model';
 import { ReadSettings } from '../models/user.model';
 import { ModalConfirmComponent } from '../components/modals/modal-confirm.component';
+import { BookTranslationComponent } from '../components/readnlisten/book-translation.component';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 
@@ -43,7 +44,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
   answersObservable: Subject<{answers: string, isResults: boolean}> = new Subject();
-  @ViewChild(ModalConfirmComponent) confirm: ModalConfirmComponent;
+  @ViewChildren(ModalConfirmComponent) confirm:  QueryList<ModalConfirmComponent>;
+  @ViewChild(BookTranslationComponent) translationsElement: BookTranslationComponent;
 
   constructor(
     protected route: ActivatedRoute,
@@ -123,7 +125,24 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   onNextSentence() {
-    this.nextSentence();
+    console.log('next sentence', this.translationsElement);
+    // Check if there is a translation not saved yet
+    if (this.translationsElement && this.translationsElement.checkIfTranslationPending()) {
+      console.log('Translation pending!');
+      const confirm = this.confirm.find(c => c.name === 'skiptranslation');
+      if (confirm) {
+        confirm.showModal = true;
+      }
+    } else {
+      this.nextSentence();
+    }
+  }
+
+  onIgnoreTranslationConfirmed(exitOk: boolean) {
+    if (exitOk) {
+      console.log('translation ignored');
+      this.nextSentence();
+    }
   }
 
   onBackToList() {
@@ -412,7 +431,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       abortNow = true;
     } else {
       if (this.sessionData.answers) {
-        this.confirm.showModal = true;
+        const confirm = this.confirm.find(c => c.name === 'exit');
+        if (confirm) {
+          confirm.showModal = true;
+        }
       } else {
         this.log('Reading aborted');
         abortNow = true;

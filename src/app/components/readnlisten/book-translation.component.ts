@@ -95,6 +95,15 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
   }
 
+  checkIfTranslationPending(): boolean {
+    console.log('Translation', this.translationEdit, this.submitted);
+    if (this.translationEdit && this.translationEdit.length > 0 && !this.submitted) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   private setThumbData(translation: SentenceTranslation) {
     if (!this.thumbs[translation.elementId]) {
       this.thumbs[translation.elementId] = {

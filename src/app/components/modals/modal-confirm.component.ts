@@ -7,6 +7,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 export class ModalConfirmComponent {
   @Input() level = 'danger';
+  @Input() name = 'confirm';
   @Output() confirmed = new EventEmitter<boolean>();
   @Input() text: Object;
 
