@@ -74,6 +74,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     this.readnListenService.saveSubscription(this.book._id, this.userLanCode, this.bookType);
+    this.playIosWorkaround();
     if (this.bookType === 'listen') {
       this.log(`Start listening to '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
@@ -87,6 +88,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     this.readnListenService.saveSubscription(this.book._id, this.userLanCode, 'listen', true);
+    this.playIosWorkaround();
     this.log(`Start listening test for '${this.book.title}'`);
     this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
@@ -129,6 +131,18 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
           maxTranslated = translated > unique ? unique : translated;
 
     return `${maxTranslated} / ${unique}`;
+  }
+
+  private playIosWorkaround() {
+    const audio = new Audio();
+    audio.src = '/assets/audio/gluck.ogg';
+    audio.load();
+    audio.onloadeddata = () => {
+      if (audio) {
+        console.log('audio loaded');
+        // audio.play();
+      }
+    };
   }
 
   private saveRecommend() {

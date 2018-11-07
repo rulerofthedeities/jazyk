@@ -118,7 +118,7 @@
     </div>
   </div>
 
-  <km-info-msg [msg]="getBookReadMessage(book?.title)" *ngIf="showReadMsg">
+  <km-info-msg [msg]="getBookReadMessage()" *ngIf="showReadMsg">
   </km-info-msg>
 
   <km-info-msg [msg]="msg" *ngIf="msg && !showReadMsg">

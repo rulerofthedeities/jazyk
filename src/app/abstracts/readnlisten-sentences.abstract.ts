@@ -125,10 +125,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   onNextSentence() {
-    console.log('next sentence', this.translationsElement);
     // Check if there is a translation not saved yet
     if (this.translationsElement && this.translationsElement.checkIfTranslationPending()) {
-      console.log('Translation pending!');
       const confirm = this.confirm.find(c => c.name === 'skiptranslation');
       if (confirm) {
         confirm.showModal = true;
@@ -140,7 +138,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   onIgnoreTranslationConfirmed(exitOk: boolean) {
     if (exitOk) {
-      console.log('translation ignored');
       this.nextSentence();
     }
   }
@@ -230,7 +227,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 1.5) : 0;
+    return words ? Math.round(words.length * this.getScoreMultiplier() * 2) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {
@@ -240,6 +237,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           this.isBookRead = true;
           this.isError = true;
           this.showReadMsg = true;
+          this.setBookFinishedMessage();
         } else {
           this.getBookAndChapter(userBook.bookId, userBook.bookmark, 1);
         }
@@ -376,7 +374,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.sessionData.points.finished =
           Math.round(this.book.difficulty.nrOfWords *
           Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier()) || 0;
+          this.getScoreMultiplier()) * 0.8 || 0;
       }
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)
@@ -407,7 +405,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   protected observe() {
     // New book started from suggestions?
     this.readnListenService
-    .readAnotherBook.subscribe(
+    .readAnotherBook
+    .subscribe(
       book => {
         if (this.currentStep === SentenceSteps.Results) {
           // Results - already saved
@@ -491,12 +490,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.processNewBookId();
   }
 
-  getBookReadMessage(title: string): string {
-    if (title) {
-      return this.text[this.bookType === 'listen' ? 'AlreadyListenedBook' : 'AlreadyReadBook'].replace('%s', title);
-    } else {
-      return '';
-    }
+  private setBookFinishedMessage() {
+    // Get title of book for error message!
+    this.readnListenService.
+    fetchBook(this.bookId, this.bookType)
+    .subscribe(
+      book => {
+        if (book) {
+          this.msg = this.text[this.bookType === 'listen' ? 'AlreadyListenedBook' : 'AlreadyReadBook'].replace('%s', book.title);
+        } else {
+          this.msg = this.text[this.bookType === 'listen' ? 'AlreadyListenedBook' : 'AlreadyReadBook'].replace('%s', 'id:' + this.bookId);
+        }
+      }
+    );
   }
 
   ngOnDestroy() {
