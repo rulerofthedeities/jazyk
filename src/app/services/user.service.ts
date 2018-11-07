@@ -369,6 +369,12 @@ export class UserService {
     );
   }
 
+  sendMailVerification(): Observable<boolean> {
+    console.log('sending mail verification service');
+    return this.http
+    .post<boolean>('/api/user/sendverificationmail', {});
+  }
+
   private createMessage(content: string) {
     let messageCreated = false;
     const newMessage: Message = {

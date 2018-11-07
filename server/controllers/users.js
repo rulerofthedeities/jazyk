@@ -273,7 +273,7 @@ module.exports = {
       });
     });
   },
-  updateUserLan: function(req, res) {
+  updateUserLan: (req, res) => {
     const userId = req.decoded.user._id,
           lanCode = req.body.lanCode,
           update = {'$set': {'main.myLan': lanCode}};
@@ -283,7 +283,7 @@ module.exports = {
       });
     });
   },
-  updatePassword: function(req, res) {
+  updatePassword: (req, res) => {
     const userId = req.decoded.user._id,
           data = req.body;
     checkPassword(data.old, userId, function(err, doc) {
@@ -296,7 +296,7 @@ module.exports = {
       });
     });
   },
-  refreshToken: function(req, res) {
+  refreshToken: (req, res) => {
     const payload = req.decoded;
     if (payload) {
       delete payload.iat;
@@ -305,7 +305,7 @@ module.exports = {
       response.handleSuccess(res, {token});
     }
   },
-  getMailData: function(req, res, recipients) {
+  getMailData: (req, res, recipients) => {
     if (recipients.length > 0) {
       recipients = recipients.slice(0, 1000); // max 1000 ids
       const recipientIds = recipients.map(recipient => recipient.recipient),
@@ -321,5 +321,22 @@ module.exports = {
     } else {
       response.handleSuccess(res, null);
     }
+  },
+  sendMailVerification: (req, res) => {
+    console.log('sending mail verification');
+    // using SendGrid's v3 Node.js Library
+    // https://github.com/sendgrid/sendgrid-nodejs
+
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: 'test@example.com',
+      from: 'no-reply@k-modo.com',
+      subject: 'Sending with SendGrid is Fun',
+      text: 'and easy to do anywhere, even with Node.js',
+      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    };
+    sgMail.send(msg);
+    response.handleSuccess(res, true);
   }
 };

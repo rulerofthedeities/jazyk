@@ -57,7 +57,9 @@
       </div>
       <!-- EMAIL TAB -->
       <div *ngSwitchCase="'email'">
-
+        <km-user-settings-email
+          [text]="text">
+        </km-user-settings-email>
       </div>
       <!-- DEACTIVATE TAB -->
       <div *ngSwitchCase="'deactivate'">
