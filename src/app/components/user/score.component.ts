@@ -27,6 +27,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   trophies: Trophy[] = [];
   loadingTrophies: boolean;
   loadingBookScores: boolean;
+  isReady = false;
 
   constructor(
     private sharedService: SharedService,
@@ -117,6 +118,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         if (translations) {
           this.text = this.sharedService.getTranslatedText(translations);
           this.sharedService.setPageTitle(this.text, 'Score');
+          this.isReady = true;
         }
       },
       error => this.errorService.handleError(error)

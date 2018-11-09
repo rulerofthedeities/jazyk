@@ -16,6 +16,7 @@ export class ModalTrophiesComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     const trophyList: string[][] = [];
+    trophyList.push(['901']);
     trophyList.push(['01', '02', '03']);
     trophyList.push(['41', '42', '43']);
     trophyList.push(['51', '52', '53']);

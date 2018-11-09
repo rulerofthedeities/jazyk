@@ -45,8 +45,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           this.text = this.sharedService.getTranslatedText(translations);
           this.sharedService.setPageTitle(this.text, 'Settings');
         }
-      },
-      error => this.errorService.handleError(error)
+      }
     );
   }
 

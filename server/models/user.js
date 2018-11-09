@@ -34,12 +34,20 @@ var jazykSchema = new Schema({
   dt: dtSchema
 }, {_id : false});
 
+var mailVerificationSchema = new Schema({
+  verificationId: {type: Schema.Types.ObjectId, required: true},
+  dtLastSent: {type: Date, default: Date.now},
+  timesSent: {type: Number, default: 0},
+  isVerified: {type: Boolean, default: false}
+}, {_id : false});
+
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true, trim: true},
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true, trim: true},
   main: {type: mainSchema, required: true},
   emailHash: {type: String},
+  mailVerification: {type: mailVerificationSchema},
   jazyk: jazykSchema,
   isAdmin: {type: Boolean, default: false},
   dtCreated: {type: Date, default: Date.now}

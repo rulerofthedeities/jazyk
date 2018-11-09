@@ -20,7 +20,7 @@
     </span>
   </div>
   <div class="panel-body">
-    <ul class="list-group settings-menu col-xs-3">
+    <ul class="list-group settings-menu col-md-3 col-xs-4">
       <li class="list-group-item"
         (click)="onChangeTab('main')"
         [class.active]="tab==='main'">
@@ -42,7 +42,7 @@
         <span class="fa fa-times"></span> {{text["Deactivate"]}}
       </li>
     </ul>
-    <div [ngSwitch]="tab">
+    <div [ngSwitch]="tab" class="col-md-9 col-xs-8">
       <!-- CONFIG TAB -->
       <div *ngSwitchCase="'main'">
         <km-user-settings-main

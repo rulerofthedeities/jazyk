@@ -256,7 +256,7 @@ module.exports = {
             $push: {translations: {$each: [ newTranslation ], "$position": 0}}
           };
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
-      response.handleError(err, res, 400, 'Error adding translation', function() {
+      response.handleError(err, res, 400, 'Error adding translation', () => {
         const translationData = {
           translation: result.translations[0],
           translationsId: result._id
@@ -278,7 +278,7 @@ module.exports = {
           },
           update = {$set: {'translations.$.translation': translation, 'translations.$.note': note}};
     Translation.findOneAndUpdate(query, update, options, (err, result) => {
-      response.handleError(err, res, 400, 'Error updating translation', function() {
+      response.handleError(err, res, 400, 'Error updating translation', () => {
         response.handleSuccess(res, true);
       });
     });
@@ -319,7 +319,7 @@ module.exports = {
       bookmark.sentenceNrBook = 0;
     }
     UserBook.findOneAndUpdate(query, update, (err, result) => {
-      response.handleError(err, res, 400, 'Error updating bookmark', function() {
+      response.handleError(err, res, 400, 'Error updating bookmark', () => {
         response.handleSuccess(res, result);
       });
     });
@@ -334,8 +334,8 @@ module.exports = {
       diff: 0
     }
     session = new Session(sessionData);
-    session.save(function(err, result) {
-      response.handleError(err, res, 400, 'Error saving new session data', function(){
+    session.save((err, result) => {
+      response.handleError(err, res, 400, 'Error saving new session data', () => {
         response.handleSuccess(res, result);
       });
     });
@@ -354,7 +354,7 @@ module.exports = {
       points: sessionData.points
     }}
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
-      response.handleError(err, res, 400, 'Error updating session', function() {
+      response.handleError(err, res, 400, 'Error updating session', () => {
         response.handleSuccess(res, result);
       });
     });

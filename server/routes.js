@@ -50,7 +50,8 @@ module.exports = {
     router.get('/dashboard/books/:max', dashboard.recentBooks);
 
     /* user */
-    router.post('/user/sendverificationmail', users.sendMailVerification)
+    router.post('/user/sendverificationmail', users.sendMailVerification);
+    router.post('/user/checkverificationId', users.checkverificationId);
     router.put('/user/settings', users.saveSettings);
     router.get('/user/profiles/:userIds', users.getCompactProfiles);
     router.get('/user/profile/:userName', users.getPublicProfile);

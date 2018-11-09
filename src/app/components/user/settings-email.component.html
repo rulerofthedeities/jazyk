@@ -1,11 +1,18 @@
-<button type="button" class="btn btn-primary" (click)="onSendTestMail()">
-  SEND TEST MAIL VERIFICATION
-</button>
+<div class="mail">
+  <button *ngIf="!isMailVerified && !isVerificationSent"
+    type="button" class="btn btn-primary"
+    (click)="onSendTestMail()">
+    <span class="fa fa-external-link-square fa-spacing"></span>{{text['VerifyMail']}}
+  </button>
+  <div *ngIf="isMailVerified"
+    class="is-verified">
+    <img src="/assets/img/trophies/trophy901.png">
+    {{text['MailIsVerified']}}
+  </div>
 
-<km-error-msg [text]="text">
-</km-error-msg>
+  <km-error-msg [msg]="errorMsg">
+  </km-error-msg>
 
-<div class="info-msg">
   <km-info-msg [msg]="infoMsg">
   </km-info-msg>
 </div>

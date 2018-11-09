@@ -3,6 +3,7 @@ const response = require('../response'),
       jwt = require('jsonwebtoken'),
       md5 = require('md5'),
       User = require('../models/user').model,
+      UserTrophy = require('../models/userbook').userTrophy,
       scrypt = require('scrypt');
 
 const setEmailHash = (doc) => {
@@ -12,9 +13,9 @@ const setEmailHash = (doc) => {
   }
 };
 
-const addUser = function(body, callback) {
+const addUser = (body, callback) => {
   const key = body.password;
-  scrypt.kdf(key, {N: 1, r: 1, p: 1}, function(err, hash) {
+  scrypt.kdf(key, {N: 1, r: 1, p: 1}, (err, hash) => {
     const userObject = new User({
           userName: body.userName,
           password: hash.toString('base64'),
@@ -22,14 +23,14 @@ const addUser = function(body, callback) {
           main: body.main,
           jazyk: body.jazyk
         });
-    userObject.save(function(err2, result) {
+    userObject.save((err2, result) => {
       setEmailHash(result);
       callback(err2, result);
     });
   });
 };
 
-const findUser = function(body, expiresIn, callback) {
+const findUser = (body, expiresIn, callback) => {
   const email = body.email ? body.email.trim().toLowerCase() : '',
         query = {email},
         projection = {
@@ -40,7 +41,7 @@ const findUser = function(body, expiresIn, callback) {
           main: 1,
           'jazyk.read': 1
         };
-  User.findOne(query, projection, function (err, doc) {
+  User.findOne(query, projection, (err, doc) => {
     if (err) {
       callback(err, doc, 401, 'Error finding e-mail');
     }
@@ -61,14 +62,14 @@ const findUser = function(body, expiresIn, callback) {
   });
 };
 
-const checkPassword = function(enteredPassword, userId, callback) {
+const checkPassword = (enteredPassword, userId, callback) => {
   const query = {_id: userId},
         projection = {_id: 0, password: 1};
-  User.findOne(query, projection, function(err, doc) {
+  User.findOne(query, projection, (err, doc) => {
     if (err) {
       callback(err, {msg: 'user not found'});
     } else {
-      scrypt.verifyKdf(new Buffer(doc.password, 'base64'), enteredPassword, function(err2, result) {
+      scrypt.verifyKdf(new Buffer(doc.password, 'base64'), enteredPassword, (err2, result) => {
         if (result !== true) {
           callback(true, {msg: 'Incorrect password'});
         } else {
@@ -79,15 +80,15 @@ const checkPassword = function(enteredPassword, userId, callback) {
   });
 };
 
-const saveNewPassword = function(newPassword, userId, callback) {
+const saveNewPassword = (newPassword, userId, callback) => {
   const key = newPassword;
   let password;
-  scrypt.kdf(key, {N: 1, r: 1, p: 1}, function(err, hash) {
+  scrypt.kdf(key, {N: 1, r: 1, p: 1}, (err, hash) => {
     password = hash.toString('base64');
     if (password) {
       const updateObj = {$set: {'password': password}};
       User.findOneAndUpdate(
-        {_id: userId}, updateObj, function(err2, result) {
+        {_id: userId}, updateObj, (err2, result) => {
           callback(err2);
       });
     } else {
@@ -96,19 +97,19 @@ const saveNewPassword = function(newPassword, userId, callback) {
   });
 };
 
-const isUniqueEmail = function(options, callback) {
-  User.findOne({email: options.mail.toLowerCase()}, function(err, doc) {
+const isUniqueEmail = (options, callback) => {
+  User.findOne({email: options.mail.toLowerCase()}, (err, doc) => {
     callback(err, doc !== null);
   });
 };
 
-const isUniqueUser = function(options, callback) {
-  User.findOne({userName: {$regex: '^' + options.user, $options: 'i'}}, function(err, doc) {
+const isUniqueUser = (options, callback) => {
+  User.findOne({userName: {$regex: '^' + options.user, $options: 'i'}}, (err, doc) => {
     callback(err, doc !== null);
   });
 };
 
-const getUserData = function(userId, callback) {
+const getUserData = (userId, callback) => {
   const query = {_id: userId},
         projection = {
           _id: 1,
@@ -116,16 +117,29 @@ const getUserData = function(userId, callback) {
           userName: 1,
           main: 1,
           'jazyk.read': 1,
-          isAdmin: 1
+          isAdmin: 1,
+          'mailVerification.isVerified': 1
         };
-  User.findOne(query, projection, function(err, doc) {
+  User.findOne(query, projection, (err, doc) => {
     setEmailHash(doc);
     callback(err, doc);
   });
 };
 
-const updateLastLoginDate = function(CurUser, res) {
-  const update = {'jazyk.dt.lastLogin': Date.now()};
+const getUserMailVerificationData = (userId, callback) => {
+  const query = {_id: userId},
+        projection = {
+          _id: 0,
+          mailVerification: 1,
+          email: 1
+        };
+  User.findOne(query, projection, (err, doc) => {
+    callback(err, doc);
+  });
+};
+
+const updateLastLoginDate = (CurUser, res) => {
+  const update = {$set: {'jazyk.dt.lastLogin': Date.now()}};
   User.findOneAndUpdate(CurUser._id, update, (err, result) => {
     if (err) {
       console.log('Error updating user login date');
@@ -133,7 +147,7 @@ const updateLastLoginDate = function(CurUser, res) {
   });
 };
 
-const getPublicProfile = function(query, res) {
+const getPublicProfile = (query, res) => {
   const projection = {
     'jazyk.profile': 1,
     'jazyk.dt': 1,
@@ -159,8 +173,8 @@ const getPublicProfile = function(query, res) {
 };
 
 module.exports = {
-  signup: function(req, res) {
-    addUser(req.body, function(err, doc) {
+  signup: (req, res) => {
+    addUser(req.body, (err, doc) => {
       response.handleError(err, res, 400, 'Error creating new user', () => {
         if (doc) {
           doc.password = undefined;
@@ -169,40 +183,40 @@ module.exports = {
       });
     });
   },
-  signin: function(req, res) {
-    findUser(req.body, req.expiresIn, function(err, result, errno, errmsg) {
+  signin: (req, res) => {
+    findUser(req.body, req.expiresIn, (err, result, errno, errmsg) => {
       response.handleError(err, res, errno, errmsg, () => {
         response.handleSuccess(res, result);
         updateLastLoginDate(result, res);
       });
     });
   },
-  check: function(req, res) {
+  check: (req, res) => {
     const options = {mail: req.query.mail, user: req.query.user};
     if (options.mail) {
-      isUniqueEmail(options, function(err, exists) {
+      isUniqueEmail(options, (err, exists) => {
         response.handleError(err, res, 400, 'Error checking email', () => {
           response.handleSuccess(res, exists);
         });
       });
     }
     if (options.user) {
-      isUniqueUser(options, function(err, exists) {
+      isUniqueUser(options, (err, exists) => {
         response.handleError(err, res, 400, 'Error checking user', () => {
           response.handleSuccess(res, exists);
         });
       });
     }
   },
-  getUser: function(req, res) {
+  getUser: (req, res) => {
     const userId = req.decoded.user._id;
-    getUserData(userId, function(err, doc) {
+    getUserData(userId, (err, doc) => {
       response.handleError(err, res, 400, 'Error getting user data for user with id"' + userId + '"', () => {
         response.handleSuccess(res, doc);
       });
     });
   },
-  saveSettings: function(req, res) {
+  saveSettings: (req, res) => {
     const userId = req.decoded.user._id,
           mainSettings = req.body.main,
           readSettings = req.body.read,
@@ -211,50 +225,50 @@ module.exports = {
             'main': mainSettings,
             'jazyk.read': readSettings}
           };
-    User.findOneAndUpdate(query, updateObj, function(err, result) {
+    User.findOneAndUpdate(query, updateObj, (err, result) => {
       response.handleError(err, res, 400, 'Error updating settings', () => {
         response.handleSuccess(res, true);
       });
     });
   },
-  getProfile: function(req, res) {
+  getProfile: (req, res) => {
     const userId = req.decoded.user._id,
           query = {_id: userId},
           projection = {_id: 0, 'jazyk.profile': 1};
-    User.findOne(query, projection, function(err, result) {
+    User.findOne(query, projection, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching profile', () => {
         response.handleSuccess(res, result.jazyk.profile);
       });
     });
   },
-  getCompactProfiles: function(req, res) {
+  getCompactProfiles: (req, res) => {
     const userIds = req.params.userIds.split(','),
           query = {_id: {$in: userIds}},
           projection = {userName: 1, email: 1};
-    User.find(query, projection, function(err, users) {
+    User.find(query, projection, (err, users) => {
       response.handleError(err, res, 400, 'Error fetching users', () => {
         users.forEach(emailUser => setEmailHash(emailUser));
         response.handleSuccess(res, users);
       });
     });
   },
-  saveProfile: function(req, res) {
+  saveProfile: (req, res) => {
     const userId = req.decoded.user._id,
           profile = req.body,
           query = {_id: userId},
           updateObj = {$set: {'jazyk.profile': profile}};
-    User.findOneAndUpdate(query, updateObj, function(err, result) {
+    User.findOneAndUpdate(query, updateObj, (err, result) => {
       response.handleError(err, res, 400, 'Error updating profile', () => {
         response.handleSuccess(res, true);
       });
     });
   },
-  getPublicProfile: function(req, res) {
+  getPublicProfile: (req, res) => {
     const userName = req.params.userName,
           query = {userName};
     getPublicProfile(query, res);
   },
-  getPublicProfileById: function(req, res) {
+  getPublicProfileById: (req, res) => {
     if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
       const query = {_id: req.params.userId};
       getPublicProfile(query, res);
@@ -263,11 +277,11 @@ module.exports = {
       response.handleError(err, res, 400, err);
     }
   },
-  updateReadLan: function(req, res) {
+  updateReadLan: (req, res) => {
     const userId = req.decoded.user._id,
           data = req.body,
           update = {'$set': {'jazyk.read.lan': data.lanCode}};
-    User.findByIdAndUpdate(userId, update, function(err, result) {
+    User.findByIdAndUpdate(userId, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating read lan', () => {
         response.handleSuccess(res, result);
       });
@@ -277,7 +291,7 @@ module.exports = {
     const userId = req.decoded.user._id,
           lanCode = req.body.lanCode,
           update = {'$set': {'main.myLan': lanCode}};
-    User.findByIdAndUpdate(userId, update, function(err, result) {
+    User.findByIdAndUpdate(userId, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating user lan', () => {
         response.handleSuccess(res, result);
       });
@@ -296,15 +310,6 @@ module.exports = {
       });
     });
   },
-  refreshToken: (req, res) => {
-    const payload = req.decoded;
-    if (payload) {
-      delete payload.iat;
-      delete payload.exp;
-      const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
-      response.handleSuccess(res, {token});
-    }
-  },
   getMailData: (req, res, recipients) => {
     if (recipients.length > 0) {
       recipients = recipients.slice(0, 1000); // max 1000 ids
@@ -312,7 +317,7 @@ module.exports = {
             query = {'_id': {$in: recipientIds}},
             projection = {userName: 1, email: 1},
             options = {sort: {userName: 1}};
-      User.find(query, projection, options, function(err, docs) {
+      User.find(query, projection, options, (err, docs) => {
         response.handleError(err, res, 400, 'Error getting mail data for recipients', () => {
           docs.forEach(doc => setEmailHash(doc));
           response.handleSuccess(res, docs);
@@ -324,19 +329,126 @@ module.exports = {
   },
   sendMailVerification: (req, res) => {
     console.log('sending mail verification');
-    // using SendGrid's v3 Node.js Library
-    // https://github.com/sendgrid/sendgrid-nodejs
 
-    const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-      to: 'test@example.com',
-      from: 'no-reply@k-modo.com',
-      subject: 'Sending with SendGrid is Fun',
-      text: 'and easy to do anywhere, even with Node.js',
-      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-    };
-    sgMail.send(msg);
-    response.handleSuccess(res, true);
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          mailData = req.body.mailData,
+          isNewUser = false,
+          setVerificationDoc = (verificationDoc) => {
+            console.log('verification doc 1', verificationDoc);
+            if (!verificationDoc || !verificationDoc.verificationId) {
+              // New verificationDoc
+              verificationDoc = {
+                verificationId: new mongoose.Types.ObjectId(),
+                timesSent: 1,
+                dtLastSent: Date.now()
+              }
+            } else {
+              // Existing verificationDOc
+              verificationDoc.timesSent++;
+              verificationDocdtLastSent= Date.now();
+            }
+            console.log('verification doc 2', verificationDoc);
+            return verificationDoc;
+          },
+          saveVerificationDoc =  (userId, verificationDoc) => {
+            const update = {'mailVerification': verificationDoc};
+            console.log('saving verification doc', verificationDoc);
+            User.findOneAndUpdate({_id: userId}, update, (err, result) => {
+              if (err) {
+                console.log(`Error updating mail verification date for user with id"${userId}"`, err);
+              }
+            });
+          },
+          buildMessage = (mailData, url) => {
+            const text = mailData.bodyText.replace('%s', url),
+                  html = mailData.bodyHtml.replace('%s', url);
+            return {
+              to: mailData.recipientEmail,
+              from: {
+                name: 'Jazyk',
+                email: 'no-reply@k-modo.com',
+              },
+              subject: mailData.subject,
+              text,
+              html
+            };
+          },
+          sendMail = (verificationDoc, email) => {
+            const host = process.env.BACKEND_URL,
+                  url = host + '/verifymail?verId=' + verificationDoc.verificationId.toString();
+            mailData.recipientEmail = email;
+            if (mailData && mailData.subject) {
+              // using SendGrid's v3 Node.js Library
+              // https://github.com/sendgrid/sendgrid-nodejs
+              const msg = buildMessage(mailData, url);
+              console.log('send mail for verification', msg);
+              /*
+              const sgMail = require('@sendgrid/mail');
+              sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+              sgMail
+              .send(msg, (error, result) => {
+                response.handleError(error, res, 400, 'Error sending verification mail', () => {
+                  response.handleSuccess(res, true);
+                });
+              });
+              */
+              response.handleSuccess(res, true);
+            } else {
+              response.handleSuccess(res, false);
+            }
+          };
+
+    getUserMailVerificationData(userId, (err, userVerificatonDoc) => {
+      response.handleError(err, res, 400, `Error getting user mail verification data for user with id"${userId}"`, () => {
+        const verificationDoc = setVerificationDoc(userVerificatonDoc.mailVerification);
+        saveVerificationDoc(userId, verificationDoc);
+        if (verificationDoc.verificationId) {
+          sendMail(verificationDoc, userVerificatonDoc.email);
+        }
+      });
+    });
+  },
+  checkverificationId: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          verifyId = req.body.verId;
+
+    const addMailTrophy = () => {
+            const trophy = new UserTrophy({userId, trophy: '901'});
+            trophy.save((err, result) => {
+              console.log(err, result);
+            });
+          },
+          setUserAsVerified = (isVerified) => {
+            const update = {$set: {'mailVerification.isVerified': true}};
+            User.findOneAndUpdate({_id: userId}, update, {isNew: true}, (err, result) => {
+              response.handleError(err, res, 400, `Error setting mail as verified for user with id"${userId}"`, () => {
+                if (!!result && !isVerified) {
+                  // wasn't verified yet, add mail trophy
+                  addMailTrophy();
+                }
+                response.handleSuccess(res, true);
+              });
+            });
+          };
+
+    getUserMailVerificationData(userId, (err, userVerificatonDoc) => {
+      response.handleError(err, res, 400, `Error getting user mail verification data for user with id"${userId}"`, () => {
+        const verificationDoc = userVerificatonDoc.mailVerification;
+        if (verificationDoc.verificationId.toString() === verifyId) {
+          setUserAsVerified(verificationDoc.isVerified);
+        } else {
+          response.handleSuccess(res, false);
+        }
+      });
+    });
+  },
+  refreshToken: (req, res) => {
+    const payload = req.decoded;
+    if (payload) {
+      delete payload.iat;
+      delete payload.exp;
+      const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
+      response.handleSuccess(res, {token});
+    }
   }
 };

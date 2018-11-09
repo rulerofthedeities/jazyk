@@ -57,6 +57,10 @@ export interface JazykConfig {
   dt: AppDates;
 }
 
+interface MailVerification {
+  isVerified: boolean;
+}
+
 export interface User {
   _id?: string;
   email: string;
@@ -66,6 +70,7 @@ export interface User {
   main: MainSettings;
   jazyk?: JazykConfig;
   isAdmin: boolean;
+  mailVerification: MailVerification;
 }
 
 export interface Notification {
@@ -106,4 +111,10 @@ export interface Followed {
 export interface Network {
   follows: Follower[];
   followed: Followed[];
+}
+
+export interface MailData {
+  subject: string;
+  bodyText: string;
+  bodyHtml: string;
 }

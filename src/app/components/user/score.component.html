@@ -1,125 +1,127 @@
-<!-- RANK -->
-<div class="panel panel-default rank transparant">
-  <div class="panel-body" (click)="onShowRankings(ranksModal)">
-    <img src="/assets/img/ranks/rank{{rank}}_64.png" class="img">
-    <span class="text">
-      <span class="name">{{text['rank' + rank + gender]}}</span>
-      <span class="score">{{overallTotal | score}}</span>
-    </span>
-  </div>
-</div>
-
-<!-- TROPHIES -->
-<div class="panel panel-default trophies transparant">
-  <div class="panel-heading">
-    <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
-  </div>
-  <div class="panel-body">
-    <div *ngIf="!loadingTrophies else loading">
-      <span *ngFor="let trophy of trophies">
-        <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
-          class="trophy"
-          [tooltip]="text['trophy' + trophy.trophy] || ''"
-          placement="top">
+<section *ngIf="isReady">
+  <!-- RANK -->
+  <div class="panel panel-default rank transparant">
+    <div class="panel-body" (click)="onShowRankings(ranksModal)">
+      <img src="/assets/img/ranks/rank{{rank}}_64.png" class="img">
+      <span class="text">
+        <span class="name">{{text['rank' + rank + gender]}}</span>
+        <span class="score">{{overallTotal | score}}</span>
       </span>
-      <div *ngIf="!trophies.length">
-        {{text["NoTrophies"]}}
-      </div>
-      <br>
-      <button
-        type="button"
-        class="btn btn-info btn-xs btn-trophies"
-        (click)="onShowTrophies(trophiesModal)">
-        <span class="fa fa-eye"></span> {{text["ShowTrophies"]}}
-      </button>
     </div>
   </div>
-</div>
 
-<!-- SCORE BOOKS -->
-<ng-container *ngTemplateOutlet="scoreTemplate;context:{
-  title: text['ScoreOverviewBooks'],
-  bookScores: bookScores,
-  bookTotal: bookTotal,
-  loadingBookScores: loadingBookScores,
-  bookType: 'read'
-}">
-</ng-container>
-<ng-container *ngTemplateOutlet="scoreTemplate;context:{
-  title: text['ScoreOverviewAudiobooks'],
-  bookScores: audiobookScores,
-  bookTotal: audiobookTotal,
-  loadingBookScores: loadingBookScores,
-  bookType: 'listen'
-}">
-</ng-container>
-
-<ng-template #scoreTemplate
-  let-title=title
-  let-scores=bookScores
-  let-type=bookType
-  let-total=bookTotal
-  let-loadingScores=loadingBookScores>
-  <div class="panel panel-default transparant books">
+  <!-- TROPHIES -->
+  <div class="panel panel-default trophies transparant">
     <div class="panel-heading">
-      <span class="fa fa-star fa-spacing-title"></span>{{title}}
+      <span class="fa fa-trophy fa-spacing-title"></span>{{text["Trophies"]}}
     </div>
     <div class="panel-body">
-      <table class="table table-hover" *ngIf="!loadingScores else loading">
-        <thead>
-          <tr>
-            <th></th>
-            <th></th>
-            <th>{{text["Book"]}}</th>
-            <th class="text-right">{{text["Points"]}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let score of scores; let i = index">
-            <td class="text-right">{{i+1}}.</td>
-            <td class="text-center">
-              <span class="finished">
-                <span *ngIf="score.isFinished"
-                  class="fa fa-check"
-                  [tooltip]="text[type === 'listen' ? 'AudioListened' : 'BookRead'] || ''">
-                </span>
-              </span>
-              <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
-              <span class="fa fa-arrow-right flag-from"></span>
-              <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
-            </td>
-            <td>{{score.bookTitle}}</td>
-            <td class="text-right nr">{{score.points | score}}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="text-right nr success">
-              <div class="total">
-                {{total | score}}
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div *ngIf="!loadingTrophies else loading">
+        <span *ngFor="let trophy of trophies">
+          <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
+            class="trophy"
+            [tooltip]="text['trophy' + trophy.trophy] || ''"
+            placement="top">
+        </span>
+        <div *ngIf="!trophies.length">
+          {{text["NoTrophies"]}}
+        </div>
+        <br>
+        <button
+          type="button"
+          class="btn btn-info btn-xs btn-trophies"
+          (click)="onShowTrophies(trophiesModal)">
+          <span class="fa fa-eye"></span> {{text["ShowTrophies"]}}
+        </button>
+      </div>
     </div>
   </div>
-</ng-template>
 
-<km-modal-ranks #ranksModal
-  [rank]="rank"
-  [text]="text">
-</km-modal-ranks>
+  <!-- SCORE BOOKS -->
+  <ng-container *ngTemplateOutlet="scoreTemplate;context:{
+    title: text['ScoreOverviewBooks'],
+    bookScores: bookScores,
+    bookTotal: bookTotal,
+    loadingBookScores: loadingBookScores,
+    bookType: 'read'
+  }">
+  </ng-container>
+  <ng-container *ngTemplateOutlet="scoreTemplate;context:{
+    title: text['ScoreOverviewAudiobooks'],
+    bookScores: audiobookScores,
+    bookTotal: audiobookTotal,
+    loadingBookScores: loadingBookScores,
+    bookType: 'listen'
+  }">
+  </ng-container>
 
-<km-modal-trophies #trophiesModal
-  [trophies]="trophies"
-  [text]="text">
-</km-modal-trophies>
+  <ng-template #scoreTemplate
+    let-title=title
+    let-scores=bookScores
+    let-type=bookType
+    let-total=bookTotal
+    let-loadingScores=loadingBookScores>
+    <div class="panel panel-default transparant books">
+      <div class="panel-heading">
+        <span class="fa fa-star fa-spacing-title"></span>{{title}}
+      </div>
+      <div class="panel-body">
+        <table class="table table-hover" *ngIf="!loadingScores else loading">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>{{text["Book"]}}</th>
+              <th class="text-right">{{text["Points"]}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let score of scores; let i = index">
+              <td class="text-right">{{i+1}}.</td>
+              <td class="text-center">
+                <span class="finished">
+                  <span *ngIf="score.isFinished"
+                    class="fa fa-check"
+                    [tooltip]="text[type === 'listen' ? 'AudioListened' : 'BookRead'] || ''">
+                  </span>
+                </span>
+                <img src="/assets/img/flags/{{score.lan.from}}.png" class="flag" />
+                <span class="fa fa-arrow-right flag-from"></span>
+                <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
+              </td>
+              <td>{{score.bookTitle}}</td>
+              <td class="text-right nr">{{score.points | score}}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right nr success">
+                <div class="total">
+                  {{total | score}}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-template>
 
-<ng-template #loading>
-  <km-loader
-    [msg]="''"
-    [showBackground]="false">
-  </km-loader>
-</ng-template>
+  <km-modal-ranks #ranksModal
+    [rank]="rank"
+    [text]="text">
+  </km-modal-ranks>
+
+  <km-modal-trophies #trophiesModal
+    [trophies]="trophies"
+    [text]="text">
+  </km-modal-trophies>
+
+  <ng-template #loading>
+    <km-loader
+      [msg]="''"
+      [showBackground]="false">
+    </km-loader>
+  </ng-template>
+</section>

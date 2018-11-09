@@ -74,7 +74,7 @@
           </button>
           <div class="book-read" *ngIf="isFinished">
             <span class="fa fa-check"></span>
-            {{text[bookType=== 'listen' ? 'AudioListened' : 'BookRead']}}
+            {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
           </div>
         </div>
         <div class="info" *ngIf="tpe !== 'home'">

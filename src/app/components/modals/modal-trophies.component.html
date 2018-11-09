@@ -13,8 +13,9 @@
             <span *ngFor="let trophy of trophies; let j=index" class="trophy">
               <img src="/assets/img/trophies/trophy{{trophy}}.png"
               [tooltip]="text['trophy' + trophyListAll[i][j]] || text['TBD'] || ''"
-              placement="right">
-              {{trophy}}
+              placement="right"
+              z-index="2000"
+              hide-delay="0">
             </span>
           </div>
         </div>

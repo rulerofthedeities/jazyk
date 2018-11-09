@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
-         Profile, Message, PublicProfile, Notification, Network } from '../models/user.model';
+         Profile, Message, PublicProfile, Notification, Network, MailData } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
 import { Trophy, UserBook } from '../models/book.model';
@@ -101,7 +101,8 @@ export class UserService {
         gender: '',
       },
       jazyk: this.getDefaultSettings(userLan, true),
-      isAdmin: false
+      isAdmin: false,
+      mailVerification: {isVerified: false}
     };
     return user;
   }
@@ -369,12 +370,27 @@ export class UserService {
     );
   }
 
-  sendMailVerification(): Observable<boolean> {
-    console.log('sending mail verification service');
+  /** MAIL VERIFICATION */
+  sendMailVerification(mailData: MailData): Observable<boolean> {
     return this.http
-    .post<boolean>('/api/user/sendverificationmail', {});
+    .post<boolean>('/api/user/sendverificationmail', {mailData});
   }
 
+  checkVerificationId(verId: string): Observable<boolean> {
+    console.log('check verification service');
+    return this.http
+    .post<boolean>('/api/user/checkverificationId', {verId});
+  }
+
+  getMailData(text: Object, tpe: string, isNewUser: boolean): MailData {
+    if (tpe === 'verification') {
+      return {
+        subject: isNewUser ? text['WelcomeToJazyk'] : text['WelcomeToJazyk'] + ' ' + text['ConfirmYourEmail'],
+        bodyText: text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
+        bodyHtml: `${text['ConfirmMailText1']} ${text['ConfirmMailHtml2']}} <a href="%s">${text['ConfirmYourEmail']}</a>`
+      };
+    }
+  }
   private createMessage(content: string) {
     let messageCreated = false;
     const newMessage: Message = {
