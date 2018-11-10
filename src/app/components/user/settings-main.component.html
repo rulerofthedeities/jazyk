@@ -1,12 +1,16 @@
 <form *ngIf="isReady"
   [formGroup]="mainForm"
-  class="form-horizontal col-xs-9">
+  class="form-horizontal col-xs-12">
   <!-- Interface Lan -->
   <div class="form-group">
     <label
       for="lan"
       class="control-label col-xs-4">
       {{text["InterfaceLan"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['InterfaceLanInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <select
@@ -28,6 +32,10 @@
       for="mylan"
       class="control-label col-xs-4">
       {{text["MyLan"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['MyLanInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <select
@@ -49,6 +57,10 @@
       for="background"
       class="control-label col-xs-4">
       {{text["Background"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['BackgroundInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <km-toggle id="countdown"
@@ -63,6 +75,10 @@
       for="countdown"
       class="control-label col-xs-4">
       {{text["Countdown"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['CountdownInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <km-toggle id="countdown"
@@ -76,6 +92,11 @@
     <label
       for="delay"
       class="control-label col-xs-4">
+      {{text["CountdownDelay"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['DelayInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <div class="input-group ig-fixed">
@@ -101,6 +122,10 @@
       for="background"
       class="control-label col-xs-4">
       {{text["RankGender"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['RankGenderInfo']"
+        hide-delay="50">
+      </span>
     </label>
     <div class="col-xs-8">
       <span class="fa fa-male fa-spacing-title gender"

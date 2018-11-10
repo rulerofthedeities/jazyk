@@ -12,3 +12,7 @@
 .ig-fixed .input-group-addon {
   width: inherit;
 }
+.fa-info-circle {
+  font-size: 16px;
+  color: grey;
+}
