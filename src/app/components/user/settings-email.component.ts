@@ -23,7 +23,6 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const mailVerification = this.userService.user.mailVerification;
-    console.log('user mail Verification', mailVerification);
     if (!!mailVerification && mailVerification.isVerified) {
       this.isMailVerified = true;
     }
@@ -47,7 +46,6 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
       error => {
         this.errorMsg = this.text['ErrorSendingMail'] + ' ' + this.text['TryAgainLater'];
         this.infoMsg = '';
-        console.log('error sending mail verification');
       });
   }
 

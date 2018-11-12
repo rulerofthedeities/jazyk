@@ -64,7 +64,6 @@ export class VerifyMailComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         if (params['verId']) {
-          console.log(params['verId']);
           this.checkVerificationId(params['verId']);
         } else {
           this.errorMsg = 'Error: No verification Id found';

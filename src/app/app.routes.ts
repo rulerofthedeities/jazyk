@@ -6,6 +6,8 @@ import { VerifyMailComponent } from './components/user/verify-mail.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
+import { InfoComponent } from './components/pages/info.component';
+import { BooklistComponent } from './components/pages/book-list.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -45,7 +47,11 @@ export const routes: Routes = [
       },
       {
         path: 'info',
-        loadChildren: './page.module#PageModule'
+        // loadChildren: './page.module#PageModule'
+        children: [
+          {path: 'booklist', component: BooklistComponent},
+          {path: ':page', component: InfoComponent}
+        ]
       },
       {
         path: 'u/:name',

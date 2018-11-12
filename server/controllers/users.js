@@ -382,7 +382,6 @@ module.exports = {
               // https://github.com/sendgrid/sendgrid-nodejs
               const msg = buildMessage(mailData, url);
               console.log('send mail for verification', msg);
-              /*
               const sgMail = require('@sendgrid/mail');
               sgMail.setApiKey(process.env.SENDGRID_API_KEY);
               sgMail
@@ -391,8 +390,6 @@ module.exports = {
                   response.handleSuccess(res, true);
                 });
               });
-              */
-              response.handleSuccess(res, true);
             } else {
               response.handleSuccess(res, false);
             }
@@ -414,9 +411,7 @@ module.exports = {
 
     const addMailTrophy = () => {
             const trophy = new UserTrophy({userId, trophy: '901'});
-            trophy.save((err, result) => {
-              console.log(err, result);
-            });
+            trophy.save((err, result) => {});
           },
           setUserAsVerified = (isVerified) => {
             const update = {$set: {'mailVerification.isVerified': true}};

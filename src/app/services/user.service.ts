@@ -377,7 +377,6 @@ export class UserService {
   }
 
   checkVerificationId(verId: string): Observable<boolean> {
-    console.log('check verification service');
     return this.http
     .post<boolean>('/api/user/checkverificationId', {verId});
   }
@@ -385,9 +384,9 @@ export class UserService {
   getMailData(text: Object, tpe: string, isNewUser: boolean): MailData {
     if (tpe === 'verification') {
       return {
-        subject: isNewUser ? text['WelcomeToJazyk'] : text['WelcomeToJazyk'] + ' ' + text['ConfirmYourEmail'],
+        subject: isNewUser ? text['WelcomeToJazyk'] + ' ' + text['ConfirmYourEmail'] : text['ConfirmYourEmail'],
         bodyText: text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
-        bodyHtml: `${text['ConfirmMailText1']} ${text['ConfirmMailHtml2']}} <a href="%s">${text['ConfirmYourEmail']}</a>`
+        bodyHtml: `${text['ConfirmMailText1']}<br>${text['ConfirmMailHtml2']} <a href="%s">${text['ConfirmYourEmail']}</a>`
       };
     }
   }

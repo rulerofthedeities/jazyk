@@ -1,3 +1,6 @@
+// Lazy loading disabled to avoid flickering bug in universal
+/*
+
 import { NgModule } from '@angular/core';
 import { SharedModule } from './shared.module';
 import { RouterModule } from '@angular/router';
@@ -19,4 +22,6 @@ import { BooklistComponent } from './components/pages/book-list.component';
     BooklistComponent
   ]
 })
+
 export class PageModule {}
+*/

@@ -23,6 +23,11 @@ import { DashboardComponent } from './components/home/dashboard.component';
 import { VerifyMailComponent } from './components/user/verify-mail.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 
+// Temp workaround for flickering in universal
+import { PageService } from './services/page.service';
+import { InfoComponent } from './components/pages/info.component';
+import { BooklistComponent } from './components/pages/book-list.component';
+
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
@@ -36,7 +41,8 @@ import { PageNotFoundComponent } from './components/not-found.component';
   providers: [
     UserResolver,
     ReadnListenService,
-    DashboardService
+    DashboardService,
+    PageService
   ],
   declarations: [
     AppComponent,
@@ -48,7 +54,9 @@ import { PageNotFoundComponent } from './components/not-found.component';
     DefaultHomeComponent,
     DashboardComponent,
     VerifyMailComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    InfoComponent,
+    BooklistComponent
   ],
   bootstrap: [AppComponent]
 })

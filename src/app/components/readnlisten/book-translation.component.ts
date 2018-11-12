@@ -96,7 +96,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   checkIfTranslationPending(): boolean {
-    console.log('Translation', this.translationEdit, this.submitted);
     if (this.translationEdit && this.translationEdit.length > 0 && !this.submitted) {
       return true;
     } else {
