@@ -112,6 +112,14 @@ export interface TranslationData {
   count: number;
 }
 
+interface DeepLTranslation {
+  detected_source_language: string;
+  text: string;
+}
+export interface DeepLTranslations {
+  translations: DeepLTranslation[];
+}
+
 export interface Bookmark {
   chapterId: string;
   sentenceNrChapter: number;

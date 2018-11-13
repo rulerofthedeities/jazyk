@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
 import { LanPair } from '../../models/main.model';
-import { SentenceTranslation, TranslatedData } from '../../models/book.model';
+import { DeepLTranslations, TranslatedData } from '../../models/book.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile, delay } from 'rxjs/operators';
 
@@ -21,6 +21,9 @@ export class MachineTranslationComponent implements OnDestroy {
   private componentActive = true;
   isLoading = false;
   isTranslated = false;
+  isError = false;
+  errorMsg: string;
+  errorDetail: string;
 
   constructor(
     private readnListenService: ReadnListenService
@@ -34,13 +37,24 @@ export class MachineTranslationComponent implements OnDestroy {
     this.isLoading = true;
     this.readnListenService
     .fetchMachineTranslation(tpe.toLowerCase(), this.lanPair, this.sentence)
-    .pipe(takeWhile(() => this.componentActive), delay(1000))
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      translation => {
-        this.isTranslated = true;
+      (translation: DeepLTranslations) => {
         this.isLoading = false;
-        console.log('machine translation', translation);
-        this.saveTranslation(tpe.toLowerCase(), translation['translation'], 'Machine translation by ' + tpe);
+        if (translation) {
+          this.isTranslated = true;
+          console.log('machine translation', translation);
+          const translations = translation.translations;
+          if (translations[0] && translations[0].text) {
+            this.saveTranslation(tpe.toLowerCase(), translations[0].text, 'Machine translation by ' + tpe);
+          }
+        }
+      },
+      error => {
+        this.isLoading = false;
+        this.isError = true;
+        this.errorMsg = 'Error fetching machine translaton';
+        this.errorDetail = JSON.stringify(error);
       }
     );
   }

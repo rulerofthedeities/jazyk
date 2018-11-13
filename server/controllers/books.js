@@ -8,7 +8,8 @@ const response = require('../response'),
       UserBookThumb = require('../models/userbook').userBookThumb,
       UserTrophy = require('../models/userbook').userTrophy,
       ErrorModel = require('../models/error'),
-      wilson = require('wilson-score');
+      wilson = require('wilson-score'),
+      request = require('request');
 
 const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) => {
   const translationId = new mongoose.Types.ObjectId(translation_id),
@@ -261,7 +262,6 @@ module.exports = {
             sentence,
             $push: {translations: {$each: [ newTranslation ], "$position": 0}}
           };
-    console.log('adding translation', update);
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', () => {
         const translationData = {
@@ -313,11 +313,26 @@ module.exports = {
     });
   },
   getDeeplTranslation: (req, res) => {
-    const lanFrom = req.body.lanPair.from,
-          lanTo = req.body.lanPair.to,
-          sentence = req.body.sentence.slice(0, 500); // limit to 500 chars
-    console.log(lanFrom, lanTo, sentence);
-    response.handleSuccess(res, {translation: 'Test deepl'});
+    const lanFrom = req.body.lanPair.from.toUpperCase(),
+          lanTo = req.body.lanPair.to.toUpperCase(),
+          sentence = encodeURI(req.body.sentence.slice(0, 1000)), // limit to 1000 chars
+          api_key = process.env.DEEPL_API_KEY,
+          url = `https://api.deepl.com/v2/translate?source_lang=${lanFrom}&target_lang=${lanTo}&split_sentences=0&text=${sentence}&auth_key=${api_key}`;
+
+    request(url, (errDeepl, resDeepl, bodyDeepl) => {
+      if (errDeepl) {
+        console.log(`ERREXE07: Error fetching DeepL translation`, errDeepl);
+        const error = new ErrorModel({
+          code: 'ERREXE07',
+          src: 'getDeeplTranslation',
+          msg: `ERREXE07: Error fetching DeepL translation for ${sentence}, ${lanFrom} => ${lanTo} Status code: ${response && response.statusCode} (${JSON.stringify(errDeepl)})`,
+          module: 'books'});
+        error.save(function(err, result) {});
+      }
+      response.handleError(errDeepl, resDeepl, 400, 'Error fetching DeepL translation', () => {
+        response.handleSuccess(res, bodyDeepl);
+      });
+    }).end();
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),

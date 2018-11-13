@@ -31,3 +31,6 @@ a:link, a:visited, a:active {
   flex: 1;
   padding: 3px;
 }
+.intro {
+  font-size: 1.6rem;
+}

@@ -100,7 +100,7 @@
     <div *ngIf="submitted">
       {{submitMsg}}
     </div>
-    <km-machine-translation *ngIf="!translations.length"
+    <km-machine-translation *ngIf="isDeeplAvailable && !translations.length"
       [text]="text"
       [bookId]="bookId"
       [lanPair]="{from: bookLanCode, to: userLanCode}"

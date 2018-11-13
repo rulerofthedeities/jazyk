@@ -35,12 +35,14 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   translationNote: string;
   submitMsg: string;
   thumbs: Map<Thumbs> = {};
+  isDeeplAvailable: boolean;
 
   constructor(
     private readnListenService: ReadnListenService
   ) {}
 
   ngOnInit() {
+    this.checkMachineTranslationAvailability();
     this.observe();
     this.getSentenceTranslations(this.sentence);
   }
@@ -274,6 +276,14 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       points = (wordsTranslation.length + wordsSentence.length) || 0;
     }
     return points * 2;
+  }
+
+  private checkMachineTranslationAvailability() {
+    // Check if both source and target languages are available in deepl
+    const deeplLanguages = this.readnListenService.getMachineLanguages('deepl');
+    if (deeplLanguages.includes(this.userLanCode) && deeplLanguages.includes(this.bookLanCode)) {
+      this.isDeeplAvailable = true;
+    }
   }
 
   private observe() {

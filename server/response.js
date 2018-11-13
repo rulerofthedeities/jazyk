@@ -2,7 +2,7 @@
 
 module.exports = {
   handleError: function(err, res, statusno, title, callback) {
-    if (err) {
+    if (err && res) {
       return res.status(statusno).json({
         title: title,
         error: err

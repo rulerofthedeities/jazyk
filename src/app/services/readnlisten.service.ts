@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LanPair } from '../models/main.model';
 import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark,
-         SessionData, SentenceTranslation, Thumbs, Trophy } from '../models/book.model';
+         SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -170,9 +170,17 @@ export class ReadnListenService {
     .get<TranslationData[]>('/api/book/translation/' + userLanCode);
   }
 
-  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<string> {
+  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<DeepLTranslations> {
     return this.http
-    .post<string>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
+    .post<DeepLTranslations>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
+  }
+
+  getMachineLanguages(tpe: string) {
+    let languages = [];
+    if (tpe === 'deepl') {
+      languages = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pl'];
+    }
+    return languages;
   }
 
   /*** Thumbs ***/

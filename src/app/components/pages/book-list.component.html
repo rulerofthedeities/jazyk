@@ -1,4 +1,9 @@
 <section *ngIf="isReady">
+  <div class="panel panel-default intro">
+    <div class="panel-body">
+      {{text["BookIntro"]}}
+    </div>
+  </div>
   <ng-container *ngTemplateOutlet="listTemplate;context:{
     isLoading: isLoadingBooks,
     lanbooks: books,
