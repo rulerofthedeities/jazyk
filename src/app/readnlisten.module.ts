@@ -12,6 +12,7 @@ import { BookSentencesComponent } from './components/readnlisten/book-sentences.
 import { BookBulletsComponent } from './components/readnlisten/book-bullets.component';
 import { BookResultsComponent } from './components/readnlisten/book-results.component';
 import { BookTranslationComponent } from './components/readnlisten/book-translation.component';
+import { MachineTranslationComponent } from './components/readnlisten/machine-translation.component';
 import { BookContextComponent } from './components/readnlisten/book-context.component';
 import { BookSuggestionsComponent } from './components/readnlisten/book-suggestions.component';
 import { BookTabComponent } from './components/readnlisten/book-tab.component';
@@ -37,6 +38,7 @@ import { ModalPromotionComponent } from './components/modals/modal-promotion.com
     BookBulletsComponent,
     BookResultsComponent,
     BookTranslationComponent,
+    MachineTranslationComponent,
     BookContextComponent,
     BookSuggestionsComponent,
     BookTabComponent,
@@ -57,6 +59,7 @@ import { ModalPromotionComponent } from './components/modals/modal-promotion.com
     BookBulletsComponent,
     BookResultsComponent,
     BookTranslationComponent,
+    MachineTranslationComponent,
     BookContextComponent,
     BookSuggestionsComponent,
     BookTabComponent,

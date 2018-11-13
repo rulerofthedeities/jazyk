@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark,
+import { LanPair } from '../models/main.model';
+import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark,
          SessionData, SentenceTranslation, Thumbs, Trophy } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -141,10 +142,13 @@ export class ReadnListenService {
     bookId: string,
     sentence: string,
     translation: string,
-    note: string): Observable<{translation: SentenceTranslation, translationsId: string}> {
+    note: string,
+    isMachine = false,
+    machine = null
+  ): Observable<TranslatedData> {
     return this.http
-    .post<{translation: SentenceTranslation, translationsId: string}>('/api/book/translation/', {
-      bookLanCode, userLanCode, bookId, sentence, translation, note
+    .post<TranslatedData>('/api/book/translation/', {
+      bookLanCode, userLanCode, bookId, sentence, translation, note, isMachine, machine
     });
   }
 
@@ -152,7 +156,8 @@ export class ReadnListenService {
     translationId: string,
     translationElementId: string,
     translation: string,
-    note: string): Observable<SentenceTranslation>  {
+    note: string
+  ): Observable<SentenceTranslation>  {
     return this.http
     .put<SentenceTranslation>('/api/book/translation', {
       translationId, translationElementId, translation, note
@@ -163,6 +168,11 @@ export class ReadnListenService {
     // count the # of translations for all books into a specific language
     return this.http
     .get<TranslationData[]>('/api/book/translation/' + userLanCode);
+  }
+
+  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<string> {
+    return this.http
+    .post<string>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
   }
 
   /*** Thumbs ***/

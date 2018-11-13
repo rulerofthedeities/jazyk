@@ -101,6 +101,7 @@ module.exports = {
     router.post('/book/translation/', books.addTranslation);
     router.put('/book/translation/', books.updateTranslation);
     router.get('/book/translation/:lan', books.getBookTranslations);
+    router.post('/book/machinetranslation/deepl', books.getDeeplTranslation);
     router.put('/book/bookmark', books.updateBookmark);
     router.post('/book/session', books.addSession);
     router.put('/book/session', books.updateSession);

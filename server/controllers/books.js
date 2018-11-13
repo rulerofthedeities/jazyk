@@ -245,16 +245,23 @@ module.exports = {
           bookLanCode = req.body.bookLanCode,
           sentence = req.body.sentence,
           bookId = req.body.bookId,
+          isMachine = !!req.body.isMachine,
+          machine = req.body.machine,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
-          options = {upsert: true, new: true},
-          update = {
+          options = {upsert: true, new: true};
+    if (isMachine) {
+      newTranslation['isMachine'] = true;
+      newTranslation['machine'] = machine;
+    };
+    const update = {
             lanCode: bookLanCode,
             bookId,
             sentence,
             $push: {translations: {$each: [ newTranslation ], "$position": 0}}
           };
+    console.log('adding translation', update);
     Translation.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error adding translation', () => {
         const translationData = {
@@ -304,6 +311,13 @@ module.exports = {
         response.handleSuccess(res, translations);
       });
     });
+  },
+  getDeeplTranslation: (req, res) => {
+    const lanFrom = req.body.lanPair.from,
+          lanTo = req.body.lanPair.to,
+          sentence = req.body.sentence.slice(0, 500); // limit to 500 chars
+    console.log(lanFrom, lanTo, sentence);
+    response.handleSuccess(res, {translation: 'Test deepl'});
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),

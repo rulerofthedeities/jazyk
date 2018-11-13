@@ -12,7 +12,7 @@
           class="list-group-item translation-item"
           *ngFor="let translation of translations, let i = index"
           [style.color]="getColor(i, false)">
-          <button *ngIf="canEdit && translation.userId?.toString() === userId && isEditing !== i"
+          <button *ngIf="canEdit && !translation.isMachine && translation.userId?.toString() === userId && isEditing !== i"
             type="button"
             class="btn btn-primary btn-sm pull-right edit-button"
             (click)="onEditTranslation(i)">
@@ -100,6 +100,15 @@
     <div *ngIf="submitted">
       {{submitMsg}}
     </div>
+    <km-machine-translation *ngIf="!translations.length"
+      [text]="text"
+      [bookId]="bookId"
+      [lanPair]="{from: bookLanCode, to: userLanCode}"
+      [sentence]="sentence"
+      [hasTranslations]="translations.length"
+      [canEdit]="canEdit"
+      (translationAdded)=onMachineTranslationAdded($event)>
+    </km-machine-translation>
   </div>
 </div>
 

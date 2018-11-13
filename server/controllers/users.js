@@ -328,13 +328,10 @@ module.exports = {
     }
   },
   sendMailVerification: (req, res) => {
-    console.log('sending mail verification');
-
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           mailData = req.body.mailData,
           isNewUser = false,
           setVerificationDoc = (verificationDoc) => {
-            console.log('verification doc 1', verificationDoc);
             if (!verificationDoc || !verificationDoc.verificationId) {
               // New verificationDoc
               verificationDoc = {
@@ -347,12 +344,10 @@ module.exports = {
               verificationDoc.timesSent++;
               verificationDocdtLastSent= Date.now();
             }
-            console.log('verification doc 2', verificationDoc);
             return verificationDoc;
           },
           saveVerificationDoc =  (userId, verificationDoc) => {
             const update = {'mailVerification': verificationDoc};
-            console.log('saving verification doc', verificationDoc);
             User.findOneAndUpdate({_id: userId}, update, (err, result) => {
               if (err) {
                 console.log(`Error updating mail verification date for user with id"${userId}"`, err);
@@ -381,7 +376,6 @@ module.exports = {
               // using SendGrid's v3 Node.js Library
               // https://github.com/sendgrid/sendgrid-nodejs
               const msg = buildMessage(mailData, url);
-              console.log('send mail for verification', msg);
               const sgMail = require('@sendgrid/mail');
               sgMail.setApiKey(process.env.SENDGRID_API_KEY);
               sgMail

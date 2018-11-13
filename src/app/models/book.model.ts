@@ -96,8 +96,15 @@ export interface SentenceTranslation {
   elementId?: string;
   translation: string;
   note: string;
+  isMachine: boolean;
+  machine?: string;
   lanCode: string;
   score: number;
+}
+
+export interface TranslatedData {
+  translation: SentenceTranslation;
+  translationsId: string;
 }
 
 export interface TranslationData {

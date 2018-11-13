@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Map } from '../../models/main.model';
-import { SentenceTranslation, Thumbs } from '../../models/book.model';
+import { SentenceTranslation, TranslatedData, Thumbs } from '../../models/book.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -79,6 +79,12 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.saveThumb(up, translation);
       }
     }
+  }
+
+  onMachineTranslationAdded(translatedData: TranslatedData) {
+    console.log('translation data in parent', translatedData);
+    // add to translation list
+    const newTranslation = this.insertTranslation(translatedData);
   }
 
   getColor(i: number, isNote: boolean): string {
@@ -217,20 +223,25 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       note)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      (newTranslationData: {translation: SentenceTranslation, translationsId: string}) => {
+      (newTranslationData: TranslatedData) => {
         this.submitMsg = this.text['ThankYouTranslation'] + '!';
         this.submitted = true;
         this.submitting = false;
-        const newTranslation = newTranslationData.translation;
-        newTranslation.elementId = newTranslation._id;
-        newTranslation._id = newTranslationData.translationsId;
-        this.translations.unshift(newTranslation);
+        const newTranslation = this.insertTranslation(newTranslationData);
         const points = this.getTranslationPoints(newTranslation.translation);
         this.translationAdded.emit(points);
         this.setThumbData(newTranslation);
         this.saveThumb(true, newTranslation);
       }
     );
+  }
+
+  private insertTranslation(newTranslationData: TranslatedData) {
+    const newTranslation = newTranslationData.translation;
+    newTranslation.elementId = newTranslation._id;
+    newTranslation._id = newTranslationData.translationsId;
+    this.translations.unshift(newTranslation);
+    return newTranslation;
   }
 
   private updateTranslation(translation: string, note: string) {

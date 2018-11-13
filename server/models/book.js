@@ -50,6 +50,8 @@ const ChapterModel = mongoose.model('Bookchapter', chapterSchema);
 var translationSchema = new Schema({
   translation: {type: String, required: true, trim: true},
   note: {type: String, trim: true},
+  isMachine: Boolean,
+  machine: String,
   lanCode: {type: String, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   created: {type: Date, default: new Date()},
@@ -65,6 +67,7 @@ var translationsSchema = new Schema({
 
 translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
 translationsSchema.index({'translations.lanCode': 1});
+translationsSchema.index({'translations.isMachine': 1});
 TranslationModel = mongoose.model('Booktranslation', translationsSchema);
 
 
