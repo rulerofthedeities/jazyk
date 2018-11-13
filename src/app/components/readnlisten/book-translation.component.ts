@@ -84,7 +84,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   onMachineTranslationAdded(translatedData: TranslatedData) {
-    console.log('translation data in parent', translatedData);
     // add to translation list
     const newTranslation = this.insertTranslation(translatedData);
   }

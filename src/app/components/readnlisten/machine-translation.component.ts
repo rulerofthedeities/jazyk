@@ -43,7 +43,6 @@ export class MachineTranslationComponent implements OnDestroy {
         this.isLoading = false;
         if (translation) {
           this.isTranslated = true;
-          console.log('machine translation', translation);
           const translations = translation.translations;
           if (translations[0] && translations[0].text) {
             this.saveTranslation(tpe.toLowerCase(), translations[0].text, 'Machine translation by ' + tpe);
@@ -73,7 +72,6 @@ export class MachineTranslationComponent implements OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (newTranslationData: TranslatedData) => {
-        console.log('added translation', newTranslationData);
         this.translationAdded.emit(newTranslationData);
       }
     );
