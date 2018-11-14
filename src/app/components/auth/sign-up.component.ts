@@ -22,6 +22,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
   languages: Language[];
   text: Object = {};
   isReady = false;
+  bookLanguage: Language;
+  bookLanguages: Language[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -58,6 +60,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
     }
   }
 
+  onBookLanguageSelected(lan: Language) {
+    this.bookLanguage = lan;
+  }
+
   onSubmitForm(user: User) {
     user.main = {
       lan: this.userService.user.main.lan,
@@ -65,7 +71,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       background: true,
       gender: ''
     };
-    user.jazyk = this.userService.getDefaultSettings(user.main.lan, false);
+    user.jazyk = this.userService.getDefaultSettings(this.bookLanguage.code, false);
     if (this.userForm.valid) {
       this.authService
       .signup(user)
@@ -125,11 +131,24 @@ export class SignUpComponent implements OnInit, OnDestroy {
       dependables => {
         this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.languages = dependables.languages;
+        this.bookLanguages = dependables.bookLanguages;
+        this.bookLanguage = this.setDefaultBookLanguage(this.bookLanguages);
         this.sharedService.setPageTitle(this.text, 'Signup');
         this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private setDefaultBookLanguage(languages: Language[]): Language {
+    // Default language is French unless the interface lan is French, then it is German
+    const defaultLancode = this.userService.user.main.lan !== 'fr' ? 'fr' : 'de',
+          defaultLan = languages.find(l => l.code === defaultLancode);
+    if (defaultLan) {
+      return defaultLan;
+    } else {
+      return languages[0];
+    }
   }
 
   private goToDashboard() {

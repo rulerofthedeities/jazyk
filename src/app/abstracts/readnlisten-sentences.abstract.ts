@@ -374,7 +374,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.sessionData.points.finished =
           Math.round(this.book.difficulty.nrOfWords *
           Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier()) * 0.8 || 0;
+          this.getScoreMultiplier() * 0.8) || 0;
       }
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)

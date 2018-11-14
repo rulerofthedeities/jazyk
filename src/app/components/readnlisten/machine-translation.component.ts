@@ -17,6 +17,7 @@ export class MachineTranslationComponent implements OnDestroy {
   @Input() lanPair: LanPair;
   @Input() hasTranslations: boolean;
   @Input() canEdit: boolean;
+  @Input() canThumb: boolean;
   @Output() translationAdded = new EventEmitter<TranslatedData>();
   private componentActive = true;
   isLoading = false;

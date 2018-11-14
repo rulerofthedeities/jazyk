@@ -159,6 +159,14 @@ li {
   margin-left: 10px;
   margin-right: 10px;
 }
+.links {
+  font-size: 1.6rem;
+  line-height: 2.1rem;
+}
+.links > li {
+  padding-left: 0;
+  margin-top: 4px;
+}
 
 /* animation */
 

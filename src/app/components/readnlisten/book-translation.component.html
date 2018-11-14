@@ -2,7 +2,7 @@
   kmPressed
   (hasKeyPressed)="onKeyPressed($event)" *ngIf="showTranslations">
   <div class="panel-heading">
-    <h3 class="panel-title">{{text["Translations"]}}</h3>
+    <h3 class="panel-title">{{text["Translations"]}} ({{translations.length}})</h3>
   </div>
   <div class="panel-body">
     <!-- TRANSLATIONS LIST -->
@@ -100,13 +100,14 @@
     <div *ngIf="submitted">
       {{submitMsg}}
     </div>
-    <km-machine-translation *ngIf="isDeeplAvailable && !translations.length"
+    <km-machine-translation *ngIf="isDeeplAvailable && !hasDeeplTranslations"
       [text]="text"
       [bookId]="bookId"
       [lanPair]="{from: bookLanCode, to: userLanCode}"
       [sentence]="sentence"
       [hasTranslations]="translations.length"
       [canEdit]="canEdit"
+      [canThumb]="canThumb"
       (translationAdded)=onMachineTranslationAdded($event)>
     </km-machine-translation>
   </div>

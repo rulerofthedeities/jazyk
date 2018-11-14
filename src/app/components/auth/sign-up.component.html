@@ -70,7 +70,6 @@
           </km-field-messages>
         </div>
 
-
         <div class="field">
           <label for="password">
             {{text["Password"]}}
@@ -93,6 +92,18 @@
             [label]="'Password'"
             [text]="text">
           </km-field-messages>
+        </div>
+
+        <div class="field lanselector">
+          <label>
+            {{text["LanguageLearning"]}}
+          </label>
+          <km-language-selector
+            [languages]="bookLanguages"
+            [currentLanguage]="bookLanguage"
+            [text]="text"
+            (languageSelected)="onBookLanguageSelected($event)">
+          </km-language-selector>
         </div>
 
         <button

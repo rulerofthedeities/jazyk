@@ -1,7 +1,7 @@
 div.altsign {
   float:right;
   font-size: 85%;
-  position: relative; 
+  position: relative;
   top:-10px;
 }
 div.altsign a {
@@ -37,7 +37,9 @@ div.altsign a {
   border: 1px solid red;
 }
 km-field-messages {
-  margin-left: 54px;
+  position: relative;
+  left: 54px;
+  display: inline-block;
 }
 /* override bootstrap */
 .panel-primary > .panel-heading {
@@ -56,4 +58,7 @@ km-field-messages {
 .panel-title {
   font-size: 24px;
   color: snow;
+}
+.lanselector {
+  margin-bottom: 12px;
 }

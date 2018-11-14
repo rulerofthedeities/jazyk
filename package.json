@@ -1,7 +1,7 @@
 {
   "name": "jazyk",
   "description": "language learning tool",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "scripts": {
     "ng": "ng",
     "start": "pm2 start km-jazyk.js --watch",
@@ -37,7 +37,7 @@
     "@angular/platform-browser-dynamic": "^6.1.10",
     "@angular/platform-server": "^6.1.10",
     "@angular/router": "^6.1.10",
-    "@auth0/angular-jwt": "^1.2.0",
+    "@auth0/angular-jwt": "^2.0.0",
     "@nguniversal/common": "^7.0.2",
     "@nguniversal/express-engine": "^7.0.2",
     "@nguniversal/module-map-ngfactory-loader": "^6.1.0",

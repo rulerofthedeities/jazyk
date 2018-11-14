@@ -224,7 +224,9 @@ module.exports = {
             lanCode: "$translations.lanCode",
             score: "$translations.score",
             userId: "$translations.userId",
-            elementId: "$translations._id"
+            elementId: "$translations._id",
+            isMachine: "$translations.isMachine",
+            machine: "$translations.machine"
           },
           pipeline = [
             {$match: query},

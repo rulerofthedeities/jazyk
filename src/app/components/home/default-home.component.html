@@ -104,6 +104,18 @@
             <span class="fa fa-arrow-right fa-spacing"></span>{{lines[3]}}
           </li>
         </ul>
+        <ul class="list-unstyled links">
+          <li>
+            <a [routerLink]="['/info/features']" routerLinkActive="router-link-active">
+              <span class="fa fa-chevron-right fa-spacing"></span>{{text["CheckFeatures"]}}
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/info/booklist']" routerLinkActive="router-link-active">
+              <span class="fa fa-chevron-right fa-spacing"></span>{{text["CheckBookList"]}}
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

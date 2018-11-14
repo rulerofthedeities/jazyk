@@ -4,6 +4,7 @@ import { SentenceTranslation, TranslatedData, Thumbs } from '../../models/book.m
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'km-sentence-translations',
@@ -36,6 +37,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   submitMsg: string;
   thumbs: Map<Thumbs> = {};
   isDeeplAvailable: boolean;
+  hasDeeplTranslations: boolean;
 
   constructor(
     private readnListenService: ReadnListenService
@@ -86,6 +88,9 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   onMachineTranslationAdded(translatedData: TranslatedData) {
     // add to translation list
     const newTranslation = this.insertTranslation(translatedData);
+    if (newTranslation && newTranslation.machine === 'deepl') {
+      this.hasDeeplTranslations = true;
+    }
   }
 
   getColor(i: number, isNote: boolean): string {
@@ -174,6 +179,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.translations = translations;
         if (this.translations.length) {
           this.getTranslationThumbs(this.translations[0]._id);
+          this.checkIfMachineTranslations(this.translations);
         }
       }
     );
@@ -274,7 +280,19 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     if (wordsTranslation.length >= wordsSentence.length / 2) {
       points = (wordsTranslation.length + wordsSentence.length) || 0;
     }
-    return points * 2;
+    return Math.round(points * 2);
+  }
+
+  private checkIfMachineTranslations(translations: SentenceTranslation[]) {
+    // Check if there is a machine translation
+    // User can only add a machine translation if it isn't available yet
+    console.log('check deepl', translations);
+    const deepl = translations.find(t => t.isMachine && t.machine === 'deepl');
+    if (deepl) {
+      this.hasDeeplTranslations = true;
+    } else {
+      this.hasDeeplTranslations = false;
+    }
   }
 
   private checkMachineTranslationAvailability() {

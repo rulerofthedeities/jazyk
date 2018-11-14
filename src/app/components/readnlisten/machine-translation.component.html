@@ -1,4 +1,4 @@
-<div class="mt" *ngIf="!isTranslated">
+<div class="mt" *ngIf="!isTranslated && (!hasTranslations || canThumb)">
   {{text[canEdit ? "OrFetchMachineTranslation": "FetchMachineTranslation"]}}
   <span class="fetch">
     <button  *ngIf="!isLoading"

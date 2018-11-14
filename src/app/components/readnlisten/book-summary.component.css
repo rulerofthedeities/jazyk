@@ -170,11 +170,10 @@
   width: 200px;
   height: 16px;
   border: 1px solid #333;
-  margin-top: 2px;
   display: inline-block;
   position: relative;
-  top: 4px;
-  margin-left: 4px;
+  top: 2px;
+  margin-left: 2px;
 }
 .sentences {
   font-weight: bold;
