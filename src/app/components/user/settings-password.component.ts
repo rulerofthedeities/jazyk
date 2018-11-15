@@ -7,14 +7,28 @@ import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-user-settings-password',
-  templateUrl: 'settings-password.component.html'
+  templateUrl: 'settings-password.component.html',
+  styles: [`
+
+  input.green {
+    border: 1px solid green;
+  }
+  input.orange  {
+    border: 1px solid orange;
+  }
+  input.red {
+    border: 1px solid red;
+  }
+  `]
 })
 
 export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
   private componentActive = true;
   pwForm: FormGroup;
   isFormReady = false;
+  isUpdated = false;
   infoMsg = '';
+  passwordColor: string;
   @Input() text: Object;
 
   constructor(
@@ -25,6 +39,7 @@ export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buildForm();
+    this.observe();
   }
 
   onChangeField() {
@@ -39,7 +54,7 @@ export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.pwForm = this.formBuilder.group({
-      'oldPassword': ['', [Validators.required, ValidationService.passwordValidator]],
+      'oldPassword': ['', [Validators.required]],
       'newPassword': ['', [Validators.required, ValidationService.passwordValidator]]
     }, {validator: ValidationService.equalPasswordsValidator});
     this.isFormReady = true;
@@ -51,6 +66,7 @@ export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
+        this.isUpdated = true;
         this.infoMsg = this.text['PasswordUpdated'];
         this.errorService.clearError();
         this.pwForm.patchValue({oldPassword: ''});
@@ -59,6 +75,22 @@ export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private observe() {
+    this.pwForm.get('newPassword').valueChanges.subscribe(pw => {
+      this.passwordColor = this.getPasswordColor(pw);
+    });
+  }
+
+  private getPasswordColor(pw: string): string {
+    let color = 'red';
+    const strength = this.userService.getPasswordStrength(pw);
+    switch (strength) {
+      case 'strong': color = 'green'; break;
+      case 'medium': color = 'orange'; break;
+    }
+    return color;
   }
 
   ngOnDestroy() {
