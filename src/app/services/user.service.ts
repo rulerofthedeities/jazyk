@@ -15,6 +15,10 @@ import { retry, tap, takeWhile } from 'rxjs/operators';
 export class UserService {
   private _user: User;
   private subscription: Subscription;
+  // strong pw: min 8 characters, 1 special char, 1 digit, one lowercase letter, one uppercase char
+  private strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');
+  // medium pw: min 6 characters, 1 lowercase and digit OR 1 uppercase and digit
+  private mediumRegex = new RegExp('^(((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})');
   interfaceLanguageChanged = new Subject<string>();
   backgroundChanged = new EventEmitter<boolean>();
   notificationRead = new EventEmitter<boolean>();
@@ -133,6 +137,18 @@ export class UserService {
       level = userAccess.level;
     }
     return level;
+  }
+
+  // PASSWORDS
+
+  getPasswordStrength(password: string) {
+    if (this.strongRegex.test(password)) {
+      return 'strong';
+    } else if (this.mediumRegex.test(password)) {
+      return 'medium';
+    } else {
+      return 'weak';
+    }
   }
 
   // EVENTS

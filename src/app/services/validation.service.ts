@@ -9,14 +9,20 @@ export class ValidationService {
     field: string,
     validatorName: string,
     validatorValue?: any) {
-    const length = validatorValue ? validatorValue.requiredLength : 0,
+    const length = validatorValue && validatorValue.requiredLength || 0,
+          lengthOk = validatorValue && validatorValue.lengthOk || false,
           required = text['isrequired'] ?
                       text['isrequired'].replace('%s', text[field]) : '',
           minlength = text['minLength'] ?
-                      text['minLength'].replace('%s', text[field]).replace('%d', length) : '',
-          invalidPassword = text['invalidPassword'] ?
-                      text['invalidPassword'].replace('%d', length) : '',
-          config = {
+                      text['minLength'].replace('%s', text[field]).replace('%d', length) : '';
+    let invalidPassword;
+    if (lengthOk) {
+      invalidPassword = text['invalidPasswordContent'];
+    } else {
+      invalidPassword = text['invalidPasswordLength'] ? text['invalidPasswordLength'].replace('%d', length) : '';
+    }
+
+    const config = {
             'required': required,
             'invalidEmailAddress': text['Invalidemail'],
             'minlength': minlength,
@@ -52,10 +58,14 @@ export class ValidationService {
   }
 
   static passwordValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9_\-\.\,\+\+?\"\(\)\[\]\{\}\~\\;:!@#$%^&*]{6,100}$/)) {
+    if (control.value.match(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/)) {
       return null;
     } else {
-      return {'invalidPassword': {requiredLength: 6}};
+      if (control.value.match(/(?=.{6,})/)) {
+        return {'invalidPassword': {lengthOk: true}};
+      } else {
+        return {'invalidPassword': {requiredLength: 6}};
+      }
     }
   }
 

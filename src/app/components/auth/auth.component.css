@@ -25,6 +25,11 @@ div.altsign a {
   background-color: green;
   color: white;
 }
+.orange > span {
+  border: 1px solid orange;
+  background-color: orange;
+  color: white;
+}
 .red > span {
   border: 1px solid red;
   background-color: red;
@@ -32,6 +37,9 @@ div.altsign a {
 }
 .green input{
   border: 1px solid green;
+}
+.orange input {
+  border: 1px solid orange;
 }
 .red input {
   border: 1px solid red;

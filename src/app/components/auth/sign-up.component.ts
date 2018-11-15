@@ -18,6 +18,7 @@ import { takeWhile } from 'rxjs/operators';
 
 export class SignUpComponent implements OnInit, OnDestroy {
   private componentActive = true;
+
   userForm: FormGroup;
   languages: Language[];
   text: Object = {};
@@ -25,6 +26,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   bookLanguage: Language;
   bookLanguages: Language[];
   isVerificationMailSent = false;
+  passwordColor: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,6 +41,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getDependables();
     this.buildForm();
+    this.observe();
   }
 
   getIconClass(fieldName: string): string {
@@ -166,6 +169,22 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private goToDashboard() {
     this.router.navigateByUrl('/home');
+  }
+
+  private observe() {
+    this.userForm.get('password').valueChanges.subscribe(pw => {
+      this.passwordColor = this.getPasswordColor(pw);
+    });
+  }
+
+  private getPasswordColor(pw: string): string {
+    let color = 'red';
+    const strength = this.userService.getPasswordStrength(pw);
+    switch (strength) {
+      case 'strong': color = 'green'; break;
+      case 'medium': color = 'orange'; break;
+    }
+    return color;
   }
 
   private log(message: string) {
