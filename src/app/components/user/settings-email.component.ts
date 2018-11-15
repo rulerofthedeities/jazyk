@@ -28,9 +28,10 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSendTestMail() {
-    const mailData: MailData = this.userService.getMailData(this.text, 'verification', false);
-    this.userService.sendMailVerification(mailData)
+  onSendVerificationMail() {
+    const mailData: MailData = this.userService.getMailData(this.text, 'verification', this.userService.user.userName, false);
+    this.userService
+    .sendMailVerification(mailData)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       result => {
@@ -42,11 +43,12 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
           this.errorMsg = this.text['ErrorSendingMail'] + ' ' + this.text['TryAgainLater'];
           this.infoMsg = '';
         }
-    },
+      },
       error => {
         this.errorMsg = this.text['ErrorSendingMail'] + ' ' + this.text['TryAgainLater'];
         this.infoMsg = '';
-      });
+      }
+    );
   }
 
   ngOnDestroy() {

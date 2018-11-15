@@ -328,9 +328,9 @@ module.exports = {
     }
   },
   sendMailVerification: (req, res) => {
+    console.log('send mail verification');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           mailData = req.body.mailData,
-          isNewUser = false,
           setVerificationDoc = (verificationDoc) => {
             if (!verificationDoc || !verificationDoc.verificationId) {
               // New verificationDoc
@@ -372,11 +372,13 @@ module.exports = {
             const host = process.env.BACKEND_URL,
                   url = host + '/verifymail?verId=' + verificationDoc.verificationId.toString();
             mailData.recipientEmail = email;
+            console.log('mail data', mailData);
+            console.log('url', url);
             if (mailData && mailData.subject) {
               // using SendGrid's v3 Node.js Library
               // https://github.com/sendgrid/sendgrid-nodejs
-              const msg = buildMessage(mailData, url);
-              const sgMail = require('@sendgrid/mail');
+              const msg = buildMessage(mailData, url),
+                    sgMail = require('@sendgrid/mail');
               sgMail.setApiKey(process.env.SENDGRID_API_KEY);
               sgMail
               .send(msg, (error, result) => {

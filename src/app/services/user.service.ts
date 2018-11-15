@@ -371,6 +371,7 @@ export class UserService {
   }
 
   /** MAIL VERIFICATION */
+
   sendMailVerification(mailData: MailData): Observable<boolean> {
     return this.http
     .post<boolean>('/api/user/sendverificationmail', {mailData});
@@ -381,15 +382,26 @@ export class UserService {
     .post<boolean>('/api/user/checkverificationId', {verId});
   }
 
-  getMailData(text: Object, tpe: string, isNewUser: boolean): MailData {
+  getMailData(text: Object, tpe: string, userName: string, isNewUser: boolean): MailData {
     if (tpe === 'verification') {
+      let hello = text['DearUser'];
+      if (hello) {
+        hello = hello.replace('%s', userName);
+      }
+      const welcome = isNewUser ? text['WelcomeToJazyk'] : '',
+            welcomeLowerCase = welcome.charAt(0).toLowerCase() + welcome.substr(1),
+            welcomeSubject = welcomeLowerCase ? welcomeLowerCase + '! ' : '',
+            welcomeText = welcomeLowerCase ? welcomeLowerCase + '. ' : '';
       return {
-        subject: isNewUser ? text['WelcomeToJazyk'] + ' ' + text['ConfirmYourEmail'] : text['ConfirmYourEmail'],
-        bodyText: text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
-        bodyHtml: `${text['ConfirmMailText1']}<br>${text['ConfirmMailHtml2']} <a href="%s">${text['ConfirmYourEmail']}</a>`
+        subject: welcomeSubject + text['ConfirmYourEmail'],
+        bodyText: hello + '\n' + welcomeText + text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
+        bodyHtml: `
+          ${hello}<br><br>${welcomeText}${text['ConfirmMailText1']}<br>
+          ${text['ConfirmMailHtml2']} <a href="%s">${text['ConfirmYourEmail']}</a>`
       };
     }
   }
+
   private createMessage(content: string) {
     let messageCreated = false;
     const newMessage: Message = {

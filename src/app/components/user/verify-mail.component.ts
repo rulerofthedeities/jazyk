@@ -33,6 +33,7 @@ export class VerifyMailComponent implements OnInit, OnDestroy {
         if (verified) {
           this.infoMsg = this.text['EmailConfirmed'];
           this.errorMsg = '';
+          this.userService.user.mailVerification.isVerified = true;
         } else {
           this.errorMsg = this.text['ErrorMailVerificationId'];
         }

@@ -4,7 +4,6 @@ import { SentenceTranslation, TranslatedData, Thumbs } from '../../models/book.m
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'km-sentence-translations',

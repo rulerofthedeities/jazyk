@@ -109,7 +109,6 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private getUrl() {
     this.url = this.router.url;
-    console.log('url1', this.url);
     this.router.events
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {

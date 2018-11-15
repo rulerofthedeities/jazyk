@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
 import { ValidationService } from '../../services/validation.service';
 import { Language } from '../../models/main.model';
-import { User } from '../../models/user.model';
+import { User, MailData } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -24,6 +24,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   isReady = false;
   bookLanguage: Language;
   bookLanguages: Language[];
+  isVerificationMailSent = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -94,6 +95,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         this.authService.signedIn(signInData, false);
         this.userService.user = signInData.user;
         this.userService.fetchWelcomeMessage(signInData.user);
+        this.sendVerificationMail();
         this.log(`Logged in as ${signInData.user.userName}`);
         this.goToDashboard();
       },
@@ -149,6 +151,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
     } else {
       return languages[0];
     }
+  }
+
+  private sendVerificationMail() {
+    const mailData: MailData = this.userService.getMailData(this.text, 'verification', this.userService.user.userName, true);
+    console.log('mailData', mailData);
+    this.userService
+    .sendMailVerification(mailData)
+    .pipe(takeWhile(() => !this.isVerificationMailSent))
+    .subscribe(result => {
+      this.isVerificationMailSent = true;
+    });
   }
 
   private goToDashboard() {
