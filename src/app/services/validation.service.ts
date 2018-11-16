@@ -1,6 +1,7 @@
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { cpus } from 'os';
 
 export class ValidationService {
 
@@ -28,6 +29,7 @@ export class ValidationService {
             'minlength': minlength,
             'invalidPassword': invalidPassword,
             'invalidUserName': text['invalidUserName'],
+            'invalidUserName2': text['invalidUserName2'],
             'usernameTaken': text['usernameTaken'],
             'emailTaken': text['emailTaken'],
             'noSelectOptions': text['noSelectOptions'],
@@ -39,12 +41,30 @@ export class ValidationService {
     return config[validatorName];
   }
 
-  static userNameValidator(control: FormControl): {[key: string]: any} {
-    if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
-      return null;
-    } else {
-      return {'invalidUserName': true};
-    }
+  static userNameValidator(invalidNames: string[]): {[key: string]: any} {
+
+    const isInvalidPattern = (value: string): boolean => {
+      let regEx: RegExp;
+      for (let i = 0; i < invalidNames.length; i++) {
+        regEx = new RegExp(invalidNames[i]);
+        if (value.match(regEx)) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    return function(control) {
+      if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
+        if (isInvalidPattern(control.value)) {
+          return {'invalidUserName2': true};
+        } else {
+          return null;
+        }
+      } else {
+        return {'invalidUserName': true};
+      }
+    };
   }
 
   static emailValidator(control: FormControl): {[key: string]: any} {

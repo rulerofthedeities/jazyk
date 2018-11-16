@@ -46,6 +46,7 @@ export interface Dependables {
   userLanguages: Language[]; // my languages
   bookLanguages: Language[];
   licenseUrls: LicenseUrl[];
+  invalidNames: string;
 }
 
 export interface DependableOptions {
@@ -53,4 +54,6 @@ export interface DependableOptions {
   component?: string;
   getTranslations?: boolean;
   getLanguages?: boolean;
+  getLicenses?: boolean;
+  getInvalidNames?: boolean;
 }

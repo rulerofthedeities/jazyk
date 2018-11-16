@@ -69,7 +69,7 @@ module.exports = {
           {$sort: {code: 1}}
         ];
     const getData = async () => {
-      let translations, languages, userLanguages, bookLanguages, licenseUrls;
+      let translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames;
       if (params.getTranslations === 'true') {
         translations = await Translation.aggregate(translationPipeline);
       }
@@ -81,8 +81,12 @@ module.exports = {
       if (params.getLicenses === 'true') {
         licenseUrls = await Config.find({tpe: 'license'}, {_id: 0, license: 1, url: 1});
       }
+      if (params.getInvalidNames === 'true') {
+        const names = await Config.findOne({tpe: 'invalid'}, {_id: 0, name: 1});
+        invalidNames = names ? names.name : '';
+      }
 
-      return {translations, languages, userLanguages, bookLanguages, licenseUrls};
+      return {translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames};
     };
 
     getData().then((results) => {

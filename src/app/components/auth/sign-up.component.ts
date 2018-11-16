@@ -27,6 +27,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   bookLanguages: Language[];
   isVerificationMailSent = false;
   passwordColor: string;
+  invalidNames: string[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,8 +41,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getDependables();
-    this.buildForm();
-    this.observe();
   }
 
   getIconClass(fieldName: string): string {
@@ -109,7 +108,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   private buildForm() {
     this.userForm = this.formBuilder.group({
       'userName': ['', {
-        validators: [Validators.required, ValidationService.userNameValidator],
+        validators: [Validators.required, ValidationService.userNameValidator(this.invalidNames)],
         asyncValidators: [ValidationService.checkUniqueUserName(this.http)]
       }],
       'email': ['', {
@@ -127,7 +126,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
       lan: this.userService.user.main.lan,
       component: 'AuthComponent',
       getTranslations: true,
-      getLanguages: true
+      getLanguages: true,
+      getInvalidNames: true
     };
     this.sharedService
     .fetchDependables(options)
@@ -138,7 +138,10 @@ export class SignUpComponent implements OnInit, OnDestroy {
         this.languages = dependables.languages;
         this.bookLanguages = dependables.bookLanguages;
         this.bookLanguage = this.setDefaultBookLanguage(this.bookLanguages);
+        this.invalidNames = dependables.invalidNames ? dependables.invalidNames.split('|') : [];
         this.sharedService.setPageTitle(this.text, 'Signup');
+        this.buildForm();
+        this.observe();
         this.isReady = true;
       },
       error => this.errorService.handleError(error)
