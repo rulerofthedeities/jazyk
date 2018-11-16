@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
-         Profile, Message, PublicProfile, Notification, Network, MailData } from '../models/user.model';
+         Profile, Message, PublicProfile, Notification, Network, MailData, MailOptIn } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
 import { Trophy, UserBook } from '../models/book.model';
@@ -106,7 +106,8 @@ export class UserService {
       },
       jazyk: this.getDefaultSettings(userLan, true),
       isAdmin: false,
-      mailVerification: {isVerified: false}
+      mailVerification: {isVerified: false},
+      mailOptIn: {info: false}
     };
     return user;
   }
@@ -191,6 +192,11 @@ export class UserService {
   saveSettings(settings: AppSettings): Observable<boolean> {
     return this.http
     .put<boolean>('/api/user/settings', settings);
+  }
+
+  saveMailSettings(settings: MailOptIn): Observable<boolean> {
+    return this.http
+    .put<boolean>('/api/user/mailsettings', settings);
   }
 
   getProfile(): Observable<Profile> {

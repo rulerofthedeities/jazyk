@@ -9,6 +9,30 @@
     <img src="/assets/img/trophies/trophy901.png">
     {{text['MailIsVerified']}}
   </div>
+  <form *ngIf="isReady"
+  [formGroup]="mailForm"
+  class="form-horizontal col-xs-12">
+    <fieldset class="mails">
+      <legend>EMAIL OPT-IN:</legend>
+      <div class="form-group">
+        <label
+          for="countdown"
+          class="control-label col-xs-4">
+          {{text["EmailNews"]}}
+          <span class="fa fa-info-circle"
+            [tooltip]="text['EmailNewsInfo']"
+            hide-delay="50">
+          </span>
+        </label>
+        <div class="col-xs-8">
+          <km-toggle id="countdown"
+            [toggle]="mailForm.value.info"
+            (toggled)="onSetFlag('info', $event)">
+          </km-toggle>
+        </div>
+      </div>
+    </fieldset>
+    </form>
 
   <km-error-msg [msg]="errorMsg">
   </km-error-msg>

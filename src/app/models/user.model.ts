@@ -61,6 +61,10 @@ interface MailVerification {
   isVerified: boolean;
 }
 
+export interface MailOptIn {
+  info: boolean;
+}
+
 export interface User {
   _id?: string;
   email: string;
@@ -71,6 +75,7 @@ export interface User {
   jazyk?: JazykConfig;
   isAdmin: boolean;
   mailVerification: MailVerification;
+  mailOptIn: MailOptIn;
 }
 
 export interface Notification {

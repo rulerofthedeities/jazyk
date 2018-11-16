@@ -41,6 +41,10 @@ var mailVerificationSchema = new Schema({
   isVerified: {type: Boolean, default: false}
 }, {_id : false});
 
+var mailOptInSchema = new Schema({
+  info: {type: Boolean, default: false}
+}, {_id : false});
+
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true, trim: true},
   password: {type: String, required: true},
@@ -48,6 +52,7 @@ var userSchema = new Schema({
   main: {type: mainSchema, required: true},
   emailHash: {type: String},
   mailVerification: {type: mailVerificationSchema},
+  mailOptIn: {type: mailOptInSchema},
   jazyk: jazykSchema,
   isAdmin: {type: Boolean, default: false},
   dtCreated: {type: Date, default: Date.now}

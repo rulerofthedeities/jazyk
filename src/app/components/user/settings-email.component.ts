@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { takeWhile } from 'rxjs/operators';
-import { MailData } from '../../models/user.model';
+import { MailData, MailOptIn } from '../../models/user.model';
 
 @Component({
   selector: 'km-user-settings-email',
@@ -12,12 +13,15 @@ import { MailData } from '../../models/user.model';
 export class UserSettingsEmailComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   private componentActive = true;
+  mailForm: FormGroup;
   infoMsg: string;
   errorMsg: string;
   isMailVerified = false;
   isVerificationSent = false;
+  isReady = false;
 
   constructor(
+    private formBuilder: FormBuilder,
     private userService: UserService
   ) {}
 
@@ -26,6 +30,7 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
     if (!!mailVerification && mailVerification.isVerified) {
       this.isMailVerified = true;
     }
+    this.buildForm();
   }
 
   onSendVerificationMail() {
@@ -49,6 +54,40 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
         this.infoMsg = '';
       }
     );
+  }
+
+  onSetFlag(field: string, status: boolean) {
+    this.setFlag(field, status);
+  }
+
+  private setFlag(field: string, status: any) {
+    this.mailForm.patchValue({[field]: status});
+    this.mailForm.markAsDirty();
+    this.infoMsg = '';
+    this.updateSettings(this.mailForm.value);
+  }
+
+  private updateSettings(settings: MailOptIn) {
+    this.userService
+    .saveMailSettings(settings)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      result => {
+        this.userService.user.mailOptIn = settings;
+      }
+    );
+  }
+
+  private buildForm() {
+    const user = this.userService.user;
+    console.log(user);
+    if (!user.mailOptIn) {
+      user.mailOptIn = {info: false};
+    }
+    this.mailForm = this.formBuilder.group({
+      info: [user.mailOptIn.info]
+    });
+    this.isReady = true;
   }
 
   ngOnDestroy() {

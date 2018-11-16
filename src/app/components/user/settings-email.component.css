@@ -6,3 +6,15 @@
 .mail {
   padding: 15px;
 }
+fieldset {
+  padding: 12px;
+  border: 1px dotted black;
+  border-radius: 3px;
+  margin-top: 15px;
+}
+.mails > legend {
+  width: inherit;
+  padding: 0 10px;
+  border-bottom: none;
+  margin-bottom: 0;
+}

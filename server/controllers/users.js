@@ -118,7 +118,8 @@ const getUserData = (userId, callback) => {
           main: 1,
           'jazyk.read': 1,
           isAdmin: 1,
-          'mailVerification.isVerified': 1
+          'mailVerification.isVerified': 1,
+          mailOptIn: 1
         };
   User.findOne(query, projection, (err, doc) => {
     setEmailHash(doc);
@@ -221,12 +222,25 @@ module.exports = {
           mainSettings = req.body.main,
           readSettings = req.body.read,
           query = {_id: userId},
-          updateObj = {$set: {
+          update = {$set: {
             'main': mainSettings,
             'jazyk.read': readSettings}
           };
-    User.findOneAndUpdate(query, updateObj, (err, result) => {
-      response.handleError(err, res, 400, 'Error updating settings', () => {
+    User.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating main settings', () => {
+        response.handleSuccess(res, true);
+      });
+    });
+  },
+  saveMailSettings: (req, res) => {
+    const userId = req.decoded.user._id,
+          mailSettings = req.body,
+          query = {_id: userId},
+          update = {$set: {
+            'mailOptIn': mailSettings}
+          };
+    User.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating mail settings', () => {
         response.handleSuccess(res, true);
       });
     });
