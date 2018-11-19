@@ -45,6 +45,12 @@ var mailOptInSchema = new Schema({
   info: {type: Boolean, default: false}
 }, {_id : false});
 
+var pwForgottenSchema = new Schema({
+  dt: {type: Date, default: Date.now, required: true},
+  resetId: {type: Schema.Types.ObjectId, required: true},
+  email: {type: String, required: true}
+}, {_id: false})
+
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true, trim: true},
   password: {type: String, required: true},
@@ -53,6 +59,7 @@ var userSchema = new Schema({
   emailHash: {type: String},
   mailVerification: {type: mailVerificationSchema},
   mailOptIn: {type: mailOptInSchema},
+  mailPwReset: pwForgottenSchema,
   jazyk: jazykSchema,
   isAdmin: {type: Boolean, default: false},
   dtCreated: {type: Date, default: Date.now}

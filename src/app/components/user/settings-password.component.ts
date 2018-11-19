@@ -23,13 +23,13 @@ import { takeWhile } from 'rxjs/operators';
 })
 
 export class UserSettingsPasswordComponent implements OnInit, OnDestroy {
+  @Input() text: Object;
   private componentActive = true;
   pwForm: FormGroup;
   isFormReady = false;
   isUpdated = false;
   infoMsg = '';
   passwordColor: string;
-  @Input() text: Object;
 
   constructor(
     private formBuilder: FormBuilder,

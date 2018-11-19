@@ -32,6 +32,9 @@ module.exports = {
     router.get('/pages/booklist/:tpe', info.getBooklist);
     router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
     router.get('/home/stats', dashboard.getHomeStats);
+    router.post('/user/sendforgotpwmail', users.sendForgotPassword);
+    router.post('/user/checkresetId', users.checkresetId);
+    router.post('/user/resetpw', users.resetpw);
 
     router.use('/', function(req, res, next) {
       jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
@@ -142,9 +145,10 @@ module.exports = {
             '/auth/*',
             '/user/*',
             '/u/:name',
+            '/v/*'
           ];
     routes.forEach(route => {
-      router.get(route,  (req, res) => {
+      router.get(route, (req, res) => {
         res.sendFile(indexFile);
       });
     });

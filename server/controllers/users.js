@@ -4,7 +4,8 @@ const response = require('../response'),
       md5 = require('md5'),
       User = require('../models/user').model,
       UserTrophy = require('../models/userbook').userTrophy,
-      scrypt = require('scrypt');
+      scrypt = require('scrypt'),
+      sgMail = require('@sendgrid/mail');
 
 const setEmailHash = (doc) => {
   if (doc) {
@@ -12,6 +13,14 @@ const setEmailHash = (doc) => {
     doc.email = undefined;
   }
 };
+
+const isElapsed = (dt, maxElapseHours) => {
+  const expiryTime = new Date(dt).getTime(),
+  currentTime = Date.now(),
+  elapseMs = currentTime - expiryTime,
+  elapseHours = elapseMs / 1000 / 60 / 60;
+  return !!(elapseHours > maxElapseHours);
+}
 
 const addUser = (body, callback) => {
   const key = body.password;
@@ -342,7 +351,6 @@ module.exports = {
     }
   },
   sendMailVerification: (req, res) => {
-    console.log('send mail verification');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           mailData = req.body.mailData,
           setVerificationDoc = (verificationDoc) => {
@@ -384,15 +392,10 @@ module.exports = {
           },
           sendMail = (verificationDoc, email) => {
             const host = process.env.BACKEND_URL,
-                  url = host + '/verifymail?verId=' + verificationDoc.verificationId.toString();
+                  url = host + '/v/verifymail?verId=' + verificationDoc.verificationId.toString();
             mailData.recipientEmail = email;
-            console.log('mail data', mailData);
-            console.log('url', url);
             if (mailData && mailData.subject) {
-              // using SendGrid's v3 Node.js Library
-              // https://github.com/sendgrid/sendgrid-nodejs
-              const msg = buildMessage(mailData, url),
-                    sgMail = require('@sendgrid/mail');
+              const msg = buildMessage(mailData, url);
               sgMail.setApiKey(process.env.SENDGRID_API_KEY);
               sgMail
               .send(msg, (error, result) => {
@@ -435,17 +438,142 @@ module.exports = {
               });
             });
           };
-
     getUserMailVerificationData(userId, (err, userVerificatonDoc) => {
       response.handleError(err, res, 400, `Error getting user mail verification data for user with id"${userId}"`, () => {
         const verificationDoc = userVerificatonDoc.mailVerification;
-        if (verificationDoc.verificationId.toString() === verifyId) {
+        if (mongoose.Types.ObjectId.isValid(verifyId) && verificationDoc.verificationId.toString() === verifyId) {
           setUserAsVerified(verificationDoc.isVerified);
         } else {
           response.handleSuccess(res, false);
         }
       });
     });
+  },
+  checkresetId: (req, res) => {
+    const resetId = req.body.resetId,
+          email = req.body.email ? decodeURI(req.body.email).toLowerCase() : null,
+          query = {email},
+          projection = {
+            _id: 0,
+            mailPwReset: 1,
+            email: 1
+          };
+    if (mongoose.Types.ObjectId.isValid(resetId)) {
+      User.findOne(query, projection, (err, doc) => {
+        response.handleError(err, res, 400, `Error finding email "${email}"`, () => {
+          if (doc && doc.mailPwReset) {
+            const resetDoc = doc.mailPwReset;
+            if (resetDoc.resetId &&  resetDoc.resetId.toString() === resetId) {
+              if (isElapsed(resetDoc.dt, 6)) {
+                response.handleSuccess(res, '3');
+              } else {
+                response.handleSuccess(res, '0');
+              }
+            } else {
+              response.handleSuccess(res, '2');
+            }
+          } else {
+            response.handleSuccess(res, '1');
+          }
+        });
+      });
+    } else {
+      response.handleSuccess(res, '2');
+    }
+  },
+  sendForgotPassword: (req, res) => {
+    const mailData = req.body.mailData,
+          email = req.body.email,
+          setForgottenPwDoc = (email, cb) => {
+            if (email) {
+              const forgottenPwDoc = {
+                      dt: Date.now(),
+                      resetId: new mongoose.Types.ObjectId(),
+                      email
+                    },
+                    update = {$set: {mailPwReset : forgottenPwDoc}};
+              User.findOneAndUpdate({email: email.toLowerCase()}, update, {}, (err, result) => {
+                cb(err, forgottenPwDoc);
+              });
+            }
+          },
+          buildMessage = (mailData, url) => {
+            const text = mailData.bodyHtml.replace('%link', mailData.linkText + ': ' + url + ' '),
+                  html = mailData.bodyText.replace('%link', `<a href="${url}">${mailData.linkText}</a>`);
+            return {
+              to: mailData.recipientEmail,
+              from: {
+                name: 'Jazyk',
+                email: 'no-reply@k-modo.com',
+              },
+              subject: mailData.subject,
+              text,
+              html
+            };
+          },
+          sendMail = (pwForgottenDoc, email) => {
+            const host = process.env.BACKEND_URL,
+                  url = host + '/v/resetpw?email=' + encodeURI(email) + '&resetId=' + pwForgottenDoc.resetId.toString();
+            mailData.recipientEmail = email;
+            if (mailData && mailData.subject) {
+              const msg = buildMessage(mailData, url);
+              sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+              sgMail
+              .send(msg, (error, result) => {
+                response.handleError(error, res, 400, 'Error sending verification mail', () => {
+                  response.handleSuccess(res, true);
+                });
+              });
+              response.handleSuccess(res, true); // TEMP
+            } else {
+              response.handleSuccess(res, false);
+            }
+          };
+    setForgottenPwDoc(email, (err, mailPwReset) => {
+      response.handleError(err, res, 400, `Error: email address does not exist "${email}"`, () => {
+        if (mailPwReset) {
+          sendMail(mailPwReset, email);
+        } else {
+          response.handleSuccess(res, false);
+        }
+      });
+    });
+  },
+  resetpw: (req, res) => {
+    const resetId = req.body.resetId,
+          email = req.body.email,
+          newpassword = req.body.pw;
+    // check if the resetId is a valid Id (mongoose)
+    if (mongoose.Types.ObjectId.isValid(resetId)) {
+        // do a query for both email and resetId
+        User.findOne({email: email.toLowerCase(), 'mailPwReset.resetId': resetId}, (err, userDoc) => {
+          response.handleError(err, res, 400, `Error: email/resetId combo does not exist "${email} ${resetId}"`, () => {
+            if (userDoc && userDoc.mailPwReset) {
+              // check if reset id isn't expired (a bit more than 6 hrs)
+              if (!isElapsed(userDoc.mailPwReset.dt, 6.2)) {
+                // set new password
+                saveNewPassword(newpassword, userDoc._id, (err2) => {
+                  response.handleError(err2, res, 400, 'Error saving password', () => {
+                    // clear password doc
+                    const update = {$set: {'mailPwReset': null}};
+                    User.findOneAndUpdate({_id: userDoc._id}, update, (err, result) => {
+                      response.handleError(err, res, 400, `Error clearing password reset for id"${userDoc._id}"`, () => {
+                        response.handleSuccess(res, '0');
+                      });
+                    });
+                  });
+                });
+              } else {
+                response.handleSuccess(res, '3');
+              }
+            } else {
+              response.handleSuccess(res, '2');
+            }
+        });
+      });
+    } else {
+      response.handleSuccess(res, '1');
+    }
   },
   refreshToken: (req, res) => {
     const payload = req.decoded;

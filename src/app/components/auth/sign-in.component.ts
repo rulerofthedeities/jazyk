@@ -6,7 +6,7 @@ import { ErrorService } from '../../services/error.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ValidationService } from '../../services/validation.service';
-import { User } from '../../models/user.model';
+import { User, UserSignIn, MailData } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -21,6 +21,11 @@ export class SignInComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   text: Object = {};
   referrerPath = '';
+  signInFailed = false;
+  errMsg = '';
+  forgotPassword = false;
+  isForGotPasswordMailSent = false;
+  addressForgotPassword: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,10 +60,14 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.isSubmitted = true;
     this.errorService.clearError();
     this.userService.clearUser();
+    const signInUser: UserSignIn = {
+      email: user.email,
+      password: user.password
+    };
     if (this.userForm.valid) {
       this.log('Logging in');
       this.authService
-      .signin(user)
+      .signin(signInUser)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         data => {
@@ -68,7 +77,15 @@ export class SignInComponent implements OnInit, OnDestroy {
           this.sharedService.userJustLoggedIn();
           this.log(`Logged in as ${data.user.userName}`);
         },
-        error => this.errorService.handleError(error)
+        error => {
+          console.log(error.status);
+          if (error.status === 401) {
+            this.signInFailed = true;
+            this.errMsg = this.text['SignInFailed'];
+          } else {
+            this.errMsg = this.text['ErrorSigningIn'];
+          }
+        }
       );
     }
   }
@@ -77,6 +94,48 @@ export class SignInComponent implements OnInit, OnDestroy {
     if (key === 'Enter') {
       this.onSubmitForm(user);
     }
+  }
+
+  onForgotPassword() {
+    this.forgotPassword = true;
+    this.errMsg = '';
+  }
+
+  onCancelForgotPassword() {
+    this.forgotPassword = false;
+  }
+
+  onSendForgotPasswordMail() {
+    this.sendForgotPasswordMail();
+  }
+
+  private sendForgotPasswordMail() {
+    console.log('lan', this.userService.user.main.lan);
+    console.log('email', this.userForm.value['email']);
+    this.addressForgotPassword = this.userForm.value['email'];
+    const mailData: MailData = this.userService.getMailData(
+      this.text,
+      'forgotpassword',
+      {
+        email: this.userForm.value['email'],
+        expireHours: 6
+      }
+    );
+    console.log('mailData', mailData);
+    this.userService
+    .sendMailForgotPassword(mailData, this.userForm.value['email'])
+    .pipe(takeWhile(() => !this.isForGotPasswordMailSent))
+    .subscribe(result => {
+      if (result) {
+        console.log('password mail sent');
+        this.isForGotPasswordMailSent = true;
+      } else {
+        // Pretend it was set for privacy/security reasons
+        // Otherwise people can check if someone else is registered
+        this.isForGotPasswordMailSent = true;
+        console.log('password mail not sent');
+      }
+    });
   }
 
   private buildForm() {

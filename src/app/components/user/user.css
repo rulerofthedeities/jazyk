@@ -12,10 +12,8 @@
   margin-top: 32px;
 }
 .input-group-addon {
-  float: left;
   padding-top: 8px;
   height: 34px;
-  width: fit-content;
 }
 .info-msg {
   width: 60%;

@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
 import { ValidationService } from '../../services/validation.service';
 import { Language } from '../../models/main.model';
-import { User, MailData } from '../../models/user.model';
+import { User, UserSignIn, MailData } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -18,7 +18,6 @@ import { takeWhile } from 'rxjs/operators';
 
 export class SignUpComponent implements OnInit, OnDestroy {
   private componentActive = true;
-
   userForm: FormGroup;
   languages: Language[];
   text: Object = {};
@@ -88,8 +87,12 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private signIn(user: User) {
     this.userService.clearUser();
+    const signInUser: UserSignIn = {
+      email: user.email,
+      password: user.password
+    };
     this.authService
-    .signin(user)
+    .signin(signInUser)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       signInData => {
@@ -160,7 +163,11 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   private sendVerificationMail() {
-    const mailData: MailData = this.userService.getMailData(this.text, 'verification', this.userService.user.userName, true);
+    const mailData: MailData = this.userService.getMailData(
+      this.text,
+      'verification',
+      {userName: this.userService.user.userName, isNewUser: true}
+    );
     console.log('mailData', mailData);
     this.userService
     .sendMailVerification(mailData)
@@ -176,18 +183,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private observe() {
     this.userForm.get('password').valueChanges.subscribe(pw => {
-      this.passwordColor = this.getPasswordColor(pw);
+      this.passwordColor = this.userService.getPasswordColor(pw);
     });
-  }
-
-  private getPasswordColor(pw: string): string {
-    let color = 'red';
-    const strength = this.userService.getPasswordStrength(pw);
-    switch (strength) {
-      case 'strong': color = 'green'; break;
-      case 'medium': color = 'orange'; break;
-    }
-    return color;
   }
 
   private log(message: string) {

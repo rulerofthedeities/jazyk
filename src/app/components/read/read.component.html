@@ -41,7 +41,7 @@
     </ul>
 
     <!-- No books found for selected language -->
-    <div *ngIf="!filteredBooks.length">
+    <div *ngIf="isReady && !filteredBooks.length">
       <km-info-msg [msg]="text['NoBooks']">
       </km-info-msg>
     </div>

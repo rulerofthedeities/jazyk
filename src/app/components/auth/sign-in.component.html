@@ -58,7 +58,7 @@
               type="password"
               class="form-control input-lg"
               [placeholder]="text['Enterpw'] || ''"
-              minlength="5"
+              minlength="6"
               maxlength="100">
           </div>
           <km-field-messages
@@ -69,14 +69,40 @@
           </km-field-messages>
         </div>
 
-        <button
+        <div class="resetpw" *ngIf="signInFailed">
+          <a class="pwlink" (click)="onForgotPassword()" *ngIf="!forgotPassword">{{text["PasswordForgotten"]}}</a>
+          <div *ngIf="forgotPassword" class="forgot-text">
+            <div *ngIf="!isForGotPasswordMailSent">
+              {{text["ForgotPasswordText1"]}} {{text["ForgotPasswordText2"]}}
+            </div>
+            <div *ngIf="isForGotPasswordMailSent">
+              {{text["ForgotPasswordText3"].replace('%s', addressForgotPassword)}} {{text["ForgotPasswordText4"]}}
+            </div>
+          </div>
+        </div>
+
+        <button *ngIf="!forgotPassword"
           type="button"
           (click)="onSubmitForm(userForm.value)"
           class="btn btn-success btn-lg center-block">
           <span class="fa fa-hand-o-right register"></span> {{text["Login"]}}
         </button>
 
-        <km-error-msg [text]="text">
+        <button *ngIf="forgotPassword && !isForGotPasswordMailSent"
+          type="button"
+          (click)="onCancelForgotPassword()"
+          class="btn btn-warning btn-lg pull-right">
+          <span class="fa fa-times fa-spacing"></span>{{text["cancel"]}}
+        </button>
+
+        <button *ngIf="forgotPassword && !isForGotPasswordMailSent"
+          type="button"
+          (click)="onSendForgotPasswordMail()"
+          class="btn btn-primary btn-lg pull-right">
+          <span class="fa fa-envelope fa-spacing"></span>{{text["ForgotPassword"]}}
+        </button>
+
+        <km-error-msg [msg]="errMsg">
         </km-error-msg>
 
       </form>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
-         Profile, Message, PublicProfile, Notification, Network, MailData, MailOptIn } from '../models/user.model';
+         Profile, Message, PublicProfile, Notification, Network, MailData, MailOptIn, MailDataOptions } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore } from '../models/score.model';
 import { Trophy, UserBook } from '../models/book.model';
@@ -150,6 +150,16 @@ export class UserService {
     } else {
       return 'weak';
     }
+  }
+
+  getPasswordColor(pw: string): string {
+    let color = 'red';
+    const strength = this.getPasswordStrength(pw);
+    switch (strength) {
+      case 'strong': color = 'green'; break;
+      case 'medium': color = 'orange'; break;
+    }
+    return color;
   }
 
   // EVENTS
@@ -392,7 +402,7 @@ export class UserService {
     );
   }
 
-  /** MAIL VERIFICATION */
+  /** MAILS */
 
   sendMailVerification(mailData: MailData): Observable<boolean> {
     return this.http
@@ -404,13 +414,28 @@ export class UserService {
     .post<boolean>('/api/user/checkverificationId', {verId});
   }
 
-  getMailData(text: Object, tpe: string, userName: string, isNewUser: boolean): MailData {
+  checkResetId(resetId: string, email: string): Observable<string> {
+    return this.http
+    .post<string>('/api/user/checkresetId', {resetId, email});
+  }
+
+  resetPw(pw: string, email: string, resetId: string): Observable<string> {
+    return this.http
+    .post<string>('/api/user/resetpw', {pw, resetId, email});
+  }
+
+  sendMailForgotPassword(mailData: MailData, email): Observable<boolean> {
+    return this.http
+    .post<boolean>('/api/user/sendforgotpwmail', {mailData, email});
+  }
+
+  getMailData(text: Object, tpe: string, options: MailDataOptions): MailData {
     if (tpe === 'verification') {
       let hello = text['DearUser'];
       if (hello) {
-        hello = hello.replace('%s', userName);
+        hello = hello.replace('%s', options.userName);
       }
-      const welcome = isNewUser ? text['WelcomeToJazyk'] : '',
+      const welcome = options.isNewUser ? text['WelcomeToJazyk'] : '',
             welcomeLowerCase = welcome.charAt(0).toLowerCase() + welcome.substr(1),
             welcomeSubject = welcomeLowerCase ? welcomeLowerCase + '! ' : '',
             welcomeText = welcomeLowerCase ? welcomeLowerCase + '. ' : '';
@@ -420,6 +445,27 @@ export class UserService {
         bodyHtml: `
           ${hello}<br><br>${welcomeText}${text['ConfirmMailText1']}<br>
           ${text['ConfirmMailHtml2']} <a href="%s">${text['ConfirmYourEmail']}</a>`
+      };
+    }
+    if (tpe === 'forgotpassword') {
+      // 'To change your Jazyk password, please click on this link.'
+      const subject = text['ForgottenPasswordRequest'],
+            bodyText = text['ForgotPasswordMailText1'] + '\n\n' +
+              text['ForgotPasswordMailText2'] + '\n\n' +
+              text['ForgotPasswordMailText3'] + '\n\n' +
+              text['ForgotPasswordMailText4'] + '\n\n' +
+              text['Thanks'] + ',' + '\nJazyk',
+            bodyHtml = text['ForgotPasswordMailText1'] + '<br><br>' +
+              text['ForgotPasswordMailText2'] + '<br><br>' +
+              text['ForgotPasswordMailText3'] + '<br><br>' +
+              text['ForgotPasswordMailText4'] + '<br><br>' +
+              text['Thanks'] + ',' + '<br>Jazyk',
+              linkText = text['link'];
+      return {
+        subject,
+        bodyText,
+        bodyHtml,
+        linkText
       };
     }
   }

@@ -9,11 +9,11 @@
     <img src="/assets/img/trophies/trophy901.png">
     {{text['MailIsVerified']}}
   </div>
-  <form *ngIf="isReady"
+  <form *ngIf="isReady && isMailVerified"
   [formGroup]="mailForm"
   class="form-horizontal col-xs-12">
     <fieldset class="mails">
-      <legend>EMAIL OPT-IN:</legend>
+      <legend>{{text["EmailOptIn"]}}:</legend>
       <div class="form-group">
         <label
           for="countdown"

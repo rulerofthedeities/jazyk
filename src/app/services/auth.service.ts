@@ -5,7 +5,7 @@ import { CookieService, CookieOptions } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { SharedService } from './shared.service';
-import { User } from '../models/user.model';
+import { User, UserSignIn } from '../models/user.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -44,7 +44,7 @@ export class AuthService {
     .post<User>('/api/user/signup', body);
   }
 
-  signin(user: User): Observable<SignedInData> {
+  signin(user: UserSignIn): Observable<SignedInData> {
     const body = JSON.stringify(user);
     return this.http
     .post<SignedInData>('/api/user/signin', body);

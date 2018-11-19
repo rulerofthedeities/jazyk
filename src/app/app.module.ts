@@ -20,7 +20,6 @@ import { FooterComponent } from './components/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { DefaultHomeComponent } from './components/home/default-home.component';
 import { DashboardComponent } from './components/home/dashboard.component';
-import { VerifyMailComponent } from './components/user/verify-mail.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 
 // Temp workaround for flickering in universal
@@ -53,7 +52,6 @@ import { BooklistComponent } from './components/pages/book-list.component';
     HomeComponent,
     DefaultHomeComponent,
     DashboardComponent,
-    VerifyMailComponent,
     PageNotFoundComponent,
     InfoComponent,
     BooklistComponent

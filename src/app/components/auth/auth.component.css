@@ -49,6 +49,9 @@ km-field-messages {
   left: 54px;
   display: inline-block;
 }
+.forgot-text {
+  margin-bottom: 12px;
+}
 /* override bootstrap */
 .panel-primary > .panel-heading {
   background-color: #60727e;
@@ -69,4 +72,7 @@ km-field-messages {
 }
 .lanselector {
   margin-bottom: 12px;
+}
+a.pwlink{
+  cursor: pointer;
 }

@@ -34,7 +34,14 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
   }
 
   onSendVerificationMail() {
-    const mailData: MailData = this.userService.getMailData(this.text, 'verification', this.userService.user.userName, false);
+    const mailData: MailData = this.userService.getMailData(
+      this.text,
+      'verification',
+      {
+        userName: this.userService.user.userName,
+        isNewUser: false
+      }
+    );
     this.userService
     .sendMailVerification(mailData)
     .pipe(takeWhile(() => this.componentActive))

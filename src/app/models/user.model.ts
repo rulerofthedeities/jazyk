@@ -78,6 +78,11 @@ export interface User {
   mailOptIn: MailOptIn;
 }
 
+export interface UserSignIn {
+  email: string;
+  password: string;
+}
+
 export interface Notification {
   _id?: string;
   userId: string;
@@ -122,4 +127,12 @@ export interface MailData {
   subject: string;
   bodyText: string;
   bodyHtml: string;
+  linkText?: string;
+}
+
+export interface MailDataOptions {
+  userName?: string;
+  isNewUser?: boolean;
+  email?: string;
+  expireHours?: number;
 }

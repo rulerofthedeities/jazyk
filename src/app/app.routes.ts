@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { BaseComponent } from './components/base.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserComponent } from './components/user/user.component';
-import { VerifyMailComponent } from './components/user/verify-mail.component';
 import { PageNotFoundComponent } from './components/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
@@ -59,9 +58,8 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'verifymail',
-        component: VerifyMailComponent,
-        canActivate: [AuthGuard]
+        path: 'v',
+        loadChildren: './verify.module#VerifyModule'
       },
       {
         path: '404',
