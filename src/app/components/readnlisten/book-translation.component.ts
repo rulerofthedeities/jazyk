@@ -285,7 +285,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   private checkIfMachineTranslations(translations: SentenceTranslation[]) {
     // Check if there is a machine translation
     // User can only add a machine translation if it isn't available yet
-    console.log('check deepl', translations);
     const deepl = translations.find(t => t.isMachine && t.machine === 'deepl');
     if (deepl) {
       this.hasDeeplTranslations = true;

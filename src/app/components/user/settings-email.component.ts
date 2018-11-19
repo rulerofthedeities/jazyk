@@ -87,7 +87,6 @@ export class UserSettingsEmailComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     const user = this.userService.user;
-    console.log(user);
     if (!user.mailOptIn) {
       user.mailOptIn = {info: false};
     }

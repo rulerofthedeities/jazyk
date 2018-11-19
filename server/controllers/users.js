@@ -524,7 +524,7 @@ module.exports = {
                   response.handleSuccess(res, true);
                 });
               });
-              response.handleSuccess(res, true); // TEMP
+
             } else {
               response.handleSuccess(res, false);
             }

@@ -118,18 +118,25 @@
     </div>
   </div>
 
-  <km-info-msg [msg]="getBookReadMessage()" *ngIf="showReadMsg">
-  </km-info-msg>
-
   <km-info-msg [msg]="msg" *ngIf="msg && !showReadMsg">
   </km-info-msg>
 
-  <km-modal-confirm #confirmexit
+  <km-modal-confirm
     [level]="'warning'"
     [text]="text"
+    name="exit"
     (confirmed)="onExitConfirmed($event)">
     <div title>{{text["Warning"]}}</div>
-    <div message>{{text["ConfirmStopListening"]}}</div>
+    <div message>{{text[bookType==='listen' ? "ConfirmStopListening" : "ConfirmStopReading"]}}</div>
+  </km-modal-confirm>
+
+  <km-modal-confirm
+    [level]="'warning'"
+    [text]="text"
+    name="skiptranslation"
+    (confirmed)="onIgnoreTranslationConfirmed($event)">
+    <div title>{{text["Warning"]}}</div>
+    <div message>{{text["ConfirmIgnoreTranslation"]}}</div>
   </km-modal-confirm>
 </section>
 

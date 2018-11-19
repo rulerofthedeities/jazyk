@@ -92,7 +92,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   private compareVersions(currentVersion: string, latestVersion: string) {
     let isNewVersionAvailable = false;
-    console.log('comparing versions', currentVersion, latestVersion);
     if (currentVersion !== latestVersion) {
       const currentArr = currentVersion.split('.'),
             latestArr = latestVersion.split('.');

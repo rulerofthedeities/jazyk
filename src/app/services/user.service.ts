@@ -437,28 +437,28 @@ export class UserService {
       }
       const welcome = options.isNewUser ? text['WelcomeToJazyk'] : '',
             welcomeLowerCase = welcome.charAt(0).toLowerCase() + welcome.substr(1),
-            welcomeSubject = welcomeLowerCase ? welcomeLowerCase + '! ' : '',
+            welcomeSubject = welcome ? welcome + '! ' : '',
             welcomeText = welcomeLowerCase ? welcomeLowerCase + '. ' : '';
       return {
         subject: welcomeSubject + text['ConfirmYourEmail'],
-        bodyText: hello + '\n' + welcomeText + text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
+        bodyText: ' ' + hello + '\n' + welcomeText + text['ConfirmMailText1'] + ' ' + text['ConfirmMailText2'],
         bodyHtml: `
           ${hello}<br><br>${welcomeText}${text['ConfirmMailText1']}<br>
           ${text['ConfirmMailHtml2']} <a href="%s">${text['ConfirmYourEmail']}</a>`
       };
     }
     if (tpe === 'forgotpassword') {
-      // 'To change your Jazyk password, please click on this link.'
+      const forgotpasswordMailText4 = text['ForgotPasswordMailText4'].replace('%d', options.expireHours);
       const subject = text['ForgottenPasswordRequest'],
-            bodyText = text['ForgotPasswordMailText1'] + '\n\n' +
-              text['ForgotPasswordMailText2'] + '\n\n' +
-              text['ForgotPasswordMailText3'] + '\n\n' +
-              text['ForgotPasswordMailText4'] + '\n\n' +
-              text['Thanks'] + ',' + '\nJazyk',
+            bodyText = ' ' + text['ForgotPasswordMailText1'] + ' \n\n' +
+              ' ' + text['ForgotPasswordMailText2'] + ' \n\n' +
+              ' ' + text['ForgotPasswordMailText3'] + ' \n\n' +
+              ' ' + forgotpasswordMailText4 + ' \n\n' +
+              ' ' + text['Thanks'] + ',' + ' \nJazyk',
             bodyHtml = text['ForgotPasswordMailText1'] + '<br><br>' +
               text['ForgotPasswordMailText2'] + '<br><br>' +
               text['ForgotPasswordMailText3'] + '<br><br>' +
-              text['ForgotPasswordMailText4'] + '<br><br>' +
+              forgotpasswordMailText4 + '<br><br>' +
               text['Thanks'] + ',' + '<br>Jazyk',
               linkText = text['link'];
       return {

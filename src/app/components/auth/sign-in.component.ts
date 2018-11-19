@@ -64,6 +64,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       email: user.email,
       password: user.password
     };
+    this.errMsg = '';
     if (this.userForm.valid) {
       this.log('Logging in');
       this.authService
@@ -78,7 +79,6 @@ export class SignInComponent implements OnInit, OnDestroy {
           this.log(`Logged in as ${data.user.userName}`);
         },
         error => {
-          console.log(error.status);
           if (error.status === 401) {
             this.signInFailed = true;
             this.errMsg = this.text['SignInFailed'];
@@ -110,8 +110,6 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   private sendForgotPasswordMail() {
-    console.log('lan', this.userService.user.main.lan);
-    console.log('email', this.userForm.value['email']);
     this.addressForgotPassword = this.userForm.value['email'];
     const mailData: MailData = this.userService.getMailData(
       this.text,
@@ -121,19 +119,16 @@ export class SignInComponent implements OnInit, OnDestroy {
         expireHours: 6
       }
     );
-    console.log('mailData', mailData);
     this.userService
     .sendMailForgotPassword(mailData, this.userForm.value['email'])
     .pipe(takeWhile(() => !this.isForGotPasswordMailSent))
     .subscribe(result => {
       if (result) {
-        console.log('password mail sent');
         this.isForGotPasswordMailSent = true;
       } else {
         // Pretend it was set for privacy/security reasons
         // Otherwise people can check if someone else is registered
         this.isForGotPasswordMailSent = true;
-        console.log('password mail not sent');
       }
     });
   }

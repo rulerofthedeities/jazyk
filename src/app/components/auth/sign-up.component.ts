@@ -168,7 +168,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
       'verification',
       {userName: this.userService.user.userName, isNewUser: true}
     );
-    console.log('mailData', mailData);
     this.userService
     .sendMailVerification(mailData)
     .pipe(takeWhile(() => !this.isVerificationMailSent))

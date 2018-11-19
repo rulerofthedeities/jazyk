@@ -7,6 +7,7 @@ import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ReadnListenSentencesComponent } from '../../abstracts/readnlisten-sentences.abstract';
 import { TestAnswer, SentenceSteps } from '../../models/book.model';
+import { cpus } from 'os';
 
 @Component({
   templateUrl: 'sentences-test.component.html',
@@ -34,6 +35,21 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
       sharedService,
       userService,
       errorService);
+  }
+
+  onKeyPressed(key: string) {
+    switch (key) {
+      case 'Escape':
+        if (this.currentStep < SentenceSteps.Results) {
+          this.exitReading();
+        }
+      break;
+      /*
+      case ' ':
+        this.sharedService.pauseAudio();
+      break;
+      */
+    }
   }
 
   onAnswered(answer: TestAnswer) {
