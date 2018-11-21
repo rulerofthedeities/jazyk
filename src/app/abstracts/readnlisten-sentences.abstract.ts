@@ -227,7 +227,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 2) : 0;
+    return words ? Math.round(words.length * this.getScoreMultiplier() * 3) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {
@@ -374,7 +374,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.sessionData.points.finished =
           Math.round(this.book.difficulty.nrOfWords *
           Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier() * 0.8) || 0;
+          this.getScoreMultiplier() * 0.5) || 0;
       }
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)

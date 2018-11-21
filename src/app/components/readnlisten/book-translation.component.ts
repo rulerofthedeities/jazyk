@@ -279,7 +279,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     if (wordsTranslation.length >= wordsSentence.length / 2) {
       points = (wordsTranslation.length + wordsSentence.length) || 0;
     }
-    return Math.round(points * 2);
+    return Math.round(points * 3);
   }
 
   private checkIfMachineTranslations(translations: SentenceTranslation[]) {

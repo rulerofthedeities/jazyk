@@ -90,8 +90,9 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   }
 
   private checkWord() {
-    const answer = this.answer,
-          word = this.word.word.replace('’', '\'').toLowerCase();
+    const answer = this.answer.trim().toLowerCase(),
+          word = this.word.word.replace('’', '\'').trim().toLowerCase();
+    console.log('answer', answer, word, answer === word);
     this.answerletter = answer === word ? 'y' : 'n';
     if (this.answerletter === 'n' && this.isAlmostCorrect(answer, word)) {
       this.answerletter = 'm';
