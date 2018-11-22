@@ -192,7 +192,7 @@ module.exports = {
     const sentencePipeline = [
             {$group: {
                 _id: '$bookId',
-                sentencesCount: {$sum: { $size: "$sentences" }}
+                sentencesCount: { $sum: "$nrOfSentences" }
             }},
             {$project: {
               _id: 0,
@@ -209,12 +209,16 @@ module.exports = {
               _id: 0,
               translationCount: 1
             }},
+          ],
+          translationPipeline2 = [
+            {$unwind: "$translations"},
+            {$count: "translationCount"},
           ];
 
     const getStats = async () => {
       const books = await Book.find({isPublished: true}, {_id: 1}),
             sentencesCount = await BookChapter.aggregate(sentencePipeline),
-            translationsCount = await Translation.aggregate(translationPipeline);
+            translationsCount = await Translation.aggregate(translationPipeline2);
       return {
         books,
         sentencesCount,
