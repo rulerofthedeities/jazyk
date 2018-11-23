@@ -77,7 +77,6 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         (stats: HomeStats) => {
-          console.log(stats);
           this.isLoadingStats = false;
           this.stats = stats;
         }

@@ -227,7 +227,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 3) : 0;
+    return words ? Math.round(words.length * this.getScoreMultiplier() * 3.2) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {

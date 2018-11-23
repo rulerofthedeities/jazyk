@@ -1,7 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=EB+Garamond|Droid+Serif|Playfair+Display|Open+Sans+Condensed:300);
+
 .info {
   height: 474px;
 }
-.info .panel-heading {
+.panel-heading {
   font-size: 32px;
 }
 .info .panel-body {
@@ -90,7 +92,7 @@ li {
 }
 .modules-text {
   position: relative;
-  top: -1px; /* for FF */
+  top: -86px;
   height: 32px;
   border-left: 1px dotted #333;
   border-right: 1px dotted #333;
@@ -102,7 +104,8 @@ li {
 .modules {
   padding: 0;
   position: relative;
-  top: -1px; /* for FF */
+  top: -86px;
+  z-index: 2;
 }
 .modules > .div {
   position: absolute;
@@ -151,6 +154,7 @@ li {
 }
 .stats .panel-body {
   padding: 12px;
+  background-color:rgba(242, 234, 211, 0.7);
 }
 .stats > div > div {
   text-align: center;
@@ -167,7 +171,78 @@ li {
   padding-left: 0;
   margin-top: 4px;
 }
+.why .panel-body, .testimonials .panel-body {
+  font-size: 20px;
+}
+.testimonials .panel-body {
+  height: 100%;
+}
+.studies1, .studies2 {
+  margin-bottom: 15px;
+}
+.resources {
+  font-size: 12px;
+}
+.author {
+  margin-left: 16px;
+  display: block;
+  margin-bottom: 6px;
+  font-style: italic;
+}
+.fa-external-link {
+  margin-left: 4px;
+  top: 1px;
+  position: relative;
+}
+.lowerwhy {
+  position: relative;
+  top: -32px;
+}
+.lowerwhy .why {
+  visibility: hidden;
+}
+.lowerstats{
+  position: relative;
+  top: 292px;
+}
+.argumentation {
+  display: flex;
+}
+.why, .testimonials {
+  height: 100%;
+}
+/* Quotes */
+.quote {
+  letter-spacing: .03em;
+  line-height: 4rem;
+}
+.quote::before {
+  content: "“";
+  font-size: 4rem;
+}
+.quote::after {
+  content: "”";
+  margin-right: -1rem;
+  font-size: 4rem;
+}
 
+.quote-container {
+  border: 1px dotted #C6D1BF;
+  border-radius: 12px;
+  font-family: 'EB Garamond';
+  font-size: 2.6rem;
+  padding: 12px;
+  background-color:rgba(242, 234, 211, 0.7);
+}
+
+.quote-highlight {
+  color: #D24335;
+}
+
+.quote-author {
+  font-family: 'Open Sans Condensed';
+  text-align: right;
+}
 /* animation */
 
 @keyframes enlarge {
@@ -226,7 +301,7 @@ li {
   .btn-column {
     width: 100%;
   }
-  .info-column {
+  .side-bar {
     display: none;
   }
 }

@@ -44,7 +44,7 @@
         <span class="fa fa-play"></span>
       </div>
     </div>
-    <div class="panel panel-default stats" [style.display]="showModules ? 'none' : 'block'">
+    <div class="panel panel-default stats" [class.lowerstats]="!!currentModule">
       <div class="panel-body">
         <div *ngIf="!isLoadingStats">
           <span class="stat">
@@ -86,7 +86,7 @@
       <div class="clearfix"></div>
     </div>
   </div>
-  <div class="col-xs-4 info-column">
+  <div class="col-xs-4 side-bar">
     <div class="panel panel-default info">
       <div class="panel-heading">{{title}}</div>
       <div class="panel-body">
@@ -116,6 +116,47 @@
             </a>
           </li>
         </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row argumentation" [class.lowerwhy]="!!currentModule">
+  <div class="col-xs-8">
+    <div class="panel panel-default why">
+      <div class="panel-heading">{{text["WhyJazyk"]}}</div>
+      <div class="panel-body">
+        <div class="studies1">
+          {{text["HomeStudies1"]}}
+          {{text["HomeStudies2"]}}
+        </div>
+        <div class="studies2">
+          <strong>{{text["HomeJazykHelps1a"]}}</strong> {{text["HomeJazykHelps1b"]}} {{text["HomeJazykHelps2"]}}
+          {{text["HomeJazykHelps3"]}} <strong>{{text["HomeJazykHelps4a"]}}</strong> {{text["HomeJazykHelps4b"]}}
+          {{text["HomeJazykHelps5a"]}} <strong>{{text["HomeJazykHelps5b"]}}</strong> {{text["HomeJazykHelps5c"]}}
+        </div>
+        <div class="resources">
+          [1] <a href="https://www.jstor.org/stable/747337" target="_blank">The impact of Reading on Second Language Learning</a>
+          <span class="fa fa-external-link"></span>
+          <span class="author">(Warwick B. Elley and Francis Mangubhai, 1983)</span>
+          [2] <a href="http://www2.hawaii.edu/~readfl/rfl/April2002/leung/leung.pdf" target="_blank">Extensive Reading and Language Learning: A Diary Study of a Beginning Learner of Japanese</a>
+          <span class="fa fa-external-link"></span>
+          <span class="author">(Ching Yin Leung, 2002)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-4 side-bar">
+    <div class="panel panel-default testimonials">
+      <div class="panel-heading">{{text["Testimonials"]}}</div>
+      <div class="panel-body">
+        <div class="quote-container">
+          <div class="quote">
+            <span class="quote-text">
+              {{text["Testimonial1a"]}} <span class="quote-highlight">{{text["Testimonial1b"]}}</span> {{text["Testimonial1c"]}}
+            </span>
+          </div>
+          <p class="quote-author">&ndash; {{text["Testimonial1name"]}}</p>
+        </div>
       </div>
     </div>
   </div>

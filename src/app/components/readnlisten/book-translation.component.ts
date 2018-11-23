@@ -332,6 +332,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.translationEdit = null;
         this.translationNote = null;
         this.submitMsg = null;
+        this.hasDeeplTranslations = false;
         this.getSentenceTranslations(sentence);
       }
     });
