@@ -3,8 +3,8 @@ import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { Map, Language, LicenseUrl } from '../models/main.model';
-import { Book, UserBook, UserData, TranslationData, ViewFilter, SessionData } from '../models/book.model';
-import { takeWhile, delay } from 'rxjs/operators';
+import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../models/book.model';
+import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 
 export abstract class ReadnListenListComponent implements OnDestroy {
@@ -122,7 +122,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       this.readnListenService.fetchSessionData(this.myLanguage.code, this.bookType),
       this.readnListenService.fetchTranslationData(this.myLanguage.code, this.bookType)
     )
-    .pipe(takeWhile(() => this.componentActive), delay(2000))
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       if (data && data.length) {
         this.processUserBooks(data[0]);

@@ -182,6 +182,7 @@ module.exports = {
           bookType = req.params.bookType,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, lanCode, bookType};
+
     UserBook.find(query, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching user books', () => {
         response.handleSuccess(res, books);

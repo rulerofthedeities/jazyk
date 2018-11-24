@@ -36,6 +36,7 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
       this.getAllUserData();
     }
     this.isLoading = true;
+
     this.readnListenService
     .fetchPublishedBooks(this.bookLanguage.code, this.sort)
     .pipe(takeWhile(() => this.componentActive))
