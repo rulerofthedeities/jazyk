@@ -292,7 +292,6 @@
 .subscribe {
   font-size: 3rem;
   color: grey;
-  margin-right: 12px;
   cursor: pointer;
 }
 .mylist, .fa-thumbs-up {
@@ -302,10 +301,24 @@
   color: grey;
 }
 .recommended {
+  margin-left: 12px;
   font-size: 3rem;
 }
 span.canrecommend:hover {
   cursor: pointer;
+}
+.repeat-count {
+  color: white;
+  border: 2px solid #337ab7;
+  background-color: #518ec2;
+  border-radius: 6px;
+  padding: 0 6px;
+  margin-left: 3px;
+  height: 26px;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: default;
 }
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */

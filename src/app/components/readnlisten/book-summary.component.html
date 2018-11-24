@@ -113,18 +113,25 @@
           {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
           ({{difficultyPerc}}%)
         </div>
-        <div class="progress" [class.progress-min]="userBookStatus.percDone < 5" *ngIf="userBookStatus.isStarted">
-          <div
-            class="progress-bar progress-bar-primary progress-bar-striped"
-            role="progressbar"
-            [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
-            aria-valuemin="0"
-            [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
-            [style.width.%]="userBookStatus.percDone">
-            <span>
-              {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
-            </span>
+        <div *ngIf="userBookStatus.isStarted">
+          <div class="repeat-count pull-right"
+            [tooltip]="text['RepeatNr']"
+            placement="left"
+            hide-delay="50">1
           </div>
+          <div class="progress" [class.progress-min]="userBookStatus.percDone < 5">
+              <div
+                class="progress-bar progress-bar-primary progress-bar-striped"
+                role="progressbar"
+                [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
+                aria-valuemin="0"
+                [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+                [style.width.%]="userBookStatus.percDone">
+                <span>
+                  {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
+                </span>
+              </div>
+            </div>
         </div>
         <div class="progress test" [class.progress-min]="userBookStatusTest.percDone < 5" *ngIf="userBookStatusTest.isStarted">
           <div
