@@ -138,6 +138,8 @@ export interface UserBook {
   recommended: boolean;
   bookmark: Bookmark;
   dt: UserBookDates;
+  repeats: Date[];
+  repeatCount: number;
 }
 
 interface Points {
@@ -172,6 +174,7 @@ export interface SessionData {
   nrMaybe: number;
   translations: number;
   points: Points;
+  repeatCount?: number;
   dt?: SessionDates;
   resultData?: ResultData; // For results page
 }
@@ -184,6 +187,9 @@ export interface UserData {
   nrNo: number;
   nrMaybe: number;
   isTest: boolean;
+  repeatCount: number;
+  start?: Date;
+  end?: Date;
 }
 
 export interface ChapterData {

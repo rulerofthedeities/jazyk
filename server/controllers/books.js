@@ -392,6 +392,7 @@ module.exports = {
     });
   },
   getSessions: (req, res) => {
+    console.log('Getting sessions');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lanCode = req.params.lan,
           bookType = req.params.bookType,
@@ -400,19 +401,29 @@ module.exports = {
             _id: 0,
             bookId: '$_id.bookId',
             isTest: '$_id.isTest',
+            repeatCount: '$_id.repeat',
             nrSentencesDone: 1,
             nrYes: 1,
             nrMaybe: 1,
-            nrNo: 1
+            nrNo: 1,
+            start: 1,
+            end: 1
           },
           pipeline = [
             {$match: query},
+            {$sort: {'dt.start': 1}},
             {$group: {
-              _id: {bookId: '$bookId', isTest: '$isTest'},
+              _id: {
+                bookId: '$bookId',
+                isTest: '$isTest',
+                repeat: '$repeatCount'
+              },
               nrSentencesDone: {'$sum': { $strLenCP: "$answers" }},
               nrYes: {'$sum': "$nrYes" },
               nrMaybe: {'$sum': "$nrMaybe" },
-              nrNo: {'$sum': "$nrNo" }
+              nrNo: {'$sum': "$nrNo" },
+              start: {$first: '$dt.start'},
+              end: {$last: '$dt.end'}
             }},
             {$project: projection}
           ];
@@ -533,7 +544,7 @@ module.exports = {
           existingTrophies = getExistingTrophies(req.body, userId);
     checkTotalThumbTrophies(res, userId, existingTrophies);
   },
-  subscribeToBook: function(req, res) {
+  subscribeToBook: (req, res) => {
     const userId = req.decoded.user._id,
           data = req.body;
     if (data && data.bookId) {
@@ -555,7 +566,37 @@ module.exports = {
       response.handleSuccess(res, {}, 200);
     }
   },
-  unsubscribeFromBook: function(req, res) {
+  subscribeRepeat: (req, res) => {
+    // add bookmark dt to repeats
+    // increase repeatCount
+    // remove bookmark
+    // set subscribed to true
+    const userId = req.decoded.user._id,
+          data = req.body,
+          bookId = mongoose.Types.ObjectId(data.bookId),
+          lanCode = data.lanCode,
+          bookType = data.bookType,
+          isTest = data.isTest,
+          dt = data.bookmark.dt,
+          query = {userId, bookId, lanCode, bookType, isTest},
+          update = {
+            $unset: {bookmark: null},
+            $inc: {repeatCount: 1},
+            $push: {repeats: dt},
+            subscribed: true,
+            'dt.dtLastReSubscribed': Date.now()
+          }
+          options= {isNew: true};
+    console.log('query', query);
+    console.log('update', update);
+    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+      console.log('result', result);
+      response.handleError(err, res, 400, 'Error subscribing repeat', function() {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  unsubscribeFromBook: (req, res) => {
     const userId = req.decoded.user._id,
           ubookId = req.body.ubookId,
           query = {_id: ubookId, userId},
@@ -568,7 +609,7 @@ module.exports = {
       });
     });
   },
-  recommend: function(req, res) {
+  recommend: (req, res) => {
     const userId = req.decoded.user._id,
           ubookId = req.body.ubookId,
           recommended = req.body.recommend,

@@ -34,6 +34,7 @@ export class PieChartComponent implements OnInit {
           nrYes: this.data.nrYes + this.testData.nrYes,
           nrNo: this.data.nrNo + this.testData.nrNo,
           nrMaybe: this.data.nrMaybe + this.testData.nrMaybe,
+          repeatCount: null,
           isTest: true
         };
       } else {

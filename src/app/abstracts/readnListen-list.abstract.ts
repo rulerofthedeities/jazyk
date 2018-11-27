@@ -14,8 +14,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   filteredBooks: Book[] = [];
   userBooks: Map<UserBook> = {}; // For sorting
   userBooksTest: Map<UserBook> = {};
-  userData: Map<UserData> = {};
-  userDataTest: Map<UserData> = {};
+  userData: Map<UserData>[] = [];
+  userDataTest: Map<UserData>[] = [];
   translationData: Map<TranslationData> = {};
   bookLanguage: Language;
   bookLanguages: Language[];
@@ -149,13 +149,17 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   private processUserData(sessionData: UserData[]) {
-    this.userData = {};
-    this.userDataTest = {};
+    this.userData = [];
+    this.userDataTest = [];
+    // Arrange all sessions per book
     sessionData.forEach(session => {
+      console.log('Repeat count', session.repeatCount);
       if (session.isTest) {
-        this.userDataTest[session.bookId] = session;
+        this.userDataTest[session.bookId] = this.userDataTest[session.bookId] ? this.userDataTest[session.bookId] : [];
+        this.userDataTest[session.bookId].push(session);
       } else {
-        this.userData[session.bookId] = session;
+        this.userData[session.bookId] = this.userData[session.bookId] ? this.userData[session.bookId] : [];
+        this.userData[session.bookId].push(session);
       }
     });
   }

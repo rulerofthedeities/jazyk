@@ -16,7 +16,7 @@ import { zip, BehaviorSubject, Subject } from 'rxjs';
 export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy {
   protected componentActive = true;
   protected bookId: string;
-  private saveFrequency = 3;
+  private saveFrequency = 2; // Save every two answers
   text: Object = {};
   settings: ReadSettings;
   book: Book;
@@ -38,6 +38,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   isCountDown = false;
   isBookRead = false;
   isError = false;
+  isRepeat = false;
   showReadMsg = false;
   readingStarted = false;
   nextSentenceObservable: Subject<string> = new Subject();
@@ -200,6 +201,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           lanCode: this.userLanCode,
           bookType: this.bookType,
           isTest: this.isTest,
+          repeatCount: userBook.repeatCount ? userBook.repeatCount : undefined,
           answers: '',
           chapters: 0,
           translations: 0,
@@ -232,6 +234,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   private findCurrentChapter(userBook: UserBook) {
     if (userBook) {
+      const repeatCount = userBook.repeatCount || 0;
+      if (repeatCount > 0) {
+        this.isRepeat = true;
+      }
+      console.log('repeat', this.isRepeat, repeatCount);
       if (userBook.bookmark) {
         if (userBook.bookmark.isBookRead) {
           this.isBookRead = true;
@@ -247,8 +254,13 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       }
     } else {
       // no userbook, subscribe and get first chapter
-      this.readnListenService.saveSubscription(this.bookId, this.userLanCode, this.bookType);
-      this.getBookAndChapter(this.bookId, null, 1);
+      this.readnListenService
+      .subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        newUserBook => {
+          this.getBookAndChapter(this.bookId, null, 1);
+      });
     }
   }
 
@@ -469,25 +481,30 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   protected startAnotherBook(book: Book) {
     this.bookId = book._id;
     this.book = book;
-    this.readnListenService.saveSubscription(this.bookId, this.userLanCode, this.bookType, this.isTest);
-    this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode + (this.isTest ? '/test' : ''));
-    this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
-    this.isCountDown = false;
-    this.currentChapter = null;
-    this.currentSentence = null;
-    this.currentSentenceTxt = null;
-    this.currentSentenceNr = null;
-    this.currentSentenceTotal = null;
-    this.currentStep = null;
-    this.currentAnswer = null;
-    this.isBookRead = false;
-    this.readingStarted = false;
-    this.isLoading = false;
-    this.isError = false;
-    this.showReadMsg = false;
-    this.sessionData = null;
-    this.msg = null;
-    this.processNewBookId();
+    this.readnListenService
+    .subscribeToBook(this.bookId, this.userLanCode, this.bookType, this.isTest)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      userBook => {
+        this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode + (this.isTest ? '/test' : ''));
+        this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
+        this.isCountDown = false;
+        this.currentChapter = null;
+        this.currentSentence = null;
+        this.currentSentenceTxt = null;
+        this.currentSentenceNr = null;
+        this.currentSentenceTotal = null;
+        this.currentStep = null;
+        this.currentAnswer = null;
+        this.isBookRead = false;
+        this.readingStarted = false;
+        this.isLoading = false;
+        this.isError = false;
+        this.showReadMsg = false;
+        this.sessionData = null;
+        this.msg = null;
+        this.processNewBookId();
+    });
   }
 
   private setBookFinishedMessage() {

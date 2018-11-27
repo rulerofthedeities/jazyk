@@ -16,6 +16,15 @@ interface UserBookStatus {
   percDone: number;
 }
 
+interface ColorHistory {
+  red: string;
+  orange: string;
+  green: string;
+  nrRed: number;
+  nrOrange: number;
+  nrGreen: number;
+}
+
 @Component({
   selector: 'km-book-summary',
   templateUrl: 'book-summary.component.html',
@@ -28,8 +37,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTest = false;
   @Input() userBook: UserBook;
   @Input() userBookTest: UserBook;
-  @Input() userData: UserData;
-  @Input() userDataTest: UserData;
+  @Input() userData: UserData[];
+  @Input() userDataTest: UserData[];
   @Input() translationData: TranslationData;
   @Input() userLanCode: string;
   @Input() text: Object;
@@ -40,9 +49,13 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
+  currentUserData: UserData;
+  currentUserTestData: UserData;
+  userColors: ColorHistory[];
   difficultyWidth: number;
   difficultyPerc: number;
   showIntro = false;
+  showHistoryData = false;
   isNewBook = false;
   isFinished = false;
   defaultImage: string;
@@ -65,32 +78,70 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges() {
+    this.getAllCurrentUserData();
     this.checkIfStarted();
     this.checkIfFinished();
     this.checkSentencesDone();
   }
 
-  onStartReadingListening() {
+  onShowRepeatHistory() {
+    console.log('show history');
+    if (!this.showHistoryData) {
+      this.userColors = [];
+      let total: number,
+          red: number,
+          orange: number,
+          green: number;
+      this.userData.forEach(data => {
+        total = data.nrNo + data.nrMaybe + data.nrYes;
+        red = Math.round(data.nrNo / total * 100);
+        orange = Math.round(data.nrMaybe / total * 100);
+        green = 100 - red - orange;
+        console.log('colors', data, red, orange, green);
+        this.userColors.push({
+          nrRed: data.nrNo,
+          nrOrange: data.nrMaybe,
+          nrGreen: data.nrYes,
+          red: red.toString(),
+          orange: orange.toString(),
+          green: green.toString()
+        });
+      });
+    }
+    this.showHistoryData = !this.showHistoryData;
+    console.log(this.showHistoryData, this.userData);
+  }
+
+  onStartReadingListening(isRepeat = false) {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.readnListenService.saveSubscription(this.book._id, this.userLanCode, this.bookType);
-    this.playIosWorkaround();
-    if (this.bookType === 'listen') {
-      this.log(`Start listening to '${this.book.title}'`);
-      this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
+    console.log('bookmark', this.userBook.bookmark);
+    if (isRepeat) {
+      this.readnListenService
+      .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, this.isTest)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(subscription => {
+        this.startReadingListening();
+      });
     } else {
-      this.log(`Start reading '${this.book.title}'`);
-      this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
+      this.readnListenService
+      .subscribeToBook(this.book._id, this.userLanCode, this.bookType, this.isTest)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(subscription => {
+        this.startReadingListening();
+      });
     }
   }
 
   onStartListeningTest() {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    this.readnListenService.saveSubscription(this.book._id, this.userLanCode, 'listen', true);
-    this.playIosWorkaround();
-    this.log(`Start listening test for '${this.book.title}'`);
-    this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
+    this.readnListenService
+    .subscribeToBook(this.book._id, this.userLanCode, 'listen', this.isTest)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(subscription => {
+      this.startReadingListeningTest();
+    });
   }
 
   onStopReadingListening() {
@@ -111,7 +162,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onToggleSubscription() {
     if ((this.userBookStatus && !this.userBookStatus.isSubscribed) || !this.userBookStatus) {
       this.readnListenService
-      .subscribeToBook(this.book._id, this.userLanCode, this.bookType)
+      .subscribeToBook(this.book._id, this.userLanCode, this.bookType, this.isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         userBook => {
@@ -143,6 +194,23 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         // audio.play();
       }
     };
+  }
+
+  private startReadingListening() {
+    this.playIosWorkaround();
+    if (this.bookType === 'listen') {
+      this.log(`Start listening to '${this.book.title}'`);
+      this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
+    } else {
+      this.log(`Start reading '${this.book.title}'`);
+      this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
+    }
+  }
+
+  private startReadingListeningTest() {
+    this.playIosWorkaround();
+    this.log(`Start listening test for '${this.book.title}'`);
+    this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
   private saveRecommend() {
@@ -188,6 +256,26 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       );
+    }
+  }
+
+  private getAllCurrentUserData() {
+    // Use the most recent repeat for current user data
+    this.currentUserData = this.getCurrentUserData(this.userData);
+    this.currentUserTestData = this.getCurrentUserData(this.userDataTest);
+  }
+
+  private getCurrentUserData(userData: UserData[]): UserData {
+    if (userData && userData.length) {
+      if (userData.length > 1) {
+        userData.sort(
+          (a, b) => (a.repeatCount > b.repeatCount) ? 1 : ((b.repeatCount > a.repeatCount) ? -1 : 0)
+        );
+        console.log('sorted data', userData);
+      }
+      return userData[0];
+    } else {
+      return null;
     }
   }
 
@@ -258,8 +346,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkSentencesDone() {
-    this.checkSentencesDoneEach(this.userData, this.userBookStatus);
-    this.checkSentencesDoneEach(this.userDataTest, this.userBookStatusTest);
+    this.checkSentencesDoneEach(this.currentUserData, this.userBookStatus);
+    this.checkSentencesDoneEach(this.currentUserTestData, this.userBookStatusTest);
   }
 
   private checkSentencesDoneEach(userData: UserData, status: UserBookStatus) {

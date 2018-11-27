@@ -78,15 +78,15 @@ export class ReadnListenService {
     return this.http
     .put<Bookmark>('/api/book/bookmark/', {bookmark, bookId, lanCode, bookType, isTest});
   }
-  saveSubscription(bookId: string, lanCode: string, bookType: string, isTest = false) {
-    this.http
-    .post<UserBook>('/api/book/subscribe', JSON.stringify({bookId, lanCode, bookType, isTest}))
-    .toPromise();
-  }
 
-  subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest = false): Observable<UserBook> {
+  subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest: boolean): Observable<UserBook> {
     return this.http
     .post<UserBook>('/api/book/subscribe', {bookId, lanCode, bookType, isTest});
+  }
+
+  subscribeRepeat(bookId: string, lanCode: string, bookType: string, bookmark: Bookmark, isTest: boolean): Observable<UserBook> {
+    return this.http
+    .put<UserBook>('/api/book/subscribe/repeat', {bookId, lanCode, bookType, bookmark, isTest});
   }
 
   unSubscribeFromBook(ubookId: string): Observable<UserBook> {

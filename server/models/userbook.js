@@ -24,7 +24,9 @@ var userBookSchema = new Schema({
   subscribed: {type: Boolean, default: true},
   recommended: Boolean,
   bookmark: bookmarkSchema,
-  dt: {type: dateSchema, required: true}
+  dt: {type: dateSchema, required: true},
+  repeats: [Date],
+  repeatCount: Number
 });
 
 userBookSchema.index({userId: 1, bookId: 1, lanCode: 1, bookType: 1, isTest: 1});

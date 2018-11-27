@@ -58,10 +58,10 @@
             type="button"
             class="btn btn-primary"
             [class.btn-lg]="tpe!=='home'"
-            (click)="onStartReadingListening()">
+            (click)="onStartReadingListening(false)">
             <span class="fa fa-arrow-right fa-spacing"></span>
             {{userBookStatus.isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
-                        : (bookType=== 'listen' ? text["StartListening"] : text["StartReading"])
+                        : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
             }}
           </button>
           <button *ngIf="!userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
@@ -75,6 +75,12 @@
           <div class="book-read" *ngIf="isFinished">
             <span class="fa fa-check"></span>
             {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+            <button type="button" *ngIf="userBook?.bookmark"
+              (click)="onStartReadingListening(true)"
+              class="btn btn-primary"
+              [class.btn-lg]="tpe!=='home'">
+              <span class="fa fa-repeat fa-spacing"></span>{{text['ReadAgain']}}
+            </button>
           </div>
         </div>
         <div class="info" *ngIf="tpe !== 'home'">
@@ -110,28 +116,56 @@
                 (click)="onToggleRecommend()"></span>
             </div>
           </div>
-          {{text["Difficulty"]}}: <span class="difficulty" [ngStyle]="{width:difficultyWidth + 'px'}"></span>
+          {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
           ({{difficultyPerc}}%)
         </div>
         <div *ngIf="userBookStatus.isStarted">
-          <div class="repeat-count pull-right"
+          <div *ngIf="userBook.repeatCount"
+            (click)="onShowRepeatHistory()"
+            class="repeat-count pull-right"
             [tooltip]="text['RepeatNr']"
             placement="left"
-            hide-delay="50">1
+            hide-delay="50">
+            {{userBook.repeatCount}}
           </div>
           <div class="progress" [class.progress-min]="userBookStatus.percDone < 5">
-              <div
-                class="progress-bar progress-bar-primary progress-bar-striped"
-                role="progressbar"
-                [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
-                aria-valuemin="0"
-                [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
-                [style.width.%]="userBookStatus.percDone">
-                <span>
-                  {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
-                </span>
-              </div>
+            <div
+              class="progress-bar progress-bar-primary progress-bar-striped"
+              role="progressbar"
+              [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+              [style.width.%]="userBookStatus.percDone">
+              <span>
+                {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
+              </span>
             </div>
+          </div>
+          <ul class="list-group repeat-history" *ngIf="showHistoryData">
+            <li *ngFor="let history of userData; let i=index" class="list-group-item history-row">
+              <span class="dt">{{history.start | date:'yyyy/MM/dd'}} - {{history.end | date:'yyyy/MM/dd'}}</span>
+              <span class="color-bar">
+                <div class="column" *ngIf="userColors[i].nrRed" [ngStyle]="{
+                  'flex': '1 0 ' + userColors[i].red +  '%',
+                  'background-color': 'red'
+                }">
+                {{userColors[i].nrRed}}
+                </div>
+                <div class="column" *ngIf="userColors[i].nrOrange" [ngStyle]="{
+                  'flex': '1 0 ' + userColors[i].orange +  '%',
+                  'background-color': 'orange'
+                }">
+                {{userColors[i].nrOrange}}
+                </div>
+                <div class="column" *ngIf="userColors[i].nrGreen" [ngStyle]="{
+                  'flex': '1 0 ' + userColors[i].green +  '%',
+                  'background-color': 'green'
+                }">
+                {{userColors[i].nrGreen}}
+                </div>
+              </span>
+            </li>
+          </ul>
         </div>
         <div class="progress test" [class.progress-min]="userBookStatusTest.percDone < 5" *ngIf="userBookStatusTest.isStarted">
           <div

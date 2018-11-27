@@ -307,6 +307,9 @@
 span.canrecommend:hover {
   cursor: pointer;
 }
+.repeat-history {
+  margin-top: 12px;
+}
 .repeat-count {
   color: white;
   border: 2px solid #337ab7;
@@ -318,7 +321,24 @@ span.canrecommend:hover {
   font-family: monospace;
   font-size: 16px;
   font-weight: bold;
-  cursor: default;
+  cursor: pointer;
+}
+.color-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 50%;
+  float: right;
+  color: white;
+  position: relative;
+  top: -6px;
+  height: 32px;
+}
+.column {
+  text-align: center;
+  overflow: hidden;
+  padding: 6px 0;
+}
+.history-row {
 }
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */

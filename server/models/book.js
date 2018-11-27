@@ -96,6 +96,7 @@ var sessionSchema = new Schema({
   nrNo: Number,
   nrMaybe: Number,
   translations: Number,
+  repeatCount: Number,
   dt: dtSchema,
   points: pointsSchema
 });

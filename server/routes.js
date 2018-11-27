@@ -118,6 +118,7 @@ module.exports = {
     router.post('/book/trophies/session', books.getSessionTrophies);
     router.post('/book/trophies/thumb', books.getThumbTrophies);
     router.post('/book/subscribe', books.subscribeToBook);
+    router.put('/book/subscribe/repeat', books.subscribeRepeat);
     router.post('/book/unsubscribe', books.unsubscribeFromBook);
     router.put('/book/recommend', books.recommend);
 
