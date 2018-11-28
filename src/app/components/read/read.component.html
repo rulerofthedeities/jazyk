@@ -33,6 +33,7 @@
           [userLanCode]="myLanguage.code"
           [text]="text"
           [nr]="i + 1"
+          [total]="filteredBooks.length"
           [licenses]="licenses"
           [tpe]="listTpe === 'my' ? 'my' : 'read'"
           (removedSubscription)="onRemovedSubscription($event)">

@@ -21,7 +21,7 @@
         </span>
         </div>
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
-          {{nr}}
+          {{nr}} / {{total}}
         </div>
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
@@ -34,8 +34,8 @@
         <div class="pie-content" style="position:relative;">
           <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
             <km-pie-chart
-              [data]="userData"
-              [testData]="userDataTest">
+              [data]="currentUserData"
+              [testData]="currentUserTestData">
             </km-pie-chart>
           </div>
         </div>
@@ -119,67 +119,23 @@
           {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
           ({{difficultyPerc}}%)
         </div>
-        <div *ngIf="userBookStatus.isStarted">
-          <div *ngIf="userBook.repeatCount"
-            (click)="onShowRepeatHistory()"
-            class="repeat-count pull-right"
-            [tooltip]="text['RepeatNr']"
-            placement="left"
-            hide-delay="50">
-            {{userBook.repeatCount}}
-          </div>
-          <div class="progress" [class.progress-min]="userBookStatus.percDone < 5">
-            <div
-              class="progress-bar progress-bar-primary progress-bar-striped"
-              role="progressbar"
-              [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
-              aria-valuemin="0"
-              [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
-              [style.width.%]="userBookStatus.percDone">
-              <span>
-                {{userBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
-              </span>
-            </div>
-          </div>
-          <ul class="list-group repeat-history" *ngIf="showHistoryData">
-            <li *ngFor="let history of userData; let i=index" class="list-group-item history-row">
-              <span class="dt">{{history.start | date:'yyyy/MM/dd'}} - {{history.end | date:'yyyy/MM/dd'}}</span>
-              <span class="color-bar">
-                <div class="column" *ngIf="userColors[i].nrRed" [ngStyle]="{
-                  'flex': '1 0 ' + userColors[i].red +  '%',
-                  'background-color': 'red'
-                }">
-                {{userColors[i].nrRed}}
-                </div>
-                <div class="column" *ngIf="userColors[i].nrOrange" [ngStyle]="{
-                  'flex': '1 0 ' + userColors[i].orange +  '%',
-                  'background-color': 'orange'
-                }">
-                {{userColors[i].nrOrange}}
-                </div>
-                <div class="column" *ngIf="userColors[i].nrGreen" [ngStyle]="{
-                  'flex': '1 0 ' + userColors[i].green +  '%',
-                  'background-color': 'green'
-                }">
-                {{userColors[i].nrGreen}}
-                </div>
-              </span>
-            </li>
-          </ul>
-        </div>
-        <div class="progress test" [class.progress-min]="userBookStatusTest.percDone < 5" *ngIf="userBookStatusTest.isStarted">
-          <div
-            class="progress-bar progress-bar-warning progress-bar-striped"
-            role="progressbar"
-            [attr.aria-valuenow]="userBookStatusTest.nrOfSentencesDone"
-            aria-valuemin="0"
-            [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
-            [style.width.%]="userBookStatusTest.percDone">
-            <span>
-              {{userBookStatusTest.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{userBookStatusTest.percDone}}%)
-            </span>
-          </div>
-        </div>
+        <ng-container *ngTemplateOutlet="progressTemplate;context:{
+          isTest: false,
+          userBookStatus: userBookStatus,
+          userBook: userBook,
+          userData: userData,
+          showHistory: showHistoryData[0]
+        }">
+        </ng-container>
+        <ng-container *ngTemplateOutlet="progressTemplate;context:{
+          isTest: true,
+          userBookStatus: userBookStatusTest,
+          userBook: userBookTest,
+          userData: userDataTest,
+          showHistory: showHistoryData[1]
+        }">
+        </ng-container>
+
         <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
           <button type="button" class="btn btn-default"
             (click)="onStopReadingListening()">
@@ -191,3 +147,61 @@
     </div>
   </div>
 </article>
+
+<ng-template #progressTemplate
+  let-isTest=isTest
+  let-uBookStatus=userBookStatus
+  let-uBook=userBook
+  let-uData=userData
+  let-showHistory=showHistory>
+  <div *ngIf="uBookStatus.isStarted">
+    <div *ngIf="uBook.repeatCount"
+      (click)="onShowRepeatHistory(isTest)"
+      class="repeat-count pull-right"
+      [tooltip]="text['RepeatNr']"
+      placement="left"
+      hide-delay="50">
+      {{uBook.repeatCount}}
+    </div>
+    <div class="progress"
+      [ngClass]="{'progress-min': uBookStatus.percDone < 5, 'test': isTest}">
+      <div
+        class="progress-bar progress-bar-striped"
+        [ngClass]="{'progress-bar-warning': isTest, 'progress-bar-primary': !isTest}"
+        role="progressbar"
+        [attr.aria-valuenow]="uBookStatus.nrOfSentencesDone"
+        aria-valuemin="0"
+        [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+        [style.width.%]="uBookStatus.percDone">
+        <span>
+          {{uBookStatus.nrOfSentencesDone}}/{{book.difficulty?.nrOfSentences}}&nbsp;({{uBookStatus.percDone}}%)
+        </span>
+      </div>
+    </div>
+    <ul class="list-group repeat-history" *ngIf="showHistory">
+      <li *ngFor="let history of uData; let i=index" class="list-group-item history-row">
+        <span class="dt">{{history.start | date:'yyyy/MM/dd'}} - {{history.end | date:'yyyy/MM/dd'}}</span>
+        <span class="color-bar">
+          <div class="column" *ngIf="userColors[i].nrRed" [ngStyle]="{
+            'flex': '1 0 ' + userColors[i].red +  '%',
+            'background-color': 'red'
+          }">
+          {{userColors[i].nrRed}}
+          </div>
+          <div class="column" *ngIf="userColors[i].nrOrange" [ngStyle]="{
+            'flex': '1 0 ' + userColors[i].orange +  '%',
+            'background-color': 'orange'
+          }">
+          {{userColors[i].nrOrange}}
+          </div>
+          <div class="column" *ngIf="userColors[i].nrGreen" [ngStyle]="{
+            'flex': '1 0 ' + userColors[i].green +  '%',
+            'background-color': 'green'
+          }">
+          {{userColors[i].nrGreen}}
+          </div>
+        </span>
+      </li>
+    </ul>
+  </div>
+</ng-template>

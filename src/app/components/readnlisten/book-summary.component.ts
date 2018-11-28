@@ -43,6 +43,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() userLanCode: string;
   @Input() text: Object;
   @Input() nr: number;
+  @Input() total: number;
   @Input() tpe: string; // home or read
   @Input() licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
@@ -55,7 +56,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   difficultyWidth: number;
   difficultyPerc: number;
   showIntro = false;
-  showHistoryData = false;
+  showHistoryData: boolean[] = [false, false];
   isNewBook = false;
   isFinished = false;
   defaultImage: string;
@@ -84,15 +85,17 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkSentencesDone();
   }
 
-  onShowRepeatHistory() {
+  onShowRepeatHistory(isTest: boolean) {
     console.log('show history');
-    if (!this.showHistoryData) {
+    const historyNr = isTest ? 1 : 0,
+          userData = isTest ? this.userDataTest : this.userData;
+    if (!this.showHistoryData[historyNr]) {
       this.userColors = [];
       let total: number,
           red: number,
           orange: number,
           green: number;
-      this.userData.forEach(data => {
+      userData.forEach(data => {
         total = data.nrNo + data.nrMaybe + data.nrYes;
         red = Math.round(data.nrNo / total * 100);
         orange = Math.round(data.nrMaybe / total * 100);
@@ -108,8 +111,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         });
       });
     }
-    this.showHistoryData = !this.showHistoryData;
-    console.log(this.showHistoryData, this.userData);
+    this.showHistoryData[historyNr] = !this.showHistoryData[historyNr];
+    console.log(this.showHistoryData[historyNr], historyNr, isTest ? this.userDataTest : this.userData);
   }
 
   onStartReadingListening(isRepeat = false) {

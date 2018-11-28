@@ -57,7 +57,8 @@ module.exports = {
                 '$points.words',
                 '$points.translations',
                 '$points.finished']
-              }}
+              }},
+              repeats: {$max: '$repeatCount'}
             }},
             {$sort: {'totalPoints': -1}},
             {$lookup: {
@@ -69,7 +70,8 @@ module.exports = {
             {$project: {
               _id: 1,
               book: 1,
-              points: '$totalPoints'
+              points: '$totalPoints',
+              repeatCount: '$repeats'
             }}
           ];
     Session.aggregate(pipeline, function(err, result) {
@@ -84,7 +86,8 @@ module.exports = {
                       bookTitle: book.title,
                       bookId: book._id,
                       lan: {from: book.lanCode, to : doc._id.lan},
-                      points: doc.points
+                      points: doc.points,
+                      repeatCount: doc.repeatCount
                     };
               total += doc.points;
               scores.push(newDoc);

@@ -89,7 +89,13 @@
                 <span class="fa fa-arrow-right flag-from"></span>
                 <img src="/assets/img/flags/{{score.lan.to}}.png" class="flag" />
               </td>
-              <td>{{score.bookTitle}}</td>
+              <td>{{score.bookTitle}}
+                <span class="repeats" *ngIf="score.repeatCount"
+                  [tooltip]="text['RepeatNr']"
+                  placement="right"
+                  hide-delay="50">[{{score.repeatCount}}]
+                </span>
+              </td>
               <td class="text-right nr">{{score.points | score}}</td>
             </tr>
             <tr>

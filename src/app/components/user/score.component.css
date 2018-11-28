@@ -46,3 +46,6 @@
   width: 26px;
   display: inline-block;
 }
+.repeats {
+  cursor: default;
+}
