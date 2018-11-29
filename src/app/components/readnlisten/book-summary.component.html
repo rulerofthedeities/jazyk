@@ -1,6 +1,6 @@
 <article>
   <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen', readbook:bookType==='read'}">
-    <div class="read-bar" *ngIf="isFinished">
+    <div class="read-bar" *ngIf="isAllFinished">
     </div>
     <div class="panel-body" [class.read]="userBookStatus.isBookRead">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
@@ -18,11 +18,12 @@
             [ngClass]="{'fa-book':bookType==='read', 'fa-volume-up': bookType==='listen'}"
             [tooltip]="text[bookType==='listen' ? 'Audiobook' : 'book']"
             placement="left">
-        </span>
+          </span>
         </div>
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
           {{nr}} / {{total}}
         </div>
+        <!-- TITLE -->
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
           {{book.title}}<span class="fa fa-info-circle intro-icon" *ngIf="book.intro" (click)="onToggleIntro()"></span>
@@ -31,6 +32,7 @@
         <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
           {{book.intro}}
         </div>
+        <!-- PIE CHART -->
         <div class="pie-content" style="position:relative;">
           <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
             <km-pie-chart
@@ -39,6 +41,7 @@
             </km-pie-chart>
           </div>
         </div>
+        <!-- AUTHOR -->
         <div class="author">
           <km-book-tpe
             [tpe]="book.tpe"
@@ -53,6 +56,7 @@
             [text]="text">
           </km-license>
         </div>
+        <!-- BUTTONS -->
         <div class="buttons" *ngIf="book.lanCode !== userLanCode">
           <button *ngIf="!userBookStatus.isBookRead && (!isTest || tpe!=='home')"
             type="button"
@@ -72,17 +76,26 @@
             <span class="fa fa-flask fa-spacing"></span>
             {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
           </button>
-          <div class="book-read" *ngIf="isFinished">
-            <span class="fa fa-check"></span>
-            {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
-            <button type="button" *ngIf="userBook?.bookmark"
-              (click)="onStartReadingListening(true)"
+          <span *ngIf="isFinished || isTestFinished">
+            <span class="book-read" *ngIf="isAllFinished">
+              <span class="fa fa-check"></span>
+              {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+            </span>
+            <button type="button" *ngIf="isFinished"
+              (click)="onStartReadingListening(false)"
               class="btn btn-primary"
               [class.btn-lg]="tpe!=='home'">
-              <span class="fa fa-repeat fa-spacing"></span>{{text['ReadAgain']}}
+              <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
             </button>
-          </div>
+            <button type="button" *ngIf="isTestFinished"
+              (click)="onStartReadingListening(true)"
+              class="btn btn-warning"
+              [class.btn-lg]="tpe!=='home'">
+              <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+            </button>
+          </span>
         </div>
+        <!-- INFO -->
         <div class="info" *ngIf="tpe !== 'home'">
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
@@ -119,6 +132,7 @@
           {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
           ({{difficultyPerc}}%)
         </div>
+        <!-- PROGRESS -->
         <ng-container *ngTemplateOutlet="progressTemplate;context:{
           isTest: false,
           userBookStatus: userBookStatus,
@@ -135,7 +149,7 @@
           showHistory: showHistoryData[1]
         }">
         </ng-container>
-
+        <!-- UNSUBSCRIBE -->
         <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
           <button type="button" class="btn btn-default"
             (click)="onStopReadingListening()">
@@ -155,13 +169,20 @@
   let-uData=userData
   let-showHistory=showHistory>
   <div *ngIf="uBookStatus.isStarted">
-    <div *ngIf="uBook.repeatCount"
+    <div *ngIf="uBook.repeatCount && tpe !== 'home'"
       (click)="onShowRepeatHistory(isTest)"
       class="repeat-count pull-right"
       [tooltip]="text['RepeatNr']"
       placement="left"
       hide-delay="50">
       {{uBook.repeatCount}}
+    </div>
+    <div *ngIf="uBook.repeatCount && tpe === 'home'"
+      class="repeat-count home pull-right"
+      [tooltip]="text['RepeatNr']"
+      placement="left"
+      hide-delay="50">
+      <span class="repeat-nr">{{uBook.repeatCount}}</span>
     </div>
     <div class="progress"
       [ngClass]="{'progress-min': uBookStatus.percDone < 5, 'test': isTest}">

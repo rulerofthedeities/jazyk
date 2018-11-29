@@ -34,7 +34,7 @@ interface ColorHistory {
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
   @Input() bookType = 'read'; // read or listen
-  @Input() isTest = false;
+  @Input() isTest = false; // only true in dashboard
   @Input() userBook: UserBook;
   @Input() userBookTest: UserBook;
   @Input() userData: UserData[];
@@ -58,7 +58,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   showIntro = false;
   showHistoryData: boolean[] = [false, false];
   isNewBook = false;
-  isFinished = false;
+  isAllFinished = false;
+  isFinished = false; // non-test
+  isTestFinished = false;
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
@@ -118,7 +120,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStartReadingListening(isRepeat = false) {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
-    console.log('bookmark', this.userBook.bookmark);
     if (isRepeat) {
       this.readnListenService
       .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, this.isTest)
@@ -274,7 +275,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         userData.sort(
           (a, b) => (a.repeatCount > b.repeatCount) ? 1 : ((b.repeatCount > a.repeatCount) ? -1 : 0)
         );
-        console.log('sorted data', userData);
       }
       return userData[0];
     } else {
@@ -284,16 +284,18 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private checkIfFinished() {
     if (this.tpe === 'home') {
-      this.isFinished = (this.userBook && this.userBookStatus.isBookRead) || (this.userBookTest && this.userBookStatusTest.isBookRead);
+      this.isAllFinished = (this.userBook && this.userBookStatus.isBookRead) || (this.userBookTest && this.userBookStatusTest.isBookRead);
     } else {
       if (this.userBook && this.userBookTest) {
         // test + no test -> both must be finished
-        this.isFinished = this.userBookStatus.isBookRead && this.userBookStatusTest.isBookRead;
+        this.isAllFinished = this.userBookStatus.isBookRead && this.userBookStatusTest.isBookRead;
       } else if (this.userBook) {
         // only read
-        this.isFinished = this.userBookStatus.isBookRead;
+        this.isAllFinished = this.userBookStatus.isBookRead;
       }
     }
+    this.isFinished = this.userBook && this.userBookStatus.isBookRead;
+    this.isTestFinished = this.userBookTest && this.userBookStatusTest.isBookRead;
   }
 
   private checkIfNew() {
