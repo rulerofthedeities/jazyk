@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReadnListenService } from '../../services/readnlisten.service';
@@ -7,7 +7,6 @@ import { SharedService } from '../../services/shared.service';
 import { ErrorService } from '../../services/error.service';
 import { ReadnListenSentencesComponent } from '../../abstracts/readnlisten-sentences.abstract';
 import { TestAnswer, SentenceSteps } from '../../models/book.model';
-import { cpus } from 'os';
 
 @Component({
   templateUrl: 'sentences-test.component.html',

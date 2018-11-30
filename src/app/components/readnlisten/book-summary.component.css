@@ -331,6 +331,10 @@ span.canrecommend:hover {
   border-radius: 2px;
   border-width: 1px;
 }
+.repeat-count.test {
+  border-color: #ffa500;
+  background-color: #f2b968;
+}
 .repeat-nr {
   position: relative;
   top: -2px;

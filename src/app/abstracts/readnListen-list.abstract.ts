@@ -153,7 +153,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     this.userDataTest = [];
     // Arrange all sessions per book
     sessionData.forEach(session => {
-      console.log('Repeat count', session.repeatCount);
       if (session.isTest) {
         this.userDataTest[session.bookId] = this.userDataTest[session.bookId] ? this.userDataTest[session.bookId] : [];
         this.userDataTest[session.bookId].push(session);

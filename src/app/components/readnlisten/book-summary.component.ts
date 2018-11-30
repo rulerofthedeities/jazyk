@@ -20,9 +20,6 @@ interface ColorHistory {
   red: string;
   orange: string;
   green: string;
-  nrRed: number;
-  nrOrange: number;
-  nrGreen: number;
 }
 
 @Component({
@@ -52,7 +49,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   userBookStatusTest: UserBookStatus;
   currentUserData: UserData;
   currentUserTestData: UserData;
-  userColors: ColorHistory[];
+  userColors: ColorHistory[][] = [];
   difficultyWidth: number;
   difficultyPerc: number;
   showIntro = false;
@@ -88,11 +85,10 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onShowRepeatHistory(isTest: boolean) {
-    console.log('show history');
     const historyNr = isTest ? 1 : 0,
           userData = isTest ? this.userDataTest : this.userData;
     if (!this.showHistoryData[historyNr]) {
-      this.userColors = [];
+      this.userColors[historyNr] = [];
       let total: number,
           red: number,
           orange: number,
@@ -102,11 +98,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         red = Math.round(data.nrNo / total * 100);
         orange = Math.round(data.nrMaybe / total * 100);
         green = 100 - red - orange;
-        console.log('colors', data, red, orange, green);
-        this.userColors.push({
-          nrRed: data.nrNo,
-          nrOrange: data.nrMaybe,
-          nrGreen: data.nrYes,
+        this.userColors[historyNr].push({
           red: red.toString(),
           orange: orange.toString(),
           green: green.toString()
@@ -114,22 +106,21 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       });
     }
     this.showHistoryData[historyNr] = !this.showHistoryData[historyNr];
-    console.log(this.showHistoryData[historyNr], historyNr, isTest ? this.userDataTest : this.userData);
   }
 
-  onStartReadingListening(isRepeat = false) {
+  onStartReadingListening(isRepeat = false, isTest = false) {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     if (isRepeat) {
       this.readnListenService
-      .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, this.isTest)
+      .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
         this.startReadingListening();
       });
     } else {
       this.readnListenService
-      .subscribeToBook(this.book._id, this.userLanCode, this.bookType, this.isTest)
+      .subscribeToBook(this.book._id, this.userLanCode, this.bookType, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
         this.startReadingListening();
@@ -141,7 +132,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     this.readnListenService
-    .subscribeToBook(this.book._id, this.userLanCode, 'listen', this.isTest)
+    .subscribeToBook(this.book._id, this.userLanCode, 'listen', true)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(subscription => {
       this.startReadingListeningTest();
@@ -272,8 +263,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   private getCurrentUserData(userData: UserData[]): UserData {
     if (userData && userData.length) {
       if (userData.length > 1) {
+        userData.map(data => data.repeatCount = data.repeatCount || 0);
         userData.sort(
-          (a, b) => (a.repeatCount > b.repeatCount) ? 1 : ((b.repeatCount > a.repeatCount) ? -1 : 0)
+          (a, b) => (a.repeatCount > b.repeatCount) ? -1 : ((b.repeatCount > a.repeatCount) ? 1 : 0)
         );
       }
       return userData[0];
@@ -291,7 +283,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         this.isAllFinished = this.userBookStatus.isBookRead && this.userBookStatusTest.isBookRead;
       } else if (this.userBook) {
         // only read
-        this.isAllFinished = this.userBookStatus.isBookRead;
+        this.isAllFinished = this.userBookStatus.isBookRead || this.userBook.repeatCount > 0;
       }
     }
     this.isFinished = this.userBook && this.userBookStatus.isBookRead;
@@ -328,7 +320,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     if (userBook) {
       status.isSubscribed = !!userBook.subscribed;
       status.isRecommended = !!userBook.recommended;
-      if (userBook.bookmark) {
+      if (userBook.bookmark && userBook.bookmark.chapterId) {
         status.isStarted = true;
         if (userBook.bookmark.isBookRead) {
           status.nrOfSentencesDone = this.book.difficulty.nrOfSentences;

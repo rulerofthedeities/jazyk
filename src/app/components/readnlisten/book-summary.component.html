@@ -58,17 +58,21 @@
         </div>
         <!-- BUTTONS -->
         <div class="buttons" *ngIf="book.lanCode !== userLanCode">
-          <button *ngIf="!userBookStatus.isBookRead && (!isTest || tpe!=='home')"
+          <button *ngIf="!isFinished && !userBookStatus.isBookRead && (!isTest || tpe!=='home')"
             type="button"
             class="btn btn-primary"
             [class.btn-lg]="tpe!=='home'"
-            (click)="onStartReadingListening(false)">
+            (click)="onStartReadingListening(false, false)">
             <span class="fa fa-arrow-right fa-spacing"></span>
-            {{userBookStatus.isStarted ? (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
-                        : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
+            {{userBookStatus.isStarted ?
+                (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
+                : (userBook && userBook.repeatCount > 0 ?
+                  (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
+                  : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
+                )
             }}
           </button>
-          <button *ngIf="!userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
+          <button *ngIf="!isTestFinished && !userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
             type="button"
             class="btn btn-warning"
             [class.btn-lg]="tpe!=='home'"
@@ -82,13 +86,13 @@
               {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
             </span>
             <button type="button" *ngIf="isFinished"
-              (click)="onStartReadingListening(false)"
+              (click)="onStartReadingListening(true, false)"
               class="btn btn-primary"
               [class.btn-lg]="tpe!=='home'">
               <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
             </button>
             <button type="button" *ngIf="isTestFinished"
-              (click)="onStartReadingListening(true)"
+              (click)="onStartReadingListening(true, true)"
               class="btn btn-warning"
               [class.btn-lg]="tpe!=='home'">
               <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
@@ -168,16 +172,17 @@
   let-uBook=userBook
   let-uData=userData
   let-showHistory=showHistory>
-  <div *ngIf="uBookStatus.isStarted">
-    <div *ngIf="uBook.repeatCount && tpe !== 'home'"
+  <div *ngIf="uBookStatus.isStarted || (uBook && uBook.repeatCount > 0)">
+    <div *ngIf="uBook.repeatCount && uBookStatus.isStarted && tpe !== 'home'"
       (click)="onShowRepeatHistory(isTest)"
       class="repeat-count pull-right"
+      [class.test]="isTest"
       [tooltip]="text['RepeatNr']"
       placement="left"
       hide-delay="50">
       {{uBook.repeatCount}}
     </div>
-    <div *ngIf="uBook.repeatCount && tpe === 'home'"
+    <div *ngIf="uBook.repeatCount && uBookStatus.isStarted && tpe === 'home'"
       class="repeat-count home pull-right"
       [tooltip]="text['RepeatNr']"
       placement="left"
@@ -203,23 +208,23 @@
       <li *ngFor="let history of uData; let i=index" class="list-group-item history-row">
         <span class="dt">{{history.start | date:'yyyy/MM/dd'}} - {{history.end | date:'yyyy/MM/dd'}}</span>
         <span class="color-bar">
-          <div class="column" *ngIf="userColors[i].nrRed" [ngStyle]="{
-            'flex': '1 0 ' + userColors[i].red +  '%',
+          <div class="column" *ngIf="history.nrNo" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].red +  '%',
             'background-color': 'red'
           }">
-          {{userColors[i].nrRed}}
+          {{history.nrNo}}
           </div>
-          <div class="column" *ngIf="userColors[i].nrOrange" [ngStyle]="{
-            'flex': '1 0 ' + userColors[i].orange +  '%',
+          <div class="column" *ngIf="history.nrMaybe" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].orange +  '%',
             'background-color': 'orange'
           }">
-          {{userColors[i].nrOrange}}
+          {{history.nrMaybe}}
           </div>
-          <div class="column" *ngIf="userColors[i].nrGreen" [ngStyle]="{
-            'flex': '1 0 ' + userColors[i].green +  '%',
+          <div class="column" *ngIf="history.nrYes" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].green +  '%',
             'background-color': 'green'
           }">
-          {{userColors[i].nrGreen}}
+          {{history.nrYes}}
           </div>
         </span>
       </li>

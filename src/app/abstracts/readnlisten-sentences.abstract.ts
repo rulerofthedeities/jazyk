@@ -17,6 +17,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   protected componentActive = true;
   protected bookId: string;
   private saveFrequency = 2; // Save every two answers
+  private repeatCount = 0;
   text: Object = {};
   settings: ReadSettings;
   book: Book;
@@ -229,7 +230,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    return words ? Math.round(words.length * this.getScoreMultiplier() * 3.2) : 0;
+    console.log('repeat multiplier points', this.getRepeatMultiplier());
+    return words ? Math.round(words.length * this.getScoreMultiplier() * this.getRepeatMultiplier() * 3.2) : 0;
   }
 
   private findCurrentChapter(userBook: UserBook) {
@@ -237,8 +239,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       const repeatCount = userBook.repeatCount || 0;
       if (repeatCount > 0) {
         this.isRepeat = true;
+        this.repeatCount = repeatCount;
       }
-      console.log('repeat', this.isRepeat, repeatCount);
       if (userBook.bookmark) {
         if (userBook.bookmark.isBookRead) {
           this.isBookRead = true;
@@ -383,10 +385,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         isBookRead
       };
       if (isBookRead) {
+        console.log('repeat multiplier finished', this.getRepeatMultiplier());
         this.sessionData.points.finished =
           Math.round(this.book.difficulty.nrOfWords *
           Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier() * 0.5) || 0;
+          this.getScoreMultiplier() * this.getRepeatMultiplier() * 0.6) || 0;
       }
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)
@@ -468,6 +471,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getScoreMultiplier(): number {
     return 1.1 + this.book.difficulty.avgWordScore / 1000;
+  }
+
+  private getRepeatMultiplier(): number {
+    // The more repeats you do, the less points you get
+    switch (this.repeatCount) {
+      case 0: return 1;
+      case 1: return 0.95;
+      case 2: return 0.8;
+      case 3: return 0.7;
+      case 4: return 0.55;
+      case 5: return 0.35;
+      default: return 0.25;
+    }
   }
 
   protected log(message: string) {

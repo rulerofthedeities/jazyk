@@ -118,7 +118,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private getRecent() {
     this.isLoadingRecent = true;
-    this.dashboardService.fetchRecentBooks()
+    this.dashboardService
+    .fetchRecentBooks()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(books => {
       this.isLoadingRecent = false;

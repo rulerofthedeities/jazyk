@@ -580,7 +580,15 @@ module.exports = {
           dt = data.bookmark.dt,
           query = {userId, bookId, lanCode, bookType, isTest},
           update = {
-            $unset: {bookmark: null},
+            $set: {
+              bookmark: {
+                isChapterRead: false,
+                isBookRead: false,
+                dt: Date.now(),
+                chapterId: null,
+                sentenceNrChapter: 0
+              }
+            },
             $inc: {repeatCount: 1},
             $push: {repeats: dt},
             subscribed: true,

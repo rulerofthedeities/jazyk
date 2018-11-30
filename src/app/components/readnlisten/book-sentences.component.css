@@ -59,6 +59,9 @@
 .fa-volume-up {
   font-size: 32px;
   margin: 14px 0 0 4px;
+  color: #428bca;
+}
+.fa-volume-up.test {
   color: #ffa500;
 }
 .book-chapter {

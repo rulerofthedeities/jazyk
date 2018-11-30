@@ -1,7 +1,6 @@
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { cpus } from 'os';
 
 export class ValidationService {
 

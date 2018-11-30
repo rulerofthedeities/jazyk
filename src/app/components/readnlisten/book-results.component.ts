@@ -6,7 +6,6 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ModalPromotionComponent } from '../modals/modal-promotion.component';
 import { zip } from 'rxjs';
-import { cpus } from 'os';
 
 @Component({
   selector: 'km-sentences-results',
