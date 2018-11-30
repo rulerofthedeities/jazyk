@@ -392,7 +392,6 @@ module.exports = {
     });
   },
   getSessions: (req, res) => {
-    console.log('Getting sessions');
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lanCode = req.params.lan,
           bookType = req.params.bookType,
@@ -595,10 +594,7 @@ module.exports = {
             'dt.dtLastReSubscribed': Date.now()
           }
           options= {isNew: true};
-    console.log('query', query);
-    console.log('update', update);
     UserBook.findOneAndUpdate(query, update, options, function(err, result) {
-      console.log('result', result);
       response.handleError(err, res, 400, 'Error subscribing repeat', function() {
         response.handleSuccess(res, result);
       });

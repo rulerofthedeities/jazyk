@@ -230,7 +230,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentencePoints(sentence: string): number {
     const words = sentence.split(' ');
-    console.log('repeat multiplier points', this.getRepeatMultiplier());
     return words ? Math.round(words.length * this.getScoreMultiplier() * this.getRepeatMultiplier() * 3.2) : 0;
   }
 
@@ -385,7 +384,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         isBookRead
       };
       if (isBookRead) {
-        console.log('repeat multiplier finished', this.getRepeatMultiplier());
         this.sessionData.points.finished =
           Math.round(this.book.difficulty.nrOfWords *
           Math.log(this.book.difficulty.nrOfWords) *

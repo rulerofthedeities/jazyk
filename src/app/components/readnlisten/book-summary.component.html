@@ -15,7 +15,11 @@
       <div class="book">
         <div class="book-type" *ngIf="tpe === 'home'">
           <span class="fa"
-            [ngClass]="{'fa-book':bookType==='read', 'fa-volume-up': bookType==='listen'}"
+            [ngClass]="{
+              'fa-book':bookType==='read',
+              'fa-volume-up': bookType==='listen',
+              'test': isTest
+            }"
             [tooltip]="text[bookType==='listen' ? 'Audiobook' : 'book']"
             placement="left">
           </span>
@@ -184,6 +188,7 @@
     </div>
     <div *ngIf="uBook.repeatCount && uBookStatus.isStarted && tpe === 'home'"
       class="repeat-count home pull-right"
+      [class.test]="isTest"
       [tooltip]="text['RepeatNr']"
       placement="left"
       hide-delay="50">

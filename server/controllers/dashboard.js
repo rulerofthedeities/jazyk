@@ -118,7 +118,6 @@ module.exports = {
                 book = await Book.findOne({_id: uBook.bookId, isPublished: true});
               }
               // Get session count
-
               const sesQuery = {
                       userId,
                       lanCode: userLan,
@@ -128,7 +127,7 @@ module.exports = {
                     },
                     sesProjection = {
                       _id: 0,
-                      bookId: '$_id',
+                      bookId: '$_id.bookId',
                       nrSentencesDone: 1,
                       nrYes: 1,
                       nrMaybe: 1,
@@ -137,12 +136,17 @@ module.exports = {
                     sesPipeline = [
                       {$match: sesQuery},
                       {$group: {
-                        _id: '$bookId',
+                        _id: {
+                          bookId: '$bookId',
+                          isTest: '$isTest',
+                          repeat: '$repeatCount'
+                        },
                         nrSentencesDone: {'$sum': { $strLenCP: "$answers" }},
                         nrYes: {'$sum': "$nrYes" },
                         nrMaybe: {'$sum': "$nrMaybe" },
                         nrNo: {'$sum': "$nrNo" }
                       }},
+                      {$sort: {'_id.repeat': -1}},
                       {$project: sesProjection}
                     ];
               const sessions = await Session.aggregate(sesPipeline);
@@ -164,7 +168,6 @@ module.exports = {
                       {$project: tlProjection}
                     ];
               const translations = await Translation.aggregate(tlPipeline);
-
               return ({
                 dt: uBook.bookmark ? uBook.bookmark.dt : null,
                 tpe: 'book',

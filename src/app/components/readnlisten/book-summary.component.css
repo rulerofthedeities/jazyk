@@ -219,7 +219,7 @@
   color: green;
   font-size: 32px;
 }
-.fa-volume-up {
+.fa-volume-up.test {
   color: #ffa500;
 }
 .book-read {
