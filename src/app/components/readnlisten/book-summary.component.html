@@ -11,6 +11,9 @@
         <img src="{{book?.img || defaultImage}}" class="book-img">
         <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
         <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
+        <div class="jazyk-book" *ngIf="book?.authors==='Jazyk'">
+          <img src="/assets/img/logo.png">
+        </div>
       </div>
       <div class="book">
         <div class="book-type" *ngIf="tpe === 'home'">

@@ -48,13 +48,13 @@
       <div class="panel-body">
         <div *ngIf="!isLoadingStats">
           <span class="stat">
-            {{text["Books"]}}: <strong>{{stats?.nrOfBooks | score}}</strong>
+            <strong>{{stats?.nrOfBooks | score}}</strong> {{text["Books"].toLowerCase()}}
           </span>
           <span class="stat middle">
-            {{text["Sentences"]}}: <strong>{{stats?.nrOfSentences | score}}</strong>
+            <strong>{{stats?.nrOfSentences | score}}</strong> {{text["Sentences"].toLowerCase()}}
           </span>
             <span class="stat">
-            {{text["Translations"]}}: <strong>{{stats?.nrOfTranslations | score}}</strong>
+              <strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"].toLowerCase()}}
           </span>
         </div>
         <km-loader *ngIf="isLoadingStats" style="height: 20px;"

@@ -354,7 +354,11 @@ span.canrecommend:hover {
   overflow: hidden;
   padding: 6px 0;
 }
-.history-row {
+.jazyk-book {
+  position: relative;
+  top: -32px;
+  border-top: 1px solid #333;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */
