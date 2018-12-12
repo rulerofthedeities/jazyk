@@ -25,6 +25,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
 // Temp workaround for flickering in universal
 import { PageService } from './services/page.service';
 import { InfoComponent } from './components/pages/info.component';
+import { ManualComponent } from './components/pages/manual.component';
 import { BooklistComponent } from './components/pages/book-list.component';
 
 @NgModule({
@@ -54,6 +55,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     DashboardComponent,
     PageNotFoundComponent,
     InfoComponent,
+    ManualComponent,
     BooklistComponent
   ],
   bootstrap: [AppComponent]

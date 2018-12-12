@@ -6,6 +6,7 @@ import { PageNotFoundComponent } from './components/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
 import { InfoComponent } from './components/pages/info.component';
+import { ManualComponent } from './components/pages/manual.component';
 import { BooklistComponent } from './components/pages/book-list.component';
 
 export const routes: Routes = [
@@ -50,6 +51,13 @@ export const routes: Routes = [
         children: [
           {path: 'booklist', component: BooklistComponent},
           {path: ':page', component: InfoComponent}
+        ]
+      },
+      {
+        path: 'manual',
+        children: [
+          {path: '', redirectTo: '/manual/index', pathMatch: 'full' },
+          {path: ':page', component: ManualComponent}
         ]
       },
       {

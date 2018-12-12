@@ -55,7 +55,7 @@ export class BooklistComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected getDependables() {
+  private getDependables() {
     const options = {
       lan: this.userLan,
       component: 'ReadComponent',

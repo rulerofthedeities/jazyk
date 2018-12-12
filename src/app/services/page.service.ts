@@ -1,6 +1,6 @@
 import { Injectable, Inject, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Page, BooksByLan } from '../models/page.model';
+import { Page, BooksByLan, ManualIndex } from '../models/page.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -25,6 +25,21 @@ export class PageService {
     const hostName = this.originUrl || ''; // for ssr
     return this.http
     .get<BooksByLan[]>(hostName + '/api/pages/booklist/' + tpe)
+    .pipe(retry(3));
+  }
+
+  /*** MANUAL ***/
+  fetchManualIndex(): Observable<ManualIndex[]> {
+    const hostName = this.originUrl || ''; // for ssr
+    return this.http
+    .get<ManualIndex[]>(hostName + '/api/pages/manual/index')
+    .pipe(retry(3));
+  }
+
+  fetchManualPage(pageId: string): Observable<Page> {
+    const hostName = this.originUrl || ''; // for ssr
+    return this.http
+    .get<Page>(hostName + '/api/pages/manual/' + pageId)
     .pipe(retry(3));
   }
 }

@@ -3,10 +3,16 @@
   margin: 0 auto;
 }
 .panel-heading {
-  background-color: rgb(189, 208, 156);
   border-color: #505d66;
-  color: rgb(78, 97, 114);
   font-size: 24px;
+}
+.info .panel-heading {
+  background-color: rgb(189, 208, 156);
+  color: rgb(78, 97, 114);
+}
+.manual .panel-heading {
+  background-color: rgb(78, 97, 114);
+  color: white;
 }
 :host {
   font-size: 18px;
@@ -138,6 +144,10 @@
 }
 /deep/ .i-float {
   float: left;
+}
+/deep/ .i-image > figcaption {
+  text-align: center;
+  font-style: italic;
 }
 /* routes */
 /deep/ .i-route {

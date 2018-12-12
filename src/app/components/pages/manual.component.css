@@ -1,0 +1,13 @@
+.fa-arrow-up, .list-group-item {
+  cursor: pointer;
+}
+.level-2 {
+  margin-left: 60px;
+}
+.list-group-item:hover {
+  background-color: #e1f4fa;
+}
+.chevron {
+  width: 20px;
+}
+[hidden] { display: none !important;}

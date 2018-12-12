@@ -45,6 +45,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     const y = dt.getFullYear();
     const m = ('0' + (dt.getMonth() + 1)).slice(-2);
     this.month = y + m;
+    this.month = '201909';
   }
 
   private setUpTokenRefresh() {

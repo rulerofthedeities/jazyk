@@ -19,3 +19,11 @@ export interface BooksByLan {
    links?: string[];
    total: number;
  }
+
+export interface ManualIndex {
+  name: string;
+  sort: string;
+  title: string;
+  level?: number;
+  nr?: number;
+}

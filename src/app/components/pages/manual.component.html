@@ -1,0 +1,36 @@
+<div class="panel panel-default transparant manual">
+  <div class="panel-heading">
+    <span class="fa fa-question-circle fa-spacing-title"></span>
+    <span *ngIf="isIndex && !!text">
+      {{isIndex ? text["Manual"] : page?.title}}
+    </span>
+    <span *ngIf="!isIndex"
+      class="fa fa-arrow-up pull-right"
+      (click)="onReturnToIndex()"></span>
+  </div>
+  <div class="panel-body">
+    <ul *ngIf="isIndex" class="list-group">
+      <li *ngFor="let item of index"
+        class="list-group-item"
+        [hidden]="isSectionClosed[item.nr] && item.level > 1"
+        (click)="onGoToManualPage(item)"
+        [ngClass]="{
+          'level-1': item.level === 1,
+          'level-2': item.level === 2}">
+        <span
+          *ngIf="item.level === 1"
+          class="fa fa-spacing chevron"
+          [ngClass]="{
+            'fa-chevron-down': !isSectionClosed[item.nr],
+            'fa-chevron-right': isSectionClosed[item.nr]
+          }">
+        </span>
+        <span *ngIf="item.level > 1" class="fa fa-arrow-right"></span>
+        {{item.title}}
+      </li>
+    </ul>
+    <div *ngIf="!isIndex"
+      [innerHTML]="page?.html | sanitizeHtml">
+    </div>
+  </div>
+</div>

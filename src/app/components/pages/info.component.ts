@@ -11,7 +11,7 @@ import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'info.component.html',
-  styleUrls: ['info.component.css']
+  styleUrls: ['page.component.css']
 })
 
 export class InfoComponent implements OnInit, OnDestroy {

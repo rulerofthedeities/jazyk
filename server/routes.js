@@ -10,7 +10,7 @@ const path = require('path'),
       messages = require('./controllers/messages'),
       follows = require('./controllers/follows'),
       scores = require('./controllers/scores'),
-      info = require('./controllers/info'),
+      page = require('./controllers/page'),
       dashboard = require('./controllers/dashboard'),
       log = require('./controllers/log'),
       response = require('./response');
@@ -29,8 +29,10 @@ module.exports = {
     router.post('/user/signup', users.signup);
     router.get('/translations/:lan/:component', translations.getTranslations);
     router.get('/dependables', config.getDependables);
-    router.get('/pages/booklist/:tpe', info.getBooklist);
-    router.get('/pages/info/:page/:lan/:loggedIn', info.getPage);
+    router.get('/pages/booklist/:tpe', page.getBooklist);
+    router.get('/pages/info/:page/:lan/:loggedIn', page.getInfoPage);
+    router.get('/pages/manual/index', page.getManualIndex);
+    router.get('/pages/manual/:page', page.getManualPage);
     router.get('/home/stats', dashboard.getHomeStats);
     router.post('/user/sendforgotpwmail', users.sendForgotPassword);
     router.post('/user/checkresetId', users.checkresetId);

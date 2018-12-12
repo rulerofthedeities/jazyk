@@ -23,3 +23,21 @@
   position: relative;
   top: -5px;
 }
+.bg {
+  background-color: yellow;
+  color: black;
+  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  text-align: center;
+  padding-top: 2px;
+}
+.bg-red {
+  background-color: red;
+  color: white;
+}
+.bg-green {
+  background-color: green;
+  color: white;
+}

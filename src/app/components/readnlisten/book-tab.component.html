@@ -1,8 +1,12 @@
 <li class="list-group-item">
-  <span class="fa fa-circle"
+  <span class="fa bg"
     [ngClass]="{
-      green: book.difficulty.weight <= weight,
-      red: book.difficulty.weight > weight}"
+      'bg-red': book.difficulty.weight <= weight - 5,
+      'bg-green': book.difficulty.weight > weight + 5,
+      'fa-angle-up': book.difficulty.weight > weight + 5 && book.difficulty.weight <= weight + 20,
+      'fa-angle-down': book.difficulty.weight < weight - 5 && book.difficulty.weight >= weight - 20,
+      'fa-angle-double-up': book.difficulty.weight > weight + 20,
+      'fa-angle-double-down': book.difficulty.weight < weight - 20}"
     [tooltip]="tooltip"
     placement="top">
   </span>

@@ -4,7 +4,7 @@ const response = require('../response'),
       Audiobook = require('../models/book').audiobook;
 
 module.exports = {
-  getPage: (req, res) => {
+  getInfoPage: (req, res) => {
     const page = req.params.page,
           lan = req.params.lan,
           loggedIn = req.params.loggedIn,
@@ -47,5 +47,31 @@ module.exports = {
         response.handleSuccess(res, books);
       });
     })
+  },
+  getManualIndex: (req, res) => {
+    const query = {tpe: 'manual'},
+          projection = {
+            _id: 0,
+            name: 1,
+            title: 1,
+            sort: 1
+          },
+          options = {sort: {sort: 1}};
+    console.log('query', query);
+    Page.find(query, projection, options, (err, result) => {
+      response.handleError(err, res, 400, `Error getting manual index`, () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  getManualPage: (req, res) => {
+    const page = req.params.page,
+          query = {tpe: 'manual', name: page};
+    console.log('fetching page', page);
+    Page.findOne(query, (err, result) => {
+      response.handleError(err, res, 400, `Error getting manual page "${page}"`, () => {
+        response.handleSuccess(res, result);
+      });
+    });
   }
 }
