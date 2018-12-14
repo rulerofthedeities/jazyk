@@ -104,9 +104,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   onSetFinished(isFinished: boolean) {
     // Book is finished but flag is not set in bookmark (user closed page right before results)
-    console.log('Set to finish');
+    this.sessionData.points.finished = this.getPointsFinished();
     this.readnListenService
-    .setFinished(this.bookId, this.userLanCode, this.bookType, this.isTest)
+    .setFinished(this.bookId, this.userLanCode, this.bookType, this.isTest, this.sessionData.points.finished)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {}
@@ -395,16 +395,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         isBookRead
       };
       if (isBookRead) {
-        this.sessionData.points.finished =
-          Math.round(this.book.difficulty.nrOfWords *
-          Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier() * this.getRepeatMultiplier() * 0.9) || 0;
+        this.sessionData.points.finished = this.getPointsFinished();
       }
       this.readnListenService
       .placeBookmark(this.bookId, newBookmark, this.userLanCode, this.bookType, this.isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(bookmark => {});
     }
+  }
+
+  private getPointsFinished(): number {
+    return Math.round(this.book.difficulty.nrOfWords *
+          Math.log(this.book.difficulty.nrOfWords) *
+          this.getScoreMultiplier() * this.getRepeatMultiplier() * 0.9) || 0;
   }
 
   protected saveSessionData(book: Book = null) {
@@ -434,10 +437,28 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       book => {
         if (this.currentStep === SentenceSteps.Results) {
           // Results - already saved
+          console.log('start another book - results saved', book);
           this.startAnotherBook(book);
         } else {
-          this.placeBookmark(false);
-          this.saveSessionData(book);
+          console.log('start another book - results not saved');
+          if (this.currentSentenceNr >= this.currentSentenceTotal) {
+            // Check if finished
+            this.readnListenService
+            .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
+            .pipe(takeWhile(() => this.componentActive))
+            .subscribe(
+              chapter => {
+                if (!chapter) {
+                  // Quit book right at the finish!
+                  this.placeBookmark(true);
+                }
+                this.saveSessionData(book);
+              }
+            );
+            } else {
+              this.placeBookmark(false);
+              this.saveSessionData(book);
+            }
         }
       }
     );
@@ -511,6 +532,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
+        console.log('go to new book');
         this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode + (this.isTest ? '/test' : ''));
         this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
         this.isCountDown = false;
