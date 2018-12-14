@@ -558,12 +558,10 @@ module.exports = {
             update = {$set: set, $setOnInsert: insert};
       UserBook.findOneAndUpdate(query, update, options, (err, result) => {
         response.handleError(err, res, 400, 'Error subscribing to book', () => {
-          console.log('result2', result);
           response.handleSuccess(res, result);
         });
       });
     } else {
-      console.log('no data');
       response.handleSuccess(res, {}, 200);
     }
   },

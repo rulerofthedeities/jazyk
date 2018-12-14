@@ -75,7 +75,7 @@ export class SignInComponent implements OnInit, OnDestroy {
           data.returnUrl = this.returnUrl;
           this.authService.signedIn(data);
           this.userService.user = data.user;
-          this.sharedService.userJustLoggedIn();
+          // this.sharedService.userJustLoggedIn();
           this.log(`Logged in as ${data.user.userName}`);
         },
         error => {

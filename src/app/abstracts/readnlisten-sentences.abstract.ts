@@ -437,10 +437,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       book => {
         if (this.currentStep === SentenceSteps.Results) {
           // Results - already saved
-          console.log('start another book - results saved', book);
           this.startAnotherBook(book);
         } else {
-          console.log('start another book - results not saved');
           if (this.currentSentenceNr >= this.currentSentenceTotal) {
             // Check if finished
             this.readnListenService
@@ -455,10 +453,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
                 this.saveSessionData(book);
               }
             );
-            } else {
-              this.placeBookmark(false);
-              this.saveSessionData(book);
-            }
+          } else {
+            this.placeBookmark(false);
+            this.saveSessionData(book);
+          }
         }
       }
     );

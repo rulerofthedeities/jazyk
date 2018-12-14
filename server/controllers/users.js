@@ -149,8 +149,9 @@ const getUserMailVerificationData = (userId, callback) => {
 };
 
 const updateLastLoginDate = (CurUser, res) => {
-  const update = {$set: {'jazyk.dt.lastLogin': Date.now()}};
-  User.findOneAndUpdate(CurUser._id, update, (err, result) => {
+  const userId = new mongoose.Types.ObjectId(CurUser.user._id),
+        update = {$set: {'jazyk.dt.lastLogin': Date.now()}};
+  User.findOneAndUpdate({_id: userId}, update, (err, result) => {
     if (err) {
       console.log('Error updating user login date');
     }
