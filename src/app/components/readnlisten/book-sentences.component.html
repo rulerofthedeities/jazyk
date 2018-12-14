@@ -127,7 +127,9 @@
               [data]="sessionData"
               [text]="text"
               [bookType]="bookType"
-              [isTest]="false">
+              [isTest]="false"
+              [isBookRead]="isBookRead"
+              (setFinished)="onSetFinished($event)">
             </km-sentences-results>
           </div>
 

@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
-import { Language } from '../../models/main.model';
+import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 import { Book } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
-import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 
 @Component({
   templateUrl: 'read.component.html',
@@ -35,8 +34,8 @@ export class ReadComponent extends ReadnListenListComponent implements OnInit, O
     if (!onlyBooks) { // Not required if resorted
       this.getAllUserData();
     }
+    this.filteredBooks = [];
     this.isLoading = true;
-
     this.readnListenService
     .fetchPublishedBooks(this.bookLanguage.code, this.sort)
     .pipe(takeWhile(() => this.componentActive))

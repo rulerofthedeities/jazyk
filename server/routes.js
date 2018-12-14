@@ -122,6 +122,7 @@ module.exports = {
     router.post('/book/subscribe', books.subscribeToBook);
     router.put('/book/subscribe/repeat', books.subscribeRepeat);
     router.post('/book/unsubscribe', books.unsubscribeFromBook);
+    router.put('/book/finished', books.setBookFinished);
     router.put('/book/recommend', books.recommend);
 
     router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);

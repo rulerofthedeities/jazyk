@@ -102,6 +102,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
+  onSetFinished(isFinished: boolean) {
+    // Book is finished but flag is not set in bookmark (user closed page right before results)
+    console.log('Set to finish');
+    this.readnListenService
+    .setFinished(this.bookId, this.userLanCode, this.bookType, this.isTest)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      userBook => {}
+    );
+  }
+
   onKeyPressed(key: string) {
     switch (key) {
       case 'Escape':

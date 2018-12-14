@@ -565,6 +565,27 @@ module.exports = {
       response.handleSuccess(res, {}, 200);
     }
   },
+  setBookFinished: (req, res) => {
+    const userId = req.decoded.user._id,
+          data = req.body;
+    console.log('setting book finished', data);
+    if (data && data.bookId) {
+      const bookId = mongoose.Types.ObjectId(data.bookId),
+            lanCode = data.lanCode,
+            bookType = data.bookType,
+            isTest = data.isTest,
+            query = {userId, bookId, lanCode, bookType, isTest},
+            options = {new: true},
+            update = {$set: {'bookmark.isBookRead': true}};
+      UserBook.findOneAndUpdate(query, update, options, function(err, result) {
+        response.handleError(err, res, 400, 'Error setting book to finished', function() {
+          response.handleSuccess(res, result);
+        });
+      });
+    } else {
+      response.handleSuccess(res, {}, 200);
+    }
+  },
   subscribeRepeat: (req, res) => {
     // add bookmark dt to repeats
     // increase repeatCount

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, Output, OnChanges, OnDestroy, ViewChild, EventEmitter } from '@angular/core';
 import { SessionData, Trophy } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { ReadnListenService } from '../../services/readnlisten.service';
@@ -18,6 +18,8 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   @Input() text: Object;
   @Input() bookType: string;
   @Input() isTest: boolean;
+  @Input() isBookRead: boolean;
+  @Output() setFinished = new EventEmitter<boolean>();
   @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   percYes = 0;
@@ -55,6 +57,11 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   private calculateResults() {
     this.newTrophies = [];
     this.isFinished = this.data.resultData.isFinished;
+    if (this.isFinished && !this.isBookRead) {
+      // set book to finished
+      console.log('FINISHED', this.data);
+      this.setFinished.emit(true);
+    }
     this.checkSessionTrophies(this.data);
     this.total = this.data.nrYes + this.data.nrMaybe + this.data.nrNo;
     if (this.total > 0) {

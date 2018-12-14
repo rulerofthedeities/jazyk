@@ -99,6 +99,12 @@ export class ReadnListenService {
     .put<UserBook>('/api/book/recommend', {ubookId, recommend});
   }
 
+  setFinished(bookId: string, lanCode: string, bookType: string, isTest: boolean): Observable<UserBook> {
+    console.log('setting book to finished');
+    return this.http
+    .put<UserBook>('/api/book/finished', {bookId, lanCode, bookType, isTest});
+  }
+
   /*** Session Data ***/
 
   fetchSessionData(learnLanCode: string, bookType: string): Observable<UserData[]> {
