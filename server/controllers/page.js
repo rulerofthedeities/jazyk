@@ -54,10 +54,10 @@ module.exports = {
             _id: 0,
             name: 1,
             title: 1,
-            sort: 1
+            sort: 1,
+            isHeader: 1
           },
           options = {sort: {sort: 1}};
-    console.log('query', query);
     Page.find(query, projection, options, (err, result) => {
       response.handleError(err, res, 400, `Error getting manual index`, () => {
         response.handleSuccess(res, result);

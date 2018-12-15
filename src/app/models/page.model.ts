@@ -24,6 +24,6 @@ export interface ManualIndex {
   name: string;
   sort: string;
   title: string;
+  isHeader: boolean;
   level?: number;
-  nr?: number;
 }

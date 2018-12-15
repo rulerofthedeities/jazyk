@@ -20,7 +20,7 @@ export class ManualComponent implements OnInit, OnDestroy {
   page: Page;
   index: ManualIndex[];
   isIndex = false;
-  isSectionClosed: boolean[] = [];
+  sectionClosed: boolean[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -54,12 +54,12 @@ export class ManualComponent implements OnInit, OnDestroy {
   }
 
   onGoToManualPage(item: ManualIndex) {
-    if (item.level > 1) {
+    if (item.isHeader) {
+      this.sectionClosed[item.sort] = !this.sectionClosed[item.sort];
+      console.log(item.sort, this.sectionClosed[item.sort]);
+    } else {
       console.log('go to page', item);
       this.router.navigate(['/manual/', item.name]);
-    } else {
-      this.isSectionClosed[item.nr] = !this.isSectionClosed[item.nr];
-      console.log(item.nr, this.isSectionClosed[item.nr]);
     }
   }
 
@@ -67,9 +67,18 @@ export class ManualComponent implements OnInit, OnDestroy {
     this.router.navigate(['/manual/index']);
   }
 
-  getDisplay(nr: string): string {
-    console.log('display', this.isSectionClosed[nr] ? 'hidden' : 'block');
-    return this.isSectionClosed[nr] ? 'hidden' : 'block';
+  isSectionClosed(item: ManualIndex): boolean {
+    const levels = item.sort.split('.');
+    let parent: string,
+        closed = false;
+    // check if one of the parents is closed
+    for (let i = 0; i < levels.length - 1; i++) {
+      parent = item.sort.split('.', i + 1).join('.');
+      if (this.sectionClosed[parent]) {
+        closed = true;
+      }
+    }
+    return closed;
   }
 
   private getManualIndex() {
@@ -99,8 +108,10 @@ export class ManualComponent implements OnInit, OnDestroy {
 
   private processIndex(index: ManualIndex[]): ManualIndex[] {
     index.forEach(item => {
-      item.level = item.sort.split('.').length;
-      item.nr = parseInt(item.sort.split('.')[0], 10);
+      const levels = item.sort.split('.');
+      item.level = levels.length;
+      levels.pop();
+      item.parent = levels.join('.');
     });
     return index;
   }

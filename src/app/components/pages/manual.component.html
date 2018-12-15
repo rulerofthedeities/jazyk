@@ -15,20 +15,18 @@
     <ul *ngIf="isIndex" class="list-group">
       <li *ngFor="let item of index"
         class="list-group-item"
-        [hidden]="isSectionClosed[item.nr] && item.level > 1"
+        [hidden]="isSectionClosed(item)"
         (click)="onGoToManualPage(item)"
-        [ngClass]="{
-          'level-1': item.level === 1,
-          'level-2': item.level === 2}">
+        [ngClass]="'level-' + item.level">
         <span
-          *ngIf="item.level === 1"
+          *ngIf="item.isHeader"
           class="fa fa-spacing chevron"
           [ngClass]="{
-            'fa-chevron-down': !isSectionClosed[item.nr],
-            'fa-chevron-right': isSectionClosed[item.nr]
+            'fa-chevron-down': !sectionClosed[item.sort],
+            'fa-chevron-right': sectionClosed[item.sort]
           }">
         </span>
-        <span *ngIf="item.level > 1" class="fa fa-arrow-right"></span>
+        <span *ngIf="!item.isHeader" class="fa fa-arrow-right"></span>
         {{item.title}}
       </li>
     </ul>
