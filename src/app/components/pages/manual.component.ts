@@ -84,9 +84,10 @@ export class ManualComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getManualPage(pageId: string) {
+  private getManualPage(pageName: string) {
+    console.log('Fetching manual page', pageName);
     this.pageService
-    .fetchManualPage(pageId)
+    .fetchManualPage(pageName)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       page => {

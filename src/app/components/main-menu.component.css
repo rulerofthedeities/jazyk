@@ -55,8 +55,11 @@ li.active .bar, li > a:hover .bar {
 li > a.inactive:hover .bar {
   display: none;
 }
-li > a .bar.small {
+li > a.messages .bar.small {
   width: 26px;
+}
+.manual {
+  font-size: 24px;
 }
 li.active span.bar {
   background-color: #ddd;

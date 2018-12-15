@@ -1,12 +1,15 @@
 <div class="panel panel-default transparant manual">
   <div class="panel-heading">
-    <span class="fa fa-question-circle fa-spacing-title"></span>
-    <span *ngIf="isIndex && !!text">
+    <span class="fa fa-question-circle fa-spacing-title"
+      (click)="onReturnToIndex()">
+    </span>
+    <span *ngIf="text">
       {{isIndex ? text["Manual"] : page?.title}}
     </span>
     <span *ngIf="!isIndex"
       class="fa fa-arrow-up pull-right"
-      (click)="onReturnToIndex()"></span>
+      (click)="onReturnToIndex()">
+    </span>
   </div>
   <div class="panel-body">
     <ul *ngIf="isIndex" class="list-group">

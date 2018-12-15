@@ -139,6 +139,11 @@
                 <span class="fa fa-trophy"></span> {{text["Score"]}}
               </a>
             </li>
+            <li (click)="onGotoManual($event)" *ngIf="intLan?.code==='en'">
+              <a class="dropdown-item">
+                <span class="fa fa-question-circle-o"></span> {{text["Manual"]}}
+              </a>
+            </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
             <li *ngIf="score" (click)="onGoto($event, 'score')">
               <a class="dropdown-item"

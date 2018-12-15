@@ -36,10 +36,10 @@ export class PageService {
     .pipe(retry(3));
   }
 
-  fetchManualPage(pageId: string): Observable<Page> {
+  fetchManualPage(pageName: string): Observable<Page> {
     const hostName = this.originUrl || ''; // for ssr
     return this.http
-    .get<Page>(hostName + '/api/pages/manual/' + pageId)
+    .get<Page>(hostName + '/api/pages/manual/' + encodeURIComponent(pageName))
     .pipe(retry(3));
   }
 }

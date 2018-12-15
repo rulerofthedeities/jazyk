@@ -65,7 +65,7 @@ module.exports = {
     });
   },
   getManualPage: (req, res) => {
-    const page = req.params.page,
+    const page = decodeURIComponent(req.params.page),
           query = {tpe: 'manual', name: page};
     console.log('fetching page', page);
     Page.findOne(query, (err, result) => {
