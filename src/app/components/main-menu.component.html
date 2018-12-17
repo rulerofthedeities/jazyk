@@ -68,6 +68,11 @@
             <span class="bar"></span>
           </a>
         </li>
+        <li *ngIf="!isLoggedIn && intLan?.code==='en' && url.slice(0,7)!=='/manual'">
+          <a class="dropdown-item manual" (click)="onGotoManual($event)">
+            <span class="fa fa-question-circle-o"></span>
+          </a>
+        </li>
         <li
           class="nav-item dropdown"
           *ngIf="!isLoggedIn && (url==='/home')"

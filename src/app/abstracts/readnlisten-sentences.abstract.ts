@@ -530,7 +530,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userBook => {
-        console.log('go to new book');
         this.location.go('/' + this.bookType + '/book/' + this.bookId + '/' + this.userLanCode + (this.isTest ? '/test' : ''));
         this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
         this.isCountDown = false;

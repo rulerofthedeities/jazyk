@@ -71,7 +71,7 @@ li.active span.bar {
   left: 4px;
   top: -4px;
 }
-.dropdown, .indicator {
+.dropdown, .indicator, .manual {
   cursor: pointer;
 }
 .gravatar {

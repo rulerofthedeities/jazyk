@@ -65,11 +65,10 @@ module.exports = {
     });
   },
   getManualPage: (req, res) => {
-    const page = decodeURIComponent(req.params.page),
-          query = {tpe: 'manual', name: page};
-    console.log('fetching page', page);
+    const pageName = decodeURIComponent(req.params.page),
+          query = {tpe: 'manual', name: pageName};
     Page.findOne(query, (err, result) => {
-      response.handleError(err, res, 400, `Error getting manual page "${page}"`, () => {
+      response.handleError(err, res, 400, `Error getting manual page "${pageName}"`, () => {
         response.handleSuccess(res, result);
       });
     });

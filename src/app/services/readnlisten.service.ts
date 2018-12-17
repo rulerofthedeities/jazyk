@@ -106,7 +106,6 @@ export class ReadnListenService {
     isTest: boolean,
     finishedPoints: number
     ): Observable<UserBook> {
-      console.log('setting book to finished');
       return this.http
       .put<UserBook>('/api/book/finished', {bookId, lanCode, bookType, isTest, finishedPoints}
     );

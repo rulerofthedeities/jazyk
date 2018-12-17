@@ -127,13 +127,6 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
               book.difficulty.weight > currentWeight - noDelta &&
               book.difficulty.weight < currentWeight + yesDelta
             );
-      console.log('answers:', answers);
-      console.log('yes:', (answers.nrYes / answers.total * 100), minYesPerc, multiplier);
-      console.log('Delta1:', noDelta, '-', yesDelta);
-      console.log('current weight', currentWeight);
-      console.log('Margin:', currentWeight - noDelta, '-', currentWeight + yesDelta);
-      console.log('books:', suggestedBooks);
-
       if (suggestedBooks) {
         // Sort books according to weight
         suggestedBooks.sort(

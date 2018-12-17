@@ -39,15 +39,16 @@ export class ManualComponent implements OnInit, OnDestroy {
       filter(params => params.page))
     .subscribe(
       params => {
-        console.log('manual params', params);
-        const pageId = params['page'].toLowerCase();
-        if (pageId === 'index') {
-          this.isIndex = true;
-          this.getDependables();
-          this.getManualIndex();
-        } else {
-          this.isIndex = false;
-          this.getManualPage(pageId);
+        if (params['page']) {
+          const pageName = params['page'].toLowerCase();
+          if (pageName === 'index') {
+            this.isIndex = true;
+            this.getDependables();
+            this.getManualIndex();
+          } else {
+            this.isIndex = false;
+            this.getManualPage(pageName);
+          }
         }
       }
     );
@@ -56,9 +57,7 @@ export class ManualComponent implements OnInit, OnDestroy {
   onGoToManualPage(item: ManualIndex) {
     if (item.isHeader) {
       this.sectionClosed[item.sort] = !this.sectionClosed[item.sort];
-      console.log(item.sort, this.sectionClosed[item.sort]);
     } else {
-      console.log('go to page', item);
       this.router.navigate(['/manual/', item.name]);
     }
   }
@@ -81,6 +80,10 @@ export class ManualComponent implements OnInit, OnDestroy {
     return closed;
   }
 
+  getPath(item: ManualIndex): string {
+    return encodeURIComponent(item.name);
+  }
+
   private getManualIndex() {
     this.pageService
     .fetchManualIndex()
@@ -88,30 +91,24 @@ export class ManualComponent implements OnInit, OnDestroy {
     .subscribe(
       index => {
         this.index = this.processIndex(index);
-        console.log('index', index);
       }
     );
   }
 
   private getManualPage(pageName: string) {
-    console.log('Fetching manual page', pageName);
     this.pageService
     .fetchManualPage(pageName)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       page => {
         this.page = page;
-        console.log('page', page);
       }
     );
   }
 
   private processIndex(index: ManualIndex[]): ManualIndex[] {
     index.forEach(item => {
-      const levels = item.sort.split('.');
-      item.level = levels.length;
-      levels.pop();
-      item.parent = levels.join('.');
+      item.level = item.sort.split('.').length;
     });
     return index;
   }

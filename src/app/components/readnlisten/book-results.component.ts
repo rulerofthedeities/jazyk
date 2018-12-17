@@ -59,7 +59,6 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
     this.isFinished = this.data.resultData.isFinished;
     if (this.isFinished && !this.isBookRead) {
       // set book to finished
-      console.log('FINISHED', this.data);
       this.setFinished.emit(true);
     }
     this.checkSessionTrophies(this.data);
