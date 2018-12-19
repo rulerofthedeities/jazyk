@@ -84,6 +84,13 @@ export class ManualComponent implements OnInit, OnDestroy {
     return encodeURIComponent(item.name);
   }
 
+  getRoute(event: any) {
+    if (event.target && event.target.getAttribute('href')) {
+      event.preventDefault();
+      this.router.navigate([event.target.getAttribute('href')]);
+    }
+  }
+
   private getManualIndex() {
     this.pageService
     .fetchManualIndex()

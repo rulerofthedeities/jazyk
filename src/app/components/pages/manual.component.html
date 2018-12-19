@@ -36,7 +36,7 @@
       </li>
     </ul>
     <div *ngIf="!isIndex"
-      [innerHTML]="page?.html | sanitizeHtml">
+      [innerHTML]="page?.html | sanitizeHtml" (click)="getRoute($event)">
     </div>
   </div>
 </div>
