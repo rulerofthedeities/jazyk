@@ -11,6 +11,7 @@ interface UserBookStatus {
   isSubscribed: boolean;
   isRecommended: boolean;
   isStarted: boolean;
+  isRepeat: boolean;
   nrOfSentencesDone: number;
   isBookRead: boolean;
   percDone: number;
@@ -149,7 +150,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onToggleRecommend() {
-    if (this.userBookStatus && this.userBookStatus.isBookRead) {
+    if (this.userBookStatus && (this.userBookStatus.isBookRead || this.userBookStatus.isRepeat)) {
       this.saveRecommend();
     }
   }
@@ -320,6 +321,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     if (userBook) {
       status.isSubscribed = !!userBook.subscribed;
       status.isRecommended = !!userBook.recommended;
+      status.isRepeat = userBook.repeatCount > 0;
       if (userBook.bookmark && userBook.bookmark.chapterId) {
         status.isStarted = true;
         if (userBook.bookmark.isBookRead) {
@@ -337,6 +339,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       isRecommended: false,
       isStarted: false,
       isBookRead: false,
+      isRepeat: false,
       nrOfSentencesDone: 0,
       percDone: 0
     };

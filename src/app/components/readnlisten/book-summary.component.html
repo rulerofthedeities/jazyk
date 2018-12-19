@@ -127,7 +127,7 @@
               hide-delay="50">
               <span class="fa fa-thumb-tack"></span>
             </div>
-            <div class="recommended" *ngIf="userBookStatus.isBookRead"
+            <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
               [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
               placement="left"
               hide-delay="50">
@@ -135,7 +135,7 @@
                 [ngClass]="{
                   'fa-thumbs-o-up': !userBookStatus.isRecommended,
                   'fa-thumbs-up': userBookStatus.isRecommended,
-                  'canrecommend': userBookStatus.isBookRead
+                  'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
                 }"
                 (click)="onToggleRecommend()"></span>
             </div>
