@@ -72,8 +72,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(answers => {
       if (answers && answers.answers) {
-        this.processAnswers(answers.answers);
         this.isResults = answers.isResults;
+        this.processAnswers(answers.answers);
       }
     });
     this.nextSentence
@@ -123,12 +123,16 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
       if (this.books.length > 0) {
         const currentWeight = this.book.difficulty.weight,
               yesDelta = ((answers.nrYes / answers.total * 100) - minYesPerc) / 100 * multiplier,
-              noDelta = ((answers.nrNo / answers.total * 100) - minNoPerc) / 100 * multiplier,
-              suggestedBooks = this.books.filter(book =>
-                book.difficulty.weight > currentWeight - noDelta &&
-                book.difficulty.weight < currentWeight + yesDelta
-              );
+              noDelta = ((answers.nrNo / answers.total * 100) - minNoPerc) / 100 * multiplier;
+        let suggestedBooks = this.books.filter(book =>
+              book.difficulty.weight > currentWeight - noDelta &&
+              book.difficulty.weight < currentWeight + yesDelta
+            );
         if (suggestedBooks) {
+          if (!this.isResults) {
+            // Get max 3 random
+            suggestedBooks = this.getRandomElements(suggestedBooks, 3);
+          }
           // Sort books according to weight
           suggestedBooks.sort(
             (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
@@ -139,6 +143,22 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  private getRandomElements(books: Book[], n: number): Book[] {
+    let len = books.length,
+        x: number;
+    const result = new Array(n),
+          taken = new Array(len);
+    if (n > len) {
+      return books;
+    }
+    while (n--) {
+        x = Math.floor(Math.random() * len);
+        result[n] = books[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
+}
 
   ngOnDestroy() {
     this.componentActive = false;
