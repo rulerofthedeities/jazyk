@@ -113,28 +113,30 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
   }
 
   private findSuggestions(answers: Answers) {
-    // Remove current book
-    this.books = this.books.filter(book => book._id.toString() !== this.book._id.toString());
-    // Remove finished books
-    this.finishedBooks.forEach(finishedBook => {
-      this.books = this.books.filter(book => book._id !== finishedBook.bookId);
-    });
-    if (this.books.length > 0) {
-      const currentWeight = this.book.difficulty.weight,
-            yesDelta = ((answers.nrYes / answers.total * 100) - minYesPerc) / 100 * multiplier,
-            noDelta = ((answers.nrNo / answers.total * 100) - minNoPerc) / 100 * multiplier,
-            suggestedBooks = this.books.filter(book =>
-              book.difficulty.weight > currentWeight - noDelta &&
-              book.difficulty.weight < currentWeight + yesDelta
-            );
-      if (suggestedBooks) {
-        // Sort books according to weight
-        suggestedBooks.sort(
-          (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
-                    ((b.difficulty.weight > a.difficulty.weight) ? -1 : 0)
-        );
+    if (this.books) {
+      // Remove current book
+      this.books = this.books.filter(book => book._id.toString() !== this.book._id.toString());
+      // Remove finished books
+      this.finishedBooks.forEach(finishedBook => {
+        this.books = this.books.filter(book => book._id !== finishedBook.bookId);
+      });
+      if (this.books.length > 0) {
+        const currentWeight = this.book.difficulty.weight,
+              yesDelta = ((answers.nrYes / answers.total * 100) - minYesPerc) / 100 * multiplier,
+              noDelta = ((answers.nrNo / answers.total * 100) - minNoPerc) / 100 * multiplier,
+              suggestedBooks = this.books.filter(book =>
+                book.difficulty.weight > currentWeight - noDelta &&
+                book.difficulty.weight < currentWeight + yesDelta
+              );
+        if (suggestedBooks) {
+          // Sort books according to weight
+          suggestedBooks.sort(
+            (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :
+                      ((b.difficulty.weight > a.difficulty.weight) ? -1 : 0)
+          );
+        }
+        this.suggestedBooks = suggestedBooks;
       }
-      this.suggestedBooks = suggestedBooks;
     }
   }
 

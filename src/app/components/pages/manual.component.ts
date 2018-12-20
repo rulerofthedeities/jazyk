@@ -98,6 +98,8 @@ export class ManualComponent implements OnInit, OnDestroy {
     .subscribe(
       index => {
         this.index = this.processIndex(index);
+        console.log('index');
+        this.setPageTitle();
       }
     );
   }
@@ -109,6 +111,7 @@ export class ManualComponent implements OnInit, OnDestroy {
     .subscribe(
       page => {
         this.page = page;
+        this.setPageTitle();
       }
     );
   }
@@ -119,19 +122,17 @@ export class ManualComponent implements OnInit, OnDestroy {
     });
     return index;
   }
-/*
 
-  private setMetaTags(page: Page) {
-    this.page = page;
-    this.sharedService.setPageTitle(null, page.title);
-    // Add meta tags
-    if (page.index === false) {
-      this.meta.addTag({name: 'robots', content: 'noindex'});
+  private setPageTitle() {
+    console.log('setting page title', this.isIndex, this.page);
+    if (this.text) {
+      if (!this.isIndex && this.page && this.page.title) {
+        this.sharedService.setPageTitle(null, this.text['Manual'] + ' - ' + this.page.title);
+      }  else {
+        this.sharedService.setPageTitle(this.text, 'Manual');
+      }
     }
-    const isoCode = this.sharedService.getContentLanguageCode(this.lanCode);
-    this.meta.addTag({'http-equiv': 'Content-Language', content: isoCode});
   }
-*/
 
 private getDependables() {
   const options = {
@@ -145,7 +146,7 @@ private getDependables() {
   .subscribe(
     dependables => {
       this.text = this.sharedService.getTranslatedText(dependables.translations);
-      this.sharedService.setPageTitle(this.text, 'Manual');
+      this.setPageTitle();
     }
   );
 }

@@ -17,7 +17,8 @@
         class="list-group-item"
         [hidden]="isSectionClosed(item)"
         (click)="onGoToManualPage(item)"
-        [ngClass]="'level-' + item.level">
+        [ngClass]="'level-' + item.level"
+        [class.header]="item.isHeader">
         <span
           *ngIf="item.isHeader"
           class="fa fa-spacing chevron"
