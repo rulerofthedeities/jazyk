@@ -211,6 +211,9 @@ li {
 .why, .testimonials {
   height: 100%;
 }
+.features {
+  margin-top: 0;
+}
 /* Quotes */
 .quote {
   letter-spacing: .03em;
@@ -225,7 +228,6 @@ li {
   margin-right: -1rem;
   font-size: 4rem;
 }
-
 .quote-container {
   border: 1px dotted #C6D1BF;
   border-radius: 12px;
@@ -234,11 +236,9 @@ li {
   padding: 12px;
   background-color:rgba(242, 234, 211, 0.7);
 }
-
 .quote-highlight {
   color: #D24335;
 }
-
 .quote-author {
   font-family: 'Open Sans Condensed';
   text-align: right;

@@ -3,6 +3,6 @@
     <span class="fa fa-info-circle fa-spacing-title"></span>{{page?.title}}
   </div>
   <div class="panel-body">
-    <div [innerHTML]="page?.html | sanitizeHtml"></div>
+    <div [innerHTML]="page?.html | sanitizeHtml" (click)="getRoute($event)"></div>
   </div>
 </div>

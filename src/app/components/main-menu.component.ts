@@ -248,7 +248,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     .interfaceLanguageChanged
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(
-      newLan => this.getTranslations(newLan)
+      newLan => {
+        this.intLan.code = newLan;
+        this.getTranslations(newLan);
+      }
     );
     /*
     this.userService

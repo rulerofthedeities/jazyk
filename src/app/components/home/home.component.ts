@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object = {};
   licenses: LicenseUrl[];
+  intLan = 'en';
 
   constructor(
     private sharedService: SharedService,

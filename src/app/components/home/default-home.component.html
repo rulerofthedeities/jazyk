@@ -91,7 +91,7 @@
       <div class="panel-heading">{{title}}</div>
       <div class="panel-body">
         {{lines[0]}}
-        <ul class="list-unstyled">
+        <ul class="list-unstyled features">
           <li>
             <span class="fa fa-arrow-right fa-spacing"></span>{{lines[1]}}
           </li>
@@ -113,6 +113,11 @@
           <li>
             <a [routerLink]="['/info/booklist']" routerLinkActive="router-link-active">
               <span class="fa fa-chevron-right fa-spacing"></span>{{text["CheckBookList"]}}
+            </a>
+          </li>
+          <li *ngIf="intLan==='en'">
+            <a [routerLink]="['/manual/index']" routerLinkActive="router-link-active">
+              <span class="fa fa-chevron-right fa-spacing"></span>{{text["Manual"]}}
             </a>
           </li>
         </ul>

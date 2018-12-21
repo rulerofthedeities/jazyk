@@ -3,6 +3,7 @@ import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Router } from '@angular/router';
 import { appTitle } from '../../services/shared.service';
 import { DashboardService } from '../../services/dashboard.service';
+import { UserService } from '../../services/user.service';
 import { HomeStats } from '../../models/dashboard.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -23,14 +24,18 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
   moduleText: string;
   isLoadingStats = false;
   stats: HomeStats;
+  intLan: string;
 
   constructor(
     private router: Router,
+    private userService: UserService,
     private dashboardService: DashboardService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
+    this.intLan = this.userService.user.main.lan;
+    this.observe();
     this.getStats();
   }
 
@@ -82,6 +87,15 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
     }
+  }
+
+  private observe() {
+    this.userService
+    .interfaceLanguageChanged
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(
+      newLan => this.intLan = newLan
+    );
   }
 
   ngOnDestroy() {

@@ -41,6 +41,13 @@ export class InfoComponent implements OnInit, OnDestroy {
     );
   }
 
+  getRoute(event: any) {
+    if (event.target && event.target.getAttribute('href')) {
+      event.preventDefault();
+      this.router.navigate([event.target.getAttribute('href')]);
+    }
+  }
+
   private fetchInfoPage(pageId: string, lanCode: string) {
     this.pageService
     .fetchInfoPage(pageId, lanCode, this.authService.isLoggedIn())
