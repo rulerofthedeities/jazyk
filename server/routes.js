@@ -91,7 +91,8 @@ module.exports = {
     router.patch('/user/emptytrash', messages.setEmptyTrash);
     router.get('/user/messagescount', messages.getMessagesCount);
     router.get('/user/config/welcome/:lan', config.getWelcomeMessage);
-    router.get('/user/score/total', scores.getTotalScore);
+    router.get('/user/score/total/:userId', scores.getTotalScore);
+    router.get('/user/score/total/', scores.getTotalScore);
     router.get('/user/score/books/:bookType', scores.getBookScores);
     router.get('/user/finishedbooks', scores.getFinishedBooks);
     router.get('/user', users.getUser);
@@ -115,7 +116,8 @@ module.exports = {
     router.get('/book/sessions/book/:bookId/:lan', books.getBookSessions);
     router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
     router.post('/book/thumb', books.addThumb);
-    router.get('/book/trophies/user', books.getTrophies);
+    router.get('/book/trophies/user/:userId', books.getTrophies);
+    router.get('/book/trophies/user/', books.getTrophies);
     router.post('/book/trophies', books.saveTrophies);
     router.post('/book/trophies/session', books.getSessionTrophies);
     router.post('/book/trophies/thumb', books.getThumbTrophies);

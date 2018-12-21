@@ -514,7 +514,8 @@ module.exports = {
     });
   },
   getTrophies: (req, res) => {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+    const user = req.params.userId,
+          userId = user ? new mongoose.Types.ObjectId(user) : new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId},
           options = {};
     UserTrophy.find(query, {}, options, (err, trophies) =>  {

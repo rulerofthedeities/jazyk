@@ -282,9 +282,10 @@ export class UserService {
     .pipe(retry(3));
   }
 
-  fetchScoreTotal(): Observable<number> {
+  fetchScoreTotal(userId: string = null): Observable<number> {
+    const suffix = userId || '';
     return this.http
-    .get<number>('/api/user/score/total')
+    .get<number>('/api/user/score/total/' + suffix)
     .pipe(retry(3));
   }
 
@@ -294,9 +295,10 @@ export class UserService {
     .pipe(retry(3));
   }
 
-  fetchTrophies(): Observable<Trophy[]> {
+  fetchTrophies(userId: string = null): Observable<Trophy[]> {
+    const suffix = userId || '';
     return this.http
-    .get<Trophy[]>('/api/book/trophies/user')
+    .get<Trophy[]>('/api/book/trophies/user/' + suffix)
     .pipe(retry(3));
   }
 

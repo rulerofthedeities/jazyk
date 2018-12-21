@@ -77,7 +77,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   private getTrophies() {
     this.loadingTrophies = true;
     this.userService
-    .fetchTrophies()
+    .fetchTrophies(null)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (trophies) => {

@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
 import { PublicProfile, CompactProfile, Message, Followed, Follower, Network } from '../../models/user.model';
+import { Trophy } from '../../models/book.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
 @Component({
@@ -25,6 +26,10 @@ export class UserComponent implements OnInit, OnDestroy {
   message: string;
   infoMsg: string;
   isAdmin: boolean;
+  score: number;
+  rank: number;
+  gender: string;
+  trophies: Trophy[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -127,10 +132,14 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private init() {
     // In case user navigates to another public profile
+    this.gender = this.userService.user.main.gender || 'm';
     this.profile = undefined;
     this.isCurrentUser = false;
     this.isCurrentlyFollowing = false;
     this.isCurrentlyFollowed = false;
+    this.score = null;
+    this.rank = null;
+    this.trophies = null;
     this.publicNetwork = [];
     this.network = {
       follows: [],
@@ -139,6 +148,33 @@ export class UserComponent implements OnInit, OnDestroy {
     this.networkShown = false;
     this.messageShown = false;
     this.infoMsg = '';
+  }
+
+  private getScoreCount(userId: string) {
+    this.userService
+    .fetchScoreTotal(userId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      score => {
+        this.score = score || 0;
+        this.rank = this.sharedService.getRank(this.score);
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getTrophies(userId: string) {
+    this.userService
+    .fetchTrophies(userId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (trophies) => {
+        trophies.sort(
+          (a, b) => (parseInt(a.trophy, 10) > parseInt(b.trophy, 10) ? 1 : ((parseInt(b.trophy, 10) > parseInt(a.trophy, 10)) ? -1 : 0))
+        );
+        this.trophies = trophies;
+      }
+    );
   }
 
   /*
@@ -162,6 +198,8 @@ export class UserComponent implements OnInit, OnDestroy {
         this.isCurrentUser = this.userService.user._id === profile._id;
         this.profile = profile;
         this.fetchFollowers(profile._id);
+        this.getScoreCount(profile._id);
+        this.getTrophies(profile._id);
       },
       error => {
         if (error.status === 404) {
@@ -241,6 +279,7 @@ export class UserComponent implements OnInit, OnDestroy {
     return isFollowed;
   }
 
+  /*
   private fetchUserData(users: string[]) {
     if (users.length > 0 && users[0]) {
       this.userService
@@ -264,6 +303,7 @@ export class UserComponent implements OnInit, OnDestroy {
     follower.emailHash = profile.emailHash;
     follower.userName = profile.userName;
   }
+  */
 
   private sendMessage(profile: PublicProfile, msg: string) {
     this.messageShown = false;

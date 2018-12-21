@@ -168,7 +168,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   private getScoreCount() {
     if (this.isLoggedIn) {
       this.userService
-      .fetchScoreTotal()
+      .fetchScoreTotal(null)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         score => {

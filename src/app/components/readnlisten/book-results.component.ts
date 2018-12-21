@@ -77,7 +77,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
 
   private checkNewRank() {
     this.userService
-    .fetchScoreTotal()
+    .fetchScoreTotal(null)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       score => {

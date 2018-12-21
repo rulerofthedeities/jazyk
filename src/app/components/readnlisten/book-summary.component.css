@@ -138,6 +138,7 @@
 .book h3 small {
   margin-left: 10px;
   font-style: italic;
+  font-size: 50%;
 }
 .dashboard .book h3 {
   margin-top: -8px;
