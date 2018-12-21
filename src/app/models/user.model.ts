@@ -110,17 +110,10 @@ export interface Message {
   dt?: Date;
 }
 
-export interface Follower {
-  followId: string;
-}
-
-export interface Followed {
-  userId: string;
-}
-
 export interface Network {
-  follows: Follower[];
-  followed: Followed[];
+  followers: string[];
+  following: string[];
+  buddies: string[];
 }
 
 export interface MailData {

@@ -126,47 +126,24 @@
             </span>
           </div>
         </div>
-        <div class="row" *ngIf="network">
+        <div class="row">
           <label
             for="network"
             class="control-label col-xs-3">
             {{text['Network']}}
           </label>
           <div class="col-xs-9">
-            {{text['Follows']}} {{network?.follows?.length || text['noone']}} {{ network?.follows?.length === 1 ? text['person'] : (network?.follows?.length === 0 ? '' : text['people'])}}
+            {{text['Following2']}} {{network?.following?.length || text['noone']}} {{ network?.following?.length === 1 ? text['person'] : (network?.following?.length === 0 ? '' : text['people'])}}
           </div>
           <div class="col-xs-9 col-xs-offset-3">
-            {{text['FollowedBy']}} {{network?.followed?.length || text['noone']}}
-            <span *ngIf="network?.followed?.length">
-              {{network?.followed?.length === 1 ? text['person'] : text['people']}}
+            {{text['FollowedBy']}} {{network?.followers?.length || text['noone']}}
+            <span *ngIf="network?.followers?.length">
+              {{network?.followers?.length === 1 ? text['person'] : text['people']}}
             </span>
           </div>
-          <div class="col-xs-9 col-xs-offset-3">
-            BUDDIES
+          <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.buddies?.length > 0">
+              {{network?.buddies?.length}} {{network?.buddies?.length === 1 ? text['buddy']: text['buddies']}}
           </div>
-          <!--
-          <div class="col-xs-9 col-xs-offset-3" *ngIf="publicNetwork?.length > 0">
-            <button *ngIf="!networkShown"
-              type="button"
-              class="btn btn-info btn-xs"
-              (click)="onShowNetwork()">
-              <span class="fa fa-eye"></span> {{text["ShowNetwork"]}}
-            </button>
-            <div *ngIf="networkShown">
-              <km-compact-profile *ngFor="let user of publicNetwork"
-                  [profile]="user"
-                  [text]="text">
-              </km-compact-profile>
-              <div class="clearfix"></div>
-              <button
-                type="button"
-                class="btn btn-warning btn-xs"
-                (click)="onCloseNetwork()">
-                <span class="fa fa-times"></span> {{text["Close"]}}
-              </button>
-            </div>
-          </div>
-          -->
         </div>
         <div class="row" *ngIf="!isCurrentUser && (isAdmin || (isCurrentlyFollowing && isCurrentlyFollowed && profile))">
           <button [style.display]="messageShown ? 'none' : 'inline-block'"

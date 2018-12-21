@@ -318,7 +318,7 @@ export class UserService {
     .put<boolean>('/api/user/unfollow', JSON.stringify({userId}));
   }
 
-  getFollowers(userId: string): Observable<Network> {
+  fetchFollowers(userId: string): Observable<Network> {
     return this.http
     .get<Network>('/api/user/followers/' + userId)
     .pipe(retry(3));

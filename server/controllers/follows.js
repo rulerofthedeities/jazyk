@@ -29,16 +29,16 @@ module.exports = {
   getFollowers: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.params.userId),
           follows = {};
-    let query = {userId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
-        projection = {_id: 0, followId:1};
+    let query = {userId, follow: true},
+        projection = {_id: 0, followId: 1};
 
     Follow.find(query, projection, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching followers', () => {
-        follows.follows = result;
-        query = {followId: new mongoose.Types.ObjectId(req.params.userId), follow: true},
+        follows.followers = result.map(user => user.followId);
+        query = {followId: userId, follow: true},
         projection = {_id: 0, userId:1};
         Follow.find(query, projection, (err, result) => {
-          follows.followed = result;
+          follows.following = result.map(user => user.userId);
           response.handleError(err, res, 400, 'Error fetching followed', () => {
             response.handleSuccess(res, follows);
           });

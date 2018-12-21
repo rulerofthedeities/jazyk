@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
-import { PublicProfile, CompactProfile, Message, Followed, Follower, Network } from '../../models/user.model';
+import { PublicProfile, CompactProfile, Message, Network } from '../../models/user.model';
 import { Trophy } from '../../models/book.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
@@ -17,11 +17,10 @@ export class UserComponent implements OnInit, OnDestroy {
   text: Object;
   profile: PublicProfile;
   network: Network;
-  publicNetwork: CompactProfile[] = [];
+  // publicNetwork: CompactProfile[] = [];
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
   isCurrentlyFollowed: boolean;
-  networkShown: boolean;
   messageShown: boolean;
   message: string;
   infoMsg: string;
@@ -68,13 +67,7 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         follow => {
           this.isCurrentlyFollowing = true;
-          this.network.followed.push({userId: id});
-          this.addFollowed({userId: id});
-          /*
-          if (this.networkShown) {
-            this.showNetwork();
-          }
-          */
+          // this.addFollowed({userId: id});
         },
         error => this.errorService.handleError(error)
       );
@@ -92,7 +85,9 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         unfollow => {
           this.isCurrentlyFollowing = false;
-          this.network.followed = this.network.followed.filter(item => item.userId !== id);
+          this.network.following = this.network.following.filter(item => item !== id);
+          // check if to remove from buddies !
+          /*
           const previousLength = this.publicNetwork.length;
           this.publicNetwork = this.publicNetwork.filter(item => item._id !== id || item.isFollow);
           if (previousLength === this.publicNetwork.length) {
@@ -102,23 +97,11 @@ export class UserComponent implements OnInit, OnDestroy {
               follow.isFollower = false;
             }
           }
+          */
         },
         error => this.errorService.handleError(error)
       );
     }
-  }
-
-  /*
-  onShowNetwork() {
-    this.infoMsg = '';
-    this.showNetwork();
-    this.networkShown = true;
-  }
-  */
-
-  onCloseNetwork() {
-    this.networkShown = false;
-    this.infoMsg = '';
   }
 
   onCreateMessage(msgField: any) {
@@ -140,12 +123,11 @@ export class UserComponent implements OnInit, OnDestroy {
     this.score = null;
     this.rank = null;
     this.trophies = null;
-    this.publicNetwork = [];
     this.network = {
-      follows: [],
-      followed: []
+      followers: [],
+      following: [],
+      buddies: []
     };
-    this.networkShown = false;
     this.messageShown = false;
     this.infoMsg = '';
   }
@@ -177,18 +159,6 @@ export class UserComponent implements OnInit, OnDestroy {
     );
   }
 
-  /*
-  private showNetwork() {
-    const maxPerCall = 10,
-          followers = this.publicNetwork.filter(follower => !follower.userName),
-          users: string[] = followers.map(follower => follower._id);
-    if (users.length > 0) {
-      users.slice(0, maxPerCall);
-      this.fetchUserData(users);
-    }
-  }
-*/
-
   private fetchPublicProfile(user: string) {
     this.userService
     .getPublicProfile(user)
@@ -197,7 +167,7 @@ export class UserComponent implements OnInit, OnDestroy {
       profile => {
         this.isCurrentUser = this.userService.user._id === profile._id;
         this.profile = profile;
-        this.fetchFollowers(profile._id);
+        this.getFollowers(profile._id);
         this.getScoreCount(profile._id);
         this.getTrophies(profile._id);
       },
@@ -211,69 +181,48 @@ export class UserComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fetchFollowers(userId: string) {
+  private getFollowers(userId: string) {
     this.userService
-    .getFollowers(userId)
+    .fetchFollowers(userId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      network => {
+      (network: Network) => {
         this.network = network;
-        this.mergeNetwork();
-        this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(this.network.followed);
-        this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(this.network.follows);
+        // const buddies = [...new Set(network.followers.concat(network.following)];
+        this.network.buddies = this.getBuddies();
+        console.log('Network:', network);
+        this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(network.followers);
+        this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(network.following);
       },
       error => this.errorService.handleError(error)
     );
   }
 
-  private mergeNetwork() {
-    this.network.followed.forEach(followed => {
-      this.addFollowed(followed);
+  private getBuddies(): string[] {
+    const buddies = [];
+    let isFollowing: string;
+    this.network.followers.forEach(follower => {
+      isFollowing = this.network.following.find(following => following.toString() === follower.toString());
+      if (isFollowing) {
+        buddies.push(follower);
+      }
     });
-    this.network.follows.forEach(follow => {
-      this.addFollow(follow);
-    });
+    return buddies;
   }
 
-  private addFollowed(followed: Followed) {
-    const follow: CompactProfile = this.publicNetwork.find(user => user._id === followed.userId);
-    if (!follow) {
-      this.publicNetwork.push({
-        _id: followed.userId,
-        isFollower: true,
-        isFollow: false
-      });
-    } else {
-      follow.isFollower = true;
-    }
-  }
-
-  private addFollow(follow: Follower) {
-    const followed: CompactProfile = this.publicNetwork.find(user => user._id === follow.followId);
-    if (!followed) {
-      this.publicNetwork.push({
-        _id: follow.followId,
-        isFollower: false,
-        isFollow: true
-      });
-    } else {
-      followed.isFollow = true;
-    }
-  }
-
-  private checkIfCurrentlyFollowing(followed: Followed[]): boolean {
+  private checkIfCurrentlyFollowing(following: string[]): boolean {
     const currentId = this.userService.user._id;
     let isFollowing = false;
-    if (followed.find(user => user.userId === currentId)) {
+    if (following && following.find(userId => userId === currentId)) {
       isFollowing = true;
     }
     return isFollowing;
   }
 
-  private checkIfCurrentlyFollowed(follow: Follower[]): boolean {
+  private checkIfCurrentlyFollowed(followers: string[]): boolean {
     const currentId = this.userService.user._id;
     let isFollowed = false;
-    if (follow.find(user => user.followId === currentId)) {
+    if (followers && followers.find(userId => userId === currentId)) {
       isFollowed = true;
     }
     return isFollowed;
