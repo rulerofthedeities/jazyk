@@ -48,6 +48,8 @@ const findUser = (body, expiresIn, callback) => {
           email: 1,
           password: 1,
           main: 1,
+          'mailVerification.isVerified': 1,
+          mailOptIn: 1,
           'jazyk.read': 1
         };
   User.findOne(query, projection, (err, doc) => {

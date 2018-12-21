@@ -42,7 +42,6 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   getRoute(event: any) {
-    console.log('ext info?', event.target.getAttribute('data-tpe'));
     const tpe = event.target.getAttribute('data-tpe');
     if (event.target && event.target.getAttribute('href') && tpe !== 'ext') {
       event.preventDefault();
