@@ -85,7 +85,9 @@ export class ManualComponent implements OnInit, OnDestroy {
   }
 
   getRoute(event: any) {
-    if (event.target && event.target.getAttribute('href')) {
+    console.log('ext manual?', event.target.getAttribute('data-tpe'));
+    const tpe = event.target.getAttribute('data-tpe');
+    if (event.target && event.target.getAttribute('href') && tpe !== 'ext') {
       event.preventDefault();
       this.router.navigate([event.target.getAttribute('href')]);
     }
@@ -98,7 +100,6 @@ export class ManualComponent implements OnInit, OnDestroy {
     .subscribe(
       index => {
         this.index = this.processIndex(index);
-        console.log('index');
         this.setPageTitle();
       }
     );
@@ -124,7 +125,6 @@ export class ManualComponent implements OnInit, OnDestroy {
   }
 
   private setPageTitle() {
-    console.log('setting page title', this.isIndex, this.page);
     if (this.text) {
       if (!this.isIndex && this.page && this.page.title) {
         this.sharedService.setPageTitle(null, this.text['Manual'] + ' - ' + this.page.title);
