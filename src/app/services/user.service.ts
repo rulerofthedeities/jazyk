@@ -310,12 +310,12 @@ export class UserService {
 
   followUser(userId: string): Observable<boolean> {
     return this.http
-    .post<boolean>('/api/user/follow', JSON.stringify({userId}));
+    .post<boolean>('/api/user/follow', {userId});
   }
 
   unFollowUser(userId: string): Observable<boolean> {
     return this.http
-    .put<boolean>('/api/user/unfollow', JSON.stringify({userId}));
+    .put<boolean>('/api/user/unfollow', {userId});
   }
 
   fetchFollowers(userId: string): Observable<Network> {

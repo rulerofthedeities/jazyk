@@ -71,7 +71,9 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         follow => {
           this.isCurrentlyFollowing = true;
-          // this.addFollowed({userId: id});
+          this.network.followers.push(id);
+          this.network.buddies = this.getBuddies();
+          console.log('buddies', this.network.buddies);
         },
         error => this.errorService.handleError(error)
       );
@@ -89,19 +91,10 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         unfollow => {
           this.isCurrentlyFollowing = false;
-          this.network.following = this.network.following.filter(item => item !== id);
-          // check if to remove from buddies !
-          /*
-          const previousLength = this.publicNetwork.length;
-          this.publicNetwork = this.publicNetwork.filter(item => item._id !== id || item.isFollow);
-          if (previousLength === this.publicNetwork.length) {
-            // Was a two-way connection, remove one connection only
-            const follow: CompactProfile = this.publicNetwork.find(item => item._id === id);
-            if (follow) {
-              follow.isFollower = false;
-            }
-          }
-          */
+          this.network.followers = this.network.followers.filter(item => item.toString() !== id.toString());
+          this.network.followersDetail = this.network.followersDetail.filter(item => item.toString() !== id.toString());
+          this.network.buddies = this.network.buddies.filter(item => item.toString() !== id.toString());
+          this.network.buddiesDetail = this.network.buddiesDetail.filter(item => item.toString() !== id.toString());
         },
         error => this.errorService.handleError(error)
       );
