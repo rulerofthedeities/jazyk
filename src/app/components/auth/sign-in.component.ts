@@ -72,7 +72,6 @@ export class SignInComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         data => {
-          console.log('data login', data.user);
           data.returnUrl = this.returnUrl;
           this.authService.signedIn(data);
           this.userService.user = data.user;

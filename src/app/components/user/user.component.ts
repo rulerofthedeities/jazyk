@@ -73,7 +73,6 @@ export class UserComponent implements OnInit, OnDestroy {
           this.isCurrentlyFollowing = true;
           this.network.followers.push(id);
           this.network.buddies = this.getBuddies();
-          console.log('buddies', this.network.buddies);
         },
         error => this.errorService.handleError(error)
       );
@@ -102,10 +101,12 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onToggleNetwork(tpe: string) {
-    const key = 'show' + tpe.charAt(0).toUpperCase() + tpe.slice(1);
-    this.network[key] = !this.network[key];
-    if (this.network[key]) {
-      this.getNetworkDetails(tpe);
+    if (this.isCurrentUser) {
+      const key = 'show' + tpe.charAt(0).toUpperCase() + tpe.slice(1);
+      this.network[key] = !this.network[key];
+      if (this.network[key]) {
+        this.getNetworkDetails(tpe);
+      }
     }
   }
 
@@ -141,7 +142,10 @@ export class UserComponent implements OnInit, OnDestroy {
       buddiesDetail: [],
       showFollowers: false,
       showFollowing: false,
-      showBuddies: false
+      showBuddies: false,
+      loadingFollowers: false,
+      loadingFollowing: false,
+      loadingBuddies: false
     };
     this.loadingNetwork = false;
     this.loadingTrophies = false;
@@ -178,7 +182,6 @@ export class UserComponent implements OnInit, OnDestroy {
         this.network.buddiesDetail = [];
         // const buddies = [...new Set(network.followers.concat(network.following)];
         this.network.buddies = this.getBuddies();
-        console.log('Network:', network);
         this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(network.followers);
         this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(network.following);
         this.loadingNetwork = false;
@@ -275,7 +278,6 @@ export class UserComponent implements OnInit, OnDestroy {
           }
         });
       }
-      console.log('buddies detail1', this.network.buddiesDetail);
       for (let i = 0; i < this.network[tpe].length && toFetch.length < maxProfiles; i++) {
         userId = this.network[tpe][i].toString();
         toAdd = !this.network[tpe + 'Detail'].find(user => user._id.toString() === userId);
@@ -283,24 +285,23 @@ export class UserComponent implements OnInit, OnDestroy {
           toFetch.push(userId);
         }
       }
-      console.log('buddies detail2', this.network.buddiesDetail);
       this.getUserData(toFetch, tpe);
-      console.log(toFetch);
     }
   }
 
   private getUserData(userIds: string[], tpe: string) {
     if (userIds.length > 0 && userIds[0]) {
+      const key = 'loading' + tpe.charAt(0).toUpperCase() + tpe.slice(1);
+      this.network[key] = true;
       this.userService
       .getCompactProfiles(userIds)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         profiles => {
-          console.log('profiles', profiles);
           if (profiles) {
             this.network[tpe + 'Detail'] = this.network[tpe + 'Detail'].concat(profiles);
-            console.log(tpe + 'Detail', this.network[tpe + 'Detail']);
           }
+          this.network[key] = false;
         },
         error => this.errorService.handleError(error)
       );

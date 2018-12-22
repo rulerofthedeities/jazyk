@@ -162,8 +162,8 @@
           <div class="col-xs-9" *ngIf="!loadingNetwork && network">
             <ul class="list-unstyled">
               <!-- FOLLOWING -->
-              <li (click)="onToggleNetwork('following')" [class.clickable]="network.following.length > 0">
-                <span *ngIf="network.following.length > 0"
+              <li (click)="onToggleNetwork('following')" [class.clickable]="network.following.length > 0 && isCurrentUser">
+                <span *ngIf="network.following.length > 0 && isCurrentUser"
                   class="fa fa-spacing" [ngClass]="{
                   'fa-chevron-right': !network.showFollowing && network.following.length > 0,
                   'fa-chevron-down': network.showFollowing && network.following.length > 0
@@ -176,7 +176,13 @@
                   [text]="text">
                 </km-compact-profile>
                 <div class="clearfix"></div>
-                <button *ngIf="network?.following?.length > network.followingDetail.length"
+                <km-loader *ngIf="network.loadingFollowing"
+                  [margin]="0"
+                  [spinnerMargin]="0"
+                  [small]="true"
+                  [showBackground]="false">
+                </km-loader>
+                <button *ngIf="!network?.loadingFollowing && network?.following?.length > network.followingDetail.length"
                   type="button"
                   class="btn btn-info btn-xs"
                   (click)="onShowMore('following')">
@@ -184,8 +190,8 @@
                 </button>
               </li>
               <!-- FOLLOWERS -->
-              <li (click)="onToggleNetwork('followers')" [class.clickable]="network.followers.length > 0">
-                <span *ngIf="network.followers.length > 0"
+              <li (click)="onToggleNetwork('followers')" [class.clickable]="network.followers.length > 0 && isCurrentUser">
+                <span *ngIf="network.followers.length > 0 && isCurrentUser"
                   class="fa fa-spacing" [ngClass]="{
                   'fa-chevron-right': !network.showFollowers,
                   'fa-chevron-down': network.showFollowers
@@ -201,7 +207,13 @@
                   [text]="text">
                 </km-compact-profile>
                 <div class="clearfix"></div>
-                <button *ngIf="network?.followers?.length > network.followersDetail.length"
+                <km-loader *ngIf="network.loadingFollowers"
+                  [margin]="0"
+                  [spinnerMargin]="0"
+                  [small]="true"
+                  [showBackground]="false">
+                </km-loader>
+                <button *ngIf="!network?.loadingFollowers && network?.followers?.length > network.followersDetail.length"
                   type="button"
                   class="btn btn-info btn-xs"
                   (click)="onShowMore('followers')">
@@ -211,8 +223,8 @@
               <!-- BUDDIES -->
               <li *ngIf="network?.buddies?.length > 0"
                 (click)="onToggleNetwork('buddies')"
-                [class.clickable]="network.buddies.length > 0">
-                <span *ngIf="network.buddies.length > 0"
+                [class.clickable]="network.buddies.length > 0 && isCurrentUser">
+                <span *ngIf="network.buddies.length > 0 && isCurrentUser"
                     class="fa fa-spacing" [ngClass]="{
                     'fa-chevron-right': !network.showBuddies,
                     'fa-chevron-down': network.showBuddies
@@ -225,7 +237,13 @@
                   [text]="text">
                 </km-compact-profile>
                 <div class="clearfix"></div>
-                <button *ngIf="network?.buddies?.length > network.buddiesDetail.length"
+                <km-loader *ngIf="network.loadingBuddies"
+                  [margin]="0"
+                  [spinnerMargin]="0"
+                  [small]="true"
+                  [showBackground]="false">
+                </km-loader>
+                <button *ngIf="!network?.loadingBuddies && network?.buddies?.length > network.buddiesDetail.length"
                   type="button"
                   class="btn btn-info btn-xs"
                   (click)="onShowMore('buddies')">

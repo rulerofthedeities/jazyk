@@ -116,6 +116,9 @@ export interface Network {
   showFollowers: boolean;
   showFollowing: boolean;
   showBuddies: boolean;
+  loadingFollowers: boolean;
+  loadingFollowing: boolean;
+  loadingBuddies: boolean;
 }
 
 export interface MailData {
