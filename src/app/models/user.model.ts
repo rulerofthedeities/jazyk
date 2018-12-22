@@ -40,10 +40,6 @@ export interface CompactProfile {
   _id: string;
   userName?: string;
   emailHash?: string;
-  isFollower?: boolean;
-  isFollow?: boolean;
-  userOnly?: boolean; // show only user name and icon
-  loadData?: boolean; // load profile data in the profile
 }
 
 interface AppDates {
@@ -114,6 +110,12 @@ export interface Network {
   followers: string[];
   following: string[];
   buddies: string[];
+  followersDetail: CompactProfile[];
+  followingDetail: CompactProfile[];
+  buddiesDetail: CompactProfile[];
+  showFollowers: boolean;
+  showFollowing: boolean;
+  showBuddies: boolean;
 }
 
 export interface MailData {

@@ -268,7 +268,7 @@ module.exports = {
     });
   },
   getCompactProfiles: (req, res) => {
-    const userIds = req.params.userIds.split(','),
+    const userIds = req.body.userIds,
           query = {_id: {$in: userIds}},
           projection = {userName: 1, email: 1};
     User.find(query, projection, (err, users) => {

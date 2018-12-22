@@ -1,7 +1,10 @@
 .profile {
   display: inline-block;
-  width: 248px;
+  width: 220px;
+  height: 60px;
   margin-bottom: 8px;
+  margin-right: 4px;
+  padding-right: 4px;
 }
 .gravatar {
   margin-right: 8px;
@@ -30,11 +33,10 @@
 }
 .open {
   position: relative;
-  top: -10px;
-  left: -24px;
+  float: right;
+  top: -6px;
 }
 .truncate {
-  width: 164px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

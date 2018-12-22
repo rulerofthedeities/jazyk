@@ -327,7 +327,7 @@ export class UserService {
   getCompactProfiles(userIds: string[]): Observable<CompactProfile[]> {
     userIds.join(',');
     return this.http
-    .get<CompactProfile[]>('/api/user/profiles/' + userIds)
+    .post<CompactProfile[]>('/api/user/profiles', {userIds})
     .pipe(retry(3));
   }
 

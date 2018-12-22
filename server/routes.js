@@ -59,7 +59,7 @@ module.exports = {
     router.post('/user/checkverificationId', users.checkverificationId);
     router.put('/user/settings', users.saveSettings);
     router.put('/user/mailsettings', users.saveMailSettings);
-    router.get('/user/profiles/:userIds', users.getCompactProfiles);
+    router.post('/user/profiles', users.getCompactProfiles);
     router.get('/user/profile/:userName', users.getPublicProfile);
     router.get('/user/profileId/:userId', users.getPublicProfileById);
     router.get('/user/profile', users.getProfile);

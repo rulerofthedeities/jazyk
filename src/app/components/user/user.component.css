@@ -12,3 +12,16 @@
 .trophy{
   height: 40px;
 }
+.img {
+  width: 32px;
+  width: 32px;
+}
+.clickable {
+  cursor: pointer;
+}
+.profiles {
+  margin-left: 28px;
+}
+km-compact-profile {
+  display: inline;
+}

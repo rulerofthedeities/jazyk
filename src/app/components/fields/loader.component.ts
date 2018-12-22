@@ -13,7 +13,8 @@ export class LoaderComponent implements OnInit, OnDestroy {
   @Input() showBackground = true;
   @Input() inline = false;
   @Input() small = false;
-  @Input() margin = '60px';
+  @Input() margin = '60px'; // Vertical
+  @Input() spinnerMargin = 'auto'; // Horizontal
   private subscription: Subscription;
   show = false;
 

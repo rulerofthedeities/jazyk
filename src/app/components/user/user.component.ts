@@ -7,6 +7,8 @@ import { PublicProfile, CompactProfile, Message, Network } from '../../models/us
 import { Trophy } from '../../models/book.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
+const maxProfiles = 20; // Max nr of compact profiles fetched at one time
+
 @Component({
   templateUrl: 'user.component.html',
   styleUrls: ['user.css', 'user.component.css']
@@ -17,7 +19,6 @@ export class UserComponent implements OnInit, OnDestroy {
   text: Object;
   profile: PublicProfile;
   network: Network;
-  // publicNetwork: CompactProfile[] = [];
   isCurrentUser: boolean;
   isCurrentlyFollowing: boolean;
   isCurrentlyFollowed: boolean;
@@ -29,6 +30,9 @@ export class UserComponent implements OnInit, OnDestroy {
   rank: number;
   gender: string;
   trophies: Trophy[] = [];
+  loadingNetwork: boolean;
+  loadingTrophies: boolean;
+  loadingPoints: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -104,6 +108,18 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
+  onToggleNetwork(tpe: string) {
+    const key = 'show' + tpe.charAt(0).toUpperCase() + tpe.slice(1);
+    this.network[key] = !this.network[key];
+    if (this.network[key]) {
+      this.getNetworkDetails(tpe);
+    }
+  }
+
+  onShowMore(tpe: string) {
+    this.getNetworkDetails(tpe);
+  }
+
   onCreateMessage(msgField: any) {
     this.infoMsg = '';
     this.messageShown = true;
@@ -126,13 +142,23 @@ export class UserComponent implements OnInit, OnDestroy {
     this.network = {
       followers: [],
       following: [],
-      buddies: []
+      buddies: [],
+      followersDetail: [],
+      followingDetail: [],
+      buddiesDetail: [],
+      showFollowers: false,
+      showFollowing: false,
+      showBuddies: false
     };
+    this.loadingNetwork = false;
+    this.loadingTrophies = false;
+    this.loadingPoints = false;
     this.messageShown = false;
     this.infoMsg = '';
   }
 
   private getScoreCount(userId: string) {
+    this.loadingPoints = true;
     this.userService
     .fetchScoreTotal(userId)
     .pipe(takeWhile(() => this.componentActive))
@@ -140,12 +166,36 @@ export class UserComponent implements OnInit, OnDestroy {
       score => {
         this.score = score || 0;
         this.rank = this.sharedService.getRank(this.score);
+        this.loadingPoints = false;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  private getNetwork(userId: string) {
+    this.loadingNetwork = true;
+    this.userService
+    .fetchFollowers(userId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (network: Network) => {
+        this.network = network;
+        this.network.followingDetail = [];
+        this.network.followersDetail = [];
+        this.network.buddiesDetail = [];
+        // const buddies = [...new Set(network.followers.concat(network.following)];
+        this.network.buddies = this.getBuddies();
+        console.log('Network:', network);
+        this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(network.followers);
+        this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(network.following);
+        this.loadingNetwork = false;
       },
       error => this.errorService.handleError(error)
     );
   }
 
   private getTrophies(userId: string) {
+    this.loadingTrophies = true;
     this.userService
     .fetchTrophies(userId)
     .pipe(takeWhile(() => this.componentActive))
@@ -155,6 +205,7 @@ export class UserComponent implements OnInit, OnDestroy {
           (a, b) => (parseInt(a.trophy, 10) > parseInt(b.trophy, 10) ? 1 : ((parseInt(b.trophy, 10) > parseInt(a.trophy, 10)) ? -1 : 0))
         );
         this.trophies = trophies;
+        this.loadingTrophies = false;
       }
     );
   }
@@ -167,7 +218,7 @@ export class UserComponent implements OnInit, OnDestroy {
       profile => {
         this.isCurrentUser = this.userService.user._id === profile._id;
         this.profile = profile;
-        this.getFollowers(profile._id);
+        this.getNetwork(profile._id);
         this.getScoreCount(profile._id);
         this.getTrophies(profile._id);
       },
@@ -178,23 +229,6 @@ export class UserComponent implements OnInit, OnDestroy {
           this.errorService.handleError(error);
         }
       }
-    );
-  }
-
-  private getFollowers(userId: string) {
-    this.userService
-    .fetchFollowers(userId)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      (network: Network) => {
-        this.network = network;
-        // const buddies = [...new Set(network.followers.concat(network.following)];
-        this.network.buddies = this.getBuddies();
-        console.log('Network:', network);
-        this.isCurrentlyFollowing = this.checkIfCurrentlyFollowing(network.followers);
-        this.isCurrentlyFollowed = this.checkIfCurrentlyFollowed(network.following);
-      },
-      error => this.errorService.handleError(error)
     );
   }
 
@@ -228,31 +262,57 @@ export class UserComponent implements OnInit, OnDestroy {
     return isFollowed;
   }
 
-  /*
-  private fetchUserData(users: string[]) {
-    if (users.length > 0 && users[0]) {
+  private getNetworkDetails(tpe: string) {
+    const toFetch: string[] = [];
+    let toAdd: boolean,
+        userId: string;
+    // Get list of ids that have no profiles yet
+    if (this.network[tpe].length > this.network[tpe + 'Detail'].length) {
+      if (tpe === 'buddies' && this.network.buddies.length > this.network.buddiesDetail.length) {
+        let toCheck: boolean,
+            profile: CompactProfile;
+        // First get already fetched profiles from followers & following
+        this.network.buddies.forEach(buddy => {
+          toCheck = !this.network.buddiesDetail.find(detail => detail._id.toString() === buddy.toString());
+          if (toCheck) {
+            profile = this.network.followingDetail.find(detail => detail._id.toString() === buddy.toString());
+            if (profile) {
+              this.network.buddiesDetail.push(profile);
+            }
+          }
+        });
+      }
+      console.log('buddies detail1', this.network.buddiesDetail);
+      for (let i = 0; i < this.network[tpe].length && toFetch.length < maxProfiles; i++) {
+        userId = this.network[tpe][i].toString();
+        toAdd = !this.network[tpe + 'Detail'].find(user => user._id.toString() === userId);
+        if (toAdd) {
+          toFetch.push(userId);
+        }
+      }
+      console.log('buddies detail2', this.network.buddiesDetail);
+      this.getUserData(toFetch, tpe);
+      console.log(toFetch);
+    }
+  }
+
+  private getUserData(userIds: string[], tpe: string) {
+    if (userIds.length > 0 && userIds[0]) {
       this.userService
-      .getCompactProfiles(users)
+      .getCompactProfiles(userIds)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         profiles => {
+          console.log('profiles', profiles);
           if (profiles) {
-            profiles.forEach(profile => {
-              this.mapProfileToUser(profile);
-            });
+            this.network[tpe + 'Detail'] = this.network[tpe + 'Detail'].concat(profiles);
+            console.log(tpe + 'Detail', this.network[tpe + 'Detail']);
           }
         },
         error => this.errorService.handleError(error)
       );
     }
   }
-
-  private mapProfileToUser(profile: CompactProfile) {
-    const follower: CompactProfile = this.publicNetwork.find(user => user._id === profile._id);
-    follower.emailHash = profile.emailHash;
-    follower.userName = profile.userName;
-  }
-  */
 
   private sendMessage(profile: PublicProfile, msg: string) {
     this.messageShown = false;

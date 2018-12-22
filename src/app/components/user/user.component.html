@@ -96,9 +96,17 @@
             class="control-label col-xs-3">
             {{text['Rank']}}
           </label>
-          <div class="col-xs-9">
-              <img src="/assets/img/ranks/rank{{rank}}_32b.png" class="img">
+          <div class="col-xs-9" *ngIf="!loadingPoints">
+            <img src="/assets/img/ranks/rank{{rank}}_32b.png" class="img">
             {{text['rank' + rank + gender]}}
+          </div>
+          <div class="col-xs-9" *ngIf="loadingPoints">
+            <km-loader
+              [margin]="0"
+              [spinnerMargin]="0"
+              [small]="true"
+              [showBackground]="false">
+            </km-loader>
           </div>
         </div>
         <div class="row">
@@ -107,8 +115,16 @@
             class="control-label col-xs-3">
             {{text['Points']}}
           </label>
-          <div class="col-xs-9">
+          <div class="col-xs-9" *ngIf="!loadingPoints">
             {{score | score}}
+          </div>
+          <div class="col-xs-9" *ngIf="loadingPoints">
+            <km-loader
+              [margin]="0"
+              [spinnerMargin]="0"
+              [small]="true"
+              [showBackground]="false">
+            </km-loader>
           </div>
         </div>
         <div class="row">
@@ -117,13 +133,24 @@
             class="control-label col-xs-3">
             {{text['Trophies']}}
           </label>
-          <div class="col-xs-9">
+          <div class="col-xs-9" *ngIf="!loadingTrophies">
             <span *ngFor="let trophy of trophies">
               <img src="/assets/img/trophies/trophy{{trophy.trophy}}.png"
                 class="trophy"
                 [tooltip]="text['trophy' + trophy.trophy] || ''"
                 placement="top">
             </span>
+            <span *ngIf="trophies?.length < 1">
+              {{text['None']}}
+            </span>
+          </div>
+          <div class="col-xs-9" *ngIf="loadingTrophies">
+            <km-loader
+              [margin]="0"
+              [spinnerMargin]="0"
+              [small]="true"
+              [showBackground]="false">
+            </km-loader>
           </div>
         </div>
         <div class="row">
@@ -132,17 +159,85 @@
             class="control-label col-xs-3">
             {{text['Network']}}
           </label>
-          <div class="col-xs-9">
-            {{text['Following2']}} {{network?.following?.length || text['noone']}} {{ network?.following?.length === 1 ? text['person'] : (network?.following?.length === 0 ? '' : text['people'])}}
+          <div class="col-xs-9" *ngIf="!loadingNetwork && network">
+            <ul class="list-unstyled">
+              <!-- FOLLOWING -->
+              <li (click)="onToggleNetwork('following')" [class.clickable]="network.following.length > 0">
+                <span *ngIf="network.following.length > 0"
+                  class="fa fa-spacing" [ngClass]="{
+                  'fa-chevron-right': !network.showFollowing && network.following.length > 0,
+                  'fa-chevron-down': network.showFollowing && network.following.length > 0
+                }"></span>
+                {{text['Following2']}} {{network?.following?.length || text['noone']}} {{ network?.following?.length === 1 ? text['person'] : (network?.following?.length === 0 ? '' : text['people'])}}
+              </li>
+              <li *ngIf="network.showFollowing" class="profiles">
+                <km-compact-profile *ngFor="let user of network.followingDetail"
+                  [profile]="user"
+                  [text]="text">
+                </km-compact-profile>
+                <button *ngIf="network?.following?.length > network.followingDetail.length"
+                  type="button"
+                  class="btn btn-info btn-xs"
+                  (click)="onShowMore('following')">
+                  <span class="fa fa-eye fa-spacing"></span>{{text["ShowMore"]}}
+                </button>
+              </li>
+              <!-- FOLLOWERS -->
+              <li (click)="onToggleNetwork('followers')" [class.clickable]="network.followers.length > 0">
+                <span *ngIf="network.followers.length > 0"
+                  class="fa fa-spacing" [ngClass]="{
+                  'fa-chevron-right': !network.showFollowers,
+                  'fa-chevron-down': network.showFollowers
+                }"></span>
+                {{text['FollowedBy']}} {{network?.followers?.length || text['noone']}}
+                <span *ngIf="network?.followers?.length">
+                  {{network?.followers?.length === 1 ? text['person'] : text['people']}}
+                </span>
+              </li>
+              <li *ngIf="network.showFollowers" class="profiles">
+                <km-compact-profile *ngFor="let user of network.followersDetail"
+                  [profile]="user"
+                  [text]="text">
+                </km-compact-profile>
+                <button *ngIf="network?.followers?.length > network.followersDetail.length"
+                  type="button"
+                  class="btn btn-info btn-xs"
+                  (click)="onShowMore('followers')">
+                  <span class="fa fa-eye fa-spacing"></span>{{text["ShowMore"]}}
+                </button>
+              </li>
+              <!-- BUDDIES -->
+              <li *ngIf="network?.buddies?.length > 0"
+                (click)="onToggleNetwork('buddies')"
+                [class.clickable]="network.buddies.length > 0">
+                <span *ngIf="network.buddies.length > 0"
+                    class="fa fa-spacing" [ngClass]="{
+                    'fa-chevron-right': !network.showBuddies,
+                    'fa-chevron-down': network.showBuddies
+                  }"></span>
+                {{network?.buddies?.length}} {{network?.buddies?.length === 1 ? text['buddy']: text['buddies']}}
+              </li>
+              <li *ngIf="network.showBuddies" class="profiles">
+                <km-compact-profile *ngFor="let user of network.buddiesDetail"
+                  [profile]="user"
+                  [text]="text">
+                </km-compact-profile>
+                <button *ngIf="network?.buddies?.length > network.buddiesDetail.length"
+                  type="button"
+                  class="btn btn-info btn-xs"
+                  (click)="onShowMore('buddies')">
+                  <span class="fa fa-eye"></span> {{text["ShowMore"]}}
+                </button>
+              </li>
+            </ul>
           </div>
-          <div class="col-xs-9 col-xs-offset-3">
-            {{text['FollowedBy']}} {{network?.followers?.length || text['noone']}}
-            <span *ngIf="network?.followers?.length">
-              {{network?.followers?.length === 1 ? text['person'] : text['people']}}
-            </span>
-          </div>
-          <div class="col-xs-9 col-xs-offset-3" *ngIf="network?.buddies?.length > 0">
-              {{network?.buddies?.length}} {{network?.buddies?.length === 1 ? text['buddy']: text['buddies']}}
+          <div class="col-xs-9" *ngIf="loadingNetwork">
+            <km-loader
+              [margin]="0"
+              [spinnerMargin]="0"
+              [small]="true"
+              [showBackground]="false">
+            </km-loader>
           </div>
         </div>
         <div class="row" *ngIf="!isCurrentUser && (isAdmin || (isCurrentlyFollowing && isCurrentlyFollowed && profile))">
