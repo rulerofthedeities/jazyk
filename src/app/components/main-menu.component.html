@@ -109,7 +109,10 @@
         <li
           class="gravatar"
           *ngIf="isLoggedIn && getUser()?.emailHash">
-          <img kmGravatar [hash]="getUser()?.emailHash" [width]="32">
+          <img kmGravatar
+            [hash]="getUser()?.emailHash"
+            [width]="32"
+            (click)="onGoToProfile()">
         </li>
         <li
           class="nav-item dropdown"

@@ -1,13 +1,16 @@
 .profile {
   display: inline-block;
   width: 220px;
-  height: 60px;
+  height: 58px;
   margin-bottom: 4px;
   margin-right: 4px;
   padding-right: 4px;
 }
 .gravatar {
-  margin-right: 8px;
+  margin-right: 4px;
+  position: relative;
+  top: -2px;
+  left: -4px;
 }
 .user > .fa {
   color: green;
@@ -34,7 +37,7 @@
 .open {
   position: relative;
   float: right;
-  top: -6px;
+  top: -8px;
 }
 .truncate {
   white-space: nowrap;

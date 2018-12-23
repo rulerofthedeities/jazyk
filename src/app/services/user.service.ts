@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
@@ -26,6 +27,7 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
+    private router: Router,
     private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -231,6 +233,11 @@ export class UserService {
     return this.http
     .get<PublicProfile>('/api/user/profileId/' + userId)
     .pipe(retry(3));
+  }
+
+  goToPublicProfile() {
+    const user = this.user.userName.toLowerCase();
+    this.router.navigate(['/u/' + user]);
   }
 
   saveNotification(notification: Notification): Observable<Notification> {

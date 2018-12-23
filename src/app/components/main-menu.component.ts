@@ -94,6 +94,10 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['/manual']);
   }
 
+  onGoToProfile() {
+    this.userService.goToPublicProfile();
+  }
+
   onSelectLanguage(newInterfaceLan: Language) {
     this.log(`Change interface language to ${newInterfaceLan.name}`);
     this.updateInterfaceLan(newInterfaceLan);

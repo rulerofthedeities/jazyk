@@ -80,6 +80,7 @@ li.active span.bar {
 }
 .gravatar img {
   border: 1px solid #ddd;
+  cursor: pointer;
 }
 .user-name {
   max-width: 250px;

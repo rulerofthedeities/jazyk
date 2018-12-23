@@ -53,8 +53,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   onGoToPublicProfile() {
-    const user = this.userService.user.userName.toLowerCase();
-    this.router.navigate(['/u/' + user]);
+    this.userService.goToPublicProfile();
   }
 
   getHash() {
