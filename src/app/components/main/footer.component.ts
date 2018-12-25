@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
 import { isDevMode } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { UserService } from '../services/user.service';
-import { ErrorService } from '../services/error.service';
-import { SharedService } from '../services/shared.service';
-import { EventMessage } from '../models/error.model';
+import { UserService } from '../../services/user.service';
+import { ErrorService } from '../../services/error.service';
+import { SharedService } from '../../services/shared.service';
+import { EventMessage } from '../../models/error.model';
 import { environment } from 'environments/environment';
 import { takeWhile } from 'rxjs/operators';
 

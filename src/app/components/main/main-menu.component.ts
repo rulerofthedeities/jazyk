@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
          Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { UserService } from '../services/user.service';
-import { SharedService, appTitle } from '../services/shared.service';
-import { AuthService } from '../services/auth.service';
-import { ErrorService } from '../services/error.service';
-import { User } from '../models/user.model';
-import { Language } from '../models/main.model';
+import { UserService } from '../../services/user.service';
+import { SharedService, appTitle } from '../../services/shared.service';
+import { AuthService } from '../../services/auth.service';
+import { ErrorService } from '../../services/error.service';
+import { User } from '../../models/user.model';
+import { Language } from '../../models/main.model';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 

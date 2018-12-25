@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SummaryData, RecentBook, HomeStats } from '../models/dashboard.model';
+import { Leader } from '../models/score.model';
 import { Message } from '../models/user.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -30,9 +31,15 @@ export class DashboardService {
     .pipe(retry(3));
   }
 
+  fetchLeaders(max: number): Observable<Leader[]> {
+    return this.http
+    .get<Leader[]>('/api/dashboard/leaders/' + max.toString())
+    .pipe(retry(3));
+  }
+
   fetchHomeStats(): Observable<HomeStats> {
     return this.http
-    .get<HomeStats>('/api/home/stats')
+    .get<HomeStats>('/api/scores/stats')
     .pipe(retry(3));
   }
 }

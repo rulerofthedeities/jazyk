@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { SharedService } from '../services/shared.service';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   template: `

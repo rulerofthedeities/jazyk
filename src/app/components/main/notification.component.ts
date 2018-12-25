@@ -1,6 +1,6 @@
 import { Component, Input, PLATFORM_ID, Inject, OnInit, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { SharedService } from '../services/shared.service';
+import { SharedService } from '../../services/shared.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({

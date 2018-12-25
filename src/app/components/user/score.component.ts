@@ -4,8 +4,8 @@ import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
 import { ModalTrophiesComponent } from '../modals/modal-trophies.component';
-import { Trophy, UserBook, Book } from '../../models/book.model';
-import { SingleBookScore, BookScore } from '../../models/score.model';
+import { Trophy, UserBook } from '../../models/book.model';
+import { SingleBookScore } from '../../models/score.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 

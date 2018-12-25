@@ -1,0 +1,13 @@
+img.gravatar{
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+}
+.panel-body {
+  font-size: 26px;
+}
+.img.rank {
+  margin-right: 6px;
+  width: 32px;
+  height: 32px;
+}

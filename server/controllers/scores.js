@@ -107,5 +107,27 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     })
+  },
+  getLeaders: (req, res) => {
+    const max = parseInt(req.params.max, 10) || 20,
+          leadersPipeline = [
+            {$group: {
+              _id: '$userId',
+              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+            }},
+            {$sort: {points: -1}},
+            {$limit: max},
+            {$project: {
+              _id: 0,
+              userId: '$_id',
+              points: 1
+            }}
+          ];
+    Session.aggregate(leadersPipeline, (err, result) => {
+      response.handleError(err, res, 400, 'Error fetching leaderboard', () => {
+        response.handleSuccess(res, result);
+      });
+    })
+    console.log('get leaders', max);
   }
 }

@@ -2,12 +2,13 @@ import { Routes } from '@angular/router';
 import { BaseComponent } from './components/base.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserComponent } from './components/user/user.component';
-import { PageNotFoundComponent } from './components/not-found.component';
+import { PageNotFoundComponent } from './components/main/not-found.component';
 import { UserResolver } from './resolves/user.resolver';
 import { AuthGuard } from './guards/auth.guard';
 import { InfoComponent } from './components/pages/info.component';
 import { ManualComponent } from './components/pages/manual.component';
 import { BooklistComponent } from './components/pages/book-list.component';
+import { LeaderboardComponent } from './components/main/leaderboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,6 +25,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: HomeComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'leaderboard',
+        component: LeaderboardComponent,
         canActivate: [AuthGuard]
       },
       {

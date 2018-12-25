@@ -14,13 +14,14 @@ import { DashboardService } from './services/dashboard.service';
 
 import { AppComponent } from './components/app.component';
 import { BaseComponent } from './components/base.component';
-import { MainMenuComponent } from './components/main-menu.component';
-import { NotificationComponent } from './components/notification.component';
-import { FooterComponent } from './components/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { DefaultHomeComponent } from './components/home/default-home.component';
 import { DashboardComponent } from './components/home/dashboard.component';
-import { PageNotFoundComponent } from './components/not-found.component';
+import { MainMenuComponent } from './components/main/main-menu.component';
+import { NotificationComponent } from './components/main/notification.component';
+import { FooterComponent } from './components/main/footer.component';
+import { LeaderboardComponent } from './components/main/leaderboard.component';
+import { PageNotFoundComponent } from './components/main/not-found.component';
 
 // Temp workaround for flickering in universal
 import { PageService } from './services/page.service';
@@ -53,6 +54,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     HomeComponent,
     DefaultHomeComponent,
     DashboardComponent,
+    LeaderboardComponent,
     PageNotFoundComponent,
     InfoComponent,
     ManualComponent,

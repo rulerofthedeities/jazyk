@@ -6,7 +6,7 @@ import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network, MailData, MailOptIn, MailDataOptions } from '../models/user.model';
 import { Language, UserAccess, AccessLevel } from '../models/main.model';
-import { BookScore } from '../models/score.model';
+import { BookScore, LeaderUser } from '../models/score.model';
 import { Trophy, UserBook } from '../models/book.model';
 import { AuthService } from './auth.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
@@ -302,6 +302,13 @@ export class UserService {
     .pipe(retry(3));
   }
 
+  // Leaderboard Users
+  fetchUsers(userIds: string[]): Observable<LeaderUser[]> {
+    return this.http
+    .post<LeaderUser[]>('/api/users/byid', {userIds})
+    .pipe(retry(3));
+  }
+
   fetchTrophies(userId: string = null): Observable<Trophy[]> {
     const suffix = userId || '';
     return this.http
@@ -332,7 +339,6 @@ export class UserService {
   }
 
   getCompactProfiles(userIds: string[]): Observable<CompactProfile[]> {
-    userIds.join(',');
     return this.http
     .post<CompactProfile[]>('/api/user/profiles', {userIds})
     .pipe(retry(3));

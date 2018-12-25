@@ -1,0 +1,42 @@
+<section *ngIf="isReady">
+  <div class="panel panel-default transparant books">
+    <div class="panel-heading">
+      <span class="fa fa-trophy fa-spacing-title"></span>LEADERBOARD
+    </div>
+    <div class="panel-body">
+      <table class="table table-hover" *ngIf="!loadingBoard else loading">
+        <thead>
+          <tr>
+            <th></th>
+            <th width="36px"></th>
+            <th></th>
+            <th class="text-right">POINTS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let leader of leaders; let i = index">
+            <td class="text-right">{{i+1}}.</td>
+            <td>
+              <img kmGravatar *ngIf="!!leader.emailHash"
+              [hash]="leader.emailHash"
+              [width]="32"
+              class="gravatar"></td>
+            <td>
+              {{leader.userName}}
+            </td>
+            <td class="text-right nr">
+              <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName">
+              {{leader.points | score}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #loading>
+    <km-loader
+      [msg]="''"
+      [showBackground]="false">
+    </km-loader>
+  </ng-template>
+</section>

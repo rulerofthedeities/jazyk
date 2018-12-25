@@ -53,6 +53,7 @@ module.exports = {
     router.get('/dashboard/count', dashboard.getCount);
     router.get('/dashboard/communication/:max', dashboard.getRecentMail);
     router.get('/dashboard/books/:max', dashboard.recentBooks);
+    router.get('/dashboard/leaders/:max', scores.getLeaders);
 
     /* user */
     router.post('/user/sendverificationmail', users.sendMailVerification);
@@ -96,6 +97,7 @@ module.exports = {
     router.get('/user/score/books/:bookType', scores.getBookScores);
     router.get('/user/finishedbooks', scores.getFinishedBooks);
     router.get('/user', users.getUser);
+    router.post('/users/byid', users.getUsersById);
 
     /* read */
     router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);

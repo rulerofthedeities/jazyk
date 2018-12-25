@@ -229,6 +229,22 @@ module.exports = {
       });
     });
   },
+  getUsersById: (req, res) => {
+    const userIds = req.body.userIds,
+        query = {_id: {$in: userIds}},
+        projection = {
+          _id: 1,
+          userName: 1,
+          emailHash: 1,
+          email: 1
+        };
+    User.find(query, projection, (err, users) => {
+      response.handleError(err, res, 400, 'Error fetching users', () => {
+        users.forEach(emailUser => setEmailHash(emailUser));
+        response.handleSuccess(res, users);
+      });
+    });
+  },
   saveSettings: (req, res) => {
     const userId = req.decoded.user._id,
           mainSettings = req.body.main,
