@@ -11,6 +11,9 @@ img.gravatar{
   width: 32px;
   height: 32px;
 }
-tr {
+.clickable {
   cursor: pointer;
+}
+.current-user{
+  font-weight: bold;
 }

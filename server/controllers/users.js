@@ -167,9 +167,7 @@ const getPublicProfile = (query, res) => {
     userName: 1,
     email: 1
   };
-  console.log('profile query', query);
   User.findOne(query, projection, (err, result) => {
-    console.log('profile result', result);
     let errCode = 400;
     if (!result) {
       err = {msg: '404 not found'};

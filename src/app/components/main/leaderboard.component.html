@@ -6,20 +6,20 @@
     <div class="panel-body">
       <table class="table table-hover" *ngIf="!loadingBoard else loading">
         <tbody>
-          <tr *ngFor="let leader of leaders; let i = index" (click)="onGoToProfile(leader.userName)">
-            <td class="text-right">{{i+1}}.</td>
-            <td width="36px">
-              <img kmGravatar *ngIf="!!leader.emailHash"
-              [hash]="leader.emailHash"
-              [width]="32"
-              class="gravatar"></td>
-            <td>
-              {{leader.userName}}
-            </td>
-            <td class="text-right nr">
-              <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName">
-              {{leader.points | score}}
-            </td>
+          <tr *ngFor="let leader of leaders; let i = index"
+            (click)="onGoToProfile(leader.userName)"
+            class="clickable"
+            [class.current-user]="leader.isCurrentUser">
+            <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader}"></ng-container>
+          </tr>
+          <tr *ngIf="!!currentLeader">
+            <td></td>
+            <td colspan="3">...</td>
+          </tr>
+          <tr *ngIf="!!currentLeader"
+            class="clickable current-user"
+            (click)="onGoToProfile(currentLeader.userName)">
+            <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader.position, leader:currentLeader}"></ng-container>
           </tr>
         </tbody>
       </table>
@@ -32,3 +32,25 @@
     </km-loader>
   </ng-template>
 </section>
+
+<ng-template #leaderRow let-i=nr let-leader=leader>
+    <td class="text-right">
+      {{i + 1}}.
+    </td>
+    <td width="36px">
+      <img kmGravatar *ngIf="!!leader.emailHash"
+      [hash]="leader.emailHash"
+      [width]="32"
+      class="gravatar">
+    </td>
+    <td>
+      {{leader.userName}}
+    </td>
+    <td class="text-right nr">
+      <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName"
+      [tooltip]="leader.rankName"
+      placement="left"
+      hide-delay="50">
+      {{leader.points | score}}
+    </td>
+</ng-template>

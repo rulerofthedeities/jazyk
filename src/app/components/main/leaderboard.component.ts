@@ -21,6 +21,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   users: LeaderUser[] = [];
   isReady = false;
   text: Object;
+  currentLeader: Leader;
+  gender = 'm';
 
   constructor(
     private dashboardService: DashboardService,
@@ -32,6 +34,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getLeaders();
     this.getTranslations();
+    this.gender = this.userService.user.main.gender || 'm';
   }
 
   onGoToProfile(userName: string) {
@@ -58,6 +61,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       const leaders = this.leaders.slice(nrUsers, nrUsers + maxUserBatch),
             leaderIds = leaders.map(leader => leader.userId);
       this.getUsers(leaderIds);
+    } else {
+      this.checkCurrentUser();
     }
   }
 
@@ -81,11 +86,53 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     users.forEach(user => {
       leader = this.leaders.find(l => l.userId === user._id);
       if (leader) {
-        leader.userName = user.userName;
-        leader.emailHash = user.emailHash;
-        leader.rank = this.sharedService.getRank(leader.points);
+        leader = this.getLeaderData(leader, user);
       }
     });
+  }
+
+  private getLeaderData(leader: Leader, user: LeaderUser) {
+    leader.userName = user.userName;
+    leader.emailHash = user.emailHash;
+    leader.rank = this.sharedService.getRank(leader.points);
+    leader.rankName = this.text['rank' + leader.rank.toString() + this.gender];
+    leader.isCurrentUser = leader.userId === this.userService.user._id;
+    return leader;
+  }
+
+  private checkCurrentUser() {
+    // Check if current user is in leaderboard
+    // If not, add to bottom
+    const currentUserId = this.userService.user._id.toString(),
+          leader = this.leaders.find(l => l.userId === currentUserId);
+    if (!leader) {
+      this.getUserRank();
+    }
+  }
+
+  private getUserRank() {
+    const userId = this.userService.user._id;
+    this.dashboardService
+    .fetchUserRank(userId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      userPosition => {
+        if (userPosition && userPosition.position) {
+          const leader = {
+                  points: userPosition.points,
+                  userId
+                },
+                user = {
+                  _id: userId,
+                  userName: this.userService.user.userName,
+                  emailHash: this.userService.user.emailHash
+                };
+          this.currentLeader = this.getLeaderData(leader, user);
+          this.currentLeader.position = userPosition.position;
+          console.log('current', this.currentLeader);
+        }
+      }
+    );
   }
 
   private getTranslations() {

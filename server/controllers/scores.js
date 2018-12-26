@@ -128,6 +128,46 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     })
-    console.log('get leaders', max);
+  },
+  getLeaderRank: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.params.userId),
+          userPipeline = [
+            {$match: {userId}},
+            {$group: {
+              _id: '$userId',
+              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+            }},
+            {$project: {
+              _id: 0,
+              userId: '$_id',
+              points: 1
+            }}
+          ];
+    // Get points for user
+    Session.aggregate(userPipeline, (err, results) => {
+      let points = 0;
+      response.handleError(err, res, 400, 'Error fetching user points', () => {
+        if (results && results[0]) {
+          points = results[0].points;
+        }
+        const rankPipeline = [
+                {$group: {
+                  _id: '$userId',
+                  points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+                }},
+                {$match: {points: {'$gt': points}}},
+                {$count: 'rank'}
+              ];
+        Session.aggregate(rankPipeline, (err, results) => {
+          response.handleError(err, res, 400, 'Error fetching user rank', () => {
+            if (results[0]) {
+              response.handleSuccess(res, {position: results[0].rank, points});
+            } else {
+              response.handleSuccess(res, {});
+            }
+          });
+        });
+      });
+    });
   }
 }
