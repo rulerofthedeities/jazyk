@@ -11,3 +11,6 @@ img.gravatar{
   width: 32px;
   height: 32px;
 }
+tr {
+  cursor: pointer;
+}

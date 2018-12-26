@@ -51,7 +51,7 @@ export class UserComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         this.init();
-        this.fetchPublicProfile(params['name'].toLowerCase());
+        this.fetchPublicProfile(params['name']);
         this.getTranslations();
       }
     );
@@ -219,6 +219,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.getTrophies(profile._id);
       },
       error => {
+        console.log('error', error);
         if (error.status === 404) {
           this.router.navigate(['/404']);
         } else {

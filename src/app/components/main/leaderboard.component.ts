@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { SharedService } from 'app/services/shared.service';
@@ -19,15 +20,22 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   leaders: Leader[] = [];
   users: LeaderUser[] = [];
   isReady = false;
+  text: Object;
 
   constructor(
     private dashboardService: DashboardService,
     private sharedService: SharedService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getLeaders();
+    this.getTranslations();
+  }
+
+  onGoToProfile(userName: string) {
+    this.router.navigate(['/u/' + userName]);
   }
 
   private getLeaders() {
@@ -39,7 +47,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       leaders => {
         this.leaders = leaders;
         this.getUserData();
-        this.isReady = true;
       }
     );
   }
@@ -55,7 +62,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   }
 
   private getUsers(ids: string[]) {
-    console.log('getting data for users', ids);
     this.userService
     .fetchUsers(ids)
     .pipe(takeWhile(() => this.componentActive))
@@ -64,7 +70,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
         this.users = this.users.concat(users);
         this.updateLeaderData(users);
         this.loadingBoard = false; // Show userboard once first batch of users is known
-        console.log('users', users);
         this.getUserData();
       }
     );
@@ -81,6 +86,21 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
         leader.rank = this.sharedService.getRank(leader.points);
       }
     });
+  }
+
+  private getTranslations() {
+    this.sharedService
+    .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      translations => {
+        if (translations) {
+          this.text = this.sharedService.getTranslatedText(translations);
+          this.sharedService.setPageTitle(this.text, 'Leaderboard');
+          this.isReady = true;
+        }
+      }
+    );
   }
 
   ngOnDestroy() {

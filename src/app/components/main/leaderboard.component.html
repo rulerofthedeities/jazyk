@@ -1,22 +1,14 @@
 <section *ngIf="isReady">
   <div class="panel panel-default transparant books">
     <div class="panel-heading">
-      <span class="fa fa-trophy fa-spacing-title"></span>LEADERBOARD
+      <span class="fa fa-trophy fa-spacing-title"></span>{{text['Leaderboard']}}
     </div>
     <div class="panel-body">
       <table class="table table-hover" *ngIf="!loadingBoard else loading">
-        <thead>
-          <tr>
-            <th></th>
-            <th width="36px"></th>
-            <th></th>
-            <th class="text-right">POINTS</th>
-          </tr>
-        </thead>
         <tbody>
-          <tr *ngFor="let leader of leaders; let i = index">
+          <tr *ngFor="let leader of leaders; let i = index" (click)="onGoToProfile(leader.userName)">
             <td class="text-right">{{i+1}}.</td>
-            <td>
+            <td width="36px">
               <img kmGravatar *ngIf="!!leader.emailHash"
               [hash]="leader.emailHash"
               [width]="32"

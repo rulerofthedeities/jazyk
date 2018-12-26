@@ -125,7 +125,7 @@
   color: white;
 }
 /deep/ .i-table tr:hover {
-  background-color: #e8fcfa;
+  background-color: #e1f4fa;
   cursor: default;
 }
 /* audio */

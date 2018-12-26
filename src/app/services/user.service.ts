@@ -236,7 +236,7 @@ export class UserService {
   }
 
   goToPublicProfile() {
-    const user = this.user.userName.toLowerCase();
+    const user = this.user.userName;
     this.router.navigate(['/u/' + user]);
   }
 
