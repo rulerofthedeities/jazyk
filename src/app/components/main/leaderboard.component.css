@@ -17,3 +17,9 @@ img.gravatar{
 .current-user{
   font-weight: bold;
 }
+.nr {
+  white-space: nowrap;
+}
+.panel {
+  display: table;
+}

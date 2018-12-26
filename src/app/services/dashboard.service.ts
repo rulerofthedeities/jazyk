@@ -45,7 +45,7 @@ export class DashboardService {
 
   fetchHomeStats(): Observable<HomeStats> {
     return this.http
-    .get<HomeStats>('/api/scores/stats')
+    .get<HomeStats>('/api/home/stats')
     .pipe(retry(3));
   }
 }

@@ -219,7 +219,6 @@ export class UserComponent implements OnInit, OnDestroy {
         this.getTrophies(profile._id);
       },
       error => {
-        console.log('error', error);
         if (error.status === 404) {
           this.router.navigate(['/404']);
         } else {

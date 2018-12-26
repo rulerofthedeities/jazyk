@@ -129,7 +129,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
                 };
           this.currentLeader = this.getLeaderData(leader, user);
           this.currentLeader.position = userPosition.position;
-          console.log('current', this.currentLeader);
         }
       }
     );

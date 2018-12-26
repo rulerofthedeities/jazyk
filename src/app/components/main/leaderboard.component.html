@@ -34,23 +34,23 @@
 </section>
 
 <ng-template #leaderRow let-i=nr let-leader=leader>
-    <td class="text-right">
-      {{i + 1}}.
-    </td>
-    <td width="36px">
-      <img kmGravatar *ngIf="!!leader.emailHash"
-      [hash]="leader.emailHash"
-      [width]="32"
-      class="gravatar">
-    </td>
-    <td>
-      {{leader.userName}}
-    </td>
-    <td class="text-right nr">
-      <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName"
-      [tooltip]="leader.rankName"
-      placement="left"
-      hide-delay="50">
-      {{leader.points | score}}
-    </td>
+  <td class="text-right">
+    {{i + 1}}.
+  </td>
+  <td width="36px">
+    <img kmGravatar *ngIf="!!leader.emailHash"
+    [hash]="leader.emailHash"
+    [width]="32"
+    class="gravatar">
+  </td>
+  <td class="name">
+    {{leader.userName}}
+  </td>
+  <td class="text-right nr">
+    <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName"
+    [tooltip]="leader.rankName"
+    placement="left"
+    hide-delay="50">
+    {{leader.points | score}}
+  </td>
 </ng-template>

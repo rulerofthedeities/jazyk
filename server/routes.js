@@ -147,6 +147,7 @@ module.exports = {
     const indexFile = path.join(DIST_FOLDER, 'browser', 'index.html'),
           routes = [
             '/dashboard',
+            '/leaderboard',
             '/read',
             '/read/*',
             '/listen',
@@ -154,6 +155,8 @@ module.exports = {
             '/auth/*',
             '/user/*',
             '/u/:name',
+            '/manual',
+            '/manual/:page',
             '/v/*'
           ];
     routes.forEach(route => {
