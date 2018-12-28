@@ -6,7 +6,7 @@ import { SharedService } from 'app/services/shared.service';
 import { Leader, LeaderUser } from '../../models/score.model';
 import { takeWhile } from 'rxjs/operators';
 
-const maxLeaders = 10,
+const maxLeaders = 20,
       maxUserBatch = 10;
 
 @Component({

@@ -392,7 +392,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         chapterId: this.currentChapter._id,
         sentenceNrChapter: sentenceNrToBookmark,
         isChapterRead: isBookRead ? true : isRead,
-        isBookRead
+        isBookRead,
+        dt: new Date()
       };
       if (isBookRead) {
         this.sessionData.points.finished = this.getPointsFinished();

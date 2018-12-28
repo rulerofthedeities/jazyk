@@ -125,6 +125,7 @@ export interface Bookmark {
   sentenceNrChapter: number;
   isChapterRead: boolean;
   isBookRead?: boolean;
+  dt?: Date;
 }
 
 export interface UserBook {
