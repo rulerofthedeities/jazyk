@@ -3,7 +3,7 @@ const response = require('../response'),
 
 module.exports = {
   logPage: function(req, res) {
-    const page = 'test'; // req.body.page,
+    const page = req.body.page,
           currentTime = new Date(),
           query = {
             page,

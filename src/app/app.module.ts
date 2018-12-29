@@ -11,6 +11,7 @@ import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
 import { ReadnListenService } from './services/readnlisten.service';
 import { DashboardService } from './services/dashboard.service';
+import { LogService } from './services/log.service';
 
 import { AppComponent } from './components/app.component';
 import { BaseComponent } from './components/base.component';
@@ -43,7 +44,8 @@ import { BooklistComponent } from './components/pages/book-list.component';
     UserResolver,
     ReadnListenService,
     DashboardService,
-    PageService
+    PageService,
+    LogService
   ],
   declarations: [
     AppComponent,
