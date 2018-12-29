@@ -151,6 +151,14 @@
   margin-left: 90px;
   display: inline-block;
 }
+.info-credits {
+  margin-left: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.info-credits.selected {
+  color: #428bca;
+}
 .buttons {
   margin: 15px 0;
 }

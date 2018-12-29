@@ -67,7 +67,9 @@ export interface Book {
   series: string;
   directory?: string;
   intro: string;
+  credits: string;
   source: string;
+  sourceLink: string;
   categories: string[];
   lanCode: string;
   lanRegion: string;

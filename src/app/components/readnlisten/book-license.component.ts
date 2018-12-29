@@ -12,9 +12,11 @@ export class BookLicenseComponent implements OnInit {
   @Input() private book: Book;
   @Input() text: Object;
   licenseUrl: string;
+  toolTip: string;
 
   ngOnInit() {
     this.getLicenseUrl();
+    this.setToolTip();
   }
 
   private getLicenseUrl() {
@@ -26,4 +28,7 @@ export class BookLicenseComponent implements OnInit {
     }
   }
 
+  private setToolTip() {
+    this.toolTip = this.text[this.book.license];
+  }
 }

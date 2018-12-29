@@ -54,6 +54,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   difficultyWidth: number;
   difficultyPerc: number;
   showIntro = false;
+  showCredits = false;
   showHistoryData: boolean[] = [false, false];
   isNewBook = false;
   isAllFinished = false;
@@ -63,6 +64,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   authorsTxt: string;
   linksTxt: string;
   someTooltip: any;
+  sourceUrl: string;
+  sourceLabel: string;
 
   constructor(
     private router: Router,
@@ -73,6 +76,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.setDefaultImg();
+    this.setSourceLink();
     this.setAuthors();
     this.checkIfNew();
     this.setDifficulty();
@@ -147,6 +151,10 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   onToggleIntro() {
     this.showIntro = !this.showIntro;
+  }
+
+  onToggleCredits() {
+    this.showCredits = !this.showCredits;
   }
 
   onToggleRecommend() {
@@ -367,6 +375,17 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private setDefaultImg() {
     this.defaultImage = this.bookType === 'listen' ? '/assets/img/books/blankrecord.png' : '/assets/img/books/blankcover.png';
+  }
+
+  private setSourceLink() {
+    const source = this.book.source;
+    if (source.substr(0, 4) === 'http') {
+      this.sourceUrl = source;
+      this.sourceLabel = source.split('//')[1];
+    } else {
+      this.sourceLabel = source;
+      this.sourceUrl = null;
+    }
   }
 
   private log(message: string) {
