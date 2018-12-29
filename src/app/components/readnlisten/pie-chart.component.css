@@ -1,0 +1,13 @@
+.pie {
+  width: 120px;
+}
+.pie.small {
+  width: 70px;
+  margin-top: 30px;
+}
+
+@media screen and (max-width: 991px) {
+  .pie {
+    width: 100px;
+  }
+}

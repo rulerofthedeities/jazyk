@@ -4,15 +4,11 @@ import { UserData } from '../../models/book.model';
 @Component({
   selector: 'km-pie-chart',
   templateUrl: 'pie-chart.component.html',
-  styles: [`
-    .pie {width: 120px;}
-    @media screen and (max-width: 991px) {
-      .pie {width: 100px;}
-    }`
-  ]
+  styleUrls: ['pie-chart.component.css']
 })
 
 export class PieChartComponent implements OnInit {
+  @Input() size = 'large';
   @Input() private data: UserData;
   @Input() private testData: UserData;
   pathData: string[] = [];
