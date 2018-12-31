@@ -1,0 +1,8 @@
+﻿# /robots.txt file for https://jazyk.k-modo.com/
+
+User-agent:  *
+Crawl-delay:  5
+
+User-agent: *
+Disallow: /auth
+Disallow: /v

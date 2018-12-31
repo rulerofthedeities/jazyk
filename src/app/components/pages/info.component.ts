@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PageService } from '../../services/page.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';

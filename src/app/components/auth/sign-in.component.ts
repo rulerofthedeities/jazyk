@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -28,6 +29,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   addressForgotPassword: string;
 
   constructor(
+    private meta: Meta,
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
@@ -37,6 +39,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.meta.addTag({name: 'robots', content: 'noindex'});
     this.getReturnUrl();
     this.getTranslations(this.userService.user.main.lan);
     this.buildForm();
