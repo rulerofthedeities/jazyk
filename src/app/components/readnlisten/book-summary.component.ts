@@ -379,7 +379,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private setSourceLink() {
     const source = this.book.source;
-    if (source.substr(0, 4) === 'http') {
+    if (source && source.substr(0, 4) === 'http') {
       this.sourceUrl = source;
       this.sourceLabel = source.split('//')[1];
     } else {

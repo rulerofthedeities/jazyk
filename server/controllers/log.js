@@ -12,7 +12,8 @@ module.exports = {
             day: currentTime.getDate()
           },
           update = {
-            $inc: {count: 1}
+            $inc: {count: 1},
+            $set: {dt: currentTime}
           };
     Log.findOneAndUpdate(query, update, {upsert: true})
     .then((result) => {

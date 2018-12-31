@@ -6,7 +6,8 @@ var logSchema = new Schema({
   year: {type: Number, required: true},
   month: {type: Number, required: true},
   day: {type: Number, required: true},
-  count: {type: Number, default: 1}
+  count: {type: Number, default: 1},
+  dt: {type: Date}
 });
 
 module.exports = mongoose.model('Log', logSchema);
