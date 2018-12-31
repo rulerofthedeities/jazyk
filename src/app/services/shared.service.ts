@@ -40,7 +40,7 @@ export class SharedService {
     500000000
   ];
   exerciseModeChanged = new Subject<boolean>();
-  notificationModeChanged = new Subject<boolean>();
+  announcementModeChanged = new Subject<boolean>();
   justLoggedInOut = new Subject<boolean>();
   eventMessage = new Subject<EventMessage>();
   audioEvent = new Subject<string>();
@@ -81,8 +81,8 @@ export class SharedService {
     this.exerciseModeChanged.next(isStarted);
   }
 
-  closeNotification() {
-    this.notificationModeChanged.next(false);
+  closeAnnouncement() {
+    this.announcementModeChanged.next(false);
   }
 
   userJustLoggedIn() {

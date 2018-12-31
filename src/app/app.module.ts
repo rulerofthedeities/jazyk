@@ -19,7 +19,7 @@ import { HomeComponent } from './components/home/home.component';
 import { DefaultHomeComponent } from './components/home/default-home.component';
 import { DashboardComponent } from './components/home/dashboard.component';
 import { MainMenuComponent } from './components/main/main-menu.component';
-import { NotificationComponent } from './components/main/notification.component';
+import { AnnouncementComponent } from './components/main/announcement.component';
 import { FooterComponent } from './components/main/footer.component';
 import { LeaderboardComponent } from './components/main/leaderboard.component';
 import { PageNotFoundComponent } from './components/main/not-found.component';
@@ -51,7 +51,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     AppComponent,
     BaseComponent,
     MainMenuComponent,
-    NotificationComponent,
+    AnnouncementComponent,
     FooterComponent,
     HomeComponent,
     DefaultHomeComponent,

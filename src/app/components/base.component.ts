@@ -19,8 +19,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   exercisesStarted = false;
   showBackground: Boolean;
   imagePath: string;
-  notification: string;
-  showNotification = false;
+  announcement: string;
+  showAnnouncement = false;
   interfaceLan: string;
 
   constructor (
@@ -82,8 +82,8 @@ export class BaseComponent implements OnInit, OnDestroy {
         if (version && version.code) {
           this.isNewVersionAvailable = this.compareVersions(environment.version, version.code);
           if (this.isNewVersionAvailable) {
-            this.notification = 'NewVersionAvailable';
-            this.showNotification = true;
+            this.announcement = 'NewVersionAvailable';
+            this.showAnnouncement = true;
           }
         }
       }
@@ -118,12 +118,12 @@ export class BaseComponent implements OnInit, OnDestroy {
     .subscribe(
       started => this.exercisesStarted = started
     );
-    // Check if notification should be closed
+    // Check if announcement should be closed
     this.sharedService
-    .notificationModeChanged
+    .announcementModeChanged
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(
-      notification => this.showNotification = notification
+      announcement => this.showAnnouncement = announcement
     );
     // Check if background image is toggled
     this.userService

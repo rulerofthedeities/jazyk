@@ -1,0 +1,9 @@
+<div class="announcement" [ngClass]="level" *ngIf="!!announcement && isReady">
+  <div class="closeAnnouncement" (click)="onClose()">
+    <span class="fa fa-times pull-right"></span>
+  </div>
+  <span class="msg">{{msg}}</span>
+  <div class="btn btn-default btn-lg" *ngIf="!!tpe" (click)="onAction()">
+    {{btnText}}
+  </div>
+</div>

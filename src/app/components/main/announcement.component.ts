@@ -4,13 +4,13 @@ import { SharedService } from '../../services/shared.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
-  selector: 'km-notification',
-  templateUrl: 'notification.component.html',
-  styleUrls: ['notification.component.css']
+  selector: 'km-announcement',
+  templateUrl: 'announcement.component.html',
+  styleUrls: ['announcement.component.css']
 })
 
-export class NotificationComponent implements OnInit, OnDestroy {
-  @Input() notification = '';
+export class AnnouncementComponent implements OnInit, OnDestroy {
+  @Input() announcement = '';
   @Input() level = 'info'; // danger, warning, info
   @Input() tpe: string;
   @Input() lan = 'en';
@@ -37,13 +37,13 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   getTranslations() {
     this.sharedService
-    .fetchTranslations(this.lan, 'NotificationComponent')
+    .fetchTranslations(this.lan, 'AnnouncementComponent')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       translations => {
         if (translations) {
           const text = this.sharedService.getTranslatedText(translations);
-          this.msg = text[this.notification];
+          this.msg = text[this.announcement];
           this.btnText = text['UpdateApp'];
           this.isReady = true;
         }
@@ -53,7 +53,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   onClose() {
     this.sharedService
-    .closeNotification();
+    .closeAnnouncement();
   }
 
   ngOnDestroy() {

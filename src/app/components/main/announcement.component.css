@@ -1,11 +1,11 @@
-.notification {
+.announcement {
   position: fixed;
   right: 0;
   left: 0;
   top: 60px;
   z-index: 10;
-  padding: 4px 15px 0 15px;
-  font-size: 2rem;
+  padding: 8px 15px 4px 15px;
+  font-size: 20px;
   border: 1px solid #333;
   text-align: center;
 }
@@ -26,7 +26,7 @@
   top: -2px;
   display: inline-block;
 }
-.closeNotfication {
+.closeAnnouncement {
   font-size: 2.5rem;
   color: white;
   text-shadow: 1px 1px 1px #333;
