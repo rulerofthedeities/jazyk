@@ -155,8 +155,6 @@ module.exports = {
             '/auth/*',
             '/user/*',
             '/u/:name',
-            '/manual',
-            '/manual/:page',
             '/v/*'
           ];
     routes.forEach(route => {
