@@ -11,7 +11,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected componentActive = true;
   protected userLanguages: Language[];
   protected books: Book[];
-  filteredBooks: Book[] = [];
+  protected filteredBooks: Book[] = [];
+  displayBooks: Book[]; // books shown in infinite scroll
   userBooks: Map<UserBook> = {}; // For sorting
   userBooksTest: Map<UserBook> = {};
   userData: Map<UserData>[] = [];
@@ -38,6 +39,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   };
   bookType: string; // read or listen
   listTpe = 'all';
+  scrollCutOff = 8; // nr of books shown - increases with scrolling
 
   constructor(
     protected readnListenService: ReadnListenService,
@@ -75,6 +77,11 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected onChangeBookType(tpe: string) {
     this.listTpe = tpe;
     this.filterBooks();
+  }
+
+  protected onScrollBooks() {
+    this.scrollCutOff += 8;
+    this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
   }
 
   protected getDependables() {
@@ -249,6 +256,12 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       this.filterTxt = this.text['Only'] + ' ';
       this.filterTxt += filters.join(', ');
     }
+    this.resetScroll();
+  }
+
+  private resetScroll() {
+    this.scrollCutOff = 8;
+    this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
   }
 
   protected onRemovedSubscription(book: Book) {

@@ -3,6 +3,7 @@ import { SharedModule } from './shared.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ReadnListenModule } from './readnlisten.module';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
@@ -16,7 +17,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     SharedModule,
     RouterModule.forChild(routes),
     FormsModule,
-    ReadnListenModule
+    ReadnListenModule,
+    InfiniteScrollModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
