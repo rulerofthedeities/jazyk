@@ -54,7 +54,7 @@ export class ValidationService {
     };
 
     return function(control) {
-      if (control.value.match(/^[0-9a-zA-Z\.-éàèá]+$/) && control.value.toLowerCase()) {
+      if (control.value.match(/^[0-9a-zA-Z\.\-éàèá]+$/)) {
         if (isInvalidPattern(control.value)) {
           return {'invalidUserName2': true};
         } else {

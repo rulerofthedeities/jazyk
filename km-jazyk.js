@@ -10,7 +10,11 @@ var express = require('express'),
     routes = require('./server/routes'),
     checks = require('./server/checks'),
     {mongoose} = require('./server/mongoose'),
+    // memwatch = require('memwatch-next'),
     https = require('https');
+
+// memwatch.on('leak', (info) => { console.log('memory leakinfo ', info); });
+// memwatch.on('stats', (stats) => { console.log('memory leak stats', stats); });
 
 // config
 app.set('port', process.env.PORT || 4800);

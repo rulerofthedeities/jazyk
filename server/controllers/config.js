@@ -1,4 +1,5 @@
 const response = require('../response'),
+      // memwatch = require('memwatch-next'),
       Config = require('../models/config'),
       Translation = require('../models/translation');
 
@@ -68,6 +69,7 @@ module.exports = {
             }},
           {$sort: {code: 1}}
         ];
+    // const hd = new memwatch.HeapDiff();
     const getData = async () => {
       let translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames;
       if (params.getTranslations === 'true') {
@@ -91,6 +93,8 @@ module.exports = {
 
     getData().then((results) => {
       response.handleSuccess(res, results);
+      // const diff = hd.end();
+      // console.log('memory diff dependables', JSON.stringify(diff, undefined, 2));
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching dependables');
     });

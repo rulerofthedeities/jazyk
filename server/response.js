@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  handleError: function(err, res, statusno, title, callback) {
+  handleError: (err, res, statusno, title, callback) => {
     if (err && res) {
       return res.status(statusno).json({
         title: title,
@@ -11,7 +11,7 @@ module.exports = {
       callback();
     }
   },
-  handleSuccess: function(res, result) {
+  handleSuccess: (res, result) => {
     res.status(200).send(result);
   }
 }
