@@ -63,6 +63,7 @@ export interface BookDates {
 
 export interface Book {
   _id: string;
+  bookId?: string; // In case audiobook = read book
   title: string;
   series: string;
   directory?: string;

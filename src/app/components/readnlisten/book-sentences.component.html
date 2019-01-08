@@ -111,7 +111,7 @@
                 [userLanCode]="userLanCode"
                 [bookLanCode]="book?.lanCode"
                 [text]="text"
-                [bookId]="book?._id"
+                [bookId]="book?.bookId ? book?.bookId : book?._id"
                 [sentence]="currentSentenceTxt"
                 [answersReceived]="answersObservable"
                 [newSentence]="nextSentenceObservable"
