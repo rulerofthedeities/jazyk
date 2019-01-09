@@ -228,6 +228,10 @@
   color: green;
   font-size: 32px;
 }
+.translations .fa-check {
+  font-size: inherit;
+  padding-left: 4px;
+}
 .fa-volume-up.test {
   color: #ffa500;
 }

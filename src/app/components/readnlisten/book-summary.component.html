@@ -125,7 +125,12 @@
           <div class="sentences">
             {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
             <span *ngIf="translationData?.count" class="translations">
-              ({{getTranslated(translationData, book)}} {{text["translatedinto"]}} {{text[userLanCode]}})
+              ({{translationString}} {{text["translatedinto"]}} {{text[userLanCode]}}<span *ngIf="isTranslated"
+                class="fa fa-check"
+                [tooltip]="text['FullyTranslated']"
+                placement="top"
+                hide-delay="50">
+              </span>)
             </span>
           </div>
           <div class="words">

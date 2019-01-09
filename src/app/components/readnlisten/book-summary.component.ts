@@ -66,6 +66,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   someTooltip: any;
   sourceUrl: string;
   sourceLabel: string;
+  translationString: string;
+  isTranslated: boolean;
 
   constructor(
     private router: Router,
@@ -87,6 +89,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkIfStarted();
     this.checkIfFinished();
     this.checkSentencesDone();
+    this.checkTranslated();
   }
 
   onShowRepeatHistory(isTest: boolean) {
@@ -178,14 +181,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.unsubscribe();
     }
-  }
-
-  getTranslated(translationData: TranslationData, book: Book): string {
-    const translated = translationData.count || 0,
-          unique = book.difficulty ? book.difficulty.nrOfUniqueSentences || 0 : 0,
-          maxTranslated = translated > unique ? unique : translated;
-
-    return `${maxTranslated} / ${unique}`;
   }
 
   private playIosWorkaround() {
@@ -351,6 +346,20 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       nrOfSentencesDone: 0,
       percDone: 0
     };
+  }
+
+  private checkTranslated() {
+    if (this.translationData && this.translationData.count > 0) {
+      const translated = this.translationData.count || 0,
+            unique = this.book.difficulty ? this.book.difficulty.nrOfUniqueSentences || 0 : 0,
+            maxTranslated = translated > unique ? unique : translated;
+      this.translationString = `${maxTranslated} / ${unique}`;
+      this.isTranslated = maxTranslated >= unique;
+      console.log('translated', maxTranslated, unique, this.isTranslated);
+    } else {
+      this.isTranslated = false;
+      this.translationString = '';
+    }
   }
 
   private checkSentencesDone() {
