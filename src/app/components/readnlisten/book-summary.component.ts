@@ -355,7 +355,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
             maxTranslated = translated > unique ? unique : translated;
       this.translationString = `${maxTranslated} / ${unique}`;
       this.isTranslated = maxTranslated >= unique;
-      console.log('translated', maxTranslated, unique, this.isTranslated);
     } else {
       this.isTranslated = false;
       this.translationString = '';

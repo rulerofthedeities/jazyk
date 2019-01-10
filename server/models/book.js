@@ -78,10 +78,10 @@ var dtSchema = new Schema({
 }, {_id: false});
 
 var pointsSchema = new Schema({
-  words: Number,
-  translations: Number,
-  test: Number,
-  finished: Number
+  words: {type: Number, required: true, default: 0},
+  translations: {type: Number, required: true, default: 0},
+  test: {type: Number, required: true, default: 0},
+  finished: {type: Number, required: true, default: 0}
 }, {_id: false});
 
 var sessionSchema = new Schema({

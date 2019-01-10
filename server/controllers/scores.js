@@ -10,11 +10,12 @@ const getTotalPoints = (userId, cb) => {
             _id: null,
             totalPointsWords: {'$sum': '$points.words'},
             totalPointsTranslations: {'$sum': '$points.translations'},
+            totalPointsTest: {'$sum': '$points.test'},
             totalPointsFinished: {'$sum': '$points.finished'}
           }},
           {$project: {
             _id: 0,
-            points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished' ]}
+            points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished', '$totalPointsTest' ]}
           }}
         ];
 
@@ -36,8 +37,7 @@ const getTotalPoints = (userId, cb) => {
 
 module.exports = {
   getTotalScore: (req, res) => {
-    const user = req.params.userId,
-          userId = user ? new mongoose.Types.ObjectId(user) : new mongoose.Types.ObjectId(req.decoded.user._id);
+    const userId =  new mongoose.Types.ObjectId(req.decoded.user._id);
     getTotalPoints(userId, (err, score) => {
       response.handleError(err, res, 400, 'Error fetching total score', () => {
         response.handleSuccess(res, score.toString());
@@ -55,9 +55,11 @@ module.exports = {
                 lan: '$lanCode'
               },
               totalPoints: {'$sum': { $add : [
-                '$points.words',
-                '$points.translations',
-                '$points.finished']
+                  '$points.words',
+                  '$points.translations',
+                  '$points.test',
+                  '$points.finished'
+                ]
               }},
               repeats: {$max: '$repeatCount'}
             }},
@@ -113,7 +115,7 @@ module.exports = {
           leadersPipeline = [
             {$group: {
               _id: '$userId',
-              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words', '$points.test' ]}}
             }},
             {$sort: {points: -1}},
             {$limit: max},
@@ -135,7 +137,7 @@ module.exports = {
             {$match: {userId}},
             {$group: {
               _id: '$userId',
-              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words', '$points.test' ]}}
             }},
             {$project: {
               _id: 0,
@@ -153,7 +155,7 @@ module.exports = {
         const rankPipeline = [
                 {$group: {
                   _id: '$userId',
-                  points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words' ]}}
+                  points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words', '$points.test' ]}}
                 }},
                 {$match: {points: {'$gt': points}}},
                 {$count: 'rank'}

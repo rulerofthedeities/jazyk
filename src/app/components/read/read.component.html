@@ -25,7 +25,7 @@
   <div *ngIf="isBooksReady">
     <ul class="list-unstyled" *ngIf="filteredBooks?.length"
       infiniteScroll
-      [infiniteScrollDistance]="0.5"
+      [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="50"
       (scrolled)="onScrollBooks()">
       <li *ngFor="let book of displayBooks; let i=index">
