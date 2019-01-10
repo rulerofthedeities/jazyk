@@ -55,6 +55,9 @@
 .container input:checked ~ .checkmark {
   background-color: #2196F3;
 }
+.container input:disabled ~ .checkmark {
+  background-color: red;
+}
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {

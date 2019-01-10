@@ -46,6 +46,12 @@ export class BookFilterBarComponent {
   }
 
   onChangeFilter() {
-    this.newFilter.emit(this.filter);
+    if (this.filter.hideEasy && this.filter.hideMedium && this.filter.hideAdvanced) {
+      this.filter.hideEasy = false;
+      this.filter.hideMedium = false;
+      this.filter.hideAdvanced = false;
+    } else {
+      this.newFilter.emit(this.filter);
+    }
   }
 }

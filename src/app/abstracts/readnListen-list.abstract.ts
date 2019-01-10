@@ -35,7 +35,10 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   filter: ViewFilter = {
     hideCompleted: false,
     hideNotTranslated: false,
-    hideOld: false
+    hideOld: false,
+    hideEasy: false,
+    hideMedium: false,
+    hideAdvanced: false
   };
   bookType: string; // read or listen
   listTpe = 'all';
@@ -242,6 +245,33 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       if (this.filter.hideOld) {
         this.filteredBooks = this.filteredBooks.filter(b => b.year >= 1945);
         filters.push(this.text['ModernOnly']);
+      }
+      if (this.filter.hideEasy) {
+        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight > 400);
+      }
+      if (this.filter.hideAdvanced) {
+        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight < 480);
+      }
+      if (this.filter.hideMedium) {
+        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight <= 400 || b.difficulty.weight >= 480);
+      }
+      if (this.filter.hideEasy && this.filter.hideMedium && !this.filter.hideAdvanced) {
+        filters.push(this.text['AdvancedOnly']);
+      }
+      if (this.filter.hideEasy && !this.filter.hideMedium && !this.filter.hideAdvanced) {
+        filters.push(this.text['AdvancedMediumOnly']);
+      }
+      if (this.filter.hideEasy && !this.filter.hideMedium && this.filter.hideAdvanced) {
+        filters.push(this.text['MediumOnly']);
+      }
+      if (!this.filter.hideEasy && this.filter.hideMedium && this.filter.hideAdvanced) {
+        filters.push(this.text['EasyOnly']);
+      }
+      if (!this.filter.hideEasy && !this.filter.hideMedium && this.filter.hideAdvanced) {
+        filters.push(this.text['EasyMediumOnly']);
+      }
+      if (!this.filter.hideEasy && this.filter.hideMedium && !this.filter.hideAdvanced) {
+        filters.push(this.text['EasyAdvancedOnly']);
       }
     }
     // Set display text

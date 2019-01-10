@@ -48,7 +48,6 @@ module.exports = {
           sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           query = chapterId === '0' ? {audioBookId, sequence} : {_id: chapterId},
           projection = {content: 0};
-    console.log('query', query);
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching audio chapter', () => {
         response.handleSuccess(res, chapter);

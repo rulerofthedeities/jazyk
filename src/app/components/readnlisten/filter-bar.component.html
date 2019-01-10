@@ -55,6 +55,36 @@
                 <span class="checkmark"></span>
               </label>
             </li>
+            <li>
+              <label class="container">
+                {{text["HideEasy"]}}
+                <input type="checkbox"
+                  [disabled]="filter.hideMedium && filter.hideAdvanced"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideEasy">
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            <li>
+              <label class="container">
+                {{text["HideMedium"]}}
+                <input type="checkbox"
+                  [disabled]="filter.hideEasy && filter.hideAdvanced"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideMedium">
+                <span class="checkmark"></span>
+              </label>
+            </li>
+            <li>
+              <label class="container">
+                {{text["HideAdvanced"]}}
+                <input type="checkbox"
+                  [disabled]="filter.hideEasy && filter.hideMedium"
+                  (change)="onChangeFilter()"
+                  [(ngModel)]="filter.hideAdvanced">
+                <span class="checkmark"></span>
+              </label>
+            </li>
           </ul>
         </div>
       </div>
