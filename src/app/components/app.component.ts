@@ -38,9 +38,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             ga('set', 'page', event.urlAfterRedirects);
             ga('send', 'pageview');
           }
+          /*
           this.logService
           .logPage(event.urlAfterRedirects)
           .subscribe();
+          */
         }
       });
     }
