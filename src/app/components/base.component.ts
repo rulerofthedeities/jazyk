@@ -49,7 +49,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   private setUpTokenRefresh() {
     if (isPlatformBrowser(this.platformId)) {
-      // Client only code.
+      // Client only code
       const timerObservable = timer(30000, 3600000); // Start after 30 secs, then check every hour
       timerObservable
       .pipe(takeWhile(() => this.componentActive))
@@ -63,7 +63,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   private checkVersion() {
     if (isPlatformBrowser(this.platformId)) {
-      // Client only code.
+      // Client only code
       const timerObservable = timer(3600000, 10800000); // First check after one hour, then check every three hours
       timerObservable
       .pipe(takeWhile(() => this.componentActive))

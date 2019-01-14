@@ -7,7 +7,7 @@
   <img src="https://{{imagePath + month}}.jpg" *ngIf="showBackground">
   <div class="container">
     <km-main-menu *ngIf="!exercisesStarted"></km-main-menu>
-    <km-announcement *ngIf="showAnnouncement"
+    <km-announcement *ngIf="showAnnouncement && !exercisesStarted"
       [announcement]="announcement"
       level="danger"
       tpe="refresh"

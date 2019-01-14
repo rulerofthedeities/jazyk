@@ -238,8 +238,10 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         filters.push(this.text['CompletedOnly']);
       }
       if (this.filter.hideNotTranslated) {
-        this.filteredBooks = this.filteredBooks.filter(b =>
-          this.translationData[b._id] && this.translationData[b._id].count >= b.difficulty.nrOfUniqueSentences);
+        this.filteredBooks = this.filteredBooks.filter(b => {
+          const bookId = b.bookId ? b.bookId : b._id;
+          return this.translationData[bookId] && this.translationData[bookId].count >= b.difficulty.nrOfUniqueSentences;
+        });
         filters.push(this.text['TranslatedOnly']);
       }
       if (this.filter.hideOld) {
