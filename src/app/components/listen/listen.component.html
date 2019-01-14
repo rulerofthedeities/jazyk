@@ -32,7 +32,7 @@
           [userData]="userData[book._id]"
           [userBookTest]="userBooksTest[book._id]"
           [userDataTest]="userDataTest[book._id]"
-          [translationData]="translationData[book._id]"
+          [translationData]="translationData[book.bookId ? book.bookId : book._id]"
           [userLanCode]="myLanguage.code"
           [text]="text"
           [nr]="i + 1"
