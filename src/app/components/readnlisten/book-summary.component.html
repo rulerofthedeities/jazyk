@@ -70,7 +70,10 @@
           </span>
           <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
             <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
+            <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
             <div *ngIf="book.narrators">{{text['BookNarrator']}}: {{book.narrators}}</div>
+            <div *ngIf="book.translator">{{text['BookTranslator']}}: {{book.translator}}</div>
+            <div *ngIf="book.cover">{{text['BookCover']}}: {{book.cover}}</div>
             <div *ngIf="book.source">{{text['BookSource']}}:
               <span *ngIf="!!sourceUrl"><a href="{{sourceUrl}}">{{sourceLabel}}</a></span>
               <span *ngIf="!sourceUrl">{{book.source}}</span>

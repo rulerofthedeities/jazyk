@@ -69,6 +69,8 @@ export interface Book {
   directory?: string;
   intro: string;
   credits: string;
+  translator?: string;
+  cover?: string;
   source: string;
   sourceLink: string;
   categories: string[];
