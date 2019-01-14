@@ -19,7 +19,9 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   @Input() bookType: string;
   @Input() isTest: boolean;
   @Input() isBookRead: boolean;
+  @Input() isRepeat: boolean;
   @Output() setFinished = new EventEmitter<boolean>();
+  @Output() setRecommend = new EventEmitter<boolean>();
   @ViewChild(ModalPromotionComponent) promotionComponent: ModalPromotionComponent;
   private componentActive = true;
   percYes = 0;
@@ -32,6 +34,9 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
   bonus = 0;
   basic = 0;
   isFinished = false;
+  isRecommending = false;
+  hasRecommended = false;
+  recommend: boolean;
   newTrophies: string[] = [];
   rankKey: string;
   rankNr: number;
@@ -48,6 +53,13 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
 
   onShowDetails(show: boolean) {
     this.showDetails = show;
+  }
+
+  onRecommend(recommend: boolean) {
+    this.isRecommending = true;
+    this.recommend = recommend;
+    this.setRecommend.next(recommend);
+    this.hasRecommended = true;
   }
 
   getGender(): string {

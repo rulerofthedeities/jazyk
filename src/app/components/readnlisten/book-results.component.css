@@ -86,6 +86,14 @@
 .table-bordered {
   border-style: dotted;
 }
+.fa-thumbs-up {
+  color: green;
+  font-size: 20px;
+}
+.fa-thumbs-down {
+  color: red;
+  font-size: 20px;
+}
 @media screen and (max-width: 500px) {
   .chart-label {display: none;}
 }

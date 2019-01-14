@@ -95,6 +95,8 @@
               [bookType]="bookType"
               [isTest]="true"
               [isBookRead]="isBookRead"
+              [isRepeat]="isRepeat"
+              (setRecommend)="onSetRecommend($event)"
               (setFinished)="onSetFinished($event)">
             </km-sentences-results>
           </div>

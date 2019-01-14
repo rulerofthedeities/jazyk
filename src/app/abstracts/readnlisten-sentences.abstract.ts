@@ -33,6 +33,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   bookType = 'read'; // read or listen
   userLanCode: string;
   userId: string;
+  userBookId: string;
   msg: string;
   isTest = false;
   isLoading = false;
@@ -111,6 +112,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     .subscribe(
       userBook => {}
     );
+  }
+
+  onSetRecommend(recommend: boolean) {
+    if (this.userBookId) {
+      this.readnListenService
+      .recommendBook(this.userBookId, recommend)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        updated => {}
+      );
+    }
   }
 
   onKeyPressed(key: string) {
@@ -247,6 +259,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private findCurrentChapter(userBook: UserBook) {
     if (userBook) {
       const repeatCount = userBook.repeatCount || 0;
+      this.userBookId = userBook._id;
       if (repeatCount > 0) {
         this.isRepeat = true;
         this.repeatCount = repeatCount;
