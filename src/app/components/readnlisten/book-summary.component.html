@@ -63,7 +63,7 @@
             [book]="book"
             [text]="text">
           </km-license>
-          <span  *ngIf="book.credits || book.source || book.narrators"
+          <span *ngIf="book.credits || book.source || book.narrators || book.translator || book.cover"
             class="fa fa-info-circle info-credits"
             [class.selected]="showCredits"
             (click)="onToggleCredits()">
