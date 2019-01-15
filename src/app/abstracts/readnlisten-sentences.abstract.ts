@@ -171,6 +171,16 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.router.navigate(['/' + this.bookType]);
   }
 
+  onRepeat() {
+    // Start story again from results page
+    this.readnListenService
+    .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, null, this.isTest)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(subscription => {
+      this.startAnotherBook(this.book);
+    });
+  }
+
   private nextSentence() {
     this.sharedService.stopAudio();
     this.getSentence();
@@ -225,7 +235,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           lanCode: this.userLanCode,
           bookType: this.bookType,
           isTest: this.isTest,
-          repeatCount: userBook.repeatCount ? userBook.repeatCount : undefined,
+          repeatCount: userBook && userBook.repeatCount ? userBook.repeatCount : undefined,
           answers: '',
           chapters: 0,
           translations: 0,

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { LanPair } from '../models/main.model';
 import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark,
          SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy } from '../models/book.model';
@@ -15,7 +16,8 @@ export class ReadnListenService {
   readAnotherBook = new Subject<Book>();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {}
 
   /*** Audio ***/
@@ -25,6 +27,34 @@ export class ReadnListenService {
   }
 
   /*** Books ***/
+
+  startReadingListening(bookId: string, userLanCode: string, bookType: string, isTest: boolean) {
+    this.playIosWorkaround();
+    if (isTest) {
+      // this.log(`Start listening test for '${this.book.title}'`);
+      this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode + '/test']);
+    } else {
+      if (bookType === 'listen') {
+        // this.log(`Start listening to '${this.book.title}'`);
+        this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode]);
+      } else {
+        // this.log(`Start reading '${this.book.title}'`);
+        this.router.navigate(['/read/book/' + bookId + '/' + userLanCode]);
+      }
+    }
+  }
+
+  private playIosWorkaround() {
+    const audio = new Audio();
+    audio.src = '/assets/audio/gluck.ogg';
+    audio.load();
+    audio.onloadeddata = () => {
+      if (audio) {
+        console.log('audio loaded');
+        // audio.play();
+      }
+    };
+  }
 
   fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
     return this.http

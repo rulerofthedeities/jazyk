@@ -124,14 +124,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
-        this.startReadingListening();
+        this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
       });
     } else {
       this.readnListenService
       .subscribeToBook(this.book._id, this.userLanCode, this.bookType, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
-        this.startReadingListening();
+        this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
       });
     }
   }
@@ -143,7 +143,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     .subscribeToBook(this.book._id, this.userLanCode, 'listen', true)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(subscription => {
-      this.startReadingListeningTest();
+      this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, true);
     });
   }
 
@@ -181,35 +181,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.unsubscribe();
     }
-  }
-
-  private playIosWorkaround() {
-    const audio = new Audio();
-    audio.src = '/assets/audio/gluck.ogg';
-    audio.load();
-    audio.onloadeddata = () => {
-      if (audio) {
-        console.log('audio loaded');
-        // audio.play();
-      }
-    };
-  }
-
-  private startReadingListening() {
-    this.playIosWorkaround();
-    if (this.bookType === 'listen') {
-      this.log(`Start listening to '${this.book.title}'`);
-      this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode]);
-    } else {
-      this.log(`Start reading '${this.book.title}'`);
-      this.router.navigate(['/read/book/' + this.book._id + '/' + this.userLanCode]);
-    }
-  }
-
-  private startReadingListeningTest() {
-    this.playIosWorkaround();
-    this.log(`Start listening test for '${this.book.title}'`);
-    this.router.navigate(['/listen/book/' + this.book._id + '/' + this.userLanCode + '/test']);
   }
 
   private saveRecommend() {
@@ -368,7 +339,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private checkSentencesDoneEach(userData: UserData, status: UserBookStatus) {
     if (userData) {
-      if (!status.isBookRead) {
+      if (!status.isBookRead && status.isStarted) {
         status.nrOfSentencesDone = userData.nrSentencesDone;
         status.percDone = Math.trunc(Math.min(100, (status.nrOfSentencesDone / this.book.difficulty.nrOfSentences) * 100));
       }
@@ -395,13 +366,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       this.sourceUrl = null;
     }
   }
-
+/*
   private log(message: string) {
     this.sharedService.sendEventMessage({
       message,
       source: 'BookSummaryComponent'
     });
   }
+  */
 
   ngOnDestroy() {
     this.componentActive = false;

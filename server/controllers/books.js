@@ -604,7 +604,7 @@ module.exports = {
           lanCode = data.lanCode,
           bookType = data.bookType,
           isTest = data.isTest,
-          dt = data.bookmark.dt,
+          dt = data.bookmark ? data.bookmark.dt : Date.now(),
           query = {userId, bookId, lanCode, bookType, isTest},
           update = {
             $set: {

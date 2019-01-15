@@ -146,9 +146,17 @@
             [nextSentence]="nextSentenceObservable">
           </km-book-suggestions>
 
+          <button type="button" *ngIf="sessionData?.resultData?.isFinished"
+            class="btn btn-primary"
+            (click)="onRepeat()">
+            <span class="fa fa-repeat fa-spacing"></span>
+            {{bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"]}}
+          </button>
+
           <button type="button" *ngIf="currentStep === steps.Results"
             class="btn btn-primary"
             (click)="onBackToList()">
+            <span class="fa fa-th-list fa-spacing"></span>
             {{text[bookType === 'listen' ? "BackListening" : "BackReading"]}}
           </button>
         </div>

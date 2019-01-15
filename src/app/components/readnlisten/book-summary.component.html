@@ -89,7 +89,7 @@
             (click)="onStartReadingListening(false, false)">
             <span class="fa fa-arrow-right fa-spacing"></span>
             {{userBookStatus.isStarted ?
-                (bookType=== 'listen' ? text["ContinueListening"] : text["ContinueReading"])
+                (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
                 : (userBook && userBook.repeatCount > 0 ?
                   (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
                   : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
@@ -202,7 +202,7 @@
   let-uData=userData
   let-showHistory=showHistory>
   <div *ngIf="uBookStatus.isStarted || (uBook && uBook.repeatCount > 0)">
-    <div *ngIf="uBook.repeatCount && uBookStatus.isStarted && tpe !== 'home'"
+    <div *ngIf="uBook.repeatCount && tpe !== 'home'"
       (click)="onShowRepeatHistory(isTest)"
       class="repeat-count pull-right"
       [class.test]="isTest"
@@ -211,7 +211,7 @@
       hide-delay="50">
       {{uBook.repeatCount}}
     </div>
-    <div *ngIf="uBook.repeatCount && uBookStatus.isStarted && tpe === 'home'"
+    <div *ngIf="uBook.repeatCount && tpe === 'home'"
       class="repeat-count home pull-right"
       [class.test]="isTest"
       [tooltip]="text['RepeatNr']"
