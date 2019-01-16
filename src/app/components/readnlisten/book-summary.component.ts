@@ -124,14 +124,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       .subscribeRepeat(this.book._id, this.userLanCode, this.bookType, this.userBook.bookmark, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
-        this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
+        this.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
       });
     } else {
       this.readnListenService
       .subscribeToBook(this.book._id, this.userLanCode, this.bookType, isTest)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(subscription => {
-        this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
+        this.startReadingListening(this.book._id, this.userLanCode, this.bookType, isTest);
       });
     }
   }
@@ -143,7 +143,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     .subscribeToBook(this.book._id, this.userLanCode, 'listen', true)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(subscription => {
-      this.readnListenService.startReadingListening(this.book._id, this.userLanCode, this.bookType, true);
+      this.startReadingListening(this.book._id, this.userLanCode, this.bookType, true);
     });
   }
 
@@ -180,6 +180,22 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       );
     } else {
       this.unsubscribe();
+    }
+  }
+
+  private startReadingListening(bookId: string, userLanCode: string, bookType: string, isTest: boolean) {
+    this.readnListenService.playIosWorkaround();
+    if (isTest) {
+      this.log(`Start listening test for '${this.book.title}'`);
+      this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode + '/test']);
+    } else {
+      if (bookType === 'listen') {
+        this.log(`Start listening to '${this.book.title}'`);
+        this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode]);
+      } else {
+        this.log(`Start reading '${this.book.title}'`);
+        this.router.navigate(['/read/book/' + bookId + '/' + userLanCode]);
+      }
     }
   }
 
@@ -366,14 +382,13 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       this.sourceUrl = null;
     }
   }
-/*
+
   private log(message: string) {
     this.sharedService.sendEventMessage({
       message,
       source: 'BookSummaryComponent'
     });
   }
-  */
 
   ngOnDestroy() {
     this.componentActive = false;

@@ -26,25 +26,7 @@ export class ReadnListenService {
     this.audioEnded.next(ended);
   }
 
-  /*** Books ***/
-
-  startReadingListening(bookId: string, userLanCode: string, bookType: string, isTest: boolean) {
-    this.playIosWorkaround();
-    if (isTest) {
-      // this.log(`Start listening test for '${this.book.title}'`);
-      this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode + '/test']);
-    } else {
-      if (bookType === 'listen') {
-        // this.log(`Start listening to '${this.book.title}'`);
-        this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode]);
-      } else {
-        // this.log(`Start reading '${this.book.title}'`);
-        this.router.navigate(['/read/book/' + bookId + '/' + userLanCode]);
-      }
-    }
-  }
-
-  private playIosWorkaround() {
+  playIosWorkaround() {
     const audio = new Audio();
     audio.src = '/assets/audio/gluck.ogg';
     audio.load();
@@ -55,6 +37,8 @@ export class ReadnListenService {
       }
     };
   }
+
+  /*** Books ***/
 
   fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
     return this.http
