@@ -58,7 +58,8 @@
               [text]="text"
               [sentence]="currentSentence"
               [difficulty]="book.difficulty.weight"
-              (answered)="onAnswered($event)">
+              (answered)="onAnswered($event)"
+              (nextSentence)="onNextSentence($event)">
             </km-sentence-test>
 
             <!-- NEXT SENTENCE -->

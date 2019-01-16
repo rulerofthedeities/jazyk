@@ -1,44 +1,54 @@
 <div kmPressed (hasKeyPressed)="onKeyPressed($event)">
-  <div *ngIf="showSentence"
-    class="instruction"
-    [style.display]="isAnswered ? 'none' : 'block'">
-    <span class="fa fa-info-circle"></span>
-    {{text["EnterMissingWord"]}}
-  </div>
-  <div class="sentence" *ngIf="showSentence">
-    <span class="split-sentence">{{sentenceSections[0]}}</span>
-    <input *ngIf="!isAnswered"
-      type="text"
-      class="form-control input-lg word"
-      id="answer"
-      maxlength="100"
-      autofocus
-      autocomplete="off"
-      spellcheck="false"
-      [attr.disabled]="isAnswered ? '' : null"
-      [(ngModel)]="answer">
-    <span *ngIf="isAnswered" class="answer"
-      [ngClass]="{
-        answered: isAnswered,
-        correct: isAnswered && answerletter==='y',
-        almostcorrect: isAnswered && answerletter==='m',
-        incorrect: isAnswered && answerletter==='n'
-      }">
-      {{answer}}
-    </span>
-    <span class="split-sentence ">{{sentenceSections[1]}}</span>
-    <div class="clearfix"></div>
-  </div>
+  <div *ngIf="!skip">
+    <div *ngIf="showSentence"
+      class="instruction"
+      [style.display]="isAnswered ? 'none' : 'block'">
+      <span class="fa fa-info-circle"></span>
+      {{text["EnterMissingWord"]}}
+    </div>
+    <div class="sentence" *ngIf="showSentence">
+      <span class="split-sentence">{{sentenceSections[0]}}</span>
+      <input *ngIf="!isAnswered"
+        type="text"
+        class="form-control input-lg word"
+        id="answer"
+        maxlength="100"
+        autofocus
+        autocomplete="off"
+        spellcheck="false"
+        [attr.disabled]="isAnswered ? '' : null"
+        [(ngModel)]="answer">
+      <span *ngIf="isAnswered" class="answer"
+        [ngClass]="{
+          answered: isAnswered,
+          correct: isAnswered && answerletter==='y',
+          almostcorrect: isAnswered && answerletter==='m',
+          incorrect: isAnswered && answerletter==='n'
+        }">
+        {{answer}}
+      </span>
+      <span class="split-sentence ">{{sentenceSections[1]}}</span>
+      <div class="clearfix"></div>
+    </div>
 
-  <div class="solution" *ngIf="isAnswered && answerletter!=='y'">
-    <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{word.word}}</span>
+    <div class="solution" *ngIf="isAnswered && answerletter!=='y'">
+      <span class="msg">{{text["Expectedanswer"]}} </span><span class="answer">{{word.word}}</span>
+    </div>
+    <!-- Check WORD -->
+    <button *ngIf="showSentence && !isAnswered"
+      type="button"
+      class="btn btn-success btn-lg pull-right next-sentence"
+      (click)="onCheckWord()">
+      {{text["Check"]}} <span class="fa fa-chevron-right"></span>
+    </button>
   </div>
-  <!-- Check WORD -->
-  <button *ngIf="showSentence && !isAnswered"
-    type="button"
-    class="btn btn-success btn-lg pull-right next-sentence"
-    (click)="onCheckWord()">
-    {{text["Check"]}} <span class="fa fa-chevron-right"></span>
-  </button>
+  <div *ngIf="skip && showSentence">
+    <div class="sentence">
+      {{sentence?.text}}
+    </div>
+    <span class="notest">
+      {{text["NoTest"]}}
+    </span>
+  </div>
   <div class="clearfix"></div>
 </div>

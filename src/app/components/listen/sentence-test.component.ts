@@ -14,10 +14,12 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   @Input() sentence: Sentence;
   @Input() difficulty: number;
   @Output() answered = new EventEmitter<TestAnswer>();
+  @Output() nextSentence = new EventEmitter<boolean>();
   sentenceSections: string[];
   word: Word;
   showSentence = false;
   isAnswered = false;
+  skip = false;
   answerletter: string;
   answer: string;
 
@@ -34,15 +36,27 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     this.showSentence = false;
     this.isAnswered = false;
     this.answer = '';
-    this.selectWord();
-    this.splitSentence();
+    const words = this.sentence.words.filter(w => !w.unselectable);
+    if (words && words.length) {
+      this.skip = false;
+      this.selectWord(words);
+      this.splitSentence();
+    } else {
+      this.skip = true;
+    }
   }
 
   onKeyPressed(key: string) {
     switch (key) {
       case 'Enter':
-        if (!this.isAnswered) {
-          this.checkWord();
+        if (this.showSentence) {
+          if (this.skip) {
+            this.nextSentence.next(true);
+          } else {
+            if (!this.isAnswered) {
+              this.checkWord();
+            }
+          }
         }
       break;
       case ' ':
@@ -55,31 +69,28 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     this.checkWord();
   }
 
-  private selectWord() {
+  private selectWord(words: Word[]) {
     this.word = null;
     let nr;
     // select the word the user has to enter
-    let words = this.sentence.words.filter(w => !w.unselectable);
-    if (words.length > 1) {
-      // skip rarest and most common words
-      let minScore = minWordScore;
-      let maxScore = maxWordScore;
-      const minIncrease = this.difficulty < 400 ? 150 : (this.difficulty < 500 ? 100 : 0);
-      minScore += minIncrease;
+    // skip rarest and most common words
+    let minScore = minWordScore;
+    let maxScore = maxWordScore;
+    const minIncrease = this.difficulty < 400 ? 150 : (this.difficulty < 500 ? 100 : 0);
+    minScore += minIncrease;
+    words = words.filter(w => w.score > minScore && w.score < maxScore);
+    // if words are found, select a random word
+    if (words.length > 0) {
+      nr = Math.floor((Math.random() * words.length));
+      this.word = words[nr];
+    } else {
+      // if no words are found, include rarer and more common words
+      minScore -= minIncrease;
+      maxScore += 50;
       words = words.filter(w => w.score > minScore && w.score < maxScore);
-      // if words are found, select a random word
       if (words.length > 0) {
         nr = Math.floor((Math.random() * words.length));
         this.word = words[nr];
-      } else {
-        // if no words are found, include rarer and more common words
-        minScore -= minIncrease;
-        maxScore += 50;
-        words = words.filter(w => w.score > minScore && w.score < maxScore);
-        if (words.length > 0) {
-          nr = Math.floor((Math.random() * words.length));
-          this.word = words[nr];
-        }
       }
     }
     // Nothing found, select a random word without any filter
@@ -101,6 +112,16 @@ export class SentenceTestComponent implements OnInit, OnChanges {
       word,
       score: this.word.score,
       answerLetter: this.answerletter
+    });
+  }
+
+  private toNextSentence() {
+    console.log('to next sentence');
+    this.isAnswered = true;
+    this.answered.emit({
+      word: '',
+      score: 0,
+      answerLetter: ''
     });
   }
 
@@ -132,6 +153,9 @@ export class SentenceTestComponent implements OnInit, OnChanges {
       hasEnded => {
         if (hasEnded) {
           this.showSentence = true;
+          if (this.skip) {
+            this.toNextSentence();
+          }
         }
       }
     );

@@ -187,7 +187,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected saveBookmarkAndSession() {
-    if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length === 1) {
+    if (this.sessionData.answers.length % this.saveFrequency === 0 || this.sessionData.answers.length < 2) {
       this.placeBookmark(false);
       this.saveSessionData();
     }
@@ -402,7 +402,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected placeBookmark(isBookRead: boolean) {
-    if (this.sessionData.answers) {
+    if (this.sessionData) {
       let sentenceNrToBookmark = this.currentSentenceNr;
       if (this.currentStep < SentenceSteps.Answered) {
         sentenceNrToBookmark--;
@@ -435,7 +435,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected saveSessionData(book: Book = null) {
-    if (this.sessionData.answers) {
+    if (this.sessionData) {
       this.readnListenService
       .saveSessionData(this.sessionData)
       .pipe(takeWhile(() => this.componentActive))

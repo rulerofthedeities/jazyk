@@ -55,7 +55,7 @@ export class SentencesTestComponent extends ReadnListenSentencesComponent {
     this.currentStep = SentenceSteps.Answered;
     this.currentAnswer = answer.word;
     this.sessionData.answers += answer.answerLetter;
-    this.sessionData.points.words += this.getSentencePoints(this.currentSentenceTxt);
+    this.sessionData.points.words += answer.answerLetter === '' ? 0 : this.getSentencePoints(this.currentSentenceTxt);
     this.sessionData.points.test += this.getSentenceTestPoints(answer);
     this.sessionData.nrYes += answer.answerLetter === 'y' ? 1 : 0 ;
     this.sessionData.nrMaybe += answer.answerLetter === 'm' ? 1 : 0 ;
