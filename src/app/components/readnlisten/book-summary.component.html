@@ -1,18 +1,28 @@
 <article>
-  <div class="panel panel-default panel-book" [ngClass]="{dashboard:tpe==='home', audiobook:bookType==='listen', readbook:bookType==='read'}">
+  <div class="panel panel-default panel-book"
+    [ngClass]="{
+      dashboard:tpe==='home',
+      audiobook:bookType==='listen',
+      readbook:bookType==='read',
+      compact:isCompact
+    }">
     <div class="read-bar" *ngIf="isAllFinished">
     </div>
-    <div class="panel-body" [class.read]="userBookStatus.isBookRead">
+    <div class="panel-body"
+      [class.read]="userBookStatus.isBookRead"
+      (click)="onOpen()">
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
         {{text["New"]}}!
       </div>
-      <div class="image" [class.img-border]="!!book?.img">
-        <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
-        <img src="{{book?.img || defaultImage}}" class="book-img">
-        <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
-        <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
-        <div class="jazyk-book" *ngIf="!!book?.img && book?.authors==='Jazyk'">
-          <img src="/assets/img/logo.png">
+      <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
+      <div class="image-wrapper" [class.img-border]="!!book?.img">
+        <div class="image">
+          <img src="{{book?.img || defaultImage}}" class="book-img">
+          <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
+          <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
+          <div class="jazyk-book" *ngIf="!!book?.img && book?.authors==='Jazyk'">
+            <img src="/assets/img/logo.png">
+          </div>
         </div>
       </div>
       <div class="book">
@@ -33,162 +43,165 @@
         <!-- TITLE -->
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-          {{book.title}}<span class="fa fa-info-circle intro-icon" *ngIf="book.intro" (click)="onToggleIntro()"></span>
+          <span class="fa fa-check" *ngIf="isCompact && isAllFinished"></span>{{book.title}}
+          <span class="fa fa-info-circle intro-icon" *ngIf="book.intro && !isCompact" (click)="onToggleIntro()"></span>
           <small>{{book.series}}</small>
         </h3>
-        <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
-          {{book.intro}}
-        </div>
-        <!-- PIE CHART -->
-        <div class="pie-content" style="position:relative;">
-          <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
-            <km-pie-chart
-              [size]="tpe==='home' ? 'small' : 'large'"
-              [data]="currentUserData"
-              [testData]="currentUserTestData">
-            </km-pie-chart>
+        <div class="book-content">
+          <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
+            {{book.intro}}
           </div>
-        </div>
-        <!-- AUTHOR -->
-        <div class="author">
-          <km-book-tpe
-            [tpe]="book.tpe"
-            [text]="text">
-          </km-book-tpe>
-          {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
-          <span *ngIf="linksTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
-          <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
-          <km-license
-            [licenses]="licenses"
-            [book]="book"
-            [text]="text">
-          </km-license>
-          <span *ngIf="book.credits || book.source || book.narrators || book.translator || book.cover"
-            class="fa fa-info-circle info-credits"
-            [class.selected]="showCredits"
-            (click)="onToggleCredits()">
-          </span>
-          <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
-            <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
-            <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
-            <div *ngIf="book.narrators">{{text['BookNarrator']}}: {{book.narrators}}</div>
-            <div *ngIf="book.translator">{{text['BookTranslator']}}: {{book.translator}}</div>
-            <div *ngIf="book.cover">{{text['BookCover']}}: {{book.cover}}</div>
-            <div *ngIf="book.source">{{text['BookSource']}}:
-              <span *ngIf="!!sourceUrl"><a href="{{sourceUrl}}">{{sourceLabel}}</a></span>
-              <span *ngIf="!sourceUrl">{{book.source}}</span>
+          <!-- PIE CHART -->
+          <div class="pie-content" style="position:relative;">
+            <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
+              <km-pie-chart
+                [size]="tpe==='home' ? 'small' : 'large'"
+                [data]="currentUserData"
+                [testData]="currentUserTestData">
+              </km-pie-chart>
             </div>
           </div>
-        </div>
-        <!-- BUTTONS -->
-        <div class="buttons" *ngIf="book.lanCode !== userLanCode">
-          <button *ngIf="!isFinished && !userBookStatus.isBookRead && (!isTest || tpe!=='home')"
-            type="button"
-            class="btn btn-primary"
-            [class.btn-lg]="tpe!=='home'"
-            (click)="onStartReadingListening(false, false)">
-            <span class="fa fa-arrow-right fa-spacing"></span>
-            {{userBookStatus.isStarted ?
-                (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
-                : (userBook && userBook.repeatCount > 0 ?
-                  (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
-                  : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
-                )
-            }}
-          </button>
-          <button *ngIf="!isTestFinished && !userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
-            type="button"
-            class="btn btn-warning"
-            [class.btn-lg]="tpe!=='home'"
-            (click)="onStartListeningTest()">
-            <span class="fa fa-flask fa-spacing"></span>
-            {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
-          </button>
-          <span *ngIf="isFinished || isTestFinished">
-            <span class="book-read" *ngIf="isAllFinished">
-              <span class="fa fa-check"></span>
-              {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+          <!-- AUTHOR -->
+          <div class="author">
+            <km-book-tpe
+              [tpe]="book.tpe"
+              [text]="text">
+            </km-book-tpe>
+            {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
+            <span *ngIf="linksTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
+            <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+            <km-license
+              [licenses]="licenses"
+              [book]="book"
+              [text]="text">
+            </km-license>
+            <span *ngIf="book.credits || book.source || book.narrators || book.translator || book.cover"
+              class="fa fa-info-circle info-credits"
+              [class.selected]="showCredits"
+              (click)="onToggleCredits()">
             </span>
-            <button type="button" *ngIf="isFinished"
-              (click)="onStartReadingListening(true, false)"
+            <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
+              <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
+              <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
+              <div *ngIf="book.narrators">{{text['BookNarrator']}}: {{book.narrators}}</div>
+              <div *ngIf="book.translator">{{text['BookTranslator']}}: {{book.translator}}</div>
+              <div *ngIf="book.cover">{{text['BookCover']}}: {{book.cover}}</div>
+              <div *ngIf="book.source">{{text['BookSource']}}:
+                <span *ngIf="!!sourceUrl"><a href="{{sourceUrl}}">{{sourceLabel}}</a></span>
+                <span *ngIf="!sourceUrl">{{book.source}}</span>
+              </div>
+            </div>
+          </div>
+          <!-- BUTTONS -->
+          <div class="buttons" *ngIf="book.lanCode !== userLanCode">
+            <button *ngIf="!isFinished && !userBookStatus.isBookRead && (!isTest || tpe!=='home')"
+              type="button"
               class="btn btn-primary"
-              [class.btn-lg]="tpe!=='home'">
-              <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
+              [class.btn-lg]="tpe!=='home'"
+              (click)="onStartReadingListening(false, false)">
+              <span class="fa fa-arrow-right fa-spacing"></span>
+              {{userBookStatus.isStarted ?
+                  (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
+                  : (userBook && userBook.repeatCount > 0 ?
+                    (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
+                    : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
+                  )
+              }}
             </button>
-            <button type="button" *ngIf="isTestFinished"
-              (click)="onStartReadingListening(true, true)"
+            <button *ngIf="!isTestFinished && !userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
+              type="button"
               class="btn btn-warning"
-              [class.btn-lg]="tpe!=='home'">
-              <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+              [class.btn-lg]="tpe!=='home'"
+              (click)="onStartListeningTest()">
+              <span class="fa fa-flask fa-spacing"></span>
+              {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
             </button>
-          </span>
-        </div>
-        <!-- INFO -->
-        <div class="info" *ngIf="tpe !== 'home'">
-          <div class="sentences">
-            {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
-            <span *ngIf="translationData?.count" class="translations">
-              ({{translationString}} {{text["translatedinto"]}} {{text[userLanCode]}}<span *ngIf="isTranslated"
-                class="fa fa-check"
-                [tooltip]="text['FullyTranslated']"
-                placement="top"
-                hide-delay="50">
-              </span>)
+            <span *ngIf="isFinished || isTestFinished">
+              <span class="book-read" *ngIf="isAllFinished">
+                <span class="fa fa-check"></span>
+                {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+              </span>
+              <button type="button" *ngIf="isFinished"
+                (click)="onStartReadingListening(true, false)"
+                class="btn btn-primary"
+                [class.btn-lg]="tpe!=='home'">
+                <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
+              </button>
+              <button type="button" *ngIf="isTestFinished"
+                (click)="onStartReadingListening(true, true)"
+                class="btn btn-warning"
+                [class.btn-lg]="tpe!=='home'">
+                <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+              </button>
             </span>
           </div>
-          <div class="words">
-            {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
-          </div>
-          <div *ngIf="tpe!=='home'" class="icons pull-right">
-            <div *ngIf="tpe!=='my'"
-              class="subscribe"
-              [class.mylist]="userBookStatus.isSubscribed"
-              (click)="onToggleSubscription()"
-              [tooltip]="text[userBookStatus.isSubscribed ? 'RemoveFromList' : 'AddToList']"
-              placement="left"
-              hide-delay="50">
-              <span class="fa fa-thumb-tack"></span>
+          <!-- INFO -->
+          <div class="info" *ngIf="tpe !== 'home'">
+            <div class="sentences">
+              {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
+              <span *ngIf="translationData?.count" class="translations">
+                ({{translationString}} {{text["translatedinto"]}} {{text[userLanCode]}}<span *ngIf="isTranslated"
+                  class="fa fa-check"
+                  [tooltip]="text['FullyTranslated']"
+                  placement="top"
+                  hide-delay="50">
+                </span>)
+              </span>
             </div>
-            <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
-              [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
-              placement="left"
-              hide-delay="50">
-              <span class="fa"
-                [ngClass]="{
-                  'fa-thumbs-o-up': !userBookStatus.isRecommended,
-                  'fa-thumbs-up': userBookStatus.isRecommended,
-                  'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
-                }"
-                (click)="onToggleRecommend()"></span>
+            <div class="words">
+              {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
             </div>
+            <div *ngIf="tpe!=='home'" class="icons pull-right">
+              <div *ngIf="tpe!=='my'"
+                class="subscribe"
+                [class.mylist]="userBookStatus.isSubscribed"
+                (click)="onToggleSubscription()"
+                [tooltip]="text[userBookStatus.isSubscribed ? 'RemoveFromList' : 'AddToList']"
+                placement="left"
+                hide-delay="50">
+                <span class="fa fa-thumb-tack"></span>
+              </div>
+              <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
+                [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
+                placement="left"
+                hide-delay="50">
+                <span class="fa"
+                  [ngClass]="{
+                    'fa-thumbs-o-up': !userBookStatus.isRecommended,
+                    'fa-thumbs-up': userBookStatus.isRecommended,
+                    'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
+                  }"
+                  (click)="onToggleRecommend()"></span>
+              </div>
+            </div>
+            {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
+            ({{difficultyPerc}}%)
           </div>
-          {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
-          ({{difficultyPerc}}%)
-        </div>
-        <!-- PROGRESS -->
-        <ng-container *ngTemplateOutlet="progressTemplate;context:{
-          isTest: false,
-          userBookStatus: userBookStatus,
-          userBook: userBook,
-          userData: userData,
-          showHistory: showHistoryData[0]
-        }">
-        </ng-container>
-        <ng-container *ngTemplateOutlet="progressTemplate;context:{
-          isTest: true,
-          userBookStatus: userBookStatusTest,
-          userBook: userBookTest,
-          userData: userDataTest,
-          showHistory: showHistoryData[1]
-        }">
-        </ng-container>
-        <!-- UNSUBSCRIBE -->
-        <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
-          <button type="button" class="btn btn-default"
-            (click)="onStopReadingListening()">
-            <span class="fa fa-times-circle fa-spacing"></span>
-            {{text["RemoveFromList"]}}
-          </button>
+          <!-- PROGRESS -->
+          <ng-container *ngTemplateOutlet="progressTemplate;context:{
+            isTest: false,
+            userBookStatus: userBookStatus,
+            userBook: userBook,
+            userData: userData,
+            showHistory: showHistoryData[0]
+          }">
+          </ng-container>
+          <ng-container *ngTemplateOutlet="progressTemplate;context:{
+            isTest: true,
+            userBookStatus: userBookStatusTest,
+            userBook: userBookTest,
+            userData: userDataTest,
+            showHistory: showHistoryData[1]
+          }">
+          </ng-container>
+          <!-- UNSUBSCRIBE -->
+          <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
+            <button type="button" class="btn btn-default"
+              (click)="onStopReadingListening()">
+              <span class="fa fa-times-circle fa-spacing"></span>
+              {{text["RemoveFromList"]}}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -42,7 +42,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() text: Object;
   @Input() nr: number;
   @Input() total: number;
-  @Input() tpe: string; // home or read
+  @Input() tpe: string; // home or read or my
   @Input() licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   private componentActive = true;
@@ -60,6 +60,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isAllFinished = false;
   isFinished = false; // non-test
   isTestFinished = false;
+  isCompact = false;
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
@@ -183,6 +184,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  onOpen() {
+    if (this.isCompact) {
+      this.isCompact = false;
+    }
+  }
+
   private startReadingListening(bookId: string, userLanCode: string, bookType: string, isTest: boolean) {
     this.readnListenService.playIosWorkaround();
     if (isTest) {
@@ -266,6 +273,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIfFinished() {
+    this.isCompact = false;
     if (this.tpe === 'home') {
       this.isAllFinished = (this.userBook && this.userBookStatus.isBookRead) || (this.userBookTest && this.userBookStatusTest.isBookRead);
     } else {
@@ -275,6 +283,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       } else if (this.userBook) {
         // only read
         this.isAllFinished = this.userBookStatus.isBookRead || this.userBook.repeatCount > 0;
+        this.isCompact = this.userBookStatus.isBookRead && this.tpe === 'read' && this.bookType === 'read';
       }
     }
     this.isFinished = this.userBook && this.userBookStatus.isBookRead;

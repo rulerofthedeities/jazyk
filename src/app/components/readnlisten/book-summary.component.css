@@ -16,12 +16,14 @@
   top: 0px;
   font-size: 20px;
 }
-.image {
-  width: 162px;
-  height: 242px;
+.image-wrapper {
   float: left;
   margin: 1px;
   position: relative;
+}
+.image {
+  width: 160px;
+  height: 240px;
 }
 .dashboard .image {
   width: 81px;
@@ -54,10 +56,11 @@
 }
 .circle-flag {
   position: absolute;
-  top: -8px;
-  left: -12px;
+  top: 8px;
+  left: 4px;
   width: 32px;
   height: 32px;
+  z-index: 1;
 }
 .dashboard .circle-flag {
   width: 20px;
@@ -227,6 +230,9 @@
 .fa-check {
   color: green;
   font-size: 32px;
+}
+h3 .fa-check {
+  margin-left: 6px;
 }
 .translations .fa-check {
   font-size: inherit;
@@ -400,6 +406,24 @@ span.canrecommend:hover {
 }
 .corner-ribbon.yellow{
   background: rgb(255, 255, 173);
+}
+/* Compact */
+.compact.panel-book {
+  min-height: 36px;
+}
+.compact .book-content {
+  display: none;
+}
+.compact .image-wrapper {
+  height: 42px;
+  overflow: hidden;
+}
+.compact .image {
+  top: -80px;
+  position: relative;
+}
+.compact .panel-body {
+  cursor: pointer;
 }
 @media screen and (max-width: 991px) {
   .pie-chart {display: none;}
