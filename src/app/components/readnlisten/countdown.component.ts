@@ -160,10 +160,13 @@ export class CountdownComponent implements OnInit, OnDestroy {
 
   private playSound(last: boolean) {
     if (!this.mute) {
-      if (last) {
-        this.beep2.play();
-      } else {
-        this.beep1.play();
+      const promise = last ? this.beep2.play() : this.beep1.play();
+      if (promise !== undefined) {
+        promise.then(_ => {
+          // Autoplay started!
+        }).catch(error => {
+          console.log('error playing sound');
+        });
       }
     }
   }

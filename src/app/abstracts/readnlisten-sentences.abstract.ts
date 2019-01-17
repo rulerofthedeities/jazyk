@@ -402,7 +402,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected placeBookmark(isBookRead: boolean) {
-    if (this.sessionData) {
+    if (this.sessionData.answers) {
       let sentenceNrToBookmark = this.currentSentenceNr;
       if (this.currentStep < SentenceSteps.Answered) {
         sentenceNrToBookmark--;
@@ -435,7 +435,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected saveSessionData(book: Book = null) {
-    if (this.sessionData) {
+    if (this.sessionData.answers) {
       this.readnListenService
       .saveSessionData(this.sessionData)
       .pipe(takeWhile(() => this.componentActive))

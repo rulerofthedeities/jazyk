@@ -42,7 +42,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   };
   bookType: string; // read or listen
   listTpe = 'all';
-  scrollCutOff = 8; // nr of books shown - increases with scrolling
+  scrollCutOff = 15; // nr of books shown - increases with scrolling
 
   constructor(
     protected readnListenService: ReadnListenService,
@@ -83,7 +83,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   protected onScrollBooks() {
-    this.scrollCutOff += 8;
+    this.scrollCutOff += 12;
     this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
   }
 
@@ -292,7 +292,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   private resetScroll() {
-    this.scrollCutOff = 8;
+    this.scrollCutOff = 15;
     this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
   }
 

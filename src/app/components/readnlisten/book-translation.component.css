@@ -53,6 +53,9 @@
 .translation-block {
   display: block;
 }
+.duplicate {
+  color: red;
+}
 @media screen and (max-width: 767px) {
   .translation-send {float: left;width: 100%;}
   .translation-send > .btn {width: 100%;}

@@ -203,7 +203,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     translation = translation.trim();
     translationnote = translationnote || '';
     translationnote = translationnote.trim();
-    const duplicate = this.translations.find(t => t.translation === translation);
+    const duplicate = this.translations.find(t => t.translation === translation && t.note === translationnote);
     if (translation && !duplicate) {
       if (this.isEditing === null) {
         this.saveTranslation(translation, translationnote);

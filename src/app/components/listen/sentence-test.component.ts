@@ -116,12 +116,11 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   }
 
   private toNextSentence() {
-    console.log('to next sentence');
     this.isAnswered = true;
     this.answered.emit({
       word: '',
       score: 0,
-      answerLetter: ''
+      answerLetter: 'x'
     });
   }
 
