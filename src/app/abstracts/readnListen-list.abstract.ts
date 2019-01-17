@@ -30,6 +30,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   isBooksReady = false;
   itemTxt: string;
   filterTxt: string;
+  hasFilter = false;
   nrOfBooks: number;
   sort = 'difficulty1';
   filter: ViewFilter = {
@@ -284,7 +285,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     }
     this.itemTxt = itemTxt;
     this.filterTxt = this.text['NoFilter'];
+    this.hasFilter = false;
     if (filters.length) {
+      this.hasFilter = true;
       this.filterTxt = this.text['Only'] + ' ';
       this.filterTxt += filters.join(', ');
     }

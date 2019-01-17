@@ -11,6 +11,9 @@
   cursor: pointer;
   position: relative;
 }
+.clear-filter {
+  cursor: pointer;
+}
 .dropdown-menu {
   top: -2px;
   width: 242px;

@@ -10,6 +10,7 @@ import { ViewFilter } from '../../models/book.model';
 export class BookFilterBarComponent {
   @Input() text: Object = {};
   @Input() hasBooks: boolean;
+  @Input() hasFilter: boolean;
   @Input() filter: ViewFilter;
   @Input() itemTxt: string;
   @Input() filterTxt: string;
@@ -46,6 +47,22 @@ export class BookFilterBarComponent {
   }
 
   onChangeFilter() {
+    this.changeFilter();
+  }
+
+  onClearFilter() {
+    this.filter = {
+      hideCompleted: false,
+      hideNotTranslated: false,
+      hideOld: false,
+      hideEasy: false,
+      hideMedium: false,
+      hideAdvanced: false
+    };
+    this.changeFilter();
+  }
+
+  private changeFilter() {
     if (this.filter.hideEasy && this.filter.hideMedium && this.filter.hideAdvanced) {
       this.filter.hideEasy = false;
       this.filter.hideMedium = false;
