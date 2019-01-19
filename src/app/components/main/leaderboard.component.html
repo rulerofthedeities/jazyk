@@ -4,25 +4,52 @@
       <span class="fa fa-trophy fa-spacing-title"></span>{{text['Leaderboard']}}
     </div>
     <div class="panel-body">
-      <table class="table table-hover" *ngIf="!loadingBoard else loading">
-        <tbody>
-          <tr *ngFor="let leader of leaders; let i = index"
-            (click)="onGoToProfile(leader.userName)"
-            class="clickable"
-            [class.current-user]="leader.isCurrentUser">
-            <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader}"></ng-container>
-          </tr>
-          <tr *ngIf="!!currentLeader">
-            <td></td>
-            <td colspan="3">...</td>
-          </tr>
-          <tr *ngIf="!!currentLeader"
-            class="clickable current-user"
-            (click)="onGoToProfile(currentLeader.userName)">
-            <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader.position, leader:currentLeader}"></ng-container>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <ul class="nav nav-tabs">
+          <li
+            [class.active]="tab==='week'"
+            (click)="onSelectTab('week')">
+            <a>
+              {{text["ThisWeek"]}}
+            </a>
+          </li>
+          <li
+            [class.active]="tab==='month'"
+            (click)="onSelectTab('month')">
+            <a>
+              {{text["ThisMonth"]}}
+            </a>
+          </li>
+          <li
+            [class.active]="tab==='all'"
+            (click)="onSelectTab('all')">
+            <a>
+              {{text["AllTime"]}}
+            </a>
+          </li>
+        </ul>
+        <div>
+          <table class="table table-hover" *ngIf="!loadingBoard else loading">
+            <tbody>
+              <tr *ngFor="let leader of leaders[tab]; let i = index"
+                (click)="onGoToProfile(leader.userName)"
+                class="clickable"
+                [class.current-user]="leader.isCurrentUser">
+                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader}"></ng-container>
+              </tr>
+              <tr *ngIf="!!currentLeader[tab]">
+                <td></td>
+                <td colspan="3">...</td>
+              </tr>
+              <tr *ngIf="!!currentLeader[tab]"
+                class="clickable current-user"
+                (click)="onGoToProfile(currentLeader[tab].userName)">
+                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader[tab].position, leader:currentLeader[tab]}"></ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
   <ng-template #loading>

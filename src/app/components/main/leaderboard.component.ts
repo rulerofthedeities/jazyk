@@ -4,6 +4,7 @@ import { UserService } from '../../services/user.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { SharedService } from 'app/services/shared.service';
 import { Leader, LeaderUser } from '../../models/score.model';
+import { Map } from '../../models/main.model';
 import { takeWhile } from 'rxjs/operators';
 
 const maxLeaders = 20,
@@ -17,12 +18,13 @@ const maxLeaders = 20,
 export class LeaderboardComponent implements OnInit, OnDestroy {
   private componentActive = true;
   loadingBoard = false;
-  leaders: Leader[] = [];
+  leaders: Map<Leader[]> = {};
   users: LeaderUser[] = [];
   isReady = false;
   text: Object;
-  currentLeader: Leader;
+  currentLeader: Map<Leader> = {};
   gender = 'm';
+  tab = 'week';
 
   constructor(
     private dashboardService: DashboardService,
@@ -41,50 +43,67 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/u/' + userName]);
   }
 
+  onSelectTab(newTab: string) {
+    this.tab = newTab;
+    this.getLeaders();
+  }
+
   private getLeaders() {
     this.loadingBoard = true;
+    this.currentLeader = {};
     this.dashboardService
-    .fetchLeaders(maxLeaders)
+    .fetchLeaders(maxLeaders, this.tab)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       leaders => {
-        this.leaders = leaders;
+        this.leaders[this.tab] = leaders;
         this.getUserData();
       }
     );
   }
 
   private getUserData() {
-    const nrLeaders = this.leaders.length,
+    // Check if userdata missing for members of this leaderboard
+    const leaderIds = this.leaders[this.tab].map(l => l.userName ? null : l.userId).filter(l => l !== null);
+    this.getUsers(leaderIds);
+
+    this.loadingBoard = false;
+    /*
+    const nrLeaders = this.leaders[this.tab].length,
           nrUsers = this.users.length;
     if (nrUsers < nrLeaders) {
-      const leaders = this.leaders.slice(nrUsers, nrUsers + maxUserBatch),
+      const leaders = this.leaders[this.tab].slice(nrUsers, nrUsers + maxUserBatch),
             leaderIds = leaders.map(leader => leader.userId);
       this.getUsers(leaderIds);
     } else {
       this.checkCurrentUser();
     }
+    */
   }
 
   private getUsers(ids: string[]) {
-    this.userService
-    .fetchUsers(ids)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      users => {
-        this.users = this.users.concat(users);
-        this.updateLeaderData(users);
-        this.loadingBoard = false; // Show userboard once first batch of users is known
-        this.getUserData();
-      }
-    );
+    if (ids.length) {
+      ids = ids.slice(0, maxUserBatch);
+      this.userService
+      .fetchUsers(ids)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        users => {
+          this.users = this.users.concat(users);
+          this.updateLeaderData(users);
+          this.getUserData();
+        }
+      );
+    } else {
+      this.checkCurrentUser();
+    }
   }
 
   private updateLeaderData(users: LeaderUser[]) {
     // Add user data to leader array
     let leader: Leader;
     users.forEach(user => {
-      leader = this.leaders.find(l => l.userId === user._id);
+      leader = this.leaders[this.tab].find(l => l.userId === user._id);
       if (leader) {
         leader = this.getLeaderData(leader, user);
       }
@@ -103,8 +122,9 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   private checkCurrentUser() {
     // Check if current user is in leaderboard
     // If not, add to bottom
+    this.loadingBoard = false; // Show userboard once first batch of users is known
     const currentUserId = this.userService.user._id.toString(),
-          leader = this.leaders.find(l => l.userId === currentUserId);
+          leader = this.leaders[this.tab].find(l => l.userId === currentUserId);
     if (!leader) {
       this.getUserRank();
     }
@@ -113,7 +133,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   private getUserRank() {
     const userId = this.userService.user._id;
     this.dashboardService
-    .fetchUserRank(userId)
+    .fetchUserRank(userId, this.tab)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       userPosition => {
@@ -127,8 +147,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
                   userName: this.userService.user.userName,
                   emailHash: this.userService.user.emailHash
                 };
-          this.currentLeader = this.getLeaderData(leader, user);
-          this.currentLeader.position = userPosition.position;
+          this.currentLeader[this.tab] = this.getLeaderData(leader, user);
+          this.currentLeader[this.tab].position = userPosition.position;
         }
       }
     );

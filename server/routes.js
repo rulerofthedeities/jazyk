@@ -53,8 +53,8 @@ module.exports = {
     router.get('/dashboard/count', dashboard.getCount);
     router.get('/dashboard/communication/:max', dashboard.getRecentMail);
     router.get('/dashboard/books/:max', dashboard.recentBooks);
-    router.get('/dashboard/leaders/:max', scores.getLeaders);
-    router.get('/dashboard/leaderrank/:userId', scores.getLeaderRank)
+    router.get('/dashboard/leaders/:period/:max', scores.getLeaders);
+    router.get('/dashboard/leaderrank/:period/:userId', scores.getLeaderRank)
 
     /* user */
     router.post('/user/sendverificationmail', users.sendMailVerification);

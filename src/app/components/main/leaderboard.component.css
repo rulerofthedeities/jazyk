@@ -14,8 +14,20 @@ img.gravatar{
 .clickable {
   cursor: pointer;
 }
-.current-user{
+.current-user {
   font-weight: bold;
+}
+tr {
+  background-color: white;
+}
+tr:first-child td {
+  border-top: 0;
+}
+ul.nav-tabs li {
+  cursor: pointer;
+}
+ul.nav-tabs li.active {
+  cursor: default;
 }
 .nr {
   white-space: nowrap;

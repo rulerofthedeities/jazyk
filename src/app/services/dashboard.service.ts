@@ -31,15 +31,15 @@ export class DashboardService {
     .pipe(retry(3));
   }
 
-  fetchLeaders(max: number): Observable<Leader[]> {
+  fetchLeaders(max: number, period: string): Observable<Leader[]> {
     return this.http
-    .get<Leader[]>('/api/dashboard/leaders/' + max.toString())
+    .get<Leader[]>('/api/dashboard/leaders/' + period + '/' + max.toString())
     .pipe(retry(3));
   }
 
-  fetchUserRank(userId: string): Observable<Position> {
+  fetchUserRank(userId: string, period: string): Observable<Position> {
     return this.http
-    .get<Position>('/api/dashboard/leaderrank/' + userId)
+    .get<Position>('/api/dashboard/leaderrank/' + period + '/' + userId)
     .pipe(retry(3));
   }
 

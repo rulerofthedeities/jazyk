@@ -3,6 +3,19 @@ const response = require('../response'),
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook;
 
+const getCutOffDate = (period) => {
+  let cutOff = null;
+  const date = new Date();
+  if (period === 'month') {
+    cutOff = new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+  if (period === 'week') {
+    const dayDate = date.getDate() - date.getDay() + 1;
+    cutOff = new Date(date.getFullYear(), date.getMonth(), dayDate);
+  }
+  return cutOff;
+}
+
 const getTotalPoints = (userId, cb) => {
   const scoreBooksPipeline = [
           {$match: {userId}},
@@ -112,6 +125,7 @@ module.exports = {
   },
   getLeaders: (req, res) => {
     const max = parseInt(req.params.max, 10) || 20,
+          period = req.params.period,
           leadersPipeline = [
             {$group: {
               _id: '$userId',
@@ -124,7 +138,12 @@ module.exports = {
               userId: '$_id',
               points: 1
             }}
-          ];
+          ],
+          cutOff = getCutOffDate(period);
+    if (cutOff) {
+      const periodQuery = {$match: {'dt.end': {$gt: cutOff}}};
+      leadersPipeline.unshift(periodQuery);
+    }
     Session.aggregate(leadersPipeline, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching leaderboard', () => {
         response.handleSuccess(res, result);
@@ -133,6 +152,7 @@ module.exports = {
   },
   getLeaderRank: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.userId),
+          period = req.params.period,
           userPipeline = [
             {$match: {userId}},
             {$group: {
@@ -144,7 +164,12 @@ module.exports = {
               userId: '$_id',
               points: 1
             }}
-          ];
+          ],
+          cutOff = getCutOffDate(period);
+    if (cutOff) {
+      const periodQuery = {$match: {'dt.end': {$gt: cutOff}}};
+      userPipeline.unshift(periodQuery);
+    }
     // Get points for user
     Session.aggregate(userPipeline, (err, results) => {
       let points = 0;
@@ -160,6 +185,10 @@ module.exports = {
                 {$match: {points: {'$gt': points}}},
                 {$count: 'rank'}
               ];
+        if (cutOff) {
+          const periodQuery = {$match: {'dt.end': {$gt: cutOff}}};
+          rankPipeline.unshift(periodQuery);
+        }
         Session.aggregate(rankPipeline, (err, results) => {
           response.handleError(err, res, 400, 'Error fetching user rank', () => {
             if (results[0]) {
