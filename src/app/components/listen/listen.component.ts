@@ -3,6 +3,7 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
+import { Book } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -23,6 +24,11 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
   ngOnInit() {
     this.bookType = 'listen';
     this.getDependables();
+  }
+
+  onRemovedSubscription(book: Book) {
+    this.userBooks[book._id].subscribed = false;
+    this.userBooksTest[book._id].subscribed = false;
   }
 
   protected getBooks(onlyBooks = false) {

@@ -225,7 +225,10 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     // List type: my list or all
     switch (this.listTpe) {
       case 'my':
-      this.filteredBooks = this.books.filter(b => !!this.userBooks[b._id] && this.userBooks[b._id].bookmark);
+      this.filteredBooks = this.books.filter(
+        b => (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed) ||
+             (!!this.userBooksTest[b._id] && this.userBooksTest[b._id].subscribed)
+        );
       break;
       default:
         this.filteredBooks = [...this.books];
@@ -291,6 +294,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       this.filterTxt = this.text['Only'] + ' ';
       this.filterTxt += filters.join(', ');
     }
+    console.log('filtered books', this.filteredBooks);
     this.resetScroll();
   }
 

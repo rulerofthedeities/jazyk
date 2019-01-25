@@ -162,9 +162,9 @@
             <div *ngIf="tpe!=='home'" class="icons pull-right">
               <div *ngIf="tpe!=='my'"
                 class="subscribe"
-                [class.mylist]="userBookStatus.isSubscribed"
+                [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
                 (click)="onToggleSubscription()"
-                [tooltip]="text[userBookStatus.isSubscribed ? 'RemoveFromList' : 'AddToList']"
+                [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
                 placement="left"
                 hide-delay="50">
                 <span class="fa fa-thumb-tack"></span>
@@ -203,7 +203,7 @@
           }">
           </ng-container>
           <!-- UNSUBSCRIBE -->
-          <div class="stop pull-right" *ngIf="userBookStatus.isSubscribed && tpe==='my'">
+          <div class="stop pull-right" *ngIf="(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed ) && tpe==='my'">
             <button type="button" class="btn btn-default"
               (click)="onStopReadingListening()">
               <span class="fa fa-times-circle fa-spacing"></span>

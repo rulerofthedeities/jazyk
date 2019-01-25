@@ -183,6 +183,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       );
     } else {
       this.unsubscribe();
+      this.unsubscribeTest();
     }
   }
 
@@ -222,7 +223,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private unsubscribe() {
     // Unsubscribe from non-test
-    if (this.userBookStatus && this.userBookStatus.isSubscribed) {
+    if (this.userBook && this.userBookStatus && this.userBookStatus.isSubscribed) {
       this.readnListenService
       .unSubscribeFromBook(this.userBook._id)
       .pipe(takeWhile(() => this.componentActive))
@@ -239,7 +240,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private unsubscribeTest() {
     // Unsubscribe from test and non-test
-    if (this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
+    if (this.userBookTest && this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
       this.readnListenService
       .unSubscribeFromBook(this.userBookTest._id)
       .pipe(takeWhile(() => this.componentActive))
