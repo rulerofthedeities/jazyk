@@ -41,11 +41,19 @@
           {{nr}} / {{total}}
         </div>
         <!-- TITLE -->
+        <button type="button" *ngIf="isCompact"
+          (click)="onStartReadingListening(true, false)"
+          class="btn btn-primary btn-lg pull-right"
+          [tooltip]="bookType==='listen' ? text['ListenAgain'] : text['ReadAgain']"
+          placement="top"
+          hide-delay="0">
+          <span class="fa fa-repeat"></span>
+        </button>
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-          <span class="fa fa-check" *ngIf="isCompact && isAllFinished"></span>{{book.title}}
-          <span class="fa fa-info-circle intro-icon" *ngIf="book.intro && !isCompact" (click)="onToggleIntro()"></span>
-          <small>{{book.series}}</small>
+          <span *ngIf="isCompact && isAllFinished" class="fa fa-check"></span>{{book.title}}
+          <span *ngIf="!isCompact && book.intro" class="fa fa-info-circle intro-icon" (click)="onToggleIntro()"></span>
+          <small *ngIf="!isCompact">{{book.series}}</small>
         </h3>
         <div class="book-content">
           <div class="intro" [style.display]="showIntro ? 'block' : 'none'">

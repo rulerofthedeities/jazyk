@@ -58,7 +58,6 @@ module.exports = {
             {$project: projection}
           ];
     Book.aggregate(pipeline, (err, result) => {
-      console.log('count', result);
       response.handleError(err, res, 400, 'Error fetching audio books count', () => {
         response.handleSuccess(res, result);
       });

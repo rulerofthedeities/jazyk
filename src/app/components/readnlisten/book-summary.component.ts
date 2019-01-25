@@ -118,6 +118,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onStartReadingListening(isRepeat = false, isTest = false) {
+    event.preventDefault();
+    event.stopPropagation();
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.userLanCode);
     if (isRepeat) {
