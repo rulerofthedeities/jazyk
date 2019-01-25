@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LanPair } from '../models/main.model';
 import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark,
-         SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy } from '../models/book.model';
+         SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy, BookCount } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -63,6 +63,12 @@ export class ReadnListenService {
   fetchUserBook(interfaceLanCode: string, bookId: string, isTest: boolean): Observable<UserBook> {
     return this.http
     .get<UserBook>('/api/book/user/' + interfaceLanCode + '/' + bookId + '/' + (isTest ? '1' : '0'))
+    .pipe(retry(3));
+  }
+
+  fetchBooksCount(bookType: string): Observable<BookCount[]> {
+    return this.http
+    .get<BookCount[]>('/api/books/count/' + bookType)
     .pipe(retry(3));
   }
 

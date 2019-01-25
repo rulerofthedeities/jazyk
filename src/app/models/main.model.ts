@@ -13,6 +13,7 @@ export interface Language {
   article: boolean;
   articles?: string[];
   regions?: string[];
+  count?: number;
 }
 
 export interface LanPair {

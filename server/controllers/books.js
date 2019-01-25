@@ -168,6 +168,27 @@ module.exports = {
       });
     });
   },
+  getBooksCount: (req, res) => {
+    const query = {isPublished: true},
+          projection = {
+            _id: 0,
+            lanCode: '$_id',
+            count: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$lanCode',
+              count: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    Book.aggregate(pipeline, (err, result) => {
+      response.handleError(err, res, 400, 'Error fetching books count', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
   getBook: (req, res) => {
     const bookId = req.params.bookId,
           query = {_id: bookId, isPublished: true};

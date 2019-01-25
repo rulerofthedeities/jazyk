@@ -224,11 +224,16 @@ export interface Trophy {
   created?: Date;
 }
 
-export  interface ViewFilter {
+export interface ViewFilter {
   hideCompleted: boolean;
   hideNotTranslated: boolean;
   hideOld: boolean;
   hideEasy: boolean;
   hideMedium: boolean;
   hideAdvanced: boolean;
+}
+
+export interface BookCount {
+  lanCode: string;
+  count: number;
 }

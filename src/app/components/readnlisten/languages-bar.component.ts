@@ -1,6 +1,9 @@
-import { Component, Input, EventEmitter, Output, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewChildren, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { TooltipDirective } from 'ng2-tooltip-directive';
+import { ReadnListenService } from '../../services/readnlisten.service';
 import { Language } from '../../models/main.model';
+import { BookCount } from '../../models/book.model';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-languages-bar',
@@ -8,7 +11,7 @@ import { Language } from '../../models/main.model';
   styleUrls: ['languages-bar.component.css']
 })
 
-export class BookLanguagesBarComponent implements AfterViewInit {
+export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() bookType = 'read'; // read or listen
   @Input() text: Object = {};
   @Input() bookLanguages: Language[];
@@ -19,6 +22,7 @@ export class BookLanguagesBarComponent implements AfterViewInit {
   @Output() newMyLanguage = new EventEmitter<Language>();
   @Output() newBookType = new EventEmitter<string>();
   @ViewChildren(TooltipDirective) tooltipDirective;
+  private componentActive = true;
   tooltipOptions = {
     placement: 'top',
     'z-index': 9000,
@@ -26,6 +30,14 @@ export class BookLanguagesBarComponent implements AfterViewInit {
   };
   tooltip1: any;
   tooltip2: any;
+
+  constructor(
+    private readnListenService: ReadnListenService
+  ) {}
+
+  ngOnInit() {
+    this.getBooksCount();
+  }
 
   ngAfterViewInit() {
     this.tooltip1 = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
@@ -48,5 +60,28 @@ export class BookLanguagesBarComponent implements AfterViewInit {
 
   onChangeBookType(tpe: string) {
     this.newBookType.emit(tpe);
+  }
+
+  private getBooksCount() {
+    this.readnListenService
+    .fetchBooksCount(this.bookType)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      (count: BookCount[]) => this.addCountToLanguages(count)
+    );
+  }
+
+  private addCountToLanguages(count: BookCount[]) {
+    let lan: Language;
+    count.forEach(c => {
+      lan = this.bookLanguages.find(b => b.code === c.lanCode);
+      if (lan) {
+        lan.count = c.count;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

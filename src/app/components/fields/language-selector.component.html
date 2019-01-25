@@ -14,7 +14,7 @@
         (click)="onSelectLanguage(lan)"
         (mouseover)="onHoverLanguage(lan)"
         >
-        <img src="/assets/img/flags/{{lan.code}}.png" alt="{{text[lan.name]}}" class="flag" />{{text[lan.name]}}
+        <img src="/assets/img/flags/{{lan.code}}.png" alt="{{text[lan.name]}}" class="flag" />{{text[lan.name]}} {{showCount(lan)}}
       </li>
     </ul>
   </div>

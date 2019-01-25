@@ -42,6 +42,28 @@ module.exports = {
       });
     });
   },
+  getBooksCount: (req, res) => {
+    const query = {isPublished: true},
+          projection = {
+            _id: 0,
+            lanCode: '$_id',
+            count: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$lanCode',
+              count: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    Book.aggregate(pipeline, (err, result) => {
+      console.log('count', result);
+      response.handleError(err, res, 400, 'Error fetching audio books count', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
   getChapter: (req, res) => {
     const audioBookId = req.params.bookId,
           chapterId = req.params.chapterId,

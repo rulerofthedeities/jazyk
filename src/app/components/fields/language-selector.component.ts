@@ -51,4 +51,10 @@ export class LanguageSelectorComponent implements OnChanges {
   onHoverLanguage(hoveredLanguage: Language) {
     this.selectedDropdown = hoveredLanguage.code;
   }
+
+  showCount(lan: Language): string {
+    if (lan && lan.count !== undefined) {
+      return `(${lan.count})`;
+    }
+  }
 }
