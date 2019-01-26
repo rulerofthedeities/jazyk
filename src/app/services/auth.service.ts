@@ -1,10 +1,10 @@
-import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { CookieService, CookieOptions } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { SharedService } from './shared.service';
+import { PlatformService } from './platform.service';
 import { User, UserSignIn } from '../models/user.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class AuthService {
     private router: Router,
     private cookie: CookieService,
     private sharedService: SharedService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   signup(user: User): Observable<User>  {
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   signedIn(data: SignedInData, reroute = true) {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       const decoded = this.jwtHelper.decodeToken(data.token),
             userStorage: UserStorage = {
               token: data.token,
@@ -76,7 +76,7 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = this.getToken();
     if (token) {
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.platform.isBrowser) {
         return !this.jwtHelper.isTokenExpired(token);
       } else {
         return false;
@@ -87,7 +87,7 @@ export class AuthService {
   }
 
   keepTokenFresh() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       const token = this.getToken();
       if (token) {
         const decoded = this.jwtHelper.decodeToken(token),

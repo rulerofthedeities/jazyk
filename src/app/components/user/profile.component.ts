@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { Profile } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -21,12 +20,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   infoMsg: string;
 
   constructor(
-    private router: Router,
     private formBuilder: FormBuilder,
     private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   ngOnInit() {
@@ -43,11 +41,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   onEditGravatar() {
     // Redirect to gravatar page
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code.
       window.open('https://gravatar.com/emails/', '_blank');
     }
-    if (isPlatformServer(this.platformId)) {
+    if (this.platform.isServer) {
       // Server only code.
     }
   }

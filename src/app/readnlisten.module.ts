@@ -20,6 +20,7 @@ import { SentenceComponent } from './components/readnlisten/sentence.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
+import { FocusDirective } from './directives/focus.directive';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { ModalPromotionComponent } from './components/modals/modal-promotion.com
     BookSuggestionsComponent,
     BookTabComponent,
     SentenceComponent,
-    ModalPromotionComponent
+    ModalPromotionComponent,
+    FocusDirective
   ],
   providers: [
     ReadnListenService
@@ -64,7 +66,8 @@ import { ModalPromotionComponent } from './components/modals/modal-promotion.com
     BookSuggestionsComponent,
     BookTabComponent,
     SentenceComponent,
-    ModalPromotionComponent
+    ModalPromotionComponent,
+    FocusDirective
   ]
 })
 export class ReadnListenModule {

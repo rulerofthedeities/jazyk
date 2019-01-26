@@ -1,6 +1,6 @@
-import { Component, Input, PLATFORM_ID, Inject, OnInit, OnDestroy } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -21,7 +21,7 @@ export class AnnouncementComponent implements OnInit, OnDestroy {
 
   constructor(
     private sharedService: SharedService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   ngOnInit() {
@@ -29,7 +29,7 @@ export class AnnouncementComponent implements OnInit, OnDestroy {
   }
 
   onAction() {
-    if (this.tpe === 'refresh' && isPlatformBrowser(this.platformId)) {
+    if (this.tpe === 'refresh' && this.platform.isBrowser) {
       // Only Client Mode
       location.reload();
     }

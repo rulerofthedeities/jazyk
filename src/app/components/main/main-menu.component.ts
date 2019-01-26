@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
-         Renderer2, Inject, PLATFORM_ID } from '@angular/core';
+         Renderer2 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { SharedService, appTitle } from '../../services/shared.service';
 import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
+import { PlatformService } from '../../services/platform.service';
 import { User } from '../../models/user.model';
 import { Language } from '../../models/main.model';
 import { timer } from 'rxjs';
@@ -42,8 +42,8 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private authService: AuthService,
     private errorService: ErrorService,
-    renderer: Renderer2,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService,
+    renderer: Renderer2
   ) {
     renderer.listen(document, 'click', (event) => {
       if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
@@ -136,7 +136,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
 
   private updateInterfaceLan(newLan: Language) {
     this.userService.user.main.lan = newLan.code;
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code.
       localStorage.setItem('km-jazyk.lan', newLan.code);
     }
@@ -185,7 +185,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
   }
 
   private checkMessages() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       timer(0, 900000) // Start immediately, then check every 15 minutes
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(t => this.getMessagesCount());

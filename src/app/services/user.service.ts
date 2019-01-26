@@ -1,7 +1,6 @@
-import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 import { config } from '../app.config';
 import { User, AppSettings, JazykConfig, CompactProfile,
          Profile, Message, PublicProfile, Notification, Network, MailData, MailOptIn, MailDataOptions } from '../models/user.model';
@@ -9,6 +8,7 @@ import { Language, UserAccess, AccessLevel } from '../models/main.model';
 import { BookScore, LeaderUser } from '../models/score.model';
 import { Trophy, UserBook } from '../models/book.model';
 import { AuthService } from './auth.service';
+import { PlatformService } from './platform.service';
 import { Observable, Subscription, of, Subject } from 'rxjs';
 import { retry, tap, takeWhile } from 'rxjs/operators';
 
@@ -29,7 +29,7 @@ export class UserService {
     private http: HttpClient,
     private router: Router,
     private authService: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   // APP VERSION
@@ -539,7 +539,7 @@ export class UserService {
     let lan = this.validateLan(queryLan);
     if (!lan) {
       // if not in url parm, check if the lan is set in the browser
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.platform.isBrowser) {
         // Client only code.
         lan = localStorage.getItem('km-jazyk.lan');
       // if not set in browser, get from navigator

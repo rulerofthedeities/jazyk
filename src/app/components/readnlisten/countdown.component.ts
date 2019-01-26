@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy,
-         ElementRef, Renderer2, ViewChild, EventEmitter, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+         ElementRef, Renderer2, ViewChild, EventEmitter } from '@angular/core';
+import { PlatformService } from '../../services/platform.service';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -39,9 +39,9 @@ export class CountdownComponent implements OnInit, OnDestroy {
 
   constructor(
     renderer: Renderer2,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code.
       renderer.listen(window, 'resize', (event) => {
         if (this.countdown && this.countdown.nativeElement.clientWidth !== this.boxWidth) {
@@ -123,7 +123,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
   }
 
   private startCountDown() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only
       const intervalMs = 50,
             steps = 1000 / intervalMs,

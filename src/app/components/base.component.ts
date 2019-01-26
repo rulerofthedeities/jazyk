@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { PlatformService } from '../services/platform.service';
 import { awsPath, SharedService } from '../services/shared.service';
 import { timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
@@ -27,7 +27,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService,
     private sharedService: SharedService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   ngOnInit() {
@@ -48,7 +48,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   }
 
   private setUpTokenRefresh() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code
       const timerObservable = timer(30000, 3600000); // Start after 30 secs, then check every hour
       timerObservable
@@ -62,7 +62,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   }
 
   private checkVersion() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code
       const timerObservable = timer(3600000, 10800000); // First check after one hour, then check every three hours
       timerObservable

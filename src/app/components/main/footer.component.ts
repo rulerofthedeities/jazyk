@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { isDevMode } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { EventMessage } from '../../models/error.model';
 import { environment } from 'environments/environment';
 import { takeWhile } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   isReady = false;
   lastEventMessage: string;
   showLog = false;
-  platform: string;
+  platformLabel: string;
   appVersion = environment.version;
 
   @ViewChild('log') logElement: ElementRef;
@@ -31,7 +31,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private errorService: ErrorService,
     private sharedService: SharedService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    private platform: PlatformService,
     renderer: Renderer2
   ) {
     renderer.listen(document, 'click', (event) => {
@@ -45,13 +45,13 @@ export class FooterComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code.
-      this.platform = 'CLIENT';
+      this.platformLabel = 'CLIENT';
     }
-    if (isPlatformServer(this.platformId)) {
+    if (this.platform.isServer) {
       // Server only code.
-      this.platform = 'SERVER';
+      this.platformLabel = 'SERVER';
     }
     this.getTranslations(this.userService.user.main.lan);
     this.observeEventMessages();

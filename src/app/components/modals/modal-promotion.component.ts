@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { PlatformService } from '../../services/platform.service';
 import { Subscription, timer } from 'rxjs';
 
 @Component({
@@ -18,7 +18,7 @@ export class ModalPromotionComponent implements OnInit, OnDestroy {
   cheer: any;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   ngOnInit() {
@@ -36,7 +36,7 @@ export class ModalPromotionComponent implements OnInit, OnDestroy {
   }
 
   doShowModal() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       this.showModal = true;
       this.cheer.play();
       // Close modal after 5 secs

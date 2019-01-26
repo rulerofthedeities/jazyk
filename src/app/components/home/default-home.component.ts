@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { appTitle } from '../../services/shared.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { UserService } from '../../services/user.service';
+import { PlatformService } from '../../services/platform.service';
 import { HomeStats } from '../../models/dashboard.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -30,7 +30,7 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private userService: UserService,
     private dashboardService: DashboardService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private platform: PlatformService
   ) {}
 
   ngOnInit() {
@@ -74,7 +74,7 @@ export class DefaultHomeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getStats() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.platform.isBrowser) {
       // Client only code.
       this.isLoadingStats = true;
       this.dashboardService
