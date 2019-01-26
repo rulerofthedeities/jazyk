@@ -306,6 +306,13 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected onRemovedSubscription(book: Book) {
   }
 
+  protected onAddedSubscription(book: Book) {
+    if (this.userBooks[book._id]) {
+      this.userBooks[book._id].subscribed = true;
+    }
+    this.filterBooks();
+  }
+
   ngOnDestroy() {
     this.componentActive = false;
   }

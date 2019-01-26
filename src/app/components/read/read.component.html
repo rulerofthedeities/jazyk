@@ -41,7 +41,8 @@
           [total]="filteredBooks.length"
           [licenses]="licenses"
           [tpe]="listTpe === 'my' ? 'my' : 'read'"
-          (removedSubscription)="onRemovedSubscription($event)">
+          (removedSubscription)="onRemovedSubscription($event)"
+          (addedSubscription)="onAddedSubscription($event)">
         </km-book-summary>
       </li>
     </ul>

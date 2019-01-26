@@ -45,6 +45,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tpe: string; // home or read or my
   @Input() licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
+  @Output() addedSubscription = new EventEmitter<Book>();
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
@@ -178,6 +179,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         userBook => {
           if (userBook && userBook.subscribed) {
             this.userBookStatus.isSubscribed = true;
+            this.addedSubscription.emit(this.book);
           }
         }
       );

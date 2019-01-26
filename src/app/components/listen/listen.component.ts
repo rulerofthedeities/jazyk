@@ -29,6 +29,7 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
   onRemovedSubscription(book: Book) {
     this.userBooks[book._id].subscribed = false;
     this.userBooksTest[book._id].subscribed = false;
+    this.filterBooks();
   }
 
   protected getBooks(onlyBooks = false) {
