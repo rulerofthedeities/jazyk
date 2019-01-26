@@ -35,7 +35,7 @@
                 (click)="onGoToProfile(leader.userName)"
                 class="clickable"
                 [class.current-user]="leader.isCurrentUser">
-                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader}"></ng-container>
+                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader, tab:tab}"></ng-container>
               </tr>
               <tr *ngIf="!!currentLeader[tab]">
                 <td></td>
@@ -44,7 +44,7 @@
               <tr *ngIf="!!currentLeader[tab]"
                 class="clickable current-user"
                 (click)="onGoToProfile(currentLeader[tab].userName)">
-                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader[tab].position, leader:currentLeader[tab]}"></ng-container>
+                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader[tab].position, leader:currentLeader[tab], tab:tab}"></ng-container>
               </tr>
             </tbody>
           </table>
@@ -60,7 +60,7 @@
   </ng-template>
 </section>
 
-<ng-template #leaderRow let-i=nr let-leader=leader>
+<ng-template #leaderRow let-i=nr let-leader=leader let-tab=tab>
   <td class="text-right">
     {{i + 1}}.
   </td>
@@ -74,7 +74,7 @@
     {{leader.userName}}
   </td>
   <td class="text-right nr">
-    <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName"
+    <img src="/assets/img/ranks/rank{{leader.rank}}_32b.png" class="img rank" *ngIf="!!leader.userName && tab==='all'"
     [tooltip]="leader.rankName"
     placement="left"
     hide-delay="50">
