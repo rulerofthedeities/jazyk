@@ -5,13 +5,17 @@ const response = require('../response'),
 
 const getCutOffDate = (period) => {
   let cutOff = null;
-  const date = new Date();
+  // const date = new Date();
   if (period === 'month') {
-    cutOff = new Date(date.getFullYear(), date.getMonth(), 1);
+    // cutOff = new Date(date.getFullYear(), date.getMonth(), 1);
+    cutOff = new Date();
+    cutOff.setDate(cutOff.getDate() - 30);
   }
   if (period === 'week') {
-    const dayDate = date.getDate() - date.getDay() + 1;
-    cutOff = new Date(date.getFullYear(), date.getMonth(), dayDate);
+    // const dayDate = date.getDate() - date.getDay() + 1;
+    // cutOff = new Date(date.getFullYear(), date.getMonth(), dayDate);
+    cutOff = new Date();
+    cutOff.setDate(cutOff.getDate() - 7);
   }
   return cutOff;
 }

@@ -294,7 +294,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       this.filterTxt = this.text['Only'] + ' ';
       this.filterTxt += filters.join(', ');
     }
-    console.log('filtered books', this.filteredBooks);
     this.resetScroll();
   }
 
