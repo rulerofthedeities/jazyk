@@ -54,7 +54,9 @@ const getTotalPoints = (userId, cb) => {
 
 module.exports = {
   getTotalScore: (req, res) => {
-    const userId =  new mongoose.Types.ObjectId(req.decoded.user._id);
+    const userId =  req.params.userId ?
+      new mongoose.Types.ObjectId(req.params.userId) :
+      new mongoose.Types.ObjectId(req.decoded.user._id);
     getTotalPoints(userId, (err, score) => {
       response.handleError(err, res, 400, 'Error fetching total score', () => {
         response.handleSuccess(res, score.toString());

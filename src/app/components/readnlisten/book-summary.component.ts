@@ -196,7 +196,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private startReadingListening(bookId: string, userLanCode: string, bookType: string, isTest: boolean) {
-    this.readnListenService.playIosWorkaround();
+    if (bookType === 'listen') {
+      this.readnListenService.playIosWorkaround();
+    }
     if (isTest) {
       this.log(`Start listening test for '${this.book.title}'`);
       this.router.navigate(['/listen/book/' + bookId + '/' + userLanCode + '/test']);
