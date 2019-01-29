@@ -29,12 +29,15 @@
 }
 .correct {
   background-color: green;
+  z-index: 5;
 }
 .almostcorrect {
   background-color: orange;
+  z-index: 5;
 }
 .incorrect {
   background-color: red;
+  z-index: 5;
 }
 .solution {
   font-size: 3rem;
