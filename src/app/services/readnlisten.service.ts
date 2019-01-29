@@ -33,7 +33,7 @@ export class ReadnListenService {
     audio.onloadeddata = () => {
       if (audio) {
         console.log('audio loaded');
-        audio.play();
+        // audio.play();
       }
     };
   }
