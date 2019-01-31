@@ -40,18 +40,30 @@
         <div class="index-nr pull-right" *ngIf="tpe !== 'home'">
           {{nr}} / {{total}}
         </div>
+        <!-- COMPACT -->
+        <div *ngIf="isCompact">
+          <ng-container *ngTemplateOutlet="actionTemplate;context:{
+            isCompact: isCompact,
+            tpe: tpe,
+            text: text,
+            userBookStatus: userBookStatus,
+            userBookStatusTest: userBookStatusTest
+          }">
+          </ng-container>
+          <button type="button"
+            (click)="onStartReadingListening(true, false)"
+            class="btn btn-primary btn-lg pull-right"
+            [tooltip]="bookType==='listen' ? text['ListenAgain'] : text['ReadAgain']"
+            placement="top"
+            hide-delay="0">
+            <span class="fa fa-repeat"></span>
+          </button>
+        </div>
         <!-- TITLE -->
-        <button type="button" *ngIf="isCompact"
-          (click)="onStartReadingListening(true, false)"
-          class="btn btn-primary btn-lg pull-right"
-          [tooltip]="bookType==='listen' ? text['ListenAgain'] : text['ReadAgain']"
-          placement="top"
-          hide-delay="0">
-          <span class="fa fa-repeat"></span>
-        </button>
         <h3>
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-          <span *ngIf="isCompact && isAllFinished" class="fa fa-check"></span>{{book.title}}
+          <span *ngIf="isCompact && isAllFinished" class="fa fa-check"></span>
+          <span class="title">{{book.title}}</span>
           <span *ngIf="!isCompact && book.intro" class="fa fa-info-circle intro-icon" (click)="onToggleIntro()"></span>
           <small *ngIf="!isCompact">{{book.series}}</small>
         </h3>
@@ -144,7 +156,7 @@
             </span>
           </div>
           <!-- INFO -->
-          <div class="info" *ngIf="tpe !== 'home'">
+          <div class="info" *ngIf="!isCompact && tpe !== 'home'">
             <div class="sentences">
               {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
               <span *ngIf="translationData?.count" class="translations">
@@ -159,28 +171,15 @@
             <div class="words">
               {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}} ({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})
             </div>
-            <div *ngIf="tpe!=='home'" class="icons pull-right">
-              <div *ngIf="tpe!=='my'"
-                class="subscribe"
-                [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
-                (click)="onToggleSubscription()"
-                [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
-                placement="left"
-                hide-delay="50">
-                <span class="fa fa-thumb-tack"></span>
-              </div>
-              <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
-                [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
-                placement="left"
-                hide-delay="50">
-                <span class="fa"
-                  [ngClass]="{
-                    'fa-thumbs-o-up': !userBookStatus.isRecommended,
-                    'fa-thumbs-up': userBookStatus.isRecommended,
-                    'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
-                  }"
-                  (click)="onToggleRecommend()"></span>
-              </div>
+            <div *ngIf="tpe!=='home'">
+              <ng-container *ngTemplateOutlet="actionTemplate;context:{
+                isCompact: isCompact,
+                tpe: tpe,
+                text: text,
+                userBookStatus: userBookStatus,
+                userBookStatusTest: userBookStatusTest
+              }">
+              </ng-container>
             </div>
             {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
             ({{difficultyPerc}}%)
@@ -280,5 +279,37 @@
         </span>
       </li>
     </ul>
+  </div>
+</ng-template>
+
+<ng-template #actionTemplate
+  let-isCompact=isCompact
+  let-tpe=tpe
+  let-text=text
+  let-userBookStatus=userBookStatus
+  let-userBookStatusTest=userBookStatusTest>
+  <div class="icons pull-right">
+    <div *ngIf="tpe!=='my'"
+      class="subscribe"
+      [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
+      (click)="onToggleSubscription()"
+      [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
+      placement="left"
+      hide-delay="50">
+      <span class="fa fa-thumb-tack"></span>
+    </div>
+    <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
+      [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
+      placement="left"
+      hide-delay="50">
+      <span class="fa"
+        [ngClass]="{
+          'fa-thumbs-o-up': !userBookStatus.isRecommended,
+          'fa-thumbs-up': userBookStatus.isRecommended,
+          'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
+        }"
+        (click)="onToggleRecommend()">
+      </span>
+    </div>
   </div>
 </ng-template>

@@ -127,7 +127,7 @@ export class AuthService {
 
   private getCookieOptions(): CookieOptions {
     const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 7);
+    expirationDate.setDate(expirationDate.getDate() + 10);
     const cookieOptions: CookieOptions = {
       secure: true,
       httpOnly: true,

@@ -165,12 +165,16 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onToggleRecommend() {
+    event.preventDefault();
+    event.stopPropagation();
     if (this.userBookStatus && (this.userBookStatus.isBookRead || this.userBookStatus.isRepeat)) {
       this.saveRecommend();
     }
   }
 
   onToggleSubscription() {
+    event.preventDefault();
+    event.stopPropagation();
     if ((this.userBookStatus && !this.userBookStatus.isSubscribed) || !this.userBookStatus) {
       this.readnListenService
       .subscribeToBook(this.book._id, this.userLanCode, this.bookType, this.isTest)
