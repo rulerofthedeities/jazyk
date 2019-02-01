@@ -51,7 +51,7 @@
           }">
           </ng-container>
           <button type="button"
-            (click)="onStartReadingListening(true, false)"
+            (click)="onStartReadingListening(true, false, $event)"
             class="btn btn-primary btn-lg pull-right"
             [tooltip]="bookType==='listen' ? text['ListenAgain'] : text['ReadAgain']"
             placement="top"
@@ -118,7 +118,7 @@
               type="button"
               class="btn btn-primary"
               [class.btn-lg]="tpe!=='home'"
-              (click)="onStartReadingListening(false, false)">
+              (click)="onStartReadingListening(false, false, $event)">
               <span class="fa fa-arrow-right fa-spacing"></span>
               {{userBookStatus.isStarted ?
                   (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
@@ -142,13 +142,13 @@
                 {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
               </span>
               <button type="button" *ngIf="isFinished"
-                (click)="onStartReadingListening(true, false)"
+                (click)="onStartReadingListening(true, false, $event)"
                 class="btn btn-primary"
                 [class.btn-lg]="tpe!=='home'">
                 <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
               </button>
               <button type="button" *ngIf="isTestFinished"
-                (click)="onStartReadingListening(true, true)"
+                (click)="onStartReadingListening(true, true, $event)"
                 class="btn btn-warning"
                 [class.btn-lg]="tpe!=='home'">
                 <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
@@ -292,7 +292,7 @@
     <div *ngIf="tpe!=='my'"
       class="subscribe"
       [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
-      (click)="onToggleSubscription()"
+      (click)="onToggleSubscription($event)"
       [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
       placement="left"
       hide-delay="50">
@@ -308,7 +308,7 @@
           'fa-thumbs-up': userBookStatus.isRecommended,
           'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
         }"
-        (click)="onToggleRecommend()">
+        (click)="onToggleRecommend($event)">
       </span>
     </div>
   </div>

@@ -118,7 +118,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.showHistoryData[historyNr] = !this.showHistoryData[historyNr];
   }
 
-  onStartReadingListening(isRepeat = false, isTest = false) {
+  onStartReadingListening(isRepeat = false, isTest = false, event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.userService.setLanCode(this.book.lanCode);
@@ -164,7 +164,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.showCredits = !this.showCredits;
   }
 
-  onToggleRecommend() {
+  onToggleRecommend(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     if (this.userBookStatus && (this.userBookStatus.isBookRead || this.userBookStatus.isRepeat)) {
@@ -172,7 +172,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onToggleSubscription() {
+  onToggleSubscription(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     if ((this.userBookStatus && !this.userBookStatus.isSubscribed) || !this.userBookStatus) {
