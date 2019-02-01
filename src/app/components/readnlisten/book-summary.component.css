@@ -128,6 +128,7 @@
   margin-left: 96px;
 }
 .book h3 {
+  height: 50px;
   font-size: 42px;
   margin-top: -6px;
   margin-bottom: 2px;
@@ -424,6 +425,7 @@ span.canrecommend:hover {
 }
 .compact .image-wrapper {
   height: 42px;
+  top: 2px;
   overflow: hidden;
 }
 .compact .image {
