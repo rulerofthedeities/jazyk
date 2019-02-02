@@ -69,7 +69,7 @@
           </a>
         </li>
         <li *ngIf="!isLoggedIn && intLan?.code==='en' && url.slice(0,7)!=='/manual'">
-          <a class="dropdown-item manual" (click)="onGotoManual($event)">
+          <a class="dropdown-item manual" (click)="onGoto($event, 'manual')">
             <span class="fa fa-question-circle-o"></span>
           </a>
         </li>
@@ -132,28 +132,28 @@
           <ul
             class="dropdown-menu"
             [style.display]="showDropDown ? 'block' : 'none'">
-            <li (click)="onGoto($event, 'profile')">
+            <li (click)="onGoto($event, 'user/profile')">
               <a class="dropdown-item">
                 <span class="fa fa-user-o"></span> {{text["Profile"]}}
               </a>
             </li>
-            <li (click)="onGoto($event, 'settings')">
+            <li (click)="onGoto($event, 'user/settings')">
               <a class="dropdown-item">
                 <span class="fa fa-sliders"></span> {{text["Settings"]}}
               </a>
             </li>
-            <li (click)="onGoto($event, 'score')">
+            <li (click)="onGoto($event, 'user/score')">
               <a class="dropdown-item">
                 <span class="fa fa-trophy"></span> {{text["Score"]}}
               </a>
             </li>
-            <li (click)="onGotoManual($event)" *ngIf="intLan?.code==='en'">
+            <li (click)="onGoto($event, 'manual')" *ngIf="intLan?.code==='en'">
               <a class="dropdown-item">
                 <span class="fa fa-question-circle-o"></span> {{text["Manual"]}}
               </a>
             </li>
             <li class="divider dropdown-divider" *ngIf="score"></li>
-            <li *ngIf="score" (click)="onGoto($event, 'score')">
+            <li *ngIf="score" (click)="onGoto($event, 'leaderboard')">
               <a class="dropdown-item"
                 (mouseover)="onChangeRankColor($event)"
                 (mouseout)="onChangeRankColor($event)">

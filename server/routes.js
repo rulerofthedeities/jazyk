@@ -55,7 +55,7 @@ module.exports = {
     router.get('/dashboard/books/:max', dashboard.recentBooks);
     router.get('/dashboard/leaders/:period/:max', scores.getLeaders);
     router.get('/dashboard/leaderrank/:period/:userId', scores.getLeaderRank)
-
+    router.post('/dashboard/leadersbyid/:period/:max', scores.getLeadersById);
     /* user */
     router.post('/user/sendverificationmail', users.sendMailVerification);
     router.post('/user/checkverificationId', users.checkverificationId);
@@ -74,6 +74,7 @@ module.exports = {
     router.post('/user/follow', follows.followUser);
     router.put('/user/unfollow', follows.unFollowUser);
     router.get('/user/followers/:userId', follows.getFollowers);
+    router.get('/user/following', follows.getFollowing);
     router.get('/user/recipients', follows.getTwoWayFollowers);
     router.put('/user/notification', notifications.saveNotification);
     router.get('/user/notifications', notifications.getNotifications);

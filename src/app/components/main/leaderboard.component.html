@@ -2,6 +2,20 @@
   <div class="panel panel-default transparant books">
     <div class="panel-heading">
       <span class="fa fa-trophy fa-spacing-title"></span>{{text['Leaderboard']}}
+      <div
+        class="tpe pull-right"
+        [class.active]="tpe==='everyone'"
+        (click)="onSelectType('everyone')">
+        {{text["Everyone"]}}
+        <span class="bar"></span>
+      </div>
+      <div
+        class="tpe pull-right"
+        [class.active]="tpe==='following'"
+        (click)="onSelectType('following')">
+        {{text["Following"]}}
+        <span class="bar"></span>
+      </div>
     </div>
     <div class="panel-body">
       <div>
@@ -31,20 +45,20 @@
         <div>
           <table class="table table-hover" *ngIf="!loadingBoard else loading">
             <tbody>
-              <tr *ngFor="let leader of leaders[tab]; let i = index"
+              <tr *ngFor="let leader of leaders[tab + tpe]; let i = index"
                 (click)="onGoToProfile(leader.userName)"
                 class="clickable"
                 [class.current-user]="leader.isCurrentUser">
                 <ng-container *ngTemplateOutlet="leaderRow;context:{nr:i, leader:leader, tab:tab}"></ng-container>
               </tr>
-              <tr *ngIf="!!currentLeader[tab]">
+              <tr *ngIf="!!currentLeader[tab + tpe]">
                 <td></td>
                 <td colspan="3">...</td>
               </tr>
-              <tr *ngIf="!!currentLeader[tab]"
+              <tr *ngIf="!!currentLeader[tab + tpe]"
                 class="clickable current-user"
-                (click)="onGoToProfile(currentLeader[tab].userName)">
-                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader[tab].position, leader:currentLeader[tab], tab:tab}"></ng-container>
+                (click)="onGoToProfile(currentLeader[tab + tpe].userName)">
+                <ng-container *ngTemplateOutlet="leaderRow;context:{nr:currentLeader[tab + tpe].position, leader:currentLeader[tab + tpe], tab:tab}"></ng-container>
               </tr>
             </tbody>
           </table>

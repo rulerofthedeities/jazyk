@@ -338,6 +338,12 @@ export class UserService {
     .pipe(retry(3));
   }
 
+  fetchFollowing(): Observable<string[]> {
+    return this.http
+    .get<string[]>('/api/user/following')
+    .pipe(retry(3));
+  }
+
   getCompactProfiles(userIds: string[]): Observable<CompactProfile[]> {
     return this.http
     .post<CompactProfile[]>('/api/user/profiles', {userIds})

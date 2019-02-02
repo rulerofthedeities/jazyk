@@ -20,11 +20,13 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   loadingBoard = false;
   leaders: Map<Leader[]> = {};
   users: LeaderUser[] = [];
+  followingIds: string[];
   isReady = false;
   text: Object;
   currentLeader: Map<Leader> = {};
   gender = 'm';
   tab = 'week';
+  tpe = 'everyone'; // everyone or following
 
   constructor(
     private dashboardService: DashboardService,
@@ -48,37 +50,62 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     this.getLeaders();
   }
 
-  private getLeaders() {
+  onSelectType(newTpe: string) {
+    if (this.tpe !== newTpe) {
+      this.tpe = newTpe;
+      if (this.tpe === 'following' && !this.followingIds) {
+        this.getFollowingIds();
+      } else {
+        this.getLeaders();
+      }
+    }
+  }
+
+  private getFollowingIds() {
     this.loadingBoard = true;
-    this.currentLeader = {};
-    this.dashboardService
-    .fetchLeaders(maxLeaders, this.tab)
+    this.userService
+    .fetchFollowing()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      leaders => {
-        this.leaders[this.tab] = leaders;
-        this.getUserData();
+      followingIds => {
+        this.followingIds = followingIds;
+        this.followingIds.push(this.userService.user._id);
+        this.getLeaders();
       }
     );
   }
 
+  private getLeaders() {
+    this.loadingBoard = true;
+    this.currentLeader = {};
+    if (this.tpe === 'following') {
+      this.dashboardService
+      .fetchFollowingLeaders(this.followingIds, maxLeaders, this.tab)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        leaders => {
+          this.leaders[this.tab + this.tpe] = leaders;
+          this.getUserData();
+        }
+      );
+    } else {
+      this.dashboardService
+      .fetchLeaders(maxLeaders, this.tab)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        leaders => {
+          this.leaders[this.tab + this.tpe] = leaders;
+          this.getUserData();
+        }
+      );
+    }
+  }
+
   private getUserData() {
     // Check if userdata missing for members of this leaderboard
-    const leaderIds = this.leaders[this.tab].map(l => l.userName ? null : l.userId).filter(l => l !== null);
+    const leaderIds = this.leaders[this.tab + this.tpe].map(l => l.userName ? null : l.userId).filter(l => l !== null);
     this.getUsers(leaderIds);
-
     this.loadingBoard = false;
-    /*
-    const nrLeaders = this.leaders[this.tab].length,
-          nrUsers = this.users.length;
-    if (nrUsers < nrLeaders) {
-      const leaders = this.leaders[this.tab].slice(nrUsers, nrUsers + maxUserBatch),
-            leaderIds = leaders.map(leader => leader.userId);
-      this.getUsers(leaderIds);
-    } else {
-      this.checkCurrentUser();
-    }
-    */
   }
 
   private getUsers(ids: string[]) {
@@ -103,7 +130,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     // Add user data to leader array
     let leader: Leader;
     users.forEach(user => {
-      leader = this.leaders[this.tab].find(l => l.userId === user._id);
+      leader = this.leaders[this.tab + this.tpe].find(l => l.userId === user._id);
       if (leader) {
         leader = this.getLeaderData(leader, user);
       }
@@ -124,7 +151,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     // If not, add to bottom
     this.loadingBoard = false; // Show userboard once first batch of users is known
     const currentUserId = this.userService.user._id.toString(),
-          leader = this.leaders[this.tab].find(l => l.userId === currentUserId);
+          leader = this.leaders[this.tab + this.tpe].find(l => l.userId === currentUserId);
     if (!leader) {
       this.getUserRank();
     }
@@ -147,8 +174,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
                   userName: this.userService.user.userName,
                   emailHash: this.userService.user.emailHash
                 };
-          this.currentLeader[this.tab] = this.getLeaderData(leader, user);
-          this.currentLeader[this.tab].position = userPosition.position;
+          this.currentLeader[this.tab + this.tpe] = this.getLeaderData(leader, user);
+          this.currentLeader[this.tab + this.tpe].position = userPosition.position;
         }
       }
     );

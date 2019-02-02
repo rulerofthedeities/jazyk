@@ -37,6 +37,12 @@ export class DashboardService {
     .pipe(retry(3));
   }
 
+  fetchFollowingLeaders(userIds: string[], max: number, period: string): Observable<Leader[]> {
+    return this.http
+    .post<Leader[]>('/api/dashboard/leadersbyid/' + period + '/' + max.toString(), {userIds})
+    .pipe(retry(3));
+  }
+
   fetchUserRank(userId: string, period: string): Observable<Position> {
     return this.http
     .get<Position>('/api/dashboard/leaderrank/' + period + '/' + userId)

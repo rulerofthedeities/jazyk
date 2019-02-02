@@ -156,6 +156,37 @@ module.exports = {
       });
     })
   },
+  getLeadersById: (req, res) => {
+    const ids = req.body.userIds,
+          max = parseInt(req.params.max, 10) || 20,
+          period = req.params.period,
+          userIds = ids.map(id => new mongoose.Types.ObjectId(id)),
+          query = {userId: {$in: userIds}},
+          userPipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$userId',
+              points: {'$sum': {$add : [ '$points.translations', '$points.finished', '$points.words', '$points.test' ]}}
+            }},
+            {$sort: {points: -1}},
+            {$limit: max},
+            {$project: {
+              _id: 0,
+              userId: '$_id',
+              points: 1
+            }}
+          ],
+          cutOff = getCutOffDate(period);
+    if (cutOff) {
+      const periodQuery = {$match: {'dt.end': {$gt: cutOff}}};
+      userPipeline.unshift(periodQuery);
+    }
+    Session.aggregate(userPipeline, (err, results) => {
+      response.handleError(err, res, 400, 'Error fetching user points', () => {
+        response.handleSuccess(res, results);
+      });
+    });
+  },
   getLeaderRank: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.userId),
           period = req.params.period,

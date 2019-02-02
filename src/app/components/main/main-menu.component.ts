@@ -84,14 +84,7 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     event.preventDefault();
     this.showDropDown = false;
     this.showMobileMenu = false;
-    this.router.navigate(['/user/', page]);
-  }
-
-  onGotoManual(event: MouseEvent) {
-    event.preventDefault();
-    this.showDropDown = false;
-    this.showMobileMenu = false;
-    this.router.navigate(['/manual']);
+    this.router.navigate([page]);
   }
 
   onGoToProfile() {

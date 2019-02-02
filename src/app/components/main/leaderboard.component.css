@@ -44,3 +44,23 @@ ul.nav-tabs li.active {
 .panel {
   display: table;
 }
+div.tpe {
+  cursor: pointer;
+  margin-left: 12px;
+}
+div.active {
+  cursor: default;
+}
+div.active > span.bar, div.tpe:hover > span.bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  top: 1px;
+  position: relative;
+  background-color: white;
+}
+
+div.active > span.bar {
+  background-color: #ddd;
+}

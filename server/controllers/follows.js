@@ -4,7 +4,7 @@ const response = require('../response'),
       Follow = require('../models/follow');
 
 module.exports = {
-  followUser: function(req, res) {
+  followUser: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           userIdToFollow = new mongoose.Types.ObjectId(req.body.userId),
           query = {userId, followId: userIdToFollow},
@@ -15,7 +15,7 @@ module.exports = {
       });
     });
   },
-  unFollowUser: function(req, res) {
+  unFollowUser: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           userIdToUnFollow = new mongoose.Types.ObjectId(req.body.userId),
           query = {userId, followId: userIdToUnFollow},
@@ -26,7 +26,7 @@ module.exports = {
       });
     });
   },
-  getFollowers: function(req, res) {
+  getFollowers: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.userId),
           follows = {};
     let query = {userId, follow: true},
@@ -46,7 +46,18 @@ module.exports = {
       });
     });
   },
-  getTwoWayFollowers: function(req, res) {
+  getFollowing: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId, follow: true},
+          projection = {_id: 0, followId: 1};
+    Follow.find(query, projection, (err, result) => {
+      response.handleError(err, res, 400, 'Error fetching following', () => {
+        following = result.map(user => user.followId);
+        response.handleSuccess(res, following);
+      });
+    });
+  },
+  getTwoWayFollowers: (req, res) => {
     // Get users current user can mail to
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           pipeline = [
