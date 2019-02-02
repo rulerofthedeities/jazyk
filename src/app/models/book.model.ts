@@ -183,6 +183,8 @@ export interface SessionData {
   repeatCount?: number;
   dt?: SessionDates;
   resultData?: ResultData; // For results page
+  chapterId?: string; // For revision
+  sentenceNrChapter?: number; // For revision
 }
 
 // Session data returned for one user

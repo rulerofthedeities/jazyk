@@ -251,7 +251,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           resultData: {
             isFinished: false,
             totalBookSentences: null
-          }
+          },
+          chapterId: null,
+          sentenceNrChapter: null
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
@@ -336,6 +338,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
+      this.sessionData.chapterId = this.currentChapter._id;
+      this.sessionData.sentenceNrChapter = this.currentSentenceNr;
       this.emitSentenceNr(this.currentSentenceNr);
       this.getSentence();
     } else {
@@ -403,10 +407,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected placeBookmark(isBookRead: boolean) {
     if (this.sessionData.answers) {
-      let sentenceNrToBookmark = this.currentSentenceNr;
-      if (this.currentStep < SentenceSteps.Answered) {
-        sentenceNrToBookmark--;
-      }
+      const sentenceNrToBookmark = this.getSentenceNrToSave();
       let isRead = false;
       if (sentenceNrToBookmark >= this.currentSentenceTotal) {
         isRead = true;
@@ -426,6 +427,14 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(bookmark => {});
     }
+  }
+
+  private getSentenceNrToSave(): number {
+    let sentenceNrToSave = this.currentSentenceNr;
+    if (this.currentStep < SentenceSteps.Answered) {
+      sentenceNrToSave--;
+    }
+    return sentenceNrToSave;
   }
 
   private getPointsFinished(): number {

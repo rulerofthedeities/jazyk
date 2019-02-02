@@ -339,7 +339,7 @@ module.exports = {
   getDeeplTranslation: (req, res) => {
     const lanFrom = req.body.lanPair.from.toUpperCase(),
           lanTo = req.body.lanPair.to.toUpperCase(),
-          sentence = encodeURI(req.body.sentence.slice(0, 1000)), // limit to 1000 chars
+          sentence = encodeURI(req.body.sentence.slice(0, 1600)), // limit to 1600 chars
           api_key = process.env.DEEPL_API_KEY,
           url = `https://api.deepl.com/v2/translate?source_lang=${lanFrom}&target_lang=${lanTo}&split_sentences=0&text=${sentence}&auth_key=${api_key}`;
 

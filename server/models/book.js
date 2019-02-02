@@ -98,7 +98,9 @@ var sessionSchema = new Schema({
   translations: Number,
   repeatCount: Number,
   dt: dtSchema,
-  points: pointsSchema
+  points: pointsSchema,
+  chapterId: String,
+  sentenceNrChapter: Number
 });
 
 sessionSchema.index({userId: 1, bookId: 1, lanCode: 1});
