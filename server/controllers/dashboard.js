@@ -18,11 +18,12 @@ module.exports = {
               _id: null,
               totalPointsWords: {'$sum': '$points.words'},
               totalPointsTranslations: {'$sum': '$points.translations'},
+              totalPointsTest: {'$sum': '$points.test'},
               totalPointsFinished: {'$sum': '$points.finished'}
             }},
             {$project: {
               _id: 0,
-              points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished' ]}
+              points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished', '$totalPointsTest' ]}
             }}
           ],
           booksReadingPipeline = [
