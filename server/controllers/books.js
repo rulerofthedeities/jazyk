@@ -28,7 +28,7 @@ const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) =
         src: 'updateWilsonScore',
         msg: `ERREXE06: Error saving wilson score for ${translationElementId}, ${translationElementId}`,
         module: 'books'});
-      error.save(function(err, result) {});
+      error.save((err, result) => {});
     }
   });
 }
@@ -105,6 +105,8 @@ const checkTotalSessionTrophies = (res, userId, existingTrophies) => {
         response.handleSuccess(res, trophiesToSave);
       });
     });
+  } else {
+    response.handleSuccess(res, []);
   }
 }
 
@@ -130,6 +132,8 @@ const checkTotalThumbTrophies = (res, userId, existingTrophies) => {
         response.handleSuccess(res, trophiesToSave);
       });
     })
+  } else {
+    response.handleSuccess(res, []);
   }
 }
 
@@ -674,6 +678,5 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     });
-
   }
 }
