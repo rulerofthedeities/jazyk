@@ -3,6 +3,7 @@ import { SharedModule } from './shared.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ReadnListenModule } from './readnlisten.module';
+import { FilterService } from './services/filter.service';
 
 import { routes } from './listen.routes';
 import { ListenComponent } from './components/listen/listen.component';
@@ -21,6 +22,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     ReadnListenModule
   ],
   providers: [
+    FilterService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   declarations: [

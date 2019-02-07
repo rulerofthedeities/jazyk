@@ -1,5 +1,9 @@
-import { Component, Input, EventEmitter, Output, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, EventEmitter, Output, Renderer2, ViewChild, ElementRef, OnInit, OnChanges } from '@angular/core';
+import { FilterService } from '../../services/filter.service';
+import { Option } from '../../models/main.model';
 import { ViewFilter } from '../../models/book.model';
+
+
 
 @Component({
   selector: 'km-filter-bar',
@@ -7,19 +11,23 @@ import { ViewFilter } from '../../models/book.model';
   styleUrls: ['filter-bar.component.css']
 })
 
-export class BookFilterBarComponent {
+export class BookFilterBarComponent implements OnInit, OnChanges {
   @Input() text: Object = {};
   @Input() hasBooks: boolean;
-  @Input() hasFilter: boolean;
-  @Input() filter: ViewFilter;
+  @Input() bookType: string;
   @Input() itemTxt: string;
-  @Input() filterTxt: string;
   @Output() newSort = new EventEmitter<string>();
   @Output() newFilter = new EventEmitter<ViewFilter>();
   @ViewChild('dropdown') dropdown: ElementRef;
   showDropDown = false;
+  sort: string;
+  sortOptions: Option[];
+  hasFilter = false;
+  filterTxt: string;
+  filter: ViewFilter;
 
   constructor(
+    private filterService: FilterService,
     renderer: Renderer2
   ) {
     renderer.listen(document, 'click', (event) => {
@@ -28,6 +36,17 @@ export class BookFilterBarComponent {
         this.showDropDown = false;
       }
     });
+  }
+
+  ngOnInit() {
+    this.sort = this.filterService.sort[this.bookType];
+    this.sortOptions = this.filterService.getSortOptions(this.text);
+  }
+
+  ngOnChanges() {
+    this.filter = this.filterService.filter[this.bookType];
+    this.filterTxt = this.filterService.filterTxt[this.bookType];
+    this.hasFilter = this.filterService.hasFilter[this.bookType];
   }
 
   onChangeSort(sort: string) {
@@ -51,24 +70,18 @@ export class BookFilterBarComponent {
   }
 
   onClearFilter() {
-    this.filter = {
-      hideCompleted: false,
-      hideNotTranslated: false,
-      hideOld: false,
-      hideEasy: false,
-      hideMedium: false,
-      hideAdvanced: false
-    };
+    this.filterService.clearFilter(this.bookType);
     this.changeFilter();
   }
 
   private changeFilter() {
-    if (this.filter.hideEasy && this.filter.hideMedium && this.filter.hideAdvanced) {
-      this.filter.hideEasy = false;
-      this.filter.hideMedium = false;
-      this.filter.hideAdvanced = false;
+    const filter = this.filterService.filter[this.bookType];
+    if (filter.hideEasy && filter.hideMedium && filter.hideAdvanced) {
+      filter.hideEasy = false;
+      filter.hideMedium = false;
+      filter.hideAdvanced = false;
     } else {
-      this.newFilter.emit(this.filter);
+      this.newFilter.emit(filter);
     }
   }
 }

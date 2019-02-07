@@ -9,11 +9,12 @@
           (change)="onChangeSort($event.target.value)"
           [tooltip]="text['SortOrder']"
           placement="top">
-          <option value="difficulty1" selected>{{text["difficulty1"]}}</option>
-          <option value="difficulty0">{{text["difficulty0"]}}</option>
-          <option value="sentences0">{{text["sentences0"]}}</option>
-          <option value="sentences1">{{text["sentences1"]}}</option>
-          <option value="newest0">{{text["newest0"]}}</option>
+          <option
+            *ngFor="let option of sortOptions"
+            [value]="option.value"
+            [selected]="sort===option.value">
+            {{option.label}}
+          </option>
         </select>
       </div>
       <div class="form-group form-group-sm pull-left filter" #dropdown>

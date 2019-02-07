@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
+import { FilterService } from 'app/services/filter.service';
 import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 import { Book } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
@@ -16,13 +17,16 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
   constructor(
     readnListenService: ReadnListenService,
     userService: UserService,
-    sharedService: SharedService
+    sharedService: SharedService,
+    filterService: FilterService
   ) {
-    super(readnListenService, userService, sharedService);
+    super(readnListenService, userService, sharedService, filterService);
   }
 
   ngOnInit() {
     this.bookType = 'listen';
+    this.filterService.initFilter(this.bookType);
+    this.filterService.initSort(this.bookType);
     this.getDependables();
   }
 
@@ -38,7 +42,7 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
     }
     this.isLoading = true;
     this.readnListenService
-    .fetchPublishedAudioBooks(this.bookLanguage.code, this.sort)
+    .fetchPublishedAudioBooks(this.bookLanguage.code, this.filterService.sort[this.bookType])
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {

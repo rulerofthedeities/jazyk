@@ -58,3 +58,8 @@ export interface DependableOptions {
   getLicenses?: boolean;
   getInvalidNames?: boolean;
 }
+
+export interface Option {
+  label: string;
+  value: string;
+}

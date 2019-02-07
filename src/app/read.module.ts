@@ -7,6 +7,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { routes } from './read.routes';
 import { ReadComponent } from './components/read/read.component';
+import { FilterService } from './services/filter.service';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -21,6 +22,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     InfiniteScrollModule
   ],
   providers: [
+    FilterService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   declarations: [

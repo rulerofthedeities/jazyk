@@ -2,6 +2,7 @@ import { OnDestroy } from '@angular/core';
 import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
+import { FilterService } from '../services/filter.service';
 import { Map, Language, LicenseUrl } from '../models/main.model';
 import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../models/book.model';
 import { takeWhile } from 'rxjs/operators';
@@ -29,18 +30,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   isError = false;
   isBooksReady = false;
   itemTxt: string;
-  filterTxt: string;
-  hasFilter = false;
   nrOfBooks: number;
-  sort = 'difficulty1';
-  filter: ViewFilter = {
-    hideCompleted: false,
-    hideNotTranslated: false,
-    hideOld: false,
-    hideEasy: false,
-    hideMedium: false,
-    hideAdvanced: false
-  };
   bookType: string; // read or listen
   listTpe = 'all';
   scrollCutOff = 15; // nr of books shown - increases with scrolling
@@ -48,16 +38,17 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   constructor(
     protected readnListenService: ReadnListenService,
     protected userService: UserService,
-    protected sharedService: SharedService
+    protected sharedService: SharedService,
+    protected filterService: FilterService
   ) {}
 
-  protected onChangeSort(sort: string) {
-    this.sort = sort;
+  protected onChangeSort(newSort: string) {
+    this.filterService.sort[this.bookType] = newSort;
     this.getBooks(true);
   }
 
-  protected onChangeFilter(filter: ViewFilter) {
-    this.filter = filter;
+  protected onChangeFilter(newFilter: ViewFilter) {
+    this.filterService.filter[this.bookType] = newFilter;
     this.filterBooks();
   }
 
@@ -154,7 +145,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         this.userBooks[uBook.bookId] = uBook;
       }
     });
-    if (this.filter.hideCompleted) {
+    if (this.filterService.filter[this.bookType].hideCompleted) {
       this.filterBooks();
     }
   }
@@ -179,7 +170,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     translations.forEach(translation => {
       this.translationData[translation.bookId] = translation;
     });
-    if (this.filter.hideNotTranslated) {
+    if (this.filterService.filter[this.bookType].hideNotTranslated) {
       this.filterBooks();
     }
   }
@@ -234,49 +225,51 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         this.filteredBooks = [...this.books];
     }
     // Apply filters
-    const filters: string[] = [];
-    if (this.filter) {
-      if (this.filter.hideCompleted) {
+    const filters: string[] = [],
+          filter = this.filterService.filter[this.bookType];
+
+    if (filter) {
+      if (filter.hideCompleted) {
         this.filteredBooks = this.filteredBooks.filter(b =>
           !(this.userBooks[b._id] && this.userBooks[b._id].bookmark && this.userBooks[b._id].bookmark.isBookRead));
         filters.push(this.text['CompletedOnly']);
       }
-      if (this.filter.hideNotTranslated) {
+      if (filter.hideNotTranslated) {
         this.filteredBooks = this.filteredBooks.filter(b => {
           const bookId = b.bookId ? b.bookId : b._id;
           return this.translationData[bookId] && this.translationData[bookId].count >= b.difficulty.nrOfUniqueSentences;
         });
         filters.push(this.text['TranslatedOnly']);
       }
-      if (this.filter.hideOld) {
+      if (filter.hideOld) {
         this.filteredBooks = this.filteredBooks.filter(b => b.year >= 1945);
         filters.push(this.text['ModernOnly']);
       }
-      if (this.filter.hideEasy) {
+      if (filter.hideEasy) {
         this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight > 400);
       }
-      if (this.filter.hideAdvanced) {
+      if (filter.hideAdvanced) {
         this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight < 480);
       }
-      if (this.filter.hideMedium) {
+      if (filter.hideMedium) {
         this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight <= 400 || b.difficulty.weight >= 480);
       }
-      if (this.filter.hideEasy && this.filter.hideMedium && !this.filter.hideAdvanced) {
+      if (filter.hideEasy && filter.hideMedium && !filter.hideAdvanced) {
         filters.push(this.text['AdvancedOnly']);
       }
-      if (this.filter.hideEasy && !this.filter.hideMedium && !this.filter.hideAdvanced) {
+      if (filter.hideEasy && !filter.hideMedium && !filter.hideAdvanced) {
         filters.push(this.text['AdvancedMediumOnly']);
       }
-      if (this.filter.hideEasy && !this.filter.hideMedium && this.filter.hideAdvanced) {
+      if (filter.hideEasy && !filter.hideMedium && filter.hideAdvanced) {
         filters.push(this.text['MediumOnly']);
       }
-      if (!this.filter.hideEasy && this.filter.hideMedium && this.filter.hideAdvanced) {
+      if (!filter.hideEasy && filter.hideMedium && filter.hideAdvanced) {
         filters.push(this.text['EasyOnly']);
       }
-      if (!this.filter.hideEasy && !this.filter.hideMedium && this.filter.hideAdvanced) {
+      if (!filter.hideEasy && !filter.hideMedium && filter.hideAdvanced) {
         filters.push(this.text['EasyMediumOnly']);
       }
-      if (!this.filter.hideEasy && this.filter.hideMedium && !this.filter.hideAdvanced) {
+      if (!filter.hideEasy && filter.hideMedium && !filter.hideAdvanced) {
         filters.push(this.text['EasyAdvancedOnly']);
       }
     }
@@ -287,12 +280,12 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
     }
     this.itemTxt = itemTxt;
-    this.filterTxt = this.text['NoFilter'];
-    this.hasFilter = false;
+    this.filterService.filterTxt[this.bookType] = this.text['NoFilter'];
+    this.filterService.hasFilter[this.bookType] = false;
     if (filters.length) {
-      this.hasFilter = true;
-      this.filterTxt = this.text['Only'] + ' ';
-      this.filterTxt += filters.join(', ');
+      this.filterService.hasFilter[this.bookType] = true;
+      this.filterService.filterTxt[this.bookType] = this.text['Only'] + ' ';
+      this.filterService.filterTxt[this.bookType] += filters.join(', ');
     }
     this.resetScroll();
   }

@@ -14,10 +14,8 @@
   <km-filter-bar
     [text]="text"
     [hasBooks]="!!filteredBooks.length"
-    [filter]="filter"
-    [hasFilter]="hasFilter"
     [itemTxt]="itemTxt"
-    [filterTxt]="filterTxt"
+    bookType="listen"
     (newSort)="onChangeSort($event)"
     (newFilter)="onChangeFilter($event)">
   </km-filter-bar>
