@@ -45,13 +45,13 @@
     </ul>
 
     <!-- No books found for selected language -->
-    <div *ngIf="isBooksReady &&!filteredBooks.length">
+    <div *ngIf="!isLoading && isBooksReady && !filteredBooks.length">
       <km-info-msg [msg]="text['NoAudioBooks']">
       </km-info-msg>
     </div>
   </div>
 </section>
 
-<km-loader *ngIf="isLoading && !isError"
+<km-loader *ngIf="(isLoading || !isBooksReady) && !isError"
   [msg]="text['LoadingBooks']">
 </km-loader>
