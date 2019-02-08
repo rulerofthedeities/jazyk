@@ -215,6 +215,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   protected filterBooks() {
+    if (!this.nrOfBooks) {
+      return;
+    }
     // List type: my list or all
     switch (this.listTpe) {
       case 'my':
@@ -224,7 +227,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         );
       break;
       default:
-        this.filteredBooks = [...this.books];
+        if (this.books) {
+          this.filteredBooks = [...this.books];
+        }
     }
     // Apply filters
     const filters: string[] = [],
@@ -277,7 +282,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     }
     // Set display text
     let itemTxt = this.text['ShowingItems'];
-    if (itemTxt) {
+    if (itemTxt && this.nrOfBooks && this.filteredBooks) {
       itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
       itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
     }
