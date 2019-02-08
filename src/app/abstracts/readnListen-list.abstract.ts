@@ -76,7 +76,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   protected onScrollBooks() {
     this.scrollCutOff += 12;
-    this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
+    if (this.filteredBooks) {
+      this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
+    }
   }
 
   protected getDependables() {
@@ -292,7 +294,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   private resetScroll() {
     this.scrollCutOff = 15;
-    this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
+    if (this.filteredBooks) {
+      this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
+    }
   }
 
   protected onRemovedSubscription(book: Book) {

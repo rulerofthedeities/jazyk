@@ -27,6 +27,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   submitting = false;
   submitted = false;
   duplicate = false;
+  canConfirm = false;
   isEditing: number = null;
   showTranslations = false;
   canThumb = false;
@@ -306,6 +307,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(answers => {
       this.canThumb = false;
+      this.canConfirm = false;
       this.canEdit = false;
       if (answers && answers.answers) {
         const lastAnswer = answers.answers.slice(-1);
@@ -313,6 +315,10 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
           this.canThumb = true;
           if (lastAnswer !== 'm') {
             this.canEdit = true;
+          } else {
+            if (this.translations && this.translations.length) {
+              this.canConfirm = true; // Modify answer if maybe was answered initially
+            }
           }
         }
         this.showTranslations = true;
