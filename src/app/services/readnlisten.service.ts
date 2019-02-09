@@ -151,6 +151,12 @@ export class ReadnListenService {
     }
   }
 
+  saveSessionChangeAnswer(sessionData: SessionData): Observable<SessionData>  {
+    // Answer after maybe
+    return this.http
+    .put<SessionData>('/api/book/sessionchange', {sessionData});
+  }
+
   fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
     return this.http
     .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)

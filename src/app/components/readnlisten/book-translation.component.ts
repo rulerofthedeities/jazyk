@@ -22,16 +22,17 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() private newSentence: Subject<string>;
   @Output() translationAdded = new EventEmitter<number>();
   @Output() nextSentence = new EventEmitter();
+  @Output() confirm = new EventEmitter();
   private componentActive = true;
   translations: SentenceTranslation[] = [];
   submitting = false;
   submitted = false;
   duplicate = false;
-  canConfirm = false;
   isEditing: number = null;
   showTranslations = false;
   canThumb = false;
   canEdit = false;
+  canConfirm = false;
   translationEdit: string;
   translationNote: string;
   submitMsg: string;
@@ -90,6 +91,9 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     const newTranslation = this.insertTranslation(translatedData);
     if (newTranslation && newTranslation.machine === 'deepl') {
       this.hasDeeplTranslations = true;
+    }
+    if (this.canConfirm) {
+      this.confirm.next();
     }
   }
 
@@ -307,8 +311,8 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(answers => {
       this.canThumb = false;
-      this.canConfirm = false;
       this.canEdit = false;
+      this.canConfirm = false;
       if (answers && answers.answers) {
         const lastAnswer = answers.answers.slice(-1);
         if (lastAnswer === 'y' || lastAnswer === 'm') {
@@ -316,8 +320,9 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
           if (lastAnswer !== 'm') {
             this.canEdit = true;
           } else {
+            this.canConfirm = true;
             if (this.translations && this.translations.length) {
-              this.canConfirm = true; // Modify answer if maybe was answered initially
+              this.confirm.emit(); // Can modify answer if maybe was answered initially
             }
           }
         }
@@ -338,6 +343,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.translationEdit = null;
         this.translationNote = null;
         this.submitMsg = null;
+        this.canConfirm = false;
         this.hasDeeplTranslations = false;
         this.getSentenceTranslations(sentence);
       }

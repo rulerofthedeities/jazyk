@@ -1,6 +1,6 @@
 <div class="bullets" *ngIf="data">
   <span class="bullet"
-    *ngFor="let answer of data.answers.slice(-20).split(''); let i=index">
+    *ngFor="let answer of data.answers.slice(-20).toLowerCase().split(''); let i=index">
     <span class="fa fa-square"
     [ngClass]="{
       'green': answer === 'y',

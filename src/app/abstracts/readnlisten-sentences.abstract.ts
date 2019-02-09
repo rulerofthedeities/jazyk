@@ -43,6 +43,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   isRepeat = false;
   showReadMsg = false;
   readingStarted = false;
+  canConfirm = false; // If maybe was answered
   nextSentenceObservable: Subject<string> = new Subject();
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
@@ -131,7 +132,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         if (this.currentStep < SentenceSteps.Results) {
           this.exitReading();
         }
-      break;
+        break;
     }
   }
 
@@ -161,6 +162,16 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
+  onCanConfirm() {
+    // User pressed maybe and there are translations available
+    this.canConfirm = true;
+  }
+
+  onConfirm(newAnswer: string) {
+    // New answer after maybe
+    this.changeAnswer(newAnswer);
+  }
+
   onIgnoreTranslationConfirmed(exitOk: boolean) {
     if (exitOk) {
       this.nextSentence();
@@ -181,7 +192,35 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     });
   }
 
+  protected changeAnswer(newAnswer: string) {
+    if (this.sessionData.answers && this.sessionData.answers.slice(-1) === 'm') {
+      newAnswer = newAnswer.toUpperCase();
+      this.sessionData.answers = this.sessionData.answers.slice(0, -1) + newAnswer;
+      this.sessionData.nrMaybe -= 1;
+      if (newAnswer === 'Y') {
+        this.sessionData.nrYes += 1;
+      }
+      if (newAnswer === 'N') {
+        this.sessionData.nrNo += 1;
+      }
+      this.saveSessionChangeAnswer();
+      this.canConfirm = false;
+    }
+  }
+
+  private saveSessionChangeAnswer() {
+    if (this.sessionData._id) {
+      this.readnListenService
+      .saveSessionChangeAnswer(this.sessionData)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        (sessionData: SessionData) => {}
+      );
+    }
+  }
+
   private nextSentence() {
+    this.canConfirm = false;
     this.sharedService.stopAudio();
     this.getSentence();
   }
@@ -579,6 +618,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.isLoading = false;
         this.isError = false;
         this.showReadMsg = false;
+        this.canConfirm = false;
         this.sessionData = null;
         this.msg = null;
         this.processNewBookId();

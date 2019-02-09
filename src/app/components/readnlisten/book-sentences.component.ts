@@ -54,6 +54,8 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
       case '1':
         if (this.currentStep === SentenceSteps.Question) {
           this.answer('yes');
+        } else if (this.canConfirm && this.currentStep === SentenceSteps.Translations) {
+          this.changeAnswer('y');
         }
       break;
       case '2':
@@ -62,9 +64,11 @@ export class BookSentencesComponent extends ReadnListenSentencesComponent implem
         }
       break;
       case '3':
-      if (this.currentStep === SentenceSteps.Question) {
-        this.answer('no');
-      }
+        if (this.currentStep === SentenceSteps.Question) {
+          this.answer('no');
+        } else if (this.canConfirm && this.currentStep === SentenceSteps.Translations) {
+          this.changeAnswer('n');
+        }
       break;
       case ' ':
         this.sharedService.pauseAudio();

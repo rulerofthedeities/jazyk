@@ -416,6 +416,20 @@ module.exports = {
       });
     });
   },
+  changeSessionAnswer: (req, res) => {
+    const sessionData = req.body.sessionData;
+    update = {$set: {
+      answers: sessionData.answers,
+      nrYes: sessionData.nrYes,
+      nrNo: sessionData.nrNo,
+      nrMaybe: sessionData.nrMaybe
+    }}
+    Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating session change', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
   getSessions: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lanCode = req.params.lan,

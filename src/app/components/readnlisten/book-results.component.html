@@ -98,12 +98,13 @@
           {{text["AllAnswers"]}}:
           <div class="bullet-list">
             <span class="bullet"
-              *ngFor="let answer of data.answers.split(''); let i=index">
+              *ngFor="let answer of data.answers.toLowerCase().split(''); let i=index">
               <span class="fa fa-square"
               [ngClass]="{
                 'green': answer === 'y',
                 'orange': answer === 'm',
-                'red': answer === 'n'}">
+                'red': answer === 'n'
+              }">
               </span>
             </span>
           </div>

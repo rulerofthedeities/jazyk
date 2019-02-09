@@ -117,6 +117,7 @@ module.exports = {
     router.put('/book/bookmark', books.updateBookmark);
     router.post('/book/session', books.addSession);
     router.put('/book/session', books.updateSession);
+    router.put('/book/sessionchange', books.changeSessionAnswer);
     router.get('/book/sessions/:lan/:bookType', books.getSessions);
     router.get('/book/sessions/book/:bookId/:lan', books.getBookSessions);
     router.get('/book/thumb/:bookId/:translationId', books.getThumbs);

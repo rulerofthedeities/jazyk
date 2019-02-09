@@ -95,6 +95,22 @@
               </div>
             </div>
 
+            <!-- CONFIRM IF MAYBE WAS ANSWERED -->
+            <div *ngIf="canConfirm && currentStep === steps.Translations" class="confirm">
+              <button
+                type="button"
+                class="btn btn-success btn-lg pull-left"
+                (click)="onConfirm('y')">
+                <span class="answer">{{text["Yes"]}}</span> {{text["ConfirmYes"]}} <span class="short-key2">[1]</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger btn-lg pull-left"
+                (click)="onConfirm('n')">
+                <span class="answer">{{text["No"]}}</span> {{text["ConfirmNo"]}} <span class="short-key2">[3]</span>
+              </button>
+            </div>
+
             <!-- NEXT SENTENCE -->
             <button *ngIf="currentStep > steps.Question"
               type="button"
@@ -115,6 +131,7 @@
                 [sentence]="currentSentenceTxt"
                 [answersReceived]="answersObservable"
                 [newSentence]="nextSentenceObservable"
+                (confirm)="onCanConfirm()"
                 (translationAdded)="onTranslationAdded($event)"
                 (nextSentence)="onGoToNextSentence()">
               </km-sentence-translations>

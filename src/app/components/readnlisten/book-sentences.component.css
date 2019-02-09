@@ -83,6 +83,15 @@
 .has-chapter .panel-header {
   height: 80px;
 }
+.answer {
+  font-size: 24px;
+}
+.short-key2 {
+  font-size: 0.8em;
+}
+.confirm {
+  margin-bottom: 6px;
+}
 
 @media screen and (max-width: 991px) {
   .btn-text-wrapper {
