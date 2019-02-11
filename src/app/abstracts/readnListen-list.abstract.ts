@@ -81,6 +81,14 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     }
   }
 
+  protected getNoBooksMessage(bookType: string): string {
+    let msg = bookType === 'listen' ? this.text['NoAudioBooks'] : this.text['NoBooks'];
+    if (this.books.length > this.filterBooks.length) {
+      msg += '. ' + this.text['RemoveFilters'];
+    }
+    return msg;
+  }
+
   protected getDependables() {
     const options = {
       lan: this.userService.user.main.lan,

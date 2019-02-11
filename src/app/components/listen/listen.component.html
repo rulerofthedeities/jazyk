@@ -46,7 +46,7 @@
 
     <!-- No books found for selected language -->
     <div *ngIf="!isLoading && isBooksReady && !filteredBooks.length">
-      <km-info-msg [msg]="text['NoAudioBooks']">
+      <km-info-msg [msg]="getNoBooksMessage('listen')">
       </km-info-msg>
     </div>
   </div>
