@@ -154,6 +154,14 @@
                 <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
               </button>
             </span>
+            <span *ngIf="isFinished || userBook && userBook.repeatCount > 0">
+              <button type="button"
+                (click)="onRevision()"
+                class="btn btn-info"
+                [class.btn-lg]="tpe!=='home'">
+                <span class="fa fa-file-text fa-spacing"></span>{{text['Revision']}}
+              </button>
+            </span>
           </div>
           <!-- INFO -->
           <div class="info" *ngIf="!isCompact && tpe !== 'home'">

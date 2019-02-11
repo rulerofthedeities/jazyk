@@ -21,6 +21,7 @@ import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { FocusDirective } from './directives/focus.directive';
+import { BookRevisionComponent } from './components/revision/book-revision.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { FocusDirective } from './directives/focus.directive';
     BookTabComponent,
     SentenceComponent,
     ModalPromotionComponent,
+    BookRevisionComponent,
     FocusDirective
   ],
   providers: [
@@ -67,6 +69,7 @@ import { FocusDirective } from './directives/focus.directive';
     BookTabComponent,
     SentenceComponent,
     ModalPromotionComponent,
+    BookRevisionComponent,
     FocusDirective
   ]
 })
