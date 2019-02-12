@@ -74,5 +74,20 @@ module.exports = {
         response.handleSuccess(res, chapter);
       });
     });
+  },
+  getChapterHeaders: (req, res) => {
+    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
+          query = {audioBookId},
+          projection = {content: 0, sentences: 0},
+          chapterPipeline = [
+            {$match: query},
+            {$sort: {'sequence': 1}},
+            {$project: projection}
+          ];
+    Chapter.aggregate(chapterPipeline, (err, chapters) => {
+      response.handleError(err, res, 400, 'Error fetching chapter headers', () => {
+        response.handleSuccess(res, chapters);
+      });
+    });
   }
 }

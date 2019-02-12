@@ -1,4 +1,41 @@
-REVISION
+<section>
+  <km-book-title *ngIf="book"
+    [text]="text"
+    [bookType]="bookType"
+    [bookLanCode]="book?.lanCode"
+    [userLanCode]="userLanCode"
+    [bookTitle]="book?.title"
+    [chapterTitle]="currentChapter?.title"
+  ></km-book-title>
+  <div class="panel panel-default" *ngIf="currentChapter">
+    <div class="panel-body">
+      <div *ngIf="currentChapter && !hasChapters">
+        <ng-container *ngTemplateOutlet="chapterTemplate;context:{
+          sentences: currentChapter.sentences
+        }"></ng-container>
+      </div>
+      <pre>{{currentChapter | json}}</pre>
+    </div>
+  </div>
+</section>
 
 <km-info-msg [msg]="msg" *ngIf="msg">
 </km-info-msg>
+
+<ng-template #chapterTemplate let-sentences=sentences>
+  <span  *ngFor="let sentence of sentences; let i= index">
+    <p *ngIf="sentence.isEmptyLine" class="newline-space">&nbsp;</p>
+    <p *ngIf="sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
+    <span
+      class="sentence"
+      [ngClass]="{
+        paragraph: sentence.isNewParagraph,
+        header: sentence.isHeader,
+        header1: sentence.isHeader && level === 1,
+        header2: sentence.isHeader && level === 2,
+        header3: sentence.isHeader && level === 3,
+        header4: sentence.isHeader && level === 4
+      }">{{sentence.text}}
+    </span>
+  </span>
+</ng-template>

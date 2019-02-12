@@ -109,6 +109,7 @@ module.exports = {
     router.get('/book/user/:lan/:bookId', books.getUserBook);
     router.get('/book/:bookId', books.getBook);
     router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
+    router.get('/book/chapterheaders/:bookId', books.getChapterHeaders);
     router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
     router.put('/book/translation/', books.updateTranslation);
@@ -137,6 +138,7 @@ module.exports = {
     router.get('/books/count/listen', audio.getBooksCount);
     router.get('/audiobook/:bookId', audio.getBook);
     router.get('/audiobook/chapter/:bookId/:chapterId/:sequence', audio.getChapter);
+    router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
 
     app.use('/api/', router);
 

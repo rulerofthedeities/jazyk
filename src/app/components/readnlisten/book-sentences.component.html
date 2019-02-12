@@ -9,27 +9,16 @@
         class="fa fa-times pull-right close-reading"
         (click)="onExitReading()">
       </span>
-      <div class="panel panel-default panel-type">
-        <span
-          class="fa"
-          [ngClass]="bookType==='listen' ? 'fa-volume-up' : 'fa-book'"
-          [tooltip]="text[bookType==='listen' ? 'ListeningSession' : 'ReadingSession']"
-          placement="bottom">
-        </span>
-      </div>
-      <div class="panel panel-default panel-header">
-        <div class="panel-body book-header">
-          <h1 class="book-title">
-            <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-            {{book?.title}}
-            <small class="book-chapter">
-              {{currentChapter.title}}
-            </small>
-          </h1>
-        </div>
-      </div>
+      <km-book-title
+        [text]="text"
+        [bookType]="bookType"
+        [bookLanCode]="book?.lanCode"
+        [userLanCode]="userLanCode"
+        [bookTitle]="book?.title"
+        [chapterTitle]="currentChapter?.title"
+      >
+      </km-book-title>
     </div>
-
     <km-countdown
       *ngIf="isCountDown"
       [counter]="settings.delay"

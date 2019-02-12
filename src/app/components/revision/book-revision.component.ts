@@ -5,11 +5,11 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip } from 'rxjs';
-import { Book, UserBook } from 'app/models/book.model';
+import { Book, UserBook, Chapter } from 'app/models/book.model';
 
 @Component({
   templateUrl: 'book-revision.component.html',
-  styleUrls: ['book-revision.component.css']
+  styleUrls: ['../readnlisten/book-context.component.css', 'book-revision.component.css']
 })
 
 export class BookRevisionComponent implements OnInit, OnDestroy {
@@ -22,6 +22,9 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   bookId: string;
   userLanCode: string;
   msg: string;
+  chapters: Chapter[];
+  currentChapter: Chapter;
+  hasChapters = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +35,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getBookType();
-    this.getBookId();
+    this.getDependables(this.userService.user.main.lan);
   }
 
 
@@ -61,27 +64,39 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   }
 
   private processNewBookId() {
-    if (this.bookId) {
+    if (this.bookId && this.bookId.length === 24) {
       this.isLoading = true;
       zip(
         this.readnListenService.fetchBook(this.bookId, this.bookType),
         this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, false),
-        this.sharedService.fetchTranslations(this.userService.user.main.lan, 'RevisionComponent')
+        this.readnListenService.fetchChapterHeaders(this.bookId, this.bookType)
       )
       .pipe(
         takeWhile(() => this.componentActive))
       .subscribe(res => {
-        this.text = this.sharedService.getTranslatedText(res[2]);
         this.book = res[0];
         this.userBook = res[1];
+        this.chapters = res[2];
         if (this.isBookRead(this.userBook)) {
-          this.msg = 'OK';
+          // If only one chapter, load data for this chapter, otherwise display chapters
+          if (this.chapters.length === 0) {
+            this.msg = this.text['NoChapter'];
+          }
+          if (this.chapters.length === 1) {
+            this.getCurrentChapter(this.chapters[0]._id);
+          }
+          if (this.chapters.length > 1) {
+            this.hasChapters = true;
+          }
         } else {
           this.msg = this.text['BookNotReadYet'];
         }
         console.log('book', this.book);
         console.log('user book', this.userBook);
+        console.log('chapters', this.chapters);
       });
+    } else {
+      this.msg = this.text['InvalidBookId'];
     }
   }
 
@@ -91,6 +106,35 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       isBookRead = true;
     }
     return isBookRead;
+  }
+
+  private getCurrentChapter(chapterId: string) {
+    this.readnListenService
+    .fetchChapter(this.bookId, this.bookType, chapterId, 0)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      chapter => {
+        this.currentChapter = chapter;
+      }
+    );
+  }
+
+  private getDependables(lan) {
+    const options = {
+      lan,
+      component: 'RevisionComponent',
+      getTranslations: true
+    };
+
+    this.sharedService
+    .fetchDependables(options)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      dependables => {
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
+        this.getBookId();
+      }
+    );
   }
 
   ngOnDestroy() {

@@ -86,6 +86,13 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
+  fetchChapterHeaders(bookId: string, bookType: string): Observable<Chapter[]> {
+    const bookPath = bookType === 'listen' ? 'audiobook' : 'book';
+    return this.http
+    .get<Chapter[]>(`/api/${bookPath}/chapterheaders/${bookId}`)
+    .pipe(retry(3));
+  }
+
   /*** Subscriptions ***/
 
   fetchUserBooks(interfaceLanCode: string, bookType: string): Observable<UserBook[]> {

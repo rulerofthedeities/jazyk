@@ -6,16 +6,6 @@
   margin-right: 12px;
   margin-top: 6px;
 }
-.book-header {
-  padding: 8px 12px;
-  overflow: hidden;
-}
-.book-title {
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .next {
   color: #999;
 }
@@ -50,38 +40,6 @@
   bottom: 10px;
   left: 0;
   width: 100%;
-}
-.fa-book {
-  font-size: 32px;
-  margin: 14px 0 0 4px;
-  color: #428bca;
-}
-.fa-volume-up {
-  font-size: 32px;
-  margin: 14px 0 0 4px;
-  color: #428bca;
-}
-.fa-volume-up.test {
-  color: #ffa500;
-}
-.book-chapter {
-  display: block;
-  margin-left: 90px;
-  margin-top: 2px;
-}
-.panel-type {
-  float: left;
-  padding-left: 2px;
-  height: 58px;
-  width: 42px;
-}
-.panel-header {
-  margin-left: 46px;
-  height: 58px;
-}
-.has-chapter .panel-type,
-.has-chapter .panel-header {
-  height: 80px;
 }
 .answer {
   font-size: 24px;

@@ -238,6 +238,21 @@ module.exports = {
       });
     });
   },
+  getChapterHeaders: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          query = {bookId},
+          projection = {content: 0, sentences: 0},
+          chapterPipeline = [
+            {$match: query},
+            {$sort: {'sequence': 1}},
+            {$project: projection}
+          ];
+    Chapter.aggregate(chapterPipeline, (err, chapters) => {
+      response.handleError(err, res, 400, 'Error fetching chapter headers', () => {
+        response.handleSuccess(res, chapters);
+      });
+    });
+  },
   getTranslations: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           lanCode = req.params.lan,

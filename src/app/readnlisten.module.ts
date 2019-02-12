@@ -22,6 +22,7 @@ import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { FocusDirective } from './directives/focus.directive';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
+import { BookTitleComponent } from './components/readnlisten/book-title.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { BookRevisionComponent } from './components/revision/book-revision.compo
     SentenceComponent,
     ModalPromotionComponent,
     BookRevisionComponent,
+    BookTitleComponent,
     FocusDirective
   ],
   providers: [
@@ -70,6 +72,7 @@ import { BookRevisionComponent } from './components/revision/book-revision.compo
     SentenceComponent,
     ModalPromotionComponent,
     BookRevisionComponent,
+    BookTitleComponent,
     FocusDirective
   ]
 })
