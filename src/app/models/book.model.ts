@@ -125,6 +125,11 @@ export interface DeepLTranslations {
   translations: DeepLTranslation[];
 }
 
+export interface RevisionTranslations {
+  sentence: string,
+  translations: SentenceTranslation[]
+}
+
 export interface Bookmark {
   chapterId: string;
   sentenceNrChapter: number;

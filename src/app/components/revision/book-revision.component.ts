@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
+import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip } from 'rxjs';
-import { Book, UserBook, Chapter } from 'app/models/book.model';
+import { Book, UserBook, Chapter, SessionData, RevisionTranslations } from 'app/models/book.model';
 
 @Component({
   templateUrl: 'book-revision.component.html',
@@ -25,12 +26,15 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   chapters: Chapter[];
   currentChapter: Chapter;
   hasChapters = false;
+  sessionData: SessionData[];
+  translations: RevisionTranslations[];
 
   constructor(
     private route: ActivatedRoute,
     protected userService: UserService,
-    protected readnListenService: ReadnListenService,
-    protected sharedService: SharedService
+    protected sharedService: SharedService,
+    protected revisionService: RevisionService,
+    protected readnListenService: ReadnListenService
   ) {}
 
   ngOnInit() {
@@ -71,32 +75,51 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, false),
         this.readnListenService.fetchChapterHeaders(this.bookId, this.bookType)
       )
-      .pipe(
-        takeWhile(() => this.componentActive))
+      .pipe(takeWhile(() => this.componentActive))
       .subscribe(res => {
         this.book = res[0];
         this.userBook = res[1];
         this.chapters = res[2];
-        if (this.isBookRead(this.userBook)) {
-          // If only one chapter, load data for this chapter, otherwise display chapters
-          if (this.chapters.length === 0) {
-            this.msg = this.text['NoChapter'];
-          }
-          if (this.chapters.length === 1) {
-            this.getCurrentChapter(this.chapters[0]._id);
-          }
-          if (this.chapters.length > 1) {
-            this.hasChapters = true;
-          }
-        } else {
-          this.msg = this.text['BookNotReadYet'];
-        }
+        this.loadSessionsTranslations();
+
         console.log('book', this.book);
         console.log('user book', this.userBook);
         console.log('chapters', this.chapters);
       });
     } else {
       this.msg = this.text['InvalidBookId'];
+    }
+  }
+
+  private loadSessionsTranslations() {
+    zip(
+      this.revisionService.fetchTranslations(this.bookId, this.book.lanCode, this.userLanCode),
+      this.revisionService.fetchSessionData(this.bookId, this.bookType, this.userLanCode)
+    )
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(res => {
+      this.translations = res[0];
+      this.sessionData = res[1];
+      console.log('translations', this.translations);
+      console.log('sessions', this.sessionData);
+      this.loadChapters();
+    });
+  }
+
+  private loadChapters() {
+    if (this.isBookRead(this.userBook)) {
+      // If only one chapter, load data for this chapter, otherwise display chapters
+      if (this.chapters.length === 0) {
+        this.msg = this.text['NoChapter'];
+      }
+      if (this.chapters.length === 1) {
+        this.getCurrentChapter(this.chapters[0]._id, true);
+      }
+      if (this.chapters.length > 1) {
+        this.hasChapters = true;
+      }
+    } else {
+      this.msg = this.text['BookNotReadYet'];
     }
   }
 
@@ -108,9 +131,8 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     return isBookRead;
   }
 
-  private getCurrentChapter(chapterId: string) {
-    this.readnListenService
-    .fetchChapter(this.bookId, this.bookType, chapterId, 0)
+  private getCurrentChapter(chapterId: string, singleChapter: boolean) {
+    this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {

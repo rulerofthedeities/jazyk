@@ -62,7 +62,7 @@ const calculateWilsonScore = (book_id, translation_id, translationElement_id) =>
         src: 'calculateWilsonScore',
         msg: `ERREXE05: Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`,
         module: 'books'});
-      error.save(function(err, result) {});
+      error.save((err, result) => {});
     } else {
       if (result && result[0]) {
         // Calculate score
@@ -370,7 +370,7 @@ module.exports = {
           src: 'getDeeplTranslation',
           msg: `ERREXE07: Error fetching DeepL translation for ${sentence}, ${lanFrom} => ${lanTo} Status code: ${response && response.statusCode} (${JSON.stringify(errDeepl)})`,
           module: 'books'});
-        error.save(function(err, result) {});
+        error.save((err, result) => {});
       }
       response.handleError(errDeepl, resDeepl, 400, 'Error fetching DeepL translation', () => {
         response.handleSuccess(res, bodyDeepl);
@@ -481,7 +481,7 @@ module.exports = {
             {$project: projection}
           ];
     Session.aggregate(pipeline, (err, sessions) => {
-      response.handleError(err, res, 400, 'Error fetching session data', function() {
+      response.handleError(err, res, 400, 'Error fetching session data', () => {
         response.handleSuccess(res, sessions);
       });
     });
@@ -494,7 +494,7 @@ module.exports = {
           projection = {answers: 1, _id: 0},
           options = {sort: {'dt.end': 1}};
     Session.find(query, projection, options, (err, sessions) => {
-      response.handleError(err, res, 400, 'Error fetching book session data', function() {
+      response.handleError(err, res, 400, 'Error fetching book session data', () => {
         const answers = sessions.map(s => s.answers);
         response.handleSuccess(res, answers);
       });
@@ -561,7 +561,7 @@ module.exports = {
           update = {$set: {up, isOwnTranslation}, $setOnInsert: {translatorId}},
           options = {upsert: true, new: true};
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
-      response.handleError(err, res, 400, 'Error saving thumb', function() {
+      response.handleError(err, res, 400, 'Error saving thumb', () => {
         calculateWilsonScore(bookId, translationId, translationElementId);
         response.handleSuccess(res, result);
       });
@@ -573,7 +573,7 @@ module.exports = {
           query = {userId},
           options = {};
     UserTrophy.find(query, {}, options, (err, trophies) =>  {
-      response.handleError(err, res, 400, 'Error fetching trophies', function() {
+      response.handleError(err, res, 400, 'Error fetching trophies', () => {
         response.handleSuccess(res, trophies);
       });
     });
@@ -583,7 +583,7 @@ module.exports = {
           trophies = req.body.trophies;
     const trophyDocs = trophies.map(trophy => {return {userId, trophy};});
     UserTrophy.insertMany(trophyDocs, (err, result) => {
-      response.handleError(err, res, 400, 'Error saving trophies', function() {
+      response.handleError(err, res, 400, 'Error saving trophies', () => {
         response.handleSuccess(res, result);
       });
     });
@@ -676,8 +676,8 @@ module.exports = {
             'dt.dtLastReSubscribed': Date.now()
           }
           options= {isNew: true};
-    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
-      response.handleError(err, res, 400, 'Error subscribing repeat', function() {
+    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error subscribing repeat', () => {
         response.handleSuccess(res, result);
       });
     });
@@ -689,8 +689,8 @@ module.exports = {
           options = {new: true},
           set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
           update = {$set: set};
-    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
-      response.handleError(err, res, 400, 'Error unsubscribing from book', function() {
+    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error unsubscribing from book', () => {
         response.handleSuccess(res, result);
       });
     });
@@ -702,8 +702,8 @@ module.exports = {
           query = {_id: ubookId, userId},
           options = {},
           update = {$set: {recommended}};
-    UserBook.findOneAndUpdate(query, update, options, function(err, result) {
-      response.handleError(err, res, 400, 'Error recommending book', function() {
+    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error recommending book', () => {
         response.handleSuccess(res, result);
       });
     });

@@ -12,6 +12,7 @@ const path = require('path'),
       scores = require('./controllers/scores'),
       page = require('./controllers/page'),
       dashboard = require('./controllers/dashboard'),
+      revision = require('./controllers/revision'),
       log = require('./controllers/log'),
       response = require('./response');
 
@@ -139,6 +140,9 @@ module.exports = {
     router.get('/audiobook/:bookId', audio.getBook);
     router.get('/audiobook/chapter/:bookId/:chapterId/:sequence', audio.getChapter);
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
+
+    router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
+    router.get('/revision/translations/:bookId/:bookLan/:userLan', revision.getTranslationData);
 
     app.use('/api/', router);
 

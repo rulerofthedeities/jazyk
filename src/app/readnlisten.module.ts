@@ -4,6 +4,7 @@ import { SharedModule } from './shared.module';
 import { CommonModule } from '@angular/common';
 
 import { ReadnListenService } from './services/readnlisten.service';
+import { RevisionService } from './services/revision.service';
 import { RegionFlagSelectorComponent } from './components/fields/region-flag-selector.component';
 import { CountdownComponent } from './components/readnlisten/countdown.component';
 import { BookLanguagesBarComponent } from './components/readnlisten/languages-bar.component';
@@ -52,7 +53,8 @@ import { BookTitleComponent } from './components/readnlisten/book-title.componen
     FocusDirective
   ],
   providers: [
-    ReadnListenService
+    ReadnListenService,
+    RevisionService
   ],
   exports: [
     RegionFlagSelectorComponent,
@@ -81,7 +83,8 @@ export class ReadnListenModule {
     return {
       ngModule: ReadnListenModule,
       providers: [
-        ReadnListenService
+        ReadnListenService,
+        RevisionService
       ]
     };
   }
