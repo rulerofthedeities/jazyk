@@ -1,0 +1,47 @@
+.panel-body {
+  padding: 0;
+}
+.source {
+  padding: 15px;
+  background-color: lightgray;
+  border-color: black;
+}
+.target {
+  padding: 15px;
+}
+.sentence {
+  line-height: 24px;
+  cursor: pointer;
+}
+.yes {
+  background-color: rgb(0, 128, 0, 0.6);
+  color: white;
+  padding: 4px;
+}
+.maybe {
+  background-color: rgb(255, 165, 0, 0.6);
+  color: white;
+  padding: 4px;
+}
+.no {
+  background-color: rgb(255, 0, 0, 0.6);
+  color: white;
+  padding: 4px;
+}
+.under-maybe {
+  text-decoration: underline;
+  text-decoration-color: orange;
+}
+.selected {
+  padding: 3px;
+  border: 1px solid black;
+}
+.selected.yes {
+  background-color: green;
+}
+.selected.maybe {
+  background-color: orange;
+}
+.selected.no {
+  background-color: red;
+}

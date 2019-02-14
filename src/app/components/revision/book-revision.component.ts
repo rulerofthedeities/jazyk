@@ -4,9 +4,20 @@ import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
-import { takeWhile, filter } from 'rxjs/operators';
+import { takeWhile, filter, repeat } from 'rxjs/operators';
 import { zip } from 'rxjs';
-import { Book, UserBook, Chapter, SessionData, RevisionTranslations } from 'app/models/book.model';
+import { Book, UserBook, Chapter, Sentence, SessionData, RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
+import { relativeTimeRounding } from 'moment';
+import { Session } from 'protractor';
+import { a } from '@angular/core/src/render3';
+
+interface SentenceData {
+  sentence: Sentence;
+  sentenceId: string;
+  answers: string;
+  lastAnswer: string;
+  translations: SentenceTranslation[];
+}
 
 @Component({
   templateUrl: 'book-revision.component.html',
@@ -24,10 +35,13 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   userLanCode: string;
   msg: string;
   chapters: Chapter[];
-  currentChapter: Chapter;
+  currentChapterId: string;
+  currentChapterTitle: string;
+  currentSentence: number;
   hasChapters = false;
-  sessionData: SessionData[];
+  answers: string[];
   translations: RevisionTranslations[];
+  chapterData: SentenceData[];
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +56,9 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     this.getDependables(this.userService.user.main.lan);
   }
 
+  onSelectSentence(i: number) {
+    this.currentSentence = i;
+  }
 
   private getBookType() {
     // read or listen
@@ -99,11 +116,35 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
       this.translations = res[0];
-      this.sessionData = res[1];
       console.log('translations', this.translations);
-      console.log('sessions', this.sessionData);
+      this.mergeSessions(res[1]);
       this.loadChapters();
     });
+  }
+
+  private mergeSessions(sessionData: SessionData[]) {
+    console.log('sessions', sessionData);
+    // merge all answers per repeat
+    const repeatCount = this.getRepeatCount(this.userBook);
+    let sessions: SessionData[];
+    this.answers = [];
+    for (let i = 0; i <= repeatCount; i++) {
+      sessions = sessionData.filter(s => (s.repeatCount || 0) === i);
+      console.log('sessions for', i, ':', sessions);
+      this.answers[i] = '';
+      sessions.forEach(s => {
+        this.answers[i] += s.answers;
+      });
+      console.log('answers for', i, ':', this.answers[i]);
+    }
+  }
+
+  private getRepeatCount(userBook: UserBook): number {
+    if (userBook) {
+      return userBook.repeatCount || 0
+    } else {
+      return 0;
+    }
   }
 
   private loadChapters() {
@@ -132,13 +173,45 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   }
 
   private getCurrentChapter(chapterId: string, singleChapter: boolean) {
+    this.currentChapterId = chapterId;
     this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
-        this.currentChapter = chapter;
+        this.processChapter(chapter);
       }
     );
+  }
+
+  private processChapter(chapter: Chapter) {
+    this.chapterData = [];
+    // Match each sentence with translation and session data
+    this.currentChapterTitle = chapter.title;
+    let sentenceData: SentenceData;
+    chapter.sentences.forEach((sentence: Sentence, i: number) => {
+      sentenceData = {
+        sentence,
+        sentenceId: i.toString(),
+        answers: this.getAnswers(i),
+        lastAnswer: '',
+        translations: []
+      };
+      if (sentenceData.answers.length) {
+        sentenceData.lastAnswer = sentenceData.answers.substr(sentenceData.answers.length - 1, 1);
+      }
+      this.chapterData.push(sentenceData);
+    });
+    console.log('chapter data', this.chapterData);
+  }
+
+  private getAnswers(i: number): string {
+    // Find all answers for sentence nr i
+    // Only for stories with 1 single chapter !!
+    let answers = '';
+    this.answers.forEach(a => {
+      answers += a[i] || '';
+    });
+    return answers;
   }
 
   private getDependables(lan) {

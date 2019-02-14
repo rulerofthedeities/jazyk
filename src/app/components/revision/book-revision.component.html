@@ -5,16 +5,20 @@
     [bookLanCode]="book?.lanCode"
     [userLanCode]="userLanCode"
     [bookTitle]="book?.title"
-    [chapterTitle]="currentChapter?.title"
+    [chapterTitle]="currentChapterTitle"
   ></km-book-title>
-  <div class="panel panel-default" *ngIf="currentChapter">
+  <div class="panel panel-default" *ngIf="chapterData">
     <div class="panel-body">
-      <div *ngIf="currentChapter && !hasChapters">
-        <ng-container *ngTemplateOutlet="chapterTemplate;context:{
-          sentences: currentChapter.sentences
-        }"></ng-container>
+      <div class="col-xs-6 source">
+        <div *ngIf="chapterData && !hasChapters">
+          <ng-container *ngTemplateOutlet="sentencesTemplate;context:{
+            chapterSentences: chapterData
+          }"></ng-container>
+        </div>
       </div>
-      <pre>{{currentChapter | json}}</pre>
+      <div class="col-xs-6 target">
+        TL
+      </div>
     </div>
   </div>
 </section>
@@ -22,20 +26,26 @@
 <km-info-msg [msg]="msg" *ngIf="msg">
 </km-info-msg>
 
-<ng-template #chapterTemplate let-sentences=sentences>
-  <span  *ngFor="let sentence of sentences; let i= index">
-    <p *ngIf="sentence.isEmptyLine" class="newline-space">&nbsp;</p>
-    <p *ngIf="sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
+<ng-template #sentencesTemplate let-chapterSentences=chapterSentences>
+  <span  *ngFor="let sentenceData of chapterSentences; let i= index">
+    <p *ngIf="sentenceData.sentence.isEmptyLine" class="newline-space">&nbsp;</p>
+    <p *ngIf="sentenceData.sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
     <span
       class="sentence"
+      (click)="onSelectSentence(i)"
       [ngClass]="{
-        paragraph: sentence.isNewParagraph,
-        header: sentence.isHeader,
-        header1: sentence.isHeader && level === 1,
-        header2: sentence.isHeader && level === 2,
-        header3: sentence.isHeader && level === 3,
-        header4: sentence.isHeader && level === 4
-      }">{{sentence.text}}
+        paragraph: sentenceData.sentence.isNewParagraph,
+        header: sentenceData.sentence.isHeader,
+        header1: sentenceData.sentence.isHeader && level === 1,
+        header2: sentenceData.sentence.isHeader && level === 2,
+        header3: sentenceData.sentence.isHeader && level === 3,
+        header4: sentenceData.sentence.isHeader && level === 4,
+        yes: sentenceData.lastAnswer.toLowerCase() === 'y',
+        maybe: sentenceData.lastAnswer.toLowerCase() === 'm',
+        no: sentenceData.lastAnswer.toLowerCase() === 'n',
+        'under-maybe': sentenceData.lastAnswer === 'Y' || sentenceData.lastAnswer === 'N',
+        'selected': currentSentence === i
+      }">{{sentenceData.sentence.text}}
     </span>
   </span>
 </ng-template>
