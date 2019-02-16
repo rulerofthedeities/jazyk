@@ -4,12 +4,10 @@ import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
-import { takeWhile, filter, repeat } from 'rxjs/operators';
-import { zip } from 'rxjs';
-import { Book, UserBook, Chapter, Sentence, SessionData, RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
-import { relativeTimeRounding } from 'moment';
-import { Session } from 'protractor';
-import { a } from '@angular/core/src/render3';
+import { Book, UserBook, Chapter, Sentence, SessionData,
+         RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
+import { takeWhile, filter } from 'rxjs/operators';
+import { zip, Subject } from 'rxjs';
 
 interface SentenceData {
   sentence: Sentence;
@@ -17,6 +15,7 @@ interface SentenceData {
   answers: string;
   lastAnswer: string;
   translations: SentenceTranslation[];
+  bestTranslation: SentenceTranslation;
 }
 
 @Component({
@@ -37,11 +36,16 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   chapters: Chapter[];
   currentChapterId: string;
   currentChapterTitle: string;
+  currentParagraph: number;
   currentSentence: number;
+  hoverParagraph: number;
+  hoverSentence: number;
   hasChapters = false;
   answers: string[];
   translations: RevisionTranslations[];
-  chapterData: SentenceData[];
+  chapterData: SentenceData[][]; // Split into paragraphs to they can be aligned with translations
+  userId: string;
+  answersObservable: Subject<{answers: string, isResults: boolean}> = new Subject(); // For translations
 
   constructor(
     private route: ActivatedRoute,
@@ -52,12 +56,37 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.userId = this.userService.user._id.toString();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
   }
 
-  onSelectSentence(i: number) {
-    this.currentSentence = i;
+  onSelectSentence(parNr: number, lineNr, tpe: string, answer: string) {
+    console.log('tpe', tpe);
+    console.log('select', parNr, lineNr);
+    this.currentParagraph = parNr;
+    this.currentSentence = lineNr;
+    if (tpe === 'translation') {
+      this.answersObservable.next({answers: answer, isResults: false});
+    }
+  }
+
+  onHoverSentence(parNr: number, lineNr, tpe: string) {
+    this.hoverParagraph = parNr;
+    this.hoverSentence = lineNr;
+  }
+
+  onCancelHoverSentence() {
+    this.hoverParagraph = null;
+    this.hoverSentence = null;
+  }
+
+  onTranslationAdded(points: string) {
+    console.log('translation added', points);
+  }
+
+  onCanConfirm() {
+    console.log('can confirm');
   }
 
   private getBookType() {
@@ -185,6 +214,8 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   private processChapter(chapter: Chapter) {
     this.chapterData = [];
+    let parNr = 0;
+    this.chapterData[parNr] = [];
     // Match each sentence with translation and session data
     this.currentChapterTitle = chapter.title;
     let sentenceData: SentenceData;
@@ -194,12 +225,20 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         sentenceId: i.toString(),
         answers: this.getAnswers(i),
         lastAnswer: '',
-        translations: []
+        translations: this.getTranslations(sentence.text),
+        bestTranslation: null
       };
       if (sentenceData.answers.length) {
         sentenceData.lastAnswer = sentenceData.answers.substr(sentenceData.answers.length - 1, 1);
       }
-      this.chapterData.push(sentenceData);
+      if (sentenceData.translations.length) {
+        sentenceData.bestTranslation = sentenceData.translations[0];
+      }
+      this.chapterData[parNr].push(sentenceData);
+      if (sentenceData.sentence.isNewParagraph) {
+        parNr++;
+        this.chapterData[parNr] = [];
+      }
     });
     console.log('chapter data', this.chapterData);
   }
@@ -212,6 +251,15 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       answers += a[i] || '';
     });
     return answers;
+  }
+
+  private getTranslations(sentence: string): SentenceTranslation[] {
+    const translationData = this.translations.find(t => t.sentence === sentence),
+          translations = translationData ? translationData.translations : [];
+    if (translations.length > 1) {
+      translations.sort((a, b) => a.score > b.score ? -1 : b.score > a.score ? 1 : 0);
+    }
+    return translations;
   }
 
   private getDependables(lan) {

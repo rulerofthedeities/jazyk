@@ -1,7 +1,8 @@
-<div class="panel panel-info"
+<div *ngIf="showTranslations"
+  class="panel panel-info"
   kmPressed
-  (hasKeyPressed)="onKeyPressed($event)" *ngIf="showTranslations">
-  <div class="panel-heading">
+  (hasKeyPressed)="onKeyPressed($event)">
+  <div class="panel-heading" *ngIf="!isRevision">
     <h3 class="panel-title">{{text["Translations"]}} ({{translations.length}})</h3>
   </div>
   <div class="panel-body">
@@ -12,7 +13,7 @@
           class="list-group-item translation-item"
           *ngFor="let translation of translations, let i = index"
           [style.color]="getColor(i, false)">
-          <button *ngIf="canEdit && !translation.isMachine && translation.userId?.toString() === userId && isEditing !== i"
+          <button *ngIf="canEdit  && !this.isRevision && !translation.isMachine && translation.userId?.toString() === userId && isEditing !== i"
             type="button"
             class="btn btn-primary btn-sm pull-right edit-button"
             (click)="onEditTranslation(i)">
@@ -61,7 +62,7 @@
     <div *ngIf="canEdit && !submitted">
       {{!!translations.length ? text["BetterTranslation"] : text["GoodTranslation"]}}
       {{text["EnterBelow"]}}
-      <div class="input-group new-translation">
+      <div class="input-group new-translation" [class.revision]="isRevision">
         <span class="input-group-addon">
           <img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
           <div class="translation-new-note"></div>

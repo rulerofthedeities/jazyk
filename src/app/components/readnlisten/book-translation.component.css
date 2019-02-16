@@ -19,6 +19,10 @@
   padding-top: 0;
   font-style: italic;
 }
+.revision .translation-new-note {
+  height: 56px;
+}
+
 .translation-send {
   vertical-align: top;
 }
@@ -56,7 +60,10 @@
 .duplicate {
   color: red;
 }
-@media screen and (max-width: 767px) {
+.revision .translation-send {float: left;width: 100%;}
+.revision .translation-send > .btn {width: 100%;}
+
+ @media screen and (max-width: 767px) {
   .translation-send {float: left;width: 100%;}
   .translation-send > .btn {width: 100%;}
 }

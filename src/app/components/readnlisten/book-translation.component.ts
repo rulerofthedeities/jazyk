@@ -18,6 +18,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() bookId: string;
   @Input() sentence: string;
+  @Input() isRevision = false;
   @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
   @Input() private newSentence: Subject<string>;
   @Output() translationAdded = new EventEmitter<number>();
@@ -108,7 +109,11 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
 
   getTranslationPlaceHolder(): string {
     const lan = this.userLanCode.toUpperCase();
-    return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
+    if (this.text[lan]) {
+      return this.text['AddTranslation'].replace('%s', this.text[lan].toUpperCase());
+    } else {
+      return '';
+    }
   }
 
   checkIfTranslationPending(): boolean {
@@ -329,25 +334,27 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         this.showTranslations = true;
       }
     });
-    this.newSentence
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(sentence => {
-      if (sentence) {
-        // new sentence, get new data
-        this.showTranslations = false;
-        this.sentence = sentence;
-        this.submitting = false;
-        this.submitted = false;
-        this.duplicate = false;
-        this.isEditing = null;
-        this.translationEdit = null;
-        this.translationNote = null;
-        this.submitMsg = null;
-        this.canConfirm = false;
-        this.hasDeeplTranslations = false;
-        this.getSentenceTranslations(sentence);
-      }
-    });
+    if (this.newSentence) {
+      this.newSentence
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(sentence => {
+        if (sentence) {
+          // new sentence, get new data
+          this.showTranslations = false;
+          this.sentence = sentence;
+          this.submitting = false;
+          this.submitted = false;
+          this.duplicate = false;
+          this.isEditing = null;
+          this.translationEdit = null;
+          this.translationNote = null;
+          this.submitMsg = null;
+          this.canConfirm = false;
+          this.hasDeeplTranslations = false;
+          this.getSentenceTranslations(sentence);
+        }
+      });
+    }
   }
 
   ngOnDestroy() {

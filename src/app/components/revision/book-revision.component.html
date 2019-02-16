@@ -9,15 +9,33 @@
   ></km-book-title>
   <div class="panel panel-default" *ngIf="chapterData">
     <div class="panel-body">
-      <div class="col-xs-6 source">
-        <div *ngIf="chapterData && !hasChapters">
-          <ng-container *ngTemplateOutlet="sentencesTemplate;context:{
-            chapterSentences: chapterData
-          }"></ng-container>
+      <div *ngIf="chapterData && !hasChapters">
+        <div *ngFor="let paragraphData of chapterData; let i= index">
+          <div class="row paragraph">
+            <div class="col-xs-6 source">
+              <span *ngFor="let sentenceData of paragraphData; let j= index">
+                <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
+                  sentenceData: sentenceData,
+                  tpe: 'sentence',
+                  text: sentenceData.sentence.text,
+                  parNr: i,
+                  lineNr: j
+                }"></ng-container>
+              </span>
+            </div>
+            <div class="col-xs-6 target">
+              <span *ngFor="let sentenceData of paragraphData; let j= index">
+                <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
+                  sentenceData: sentenceData,
+                  tpe: 'translation',
+                  text: sentenceData.bestTranslation.translation,
+                  parNr: i,
+                  lineNr: j
+                }"></ng-container>
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="col-xs-6 target">
-        TL
       </div>
     </div>
   </div>
@@ -26,26 +44,42 @@
 <km-info-msg [msg]="msg" *ngIf="msg">
 </km-info-msg>
 
-<ng-template #sentencesTemplate let-chapterSentences=chapterSentences>
-  <span  *ngFor="let sentenceData of chapterSentences; let i= index">
-    <p *ngIf="sentenceData.sentence.isEmptyLine" class="newline-space">&nbsp;</p>
-    <p *ngIf="sentenceData.sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
-    <span
-      class="sentence"
-      (click)="onSelectSentence(i)"
-      [ngClass]="{
-        paragraph: sentenceData.sentence.isNewParagraph,
-        header: sentenceData.sentence.isHeader,
-        header1: sentenceData.sentence.isHeader && level === 1,
-        header2: sentenceData.sentence.isHeader && level === 2,
-        header3: sentenceData.sentence.isHeader && level === 3,
-        header4: sentenceData.sentence.isHeader && level === 4,
-        yes: sentenceData.lastAnswer.toLowerCase() === 'y',
-        maybe: sentenceData.lastAnswer.toLowerCase() === 'm',
-        no: sentenceData.lastAnswer.toLowerCase() === 'n',
-        'under-maybe': sentenceData.lastAnswer === 'Y' || sentenceData.lastAnswer === 'N',
-        'selected': currentSentence === i
-      }">{{sentenceData.sentence.text}}
-    </span>
+<ng-template #sentenceTemplate let-sentenceData=sentenceData let-parNr=parNr let-lineNr=lineNr let-tpe=tpe let-sentence=text>
+  <p *ngIf="sentenceData.sentence.isEmptyLine" class="newline-space">&nbsp;</p>
+  <p *ngIf="sentenceData.sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
+  <span class="maybe-changed" *ngIf="sentenceData.lastAnswer === 'Y' || sentenceData.lastAnswer === 'N'"></span>
+  <span
+    class="sentence"
+    (click)="onSelectSentence(parNr, lineNr, tpe, sentenceData.lastAnswer.toLowerCase())"
+    (mouseover)="onHoverSentence(parNr, lineNr, tpe)"
+    (mouseout)="onCancelHoverSentence()"
+    [ngClass]="{
+      paragraph: sentenceData.sentence.isNewParagraph,
+      header: sentenceData.sentence.isHeader,
+      header1: sentenceData.sentence.isHeader && level === 1,
+      header2: sentenceData.sentence.isHeader && level === 2,
+      header3: sentenceData.sentence.isHeader && level === 3,
+      header4: sentenceData.sentence.isHeader && level === 4,
+      yes: sentenceData.lastAnswer.toLowerCase() === 'y',
+      maybe: sentenceData.lastAnswer.toLowerCase() === 'm',
+      no: sentenceData.lastAnswer.toLowerCase() === 'n',
+      'selected': currentParagraph === parNr && currentSentence === lineNr,
+      'hovered': hoverParagraph === parNr && hoverSentence === lineNr
+    }">{{sentence}}
+  </span>
+  <!-- TRANSLATIONS -->
+  <span *ngIf="tpe==='translation' && userLanCode !== book.lanCode && currentParagraph === parNr && currentSentence === lineNr" class="translations">
+    <km-sentence-translations
+      [userId]="userId"
+      [userLanCode]="userLanCode"
+      [bookLanCode]="book?.lanCode"
+      [text]="text"
+      [bookId]="book?.bookId ? book?.bookId : book?._id"
+      [sentence]="sentenceData.sentence.text"
+      [answersReceived]="answersObservable"
+      isRevision=true,
+      (confirm)="onCanConfirm()"
+      (translationAdded)="onTranslationAdded($event)">
+    </km-sentence-translations>
   </span>
 </ng-template>
