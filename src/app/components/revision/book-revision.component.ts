@@ -5,7 +5,7 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
 import { Book, UserBook, Chapter, Sentence, SessionData,
-         RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
+         RevisionTranslations, SentenceTranslation, ChapterData } from 'app/models/book.model';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, Subject } from 'rxjs';
 
@@ -38,6 +38,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   currentChapterTitle: string;
   currentParagraph: number;
   currentSentence: number;
+  currentIndex: number[] = [0, 0, 0, 0, 0];
   hoverParagraph: number;
   hoverSentence: number;
   hasChapters = false;
@@ -61,13 +62,35 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     this.getDependables(this.userService.user.main.lan);
   }
 
+  showChapter(chapter: Chapter) {
+    return (chapter.level === 1) || this.isParentChapterSelected(chapter);
+  }
+
+  getChevron(chapter: Chapter) {
+    return this.isChapterSelected(chapter) ? 'fa-chevron-down' : 'fa-chevron-right';
+  }
+
   onSelectSentence(parNr: number, lineNr, tpe: string, answer: string) {
-    console.log('tpe', tpe);
-    console.log('select', parNr, lineNr);
     this.currentParagraph = parNr;
     this.currentSentence = lineNr;
     if (tpe === 'translation') {
       this.answersObservable.next({answers: answer, isResults: false});
+    }
+  }
+
+  onSelectChapter(chapter: Chapter) {
+    if (this.currentChapterId === chapter._id) {
+      this.currentChapterId = null;
+      this.chapterData = null;
+      for (let i = chapter.level - 1; i < 5; i++) {
+        if (this.currentIndex[i]) {
+          this.currentIndex[i] = 0;
+        }
+      }
+    } else {
+      this.currentChapterId = chapter._id;
+      this.currentIndex = [...chapter.index];
+      this.getCurrentChapter(chapter._id, true); // Get chapterdata
     }
   }
 
@@ -87,6 +110,26 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   onCanConfirm() {
     console.log('can confirm');
+  }
+
+  private isChapterSelected(chapter): boolean {
+    let selected = true;
+    for (let i = 0; i < chapter.level; i++) {
+      if (this.currentIndex[i] !== chapter.index[i] || this.currentIndex[i] === 0) {
+        selected = false;
+      }
+    }
+    return selected;
+  }
+
+  private isParentChapterSelected(chapter): boolean {
+    let selected = true;
+    for (let i = 0; i < chapter.level - 1; i++) {
+      if (this.currentIndex[i] !== chapter.index[i]) {
+        selected = false;
+      }
+    }
+    return selected;
   }
 
   private getBookType() {
@@ -125,12 +168,8 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.book = res[0];
         this.userBook = res[1];
-        this.chapters = res[2];
+        this.processChapters(res[2]);
         this.loadSessionsTranslations();
-
-        console.log('book', this.book);
-        console.log('user book', this.userBook);
-        console.log('chapters', this.chapters);
       });
     } else {
       this.msg = this.text['InvalidBookId'];
@@ -145,26 +184,22 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
       this.translations = res[0];
-      console.log('translations', this.translations);
       this.mergeSessions(res[1]);
       this.loadChapters();
     });
   }
 
   private mergeSessions(sessionData: SessionData[]) {
-    console.log('sessions', sessionData);
     // merge all answers per repeat
     const repeatCount = this.getRepeatCount(this.userBook);
     let sessions: SessionData[];
     this.answers = [];
     for (let i = 0; i <= repeatCount; i++) {
       sessions = sessionData.filter(s => (s.repeatCount || 0) === i);
-      console.log('sessions for', i, ':', sessions);
       this.answers[i] = '';
       sessions.forEach(s => {
         this.answers[i] += s.answers;
       });
-      console.log('answers for', i, ':', this.answers[i]);
     }
   }
 
@@ -193,6 +228,33 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     }
   }
 
+  private processChapters(chapters: Chapter[]) {
+    // Sort chapters by sequence
+    chapters.sort((a, b) => a.sequence > b.sequence ? 1 : b.sequence > a.sequence ? -1 : 0);
+    // TODO: Merge chapters for which there is no title
+
+    // Assign index nr
+    const indexArr = [0, 0, 0, 0, 0];
+    let currentLevel = 1;
+    chapters.forEach(chapter => {
+      if (chapter.level === currentLevel) {
+        indexArr[currentLevel - 1]++;
+      } else if (chapter.level > currentLevel) {
+        indexArr[currentLevel]++;
+      } else if (chapter.level < currentLevel) {
+        indexArr[currentLevel - 2]++;
+        for (let l = currentLevel - 1; l < 6; l++) {
+          indexArr[l] = 0;
+        }
+      }
+      currentLevel = chapter.level;
+      chapter.index = indexArr.filter(i => i !== 0);
+      chapter.indexLabel = chapter.index.join('.');
+    })
+
+    this.chapters = chapters;
+  }
+
   private isBookRead(userBook: UserBook): boolean {
     let isBookRead = false;
     if (userBook && (userBook.repeatCount > 0 || (userBook.bookmark && userBook.bookmark.isBookRead))) {
@@ -207,15 +269,15 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
-        this.processChapter(chapter);
+        this.chapterData = this.processChapter(chapter);
       }
     );
   }
 
-  private processChapter(chapter: Chapter) {
-    this.chapterData = [];
+  private processChapter(chapter: Chapter): SentenceData[][] {
+    const chapterData = [];
     let parNr = 0;
-    this.chapterData[parNr] = [];
+    chapterData[parNr] = [];
     // Match each sentence with translation and session data
     this.currentChapterTitle = chapter.title;
     let sentenceData: SentenceData;
@@ -234,13 +296,13 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       if (sentenceData.translations.length) {
         sentenceData.bestTranslation = sentenceData.translations[0];
       }
-      this.chapterData[parNr].push(sentenceData);
+      chapterData[parNr].push(sentenceData);
       if (sentenceData.sentence.isNewParagraph) {
         parNr++;
-        this.chapterData[parNr] = [];
+        chapterData[parNr] = [];
       }
     });
-    console.log('chapter data', this.chapterData);
+    return chapterData;
   }
 
   private getAnswers(i: number): string {

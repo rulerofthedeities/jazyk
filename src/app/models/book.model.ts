@@ -37,6 +37,9 @@ export interface Chapter {
   totalScore: number;
   chapterNr?: string;
   sentences: Sentence[];
+  index?: number[];
+  indexLabel?: string;
+  nrOfSentences?: Number;
   activeSentences?: Sentence[];
 }
 

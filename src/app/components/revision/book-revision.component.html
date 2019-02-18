@@ -7,32 +7,37 @@
     [bookTitle]="book?.title"
     [chapterTitle]="currentChapterTitle"
   ></km-book-title>
-  <div class="panel panel-default" *ngIf="chapterData">
+  <div class="panel panel-default">
     <div class="panel-body">
+      <!-- A SINGLE CHAPTER -->
       <div *ngIf="chapterData && !hasChapters">
-        <div *ngFor="let paragraphData of chapterData; let i= index">
-          <div class="row paragraph">
-            <div class="col-xs-6 source">
-              <span *ngFor="let sentenceData of paragraphData; let j= index">
-                <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
-                  sentenceData: sentenceData,
-                  tpe: 'sentence',
-                  text: sentenceData.sentence.text,
-                  parNr: i,
-                  lineNr: j
-                }"></ng-container>
-              </span>
+        <ng-container *ngTemplateOutlet="chapterTemplate;context:{chapterData: chapterData}">
+        </ng-container>
+      </div>
+      <!-- MULTIPLE CHAPTERS -->
+      <div *ngIf="hasChapters">
+        <div class="list-group">
+          <div *ngFor="let chapter of chapters"
+            [ngClass]="{
+              'level-1': chapter.level === 1,
+              'level-2': chapter.level === 2,
+              'level-3': chapter.level === 3,
+              'level-4': chapter.level === 4,
+              'level-5': chapter.level === 5,
+              'active': currentChapterId === chapter._id
+            }">
+            <div *ngIf="showChapter(chapter)"
+              class="list-group-item level"
+              (click)="onSelectChapter(chapter)">
+              {{chapter.indexLabel}}
+              <span class="fa"
+                [ngClass]="getChevron(chapter)"></span>
+              {{chapter.title}}
+              <span class="badge">{{chapter.nrOfSentences}}</span>
             </div>
-            <div class="col-xs-6 target">
-              <span *ngFor="let sentenceData of paragraphData; let j= index">
-                <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
-                  sentenceData: sentenceData,
-                  tpe: 'translation',
-                  text: sentenceData.bestTranslation.translation,
-                  parNr: i,
-                  lineNr: j
-                }"></ng-container>
-              </span>
+            <div *ngIf="currentChapterId === chapter._id">
+              <ng-container *ngTemplateOutlet="chapterTemplate;context:{chapterData: chapterData}">
+              </ng-container>
             </div>
           </div>
         </div>
@@ -43,6 +48,35 @@
 
 <km-info-msg [msg]="msg" *ngIf="msg">
 </km-info-msg>
+
+<ng-template #chapterTemplate let-chapterData=chapterData>
+  <div *ngFor="let paragraphData of chapterData; let i= index">
+    <div class="row paragraph">
+      <div class="col-xs-6 source">
+        <span *ngFor="let sentenceData of paragraphData; let j= index">
+          <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
+            sentenceData: sentenceData,
+            tpe: 'sentence',
+            text: sentenceData.sentence.text,
+            parNr: i,
+            lineNr: j
+          }"></ng-container>
+        </span>
+      </div>
+      <div class="col-xs-6 target">
+        <span *ngFor="let sentenceData of paragraphData; let j= index">
+          <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
+            sentenceData: sentenceData,
+            tpe: 'translation',
+            text: sentenceData.bestTranslation.translation,
+            parNr: i,
+            lineNr: j
+          }"></ng-container>
+        </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #sentenceTemplate let-sentenceData=sentenceData let-parNr=parNr let-lineNr=lineNr let-tpe=tpe let-sentence=text>
   <p *ngIf="sentenceData.sentence.isEmptyLine" class="newline-space">&nbsp;</p>
@@ -83,3 +117,4 @@
     </km-sentence-translations>
   </span>
 </ng-template>
+
