@@ -231,8 +231,25 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   private processChapters(chapters: Chapter[]) {
     // Sort chapters by sequence
     chapters.sort((a, b) => a.sequence > b.sequence ? 1 : b.sequence > a.sequence ? -1 : 0);
-    // TODO: Merge chapters for which there is no title
-
+    // Merge chapters for which there is no title
+    let previousChapter;
+    chapters.forEach((chapter, i) => {
+      if (chapter.title.trim() === '' && previousChapter) {
+        console.log('merge chapter with previous one', chapter, previousChapter);
+        if (previousChapter.merged) {
+          previousChapter.merged.push(chapter._id);
+        } else {
+          previousChapter.merged = [chapter._id]
+        }
+        previousChapter.nrOfSentences += chapter.nrOfSentences;
+        chapter.toRemove = true;
+      }
+      if (chapter.title.trim() !== '') {
+        previousChapter = chapter;
+      }
+    });
+    // Remove chapters with no title
+    chapters = chapters.filter(chapter => !chapter.toRemove);
     // Assign index nr
     const indexArr = [0, 0, 0, 0, 0];
     let currentLevel = 1;
@@ -250,7 +267,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       currentLevel = chapter.level;
       chapter.index = indexArr.filter(i => i !== 0);
       chapter.indexLabel = chapter.index.join('.');
-    })
+    });
 
     this.chapters = chapters;
   }
@@ -269,7 +286,29 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
-        this.chapterData = this.processChapter(chapter);
+        if (chapter.merged && chapter.merged.length) {
+          this.getMergedChapter(chapter);
+        } else {
+          this.chapterData = this.processChapter(chapter);
+        }
+      }
+    );
+  }
+
+  private getMergedChapter(chapter) {
+    const chapterId = chapter.merged[0];
+    this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      toMergeChapter => {
+        chapter.merged.unshift();
+        chapter.sentences = chapter.sentences.concat(toMergeChapter.sentences);
+        chapter.nrOfSentences = chapter.sentences.length;
+        if (chapter.merged.length) {
+          this.getMergedChapter(chapter);
+        } else {
+          this.chapterData = this.processChapter(chapter);
+        }
       }
     );
   }

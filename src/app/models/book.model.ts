@@ -41,6 +41,8 @@ export interface Chapter {
   indexLabel?: string;
   nrOfSentences?: Number;
   activeSentences?: Sentence[];
+  merged?: string[]; // list of other chapter ids to merge
+  toRemove?: boolean;
 }
 
 interface Difficulty {

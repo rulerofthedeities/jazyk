@@ -68,7 +68,7 @@
           <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
             sentenceData: sentenceData,
             tpe: 'translation',
-            text: sentenceData.bestTranslation.translation,
+            text: sentenceData.bestTranslation?.translation,
             parNr: i,
             lineNr: j
           }"></ng-container>
