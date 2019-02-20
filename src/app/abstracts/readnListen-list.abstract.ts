@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { FilterService } from '../services/filter.service';
 import { Map, Language, LicenseUrl } from '../models/main.model';
-import { Book, UserBook, UserData, TranslationData, ViewFilter } from '../models/book.model';
+import { Book, UserBook, UserBookActivity, UserData, TranslationData, ViewFilter } from '../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 
@@ -19,6 +19,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   userData: Map<UserData>[] = [];
   userDataTest: Map<UserData>[] = [];
   translationData: Map<TranslationData> = {};
+  userBookActivity: Map<UserBookActivity> = {};
   bookLanguage: Language;
   bookLanguages: Language[];
   myLanguages: Language[]; // filter out selected book language
@@ -132,7 +133,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
       this.readnListenService.fetchSessionData(this.myLanguage.code, this.bookType),
-      this.readnListenService.fetchTranslationData(this.myLanguage.code, this.bookType)
+      this.readnListenService.fetchTranslationData(this.myLanguage.code, this.bookType),
+      this.readnListenService.fetchActivity(this.myLanguage.code, this.bookType)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
@@ -140,8 +142,15 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         this.processUserBooks(data[0]);
         this.processUserData(data[1]);
         this.processTranslations(data[2]);
+        this.processActivity(data[3]);
       }
       this.isBooksReady = true;
+    });
+  }
+
+  private processActivity(activity: UserBookActivity[]) {
+    activity.forEach(act => {
+      this.userBookActivity[act.bookId] = act;
     });
   }
 

@@ -214,6 +214,37 @@ module.exports = {
       });
     });
   },
+  getActivity: (req, res) => {
+    const lanCode = req.params.lan,
+          bookType = req.params.bookType,
+          query = {bookType},
+          projection = {
+            _id: 0,
+            bookId: '$_id.bookId',
+            recommended: 1,
+            started: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: {
+                bookId: '$bookId'
+              },
+              recommended: {
+                $sum: { $cond: ["$recommended", 1, 0] }
+              },
+              started: {
+                $sum: { $cond: [{'$ifNull': ['$bookmark', false]}, 1, 0] }
+              }
+            }},
+            {$project: projection}
+          ];
+      UserBook.aggregate(pipeline, (err, activity) => {
+      response.handleError(err, res, 400, 'Error fetching user books activity', () => {
+        response.handleSuccess(res, activity);
+      });
+    });
+  },
   getUserBook: (req, res) => {
     const bookId = req.params.bookId,
           lanCode = req.params.lan,

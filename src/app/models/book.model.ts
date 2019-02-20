@@ -171,6 +171,12 @@ interface SessionDates {
   diff: number;
 }
 
+export interface UserBookActivity {
+  bookId: string;
+  recommended: number;
+  started: number;
+}
+
 export interface ResultData {
   isFinished: boolean;
   totalBookSentences: number;

@@ -106,6 +106,7 @@ module.exports = {
     router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/books/count/read', books.getBooksCount);
+    router.get('/books/activity/:lan/:bookType', books.getActivity)
     router.get('/book/user/:lan/:bookId/:isTest', books.getUserBook);
     router.get('/book/user/:lan/:bookId', books.getUserBook);
     router.get('/book/:bookId', books.getBook);

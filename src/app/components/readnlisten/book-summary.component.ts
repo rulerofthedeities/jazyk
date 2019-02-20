@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { Book, UserBook, UserData, TranslationData } from '../../models/book.model';
+import { Book, UserBook, UserData, TranslationData, UserBookActivity } from '../../models/book.model';
 import { LicenseUrl } from '../../models/main.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
@@ -38,6 +38,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() userData: UserData[];
   @Input() userDataTest: UserData[];
   @Input() translationData: TranslationData;
+  @Input() private activity: UserBookActivity;
   @Input() userLanCode: string;
   @Input() text: Object;
   @Input() nr: number;
@@ -70,6 +71,8 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   sourceLabel: string;
   translationString: string;
   isTranslated: boolean;
+  userCount = 0;
+  recommendCount = 0;
 
   constructor(
     private router: Router,
@@ -82,6 +85,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.setDefaultImg();
     this.setSourceLink();
     this.setAuthors();
+    this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
   }
@@ -157,7 +161,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onRevision() {
-    console.log('Start revision for', this.book.title);
     this.log(`Start revision for ${this.book.title}`);
     this.router.navigate(['/' + this.bookType + '/book/' + this.book._id + '/' + this.userLanCode + '/revision']);
   }
@@ -392,6 +395,11 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     const authorsLinksTxt = this.sharedService.getAuthorsLinksTxt(this.book);
     this.authorsTxt = authorsLinksTxt.authorsTxt;
     this.linksTxt = authorsLinksTxt.linksTxt;
+  }
+
+  private setActivity() {
+    this.userCount = this.activity ? this.activity.started : 0;
+    this.recommendCount = this.userCount > 0 ? this.activity.recommended : 0;
   }
 
   private setDefaultImg() {

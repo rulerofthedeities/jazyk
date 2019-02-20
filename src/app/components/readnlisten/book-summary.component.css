@@ -81,6 +81,17 @@
   font-family: Tangerine;
   z-index: 2;
 }
+.img-activity {
+  position: relative;
+  top: -26px;
+  left: 6px;
+  color: white;
+  font-size: 20px;
+}
+.img-activity .thumbs {
+  position: absolute;
+  left: 76px;
+}
 .audiobook .img-text {
   color: black;
 }
@@ -326,6 +337,9 @@ h3 .fa-check {
 .fa-thumbs-o-up {
   color: grey;
 }
+.img-activity .fa-thumbs-up {
+  color: white;
+}
 .recommended {
   margin-left: 12px;
   font-size: 3rem;
@@ -382,8 +396,9 @@ span.canrecommend:hover {
 }
 .jazyk-book {
   position: relative;
-  top: -33px;
+  top: -90px;
   border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
   background-color: rgba(255, 255, 255, 0.8);
 }
 /* ribbon */

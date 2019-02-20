@@ -14,12 +14,17 @@
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook && tpe !== 'home'">
         {{text["New"]}}!
       </div>
+      <!-- COVER IMAGE -->
       <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
       <div class="image-wrapper" [class.img-border]="!!book?.img">
         <div class="image">
           <img src="{{book?.img || defaultImage}}" class="book-img">
           <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
           <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
+          <div class="img-activity" *ngIf="userCount">
+            <span class="users"><span class="fa fa-user"></span> {{userCount}}</span>
+            <span class="thumbs"><span class="fa fa-thumbs-up"></span>{{recommendCount}}</span>
+          </div>
           <div class="jazyk-book" *ngIf="!!book?.img && book?.authors==='Jazyk'">
             <img src="/assets/img/logo.png">
           </div>
@@ -154,6 +159,7 @@
                 <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
               </button>
             </span>
+            <!--
             <span *ngIf="isFinished || userBook && userBook.repeatCount > 0">
               <button type="button"
                 (click)="onRevision()"
@@ -162,6 +168,7 @@
                 <span class="fa fa-file-text fa-spacing"></span>{{text['Revision']}}
               </button>
             </span>
+            -->
           </div>
           <!-- INFO -->
           <div class="info" *ngIf="!isCompact && tpe !== 'home'">

@@ -90,7 +90,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     } else {
       this.currentChapterId = chapter._id;
       this.currentIndex = [...chapter.index];
-      this.getCurrentChapter(chapter._id, true); // Get chapterdata
+      this.getCurrentChapter(chapter._id, chapter.merged, true); // Get chapterdata
     }
   }
 
@@ -218,7 +218,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         this.msg = this.text['NoChapter'];
       }
       if (this.chapters.length === 1) {
-        this.getCurrentChapter(this.chapters[0]._id, true);
+        this.getCurrentChapter(this.chapters[0]._id, null, true);
       }
       if (this.chapters.length > 1) {
         this.hasChapters = true;
@@ -235,7 +235,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     let previousChapter;
     chapters.forEach((chapter, i) => {
       if (chapter.title.trim() === '' && previousChapter) {
-        console.log('merge chapter with previous one', chapter, previousChapter);
         if (previousChapter.merged) {
           previousChapter.merged.push(chapter._id);
         } else {
@@ -280,14 +279,14 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     return isBookRead;
   }
 
-  private getCurrentChapter(chapterId: string, singleChapter: boolean) {
+  private getCurrentChapter(chapterId: string, merged: string[], singleChapter: boolean) {
     this.currentChapterId = chapterId;
     this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       chapter => {
-        if (chapter.merged && chapter.merged.length) {
-          this.getMergedChapter(chapter);
+        if (merged && merged.length) {
+          this.getMergedChapter(chapter, merged);
         } else {
           this.chapterData = this.processChapter(chapter);
         }
@@ -295,17 +294,17 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getMergedChapter(chapter) {
-    const chapterId = chapter.merged[0];
+  private getMergedChapter(chapter: Chapter, merged: string[]) {
+    const chapterId = merged[0];
     this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       toMergeChapter => {
-        chapter.merged.unshift();
         chapter.sentences = chapter.sentences.concat(toMergeChapter.sentences);
         chapter.nrOfSentences = chapter.sentences.length;
-        if (chapter.merged.length) {
-          this.getMergedChapter(chapter);
+        merged.shift();
+        if (merged.length) {
+          this.getMergedChapter(chapter, merged);
         } else {
           this.chapterData = this.processChapter(chapter);
         }

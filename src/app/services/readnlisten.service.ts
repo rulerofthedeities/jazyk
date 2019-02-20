@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LanPair } from '../models/main.model';
-import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark,
+import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark, UserBookActivity,
          SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy, BookCount } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -95,9 +95,15 @@ export class ReadnListenService {
 
   /*** Subscriptions ***/
 
-  fetchUserBooks(interfaceLanCode: string, bookType: string): Observable<UserBook[]> {
+  fetchUserBooks(targetLanCode: string, bookType: string): Observable<UserBook[]> {
     return this.http
-    .get<UserBook[]>('/api/books/user/' + interfaceLanCode + '/' + bookType)
+    .get<UserBook[]>('/api/books/user/' + targetLanCode + '/' + bookType)
+    .pipe(retry(3));
+  }
+
+  fetchActivity(targetLanCode: string, bookType: string): Observable<UserBookActivity[]> {
+    return this.http
+    .get<UserBookActivity[]>('/api/books/activity/' + targetLanCode + '/' + bookType)
     .pipe(retry(3));
   }
 
@@ -140,9 +146,9 @@ export class ReadnListenService {
 
   /*** Session Data ***/
 
-  fetchSessionData(learnLanCode: string, bookType: string): Observable<UserData[]> {
+  fetchSessionData(targetLanCode: string, bookType: string): Observable<UserData[]> {
     return this.http
-    .get<UserData[]>('/api/book/sessions/' + learnLanCode + '/' + bookType)
+    .get<UserData[]>('/api/book/sessions/' + targetLanCode + '/' + bookType)
     .pipe(retry(3));
   }
 
