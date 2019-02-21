@@ -285,6 +285,14 @@ export class MainMenuComponent implements OnInit, OnDestroy {
         this.getTranslations(interfaceLan);
       }
     );
+    this.sharedService
+    .scoreChanged
+    .subscribe(
+      newScore => {
+        this.score = newScore;
+        this.rank = this.sharedService.getRank(newScore);
+      }
+    );
   }
 
   private log(message: string) {

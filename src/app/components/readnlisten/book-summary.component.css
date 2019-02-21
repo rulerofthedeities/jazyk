@@ -83,14 +83,21 @@
 }
 .img-activity {
   position: relative;
-  top: -26px;
-  left: 6px;
+  bottom: 32px;
+  left: 14px;
   color: white;
-  font-size: 20px;
+  font-size: 18px;
+}
+.img-activity.default-img {
+  bottom: 42px;
+  left: 14px;
 }
 .img-activity .thumbs {
   position: absolute;
   left: 76px;
+}
+.img-activity .fa-thumbs-o-up {
+  margin-right: 6px;
 }
 .audiobook .img-text {
   color: black;
@@ -106,7 +113,7 @@
 }
 .img-author {
   position: absolute;
-  bottom: 20px;
+  bottom: 52px;
   left: 6px;
   color: #ddd;
   width: 140px;
@@ -337,7 +344,7 @@ h3 .fa-check {
 .fa-thumbs-o-up {
   color: grey;
 }
-.img-activity .fa-thumbs-up {
+.img-activity .fa-thumbs-o-up {
   color: white;
 }
 .recommended {
@@ -394,13 +401,18 @@ span.canrecommend:hover {
   overflow: hidden;
   padding: 6px 0;
 }
+/*
 .jazyk-book {
-  position: relative;
-  top: -90px;
+  position: absolute;
+  bottom: 52px;
+  width: 149px;
+  left: 5px;
   border-top: 1px solid #333;
   border-bottom: 1px solid #333;
   background-color: rgba(255, 255, 255, 0.8);
 }
+*/
+
 /* ribbon */
 /* src: https://codepen.io/eode9/pen/twkKm */
 .corner-ribbon{
@@ -469,6 +481,12 @@ span.canrecommend:hover {
 }
 .compact .index-nr {
   top: 0;
+}
+.compact .img-author {
+  bottom: 120px;
+}
+.compact .img-text {
+  display: none;
 }
 @media screen and (max-width: 991px) {
   .pie-chart {display: none;}

@@ -234,6 +234,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       updated => {
         this.userBookStatus.isRecommended = !this.userBookStatus.isRecommended;
         this.userBook.recommended = this.userBookStatus.isRecommended;
+        this.activity.recommended += this.userBookStatus.isRecommended ? 1 : -1;
+        this.activity.recommended = this.activity.recommended < 0 ? 0 : this.activity.recommended;
+        this.recommendCount = this.activity.recommended;
       }
     );
   }

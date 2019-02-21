@@ -21,12 +21,9 @@
           <img src="{{book?.img || defaultImage}}" class="book-img">
           <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
           <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
-          <div class="img-activity" *ngIf="userCount">
-            <span class="users"><span class="fa fa-user"></span> {{userCount}}</span>
-            <span class="thumbs"><span class="fa fa-thumbs-up"></span>{{recommendCount}}</span>
-          </div>
-          <div class="jazyk-book" *ngIf="!!book?.img && book?.authors==='Jazyk'">
-            <img src="/assets/img/logo.png">
+          <div class="img-activity" *ngIf="userCount" [class.default-img]="!book?.img">
+            <span class="users"><span class="fa fa-user-o"></span>{{userCount}}</span>
+            <span class="thumbs"><span class="fa fa-thumbs-o-up"></span>{{recommendCount}}</span>
           </div>
         </div>
       </div>

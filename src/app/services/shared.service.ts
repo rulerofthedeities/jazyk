@@ -44,6 +44,7 @@ export class SharedService {
   justLoggedInOut = new Subject<boolean>();
   eventMessage = new Subject<EventMessage>();
   audioEvent = new Subject<string>();
+  scoreChanged = new Subject<number>();
 
   constructor(
     private http: HttpClient,
@@ -106,6 +107,10 @@ export class SharedService {
 
   pauseAudio() {
     this.audioEvent.next('pause');
+  }
+
+  onScoreChanged(newScore: number) {
+    this.scoreChanged.next(newScore);
   }
 
   get lastEventMessage(): string {

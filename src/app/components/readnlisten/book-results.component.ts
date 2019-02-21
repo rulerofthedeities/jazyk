@@ -99,6 +99,7 @@ export class BookResultsComponent implements OnChanges, OnDestroy {
         if (rank > previousRank) {
           this.newRankPromotion(rank);
         }
+        this.sharedService.onScoreChanged(scoreTotal);
       }
     );
   }
