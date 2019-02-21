@@ -190,7 +190,6 @@ export interface SessionData {
   bookType: string;
   isTest: boolean;
   answers: string;
-  chapters: number;
   nrYes: number;
   nrNo: number;
   nrMaybe: number;
@@ -201,6 +200,8 @@ export interface SessionData {
   resultData?: ResultData; // For results page
   chapterId?: string; // For revision
   sentenceNrChapter?: number; // For revision
+  lastChapterId?: string; // For integrity check
+  lastSentenceNrChapter?: number; // For integrity check
 }
 
 // Session data returned for one user

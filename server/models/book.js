@@ -91,7 +91,6 @@ var sessionSchema = new Schema({
   bookType: {type: String, required: true},
   isTest: {type: Boolean, required: true},
   answers: {type: String, required: true},
-  chapters: Number,
   nrYes: Number,
   nrNo: Number,
   nrMaybe: Number,
@@ -100,7 +99,9 @@ var sessionSchema = new Schema({
   dt: dtSchema,
   points: pointsSchema,
   chapterId: String,
-  sentenceNrChapter: Number
+  sentenceNrChapter: Number,
+  lastChapterId: String,
+  lastSentenceNrChapter: Number
 });
 
 sessionSchema.index({userId: 1, bookId: 1, lanCode: 1});

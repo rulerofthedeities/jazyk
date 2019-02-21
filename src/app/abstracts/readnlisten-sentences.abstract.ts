@@ -82,7 +82,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.sharedService.stopAudio();
       // Check if book is finished - in case abort right before end
       if (this.currentSentenceNr >= this.currentSentenceTotal) {
-        this.sessionData.chapters++;
         this.readnListenService
         .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
         .pipe(takeWhile(() => this.componentActive))
@@ -276,7 +275,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           isTest: this.isTest,
           repeatCount: userBook && userBook.repeatCount ? userBook.repeatCount : undefined,
           answers: '',
-          chapters: 0,
           translations: 0,
           nrYes: 0,
           nrNo: 0,
@@ -292,7 +290,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
             totalBookSentences: null
           },
           chapterId: null,
-          sentenceNrChapter: null
+          sentenceNrChapter: null,
+          lastChapterId: null,
+          lastSentenceNrChapter: null
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
@@ -379,6 +379,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
       this.sessionData.chapterId = this.currentChapter._id;
       this.sessionData.sentenceNrChapter = this.currentSentenceNr;
+      this.sessionData.lastChapterId = this.currentChapter._id;
+      this.sessionData.lastSentenceNrChapter = this.currentSentenceNr;
       this.emitSentenceNr(this.currentSentenceNr);
       this.getSentence();
     } else {
@@ -407,7 +409,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (!sentenceOk) {
       // Chapter finished
-      this.sessionData.chapters++;
       this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
   }
@@ -484,6 +485,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected saveSessionData(book: Book = null) {
     if (this.sessionData.answers) {
+      this.sessionData.lastChapterId = this.currentChapter._id;
+      this.sessionData.lastSentenceNrChapter = this.getSentenceNrToSave();
       this.readnListenService
       .saveSessionData(this.sessionData)
       .pipe(takeWhile(() => this.componentActive))

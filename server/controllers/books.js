@@ -447,11 +447,12 @@ module.exports = {
     const sessionData = req.body.sessionData;
     update = {$set: {
       answers: sessionData.answers,
-      chapters: sessionData.chapters,
       nrYes: sessionData.nrYes,
       nrNo: sessionData.nrNo,
       nrMaybe: sessionData.nrMaybe,
       translations: sessionData.translations,
+      lastChapterId: sessionData.lastChapterId,
+      lastSentenceNrChapter: sessionData.lastSentenceNrChapter,
       'dt.end': Date.now(),
       'dt.diff': (new Date().getTime() - new Date(sessionData.dt.start).getTime()) / 1000,
       points: sessionData.points
