@@ -55,6 +55,10 @@ export class FilterService {
     {
       label: text['newest0'],
       value: 'newest0'
+    },
+    {
+      label: text['popular0'],
+      value: 'popular0'
     }
   ];
 }

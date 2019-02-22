@@ -149,7 +149,15 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   private processActivity(activity: UserBookActivity[]) {
+    let recommendScore: number,
+        finishedScore: number;
     activity.forEach(act => {
+      act.popularity = 0;
+      if (act.finished > 0) {
+        recommendScore = act.recommended / act.finished;
+        finishedScore = act.started > 0 ? act.finished / act.started : 0;
+        act.popularity = recommendScore + finishedScore;
+      }
       this.userBookActivity[act.bookId] = act;
     });
   }
@@ -310,6 +318,16 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       this.filterService.hasFilter[this.bookType] = true;
       this.filterService.filterTxt[this.bookType] = this.text['Only'] + ' ';
       this.filterService.filterTxt[this.bookType] += filters.join(', ');
+    }
+    // Sort by popularity
+    if (this.filterService.sort[this.bookType] === 'popular0') {
+      let popularityA: number,
+          popularityB: number;
+      this.filteredBooks.sort((a, b) => {
+        popularityA = this.userBookActivity[a._id] ? this.userBookActivity[a._id].popularity || 0 : 0;
+        popularityB = this.userBookActivity[b._id] ? this.userBookActivity[b._id].popularity || 0 : 0;
+        return popularityA > popularityB ? -1 : (popularityA < popularityB ? 1 : 0);
+      });
     }
     this.resetScroll();
   }

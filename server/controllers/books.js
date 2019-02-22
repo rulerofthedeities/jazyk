@@ -222,7 +222,8 @@ module.exports = {
             _id: 0,
             bookId: '$_id.bookId',
             recommended: 1,
-            started: 1
+            started: 1,
+            finished: 1
           },
           pipeline = [
             {$match: query},
@@ -235,6 +236,9 @@ module.exports = {
               },
               started: {
                 $sum: { $cond: [{'$ifNull': ['$bookmark', false]}, 1, 0] }
+              },
+              finished: {
+                $sum: { $cond: [{'$eq': ['$bookmark.isBookRead', true]}, 1, 0] }
               }
             }},
             {$project: projection}

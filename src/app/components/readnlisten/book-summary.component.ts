@@ -73,6 +73,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isTranslated: boolean;
   userCount = 0;
   recommendCount = 0;
+  popularity = 0;
 
   constructor(
     private router: Router,
@@ -401,8 +402,11 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setActivity() {
-    this.userCount = this.activity ? this.activity.started : 0;
-    this.recommendCount = this.userCount > 0 ? this.activity.recommended : 0;
+    if (this.activity) {
+      this.userCount = this.activity.started;
+      this.recommendCount = this.userCount > 0 ? this.activity.recommended : 0;
+      this.popularity = this.activity.popularity;
+    }
   }
 
   private setDefaultImg() {

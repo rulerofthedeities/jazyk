@@ -175,6 +175,8 @@ export interface UserBookActivity {
   bookId: string;
   recommended: number;
   started: number;
+  finished: number;
+  popularity?: number;
 }
 
 export interface ResultData {
