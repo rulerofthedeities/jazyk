@@ -22,8 +22,18 @@
           <span class="img-text" *ngIf="!book?.img">{{book.title}}</span>
           <span class="img-author" *ngIf="!book?.img">{{authorsTxt}}</span>
           <div class="img-activity" *ngIf="userCount" [class.default-img]="!book?.img">
-            <span class="users"><span class="fa fa-user-o"></span>{{userCount}}</span>
-            <span class="thumbs"><span class="fa fa-thumbs-o-up"></span>{{recommendCount}}</span>
+            <span class="users"
+              [tooltip]="text['UsersStarted']"
+              placement="top"
+              hide-delay="0">
+              <span class="fa fa-user-o"></span>{{userCount}}
+            </span>
+            <span class="thumbs"
+              [tooltip]="text['UsersRecommended']"
+              placement="top"
+              hide-delay="0">
+              <span class="fa fa-thumbs-o-up"></span>{{recommendCount}}
+            </span>
           </div>
         </div>
       </div>
