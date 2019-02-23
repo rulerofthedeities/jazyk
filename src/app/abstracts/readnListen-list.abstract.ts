@@ -35,6 +35,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   bookType: string; // read or listen
   listTpe = 'all';
   scrollCutOff = 15; // nr of books shown - increases with scrolling
+  totalFinished = 0;
 
   constructor(
     protected readnListenService: ReadnListenService,
@@ -150,13 +151,15 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   private processActivity(activity: UserBookActivity[]) {
     let recommendScore: number,
-        finishedScore: number;
+        finishedScore: number,
+        readersScore: number;
     activity.forEach(act => {
       act.popularity = 0;
       if (act.finished > 0) {
-        recommendScore = act.recommended / act.finished;
-        finishedScore = act.started > 0 ? act.finished / act.started : 0;
-        act.popularity = recommendScore + finishedScore;
+        recommendScore = act.recommended > 1 ? act.recommended / act.finished : 0;
+        finishedScore = act.started > 2 ? act.finished / act.started : 0;
+        readersScore = this.totalFinished > 0 ? act.finished / this.totalFinished : 0;
+        act.popularity = recommendScore + finishedScore + readersScore * 10;
       }
       this.userBookActivity[act.bookId] = act;
     });
@@ -165,12 +168,14 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   private processUserBooks(uBooks: UserBook[]) {
     this.userBooks = {};
     this.userBooksTest = {};
+    this.totalFinished = 0;
     uBooks.forEach(uBook => {
       if (uBook.isTest) {
         this.userBooksTest[uBook.bookId] = uBook;
       } else {
         this.userBooks[uBook.bookId] = uBook;
       }
+      this.totalFinished += uBook.bookmark && uBook.bookmark.isBookRead ? 1 : 0;
     });
     if (this.filterService.filter[this.bookType].hideCompleted) {
       this.filterBooks();
