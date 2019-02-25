@@ -246,6 +246,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   protected filterBooks() {
     if (!this.nrOfBooks) {
+      this.filteredBooks = [];
       return;
     }
     // List type: my list or all

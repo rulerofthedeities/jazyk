@@ -157,10 +157,15 @@
 }
 .book h3:hover {
   overflow: visible;
-  white-space: normal;
+  white-space: inherit;
+  display: inline;
+  top: -6px;
+  position: relative;
 }
 .compact .book h3:hover {
+  display: inherit;
   overflow: hidden;
+  top: 0;
 }
 .book h3 small {
   margin-left: 10px;
