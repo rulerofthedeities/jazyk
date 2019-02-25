@@ -269,7 +269,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     if (filter) {
       if (filter.hideCompleted) {
         this.filteredBooks = this.filteredBooks.filter(b =>
-          !(this.userBooks[b._id] && this.userBooks[b._id].bookmark && this.userBooks[b._id].bookmark.isBookRead));
+          !(this.userBooks[b._id] && this.userBooks[b._id].bookmark &&
+            (this.userBooks[b._id].bookmark.isBookRead || (this.userBooks[b._id].repeatCount || 0 > 0)))
+        );
         filters.push(this.text['CompletedOnly']);
       }
       if (filter.hideNotTranslated) {
