@@ -11,7 +11,9 @@ const mongoose = require('mongoose'),
         reconnectTries: Number.MAX_VALUE,
         reconnectInterval: 500,
         poolSize: 10,
-        promiseLibrary: global.Promise
+        promiseLibrary: global.Promise,
+        useCreateIndex: true,
+        useNewUrlParser: true
       };
 
 function encodeMongoURI(urlString) {
