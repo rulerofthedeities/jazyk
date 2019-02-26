@@ -52,10 +52,16 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
           this.audio.pause();
         }
       }
-      this.audio.onended = () => {
+      this.audio.addEventListener('ended', e => {
         // The audio has ended
         this.ended.emit(true);
+      });
+      /*
+      this.audio.onended = () => {
+        // The audio has ended
+        // this.ended.emit(true);
       };
+      */
       this.audio.onloadeddata = () => {
         // The audio has loaded
         if (this.audio) {

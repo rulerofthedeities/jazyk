@@ -125,7 +125,7 @@ module.exports = {
             'recipient.id': userId,
             'recipient.read': true,
             'recipient.trash': false,
-            'recipient.deleted': false 
+            'recipient.deleted': false
           },
           update = {'recipient.trash': true};
     Message.updateMany(query, update, function(err, result) {
@@ -139,7 +139,7 @@ module.exports = {
           query = {
             'recipient.id': userId,
             'recipient.trash': true,
-            'recipient.deleted': false 
+            'recipient.deleted': false
           },
           update = {'recipient.deleted': true};
     Message.updateMany(query, update, function(err, result) {
@@ -156,7 +156,7 @@ module.exports = {
             'recipient.trash': false,
             'recipient.deleted': false
           };
-    Message.count(query, function(err, count) {
+    Message.countDocuments(query, function(err, count) {
       response.handleError(err, res, 400, 'Error fetching messages count', function(){
         response.handleSuccess(res, count.toString());
       });

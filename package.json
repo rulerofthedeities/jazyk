@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "pm2 start km-jazyk.js --watch server",
     "start:heroku": "npm run serve:ssr",
-    "build": "ng build --watch",
+    "build:watch": "ng build --watch",
     "build:prod": "ng build --prod",
     "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
     "serve:ssr": "node dist/server.js",

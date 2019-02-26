@@ -90,7 +90,7 @@ const checkTotalSessionTrophies = (res, userId, existingTrophies) => {
       !isInArray('112', existingTrophies) ||
       !isInArray('113', existingTrophies)) {
     const query = {userId};
-    Session.count(query, (err, count) => {
+    Session.countDocuments(query, (err, count) => {
       response.handleError(err, res, 400, `Error counting total sessions for ${userId}`, () => {
         const trophiesToSave = [];
         if (count > 50 && !isInArray('111', existingTrophies)) {
@@ -117,7 +117,7 @@ const checkTotalThumbTrophies = (res, userId, existingTrophies) => {
       !isInArray('123', existingTrophies)) {
     const query = {translatorId: userId, isOwnTranslation: false};
     // get all thumbs for one user
-    UserBookThumb.count(query, (err, count) => {
+    UserBookThumb.countDocuments(query, (err, count) => {
       response.handleError(err, res, 400, `Error counting total thumbs for ${userId}`, () => {
         const trophiesToSave = [];
         if (count > 100 && !isInArray('121', existingTrophies)) {

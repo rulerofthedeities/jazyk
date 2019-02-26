@@ -1,7 +1,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Notification = require('../models/notification');
-      
+
 module.exports = {
   saveNotification: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -78,7 +78,7 @@ module.exports = {
   getNotificationsCount: function(req, res) {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {userId, read: false};
-    Notification.count(query, function(err, count) {
+    Notification.countDocuments(query, function(err, count) {
       response.handleError(err, res, 400, 'Error fetching notifications count', function(){
         response.handleSuccess(res, count.toString());
       });
