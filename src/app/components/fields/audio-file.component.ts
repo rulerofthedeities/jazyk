@@ -15,6 +15,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   @Input() active = true;
   @Output() ended = new EventEmitter<boolean>();
   private componentActive = true;
+  private supportsOgg = false;
   audio: any;
 
   constructor(
@@ -23,6 +24,9 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.observe();
+    if (this.supportsAudioType('ogg')) {
+      this.supportsOgg = true;
+    }
   }
 
   ngOnChanges() {
@@ -39,11 +43,22 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
     this.play();
   }
 
+  private supportsAudioType(type) {
+    const formats = {
+      mp3: 'audio/mpeg',
+      mp4: 'audio/mp4',
+      ogg: 'audio/ogg',
+      aif: 'audio/x-aiff'
+    };
+
+    return this.audio.canPlayType(formats[type] || type);
+  }
+
   private play() {
     if (this.active) {
       if (!this.audio) {
         this.audio = new Audio();
-        this.audio.src = this.fileUrl;
+        this.audio.src = this.getSource(this.fileUrl);
         this.audio.load();
       } else {
         if (this.audio.ended || this.audio.paused) {
@@ -56,13 +71,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         // The audio has ended
         this.ended.emit(true);
       });
-      /*
-      this.audio.onended = () => {
-        // The audio has ended
-        // this.ended.emit(true);
-      };
-      */
-      this.audio.onloadeddata = () => {
+      this.audio.addEventListener('loadeddata ', e => {
         // The audio has loaded
         if (this.audio) {
           const promise = this.audio.play();
@@ -74,10 +83,15 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
             });
           }
         }
-      };
-      this.audio.onplaying = () => {
-        // The audio is now playing
-      };
+      });
+    }
+  }
+
+  private getSource(fileName: string): string {
+    if (this.supportsOgg) {
+      return fileName;
+    } else {
+      return 'mp3_' + fileName;
     }
   }
 

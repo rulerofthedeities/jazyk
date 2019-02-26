@@ -26,18 +26,6 @@ export class ReadnListenService {
     this.audioEnded.next(ended);
   }
 
-  playIosWorkaround() {
-    const audio = new Audio();
-    audio.src = '/assets/audio/gluck.ogg';
-    audio.load();
-    audio.onloadeddata = () => {
-      if (audio) {
-        console.log('audio loaded');
-        // audio.play();
-      }
-    };
-  }
-
   /*** Books ***/
 
   fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
