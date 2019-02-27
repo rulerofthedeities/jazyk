@@ -15,7 +15,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   @Input() active = true;
   @Output() ended = new EventEmitter<boolean>();
   private componentActive = true;
-  private supportsOgg = false;
+  private supportsOgg: boolean;
   audio: any;
 
   constructor(
@@ -24,9 +24,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.observe();
-    if (this.supportsAudioType('ogg')) {
-      this.supportsOgg = true;
-    }
   }
 
   ngOnChanges() {
@@ -43,7 +40,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
     this.play();
   }
 
-  private supportsAudioType(type) {
+  private checkAudioTypeSupport(type) {
     const formats = {
       mp3: 'audio/mpeg',
       mp4: 'audio/mp4',
@@ -51,7 +48,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
       aif: 'audio/x-aiff'
     };
 
-    return this.audio.canPlayType(formats[type] || type);
+    this.supportsOgg = this.audio.canPlayType(formats[type] || type);
   }
 
   private play() {
@@ -71,7 +68,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         // The audio has ended
         this.ended.emit(true);
       });
-      this.audio.addEventListener('loadeddata ', e => {
+      this.audio.addEventListener('loadeddata', e => {
         // The audio has loaded
         if (this.audio) {
           const promise = this.audio.play();
@@ -88,10 +85,19 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getSource(fileName: string): string {
+    if (this.supportsOgg === undefined) {
+      this.checkAudioTypeSupport('ogg');
+    }
     if (this.supportsOgg) {
       return fileName;
     } else {
-      return 'mp3_' + fileName;
+      const pos = fileName.lastIndexOf('/');
+      if (pos > 0) {
+        const file = 'mp3_' + fileName.slice(pos + 1, fileName.length);
+        return fileName.slice(0, pos + 1) + file;
+      } else {
+        return fileName;
+      }
     }
   }
 

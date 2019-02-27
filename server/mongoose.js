@@ -10,7 +10,8 @@ var mongoose = require('mongoose'),
       poolSize: 10,
       promiseLibrary: global.Promise,
       useCreateIndex: true,
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      useFindAndModify: false
     };
 
 function encodeMongoURI(urlString) {
@@ -21,6 +22,7 @@ function encodeMongoURI(urlString) {
   return urlString;
 }
 
+mongoose.set('useFindAndModify', false); // To prevent deprecation warnings
 mongoose.Promise = global.Promise;
 mongoose.connect(encodeMongoURI(db_url), options)
 .then(() => {
