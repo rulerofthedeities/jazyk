@@ -97,6 +97,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkIfFinished();
     this.checkSentencesDone();
     this.checkTranslated();
+    this.setActivity();
   }
 
   onShowRepeatHistory(isTest: boolean) {
