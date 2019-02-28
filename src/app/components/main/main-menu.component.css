@@ -174,7 +174,7 @@ ul.dropdown-menu {
     max-width: 180px;
   }
 }
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 625px) {
   .mobile {
     display: block;
     animation: slideInY 0.3s ease-in;

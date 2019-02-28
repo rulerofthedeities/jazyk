@@ -298,7 +298,7 @@ li {
 }
 @media screen and (max-width: 768px) {}
 @media screen and (max-width: 991px) {
-  .btn-column {
+  .btn-column, .argumentation > div {
     width: 100%;
   }
   .side-bar {
