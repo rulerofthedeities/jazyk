@@ -73,7 +73,7 @@
         </div>
         <!-- TITLE -->
         <h3>
-          <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+          <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag to">
           <span *ngIf="isCompact && isAllFinished" class="fa fa-check"></span>
           <span class="title">{{book.title}}</span>
           <span *ngIf="!isCompact && book.intro" class="fa fa-info-circle intro-icon" (click)="onToggleIntro()"></span>

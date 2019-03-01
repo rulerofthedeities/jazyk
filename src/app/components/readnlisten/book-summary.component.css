@@ -68,6 +68,12 @@
   width: 20px;
   height: 20px;
 }
+.flag.to {
+  margin-right: 6px;
+}
+.title {
+  margin-left: 4px;
+}
 .img-text {
   position: absolute;
   top: 6px;
@@ -167,15 +173,22 @@
   overflow: hidden;
   top: 0;
 }
+.dashboard .book h3:hover {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inherit;
+  top: 0;
+}
 .book h3 small {
   margin-left: 10px;
   font-style: italic;
   font-size: 50%;
 }
 .dashboard .book h3 {
-  margin-top: -8px;
-  font-size: 32px;
-  height: 36px;
+  margin-top: -6px;
+  font-size: 28px;
+  height: 28px;
 }
 .author {
   color: #666;
