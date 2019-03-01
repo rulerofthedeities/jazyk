@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path'),
       jwt = require('jsonwebtoken'),
       users = require('./controllers/users'),
@@ -8,6 +10,7 @@ const path = require('path'),
       translations = require('./controllers/translations'),
       notifications = require('./controllers/notifications'),
       messages = require('./controllers/messages'),
+      profiles = require('./controllers/profiles'),
       follows = require('./controllers/follows'),
       scores = require('./controllers/scores'),
       page = require('./controllers/page'),
@@ -62,11 +65,11 @@ module.exports = {
     router.post('/user/checkverificationId', users.checkverificationId);
     router.put('/user/settings', users.saveSettings);
     router.put('/user/mailsettings', users.saveMailSettings);
-    router.post('/user/profiles', users.getCompactProfiles);
-    router.get('/user/profile/:userName', users.getPublicProfile);
-    router.get('/user/profileId/:userId', users.getPublicProfileById);
-    router.get('/user/profile', users.getProfile);
-    router.put('/user/profile', users.saveProfile);
+    router.post('/user/profiles', profiles.getCompactProfiles);
+    router.get('/user/profile/:userName', profiles.getPublicProfile);
+    router.get('/user/profileId/:userId', profiles.getPublicProfileById);
+    router.get('/user/profile', profiles.getProfile);
+    router.put('/user/profile', profiles.saveProfile);
     router.patch('/user/lan/read', users.updateReadLan);
     router.patch('/user/lan/user', users.updateUserLan);
     router.patch('/user/password', users.updatePassword);

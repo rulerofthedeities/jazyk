@@ -36,7 +36,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getLeaders();
     this.getTranslations();
     this.gender = this.userService.user.main.gender || 'm';
   }
@@ -191,6 +190,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
           this.text = this.sharedService.getTranslatedText(translations);
           this.sharedService.setPageTitle(this.text, 'Leaderboard');
           this.isReady = true;
+          this.getLeaders();
         }
       }
     );

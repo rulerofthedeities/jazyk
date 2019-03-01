@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       Session = require('../models/book').session,

@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       jwt = require('jsonwebtoken'),
@@ -16,9 +18,9 @@ const setEmailHash = (doc) => {
 
 const isElapsed = (dt, maxElapseHours) => {
   const expiryTime = new Date(dt).getTime(),
-  currentTime = Date.now(),
-  elapseMs = currentTime - expiryTime,
-  elapseHours = elapseMs / 1000 / 60 / 60;
+        currentTime = Date.now(),
+        elapseMs = currentTime - expiryTime,
+        elapseHours = elapseMs / 1000 / 60 / 60;
   return !!(elapseHours > maxElapseHours);
 }
 
@@ -160,31 +162,6 @@ const updateLastLoginDate = (CurUser, res) => {
   });
 };
 
-const getPublicProfile = (query, res) => {
-  const projection = {
-    'jazyk.profile': 1,
-    'jazyk.dt': 1,
-    userName: 1,
-    email: 1
-  };
-  User.findOne(query, projection, (err, result) => {
-    let errCode = 400;
-    if (!result) {
-      err = {msg: '404 not found'};
-      errCode = 404;
-    }
-    response.handleError(err, res, errCode, 'Error fetching public profile', () => {
-      const publicProfile = JSON.parse(JSON.stringify(result.jazyk));
-      publicProfile.userName = result.userName;
-      publicProfile.dtJoined = result.jazyk.dt.joined;
-      publicProfile._id = result._id;
-      publicProfile.email = result.email;
-      setEmailHash(publicProfile);
-      response.handleSuccess(res, publicProfile);
-    });
-  });
-};
-
 module.exports = {
   signup: (req, res) => {
     addUser(req.body, (err, doc) => {
@@ -205,7 +182,10 @@ module.exports = {
     });
   },
   check: (req, res) => {
-    const options = {mail: req.query.mail, user: req.query.user};
+    const options = {
+      mail: req.query.mail,
+      user: req.query.user
+    };
     if (options.mail) {
       isUniqueEmail(options, (err, exists) => {
         response.handleError(err, res, 400, 'Error checking email', () => {
@@ -273,52 +253,6 @@ module.exports = {
       });
     });
   },
-  getProfile: (req, res) => {
-    const userId = req.decoded.user._id,
-          query = {_id: userId},
-          projection = {_id: 0, 'jazyk.profile': 1};
-    User.findOne(query, projection, (err, result) => {
-      response.handleError(err, res, 400, 'Error fetching profile', () => {
-        response.handleSuccess(res, result.jazyk.profile);
-      });
-    });
-  },
-  getCompactProfiles: (req, res) => {
-    const userIds = req.body.userIds,
-          query = {_id: {$in: userIds}},
-          projection = {userName: 1, email: 1};
-    User.find(query, projection, (err, users) => {
-      response.handleError(err, res, 400, 'Error fetching users', () => {
-        users.forEach(emailUser => setEmailHash(emailUser));
-        response.handleSuccess(res, users);
-      });
-    });
-  },
-  saveProfile: (req, res) => {
-    const userId = req.decoded.user._id,
-          profile = req.body,
-          query = {_id: userId},
-          updateObj = {$set: {'jazyk.profile': profile}};
-    User.findOneAndUpdate(query, updateObj, (err, result) => {
-      response.handleError(err, res, 400, 'Error updating profile', () => {
-        response.handleSuccess(res, true);
-      });
-    });
-  },
-  getPublicProfile: (req, res) => {
-    const userName = req.params.userName,
-          query = {userName};
-    getPublicProfile(query, res);
-  },
-  getPublicProfileById: (req, res) => {
-    if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
-      const query = {_id: req.params.userId};
-      getPublicProfile(query, res);
-    } else {
-      const err = 'Invalid user id';
-      response.handleError(err, res, 400, err);
-    }
-  },
   updateReadLan: (req, res) => {
     const userId = req.decoded.user._id,
           data = req.body,
@@ -342,9 +276,9 @@ module.exports = {
   updatePassword: (req, res) => {
     const userId = req.decoded.user._id,
           data = req.body;
-    checkPassword(data.old, userId, function(err, doc) {
+    checkPassword(data.old, userId, (err, doc) => {
       response.handleError(err, res, 400, 'IncorrectPassword', () => {
-        saveNewPassword(data.new, userId, function(err2) {
+        saveNewPassword(data.new, userId, (err2) => {
           response.handleError(err2, res, 400, 'Error saving password', () => {
             response.handleSuccess(res, true);
           });
@@ -379,7 +313,7 @@ module.exports = {
                 verificationId: new mongoose.Types.ObjectId(),
                 timesSent: 1,
                 dtLastSent: Date.now()
-              }
+              };
             } else {
               // Existing verificationDOc
               verificationDoc.timesSent++;
@@ -387,7 +321,7 @@ module.exports = {
             }
             return verificationDoc;
           },
-          saveVerificationDoc =  (userId, verificationDoc) => {
+          saveVerificationDoc = (userId, verificationDoc) => {
             const update = {'mailVerification': verificationDoc};
             User.findOneAndUpdate({_id: userId}, update, (err, result) => {
               if (err) {
@@ -482,7 +416,7 @@ module.exports = {
         response.handleError(err, res, 400, `Error finding email "${email}"`, () => {
           if (doc && doc.mailPwReset) {
             const resetDoc = doc.mailPwReset;
-            if (resetDoc.resetId &&  resetDoc.resetId.toString() === resetId) {
+            if (resetDoc.resetId && resetDoc.resetId.toString() === resetId) {
               if (isElapsed(resetDoc.dt, 6)) {
                 response.handleSuccess(res, '3');
               } else {
@@ -543,7 +477,6 @@ module.exports = {
                   response.handleSuccess(res, true);
                 });
               });
-
             } else {
               response.handleSuccess(res, false);
             }
@@ -602,5 +535,8 @@ module.exports = {
       const token = jwt.sign(payload, process.env.JWT_TOKEN_SECRET, {expiresIn: req.expiresIn});
       response.handleSuccess(res, {token});
     }
+  },
+  commonSetEmailHash: (doc) => {
+    setEmailHash(doc);
   }
 };

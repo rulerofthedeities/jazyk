@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       users = require('./users'),
@@ -52,7 +54,7 @@ module.exports = {
           projection = {_id: 0, followId: 1};
     Follow.find(query, projection, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching following', () => {
-        following = result.map(user => user.followId);
+        const following = result.map(user => user.followId);
         response.handleSuccess(res, following);
       });
     });

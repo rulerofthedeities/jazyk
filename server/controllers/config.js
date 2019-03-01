@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       // memwatch = require('memwatch-next'),
       Config = require('../models/config'),

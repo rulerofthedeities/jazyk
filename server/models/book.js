@@ -1,5 +1,7 @@
+'use strict';
+
 var mongoose = require('mongoose'),
-Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 var difficultySchema = new Schema({
   nrOfSentences: {type: Number, required: true},
@@ -68,8 +70,7 @@ var translationsSchema = new Schema({
 translationsSchema.index({bookId: 1, sentence: 1}, {unique: true});
 translationsSchema.index({'translations.lanCode': 1});
 translationsSchema.index({'translations.isMachine': 1});
-TranslationModel = mongoose.model('Booktranslation', translationsSchema);
-
+const TranslationModel = mongoose.model('Booktranslation', translationsSchema);
 
 var dtSchema = new Schema({
   start: Date,

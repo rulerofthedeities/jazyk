@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
@@ -76,9 +78,9 @@ const calculateWilsonScore = (book_id, translation_id, translationElement_id) =>
 
 const getExistingTrophies = (body, userId) => {
   const trophies = body.existingTrophies;
-  existingTrophies = [];
+  let existingTrophies = [];
   if (trophies && trophies.length) {
-    userIdOnly = trophies.filter(t => t.userId.toString() === userId.toString());
+    const userIdOnly = trophies.filter(t => t.userId.toString() === userId.toString());
     existingTrophies = userIdOnly.map(t => t.trophy);
   }
   return existingTrophies;
@@ -148,7 +150,7 @@ module.exports = {
           sort = req.params.sort,
           query = {isPublished: true},
           projection = {};
-    let options = {sort: {'difficulty.weight': 1}}
+    let options = {sort: {'difficulty.weight': 1}};
     if (languageId !== 'eu') {
       query['lanCode'] = languageId;
     }
@@ -345,7 +347,7 @@ module.exports = {
         const translationData = {
           translation: result.translations[0],
           translationsId: result._id
-        }
+        };
         response.handleSuccess(res, translationData);
       });
     });
@@ -420,7 +422,7 @@ module.exports = {
           bookType = req.body.bookType,
           bookmark = req.body.bookmark,
           query = {bookId, userId, lanCode, bookType, isTest};
-    bookmark.dt = Date.now()
+    bookmark.dt = Date.now();
     const update = {$set: {bookmark}};
     if (!bookmark.sentenceNrBook) {
       bookmark.sentenceNrBook = 0;
@@ -439,8 +441,8 @@ module.exports = {
       start: Date.now(),
       end: Date.now(),
       diff: 0
-    }
-    session = new Session(sessionData);
+    };
+    const session = new Session(sessionData);
     session.save((err, result) => {
       response.handleError(err, res, 400, 'Error saving new session data', () => {
         response.handleSuccess(res, result);
@@ -448,19 +450,19 @@ module.exports = {
     });
   },
   updateSession: (req, res) => {
-    const sessionData = req.body.sessionData;
-    update = {$set: {
-      answers: sessionData.answers,
-      nrYes: sessionData.nrYes,
-      nrNo: sessionData.nrNo,
-      nrMaybe: sessionData.nrMaybe,
-      translations: sessionData.translations,
-      lastChapterId: sessionData.lastChapterId,
-      lastSentenceNrChapter: sessionData.lastSentenceNrChapter,
-      'dt.end': Date.now(),
-      'dt.diff': (new Date().getTime() - new Date(sessionData.dt.start).getTime()) / 1000,
-      points: sessionData.points
-    }}
+    const sessionData = req.body.sessionData,
+          update = {$set: {
+            answers: sessionData.answers,
+            nrYes: sessionData.nrYes,
+            nrNo: sessionData.nrNo,
+            nrMaybe: sessionData.nrMaybe,
+            translations: sessionData.translations,
+            lastChapterId: sessionData.lastChapterId,
+            lastSentenceNrChapter: sessionData.lastSentenceNrChapter,
+            'dt.end': Date.now(),
+            'dt.diff': (new Date().getTime() - new Date(sessionData.dt.start).getTime()) / 1000,
+            points: sessionData.points
+          }};
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating session', () => {
         response.handleSuccess(res, result);
@@ -468,13 +470,13 @@ module.exports = {
     });
   },
   changeSessionAnswer: (req, res) => {
-    const sessionData = req.body.sessionData;
-    update = {$set: {
-      answers: sessionData.answers,
-      nrYes: sessionData.nrYes,
-      nrNo: sessionData.nrNo,
-      nrMaybe: sessionData.nrMaybe
-    }}
+    const sessionData = req.body.sessionData,
+          update = {$set: {
+            answers: sessionData.answers,
+            nrYes: sessionData.nrYes,
+            nrNo: sessionData.nrNo,
+            nrMaybe: sessionData.nrMaybe
+          }};
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating session change', () => {
         response.handleSuccess(res, result);
@@ -571,7 +573,7 @@ module.exports = {
       const thumbCount = await UserBookThumb.aggregate(countPipeline),
             thumbUser = await UserBookThumb.aggregate(userPipeline);
       thumbUser.forEach(tu => {
-        thumb = thumbCount.find( tc => tc.translationElementId.toString() === tu.translationElementId.toString());
+        const thumb = thumbCount.find( tc => tc.translationElementId.toString() === tu.translationElementId.toString());
         if (thumb) {
           thumb.user = tu.nrUp > 0 ? true : (tu.nrDown > 0 ? false : null);
         }
@@ -592,7 +594,7 @@ module.exports = {
           translatorId = req.body.translatorId,
           translationId = req.body.translationId,
           translationElementId = req.body.translationElementId,
-          isOwnTranslation = userId.toString() === translatorId.toString();
+          isOwnTranslation = userId.toString() === translatorId.toString(),
           query = {userId, bookId, translationId, translationElementId},
           update = {$set: {up, isOwnTranslation}, $setOnInsert: {translatorId}},
           options = {upsert: true, new: true};
@@ -616,8 +618,10 @@ module.exports = {
   },
   saveTrophies: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          trophies = req.body.trophies;
-    const trophyDocs = trophies.map(trophy => {return {userId, trophy};});
+          trophies = req.body.trophies,
+          trophyDocs = trophies.map(trophy => {
+            return {userId, trophy};
+          });
     UserTrophy.insertMany(trophyDocs, (err, result) => {
       response.handleError(err, res, 400, 'Error saving trophies', () => {
         response.handleSuccess(res, result);
@@ -710,7 +714,7 @@ module.exports = {
             $push: {repeats: dt},
             subscribed: true,
             'dt.dtLastReSubscribed': Date.now()
-          }
+          },
           options= {isNew: true};
     UserBook.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error subscribing repeat', () => {

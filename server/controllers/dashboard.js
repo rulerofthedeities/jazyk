@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
@@ -10,7 +12,7 @@ const response = require('../response'),
       Notification = require('../models/notification');
 
 module.exports = {
-  getCount: function(req, res) {
+  getCount: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           scoreBooksPipeline = [
             {$match: {userId}},
@@ -61,7 +63,7 @@ module.exports = {
     });
   },
   /*
-  getCommunication: function(req, res) {
+  getCommunication: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = req.params.max || '5',
           options = {limit: parseInt(max, 10), sort: {dt: -1}},
@@ -87,7 +89,10 @@ module.exports = {
   getRecentMail: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = req.params.max || '5',
-          options = {limit: parseInt(max, 10), sort: {dt: -1}},
+          options = {
+            limit: parseInt(max, 10),
+            sort: {dt: -1}
+          },
           query = {
             'recipient.id': userId,
             'recipient.trash': false,
@@ -99,17 +104,20 @@ module.exports = {
       });
     });
   },
-  recentBooks: function(req, res) {
+  recentBooks: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = parseInt(req.params.max, 10) || 3,
           query = {userId},
-          options = {sort: {'bookmark.dt': -1}, limit: max};
+          options = {
+            sort: {'bookmark.dt': -1},
+            limit: max
+          };
     UserBook.find(query, {}, options, (err, userBooks) => {
       response.handleError(err, res, 400, 'Error fetching recent user books', () => {
         if (userBooks) {
           // Find all data for each book id
           const getBookData = async () => {
-            bookData = userBooks.map(async (uBook, i) => {
+            const bookData = userBooks.map(async (uBook, i) => {
               // Get book & session data
               const userLan = uBook.lanCode;
               let book = null;
@@ -176,7 +184,8 @@ module.exports = {
                 uBook,
                 book,
                 sessions: sessions[0],
-                translations: translations[0]});
+                translations: translations[0]
+              });
             });
             return Promise.all(bookData);
           };
@@ -232,16 +241,16 @@ module.exports = {
 
     getStats().then((results) => {
       const books = results.books,
-            sentencesCount = results.sentencesCount
+            sentencesCount = results.sentencesCount,
             translationsCount = results.translationsCount;
       let nrOfSentences = 0;
       books.forEach(book => {
-        count = sentencesCount.find(count => count.bookId.toString() === book._id.toString());
+        const count = sentencesCount.find(count => count.bookId.toString() === book._id.toString());
         if (count) {
           nrOfSentences += count.sentencesCount;
         }
       });
-      stats = {
+      const stats = {
         nrOfBooks: books.length,
         nrOfSentences,
         nrOfTranslations: translationsCount[0].translationCount

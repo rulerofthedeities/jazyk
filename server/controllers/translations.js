@@ -1,8 +1,10 @@
+'use strict';
+
 const response = require('../response'),
       Translation = require('../models/translation');
 
 module.exports = {
-  getTranslations: function(req, res) {
+  getTranslations: (req, res) => {
     const pipeline = [
             {$match: {components: req.params.component}},
             {$project: {
@@ -11,8 +13,8 @@ module.exports = {
               txt:'$' + req.params.lan
             }}
           ];
-    Translation.aggregate(pipeline, function(err, docs) {
-      response.handleError(err, res, 400, 'Error fetching translations', function(){
+    Translation.aggregate(pipeline, (err, docs) => {
+      response.handleError(err, res, 400, 'Error fetching translations', () => {
         response.handleSuccess(res, docs);
       });
     });

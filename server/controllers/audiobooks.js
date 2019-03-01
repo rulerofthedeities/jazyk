@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').audiobook,
@@ -9,7 +11,7 @@ module.exports = {
           sort = req.params.sort,
           query = {isPublished: true},
           projection = {};
-    let options = {sort: {'difficulty.weight': 1}}
+    let options = {sort: {'difficulty.weight': 1}};
     if (languageId !== 'eu') {
       query['lanCode'] = languageId;
     }

@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose'),
       uriFormat = require('mongodb-uri'),
       fs = require('fs'),
@@ -13,12 +15,13 @@ const mongoose = require('mongoose'),
         poolSize: 10,
         promiseLibrary: global.Promise,
         useCreateIndex: true,
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useFindAndModify: false
       };
 
-function encodeMongoURI(urlString) {
+const encodeMongoURI = (urlString) => {
   if (urlString) {
-    let parsed = uriFormat.parse(urlString);
+    const parsed = uriFormat.parse(urlString);
     urlString = uriFormat.format(parsed);
   }
   return urlString;

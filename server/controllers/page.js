@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       Page = require('../models/page'),
       Book = require('../models/book').book,

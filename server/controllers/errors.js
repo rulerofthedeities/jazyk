@@ -1,14 +1,14 @@
+'use strict';
+
 const response = require('../response'),
-      mongoose = require('mongoose'),
       ErrorModel = require('../models/error');
 
-
 module.exports = {
-  addError: function(req, res) {
+  addError: (req, res) => {
     const error = new ErrorModel(req.body);
 
-    error.save(function(err, result) {
-      response.handleError(err, res, 500, 'Error adding error', function(){
+    error.save((err, result) => {
+      response.handleError(err, res, 500, 'Error adding error', () => {
         response.handleSuccess(res, result);
       });
     });

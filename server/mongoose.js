@@ -1,3 +1,5 @@
+'use strict';
+
 const uriFormat = require('mongodb-uri');
 var mongoose = require('mongoose'),
     db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk',
@@ -22,7 +24,6 @@ function encodeMongoURI(urlString) {
   return urlString;
 }
 
-mongoose.set('useFindAndModify', false); // To prevent deprecation warnings
 mongoose.Promise = global.Promise;
 mongoose.connect(encodeMongoURI(db_url), options)
 .then(() => {

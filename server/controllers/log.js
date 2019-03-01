@@ -1,8 +1,10 @@
+'use strict';
+
 const response = require('../response'),
       Log = require('../models/log');
 
 module.exports = {
-  logPage: function(req, res) {
+  logPage: (req, res) => {
     const page = req.body.page,
           currentTime = new Date(),
           query = {

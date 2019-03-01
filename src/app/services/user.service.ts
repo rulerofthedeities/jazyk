@@ -39,7 +39,6 @@ export class UserService {
   }
 
   // USER DATA
-
   getUserData(): Observable<User> {
     if (this._user) {
       return of(this._user);

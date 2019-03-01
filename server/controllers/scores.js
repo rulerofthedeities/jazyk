@@ -1,3 +1,5 @@
+'use strict';
+
 const response = require('../response'),
       mongoose = require('mongoose'),
       Session = require('../models/book').session,
@@ -37,11 +39,8 @@ const getTotalPoints = (userId, cb) => {
         ];
 
   const getScores = async () => {
-    const books = await Session.aggregate(scoreBooksPipeline);
-
-    let score = 0;
-    scoreBooks = books && books[0] ? books[0].points : 0;
-    score = scoreBooks;
+    const books = await Session.aggregate(scoreBooksPipeline),
+          score = books && books[0] ? books[0].points : 0;
     return {score};
   };
 
@@ -65,7 +64,7 @@ module.exports = {
   },
   getBookScores: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          bookType = req.params.bookType;
+          bookType = req.params.bookType,
           pipeline = [
             {$match: {userId, bookType}},
             {$group: {
@@ -96,10 +95,10 @@ module.exports = {
               repeatCount: '$repeats'
             }}
           ];
-    Session.aggregate(pipeline, function(err, result) {
+    Session.aggregate(pipeline, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching score per book', () => {
-        let scores = [];
-        let total = 0;
+        let scores = [],
+            total = 0;
         if (result && result.length) {
           result.forEach(doc => {
             if (doc.book[0]) {
