@@ -229,10 +229,12 @@ module.exports = {
           ];
 
     const getStats = async () => {
-      const books = await Book.find({isPublished: true}, {_id: 1}),
+      const audioBooks = await AudioBook.find({isPublished: true}, {_id: 1}),
+            books = await Book.find({isPublished: true}, {_id: 1}),
             sentencesCount = await BookChapter.aggregate(sentencePipeline),
             translationsCount = await Translation.aggregate(translationPipeline2);
       return {
+        audioBooks,
         books,
         sentencesCount,
         translationsCount
@@ -240,7 +242,8 @@ module.exports = {
     };
 
     getStats().then((results) => {
-      const books = results.books,
+      const audioBooks = results.audioBooks,
+            books = results.books,
             sentencesCount = results.sentencesCount,
             translationsCount = results.translationsCount;
       let nrOfSentences = 0;
@@ -251,6 +254,7 @@ module.exports = {
         }
       });
       const stats = {
+        nrOfAudioBooks: audioBooks.length,
         nrOfBooks: books.length,
         nrOfSentences,
         nrOfTranslations: translationsCount[0].translationCount

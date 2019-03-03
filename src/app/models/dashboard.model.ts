@@ -29,6 +29,7 @@ export interface RecentBook {
 }
 
 export interface HomeStats {
+  nrOfAudioBooks: number;
   nrOfBooks: number;
   nrOfSentences: number;
   nrOfTranslations: number;

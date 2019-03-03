@@ -120,7 +120,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     this.answered.emit({
       word: '',
       score: 0,
-      answerLetter: 'x'
+      answerLetter: 'x' // No test words available for this sentence
     });
   }
 
