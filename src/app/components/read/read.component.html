@@ -22,7 +22,7 @@
 
   <!-- BOOKS LIST -->
   <div *ngIf="isBooksReady">
-    <ul class="list-unstyled" *ngIf="filteredBooks?.length"
+    <ul class="list-unstyled" *ngIf="displayBooks?.length"
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="50"

@@ -213,16 +213,6 @@ module.exports = {
               sentencesCount: 1
             }},
           ],
-          translationPipeline = [
-            {$group: {
-                _id: null,
-                translationCount: {$sum: { $size: "$translations" }}
-            }},
-            {$project: {
-              _id: 0,
-              translationCount: 1
-            }},
-          ],
           translationPipeline2 = [
             {$unwind: "$translations"},
             {$count: "translationCount"},

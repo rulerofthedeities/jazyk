@@ -47,16 +47,18 @@
     <div class="panel panel-default stats" [class.lowerstats]="!!currentModule">
       <div class="panel-body">
         <div *ngIf="!isLoadingStats">
-          <span class="stat col-xs-3">
+          <span class="stat col-xs-4">
             <strong>{{stats?.nrOfBooks | score}}</strong> {{text["Books"]?.toLowerCase()}}
           </span>
+          <!--
           <span class="stat col-xs-3">
             <strong>{{stats?.nrOfAudioBooks | score}}</strong> {{text["AudioBooks"]?.toLowerCase()}}
           </span>
-          <span class="stat col-xs-3">
+          -->
+          <span class="stat col-xs-4">
             <strong>{{stats?.nrOfSentences | score}}</strong> {{text["Sentences"]?.toLowerCase()}}
           </span>
-            <span class="stat col-xs-3">
+            <span class="stat col-xs-4">
               <strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"]?.toLowerCase()}}
           </span>
         </div>

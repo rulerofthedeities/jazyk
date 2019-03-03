@@ -40,6 +40,7 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
     if (!onlyBooks) { // Not required if resorted
       this.getAllUserData();
     }
+    this.filteredBooks = [];
     this.isLoading = true;
     this.readnListenService
     .fetchPublishedAudioBooks(this.bookLanguage.code, this.filterService.sort[this.bookType])
