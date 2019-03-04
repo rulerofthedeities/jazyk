@@ -69,7 +69,8 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     this.checkWord();
   }
 
-  private selectWord(words: Word[]) {
+  private selectWord(allWords: Word[]) {
+    let words: Word[];
     this.word = null;
     let nr;
     // select the word the user has to enter
@@ -78,25 +79,32 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     let maxScore = maxWordScore;
     const minIncrease = this.difficulty < 400 ? 150 : (this.difficulty < 500 ? 100 : 0);
     minScore += minIncrease;
-    words = words.filter(w => w.score > minScore && w.score < maxScore);
-    // if words are found, select a random word
-    if (words.length > 0) {
-      nr = Math.floor((Math.random() * words.length));
-      this.word = words[nr];
-    } else {
-      // if no words are found, include rarer and more common words
-      minScore -= minIncrease;
-      maxScore += 50;
-      words = words.filter(w => w.score > minScore && w.score < maxScore);
+    words = allWords.filter(w => w.score > minScore && w.score < maxScore);
+    if (words) {
+      // if words are found, select a random word
       if (words.length > 0) {
+        nr = Math.floor((Math.random() * words.length));
+        this.word = words[nr];
+      } else {
+        // if no words are found, include rarer and more common words
+        minScore -= minIncrease;
+        maxScore += 50;
+        words = words.filter(w => w.score > minScore && w.score < maxScore);
+        if (words.length > 0) {
+          nr = Math.floor((Math.random() * words.length));
+          this.word = words[nr];
+        }
+      }
+      // Nothing found, select a random word without any filter
+      if (!this.word && words.length) {
         nr = Math.floor((Math.random() * words.length));
         this.word = words[nr];
       }
     }
-    // Nothing found, select a random word without any filter
-    if (!this.word && words.length) {
-      nr = Math.floor((Math.random() * words.length));
-      this.word = words[nr];
+    // Nothing found, select a random word without any filter from all the words
+    if (!this.word) {
+      nr = Math.floor((Math.random() * allWords.length));
+      this.word = allWords[nr];
     }
   }
 
