@@ -46,6 +46,7 @@ export class BookContextComponent implements OnInit, OnDestroy {
           start = this.nr > maxNrOfLines ? this.nr - maxNrOfLines - 1 : 0,
           len = this.nr > maxNrOfLines ? maxNrOfLines : this.nr - 1;
     this.currentSentences = this.sentences ? this.sentences.slice(start, start + len) : [];
+    this.currentSentences.map(s => s.text = s.text.replace('_', ' ').trim());
   }
 
   ngOnDestroy() {

@@ -16,12 +16,14 @@ export class SentenceComponent implements OnChanges {
   @Input() lanCode: string;
   @Input() showSentence: boolean;
   awsPath = awsPath;
+  text: string;
 
   constructor(
     private readnListenService: ReadnListenService
   ) {}
 
   ngOnChanges() {
+    this.text = this.sentence.text.trim();
   }
 
   onAudioEnded(isEnded: boolean) {

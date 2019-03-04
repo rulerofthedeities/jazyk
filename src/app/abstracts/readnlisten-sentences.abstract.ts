@@ -396,9 +396,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     let sentenceOk = false;
     if (sentences[nr]) {
       this.currentStep = SentenceSteps.Question;
-      const sentenceTxt = sentences[nr].text ? sentences[nr].text.trim() : null;
+      const sentenceTxt = sentences[nr].text ? sentences[nr].text.replace('_', ' ').trim() : null;
       if (sentenceTxt) {
         this.currentSentence = sentences[nr];
+        this.currentSentence.text = sentenceTxt;
         this.currentSentenceTxt = sentenceTxt;
         this.currentSentenceNr++;
         this.emitSentenceNr(this.currentSentenceNr);
