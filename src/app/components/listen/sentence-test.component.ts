@@ -75,8 +75,8 @@ export class SentenceTestComponent implements OnInit, OnChanges {
     let nr;
     // select the word the user has to enter
     // skip rarest and most common words
-    let minScore = minWordScore;
-    let maxScore = maxWordScore;
+    let minScore = 0;
+    let maxScore = 1000;
     const minIncrease = this.difficulty < 400 ? 150 : (this.difficulty < 500 ? 100 : 0);
     minScore += minIncrease;
     words = allWords.filter(w => w.score > minScore && w.score < maxScore);

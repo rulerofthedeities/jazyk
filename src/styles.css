@@ -41,6 +41,9 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+.clickable{
+  cursor: pointer;
+}
 .msg-info {
   font-size: 20px;
   padding: 15px;

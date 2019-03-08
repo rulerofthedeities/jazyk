@@ -16,6 +16,7 @@ const path = require('path'),
       page = require('./controllers/page'),
       dashboard = require('./controllers/dashboard'),
       revision = require('./controllers/revision'),
+      wordlist = require('./controllers/wordlist'),
       log = require('./controllers/log'),
       response = require('./response');
 
@@ -147,6 +148,8 @@ module.exports = {
 
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
     router.get('/revision/translations/:bookId/:bookLan/:userLan', revision.getTranslationData);
+
+    router.get('/wordlist/:bookId', wordlist.getWordList);
 
     app.use('/api/', router);
 

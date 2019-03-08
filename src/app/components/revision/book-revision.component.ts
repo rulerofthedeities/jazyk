@@ -29,7 +29,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   book: Book;
   userBook: UserBook;
   isLoading = false;
-  bookType: string;
+  bookType = 'read';
   bookId: string;
   userLanCode: string;
   msg: string;
@@ -50,10 +50,10 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    protected userService: UserService,
-    protected sharedService: SharedService,
-    protected revisionService: RevisionService,
-    protected readnListenService: ReadnListenService
+    private userService: UserService,
+    private sharedService: SharedService,
+    private revisionService: RevisionService,
+    private readnListenService: ReadnListenService
   ) {}
 
   ngOnInit() {

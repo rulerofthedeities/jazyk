@@ -1,0 +1,50 @@
+<section>
+  <km-book-title *ngIf="!!book"
+    [text]="text"
+    [bookType]="bookType"
+    [bookLanCode]="book?.lanCode"
+    [userLanCode]="userLanCode"
+    [bookTitle]="book?.title"
+    [chapterTitle]="null"
+  ></km-book-title>
+
+  <div class="panel panel-default" *ngIf="!isLoading && words?.length">
+    <div class="panel-body">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{{text["WordList"]}}</th>
+            <th>{{text["Translation"]}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let word of words; let i = index"
+            class="current-word">
+            <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <km-loader *ngIf="isLoading && !isError"
+    [msg]="text['Loading'] || ''">
+  </km-loader>
+
+  <km-error-msg [msg]="errMsg">
+  </km-error-msg>
+
+</section>
+
+<ng-template #wordRow let-i=i let-word=word>
+  <td class="text-right">
+    {{i + 1}}.
+  </td>
+  <td>
+    {{word.word}}
+  </td>
+  <td>
+    TL
+  </td>
+</ng-template>

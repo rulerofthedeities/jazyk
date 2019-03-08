@@ -92,6 +92,8 @@ export interface Book {
   difficulty: Difficulty;
   isPublished: boolean;
   dt: BookDates;
+  nrOfWordsInList?: number;
+  wordListPublished?: boolean;
 }
 
 export interface UserBookDates {
