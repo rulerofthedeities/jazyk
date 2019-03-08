@@ -16,4 +16,10 @@ export class WordListService {
     .get<Word[]>(`/api/wordlist/${bookId}`)
     .pipe(retry(3));
   }
+
+  toggleMyWordList(word: Word): Observable<boolean> {
+    return this.http
+    .put<boolean>(`/api/wordlist/my/toggle`, {word})
+    .pipe(retry(3));
+  }
 }

@@ -17,6 +17,7 @@
             <th></th>
             <th>{{text["Word"]}}</th>
             <th>{{text["Translation"]}}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -60,9 +61,24 @@
     {{i + 1 + ((currentPage - 1) * wordsPerPage)}}.
   </td>
   <td class="word-cell">
-    {{word.word}}
+    <div class="word" kmWordColor
+      [identifier]="word.genus">
+      <span class="article" *ngIf="word.article">{{word.article}}</span>
+      <span>{{word.word}}</span>
+      <span class="root" *ngIf="word.root">({{word.root}})</span>
+    </div>
+    <div class="wordType">{{text[word.wordType]}}</div>
+    <pre>{{word|json}}</pre>
   </td>
   <td class="translation-cell">
     TL
+  </td>
+  <td>
+    <span class="fa fa-thumb-tack"
+      [tooltip]="text['AddToMyWordList']"
+      placement="top"
+      hide-delay="0"
+      (click)="onToggleMyWordList(word)">
+    </span>
   </td>
 </ng-template>

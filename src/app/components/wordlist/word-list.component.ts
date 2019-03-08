@@ -51,8 +51,22 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onToggleMyWordList(word: Word) {
+    console.log('toggle my word list', word);
+    this.toggleMyWordList(word);
+  }
+
   getCounter(nr: number): number[] {
     return new Array(nr);
+  }
+
+  private toggleMyWordList(word: Word) {
+    this.wordListService
+    .toggleMyWordList(word)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(result => {
+      console.log('toggle', result);
+    });
   }
 
   private getBookType() {

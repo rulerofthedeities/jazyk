@@ -19,3 +19,21 @@ tr th {
 table {
   table-layout: auto;
 }
+.fa-thumb-tack {
+  font-size: 18px;
+  color: grey;
+  cursor: pointer;
+}
+.word {
+  font-size: 20px;
+}
+.wordType {
+  color: grey;
+  font-style: italic;
+}
+.article{
+  margin-right: 8px;
+}
+.root {
+  margin-left: 8px;
+}

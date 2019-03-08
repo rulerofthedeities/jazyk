@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReadnListenService } from './services/readnlisten.service';
 import { RevisionService } from './services/revision.service';
 import { WordListService } from './services/word-list.service';
+
 import { RegionFlagSelectorComponent } from './components/fields/region-flag-selector.component';
 import { CountdownComponent } from './components/readnlisten/countdown.component';
 import { BookLanguagesBarComponent } from './components/readnlisten/languages-bar.component';
@@ -22,10 +23,12 @@ import { SentenceComponent } from './components/readnlisten/sentence.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
-import { FocusDirective } from './directives/focus.directive';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
 import { BookWordListComponent } from './components/wordlist/word-list.component';
 import { BookTitleComponent } from './components/readnlisten/book-title.component';
+
+import { FocusDirective } from './directives/focus.directive';
+import { WordColorDirective } from './directives/word-color.directive';
 
 @NgModule({
   imports: [
@@ -53,7 +56,8 @@ import { BookTitleComponent } from './components/readnlisten/book-title.componen
     BookRevisionComponent,
     BookWordListComponent,
     BookTitleComponent,
-    FocusDirective
+    FocusDirective,
+    WordColorDirective
   ],
   providers: [
     ReadnListenService,
@@ -80,7 +84,8 @@ import { BookTitleComponent } from './components/readnlisten/book-title.componen
     BookRevisionComponent,
     BookWordListComponent,
     BookTitleComponent,
-    FocusDirective
+    FocusDirective,
+    WordColorDirective
   ]
 })
 export class ReadnListenModule {
