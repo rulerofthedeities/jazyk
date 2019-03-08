@@ -20,12 +20,16 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   book: Book;
   bookId: string;
   words: Word[];
+  displayWords: Word[];
   bookType = 'read';
   userLanCode: string;
   msg: string;
   isLoading = false;
   isError = false;
   errMsg = null;
+  currentPage = 1;
+  wordsPerPage = 5;
+  nrOfPages: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +44,17 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     this.getDependables(this.userService.user.main.lan);
   }
 
+  onGoToPage(newPageNr) {
+    if (newPageNr > 0 && newPageNr <= this.nrOfPages) {
+      this.displayWords = this.getWordsForPage(newPageNr);
+      this.currentPage = newPageNr;
+    }
+  }
+
+  getCounter(nr: number): number[] {
+    return new Array(nr);
+  }
+
   private getBookType() {
     // read or listen
     this.route
@@ -50,10 +65,14 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getWordsForPage(pageNr: number): Word[] {
+    const start = (pageNr - 1) * this.wordsPerPage;
+    return this.words.slice(start, start + this.wordsPerPage);
+  }
+
   private processNewBookId() {
     if (this.bookId && this.bookId.length === 24) {
       this.isLoading = true;
-      console.log('book id', this.bookId);
       zip(
         this.readnListenService.fetchBook(this.bookId, this.bookType || 'read'),
         this.wordListService.fetchWordList(this.bookId)
@@ -63,6 +82,8 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         this.book = data[0];
         this.words = data[1];
         console.log('words ', this.words);
+        this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
+        this.displayWords = this.getWordsForPage(1);
         this.isLoading = false;
       },
       error => {

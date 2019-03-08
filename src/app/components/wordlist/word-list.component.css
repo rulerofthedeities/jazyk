@@ -10,3 +10,12 @@ tr td:last-child {
 tr th {
   border: 0;
 }
+.word-cell {
+  width: 40%;
+}
+.translation-cell {
+  width: 60%;
+}
+table {
+  table-layout: auto;
+}

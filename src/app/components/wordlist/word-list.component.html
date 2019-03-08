@@ -10,21 +10,39 @@
 
   <div class="panel panel-default" *ngIf="!isLoading && words?.length">
     <div class="panel-body">
+      <!-- LIST -->
       <table class="table table-hover">
         <thead>
           <tr>
             <th></th>
-            <th>{{text["WordList"]}}</th>
+            <th>{{text["Word"]}}</th>
             <th>{{text["Translation"]}}</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let word of words; let i = index"
+          <tr *ngFor="let word of displayWords; let i = index"
             class="current-word">
             <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>
           </tr>
         </tbody>
       </table>
+      <!-- PAGINATION -->
+      <ul class="pagination" *ngIf="nrOfPages > 1">
+        <li [class.clickable]="currentPage > 1"
+            (click)="onGoToPage(currentPage - 1)">
+          <a>&laquo;</a>
+        </li>
+        <li *ngFor="let pageCount of getCounter(nrOfPages);let i = index"
+          class="clickable"
+          [class.active] = "i + 1 === currentPage"
+          (click)="onGoToPage(i + 1)">
+          <a>{{i + 1}}</a>
+        </li>
+        <li [class.clickable]="currentPage < nrOfPages"
+          (click)="onGoToPage(currentPage + 1)">
+          <a>&raquo;</a>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -39,12 +57,12 @@
 
 <ng-template #wordRow let-i=i let-word=word>
   <td class="text-right">
-    {{i + 1}}.
+    {{i + 1 + ((currentPage - 1) * wordsPerPage)}}.
   </td>
-  <td>
+  <td class="word-cell">
     {{word.word}}
   </td>
-  <td>
+  <td class="translation-cell">
     TL
   </td>
 </ng-template>
