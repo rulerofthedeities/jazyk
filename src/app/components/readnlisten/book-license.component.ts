@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Book } from 'app/models/book.model';
 import { LicenseUrl } from '../../models/main.model';
-import { Book } from '../../models/book.model';
 
 @Component({
   selector: 'km-license',
@@ -8,27 +8,21 @@ import { Book } from '../../models/book.model';
 })
 
 export class BookLicenseComponent implements OnInit {
-  @Input() private licenses: LicenseUrl[];
-  @Input() private book: Book;
   @Input() text: Object;
+  @Input() book: Book;
+  @Input() licenses: LicenseUrl[];
   licenseUrl: string;
-  toolTip: string;
 
   ngOnInit() {
-    this.getLicenseUrl();
-    this.setToolTip();
+    this.setLicenseUrl();
   }
 
-  private getLicenseUrl() {
+  private setLicenseUrl() {
     if (this.licenses) {
       const license = this.licenses.find(l => this.book.license === l.license);
       if (license) {
         this.licenseUrl = license.url;
       }
     }
-  }
-
-  private setToolTip() {
-    this.toolTip = this.text[this.book.license];
   }
 }

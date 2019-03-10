@@ -78,16 +78,6 @@
           <span class="title">{{book.title}}</span>
         </h3>
         <div class="book-content">
-          <!-- PIE CHART -->
-          <div class="pie-content" style="position:relative;">
-            <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
-              <km-pie-chart
-                [size]="tpe==='home' ? 'small' : 'large'"
-                [data]="currentUserData"
-                [testData]="currentUserTestData">
-              </km-pie-chart>
-            </div>
-          </div>
           <!-- AUTHOR -->
           <div class="author">
             <km-book-tpe
@@ -106,15 +96,21 @@
               [class.selected]="showIntro"
               (click)="onToggleIntro()">
             </span>
+            <!-- INTRO -->
             <div class="extra-info" [style.display]="showIntro ? 'block' : 'none'">
               <div class="series" *ngIf="book.series">{{text['BookSeries']}}: {{book.series}}</div>
               <div class="intro" *ngIf="book.intro">{{book.intro}}</div>
             </div>
+            <!-- ATTRIBUTION -->
             <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
               <div>
                 {{text['License']}}:
-                <a *ngIf="!!licenseUrl" href="{{licenseUrl}}" target="_blank">{{text[this.book.license]}}</a>
-                <span *ngIf="!licenseUrl">{{text[this.book.license]}}</span>
+                <km-license
+                  [text]="text"
+                  [book]="book"
+                  [licenses]="licenses"
+                  >
+                </km-license>
               </div>
               <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
               <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
@@ -189,6 +185,16 @@
               </button>
             </span>
             -->
+          </div>
+          <!-- PIE CHART -->
+          <div class="pie-content" style="position:relative;">
+            <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
+              <km-pie-chart
+                [size]="tpe==='home' ? 'small' : 'large'"
+                [data]="currentUserData"
+                [testData]="currentUserTestData">
+              </km-pie-chart>
+            </div>
           </div>
           <!-- INFO -->
           <div class="info" *ngIf="!isCompact && tpe !== 'home'">

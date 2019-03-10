@@ -54,12 +54,14 @@
                     <span *ngIf="userLan === lan.lanCode">{{book.title}}</span>
                   </h3>
                   <div class="info">
-                    <span *ngIf="lan.links[j]" [innerHTML]="lan.links[j] | sanitizeHtml"></span>
-                    <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+                    <span *ngIf="lan.links[j]" [innerHTML]="lan.links[j] | sanitizeHtml" class="fa-spacing"></span>
+                    <span *ngIf="!!book.year" class="fa-spacing">({{book.year}})</span>
+                    <span class="fa fa-copyright fa-spacing"></span>
                     <km-license
-                      [licenses]="licenses"
+                      [text]="text"
                       [book]="book"
-                      [text]="text">
+                      [licenses]="licenses"
+                      >
                     </km-license>
                   </div>
                 </div>
