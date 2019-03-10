@@ -189,8 +189,8 @@
           <!-- PIE CHART -->
           <div class="pie-content" style="position:relative;">
             <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
-              <km-pie-chart
-                [size]="tpe==='home' ? 'small' : 'large'"
+              <km-pie-chart *ngIf="tpe!=='home'"
+                [size]="'small'"
                 [data]="currentUserData"
                 [testData]="currentUserTestData">
               </km-pie-chart>

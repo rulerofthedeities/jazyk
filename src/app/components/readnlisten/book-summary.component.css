@@ -315,8 +315,7 @@ h3 .fa-check {
 }
 .pie-chart {
   position: absolute;
-  top: 32px;
-  right: 100px;
+  left: 450px;
 }
 .dashboard .pie-chart {
   position: absolute;
