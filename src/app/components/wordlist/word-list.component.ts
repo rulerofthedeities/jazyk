@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { SharedService } from '../../services/shared.service';
+import { SharedService, awsPath } from '../../services/shared.service';
 import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile, filter } from 'rxjs/operators';
@@ -30,6 +30,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   wordsPerPage = 5;
   nrOfPages: number;
+  audioPath: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -95,6 +96,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.book = data[0];
         this.words = data[1];
+        this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
         console.log('words ', this.words);
         this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
         this.displayWords = this.getWordsForPage(1);

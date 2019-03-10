@@ -7,7 +7,6 @@ import { ReadnListenService } from './services/readnlisten.service';
 import { RevisionService } from './services/revision.service';
 import { WordListService } from './services/word-list.service';
 
-import { RegionFlagSelectorComponent } from './components/fields/region-flag-selector.component';
 import { CountdownComponent } from './components/readnlisten/countdown.component';
 import { BookLanguagesBarComponent } from './components/readnlisten/languages-bar.component';
 import { BookFilterBarComponent } from './components/readnlisten/filter-bar.component';
@@ -37,7 +36,6 @@ import { WordColorDirective } from './directives/word-color.directive';
     SharedModule
   ],
   declarations: [
-    RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
     CountdownComponent,
@@ -65,7 +63,6 @@ import { WordColorDirective } from './directives/word-color.directive';
     WordListService
   ],
   exports: [
-    RegionFlagSelectorComponent,
     AudioFileComponent,
     RegionFlagComponent,
     CountdownComponent,

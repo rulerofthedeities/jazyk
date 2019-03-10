@@ -25,7 +25,7 @@ table {
   cursor: pointer;
 }
 .word {
-  font-size: 20px;
+  font-size: 28px;
 }
 .wordType {
   color: grey;
@@ -34,6 +34,9 @@ table {
 .article{
   margin-right: 8px;
 }
-.root {
+.root, .genus, .audio {
   margin-left: 8px;
+}
+.audio-item {
+  margin-left: 6px;
 }

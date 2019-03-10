@@ -15,8 +15,8 @@
         <thead>
           <tr>
             <th></th>
-            <th>{{text["Word"]}}</th>
-            <th>{{text["Translation"]}}</th>
+            <th><img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"> {{text["Word"]}}</th>
+            <th><img src="/assets/img/flags/{{userLanCode}}.png" class="flag to"> {{text["Translation"]}}</th>
             <th></th>
           </tr>
         </thead>
@@ -61,14 +61,22 @@
     {{i + 1 + ((currentPage - 1) * wordsPerPage)}}.
   </td>
   <td class="word-cell">
-    <div class="word" kmWordColor
-      [identifier]="word.genus">
-      <span class="article" *ngIf="word.article">{{word.article}}</span>
-      <span>{{word.word}}</span>
+    <div>
+      <span class="word" kmWordColor
+        [identifier]="word.genus">
+        <span class="article" *ngIf="word.article">{{word.article}}</span>
+        <span>{{word.word}}</span>
+      </span>
+      <span class="genus" *ngIf="word.genus">({{word.genus}})</span>
       <span class="root" *ngIf="word.root">({{word.root}})</span>
+      <span class="audio" *ngIf="word.audio && word.audio.length > 0">
+        <km-audio-file *ngFor="let audio of word.audio"
+          [fileUrl]="audioPath + audio.s3"
+          class="audio-item">
+        </km-audio-file>
+      </span>
     </div>
     <div class="wordType">{{text[word.wordType]}}</div>
-    <pre>{{word|json}}</pre>
   </td>
   <td class="translation-cell">
     TL

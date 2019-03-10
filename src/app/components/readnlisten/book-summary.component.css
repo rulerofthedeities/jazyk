@@ -197,12 +197,12 @@
   margin-left: 80px;
   display: inline-block;
 }
-.info-credits {
+.info-credits, .info-intro {
   margin-left: 4px;
   font-size: 14px;
   cursor: pointer;
 }
-.info-credits.selected {
+.info-credits.selected, .info-intro.selected {
   color: #428bca;
 }
 .buttons {
@@ -333,9 +333,9 @@ h3 .fa-check {
   margin-left: 6px;
 }
 .intro {
-  margin: 6px 0 6px 90px;
+  margin: 6px 0;
   border: 1px dotted #666;
-  border-radius: 0 6px 0 6px;
+  border-radius: 6px;
   background-color: #eee;
   margin-right: 42px;
   padding: 6px;

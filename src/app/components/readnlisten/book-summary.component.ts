@@ -69,6 +69,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   someTooltip: any;
   sourceUrl: string;
   sourceLabel: string;
+  licenseUrl: string;
   translationString: string;
   isTranslated: boolean;
   userCount = 0;
@@ -89,6 +90,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
+    this.setLicenseUrl();
   }
 
   ngOnChanges() {
@@ -173,10 +175,16 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   onToggleIntro() {
     this.showIntro = !this.showIntro;
+    if (this.showIntro) {
+      this.showCredits = false;
+    }
   }
 
   onToggleCredits() {
     this.showCredits = !this.showCredits;
+    if (this.showCredits) {
+      this.showIntro = false;
+    }
   }
 
   onToggleRecommend(event: MouseEvent) {
@@ -423,6 +431,15 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.sourceLabel = source;
       this.sourceUrl = null;
+    }
+  }
+
+  private setLicenseUrl() {
+    if (this.licenses) {
+      const license = this.licenses.find(l => this.book.license === l.license);
+      if (license) {
+        this.licenseUrl = license.url;
+      }
     }
   }
 

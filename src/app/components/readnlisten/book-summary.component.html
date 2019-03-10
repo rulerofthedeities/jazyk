@@ -76,13 +76,8 @@
           <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag to">
           <span *ngIf="isAllFinished" class="fa fa-check"></span>
           <span class="title">{{book.title}}</span>
-          <span *ngIf="!isCompact && book.intro" class="fa fa-info-circle intro-icon" (click)="onToggleIntro()"></span>
-          <small *ngIf="!isCompact">{{book.series}}</small>
         </h3>
         <div class="book-content">
-          <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
-            {{book.intro}}
-          </div>
           <!-- PIE CHART -->
           <div class="pie-content" style="position:relative;">
             <div class="pie-chart" *ngIf="userBookStatus.nrOfSentencesDone > 0 || userBookStatusTest.nrOfSentencesDone > 0">
@@ -102,17 +97,25 @@
             {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
             <span *ngIf="linksTxt" [innerHTML]="linksTxt | sanitizeHtml"></span>
             <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
-            <km-license
-              [licenses]="licenses"
-              [book]="book"
-              [text]="text">
-            </km-license>
-            <span *ngIf="book.credits || book.source || book.narrators || book.translator || book.cover"
-              class="fa fa-info-circle info-credits"
+            <span class="fa fa-copyright info-intro"
               [class.selected]="showCredits"
               (click)="onToggleCredits()">
             </span>
+            <span *ngIf="book.series || book.intro"
+              class="fa fa-info-circle info-credits"
+              [class.selected]="showIntro"
+              (click)="onToggleIntro()">
+            </span>
+            <div class="extra-info" [style.display]="showIntro ? 'block' : 'none'">
+              <div class="series" *ngIf="book.series">{{text['BookSeries']}}: {{book.series}}</div>
+              <div class="intro" *ngIf="book.intro">{{book.intro}}</div>
+            </div>
             <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
+              <div>
+                {{text['License']}}:
+                <a *ngIf="!!licenseUrl" href="{{licenseUrl}}" target="_blank">{{text[this.book.license]}}</a>
+                <span *ngIf="!licenseUrl">{{text[this.book.license]}}</span>
+              </div>
               <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
               <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
               <div *ngIf="book.narrators">{{text['BookNarrator']}}: {{book.narrators}}</div>
