@@ -78,7 +78,7 @@
           <tbody>
             <tr *ngFor="let score of scores; let i = index">
               <td class="text-right">{{i+1}}.</td>
-              <td class="text-center">
+              <td class="text-center flags">
                 <span class="finished">
                   <span *ngIf="score.isFinished"
                     class="fa fa-check"
@@ -96,7 +96,7 @@
                   hide-delay="50">[{{score.repeatCount}}]
                 </span>
               </td>
-              <td class="text-right nr">{{score.points | score}}</td>
+              <td class="text-right nr points">{{score.points | score}}</td>
             </tr>
             <tr>
               <td></td>

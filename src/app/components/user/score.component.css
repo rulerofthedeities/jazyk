@@ -49,3 +49,6 @@
 .repeats {
   cursor: default;
 }
+.flags, .points {
+  white-space: nowrap;
+}
