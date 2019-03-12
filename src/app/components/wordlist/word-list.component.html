@@ -1,7 +1,7 @@
 <section>
   <km-book-title *ngIf="!!book"
     [text]="text"
-    [bookType]="bookType"
+    [bookType]="'wordlist'"
     [bookLanCode]="book?.lanCode"
     [userLanCode]="userLanCode"
     [bookTitle]="book?.title"
@@ -83,6 +83,7 @@
   </td>
   <td>
     <span class="fa fa-thumb-tack"
+      [class.pinned]="word.pinned"
       [tooltip]="text['AddToMyWordList']"
       placement="top"
       hide-delay="0"

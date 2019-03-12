@@ -20,7 +20,7 @@ table {
   table-layout: auto;
 }
 .fa-thumb-tack {
-  font-size: 18px;
+  font-size: 24px;
   color: grey;
   cursor: pointer;
 }
@@ -39,4 +39,7 @@ table {
 }
 .audio-item {
   margin-left: 6px;
+}
+.pinned {
+  color: #428bca;
 }

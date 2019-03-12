@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Word } from '../models/word.model';
+import { Word, UserWord } from '../models/word.model';
 import { retry } from 'rxjs/operators';
 
 @Injectable()
@@ -17,9 +17,15 @@ export class WordListService {
     .pipe(retry(3));
   }
 
-  toggleMyWordList(word: Word): Observable<boolean> {
+  fetchUserWordList(bookId: string): Observable<UserWord[]> {
     return this.http
-    .put<boolean>(`/api/wordlist/my/toggle`, {word})
+    .get<UserWord[]>(`/api/userwordlist/${bookId}`)
+    .pipe(retry(3));
+  }
+
+  pinWord(word: Word, bookId: string, pin: boolean): Observable<Word> {
+    return this.http
+    .put<Word>(`/api/wordlist/my/pin`, {word, bookId, pin})
     .pipe(retry(3));
   }
 }

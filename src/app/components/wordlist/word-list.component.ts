@@ -6,7 +6,7 @@ import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { takeWhile, filter } from 'rxjs/operators';
 import { Book } from 'app/models/book.model';
-import { Word } from 'app/models/word.model';
+import { Word, UserWord } from 'app/models/word.model';
 import { zip } from 'rxjs';
 
 @Component({
@@ -20,6 +20,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   book: Book;
   bookId: string;
   words: Word[];
+  userWords: UserWord[];
   displayWords: Word[];
   bookType = 'read';
   userLanCode: string;
@@ -62,11 +63,16 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   }
 
   private toggleMyWordList(word: Word) {
+    console.log('pin', !word.pinned);
+    word.pinned = !word.pinned;
     this.wordListService
-    .toggleMyWordList(word)
+    .pinWord(word, this.book._id, word.pinned)
     .pipe(takeWhile(() => this.componentActive))
-    .subscribe(result => {
-      console.log('toggle', result);
+    .subscribe(newWord => {
+      console.log('toggle', newWord);
+      if (newWord) {
+        word.pinned = newWord.pinned;
+      }
     });
   }
 
@@ -90,12 +96,15 @@ export class BookWordListComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       zip(
         this.readnListenService.fetchBook(this.bookId, this.bookType || 'read'),
-        this.wordListService.fetchWordList(this.bookId)
+        this.wordListService.fetchWordList(this.bookId),
+        this.wordListService.fetchUserWordList(this.bookId)
       )
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         this.book = data[0];
         this.words = data[1];
+        this.userWords = data[2];
+        this.processUserWords();
         this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
         console.log('words ', this.words);
         this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
@@ -111,6 +120,17 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     } else {
       this.msg = this.text['InvalidBookId'];
     }
+  }
+
+  private processUserWords() {
+    let word: Word;
+    // Map user word pins to words
+    this.userWords.forEach(uWord => {
+      word = this.words.find(w => w._id.toString() === uWord.wordId.toString());
+      if (word) {
+        word.pinned = uWord.pinned;
+      }
+    });
   }
 
   private getBookId() {

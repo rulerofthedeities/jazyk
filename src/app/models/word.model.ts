@@ -9,7 +9,15 @@ export interface Word {
   genus: string;
   article: string;
   audio: File[];
-  sequence: number;
+  pinned?: boolean;
+}
+
+export interface UserWord {
+  bookId: string;
+  userId: string;
+  wordId: string;
+  lanCode: string;
+  pinned: boolean;
 }
 
 interface File {

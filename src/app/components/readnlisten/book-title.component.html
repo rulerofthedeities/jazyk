@@ -5,9 +5,10 @@
       [ngClass]="{
         'fa-volume-up': bookType==='listen',
         'fa-book': bookType==='read',
+        'fa-list': bookType==='wordlist',
         'test': isTest
       }"
-      [tooltip]="text[bookType==='listen' ? 'ListeningSession' : 'ReadingSession']"
+      [tooltip]="text[bookType==='listen' ? 'ListeningSession' : (bookType==='wordlist' ? 'WordList' : 'ReadingSession')]"
       placement="bottom">
     </span>
   </div>

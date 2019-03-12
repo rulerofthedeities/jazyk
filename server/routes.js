@@ -150,6 +150,8 @@ module.exports = {
     router.get('/revision/translations/:bookId/:bookLan/:userLan', revision.getTranslationData);
 
     router.get('/wordlist/:bookId', wordlist.getWordList);
+    router.get('/userwordlist/:bookId', wordlist.getUserWordList);
+    router.put('/wordlist/my/pin', wordlist.updateMyList);
 
     app.use('/api/', router);
 

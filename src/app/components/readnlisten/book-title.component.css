@@ -32,10 +32,13 @@
   margin: 14px 0 0 4px;
   color: #428bca;
 }
-.fa-volume-up {
+.fa-volume-up, .fa-list {
   font-size: 32px;
   margin: 14px 0 0 4px;
   color: #428bca;
+}
+.fa-list {
+  color: lightblue;
 }
 .fa-volume-up.test {
   color: #ffa500;
