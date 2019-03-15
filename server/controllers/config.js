@@ -56,6 +56,7 @@ module.exports = {
               code: 1,
               name: 1,
               nativeName: 1,
+              omegaLanId: 1,
               active: 1
             }},
             {$sort: {code: 1}}
@@ -67,6 +68,7 @@ module.exports = {
               code: 1,
               name: 1,
               nativeName: 1,
+              omegaLanId: 1,
               active: 1
             }},
           {$sort: {code: 1}}

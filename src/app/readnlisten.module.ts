@@ -24,6 +24,7 @@ import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
 import { BookWordListComponent } from './components/wordlist/word-list.component';
+import { ExternalWordTranslationComponent } from './components/wordlist/external-translation.component';
 import { BookTitleComponent } from './components/readnlisten/book-title.component';
 
 import { FocusDirective } from './directives/focus.directive';
@@ -53,6 +54,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     ModalPromotionComponent,
     BookRevisionComponent,
     BookWordListComponent,
+    ExternalWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
     WordColorDirective
@@ -80,6 +82,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     ModalPromotionComponent,
     BookRevisionComponent,
     BookWordListComponent,
+    ExternalWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
     WordColorDirective

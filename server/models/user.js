@@ -51,7 +51,7 @@ var pwForgottenSchema = new Schema({
   dt: {type: Date, default: Date.now, required: true},
   resetId: {type: Schema.Types.ObjectId, required: true},
   email: {type: String, required: true}
-}, {_id: false})
+}, {_id: false});
 
 var userSchema = new Schema({
   userName: {type: String, required: true, unique: true, trim: true},

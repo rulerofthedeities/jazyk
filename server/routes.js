@@ -17,6 +17,7 @@ const path = require('path'),
       dashboard = require('./controllers/dashboard'),
       revision = require('./controllers/revision'),
       wordlist = require('./controllers/wordlist'),
+      dictionaries = require('./controllers/dictionaries'),
       log = require('./controllers/log'),
       response = require('./response');
 
@@ -152,6 +153,12 @@ module.exports = {
     router.get('/wordlist/:bookId', wordlist.getWordList);
     router.get('/userwordlist/:bookId', wordlist.getUserWordList);
     router.put('/wordlist/my/pin', wordlist.updateMyList);
+    router.get('/wordlist/word/definition/omega/local/:word', dictionaries.getOmegawikiDefinitionsLocal);
+    router.get('/wordlist/word/definition/omega/ext/:word', dictionaries.getOmegawikiDefinitionsExt);
+    router.get('/wordlist/word/translate/omega/:lanId/:word', dictionaries.getOmegawikiTranslation);
+    router.post('/wordlist/word/definition/omega', dictionaries.saveOmegaDefinitions);
+    router.post('/wordlist/word/translation', dictionaries.saveTranslation);
+    router.put('/wordlist/word/translations', dictionaries.getTranslations);
 
     app.use('/api/', router);
 

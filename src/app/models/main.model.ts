@@ -14,6 +14,7 @@ export interface Language {
   articles?: string[];
   regions?: string[];
   count?: number;
+  omegaLanId?: string;
 }
 
 export interface LanPair {

@@ -1,0 +1,17 @@
+<div class="mt" *ngIf="!isTranslated">
+  <span class="fetch">
+    <button  *ngIf="!isLoading"
+      type="button"
+      class="btn btn-success btn-xs"
+      (click)="onGetTranslation()">
+      {{text["FetchTranslation"]}}
+    </button>
+    <pre>{{definition|json}}</pre>
+    <km-loader *ngIf="isLoading"
+      [showBackground]="false"
+      [margin]="'2px'"
+      [inline]="true"
+      [small]="true">
+    </km-loader>
+  </span>
+</div>

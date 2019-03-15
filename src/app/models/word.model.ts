@@ -25,3 +25,36 @@ interface File {
   hasMp3: boolean;
   s3: string;
 }
+
+export interface WordDefinition {
+  omega?: string;
+}
+
+export interface OmegaDefinition {
+  dmid: string;
+  lanId: string;
+  definitionLanId?: string;
+  definitionTranslation?: string;
+  definitionText?: string;
+}
+
+export interface OmegaDefinitions {
+  source: string;
+  word: string;
+  omegaWord: string;
+  omegaDefinitions: OmegaDefinition[];
+}
+
+export interface WordTranslation {
+  translation: string;
+  definition: string;
+  lanCode: string;
+  source: string;
+}
+
+export interface WordTranslations {
+  lanCode: string;
+  word: string;
+  translations: WordTranslation[];
+}
+

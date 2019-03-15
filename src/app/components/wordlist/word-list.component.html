@@ -79,7 +79,18 @@
     <div class="wordType">{{text[word.wordType]}}</div>
   </td>
   <td class="translation-cell">
-    TL
+    <div *ngIf="!isLoadingTranslations && wordTranslations[currentPage - 1][i].translations.length">
+      {{wordTranslations[currentPage - 1][i]|json}}
+    </div>
+    <km-word-translation *ngIf="!isLoadingTranslations && !wordTranslations[currentPage - 1][i].translations.length"
+      [text]="text"
+      [source]="'OmegaWiki'"
+      [targetLan]="translationLan"
+      [bookLan]="bookLan"
+      [word]="word.root ? word.root : word.word"
+      [i] = "i"
+      (newTranslations)="onNewTranslations($event)"
+    ></km-word-translation>
   </td>
   <td>
     <span class="fa fa-thumb-tack"
