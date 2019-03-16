@@ -69,18 +69,22 @@
       </span>
       <span class="genus" *ngIf="word.genus">({{word.genus}})</span>
       <span class="root" *ngIf="word.root">({{word.root}})</span>
-      <span class="audio" *ngIf="word.audio && word.audio.length > 0">
-        <km-audio-file *ngFor="let audio of word.audio"
-          [fileUrl]="audioPath + audio.s3"
-          class="audio-item">
-        </km-audio-file>
-      </span>
     </div>
     <div class="wordType">{{text[word.wordType]}}</div>
+    <div class="audio" *ngIf="word.audio && word.audio.length > 0">
+      <km-audio-file *ngFor="let audio of word.audio"
+        [fileUrl]="audioPath + audio.s3"
+        class="audio-item">
+      </km-audio-file>
+    </div>
   </td>
   <td class="translation-cell">
     <div *ngIf="!isLoadingTranslations && wordTranslations[currentPage - 1][i].translations.length">
-      {{wordTranslations[currentPage - 1][i]|json}}
+      <div *ngFor="let translation of wordTranslations[currentPage - 1][i].translations">
+        <div class="tl-word">{{translation.translation}}</div>
+        <div class="tl-definition">{{translation.definition}}</div>
+        <div class="tl-source">{{text["BookSource"]}}: {{translation.source}}</div>
+      </div>
     </div>
     <km-word-translation *ngIf="!isLoadingTranslations && !wordTranslations[currentPage - 1][i].translations.length"
       [text]="text"

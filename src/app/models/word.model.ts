@@ -58,3 +58,23 @@ export interface WordTranslations {
   translations: WordTranslation[];
 }
 
+interface OmegaTranslationDefinition {
+  spelling: string;
+  langid: string;
+  lang: string;
+  text: string;
+}
+
+interface OmegaTranslationSyntrans {
+  dmid: number;
+  lang: number;
+}
+
+export interface OmegaTranslation {
+  definition: OmegaTranslationDefinition;
+  dmid: number;
+  lang: string;
+  langid: number;
+  spelling: string;
+  syntrans: OmegaTranslationSyntrans;
+}

@@ -7,7 +7,6 @@ const response = require('../response'),
       Translations = require('../models/wordlist').translations;
 
 const fetchOmegawikiData = (url) => {
-  console.log('URL', url);
   return new Promise((resolve, reject) => {
     request({
       url: url,
@@ -44,7 +43,6 @@ module.exports = {
   getOmegawikiDefinitionsExt: (req, res) => {
     const word = req.params.word,
           url = `http://www.omegawiki.org/api.php?action=ow_express&search=${word}&format=json`;
-          console.log('word>', word);
     fetchOmegawikiData(url).then((data) => {
       response.handleSuccess(res, data, 200, 'Fetched external omegawiki definitions');
     }, (err) => {
@@ -74,10 +72,12 @@ module.exports = {
     });
   },
   getTranslations: (req, res) => {
-    const lanCode = req.body.lanCode,
+    const bookLan = req.body.bookLan,
+          targetLan = req.body.targetLan,
           words = req.body.words,
-          query = {lanCode, word: {$in: words}};
-    console.log('fetching translations for ', lanCode, words);
+          query = {lanCode: bookLan, word: {$in: words}, 'translations.lanCode': targetLan};
+    console.log('fetching translations for ', bookLan, targetLan, words);
+    console.log('fetching translations ', query);
     Translations.find(query, (err, translations) => {
       console.log('translations', translations);
       response.handleError(err, res, 400, 'Error fetching word translations', () => {
@@ -87,13 +87,14 @@ module.exports = {
   },
   getOmegawikiTranslation: (req, res) => {
     const lanId = req.params.lanId,
-          word = req.params.word,
-          url = 'http://www.omegawiki.org/api.php?action=ow_define&lang=86&dm=6551&format=json';
-    console.log('fetching translation', url);
+          dmid = req.params.dmid,
+          url = `http://www.omegawiki.org/api.php?action=ow_define&lang=${lanId}&dm=${dmid}&format=json`;
 
     fetchOmegawikiData(url).then((data) => {
-      response.handleSuccess(res, data, 200, 'Fetched external omegawiki translations');
-      console.log('omega translation', data);
+      console.log('omega translation data', data);
+      const translation = data ? (data['omega'] ? data['omega']['ow_define'] : {}) : {};
+      console.log('omega translation', translation);
+      response.handleSuccess(res, {TL: translation});
     }, (err) => {
       response.handleError(err, res, 500, 'Error fetching external omegawiki translations');
     });

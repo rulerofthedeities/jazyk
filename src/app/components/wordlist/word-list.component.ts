@@ -133,7 +133,6 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
         console.log('words ', this.words);
         this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
-        // this.displayWords = this.getWordsForPage(1);
         this.goToPage(1);
         this.isLoading = false;
       },
@@ -189,10 +188,15 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     // Get translations for words
     const words = this.displayWords.map(w => w.root ? w.root : w.word);
     this.wordListService
-    .fetchTranslations(this.book.lanCode, words)
+    .fetchTranslations(this.book.lanCode, this.userLanCode, words)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
+        console.log('WT', wordTranslations);
+        // Only translations in target language
+        const wordtl = wordTranslations.forEach(wt => {
+          wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
+        });
         // Place the translations in the right order
         let tl: WordTranslations;
         this.wordTranslations[pageNr - 1] = [];

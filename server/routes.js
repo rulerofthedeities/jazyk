@@ -155,7 +155,7 @@ module.exports = {
     router.put('/wordlist/my/pin', wordlist.updateMyList);
     router.get('/wordlist/word/definition/omega/local/:word', dictionaries.getOmegawikiDefinitionsLocal);
     router.get('/wordlist/word/definition/omega/ext/:word', dictionaries.getOmegawikiDefinitionsExt);
-    router.get('/wordlist/word/translate/omega/:lanId/:word', dictionaries.getOmegawikiTranslation);
+    router.get('/wordlist/word/translate/omega/:lanId/:dmid', dictionaries.getOmegawikiTranslation);
     router.post('/wordlist/word/definition/omega', dictionaries.saveOmegaDefinitions);
     router.post('/wordlist/word/translation', dictionaries.saveTranslation);
     router.put('/wordlist/word/translations', dictionaries.getTranslations);

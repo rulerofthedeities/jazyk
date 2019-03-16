@@ -6,7 +6,6 @@
       (click)="onGetTranslation()">
       {{text["FetchTranslation"]}}
     </button>
-    <pre>{{definition|json}}</pre>
     <km-loader *ngIf="isLoading"
       [showBackground]="false"
       [margin]="'2px'"

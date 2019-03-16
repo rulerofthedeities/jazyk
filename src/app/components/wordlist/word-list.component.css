@@ -36,13 +36,23 @@ table {
 .article{
   margin-right: 8px;
 }
-.root, .genus, .audio {
+.root, .genus {
   margin-left: 8px;
 }
 .audio-item {
-  margin-left: 6px;
-  float: right;
+  margin-right: 6px;
 }
 .pinned {
   color: #428bca;
+}
+.tl-word {
+  font-weight: bold;
+}
+.tl-definition {
+  margin-left: 32px;
+}
+.tl-source {
+  color: gray;
+  font-style: italic;
+  margin-left: 32px;
 }
