@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Book } from '../models/book.model';
 import { Word, UserWord, WordDefinition, OmegaDefinitions, OmegaDefinition,
          OmegaTranslation, WordTranslation, WordTranslations } from '../models/word.model';
 import { retry } from 'rxjs/operators';
@@ -29,40 +30,4 @@ export class WordListService {
     .put<Word>(`/api/wordlist/my/pin`, {word, bookId, pin})
     .pipe(retry(3));
   }
-
-  fetchOmegaDefinitionLocal(word: string): Observable<OmegaDefinition[]> {
-    return this.http
-    .get<OmegaDefinition[]>(`/api/wordlist/word/definition/omega/local/${word}`)
-    .pipe(retry(3));
-  }
-
-  fetchOmegaDefinitionExternal(word: string): Observable<WordDefinition> {
-    return this.http
-    .get<WordDefinition>(`/api/wordlist/word/definition/omega/ext/${word}`)
-    .pipe(retry(3));
-  }
-
-  saveOmegaDefinitions(definitions: OmegaDefinitions): Observable<OmegaDefinition[]> {
-    return this.http
-    .post<OmegaDefinition[]>(`/api/wordlist/word/definition/omega`, {definitions});
-  }
-
-  saveTranslations(bookLanCode: string, word: string, translations: WordTranslation[]): Observable<WordTranslation[]> {
-    return this.http
-    .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, word, translations});
-  }
-
-  fetchTranslations(bookLan: string, targetLan: string, words: string[]): Observable<WordTranslations[]> {
-    console.log('Fetching translations', words);
-    return this.http
-    .put<WordTranslations[]>(`/api/wordlist/word/translations`, {words, bookLan, targetLan})
-    .pipe(retry(3));
-  }
-
-  fetchOmegaTranslation(omegaLanId: string, dmid: string): Observable<OmegaTranslation> {
-    return this.http
-    .get<OmegaTranslation>(`/api/wordlist/word/translate/omega/${omegaLanId}/${dmid}`)
-    .pipe(retry(3));
-  }
-
 }

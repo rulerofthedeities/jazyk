@@ -1,7 +1,7 @@
 import { Component, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
 import { LanPair } from '../../models/main.model';
 import { DeepLTranslations, TranslatedData } from '../../models/book.model';
-import { ReadnListenService } from '../../services/readnlisten.service';
+import { TranslationService } from '../../services/translation.service';
 import { takeWhile, delay } from 'rxjs/operators';
 
 @Component({
@@ -27,7 +27,7 @@ export class MachineTranslationComponent implements OnDestroy {
   errorDetail: string;
 
   constructor(
-    private readnListenService: ReadnListenService
+    private translationService: TranslationService
   ) {}
 
   onGetMachineTranslation(tpe: string) {
@@ -36,7 +36,7 @@ export class MachineTranslationComponent implements OnDestroy {
 
   private getMachineTranslation(tpe: string) {
     this.isLoading = true;
-    this.readnListenService
+    this.translationService
     .fetchMachineTranslation(tpe.toLowerCase(), this.lanPair, this.sentence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
@@ -60,7 +60,7 @@ export class MachineTranslationComponent implements OnDestroy {
   }
 
   private saveTranslation(tpe: string, translation: string, note: string) {
-    this.readnListenService
+    this.translationService
     .addSentenceTranslation(
       this.lanPair.from,
       this.lanPair.to,

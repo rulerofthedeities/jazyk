@@ -61,9 +61,10 @@ module.exports = {
   },
   saveTranslation: (req, res) => {
     const lanCode = req.body.bookLanCode,
+          bookId = req.body.bookId,
           word = req.body.word,
           translations = req.body.translations,
-          query = {lanCode, word},
+          query = {bookId, lanCode, word},
           update = {$addToSet: {translations: {$each: translations}}};
     Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
@@ -73,9 +74,10 @@ module.exports = {
   },
   getTranslations: (req, res) => {
     const bookLan = req.body.bookLan,
+          bookId = req.body.bookId,
           targetLan = req.body.targetLan,
           words = req.body.words,
-          query = {lanCode: bookLan, word: {$in: words}, 'translations.lanCode': targetLan};
+          query = {bookId, lanCode: bookLan, word: {$in: words}, 'translations.lanCode': targetLan};
     console.log('fetching translations for ', bookLan, targetLan, words);
     console.log('fetching translations ', query);
     Translations.find(query, (err, translations) => {

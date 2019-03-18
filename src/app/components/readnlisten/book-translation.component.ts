@@ -2,6 +2,7 @@ import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angu
 import { Map } from '../../models/main.model';
 import { SentenceTranslation, TranslatedData, Thumbs } from '../../models/book.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
+import { TranslationService } from '../../services/translation.service';
 import { takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -42,6 +43,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   hasDeeplTranslations: boolean;
 
   constructor(
+    private translationService: TranslationService,
     private readnListenService: ReadnListenService
   ) {}
 
@@ -177,7 +179,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private getSentenceTranslations(sentence: string) {
-    this.readnListenService
+    this.translationService
     .fetchSentenceTranslations(
       this.userLanCode,
       this.bookId,
@@ -229,7 +231,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private saveTranslation(translation: string, note: string) {
-    this.readnListenService
+    this.translationService
     .addSentenceTranslation(
       this.bookLanCode,
       this.userLanCode,
@@ -261,7 +263,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private updateTranslation(translation: string, note: string) {
-    this.readnListenService
+    this.translationService
     .updateSentenceTranslation(
       this.translations[this.isEditing]._id,
       this.translations[this.isEditing].elementId,
@@ -305,7 +307,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
 
   private checkMachineTranslationAvailability() {
     // Check if both source and target languages are available in deepl
-    const deeplLanguages = this.readnListenService.getMachineLanguages('deepl');
+    const deeplLanguages = this.translationService.getMachineLanguages('deepl');
     if (deeplLanguages.includes(this.userLanCode) && deeplLanguages.includes(this.bookLanCode)) {
       this.isDeeplAvailable = true;
     }

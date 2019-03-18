@@ -4,9 +4,10 @@ import { UserService } from '../../services/user.service';
 import { SharedService, awsPath } from '../../services/shared.service';
 import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
+import { TranslationService } from '../../services/translation.service';
 import { takeWhile, filter } from 'rxjs/operators';
 import { Book } from 'app/models/book.model';
-import { Word, UserWord, WordTranslation, WordTranslations } from 'app/models/word.model';
+import { Word, UserWord, WordTranslations } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
 
@@ -38,13 +39,17 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   nrOfPages: number;
   audioPath: string;
   isLoadingTranslations = false;
+  hasOmegaWikiTranslations: boolean[][] = [];
+  hasDeepLTranslations: boolean[][] = [];
+  isDeeplAvailable = false;
 
   constructor(
     private route: ActivatedRoute,
     private sharedService: SharedService,
     private userService: UserService,
     private readnListenService: ReadnListenService,
-    private wordListService: WordListService
+    private wordListService: WordListService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit() {
@@ -69,6 +74,13 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     } else {
       this.wordTranslations[this.currentPage - 1][data.i] = data.translations;
     }
+    data.translations.translations.forEach(tl => {
+      if (tl.source === 'OmegaWiki') {
+        this.hasOmegaWikiTranslations[this.currentPage - 1][data.i] = true;
+      } else if (tl.source === 'DeepL') {
+        this.hasDeepLTranslations[this.currentPage - 1][data.i] = true;
+      }
+    });
   }
 
   getCounter(nr: number): number[] {
@@ -127,6 +139,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.book = data[0];
         this.setBookLan(this.bookLanguages); // for omega wiki code
+        this.checkDeepLTranslationAvailability();
         this.words = data[1];
         this.userWords = data[2];
         this.processUserWords();
@@ -186,24 +199,36 @@ export class BookWordListComponent implements OnInit, OnDestroy {
 
   private getTranslations(pageNr: number) {
     // Get translations for words
+    this.wordTranslations[pageNr - 1] = [];
+    this.hasOmegaWikiTranslations[pageNr - 1] = [];
+    this.hasDeepLTranslations[pageNr - 1] = [];
     const words = this.displayWords.map(w => w.root ? w.root : w.word);
-    this.wordListService
-    .fetchTranslations(this.book.lanCode, this.userLanCode, words)
+    this.translationService
+    .fetchTranslations(this.book, this.userLanCode, words)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
         console.log('WT', wordTranslations);
         // Only translations in target language
-        const wordtl = wordTranslations.forEach(wt => {
+        wordTranslations.forEach(wt => {
           wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
         });
         // Place the translations in the right order
         let tl: WordTranslations;
-        this.wordTranslations[pageNr - 1] = [];
         words.forEach((w, i) => {
           tl = wordTranslations.find(t => t.word === w);
           if (tl) {
             this.wordTranslations[pageNr - 1][i] = tl;
+            // Check if omegaWiki translation button should be shown
+            const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
+            if (omegaWikiTranslations.length > 0) {
+              this.hasOmegaWikiTranslations[pageNr - 1][i] = true;
+            }
+            // Check if deepL translation button can be shown
+            const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
+            if (deepLTranslations.length > 0) {
+              this.hasDeepLTranslations[pageNr - 1][i] = true;
+            }
           } else {
             this.wordTranslations[pageNr - 1][i] = {
               lanCode: this.bookLan.code,
@@ -217,6 +242,14 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         console.log('word translations', this.wordTranslations);
       }
     );
+  }
+
+  private checkDeepLTranslationAvailability() {
+    // Check if both source and target languages are available in deepl
+    const deeplLanguages = this.translationService.getMachineLanguages('deepl');
+    if (deeplLanguages.includes(this.userLanCode) && deeplLanguages.includes(this.book.lanCode)) {
+      this.isDeeplAvailable = true;
+    }
   }
 
   private getDependables(lan) {

@@ -46,12 +46,13 @@ var wordTranslationSchema = new Schema({
 }, {_id: false});
 
 const wordTranslationsSchema = new Schema({
+  bookId: {type: Schema.Types.ObjectId, required: true},
   lanCode: {type: String, required: true},
   word: {type: String, required: true},
   translations: [wordTranslationSchema]
 });
 const TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);
-wordTranslationsSchema.index({lanCode: 1, word: 1});
+wordTranslationsSchema.index({bookId: 1, lanCode: 1, word: 1});
 TranslationsModel.ensureIndexes();
 
 module.exports = {

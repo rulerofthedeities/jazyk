@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { LanPair } from '../models/main.model';
-import { Book, Chapter, UserBook, UserData, TranslationData, TranslatedData, Bookmark, UserBookActivity,
-         SessionData, SentenceTranslation, DeepLTranslations, Thumbs, Trophy, BookCount } from '../models/book.model';
+import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark, UserBookActivity,
+         SessionData, Thumbs, Trophy, BookCount } from '../models/book.model';
 import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -16,8 +14,7 @@ export class ReadnListenService {
   readAnotherBook = new Subject<Book>();
 
   constructor(
-    private http: HttpClient,
-    private router: Router
+    private http: HttpClient
   ) {}
 
   /*** Audio ***/
@@ -164,62 +161,12 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  /*** Translations ***/
-
-  fetchSentenceTranslations(
-    userLanCode: string,
-    bookId: string,
-    sentence: string): Observable<SentenceTranslation[]> {
-    return this.http
-    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + userLanCode + '/' + encodeURIComponent(sentence))
-    .pipe(retry(3));
-  }
-
-  addSentenceTranslation(
-    bookLanCode: string,
-    userLanCode: string,
-    bookId: string,
-    sentence: string,
-    translation: string,
-    note: string,
-    isMachine = false,
-    machine = null
-  ): Observable<TranslatedData> {
-    return this.http
-    .post<TranslatedData>('/api/book/translation/', {
-      bookLanCode, userLanCode, bookId, sentence, translation, note, isMachine, machine
-    });
-  }
-
-  updateSentenceTranslation(
-    translationId: string,
-    translationElementId: string,
-    translation: string,
-    note: string
-  ): Observable<SentenceTranslation>  {
-    return this.http
-    .put<SentenceTranslation>('/api/book/translation', {
-      translationId, translationElementId, translation, note
-    });
-  }
+  /*** Translation count */
 
   fetchTranslationData(userLanCode: string, bookType: string): Observable<TranslationData[]> {
     // count the # of translations for all books into a specific language
     return this.http
     .get<TranslationData[]>('/api/book/translation/' + userLanCode);
-  }
-
-  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<DeepLTranslations> {
-    return this.http
-    .post<DeepLTranslations>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
-  }
-
-  getMachineLanguages(tpe: string) {
-    let languages = [];
-    if (tpe === 'deepl') {
-      languages = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pl'];
-    }
-    return languages;
   }
 
   /*** Thumbs ***/

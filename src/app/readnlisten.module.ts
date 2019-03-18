@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ReadnListenService } from './services/readnlisten.service';
 import { RevisionService } from './services/revision.service';
 import { WordListService } from './services/word-list.service';
+import { TranslationService } from './services/translation.service';
 
 import { CountdownComponent } from './components/readnlisten/countdown.component';
 import { BookLanguagesBarComponent } from './components/readnlisten/languages-bar.component';
@@ -62,7 +63,8 @@ import { WordColorDirective } from './directives/word-color.directive';
   providers: [
     ReadnListenService,
     RevisionService,
-    WordListService
+    WordListService,
+    TranslationService
   ],
   exports: [
     AudioFileComponent,
@@ -95,7 +97,8 @@ export class ReadnListenModule {
       providers: [
         ReadnListenService,
         RevisionService,
-        WordListService
+        WordListService,
+        TranslationService
       ]
     };
   }

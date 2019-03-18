@@ -4,7 +4,7 @@
       type="button"
       class="btn btn-success btn-xs"
       (click)="onGetTranslation()">
-      {{text["FetchTranslation"]}}
+      {{text["FetchTranslationFrom"].replace('%s', source)}}
     </button>
     <km-loader *ngIf="isLoading"
       [showBackground]="false"
