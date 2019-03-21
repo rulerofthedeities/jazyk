@@ -26,6 +26,7 @@ import { ModalPromotionComponent } from './components/modals/modal-promotion.com
 import { BookRevisionComponent } from './components/revision/book-revision.component';
 import { BookWordListComponent } from './components/wordlist/word-list.component';
 import { ExternalWordTranslationComponent } from './components/wordlist/external-translation.component';
+import { UserWordTranslationComponent } from './components/wordlist/user-translation.component';
 import { BookTitleComponent } from './components/readnlisten/book-title.component';
 
 import { FocusDirective } from './directives/focus.directive';
@@ -56,6 +57,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     BookRevisionComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
+    UserWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
     WordColorDirective
@@ -85,6 +87,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     BookRevisionComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
+    UserWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
     WordColorDirective

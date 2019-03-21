@@ -1,0 +1,33 @@
+<button *ngIf="!showTranslationForm"
+  type="button"
+  class="btn btn-primary btn-xs"
+  (click)="onAddTranslation()">
+  <span class="fa fa-plus fa-spacing"></span>{{text["AddUserTranslation"]}}
+</button>
+<div *ngIf="showTranslationForm">
+  <input type="text"
+    class="form-control"
+    autofocus
+    rows="3"
+    autocomplete=”off”
+    [placeholder]="getTranslationPlaceHolder()"
+    [(ngModel)]="translationEdit"
+    #translation="ngModel">
+  <input type="text"
+    class="form-control"
+    [placeholder]="text['AddTranslationNote']"
+    autocomplete=”off”
+    [(ngModel)]="translationNote"
+    #tlnote="ngModel">
+  <button
+    type="button"
+    [disabled]="submitting"
+    class="btn btn-primary"
+    (click)="onAddUpdateTranslation(translation.value, tlnote.value)">
+    <span class="fa fa-envelope fa-spacing"></span>
+    {{isEditing ? text["UpdateTranslation"] : text["SubmitTranslation"]}}
+  </button>
+  <div *ngIf="duplicate" class="duplicate">
+    {{text["TranslationExists"]}}
+  </div>
+</div>

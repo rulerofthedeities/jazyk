@@ -47,6 +47,7 @@ const findUser = (body, expiresIn, callback) => {
         projection = {
           _id: 1,
           userName: 1,
+          isAdmin: 1,
           email: 1,
           password: 1,
           main: 1,

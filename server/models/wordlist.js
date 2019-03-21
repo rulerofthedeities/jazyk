@@ -42,8 +42,9 @@ var wordTranslationSchema = new Schema({
   translation: {type: String, required: true},
   definition: String,
   lanCode: String,
-  source: String
-}, {_id: false});
+  source: String,
+  userId: Schema.Types.ObjectId
+});
 
 const wordTranslationsSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},

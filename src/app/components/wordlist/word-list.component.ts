@@ -7,7 +7,7 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { TranslationService } from '../../services/translation.service';
 import { takeWhile, filter } from 'rxjs/operators';
 import { Book } from 'app/models/book.model';
-import { Word, UserWord, WordTranslations } from 'app/models/word.model';
+import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
 
@@ -42,6 +42,8 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   hasOmegaWikiTranslations: boolean[][] = [];
   hasDeepLTranslations: boolean[][] = [];
   isDeeplAvailable = false;
+  canEdit = false;
+  userId: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +55,9 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.canEdit = this.userService.user.isAdmin;
+    this.userId = this.userService.user._id;
+    console.log('canEdit', this.userService.user, this.canEdit, this.userId);
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
   }
@@ -74,6 +79,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     } else {
       this.wordTranslations[this.currentPage - 1][data.i] = data.translations;
     }
+    this.sortTranslations(this.wordTranslations[this.currentPage - 1][data.i]);
     data.translations.translations.forEach(tl => {
       if (tl.source === 'OmegaWiki') {
         this.hasOmegaWikiTranslations[this.currentPage - 1][data.i] = true;
@@ -218,6 +224,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         words.forEach((w, i) => {
           tl = wordTranslations.find(t => t.word === w);
           if (tl) {
+            this.sortTranslations(tl);
             this.wordTranslations[pageNr - 1][i] = tl;
             // Check if omegaWiki translation button should be shown
             const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
@@ -242,6 +249,20 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         console.log('word translations', this.wordTranslations);
       }
     );
+  }
+
+  private sortTranslations(translations: WordTranslations) {
+    // Push Jazyk translations to top
+    const tmpTranslations: WordTranslation[] = [];
+    translations.translations.forEach(tl => {
+      if (tl.source === 'Jazyk') {
+        tmpTranslations.unshift(tl);
+      } else {
+        tmpTranslations.push(tl);
+      }
+    });
+    translations.translations = tmpTranslations;
+    console.log('resorted', tmpTranslations);
   }
 
   private checkDeepLTranslationAvailability() {

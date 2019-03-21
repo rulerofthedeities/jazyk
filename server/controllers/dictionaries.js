@@ -66,6 +66,7 @@ module.exports = {
           translations = req.body.translations,
           query = {bookId, lanCode, word},
           update = {$addToSet: {translations: {$each: translations}}};
+    console.log('adding translations', translations);
     Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
         response.handleSuccess(res, result);

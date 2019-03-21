@@ -46,10 +46,12 @@ export interface OmegaDefinitions {
 }
 
 export interface WordTranslation {
+  _id?: string;
   translation: string;
   definition: string;
   lanCode: string;
   source: string;
+  userId?: string;
 }
 
 export interface WordTranslations {

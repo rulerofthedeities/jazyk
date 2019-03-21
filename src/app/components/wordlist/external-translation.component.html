@@ -1,10 +1,10 @@
-<div class="mt" *ngIf="!isTranslated">
+<div class="mt" *ngIf="!isNoTranslation">
   <span class="fetch">
     <button  *ngIf="!isLoading"
       type="button"
       class="btn btn-success btn-xs"
       (click)="onGetTranslation()">
-      {{text["FetchTranslationFrom"].replace('%s', source)}}
+      <span class="fa fa-download fa-spacing"></span>{{text["FetchTranslationFrom"].replace('%s', source)}}
     </button>
     <km-loader *ngIf="isLoading"
       [showBackground]="false"
@@ -13,4 +13,7 @@
       [small]="true">
     </km-loader>
   </span>
+</div>
+<div class="no-translation" *ngIf="isNoTranslation">
+  {{text["NoTranslationFound"].replace('%s', source).replace('%l', text[this.targetLan.name])}}
 </div>

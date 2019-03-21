@@ -22,7 +22,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   @Output() newTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
   private componentActive = true;
   isLoading = false;
-  isTranslated = false;
+  isNoTranslation = false;
   definitions: OmegaDefinitions;
   toSaveTranslations: WordTranslation[] = [];
 
@@ -163,6 +163,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       // NO DEFINITIONS FOUND FOR THIS WORD
       console.log('>>> No definitions found !!');
       this.saveDummyTranslation('OmegaWiki');
+      this.noTranslationFound();
     }
   }
 
@@ -176,14 +177,24 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       .subscribe(translation => {
         console.log('omega translation', translation['TL']);
         translation = translation['TL'];
-        if (translation && translation.spelling && translation.definition.langid === this.targetLan.omegaLanId) {
-          // Save new translations
-          this.toSaveTranslations.push({
-            translation: translation.definition.spelling,
-            definition: translation.definition.text,
-            lanCode: this.targetLan.code,
-            source: 'OmegaWiki'
-          });
+        if (translation) {
+          if (translation.definition.spelling && translation.definition.langid === this.targetLan.omegaLanId) {
+            // Save new translation from sub document
+            this.toSaveTranslations.push({
+              translation: translation.definition.spelling,
+              definition: translation.definition.text,
+              lanCode: this.targetLan.code,
+              source: 'OmegaWiki'
+            });
+          } else if (translation.spelling && translation.langid.toString() === this.targetLan.omegaLanId) {
+            // Save new translation from main document
+            this.toSaveTranslations.push({
+              translation: translation.spelling,
+              definition: '',
+              lanCode: this.targetLan.code,
+              source: 'OmegaWiki'
+            });
+          }
         }
         definitions.shift();
         if (definitions.length) {
@@ -235,29 +246,71 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   }
 
   private saveNewTranslations(newTranslations: WordTranslation[]) {
-    // Remove duplicates ??
-
+    // Remove duplicates
+    newTranslations = this.removeDuplicate(newTranslations);
     // Show in list
-    console.log('emitting saveNewTranslations');
-    this.newTranslations.emit({
-      translations: {
-        lanCode: this.bookLan.code,
-        word: this.word,
-        translations: newTranslations
-      },
-      i: this.i
-    });
-    this.isLoading = false;
-    // Save
-    console.log('saving translations', this.bookLan.code, this.word, newTranslations);
     if (newTranslations.length) {
-      this.translationService
-      .saveTranslations(this.bookLan.code, this.bookId, this.word, newTranslations)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(result => {
-        console.log('translation saved', result);
+      console.log('emitting saveNewTranslations');
+      this.newTranslations.emit({
+        translations: {
+          lanCode: this.bookLan.code,
+          word: this.word,
+          translations: newTranslations
+        },
+        i: this.i
       });
+      this.isLoading = false;
+      // Save
+      console.log('saving translations', this.bookLan.code, this.word, newTranslations);
+      if (newTranslations.length) {
+        this.translationService
+        .saveTranslations(this.bookLan.code, this.bookId, this.word, newTranslations)
+        .pipe(takeWhile(() => this.componentActive))
+        .subscribe(result => {
+          console.log('translation saved', result);
+        });
+      }
+    } else {
+      this.noTranslationFound();
     }
+  }
+
+  private removeDuplicate(translations): WordTranslation[] {
+    let uniqueTranslations: WordTranslation[] = [],
+        exists: WordTranslation;
+    translations.forEach(tl => {
+      // Note: lanCode & source is equal for all
+      console.log(tl, [...uniqueTranslations]);
+      exists = uniqueTranslations.find(ut => ut.translation === tl.translation);
+      console.log('exists', exists, uniqueTranslations);
+      if (!exists) {
+        uniqueTranslations.push(tl);
+        console.log('added to unique', [...uniqueTranslations]);
+      } else {
+        console.log('already exists', [...uniqueTranslations]);
+        // Check if one of them has a definition; if only one, keep that one
+        if (exists.definition === tl.definition) {
+          console.log('definition is the same, do not add');
+          // They are the same, do not add
+        } else if (tl.definition !== '') {
+          uniqueTranslations.push(tl);
+          console.log('definition is different, add');
+          // if the existing one is empty, remove it and add new one
+          if (exists.definition === '') {
+            console.log('filtering out duplicate', tl, [...uniqueTranslations]);
+            uniqueTranslations = uniqueTranslations.filter(ut => ut.translation === tl.translation && ut.definition === '');
+            uniqueTranslations.push(tl);
+          }
+        }
+      }
+    });
+
+    return uniqueTranslations;
+  }
+
+  private noTranslationFound() {
+    console.log('NO translation found in ', this.targetLan.code, 'from', this.source, 'for', this.word);
+    this.isNoTranslation = true;
   }
 
   ngOnDestroy() {

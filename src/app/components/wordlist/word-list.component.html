@@ -68,7 +68,6 @@
         <span>{{word.word}}</span>
       </span>
       <span class="genus" *ngIf="word.genus">({{word.genus}})</span>
-      <span class="root" *ngIf="word.root">({{word.root}})</span>
     </div>
     <div class="wordType">{{text[word.wordType]}}</div>
     <div class="audio" *ngIf="word.audio && word.audio.length > 0">
@@ -88,6 +87,16 @@
         </div>
       </div>
     </div>
+    <km-user-translation *ngIf="!isLoadingTranslations && canEdit"
+      [text]="text"
+      [book]="book"
+      [targetLan]="translationLan"
+      [word]="word.root ? word.root : word.word"
+      [translations]="wordTranslations[currentPage - 1][i]"
+      [userId]="userId"
+      [i] = "i"
+      (newTranslations)="onNewTranslations($event)">
+    </km-user-translation>
     <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentPage - 1][i]"
       [text]="text"
       [source]="'OmegaWiki'"
@@ -110,6 +119,7 @@
     ></km-word-translation>
   </td>
   <td>
+    <!--
     <span class="fa fa-thumb-tack"
       [class.pinned]="word.pinned"
       [tooltip]="text['AddToMyWordList']"
@@ -117,5 +127,6 @@
       hide-delay="0"
       (click)="onToggleMyWordList(word)">
     </span>
+    -->
   </td>
 </ng-template>
