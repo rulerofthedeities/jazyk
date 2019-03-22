@@ -14,7 +14,7 @@ export class TranslationService {
     private http: HttpClient
   ) {}
 
-  /*** Word Translations  -  OMEGAWIKI ***/
+  /*** Word Translations ***/
 
   fetchOmegaDefinitionLocal(word: string): Observable<OmegaDefinition[]> {
     return this.http
@@ -33,25 +33,41 @@ export class TranslationService {
     .post<OmegaDefinition[]>(`/api/wordlist/word/definition/omega`, {definitions});
   }
 
-  saveTranslations(bookLanCode: string, bookId: string, word: string, translations: WordTranslation[]): Observable<WordTranslation[]> {
-    return this.http
-    .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
-  }
-
-  fetchTranslations(book: Book, targetLan: string, words: string[]): Observable<WordTranslations[]> {
-    console.log('Fetching translations', words);
-    return this.http
-    .put<WordTranslations[]>(`/api/wordlist/word/translations`, {words, bookId: book._id, bookLan: book.lanCode, targetLan})
-    .pipe(retry(3));
-  }
-
   fetchOmegaTranslation(omegaLanId: string, dmid: string): Observable<OmegaTranslation> {
     return this.http
     .get<OmegaTranslation>(`/api/wordlist/word/translate/omega/${omegaLanId}/${dmid}`)
     .pipe(retry(3));
   }
 
+  saveTranslations(bookLanCode: string, bookId: string, word: string, translations: WordTranslation[]): Observable<WordTranslation[]> {
+    return this.http
+    .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
+  }
 
+  fetchTranslations(book: Book, targetLan: string, words: string[]): Observable<WordTranslations[]> {
+    return this.http
+    .put<WordTranslations[]>(`/api/wordlist/word/translations`, {words, bookId: book._id, bookLan: book.lanCode, targetLan})
+    .pipe(retry(3));
+  }
+
+  updateWordTranslation(
+    translationId: string,
+    translationElementId: string,
+    translation: string,
+    note: string
+  ): Observable<boolean>  {
+    return this.http
+    .put<boolean>('/api/wordlist/word/translation', {
+      translationId, translationElementId, translation, note
+    });
+  }
+
+  removeWordTranslation(translationId: string, translationElementId: string): Observable<boolean> {
+    return this.http
+    .put<boolean>('/api/wordlist/word/removetranslation', {
+      translationId, translationElementId
+    });
+  }
 
   /*** Sentence Translations ***/
 

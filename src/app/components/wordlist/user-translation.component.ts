@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { Book } from 'app/models/book.model';
 import { WordTranslations, WordTranslation } from 'app/models/word.model';
@@ -11,7 +11,7 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['user-translation.component.css']
 })
 
-export class UserWordTranslationComponent implements OnDestroy {
+export class UserWordTranslationComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() targetLan: Language;
   @Input() book: Book;
@@ -19,11 +19,14 @@ export class UserWordTranslationComponent implements OnDestroy {
   @Input() translations: WordTranslations;
   @Input() userId: string;
   @Input() i: number;
+  @Input() elementNr: number;
+  @Input() isEditing = false;
   @Output() newTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
+  @Output() updatedTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
+  @Output() cancelTranslation = new EventEmitter<boolean>();
 
   private componentActive = true;
   showTranslationForm = false;
-  isEditing = false;
   submitting = false;
   duplicate = false;
   translationEdit: string;
@@ -33,15 +36,27 @@ export class UserWordTranslationComponent implements OnDestroy {
     private translationService: TranslationService
   ) {}
 
+  ngOnInit() {
+    if (this.isEditing) {
+      const tl = this.translations.translations[this.elementNr];
+      this.translationEdit = tl.translation;
+      this.translationNote = tl.definition;
+    }
+    this.showTranslationForm = this.isEditing;
+  }
+
   onAddTranslation() {
     this.translationEdit = '';
     this.translationNote = '';
     this.showTranslationForm = true;
-    console.log('add translation');
   }
 
   onAddUpdateTranslation(translation: string, translationnote: string) {
     this.addUpdateTranslation(translation, translationnote);
+  }
+
+  onCancel() {
+    this.cancelTranslation.emit(true);
   }
 
   getTranslationPlaceHolder(): string {
@@ -60,13 +75,11 @@ export class UserWordTranslationComponent implements OnDestroy {
     translationnote = translationnote || '';
     translationnote = translationnote.trim();
 
-    console.log('translations', this.translations);
     const translations = this.translations.translations;
     const duplicate = translations.find(t => t.translation === translation && t.definition === translationnote);
-    console.log('duplicate', duplicate);
     if (translation && !duplicate) {
       if (this.isEditing) {
-        // this.updateTranslation(translation, translationnote);
+        this.updateTranslation(translation, translationnote);
       } else {
         this.saveTranslation(translation, translationnote);
       }
@@ -76,6 +89,25 @@ export class UserWordTranslationComponent implements OnDestroy {
         this.duplicate = true;
       }
     }
+  }
+
+  private updateTranslation(translation: string, note: string) {
+    const elementId = this.translations.translations[this.elementNr]._id;
+    this.translationService
+    .updateWordTranslation(
+      this.translations._id,
+      elementId,
+      translation,
+      note)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      result => {
+        this.showTranslationForm = false;
+        this.submitting = false;
+        this.translations.translations[this.elementNr].translation = translation;
+        this.translations.translations[this.elementNr].definition = note;
+        this.updatedTranslations.emit({translations: this.translations, i: this.i});
+    });
   }
 
   private saveTranslation(translation: string, note: string) {
@@ -95,14 +127,12 @@ export class UserWordTranslationComponent implements OnDestroy {
       i: this.i
     });
     // Save
-    console.log('saving translations', this.book.lanCode, this.word, newTranslations);
     this.translationService
     .saveTranslations(this.book.lanCode, this.book._id, this.word, newTranslations)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
       this.showTranslationForm = false;
       this.submitting = false;
-      console.log('translation saved', result);
     });
   }
 

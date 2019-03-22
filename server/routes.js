@@ -159,6 +159,8 @@ module.exports = {
     router.post('/wordlist/word/definition/omega', dictionaries.saveOmegaDefinitions);
     router.post('/wordlist/word/translation', dictionaries.saveTranslation);
     router.put('/wordlist/word/translations', dictionaries.getTranslations);
+    router.put('/wordlist/word/translation', dictionaries.updateTranslation);
+    router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation)
 
     app.use('/api/', router);
 

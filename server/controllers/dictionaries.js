@@ -54,7 +54,6 @@ module.exports = {
           definitions = new Definitions(definitionsData);
     definitions.save((err, result) => {
       response.handleError(err, res, 400, 'Error saving new omegawiki definitions data', () => {
-        console.log('saved omegawiki definitions', result);
         response.handleSuccess(res, result);
       });
     });
@@ -66,12 +65,43 @@ module.exports = {
           translations = req.body.translations,
           query = {bookId, lanCode, word},
           update = {$addToSet: {translations: {$each: translations}}};
-    console.log('adding translations', translations);
     Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
         response.handleSuccess(res, result);
       });
     });
+  },
+  updateTranslation: (req, res) => {
+    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
+          translation = req.body.translation,
+          note = req.body.note,
+          options = {new: true},
+          query = {
+            _id: translationId,
+            translations: {$elemMatch: {_id: translationElementId}},
+          },
+          update = {$set: {'translations.$.translation': translation, 'translations.$.note': note}};
+    Translations.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating word translation', () => {
+        response.handleSuccess(res, true);
+      });
+    });
+  },
+  removeTranslation: (req, res) => {
+    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
+          options = {multi: false},
+          query = {
+            _id: translationId
+          },
+          update = {$pull: {'translations': {'_id': translationElementId}}};
+    Translations.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error removing word translation', () => {
+        response.handleSuccess(res, true);
+      });
+    });
+
   },
   getTranslations: (req, res) => {
     const bookLan = req.body.bookLan,
@@ -79,10 +109,7 @@ module.exports = {
           targetLan = req.body.targetLan,
           words = req.body.words,
           query = {bookId, lanCode: bookLan, word: {$in: words}, 'translations.lanCode': targetLan};
-    console.log('fetching translations for ', bookLan, targetLan, words);
-    console.log('fetching translations ', query);
     Translations.find(query, (err, translations) => {
-      console.log('translations', translations);
       response.handleError(err, res, 400, 'Error fetching word translations', () => {
         response.handleSuccess(res, translations);
       });
@@ -94,9 +121,7 @@ module.exports = {
           url = `http://www.omegawiki.org/api.php?action=ow_define&lang=${lanId}&dm=${dmid}&format=json`;
 
     fetchOmegawikiData(url).then((data) => {
-      console.log('omega translation data', data);
       const translation = data ? (data['omega'] ? data['omega']['ow_define'] : {}) : {};
-      console.log('omega translation', translation);
       response.handleSuccess(res, {TL: translation});
     }, (err) => {
       response.handleError(err, res, 500, 'Error fetching external omegawiki translations');

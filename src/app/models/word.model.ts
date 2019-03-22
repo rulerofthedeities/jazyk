@@ -55,6 +55,7 @@ export interface WordTranslation {
 }
 
 export interface WordTranslations {
+  _id?: string;
   lanCode: string;
   word: string;
   translations: WordTranslation[];

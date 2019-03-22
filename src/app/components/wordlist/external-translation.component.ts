@@ -20,6 +20,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   @Input() bookId: string;
   @Input() i: number;
   @Output() newTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
+  @Output() noTranslations = new EventEmitter<{msg: string, i: number}>();
   private componentActive = true;
   isLoading = false;
   isNoTranslation = false;
@@ -31,17 +32,11 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   ) {}
 
   onGetTranslation() {
-    console.log('fetch translation from', this.source, this.targetLan);
     if (this.source === 'OmegaWiki' && this.targetLan.omegaLanId) {
       // Fetching translation from omega wiki
       // First get definition (see if it is in the local db)
       this.getOmegaDefinitionLocal();
-      // Then get translation
-      console.log('Omega lan id', this.targetLan.omegaLanId);
-
-      // this.getOmegaTranslation();
     } else if (this.source === 'DeepL') {
-      console.log('Fetch translation from DeepL');
       this.getDeepLTranslation();
     }
   }
@@ -52,7 +47,6 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     .fetchOmegaDefinitionLocal(this.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(omegaDefinitions => {
-      console.log('omega LOCAL definition', omegaDefinitions);
       if (omegaDefinitions.length) {
         this.parseLocalOmegaDefinition(omegaDefinitions);
         // If definition is found, parse user language
@@ -69,15 +63,14 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     .fetchOmegaDefinitionExternal(this.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
-      console.log('omega definition', result);
       if (result && result.omega && result.omega['ow_express']) {
         // If definition is ok, then parse & store locally
         this.parseExternalOmegaDefinition(result.omega['ow_express']);
       } else {
         // Word not found - save dummy definition
         this.isLoading = false;
-        console.log('no definition found - add fake translation');
         this.saveDummyTranslation('OmegaWiki');
+        this.noTranslationFound();
       }
     });
   }
@@ -117,12 +110,10 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   }
 
   private saveOmegaDefinitions() {
-    console.log('saving Defitions', this.definitions);
     this.translationService
     .saveOmegaDefinitions(this.definitions)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
-      console.log('omega definition saved', result);
       // find definitions & translations for lan.omegaLanId and save translation
       if (result) {
         this.parseLocalOmegaDefinition(this.definitions.omegaDefinitions);
@@ -131,17 +122,13 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   }
 
   private parseLocalOmegaDefinition(omegaDefinitions: OmegaDefinition[]) {
-    console.log('lan', this.bookLan);
     // Get only the definitions for the word in the source language
     const sourceLandefinitions = omegaDefinitions.filter(definition => definition.lanId === this.bookLan.omegaLanId);
-    console.log('book language only definitions', sourceLandefinitions);
     if (sourceLandefinitions.length > 0) {
       // See if there are definitions & translations in the target language
       const targetLanDefinitions = sourceLandefinitions.filter(definition => definition.definitionLanId === this.targetLan.omegaLanId);
-      console.log('book language definitions available', targetLanDefinitions);
       if (targetLanDefinitions.length > 0) {
         // Definitions and translations available for the target language, save and show
-        console.log('saving translations / definitions');
         const newTranslations: WordTranslation[] = [];
         targetLanDefinitions.forEach(definition => {
           newTranslations.push({
@@ -161,21 +148,17 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       }
     } else {
       // NO DEFINITIONS FOUND FOR THIS WORD
-      console.log('>>> No definitions found !!');
       this.saveDummyTranslation('OmegaWiki');
       this.noTranslationFound();
     }
   }
 
-  private getOmegaTranslations(definitions: OmegaDefinition[]) {
-    console.log('find translation for target language', definitions);
+  private getOmegaTranslations(definitions: OmegaDefinition[]) {;
     if (definitions[0] && definitions[0].dmid) {
-      console.log('get translation for dmid', definitions[0].dmid);
       this.translationService
       .fetchOmegaTranslation(this.targetLan.omegaLanId, definitions[0].dmid)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(translation => {
-        console.log('omega translation', translation['TL']);
         translation = translation['TL'];
         if (translation) {
           if (translation.definition.spelling && translation.definition.langid === this.targetLan.omegaLanId) {
@@ -212,13 +195,11 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       to: this.targetLan.code
     };
     this.isLoading = true;
-    console.log('fetching deepl translation', this.word, lanPair);
     this.translationService
     .fetchMachineTranslation('deepl', lanPair, this.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((translation: DeepLTranslations) => {
       this.isLoading = false;
-      console.log('Translation from DeepL:', translation);
       if (translation) {
         const translations = translation.translations;
         if (translations[0] && translations[0].text) {
@@ -250,7 +231,6 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     newTranslations = this.removeDuplicate(newTranslations);
     // Show in list
     if (newTranslations.length) {
-      console.log('emitting saveNewTranslations');
       this.newTranslations.emit({
         translations: {
           lanCode: this.bookLan.code,
@@ -261,13 +241,11 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       });
       this.isLoading = false;
       // Save
-      console.log('saving translations', this.bookLan.code, this.word, newTranslations);
       if (newTranslations.length) {
         this.translationService
         .saveTranslations(this.bookLan.code, this.bookId, this.word, newTranslations)
         .pipe(takeWhile(() => this.componentActive))
         .subscribe(result => {
-          console.log('translation saved', result);
         });
       }
     } else {
@@ -280,37 +258,30 @@ export class ExternalWordTranslationComponent implements OnDestroy {
         exists: WordTranslation;
     translations.forEach(tl => {
       // Note: lanCode & source is equal for all
-      console.log(tl, [...uniqueTranslations]);
       exists = uniqueTranslations.find(ut => ut.translation === tl.translation);
-      console.log('exists', exists, uniqueTranslations);
       if (!exists) {
         uniqueTranslations.push(tl);
-        console.log('added to unique', [...uniqueTranslations]);
       } else {
-        console.log('already exists', [...uniqueTranslations]);
         // Check if one of them has a definition; if only one, keep that one
         if (exists.definition === tl.definition) {
-          console.log('definition is the same, do not add');
           // They are the same, do not add
         } else if (tl.definition !== '') {
           uniqueTranslations.push(tl);
-          console.log('definition is different, add');
           // if the existing one is empty, remove it and add new one
           if (exists.definition === '') {
-            console.log('filtering out duplicate', tl, [...uniqueTranslations]);
             uniqueTranslations = uniqueTranslations.filter(ut => ut.translation === tl.translation && ut.definition === '');
             uniqueTranslations.push(tl);
           }
         }
       }
     });
-
     return uniqueTranslations;
   }
 
   private noTranslationFound() {
-    console.log('NO translation found in ', this.targetLan.code, 'from', this.source, 'for', this.word);
+    const noTranslationMessage = this.text['NoTranslationFound'].replace('%s', this.source).replace('%l', this.text[this.targetLan.name]);
     this.isNoTranslation = true;
+    this.noTranslations.emit({msg: noTranslationMessage, i: this.i});
   }
 
   ngOnDestroy() {

@@ -79,11 +79,35 @@
   </td>
   <td class="translation-cell">
     <div *ngIf="!isLoadingTranslations && wordTranslations[currentPage - 1][i].translations.length">
-      <div *ngFor="let translation of wordTranslations[currentPage - 1][i].translations">
+      <div *ngFor="let translation of wordTranslations[currentPage - 1][i].translations; let j=index">
         <div *ngIf="translation.translation !== '<none>'">
-          <div class="tl-word">{{translation.translation}}</div>
-          <div class="tl-definition">{{translation.definition}}</div>
-          <div class="tl-source">{{text["BookSource"]}}: {{translation.source}}</div>
+          <div class="buttons pull-right" *ngIf="canEdit && translation.source === 'Jazyk' && editingTranslationId !== translation._id">
+            <button type="button" class="btn btn-primary" (click)="onEditTranslation(j, translation)">
+              <span class="fa fa-pencil fa-spacing"></span>Edit
+            </button>
+            <button type="button" class="btn btn-danger" (click)="onRemoveTranslation(i, translation)">
+              <span class="fa fa-trash-o"></span>
+            </button>
+          </div>
+          <km-user-translation *ngIf="editingTranslationId === translation._id && canEdit"
+            [text]="text"
+            [book]="book"
+            [targetLan]="translationLan"
+            [word]="word.root ? word.root : word.word"
+            [isEditing]="true"
+            [translations]="wordTranslations[currentPage - 1][i]"
+            [userId]="userId"
+            [i]="i"
+            [elementNr]="j"
+            (cancelTranslation)="onCancelTranslation()"
+            (updatedTranslations)="onUpdatedTranslation($event)">
+          </km-user-translation>
+          <div class="definition" *ngIf="editingTranslationId !== translation._id">
+            <div class="tl-word">{{translation.translation}}</div>
+            <div class="tl-definition">{{translation.definition}}</div>
+            <div class="tl-source">{{text["BookSource"]}}: {{translation.source}}</div>
+          </div>
+          <div class="tl-border"></div>
         </div>
       </div>
     </div>
@@ -106,7 +130,8 @@
       [word]="word.root ? word.root : word.word"
       [i] = "i"
       (newTranslations)="onNewTranslations($event)"
-    ></km-word-translation>
+      (noTranslations)="onNoTranslations($event)">
+    </km-word-translation>
     <km-word-translation *ngIf="isDeeplAvailable && word.wordType==='phrase' && !hasDeepLTranslations[currentPage - 1][i] && !isLoadingTranslations"
       [text]="text"
       [source]="'DeepL'"
@@ -117,6 +142,9 @@
       [i] = "i"
       (newTranslations)="onNewTranslations($event)"
     ></km-word-translation>
+    <div *ngIf="noTranslation.i === i" class="no-translation">
+      {{noTranslation.msg}}
+    </div>
   </td>
   <td>
     <!--

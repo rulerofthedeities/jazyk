@@ -56,3 +56,10 @@ table {
   font-style: italic;
   margin-left: 32px;
 }
+.tl-border {
+  border-bottom: 1px dotted gray;
+  margin-bottom: 4px;
+}
+.no-translation {
+  color: orange;
+}

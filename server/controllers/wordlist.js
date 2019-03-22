@@ -38,10 +38,8 @@ module.exports = {
             lanCode: word.lanCode
           },
           update = {pinned: pin};
-    console.log('update', update);
     UserWordList.findOneAndUpdate(query, update, {upsert: true, isNew: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
-        console.log('result', result);
         response.handleSuccess(res, result);
       });
     });

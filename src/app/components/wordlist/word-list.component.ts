@@ -44,6 +44,8 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   isDeeplAvailable = false;
   canEdit = false;
   userId: string;
+  noTranslation: {msg: string, i: number};
+  editingTranslationId: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,23 +59,23 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.canEdit = this.userService.user.isAdmin;
     this.userId = this.userService.user._id;
-    console.log('canEdit', this.userService.user, this.canEdit, this.userId);
+    this.clearNoTranslationMsg();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
   }
 
   onGoToPage(newPageNr) {
+    this.clearNoTranslationMsg();
     this.goToPage(newPageNr);
   }
 
   onToggleMyWordList(word: Word) {
-    console.log('toggle my word list', word);
     this.toggleMyWordList(word);
   }
 
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
-    console.log('new translations word list', data.translations, data.i);
-    console.log('current translations', this.wordTranslations[this.currentPage - 1]);
+    this.clearNoTranslationMsg();
+    this.editingTranslationId = null;
     if (this.wordTranslations[this.currentPage - 1][data.i]) {
       this.wordTranslations[this.currentPage - 1][data.i].translations.push(...data.translations.translations);
     } else {
@@ -89,8 +91,40 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onUpdatedTranslation(data: {translations: WordTranslations, i: number}) {
+    this.clearNoTranslationMsg();
+    this.editingTranslationId = null;
+    this.wordTranslations[this.currentPage - 1][data.i].translations = data.translations.translations;
+  }
+
+  onNoTranslations(data: {msg: string, i: number}) {
+    this.noTranslation = {msg: data.msg, i: data.i};
+  }
+
+  onEditTranslation(i: number, translation: WordTranslation) {
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.editingTranslationId = translation._id;
+    }
+  }
+
+  onRemoveTranslation(i: number, translation: WordTranslation) {
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.removeTranslation(this.wordTranslations[this.currentPage - 1][i]._id, translation._id);
+    }
+  }
+
+  onCancelTranslation() {
+    this.editingTranslationId = null;
+  }
+
   getCounter(nr: number): number[] {
     return new Array(nr);
+  }
+
+  private clearNoTranslationMsg() {
+    this.noTranslation = {msg: '', i: 0};
   }
 
   private goToPage(newPageNr) {
@@ -105,13 +139,11 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   }
 
   private toggleMyWordList(word: Word) {
-    console.log('pin', !word.pinned);
     word.pinned = !word.pinned;
     this.wordListService
     .pinWord(word, this.book._id, word.pinned)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(newWord => {
-      console.log('toggle', newWord);
       if (newWord) {
         word.pinned = newWord.pinned;
       }
@@ -150,7 +182,6 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         this.userWords = data[2];
         this.processUserWords();
         this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
-        console.log('words ', this.words);
         this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
         this.goToPage(1);
         this.isLoading = false;
@@ -192,13 +223,11 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   }
 
   private setTargetLan(userLans: Language[]) {
-    console.log('get user lan', userLans);
     const lan = userLans.find(l => l.code === this.userLanCode);
     this.translationLan = lan;
   }
 
   private setBookLan(bookLans: Language[]) {
-    console.log('get book lan', bookLans);
     const lan = bookLans.find(l => l.code === this.book.lanCode);
     this.bookLan = lan;
   }
@@ -214,7 +243,6 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
-        console.log('WT', wordTranslations);
         // Only translations in target language
         wordTranslations.forEach(wt => {
           wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
@@ -246,7 +274,6 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         });
         // this.wordTranslations[pageNr - 1] = wordTranslations;
         this.isLoadingTranslations = false;
-        console.log('word translations', this.wordTranslations);
       }
     );
   }
@@ -262,7 +289,6 @@ export class BookWordListComponent implements OnInit, OnDestroy {
       }
     });
     translations.translations = tmpTranslations;
-    console.log('resorted', tmpTranslations);
   }
 
   private checkDeepLTranslationAvailability() {
@@ -271,6 +297,14 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     if (deeplLanguages.includes(this.userLanCode) && deeplLanguages.includes(this.book.lanCode)) {
       this.isDeeplAvailable = true;
     }
+  }
+
+  private removeTranslation(translationId: string, elementId: string) {
+    this.translationService
+    .removeWordTranslation(translationId, elementId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe( result => {
+    });
   }
 
   private getDependables(lan) {
