@@ -81,11 +81,17 @@
     <div *ngIf="!isLoadingTranslations && wordTranslations[currentPage - 1][i].translations.length">
       <div *ngFor="let translation of wordTranslations[currentPage - 1][i].translations; let j=index">
         <div *ngIf="translation.translation !== '<none>'">
-          <div class="buttons pull-right" *ngIf="canEdit && translation.source === 'Jazyk' && editingTranslationId !== translation._id">
-            <button type="button" class="btn btn-primary" (click)="onEditTranslation(j, translation)">
+          <div class="buttons pull-right" *ngIf="canEdit && editingTranslationId !== translation._id">
+            <button *ngIf="translation.source === 'Jazyk'"
+              type="button"
+              class="btn btn-primary"
+              (click)="onEditTranslation(j, translation)">
               <span class="fa fa-pencil fa-spacing"></span>Edit
             </button>
-            <button type="button" class="btn btn-danger" (click)="onRemoveTranslation(i, translation)">
+            <button *ngIf="translation._id"
+              type="button"
+              class="btn btn-danger"
+              (click)="onRemoveTranslation(i, translation)">
               <span class="fa fa-trash-o"></span>
             </button>
           </div>

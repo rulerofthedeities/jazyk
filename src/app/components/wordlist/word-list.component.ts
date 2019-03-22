@@ -304,6 +304,10 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     .removeWordTranslation(translationId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
+      const tl = this.wordTranslations[this.currentPage - 1].find(wt => wt._id.toString() === translationId);
+      if (tl) {
+        tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
+      }
     });
   }
 
