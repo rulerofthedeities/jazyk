@@ -153,12 +153,14 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     }
   }
 
-  private getOmegaTranslations(definitions: OmegaDefinition[]) {;
+  private getOmegaTranslations(definitions: OmegaDefinition[]) {
     if (definitions[0] && definitions[0].dmid) {
+      this.isLoading = true;
       this.translationService
       .fetchOmegaTranslation(this.targetLan.omegaLanId, definitions[0].dmid)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(translation => {
+        this.isLoading = false;
         translation = translation['TL'];
         if (translation) {
           if (translation.definition.spelling && translation.definition.langid === this.targetLan.omegaLanId) {
@@ -249,6 +251,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
         });
       }
     } else {
+      this.saveDummyTranslation(this.source);
       this.noTranslationFound();
     }
   }

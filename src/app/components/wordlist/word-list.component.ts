@@ -35,7 +35,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   isError = false;
   errMsg = null;
   currentPage = 1;
-  wordsPerPage = 5;
+  wordsPerPage = 20;
   nrOfPages: number;
   audioPath: string;
   isLoadingTranslations = false;
