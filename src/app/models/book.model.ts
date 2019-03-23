@@ -41,8 +41,22 @@ export interface Chapter {
   indexLabel?: string;
   nrOfSentences?: Number;
   activeSentences?: Sentence[];
+  activeAudioSentences?: AudioSentence[];
   merged?: string[]; // list of other chapter ids to merge
   toRemove?: boolean;
+}
+
+export interface AudioSentence {
+  sequence: string;
+  s3: string;
+  text: string;
+  isDisabled?: boolean;
+}
+
+export interface AudioChapter {
+  title: string;
+  directory: string;
+  sentences: AudioSentence[];
 }
 
 interface Difficulty {
@@ -69,6 +83,7 @@ export interface BookDates {
 export interface Book {
   _id: string;
   bookId?: string; // In case audiobook = read book
+  audioId?: string; // Link to audiobook
   title: string;
   series: string;
   directory?: string;

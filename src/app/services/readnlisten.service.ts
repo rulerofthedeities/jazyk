@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark, UserBookActivity,
-         SessionData, Thumbs, Trophy, BookCount } from '../models/book.model';
-import { Observable, Subject } from 'rxjs';
+         SessionData, Thumbs, Trophy, BookCount, AudioChapter } from '../models/book.model';
+import { Observable, Subject, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
 export const minWordScore = 150; // only use words with min this score in listen test
@@ -55,6 +55,16 @@ export class ReadnListenService {
     return this.http
     .get<BookCount[]>('/api/books/count/' + bookType)
     .pipe(retry(3));
+  }
+
+  fetchAudioChapter(book: Book, sequence: number): Observable<AudioChapter> {
+    if (book.audioId) {
+      return this.http
+      .get<AudioChapter>(`/api/book/audiochapter/${book.audioId}/${sequence}`)
+      .pipe(retry(3));
+    } else {
+      return of({title: '', directory: '', sentences: []});
+    }
   }
 
   startNewBook(book: Book) {

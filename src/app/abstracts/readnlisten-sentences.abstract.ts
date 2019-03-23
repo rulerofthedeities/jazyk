@@ -6,7 +6,7 @@ import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { ErrorService } from '../services/error.service';
 import { SessionData, UserBook, Bookmark, Book, Chapter,
-         Sentence, SentenceSteps } from '../models/book.model';
+         Sentence, SentenceSteps, AudioChapter, AudioSentence } from '../models/book.model';
 import { ReadSettings } from '../models/user.model';
 import { ModalConfirmComponent } from '../components/modals/modal-confirm.component';
 import { BookTranslationComponent } from '../components/readnlisten/book-translation.component';
@@ -23,9 +23,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   book: Book;
   sessionData: SessionData;
   currentChapter: Chapter;
+  currentAudioChapter: AudioChapter;
   currentSentenceTotal: number;
   currentSentenceNr: number;
   currentSentence: Sentence;
+  currentAudioSentence: AudioSentence;
   currentSentenceTxt: string;
   currentAnswer: string;
   currentStep = SentenceSteps.Question;
@@ -261,7 +263,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.isLoading = true;
       zip(
         this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, this.isTest),
-        this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent')
+        this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent'),
+        this.readnListenService.fetchBook(this.bookId, this.bookType)
       )
       .pipe(
         takeWhile(() => this.componentActive))
@@ -297,6 +300,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
         }
+        this.processBook(res[2]);
         this.findCurrentChapter(userBook);
       });
     }
@@ -322,11 +326,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           this.showReadMsg = true;
           this.setBookFinishedMessage();
         } else {
-          this.getBookAndChapter(userBook.bookId, userBook.bookmark, 1);
+          this.getAudioAndChapter(userBook.bookId, userBook.bookmark, 1);
         }
       } else {
         // no chapter: get first chapter
-        this.getBookAndChapter(userBook.bookId, null, 1);
+        this.getAudioAndChapter(userBook.bookId, null, 1);
       }
     } else {
       // no userbook, subscribe and get first chapter
@@ -335,20 +339,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         newUserBook => {
-          this.getBookAndChapter(this.bookId, null, 1);
+          this.getAudioAndChapter(this.bookId, null, 1);
       });
     }
   }
 
-  private getBookAndChapter(bookId: string, bookmark: Bookmark, sequence: number) {
+  private getAudioAndChapter(bookId: string, bookmark: Bookmark, sequence: number) {
     zip(
-      this.readnListenService.fetchBook(bookId, this.bookType),
-      this.readnListenService.fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence)
+      this.readnListenService.fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence),
+      this.readnListenService.fetchAudioChapter(this.book, sequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      this.processBook(data[0]);
-      this.processChapter(data[1], bookmark);
+      this.processChapter(data[0], data[1], bookmark);
       this.isLoading = false;
     });
   }
@@ -364,16 +367,46 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
-  private processChapter(chapter: Chapter, bookmark: Bookmark) {
+  private processChapter(chapter: Chapter, audioChapter: AudioChapter, bookmark: Bookmark) {
     if (chapter) {
       this.currentChapter = chapter;
-      const activeSentences = chapter.sentences.filter(s => !s.isDisabled);
+      this.currentAudioChapter = audioChapter;
+      console.log(audioChapter);
+      const activeSentences = chapter.sentences.filter(s => !s.isDisabled),
+            activeAudioSentences = audioChapter.sentences.filter(s => !s.isDisabled);
+      activeSentences.map(sentence => sentence.text = sentence.text.replace('_', ' ').trim());
+      activeAudioSentences.map(sentence => sentence.text = sentence.text ? sentence.text.replace('_', ' ').trim() : '');
       if (this.bookType === 'listen') {
         activeSentences.sort(
           (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
         );
       }
+      activeAudioSentences.sort(
+        (a, b) => {
+          const nr1 = parseInt(a.sequence, 10),
+                nr2 = parseInt(b.sequence, 10);
+          return (nr1 > nr2) ? 1 : ((nr2 > nr1) ? -1 : 0);
+        }
+      );
+      console.log(activeSentences, activeAudioSentences);
+      console.log(activeSentences.length === activeAudioSentences.length ? 'length equal' : '>> !! LENGTH NOT EQUAL!!');
+
+      console.log('checking sentences');
+      let sentencesMatch = false;
+      if (activeSentences.length === activeAudioSentences.length) {
+        sentencesMatch = true;
+        activeSentences.forEach((sentence, i) => {
+          if (sentence.text !== activeAudioSentences[i].text) {
+            console.log('!! TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
+            // Prevent incorrect audio / sentence match
+            sentencesMatch = false;
+          }
+        });
+      }
+      console.log(sentencesMatch ? 'sentences match' : '!sentences don\'t match');
+
       chapter.activeSentences = activeSentences;
+      chapter.activeAudioSentences = sentencesMatch ? activeAudioSentences : [];
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
@@ -392,13 +425,15 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected getSentence() {
     const nr = this.currentSentenceNr,
-          sentences = this.currentChapter.activeSentences;
+          sentences = this.currentChapter.activeSentences,
+          audioSentences = this.currentChapter.activeAudioSentences;
     let sentenceOk = false;
     if (sentences[nr]) {
       this.currentStep = SentenceSteps.Question;
       const sentenceTxt = sentences[nr].text ? sentences[nr].text.replace('_', ' ').trim() : null;
       if (sentenceTxt) {
         this.currentSentence = sentences[nr];
+        this.currentAudioSentence = audioSentences.length ? audioSentences[nr] : null;
         this.currentSentence.text = sentenceTxt;
         this.currentSentenceTxt = sentenceTxt;
         this.currentSentenceNr++;
@@ -410,10 +445,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (!sentenceOk) {
       // Chapter finished
-      this.getChapter(this.bookId, null, this.currentChapter.sequence + 1);
+      this.getAudioAndChapter(this.bookId, null, this.currentChapter.sequence + 1);
     }
   }
 
+  /*
   private getChapter(bookId: string, bookmark: Bookmark, sequence: number) {
     this.readnListenService
     .fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence)
@@ -424,6 +460,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       }
     );
   }
+  */
 
   private processResults(isBookRead: boolean) {
     this.sharedService.changeExerciseMode(false);
@@ -611,7 +648,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.log(`Start ${this.bookType === 'listen' ? 'listening' : 'reading'} ${this.isTest ? 'test ' : '' }'${this.book.title}'`);
         this.isCountDown = false;
         this.currentChapter = null;
+        this.currentAudioChapter = null;
         this.currentSentence = null;
+        this.currentAudioSentence = null;
         this.currentSentenceTxt = null;
         this.currentSentenceNr = null;
         this.currentSentenceTotal = null;

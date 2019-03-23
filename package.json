@@ -1,7 +1,7 @@
 {
   "name": "jazyk",
   "description": "language learning tool",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "ng": "ng",
     "start": "pm2 start km-jazyk.js --watch server",

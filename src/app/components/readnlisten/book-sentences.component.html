@@ -44,8 +44,9 @@
             </div>
             <km-sentence
               [sentence]="currentSentence"
+              [audioSentence]="currentAudioSentence"
               [bookType]="bookType"
-              [directory]="book.directory || ''"
+              [directory]="bookType === 'listen' ? book.directory : (currentAudioChapter ? currentAudioChapter.directory : '')"
               [lanCode]="book.lanCode"
               [showSentence]="currentStep >= steps.Answered">
             </km-sentence>

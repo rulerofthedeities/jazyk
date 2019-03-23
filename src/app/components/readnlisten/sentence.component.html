@@ -1,4 +1,4 @@
-<div class="audio" *ngIf="bookType==='listen'">
+<div class="audio-listen" *ngIf="bookType==='listen'">
   <km-audio-file
     [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + sentence?.s3"
     [size]="120"
@@ -7,5 +7,13 @@
   </km-audio-file>
 </div>
 <div class="sentence" *ngIf="bookType==='read' || showSentence">
+  <div class="audio-read pull-left" *ngIf="bookType!=='listen' && s3">
+    <km-audio-file
+      [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + s3"
+      [size]="40"
+      [autoPlay]="false"
+      (ended)="onAudioEnded($event)">
+    </km-audio-file>
+  </div>
   {{text}}
 </div>

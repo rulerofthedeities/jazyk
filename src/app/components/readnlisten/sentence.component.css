@@ -6,7 +6,10 @@
   padding: 8px;
   margin-bottom: 12px;
 }
-.audio {
+.audio-listen {
   margin: auto;
   width: 120px;
+}
+.audio-read {
+  margin-right: 8px;
 }

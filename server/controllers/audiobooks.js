@@ -77,6 +77,28 @@ module.exports = {
       });
     });
   },
+  getAudioChapter: (req, res) => {
+    // Audio for read book
+    const audioBookId = req.params.bookId,
+          sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
+          query = {audioBookId, sequence},
+          projection = {
+            title: 1,
+            directory: 1,
+            'sentences.sequence': 1,
+            'sentences.s3': 1,
+            'sentences.text': 1,
+            'sentences.isDisabled': 1
+          };
+    console.log('audio chapter query', query);
+    Chapter.findOne(query, projection, (err, chapter) => {
+      response.handleError(err, res, 400, 'Error fetching audio chapter for read', () => {
+        console.log('audio chapter', chapter);
+        response.handleSuccess(res, chapter);
+      });
+    });
+
+  },
   getChapterHeaders: (req, res) => {
     const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
           query = {audioBookId},

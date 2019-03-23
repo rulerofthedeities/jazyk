@@ -116,6 +116,7 @@ module.exports = {
     router.get('/book/user/:lan/:bookId', books.getUserBook);
     router.get('/book/:bookId', books.getBook);
     router.get('/book/chapter/:bookId/:chapterId/:sequence', books.getChapter);
+    router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter); // For read
     router.get('/book/chapterheaders/:bookId', books.getChapterHeaders);
     router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
