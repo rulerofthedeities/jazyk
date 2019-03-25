@@ -164,9 +164,7 @@ export class CountdownComponent implements OnInit, OnDestroy {
       if (promise !== undefined) {
         promise.then(_ => {
           // Autoplay started!
-        }).catch(error => {
-          console.log('error playing sound', error);
-        });
+        }).catch(error => {});
       }
     }
   }

@@ -89,6 +89,9 @@
             <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
             <span class="fa fa-copyright info-intro"
               [class.selected]="showCredits"
+              [tooltip]="text['Attributions']"
+              placement="top"
+              hide-delay="0"
               (click)="onToggleCredits()">
             </span>
             <span *ngIf="book.series || book.intro"
@@ -114,6 +117,7 @@
               </div>
               <div *ngIf="book.credits">{{text['BookCredits']}}: {{book.credits}}</div>
               <div *ngIf="book.authors">{{text['Author']}}: {{book.authors.replace(';', ', ')}}</div>
+              <div *ngIf="book.adaptation">{{text['AdaptedBy']}}: {{book.adaptation}}</div>
               <div *ngIf="book.narrators">{{text['BookNarrator']}}: {{book.narrators}}</div>
               <div *ngIf="book.translator">{{text['BookTranslator']}}: {{book.translator}}</div>
               <div *ngIf="book.cover">{{text['BookCover']}}: {{book.cover}}</div>

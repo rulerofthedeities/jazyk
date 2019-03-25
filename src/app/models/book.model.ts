@@ -90,6 +90,7 @@ export interface Book {
   intro: string;
   credits: string;
   translator?: string;
+  adaptation?: string;
   cover?: string;
   source: string;
   sourceLink: string;

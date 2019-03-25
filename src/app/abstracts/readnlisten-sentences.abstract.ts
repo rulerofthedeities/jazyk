@@ -371,9 +371,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (chapter) {
       this.currentChapter = chapter;
       this.currentAudioChapter = audioChapter;
-      console.log(audioChapter);
       const activeSentences = chapter.sentences.filter(s => !s.isDisabled),
-            activeAudioSentences = audioChapter.sentences.filter(s => !s.isDisabled);
+            activeAudioSentences = audioChapter ? audioChapter.sentences.filter(s => !s.isDisabled) : [];
       activeSentences.map(sentence => sentence.text = sentence.text.replace('_', ' ').trim());
       activeAudioSentences.map(sentence => sentence.text = sentence.text ? sentence.text.replace('_', ' ').trim() : '');
       if (this.bookType === 'listen') {
@@ -382,28 +381,22 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         );
       }
       activeAudioSentences.sort(
-        (a, b) => {
-          const nr1 = parseInt(a.sequence, 10),
-                nr2 = parseInt(b.sequence, 10);
-          return (nr1 > nr2) ? 1 : ((nr2 > nr1) ? -1 : 0);
-        }
+        (a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0)
       );
-      console.log(activeSentences, activeAudioSentences);
-      console.log(activeSentences.length === activeAudioSentences.length ? 'length equal' : '>> !! LENGTH NOT EQUAL!!');
+      // console.log(activeSentences.length === activeAudioSentences.length ? 'length equal' : 'Error: LENGTH NOT EQUAL!!');
 
-      console.log('checking sentences');
       let sentencesMatch = false;
       if (activeSentences.length === activeAudioSentences.length) {
         sentencesMatch = true;
         activeSentences.forEach((sentence, i) => {
           if (sentence.text !== activeAudioSentences[i].text) {
-            console.log('!! TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
+            // console.log('Error: TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
             // Prevent incorrect audio / sentence match
             sentencesMatch = false;
           }
         });
       }
-      console.log(sentencesMatch ? 'sentences match' : '!sentences don\'t match');
+      // console.log(sentencesMatch ? 'sentences match' : '!sentences don\'t match');
 
       chapter.activeSentences = activeSentences;
       chapter.activeAudioSentences = sentencesMatch ? activeAudioSentences : [];

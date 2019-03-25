@@ -25,11 +25,9 @@ export class SentenceComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
-    console.log('audio sentence', this.audioSentence, this.lanCode);
     this.text = this.sentence.text.trim();
     if (this.audioSentence && this.audioSentence.text && this.audioSentence.text.trim() === this.text && this.audioSentence.s3) {
       this.s3 = this.audioSentence.s3;
-      console.log('audio sentence ok', this.audioSentence.s3);
     } else {
       this.s3 = null;
     }

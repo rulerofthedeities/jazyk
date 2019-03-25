@@ -75,9 +75,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
           if (promise !== undefined) {
             promise.then(_ => {
               // Autoplay started!
-            }).catch(error => {
-              console.log('error playing sound', error);
-            });
+            }).catch(error => {});
           }
         }
       });

@@ -48,9 +48,11 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
     .subscribe(
       books => {
         this.books = books;
-        if (books) {
+        if (books && books.length) {
           this.nrOfBooks = books.length;
           this.filterBooks();
+        } else {
+          this.displayBooks = [];
         }
         this.isLoading = false;
         this.isBooksReady = true;
