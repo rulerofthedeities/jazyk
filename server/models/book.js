@@ -53,6 +53,7 @@ var translationSchema = new Schema({
   translation: {type: String, required: true, trim: true},
   note: {type: String, trim: true},
   isMachine: Boolean,
+  isDuplicate: Boolean,
   machine: String,
   lanCode: {type: String, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},

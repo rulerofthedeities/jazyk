@@ -23,24 +23,29 @@
             <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
             {{i + 1}}.
             <!-- Thumbs -->
-            <button
-              type="button"
-              class="btn btn-primary btn-sm btn-thumb"
-              [class.btn-up]="canThumb"
-              [class.thumbed-up]="thumbs[translation.elementId]?.user===true"
-              (click)="onThumb(true, translation)">
-              {{thumbs[translation.elementId]?.nrUp || 0}}
-              <span class="fa fa-thumbs-up" *ngIf="canThumb"></span>
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary btn-sm btn-thumb"
-              [class.btn-down]="canThumb"
-              [class.thumbed-down]="thumbs[translation.elementId]?.user===false"
-              (click)="onThumb(false, translation)">
-              {{thumbs[translation.elementId]?.nrDown || 0}}
-              <span class="fa fa-thumbs-down" *ngIf="canThumb"></span>
-            </button>
+            <span *ngIf="!translation.isDuplicate">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm btn-thumb"
+                [class.btn-up]="canThumb"
+                [class.thumbed-up]="thumbs[translation.elementId]?.user===true"
+                (click)="onThumb(true, translation)">
+                {{thumbs[translation.elementId]?.nrUp || 0}}
+                <span class="fa fa-thumbs-up" *ngIf="canThumb"></span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm btn-thumb"
+                [class.btn-down]="canThumb"
+                [class.thumbed-down]="thumbs[translation.elementId]?.user===false"
+                (click)="onThumb(false, translation)">
+                {{thumbs[translation.elementId]?.nrDown || 0}}
+                <span class="fa fa-thumbs-down" *ngIf="canThumb"></span>
+              </button>
+            </span>
+            <span *ngIf="translation.isDuplicate" class="duplicate-thumbs">
+              {{text["Duplicate"]}}
+            </span>
           </div>
           <div class="translation-block">
             {{translation.translation}}
@@ -101,16 +106,37 @@
     <div *ngIf="submitted">
       {{submitMsg}}
     </div>
-    <km-machine-translation *ngIf="isDeeplAvailable && !hasDeeplTranslations"
-      [text]="text"
-      [bookId]="bookId"
-      [lanPair]="{from: bookLanCode, to: userLanCode}"
-      [sentence]="sentence"
-      [hasTranslations]="translations.length"
-      [canEdit]="canEdit"
-      [canThumb]="canThumb"
-      (translationAdded)=onMachineTranslationAdded($event)>
-    </km-machine-translation>
+    <div class="machine-tl" *ngIf="(isDeeplAvailable && !hasDeeplTranslations) || !hasMSTranslations">
+      <div class="pull-left">
+        {{text[canEdit ? "OrFetchMachineTranslation": "FetchMachineTranslation"]}}
+      </div>
+      <div class="machine-buttons">
+        <km-machine-translation *ngIf="isDeeplAvailable && !hasDeeplTranslations"
+          [text]="text"
+          [translations]="translations"
+          [source]="'DeepL'"
+          [bookId]="bookId"
+          [lanPair]="{from: bookLanCode, to: userLanCode}"
+          [sentence]="sentence"
+          [hasTranslations]="translations.length"
+          [canEdit]="canEdit"
+          [canThumb]="canThumb"
+          (translationAdded)=onMachineTranslationAdded($event)>
+        </km-machine-translation>
+        <km-machine-translation *ngIf="!hasMSTranslations"
+          [text]="text"
+          [translations]="translations"
+          [source]="'Microsoft'"
+          [bookId]="bookId"
+          [lanPair]="{from: bookLanCode, to: userLanCode}"
+          [sentence]="sentence"
+          [hasTranslations]="translations.length"
+          [canEdit]="canEdit"
+          [canThumb]="canThumb"
+          (translationAdded)=onMachineTranslationAdded($event)>
+        </km-machine-translation>
+      </div>
+    </div>
   </div>
 </div>
 

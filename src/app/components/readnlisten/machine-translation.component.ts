@@ -1,8 +1,8 @@
 import { Component, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
 import { LanPair } from '../../models/main.model';
-import { DeepLTranslations, TranslatedData } from '../../models/book.model';
+import { TranslatedData, SentenceTranslation } from '../../models/book.model';
 import { TranslationService } from '../../services/translation.service';
-import { takeWhile, delay } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-machine-translation',
@@ -12,6 +12,7 @@ import { takeWhile, delay } from 'rxjs/operators';
 
 export class MachineTranslationComponent implements OnDestroy {
   @Input() text: Object;
+  @Input() source: string;
   @Input() bookId: string;
   @Input() sentence: string;
   @Input() lanPair: LanPair;
@@ -19,6 +20,7 @@ export class MachineTranslationComponent implements OnDestroy {
   @Input() canEdit: boolean;
   @Input() canThumb: boolean;
   @Output() translationAdded = new EventEmitter<TranslatedData>();
+  @Input() translations: SentenceTranslation[] = []; // for duplicates
   private componentActive = true;
   isLoading = false;
   isTranslated = false;
@@ -30,23 +32,25 @@ export class MachineTranslationComponent implements OnDestroy {
     private translationService: TranslationService
   ) {}
 
-  onGetMachineTranslation(tpe: string) {
-    this.getMachineTranslation(tpe);
+  onGetMachineTranslation() {
+    this.getMachineTranslation();
   }
 
-  private getMachineTranslation(tpe: string) {
+  private getMachineTranslation() {
     this.isLoading = true;
     this.translationService
-    .fetchMachineTranslation(tpe.toLowerCase(), this.lanPair, this.sentence)
+    .fetchMachineTranslation(this.source.toLowerCase(), this.lanPair, this.sentence)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      (translation: DeepLTranslations) => {
+      translation => {
         this.isLoading = false;
         if (translation) {
           this.isTranslated = true;
-          const translations = translation.translations;
-          if (translations[0] && translations[0].text) {
-            this.saveTranslation(tpe.toLowerCase(), translations[0].text, 'Machine translation by ' + tpe);
+          const DeepLTranslations = translation.translations,
+                MSTranslations = translation[0] ? translation[0].translations : [],
+                tl = this.source === 'DeepL' ? DeepLTranslations : MSTranslations;
+          if (tl[0] && tl[0].text) {
+            this.saveTranslation(this.source.toLowerCase(), tl[0].text, 'Machine translation by ' + this.source);
           }
         }
       },
@@ -60,6 +64,7 @@ export class MachineTranslationComponent implements OnDestroy {
   }
 
   private saveTranslation(tpe: string, translation: string, note: string) {
+    const duplicate = !!this.translations.find(t => t.translation === translation);
     this.translationService
     .addSentenceTranslation(
       this.lanPair.from,
@@ -69,7 +74,8 @@ export class MachineTranslationComponent implements OnDestroy {
       translation,
       note,
       true,
-      tpe)
+      tpe,
+      duplicate)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (newTranslationData: TranslatedData) => {

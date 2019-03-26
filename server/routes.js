@@ -123,6 +123,7 @@ module.exports = {
     router.put('/book/translation/', books.updateTranslation);
     router.get('/book/translation/:lan', books.getBookTranslations);
     router.post('/book/machinetranslation/deepl', books.getDeeplTranslation);
+    router.post('/book/machinetranslation/microsoft', books.getMicrosoftTranslation);
     router.put('/book/bookmark', books.updateBookmark);
     router.post('/book/session', books.addSession);
     router.put('/book/session', books.updateSession);

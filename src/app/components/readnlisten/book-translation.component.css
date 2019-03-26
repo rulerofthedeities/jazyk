@@ -1,5 +1,5 @@
 .translations-container {
-  max-height: 100px;
+  max-height: 140px;
   overflow-y: scroll;
   border: 1px solid #333;
   margin-bottom: 12px;
@@ -22,7 +22,6 @@
 .revision .translation-new-note {
   height: 56px;
 }
-
 .translation-send {
   vertical-align: top;
 }
@@ -57,8 +56,23 @@
 .translation-block {
   display: block;
 }
+.machine-tl{
+  margin-top: 12px;
+}
+.machine-tl > div {
+  margin-right: 3px;
+}
+.machine-buttons {
+  display: inline-block;
+}
 .duplicate {
   color: red;
+}
+.duplicate-thumbs {
+  min-width: 92px;
+  min-height: 30px;
+  display: inline-block;
+  color: darkorange;
 }
 .revision .translation-send {float: left;width: 100%;}
 .revision .translation-send > .btn {width: 100%;}

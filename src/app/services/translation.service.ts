@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Book, TranslationData, TranslatedData, SentenceTranslation, DeepLTranslations } from '../models/book.model';
+import { Book, TranslationData, TranslatedData, SentenceTranslation, DeepLTranslations, MSTranslations } from '../models/book.model';
 import { WordDefinition, OmegaDefinitions, OmegaDefinition,
          OmegaTranslation, WordTranslation, WordTranslations } from '../models/word.model';
 import { LanPair } from '../models/main.model';
@@ -88,11 +88,12 @@ export class TranslationService {
     translation: string,
     note: string,
     isMachine = false,
-    machine = null
+    machine = null,
+    isDuplicate = false
   ): Observable<TranslatedData> {
     return this.http
     .post<TranslatedData>('/api/book/translation/', {
-      bookLanCode, userLanCode, bookId, sentence, translation, note, isMachine, machine
+      bookLanCode, userLanCode, bookId, sentence, translation, note, isMachine, machine, isDuplicate
     });
   }
 
@@ -108,9 +109,9 @@ export class TranslationService {
     });
   }
 
-  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<DeepLTranslations> {
+  fetchMachineTranslation(tpe: string, lanPair: LanPair, sentence: string): Observable<DeepLTranslations|MSTranslations> {
     return this.http
-    .post<DeepLTranslations>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
+    .post<DeepLTranslations|MSTranslations>('/api/book/machinetranslation/' + tpe, {lanPair, sentence});
   }
 
   getMachineLanguages(tpe: string) {

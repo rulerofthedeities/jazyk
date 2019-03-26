@@ -15,6 +15,9 @@ module.exports = {
     if (!process.env.DEEPL_API_KEY) {
       console.log('WARNING: no config var DEEPL_API_KEY set!');
     }
+    if (!process.env.MSTRANSLATE_API_KEY) {
+      console.log('WARNING: no config var MSTRANSLATE_API_KEY set!');
+    }
     // Check if running in development mode
     if (app.get('env') === 'development') {
       console.log('Server running in development mode');

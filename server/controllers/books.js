@@ -11,7 +11,8 @@ const response = require('../response'),
       UserTrophy = require('../models/userbook').userTrophy,
       ErrorModel = require('../models/error'),
       wilson = require('wilson-score'),
-      request = require('request');
+      request = require('request'),
+      uuidv4 = require('uuid/v4');
 
 const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) => {
   const translationId = new mongoose.Types.ObjectId(translation_id),
@@ -304,6 +305,7 @@ module.exports = {
             userId: "$translations.userId",
             elementId: "$translations._id",
             isMachine: "$translations.isMachine",
+            isDuplicate: "$translations.isDuplicate",
             machine: "$translations.machine"
           },
           pipeline = [
@@ -328,12 +330,14 @@ module.exports = {
           bookId = req.body.bookId,
           isMachine = !!req.body.isMachine,
           machine = req.body.machine,
+          isDuplicate = !!req.body.isDuplicate,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           newTranslation = {translation, note, lanCode, userId},
           query = {bookId, sentence},
           options = {upsert: true, new: true};
     if (isMachine) {
       newTranslation['isMachine'] = true;
+      newTranslation['isDuplicate'] = isDuplicate;
       newTranslation['machine'] = machine;
     };
     const update = {
@@ -395,7 +399,7 @@ module.exports = {
   getDeeplTranslation: (req, res) => {
     const lanFrom = req.body.lanPair.from.toUpperCase(),
           lanTo = req.body.lanPair.to.toUpperCase(),
-          sentence = encodeURI(req.body.sentence.slice(0, 1600)), // limit to 1600 chars
+          sentence = encodeURI(req.body.sentence.slice(0, 1600)), // limit to 1600 chars (url)
           api_key = process.env.DEEPL_API_KEY,
           url = `https://api.deepl.com/v2/translate?source_lang=${lanFrom}&target_lang=${lanTo}&split_sentences=0&text=${sentence}&auth_key=${api_key}`;
 
@@ -413,6 +417,36 @@ module.exports = {
         response.handleSuccess(res, bodyDeepl);
       });
     }).end();
+  },
+  getMicrosoftTranslation: (req, res) => {
+    const lanFrom = req.body.lanPair.from.toLowerCase(),
+          lanTo = req.body.lanPair.to.toLowerCase(),
+          sentence = req.body.sentence,
+          api_key = process.env.MSTRANSLATE_API_KEY,
+          options = {
+            method: 'POST',
+            baseUrl: 'https://api-eur.cognitive.microsofttranslator.com/',
+            url: 'translate',
+            qs: {
+              'api-version': '3.0',
+              'from': lanFrom,
+              'to': lanTo
+            },
+            headers: {
+              'Ocp-Apim-Subscription-Key': api_key,
+              'Content-type': 'application/json',
+              'X-ClientTraceId': uuidv4().toString()
+            },
+            body: [{
+              'text': sentence
+            }],
+            json: true,
+          };
+    request(options, (errMS, resMS, bodyMS) => {
+      response.handleError(errMS, resMS, 400, 'Error fetching DeepL translation', () => {
+        response.handleSuccess(res, bodyMS);
+      });
+    });
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),

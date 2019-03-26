@@ -1,11 +1,10 @@
 <div class="mt" *ngIf="!isTranslated && (!hasTranslations || canThumb)">
-  {{text[canEdit ? "OrFetchMachineTranslation": "FetchMachineTranslation"]}}
   <span class="fetch">
     <button  *ngIf="!isLoading"
       type="button"
       class="btn btn-success btn-xs"
-      (click)="onGetMachineTranslation('DeepL')">
-      {{text["FetchTranslation"]}}
+      (click)="onGetMachineTranslation()">
+      {{text["FetchTranslationFrom"].replace('%s', source)}}
     </button>
     <km-loader *ngIf="isLoading"
       [showBackground]="false"

@@ -41,6 +41,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   thumbs: Map<Thumbs> = {};
   isDeeplAvailable: boolean;
   hasDeeplTranslations: boolean;
+  hasMSTranslations: boolean;
 
   constructor(
     private translationService: TranslationService,
@@ -94,6 +95,9 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     const newTranslation = this.insertTranslation(translatedData);
     if (newTranslation && newTranslation.machine === 'deepl') {
       this.hasDeeplTranslations = true;
+    }
+    if (newTranslation && newTranslation.machine === 'microsoft') {
+      this.hasMSTranslations = true;
     }
     if (this.canConfirm) {
       this.confirm.next();
@@ -297,12 +301,8 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   private checkIfMachineTranslations(translations: SentenceTranslation[]) {
     // Check if there is a machine translation
     // User can only add a machine translation if it isn't available yet
-    const deepl = translations.find(t => t.isMachine && t.machine === 'deepl');
-    if (deepl) {
-      this.hasDeeplTranslations = true;
-    } else {
-      this.hasDeeplTranslations = false;
-    }
+    this.hasDeeplTranslations = !!translations.find(t => t.isMachine && t.machine === 'deepl');
+    this.hasMSTranslations = !!translations.find(t => t.isMachine && t.machine === 'microsoft');
   }
 
   private checkMachineTranslationAvailability() {

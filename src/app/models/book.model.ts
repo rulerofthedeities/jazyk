@@ -125,6 +125,7 @@ export interface SentenceTranslation {
   translation: string;
   note: string;
   isMachine: boolean;
+  isDuplicate?: boolean;
   machine?: string;
   lanCode: string;
   score: number;
@@ -144,8 +145,18 @@ interface DeepLTranslation {
   detected_source_language: string;
   text: string;
 }
+
 export interface DeepLTranslations {
   translations: DeepLTranslation[];
+}
+
+interface MSTranslation {
+  to: string;
+  text: string;
+}
+
+export interface MSTranslations {
+  translations: MSTranslation[];
 }
 
 export interface RevisionTranslations {
