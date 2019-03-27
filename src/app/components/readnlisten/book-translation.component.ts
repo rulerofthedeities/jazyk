@@ -353,6 +353,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
           this.submitMsg = null;
           this.canConfirm = false;
           this.hasDeeplTranslations = false;
+          this.hasMSTranslations = false;
           this.getSentenceTranslations(sentence);
         }
       });
