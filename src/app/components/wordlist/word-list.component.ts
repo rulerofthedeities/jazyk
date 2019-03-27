@@ -183,6 +183,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         this.processUserWords();
         this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
         this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
+        this.setPaginationLetters();
         this.goToPage(1);
         this.isLoading = false;
       },
@@ -194,6 +195,15 @@ export class BookWordListComponent implements OnInit, OnDestroy {
       );
     } else {
       this.msg = this.text['InvalidBookId'];
+    }
+  }
+
+  setPaginationLetters() {
+    // TODO: if same as previous, use more than one letter!!
+    let wordIndex = 0;
+    for(let i = 0; i < this.nrOfPages; i++) {
+      wordIndex = i * this.wordsPerPage;
+      console.log('page letter', wordIndex, this.words[wordIndex].sortWord[0]);
     }
   }
 

@@ -10,7 +10,7 @@ module.exports = {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           query = {bookIds: bookId},
           projection = {},
-          options = {sort: {word: 1}};
+          options = {sort: {sortWord: 1}};
     WordList.find(query, projection, options, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching word list', () => {
         response.handleSuccess(res, words);

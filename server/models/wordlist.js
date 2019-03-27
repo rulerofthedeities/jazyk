@@ -4,8 +4,10 @@ const mongoose = require('mongoose'),
       mongooseUniqueValidator = require('mongoose-unique-validator'),
       Schema = mongoose.Schema;
 
-const WordSchema = new Schema({}, { strict: false }),
-      WordModel = mongoose.model('bookword', WordSchema);
+
+
+const wordSchema = new Schema({}, { strict: false }),
+      WordModel = mongoose.model('bookword', wordSchema);
 
 const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
@@ -38,7 +40,7 @@ definitionsSchema.index({source: 1, word: 1});
 definitionsSchema.plugin(mongooseUniqueValidator);
 DefinitionsModel.ensureIndexes();
 
-var wordTranslationSchema = new Schema({
+const wordTranslationSchema = new Schema({
   translation: {type: String, required: true},
   definition: String,
   lanCode: String,
@@ -47,12 +49,12 @@ var wordTranslationSchema = new Schema({
 });
 
 const wordTranslationsSchema = new Schema({
-  bookId: {type: Schema.Types.ObjectId, required: true},
-  lanCode: {type: String, required: true},
-  word: {type: String, required: true},
-  translations: [wordTranslationSchema]
-});
-const TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);
+        bookId: {type: Schema.Types.ObjectId, required: true},
+        lanCode: {type: String, required: true},
+        word: {type: String, required: true},
+        translations: [wordTranslationSchema]
+      }),
+      TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);
 wordTranslationsSchema.index({bookId: 1, lanCode: 1, word: 1});
 TranslationsModel.ensureIndexes();
 

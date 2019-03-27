@@ -3,6 +3,7 @@ export interface Word {
   bookId: string;
   lanCode: string;
   word: string;
+  sortWord: string;
   root?: string;
   region: string;
   wordType: string;
