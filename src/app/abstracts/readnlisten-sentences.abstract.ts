@@ -293,8 +293,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
             totalBookSentences: null
           },
           chapterId: null,
+          chapterSequence: null,
           sentenceNrChapter: null,
           lastChapterId: null,
+          lastChapterSequence: null,
           lastSentenceNrChapter: null
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
@@ -404,8 +406,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
       this.sessionData.chapterId = this.currentChapter._id;
+      this.sessionData.chapterSequence = this.currentChapter.sequence;
       this.sessionData.sentenceNrChapter = this.currentSentenceNr;
       this.sessionData.lastChapterId = this.currentChapter._id;
+      this.sessionData.lastChapterSequence = this.currentChapter.sequence;
       this.sessionData.lastSentenceNrChapter = this.currentSentenceNr;
       this.emitSentenceNr(this.currentSentenceNr);
       this.getSentence();
@@ -442,19 +446,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
-  /*
-  private getChapter(bookId: string, bookmark: Bookmark, sequence: number) {
-    this.readnListenService
-    .fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      chapter => {
-        this.processChapter(chapter, bookmark);
-      }
-    );
-  }
-  */
-
   private processResults(isBookRead: boolean) {
     this.sharedService.changeExerciseMode(false);
     this.placeBookmark(isBookRead); // must be before currentStep change
@@ -485,6 +476,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       }
       const newBookmark: Bookmark = {
         chapterId: this.currentChapter._id,
+        chapterSequence: this.currentChapter.sequence,
         sentenceNrChapter: sentenceNrToBookmark,
         isChapterRead: isBookRead ? true : isRead,
         isBookRead,
@@ -509,14 +501,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private getPointsFinished(): number {
-    return Math.round(this.book.difficulty.nrOfWords *
-          Math.log(this.book.difficulty.nrOfWords) *
-          this.getScoreMultiplier() * this.getRepeatMultiplier() * 0.9) || 0;
+    return Math.round(
+             this.book.difficulty.nrOfWords *
+             Math.log(this.book.difficulty.nrOfWords) *
+             this.getScoreMultiplier() * this.getRepeatMultiplier() * 0.9
+           ) || 0;
   }
 
   protected saveSessionData(book: Book = null) {
     if (this.sessionData.answers) {
       this.sessionData.lastChapterId = this.currentChapter._id;
+      this.sessionData.lastChapterSequence = this.currentChapter.sequence;
       this.sessionData.lastSentenceNrChapter = this.getSentenceNrToSave();
       this.readnListenService
       .saveSessionData(this.sessionData)
@@ -545,24 +540,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           // Results - already saved
           this.startAnotherBook(book);
         } else {
-          if (this.currentSentenceNr >= this.currentSentenceTotal) {
-            // Check if finished
-            this.readnListenService
-            .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
-            .pipe(takeWhile(() => this.componentActive))
-            .subscribe(
-              chapter => {
-                if (!chapter) {
-                  // Quit book right at the finish!
-                  this.placeBookmark(true);
-                }
-                this.saveSessionData(book);
-              }
-            );
-          } else {
-            this.placeBookmark(false);
-            this.saveSessionData(book);
-          }
+          this.checkIfStoppedAtEndOfBook(book);
         }
       }
     );
@@ -570,6 +548,27 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.platformLocation.onPopState(() => {
       this.sharedService.changeExerciseMode(false);
     });
+  }
+
+  protected checkIfStoppedAtEndOfBook(book: Book = null) {
+    if (this.currentSentenceNr >= this.currentSentenceTotal) {
+      // Check if finished
+      this.readnListenService
+      .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        chapter => {
+          if (!chapter) {
+            // Quit book right at the finish!
+            this.placeBookmark(true);
+          }
+          this.saveSessionData(book);
+        }
+      );
+    } else {
+      this.placeBookmark(false);
+      this.saveSessionData(book);
+    }
   }
 
   protected exitReading() {

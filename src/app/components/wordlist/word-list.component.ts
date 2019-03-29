@@ -203,7 +203,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     let wordIndex = 0;
     for(let i = 0; i < this.nrOfPages; i++) {
       wordIndex = i * this.wordsPerPage;
-      console.log('page letter', wordIndex, this.words[wordIndex].sortWord[0]);
+      // console.log('page letter', wordIndex, this.words[wordIndex].sortWord[0]);
     }
   }
 

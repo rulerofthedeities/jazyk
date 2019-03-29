@@ -101,8 +101,10 @@ var sessionSchema = new Schema({
   dt: dtSchema,
   points: pointsSchema,
   chapterId: String,
+  chapterSequence: Number,
   sentenceNrChapter: Number,
   lastChapterId: String,
+  lastChapterSequence: Number,
   lastSentenceNrChapter: Number
 });
 

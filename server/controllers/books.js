@@ -458,9 +458,11 @@ module.exports = {
           query = {bookId, userId, lanCode, bookType, isTest};
     bookmark.dt = Date.now();
     const update = {$set: {bookmark}};
+    /*
     if (!bookmark.sentenceNrBook) {
       bookmark.sentenceNrBook = 0;
     }
+    */
     UserBook.findOneAndUpdate(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating bookmark', () => {
         response.handleSuccess(res, result);
@@ -492,6 +494,7 @@ module.exports = {
             nrMaybe: sessionData.nrMaybe,
             translations: sessionData.translations,
             lastChapterId: sessionData.lastChapterId,
+            lastChapterSequence: sessionData.lastChapterSequence,
             lastSentenceNrChapter: sessionData.lastSentenceNrChapter,
             'dt.end': Date.now(),
             'dt.diff': (new Date().getTime() - new Date(sessionData.dt.start).getTime()) / 1000,

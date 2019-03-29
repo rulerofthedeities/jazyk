@@ -165,7 +165,8 @@ export interface RevisionTranslations {
 }
 
 export interface Bookmark {
-  chapterId: string;
+  chapterId?: string;
+  chapterSequence: number;
   sentenceNrChapter: number;
   isChapterRead: boolean;
   isBookRead?: boolean;
@@ -230,8 +231,10 @@ export interface SessionData {
   dt?: SessionDates;
   resultData?: ResultData; // For results page
   chapterId?: string; // For revision
+  chapterSequence?: number; // For revision
   sentenceNrChapter?: number; // For revision
   lastChapterId?: string; // For integrity check
+  lastChapterSequence?: number; // For integrity check
   lastSentenceNrChapter?: number; // For integrity check
 }
 
