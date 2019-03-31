@@ -45,9 +45,9 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  fetchUserBook(interfaceLanCode: string, bookId: string, isTest: boolean): Observable<UserBook> {
+  fetchUserBook(userLanCode: string, bookId: string, isTest: boolean): Observable<UserBook> {
     return this.http
-    .get<UserBook>('/api/book/user/' + interfaceLanCode + '/' + bookId + '/' + (isTest ? '1' : '0'))
+    .get<UserBook>('/api/book/user/' + userLanCode + '/' + bookId + '/' + (isTest ? '1' : '0'))
     .pipe(retry(3));
   }
 
@@ -167,6 +167,12 @@ export class ReadnListenService {
   fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
     return this.http
     .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
+    .pipe(retry(3));
+  }
+
+  fetchLatestSession(userLanCode: string, bookId: string, isTest: boolean): Observable<SessionData> {
+    return this.http
+    .get<SessionData>('/api/book/sessions/latest/' + bookId + '/' + userLanCode + '/' + (isTest ? '1' : '0'))
     .pipe(retry(3));
   }
 

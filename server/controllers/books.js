@@ -574,6 +574,20 @@ module.exports = {
       });
     });
   },
+  getLastestSession: (req, res) => {
+    const bookId = req.params.bookId,
+          lanCode = req.params.lan,
+          isTest = req.params.isTest === '1' ? true : false,
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {userId, bookId, lanCode, isTest},
+          projection = {},
+          options = {sort: {'dt.end': -1}};
+    Session.findOne(query, projection, options, (err, session) => {
+      response.handleError(err, res, 400, 'Error fetching latest session data', () => {
+        response.handleSuccess(res, session);
+      });
+    });
+  },
   getThumbs: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId =new mongoose.Types.ObjectId( req.params.bookId),

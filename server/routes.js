@@ -130,6 +130,7 @@ module.exports = {
     router.put('/book/sessionchange', books.changeSessionAnswer);
     router.get('/book/sessions/:lan/:bookType', books.getSessions);
     router.get('/book/sessions/book/:bookId/:lan', books.getBookSessions);
+    router.get('/book/sessions/latest/:bookId/:lan/:isTest', books.getLastestSession);
     router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
     router.post('/book/thumb', books.addThumb);
     router.get('/book/trophies/user/:userId', books.getTrophies);

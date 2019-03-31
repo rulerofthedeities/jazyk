@@ -13,6 +13,7 @@ import { BookTranslationComponent } from '../components/readnlisten/book-transla
 import { environment } from 'environments/environment';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
+import { cp } from '@angular/core/src/render3';
 
 interface Position {
   // user's position in book
@@ -270,14 +271,16 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.isLoading = true;
       zip(
         this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, this.isTest),
+        this.readnListenService.fetchLatestSession(this.userLanCode, this.bookId, this.isTest),
         this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent'),
         this.readnListenService.fetchBook(this.bookId, this.bookType)
       )
       .pipe(
         takeWhile(() => this.componentActive))
       .subscribe(res => {
-        this.text = this.sharedService.getTranslatedText(res[1]);
-        const userBook = res[0];
+        this.text = this.sharedService.getTranslatedText(res[2]);
+        const userBook: UserBook = res[0],
+              sessionPosition: Position = this.getSessionPosition(res[1]);
         this.sessionData = {
           bookId: this.bookId,
           lanCode: this.userLanCode,
@@ -310,9 +313,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;
         }
-        this.processBook(res[2]);
-        this.findCurrentChapter(userBook);
+        this.processBook(res[3]);
+        this.findCurrentChapter(userBook, sessionPosition);
       });
+    }
+  }
+
+  private getSessionPosition(session: SessionData): Position {
+    if (session) {
+      return {chapterSequence: session.lastChapterSequence || 1, sentenceNrChapter: session.lastSentenceNrChapter || 0};
+    } else {
+      return {chapterSequence: 1, sentenceNrChapter: 0};
     }
   }
 
@@ -321,8 +332,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     return words ? Math.round(words.length * this.getScoreMultiplier() * this.getRepeatMultiplier() * 3.2) : 0;
   }
 
-  private findCurrentChapter(userBook: UserBook) {
-    const bookStartPosition: Position = {chapterSequence: 1, sentenceNrChapter : 0};
+  private findCurrentChapter(userBook: UserBook, sessionPosition: Position) {
+    const bookStartPosition: Position = {chapterSequence: 1, sentenceNrChapter: 0};
     if (userBook) {
       const repeatCount = userBook.repeatCount || 0;
       this.userBookId = userBook._id;
@@ -337,10 +348,12 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           this.showReadMsg = true;
           this.setBookFinishedMessage();
         } else {
-          this.getAudioAndChapter(userBook.bookId, {
-            chapterSequence: userBook.bookmark.chapterSequence || 1,
-            sentenceNrChapter: userBook.bookmark.sentenceNrChapter || 0
-          });
+          const bookmarkPosition = {
+                  chapterSequence: userBook.bookmark.chapterSequence || 1,
+                  sentenceNrChapter: userBook.bookmark.sentenceNrChapter || 0
+                },
+                currentPosition = this.getCurrentPosition(bookmarkPosition, sessionPosition);
+          this.getAudioAndChapter(userBook.bookId, currentPosition);
         }
       } else {
         // no bookmark: get first chapter
@@ -355,6 +368,24 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         newUserBook => {
           this.getAudioAndChapter(this.bookId, bookStartPosition);
       });
+    }
+  }
+
+  private getCurrentPosition(bookmarkPosition: Position, sessionPosition: Position): Position {
+    // Compare bookmark with latest session
+    // if latest session sequence/sentence is higher, use this one
+    if (sessionPosition.chapterSequence > bookmarkPosition.chapterSequence) {
+      console.log('!Session has later chapter, use session');
+      return sessionPosition;
+    } else if (
+      sessionPosition.chapterSequence === bookmarkPosition.chapterSequence &&
+      sessionPosition.sentenceNrChapter > bookmarkPosition.sentenceNrChapter
+    ) {
+      console.log('!Session has later sentence nr, use session position');
+      return sessionPosition;
+    } else {
+      console.log('use bookmark position');
+      return bookmarkPosition;
     }
   }
 
