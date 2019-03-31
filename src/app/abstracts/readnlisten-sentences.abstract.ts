@@ -10,6 +10,7 @@ import { SessionData, UserBook, Bookmark, Book, Chapter,
 import { ReadSettings } from '../models/user.model';
 import { ModalConfirmComponent } from '../components/modals/modal-confirm.component';
 import { BookTranslationComponent } from '../components/readnlisten/book-translation.component';
+import { environment } from 'environments/environment';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 
@@ -303,7 +304,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           sentenceNrChapter: null,
           lastChapterId: null,
           lastChapterSequence: null,
-          lastSentenceNrChapter: null
+          lastSentenceNrChapter: null,
+          version: environment.version
         };
         if (!userBook || (userBook && !userBook.bookmark)) {
           this.isCountDown = true;

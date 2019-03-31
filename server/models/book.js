@@ -105,7 +105,8 @@ var sessionSchema = new Schema({
   sentenceNrChapter: Number,
   lastChapterId: String,
   lastChapterSequence: Number,
-  lastSentenceNrChapter: Number
+  lastSentenceNrChapter: Number,
+  version: String
 });
 
 sessionSchema.index({userId: 1, bookId: 1, lanCode: 1});

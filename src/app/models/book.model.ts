@@ -236,6 +236,7 @@ export interface SessionData {
   lastChapterId?: string; // For integrity check
   lastChapterSequence?: number; // For integrity check
   lastSentenceNrChapter?: number; // For integrity check
+  version?: string;
 }
 
 // Session data returned for one user
