@@ -13,6 +13,12 @@ import { BookTranslationComponent } from '../components/readnlisten/book-transla
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 
+interface Position {
+  // user's position in book
+  chapterSequence: number;
+  sentenceNrChapter: number;
+}
+
 export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy {
   protected componentActive = true;
   protected bookId: string;
@@ -85,7 +91,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       // Check if book is finished - in case abort right before end
       if (this.currentSentenceNr >= this.currentSentenceTotal) {
         this.readnListenService
-        .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
+        .fetchChapter(this.book._id, this.bookType, this.currentChapter.sequence + 1)
         .pipe(takeWhile(() => this.componentActive))
         .subscribe(
           chapter => {
@@ -314,6 +320,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private findCurrentChapter(userBook: UserBook) {
+    const bookStartPosition: Position = {chapterSequence: 1, sentenceNrChapter : 0};
     if (userBook) {
       const repeatCount = userBook.repeatCount || 0;
       this.userBookId = userBook._id;
@@ -328,11 +335,14 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           this.showReadMsg = true;
           this.setBookFinishedMessage();
         } else {
-          this.getAudioAndChapter(userBook.bookId, userBook.bookmark, 1);
+          this.getAudioAndChapter(userBook.bookId, {
+            chapterSequence: userBook.bookmark.chapterSequence || 1,
+            sentenceNrChapter: userBook.bookmark.sentenceNrChapter || 0
+          });
         }
       } else {
-        // no chapter: get first chapter
-        this.getAudioAndChapter(userBook.bookId, null, 1);
+        // no bookmark: get first chapter
+        this.getAudioAndChapter(userBook.bookId, bookStartPosition);
       }
     } else {
       // no userbook, subscribe and get first chapter
@@ -341,19 +351,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         newUserBook => {
-          this.getAudioAndChapter(this.bookId, null, 1);
+          this.getAudioAndChapter(this.bookId, bookStartPosition);
       });
     }
   }
 
-  private getAudioAndChapter(bookId: string, bookmark: Bookmark, sequence: number) {
+  private getAudioAndChapter(bookId: string, position: Position) {
     zip(
-      this.readnListenService.fetchChapter(bookId, this.bookType, bookmark ? bookmark.chapterId : null, sequence),
-      this.readnListenService.fetchAudioChapter(this.book, sequence)
+      this.readnListenService.fetchChapter(bookId, this.bookType, position.chapterSequence),
+      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      this.processChapter(data[0], data[1], bookmark);
+      this.processChapter(data[0], data[1], position);
       this.isLoading = false;
     });
   }
@@ -369,7 +379,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
-  private processChapter(chapter: Chapter, audioChapter: AudioChapter, bookmark: Bookmark) {
+  private processChapter(chapter: Chapter, audioChapter: AudioChapter, position: Position) {
     if (chapter) {
       this.currentChapter = chapter;
       this.currentAudioChapter = audioChapter;
@@ -404,7 +414,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       chapter.activeAudioSentences = sentencesMatch ? activeAudioSentences : [];
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
-      this.currentSentenceNr = bookmark ? bookmark.sentenceNrChapter : 0;
+      this.currentSentenceNr = position.sentenceNrChapter || 0;
       this.sessionData.chapterId = this.currentChapter._id;
       this.sessionData.chapterSequence = this.currentChapter.sequence;
       this.sessionData.sentenceNrChapter = this.currentSentenceNr;
@@ -441,8 +451,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       }
     }
     if (!sentenceOk) {
-      // Chapter finished
-      this.getAudioAndChapter(this.bookId, null, this.currentChapter.sequence + 1);
+      // Chapter finished, go to next chapter
+      const nextPosition: Position = {chapterSequence: this.currentChapter.sequence + 1, sentenceNrChapter: 0};
+      this.getAudioAndChapter(this.bookId, nextPosition);
     }
   }
 
@@ -552,9 +563,9 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   protected checkIfStoppedAtEndOfBook(book: Book = null) {
     if (this.currentSentenceNr >= this.currentSentenceTotal) {
-      // Check if finished
+      // Check if finished (see if the next chapter exists)
       this.readnListenService
-      .fetchChapter(this.book._id, this.bookType, null, this.currentChapter.sequence + 1)
+      .fetchChapter(this.book._id, this.bookType, this.currentChapter.sequence + 1)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         chapter => {

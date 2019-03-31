@@ -266,9 +266,8 @@ module.exports = {
   },
   getChapter: (req, res) => {
     const bookId = req.params.bookId,
-          chapterId = req.params.chapterId,
-          sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
-          query = chapterId === '0' ? {bookId, sequence} : {_id: chapterId},
+          sequence = parseInt(req.params.sequence, 10) || 1,
+          query = {bookId, sequence},
           projection = {content: 0};
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching chapter', () => {

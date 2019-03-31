@@ -90,7 +90,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     } else {
       this.currentChapterId = chapter._id;
       this.currentIndex = [...chapter.index];
-      this.getCurrentChapter(chapter._id, chapter.merged, true); // Get chapterdata
+      // this.getCurrentChapter(chapter._id, chapter.merged, true); // Get chapterdata
     }
   }
 
@@ -218,7 +218,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         this.msg = this.text['NoChapter'];
       }
       if (this.chapters.length === 1) {
-        this.getCurrentChapter(this.chapters[0]._id, null, true);
+        // this.getCurrentChapter(this.chapters[0]._id, null, true);
       }
       if (this.chapters.length > 1) {
         this.hasChapters = true;
@@ -278,7 +278,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     }
     return isBookRead;
   }
-
+/*
   private getCurrentChapter(chapterId: string, merged: string[], singleChapter: boolean) {
     this.currentChapterId = chapterId;
     this.readnListenService.fetchChapter(this.bookId, this.bookType, chapterId, 0)
@@ -311,7 +311,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       }
     );
   }
-
+*/
   private processChapter(chapter: Chapter): SentenceData[][] {
     const chapterData = [];
     let parNr = 0;

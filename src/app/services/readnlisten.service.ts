@@ -73,11 +73,10 @@ export class ReadnListenService {
 
   /*** Chapters ***/
 
-  fetchChapter(bookId: string, bookType: string, chapterId: string, sequence: number): Observable<Chapter> {
-    const chapter = chapterId ? chapterId : '0',
-          bookPath = bookType === 'listen' ? 'audiobook' : 'book';
+  fetchChapter(bookId: string, bookType: string, sequence: number): Observable<Chapter> {
+    const bookPath = bookType === 'listen' ? 'audiobook' : 'book';
     return this.http
-    .get<Chapter>(`/api/${bookPath}/chapter/${bookId}/${chapter}/${sequence.toString()}`)
+    .get<Chapter>(`/api/${bookPath}/chapter/${bookId}/${sequence.toString()}`)
     .pipe(retry(3));
   }
 
