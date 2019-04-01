@@ -24,7 +24,6 @@
       [counter]="settings.delay"
       (countedDown)="onCountDownFinished()">
     </km-countdown>
-    Sentence nr: {{currentSentenceNr}} {{currentStep}}
     <div *ngIf="readingStarted && !isError && !isLoading && !isCountDown">
       <div class="panel panel-default">
         <div class="panel-body">
