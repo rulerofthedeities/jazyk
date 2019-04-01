@@ -19,6 +19,7 @@ interface Position {
   // user's position in book
   chapterSequence: number;
   sentenceNrChapter: number;
+  repeatCount: number;
 }
 
 export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy {
@@ -92,7 +93,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.log('Reading aborted');
       this.sharedService.stopAudio();
       // Check if book is finished - in case abort right before end
-      if (this.currentSentenceNr >= this.currentSentenceTotal) {
+      if (this.currentSentenceNr >= this.currentSentenceTotal && this.currentStep > SentenceSteps.Question) {
         this.readnListenService
         .fetchChapter(this.book._id, this.bookType, this.currentChapter.sequence + 1)
         .pipe(takeWhile(() => this.componentActive))
@@ -322,9 +323,17 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   private getSessionPosition(session: SessionData): Position {
     if (session) {
-      return {chapterSequence: session.lastChapterSequence || 1, sentenceNrChapter: session.lastSentenceNrChapter || 0};
+      return {
+        chapterSequence: session.lastChapterSequence || 1,
+        sentenceNrChapter: session.lastSentenceNrChapter || 0,
+        repeatCount: session.repeatCount || 0
+      };
     } else {
-      return {chapterSequence: 1, sentenceNrChapter: 0};
+      return {
+        chapterSequence: 1,
+        sentenceNrChapter: 0,
+        repeatCount: 0
+      };
     }
   }
 
@@ -334,7 +343,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   private findCurrentChapter(userBook: UserBook, sessionPosition: Position) {
-    const bookStartPosition: Position = {chapterSequence: 1, sentenceNrChapter: 0};
+    const bookStartPosition: Position = {
+            chapterSequence: 1,
+            sentenceNrChapter: 0,
+            repeatCount: 0
+          };
     if (userBook) {
       const repeatCount = userBook.repeatCount || 0;
       this.userBookId = userBook._id;
@@ -351,7 +364,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         } else {
           const bookmarkPosition = {
                   chapterSequence: userBook.bookmark.chapterSequence || 1,
-                  sentenceNrChapter: userBook.bookmark.sentenceNrChapter || 0
+                  sentenceNrChapter: userBook.bookmark.sentenceNrChapter || 0,
+                  repeatCount: userBook.repeatCount || 0
                 },
                 currentPosition = this.getCurrentPosition(bookmarkPosition, sessionPosition);
           this.getAudioAndChapter(userBook.bookId, currentPosition);
@@ -375,7 +389,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private getCurrentPosition(bookmarkPosition: Position, sessionPosition: Position): Position {
     // Compare bookmark with latest session
     // if latest session sequence/sentence is higher, use this one
-    if (sessionPosition && !this.isRestart && !this.isRepeat) {
+    if (sessionPosition && !this.isRestart && (bookmarkPosition.repeatCount === sessionPosition.repeatCount)) {
       if (sessionPosition.chapterSequence > bookmarkPosition.chapterSequence) {
         console.log('Session has later chapter, use session');
         return sessionPosition;
@@ -491,7 +505,11 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
     if (!sentenceOk) {
       // Chapter finished, go to next chapter
-      const nextPosition: Position = {chapterSequence: this.currentChapter.sequence + 1, sentenceNrChapter: 0};
+      const nextPosition: Position = {
+        chapterSequence: this.currentChapter.sequence + 1,
+        sentenceNrChapter: 0,
+        repeatCount: this.repeatCount
+      };
       this.getAudioAndChapter(this.bookId, nextPosition);
     }
   }

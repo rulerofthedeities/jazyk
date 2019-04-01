@@ -768,7 +768,6 @@ module.exports = {
           },
           options= {isNew: true};
     UserBook.findOneAndUpdate(query, update, options, (err, result) => {
-      console.log('subscribed repeat', result);
       response.handleError(err, res, 400, 'Error subscribing repeat', () => {
         response.handleSuccess(res, result);
       });
