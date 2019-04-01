@@ -51,6 +51,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   isBookRead = false;
   isError = false;
   isRepeat = false;
+  isRestart = false;
   showReadMsg = false;
   readingStarted = false;
   canConfirm = false; // If maybe was answered
@@ -374,17 +375,22 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private getCurrentPosition(bookmarkPosition: Position, sessionPosition: Position): Position {
     // Compare bookmark with latest session
     // if latest session sequence/sentence is higher, use this one
-    if (sessionPosition.chapterSequence > bookmarkPosition.chapterSequence) {
-      console.log('!Session has later chapter, use session');
-      return sessionPosition;
-    } else if (
-      sessionPosition.chapterSequence === bookmarkPosition.chapterSequence &&
-      sessionPosition.sentenceNrChapter > bookmarkPosition.sentenceNrChapter
-    ) {
-      console.log('!Session has later sentence nr, use session position');
-      return sessionPosition;
+    if (sessionPosition && !this.isRestart && !this.isRepeat) {
+      if (sessionPosition.chapterSequence > bookmarkPosition.chapterSequence) {
+        console.log('Session has later chapter, use session');
+        return sessionPosition;
+      } else if (
+        sessionPosition.chapterSequence === bookmarkPosition.chapterSequence &&
+        sessionPosition.sentenceNrChapter > bookmarkPosition.sentenceNrChapter
+      ) {
+        console.log('Session has later sentence nr, use session position');
+        return sessionPosition;
+      } else {
+        console.log('Use bookmark position');
+        return bookmarkPosition;
+      }
     } else {
-      console.log('use bookmark position');
+      console.log('No session, use bookmark position');
       return bookmarkPosition;
     }
   }
@@ -673,6 +679,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
 
   protected startAnotherBook(book: Book) {
+    this.isRestart = this.bookId.toString() === book._id.toString();
     this.bookId = book._id;
     this.book = book;
     this.readnListenService

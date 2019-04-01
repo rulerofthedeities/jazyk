@@ -25,7 +25,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   text: Object;
   currentLeader: Map<Leader> = {};
   gender = 'm';
-  tab = 'week';
+  tab = 'month';
   tpe = 'everyone'; // everyone or following
 
   constructor(
