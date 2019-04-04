@@ -8,6 +8,7 @@ var errorSchema = new Schema({
   src: String,
   msg: String,
   module: String,
+  err: Object,
   dt: {type: Date, default: Date.now}
 });
 

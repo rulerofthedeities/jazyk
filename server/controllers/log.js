@@ -1,7 +1,8 @@
 'use strict';
 
 const response = require('../response'),
-      Log = require('../models/log');
+      Log = require('../models/log'),
+      ErrorModel = require('../models/error');
 
 module.exports = {
   logPage: (req, res) => {
@@ -23,5 +24,19 @@ module.exports = {
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error updating page log');
     });
+  },
+  logError: (err, code, src, msg, module) => {
+    console.log('Error code', code, err);
+    if (err) {
+      console.log(msg);
+      const error = new ErrorModel({
+        code,
+        src,
+        msg,
+        module,
+        err
+      });
+      error.save((err, result) => {});
+    }
   }
 }

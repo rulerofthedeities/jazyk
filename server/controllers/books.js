@@ -2,6 +2,7 @@
 
 const response = require('../response'),
       mongoose = require('mongoose'),
+      log = require('./log'),
       Book = require('../models/book').book,
       Chapter = require('../models/book').chapter,
       Translation = require('../models/book').translation,
@@ -9,7 +10,6 @@ const response = require('../response'),
       UserBook = require('../models/userbook').userBook,
       UserBookThumb = require('../models/userbook').userBookThumb,
       UserTrophy = require('../models/userbook').userTrophy,
-      ErrorModel = require('../models/error'),
       wilson = require('wilson-score'),
       request = require('request'),
       uuidv4 = require('uuid/v4');
@@ -24,15 +24,7 @@ const updateWilsonScore = (translation_id, translationElement_id, wilsonScore) =
         },
         update = {$set: {'translations.$.score': wilsonScore}};
   Translation.findOneAndUpdate(query, update, options, (err, result) => {
-    if (err) {
-      console.log(`ERREXE06: Error saving wilson score for ${translationElementId}, ${translationElementId}`);
-      const error = new ErrorModel({
-        code: 'ERREXE06',
-        src: 'updateWilsonScore',
-        msg: `ERREXE06: Error saving wilson score for ${translationElementId}, ${translationElementId}`,
-        module: 'books'});
-      error.save((err, result) => {});
-    }
+    log.logError(err, 'ERREXE06', 'updateWilsonScore', `Error saving wilson score for ${translationElementId}, ${translationElementId}`, 'books');
   });
 }
 
@@ -59,13 +51,7 @@ const calculateWilsonScore = (book_id, translation_id, translationElement_id) =>
   // Get data for score calculation
   UserBookThumb.aggregate(countPipeline, (err, result) => {
     if (err) {
-      console.log(`ERREXE05: Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`);
-      const error = new ErrorModel({
-        code: 'ERREXE05',
-        src: 'calculateWilsonScore',
-        msg: `ERREXE05: Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`,
-        module: 'books'});
-      error.save((err, result) => {});
+      log.logError(err, 'ERREXE05', 'calculateWilsonScore', `Error finding data for wilson score for ${bookId}, ${translationElementId}, ${translationElementId}`, 'books');
     } else {
       if (result && result[0]) {
         // Calculate score
@@ -403,15 +389,7 @@ module.exports = {
           url = `https://api.deepl.com/v2/translate?source_lang=${lanFrom}&target_lang=${lanTo}&split_sentences=0&text=${sentence}&auth_key=${api_key}`;
 
     request(url, (errDeepl, resDeepl, bodyDeepl) => {
-      if (errDeepl) {
-        console.log(`ERREXE07: Error fetching DeepL translation`, errDeepl);
-        const error = new ErrorModel({
-          code: 'ERREXE07',
-          src: 'getDeeplTranslation',
-          msg: `ERREXE07: Error fetching DeepL translation for ${sentence}, ${lanFrom} => ${lanTo} Status code: ${response && response.statusCode} (${JSON.stringify(errDeepl)})`,
-          module: 'books'});
-        error.save((err, result) => {});
-      }
+      log.logError(errDeepl, 'ERREXE07', 'getDeeplTranslation', `Error fetching DeepL translation for ${sentence}, ${lanFrom} => ${lanTo} Status code: ${response && response.statusCode}`, 'books');
       response.handleError(errDeepl, resDeepl, 400, 'Error fetching DeepL translation', () => {
         response.handleSuccess(res, bodyDeepl);
       });
@@ -457,12 +435,8 @@ module.exports = {
           query = {bookId, userId, lanCode, bookType, isTest};
     bookmark.dt = Date.now();
     const update = {$set: {bookmark}};
-    /*
-    if (!bookmark.sentenceNrBook) {
-      bookmark.sentenceNrBook = 0;
-    }
-    */
     UserBook.findOneAndUpdate(query, update, (err, result) => {
+      log.logError(err, 'ERREXE08', 'updateBookmark', `Error updating bookmark for ${bookId}, ${userId}, ${lanCode}, ${bookType}, ${isTest}, Status code: ${response && response.statusCode}`, 'books');
       response.handleError(err, res, 400, 'Error updating bookmark', () => {
         response.handleSuccess(res, result);
       });
@@ -479,6 +453,7 @@ module.exports = {
     };
     const session = new Session(sessionData);
     session.save((err, result) => {
+      log.logError(err, 'ERREXE09', 'addSession', `Error adding session for ${userId}, Status code: ${response && response.statusCode}`, 'books');
       response.handleError(err, res, 400, 'Error saving new session data', () => {
         response.handleSuccess(res, result);
       });
@@ -500,6 +475,7 @@ module.exports = {
             points: sessionData.points
           }};
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
+      log.logError(err, 'ERREXE10', 'updateSession', `Error updating session for session id ${sessionData._id}, Status code: ${response && response.statusCode}`, 'books');
       response.handleError(err, res, 400, 'Error updating session', () => {
         response.handleSuccess(res, result);
       });
