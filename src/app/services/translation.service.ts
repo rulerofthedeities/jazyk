@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Book, TranslationData, TranslatedData, SentenceTranslation, DeepLTranslations, MSTranslations } from '../models/book.model';
+import { Book, TranslatedData, SentenceTranslation, DeepLTranslations, MSTranslations } from '../models/book.model';
 import { WordDefinition, OmegaDefinitions, OmegaDefinition,
          OmegaTranslation, WordTranslation, WordTranslations } from '../models/word.model';
 import { LanPair } from '../models/main.model';
@@ -117,7 +117,7 @@ export class TranslationService {
   getMachineLanguages(tpe: string) {
     let languages = [];
     if (tpe === 'deepl') {
-      languages = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pl'];
+      languages = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pl', 'pt', 'ru'];
     }
     return languages;
   }

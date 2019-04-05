@@ -39,7 +39,7 @@ export interface Chapter {
   sentences: Sentence[];
   index?: number[];
   indexLabel?: string;
-  nrOfSentences?: Number;
+  nrOfSentences?: number;
   activeSentences?: Sentence[];
   activeAudioSentences?: AudioSentence[];
   merged?: string[]; // list of other chapter ids to merge
@@ -250,17 +250,6 @@ export interface UserData {
   repeatCount: number;
   start?: Date;
   end?: Date;
-}
-
-export interface ChapterData {
-  bookId: string;
-  chapterId: string;
-  answers: string;
-  nrYes: number;
-  nrNo: number;
-  nrMaybe: number;
-  nrSentences: number;
-  translations: number;
 }
 
 export interface Thumbs {

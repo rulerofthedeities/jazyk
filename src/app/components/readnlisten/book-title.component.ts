@@ -17,5 +17,12 @@ export class BookTitleComponent {
 
   constructor() { }
 
-
+  getToolTip(): string {
+    switch (this.bookType) {
+      case 'listen': return this.text['ListeningSession'];
+      case 'wordlist': return this.text['WordList'];
+      case 'revision': return this.text['Revision'];
+      default: return this.text['ReadingSession'];
+    }
+  }
 }

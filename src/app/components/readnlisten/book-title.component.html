@@ -6,9 +6,11 @@
         'fa-volume-up': bookType==='listen',
         'fa-book': bookType==='read',
         'fa-list': bookType==='wordlist',
+        'fa-book': bookType==='read',
+        'fa-file-text': bookType==='revision',
         'test': isTest
       }"
-      [tooltip]="text[bookType==='listen' ? 'ListeningSession' : (bookType==='wordlist' ? 'WordList' : 'ReadingSession')]"
+      [tooltip]="getToolTip()"
       placement="bottom">
     </span>
   </div>

@@ -168,7 +168,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   onRevision() {
     this.log(`Start revision for ${this.book.title}`);
-    this.router.navigate(['/' + this.bookType + '/book/' + this.book._id + '/' + this.userLanCode + '/revision']);
+    this.router.navigate(['/' + this.bookType + '/book/' + this.book._id + '/' + this.userLanCode + '/review']);
   }
 
   onToggleIntro() {

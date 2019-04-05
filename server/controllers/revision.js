@@ -12,7 +12,15 @@ module.exports = {
           lanCode = req.params.lan,
           bookType = req.params.bookType,
           query = {bookId, userId, lanCode, bookType},
-          projection = {answers: 1, dt: 1, repeatCount: 1},
+          projection = {
+            answers: 1,
+            dt: 1,
+            repeatCount: 1,
+            chapterSequence: 1,
+            sentenceNrChapter: 1,
+            lastChapterSequence: 1,
+            lastSentenceNrChapter: 1
+          },
           options = {sort: {repeatCount: 1, 'dt.start': 1}};
     Session.find(query, projection, options, (err, sessions) => {
       response.handleError(err, res, 400, 'Error fetching session data', () => {

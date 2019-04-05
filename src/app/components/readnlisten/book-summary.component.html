@@ -176,19 +176,17 @@
                 (click)="onWordList()"
                 class="btn btn-info"
                 [class.btn-lg]="tpe!=='home'">
-                <span class="fa fa-file-text fa-spacing"></span>{{text['WordList']}}
+                <span class="fa fa-th-list fa-spacing"></span>{{text['WordList']}}
               </button>
             </span>
-            <!--
-            <span *ngIf="isFinished || userBook && userBook.repeatCount > 0">
+            <span *ngIf="bookType==='read' && (isFinished || userBook && userBook.repeatCount > 0)">
               <button type="button"
                 (click)="onRevision()"
                 class="btn btn-info"
-                [class.btn-lg]="tpe!=='home'">
+                [class.btn-lg]="tpe !== 'home'">
                 <span class="fa fa-file-text fa-spacing"></span>{{text['Revision']}}
               </button>
             </span>
-            -->
           </div>
           <!-- PIE CHART -->
           <div class="pie-content" style="position:relative;">

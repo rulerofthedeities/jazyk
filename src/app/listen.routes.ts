@@ -24,7 +24,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'book/:id/:lan/revision',
+    path: 'book/:id/:lan/review',
     component: BookRevisionComponent,
     data : {tpe : 'listen'},
     canActivate: [AuthGuard]
