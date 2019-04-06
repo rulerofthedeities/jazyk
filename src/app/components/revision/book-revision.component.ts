@@ -8,7 +8,6 @@ import { Book, UserBook, Chapter, Sentence, SessionData,
          RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
 import { takeWhile, filter, delay } from 'rxjs/operators';
 import { zip, Subject } from 'rxjs';
-import { Title } from '@angular/platform-browser';
 
 interface SentenceData {
   sentenceNrChapter: number;
@@ -22,12 +21,14 @@ interface SentenceData {
 }
 
 interface ChapterData {
+  chapterId: string;
   title: string;
   level: number;
   sequence: number;
   nrOfSentences: number;
   sentences: SentenceData[];
   expanded: boolean;
+  ready: boolean; // all data for this chapter has been loaded
 }
 
 @Component({
@@ -37,20 +38,15 @@ interface ChapterData {
 
 export class BookRevisionComponent implements OnInit, OnDestroy {
   private componentActive = true;
+  private bookType = 'read';
   text: Object;
   book: Book;
-  userBook: UserBook;
   isLoadingRevision = false;
-  bookType = 'read';
-  bookId: string;
+  isLoadingChapter: boolean[] = [];
   userLanCode: string;
   msg: string;
-  // chapters: Chapter[];
-  // sessions: SessionData[];
-  // sentenceData: SentenceData[][] = [];
   chapterData: ChapterData[] = [];
   userId: string;
-  currentChapterTitle = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -66,22 +62,27 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     this.getDependables(this.userService.user.main.lan);
   }
 
-  onToggleChapter(chapter: ChapterData) {
+  onToggleChapter(chapter: ChapterData, i: number) {
     console.log('selected chapter', chapter);
     chapter.expanded = !chapter.expanded;
+    if (chapter.expanded && !chapter.ready) {
+      if (!chapter.ready) {
+        this.fetchChapter(chapter, i);
+      }
+    }
   }
 
   showChapter(chapter: ChapterData) {
     const level = chapter.level;
     let sequence = chapter.sequence,
-        chapter: ChapterData,
+        chapterData: ChapterData,
         hide = true;
     if (level > 1) {
       while (sequence > 0) {
         sequence--;
-        chapter = this.chapterData.find(cd => cd.sequence === sequence && cd.level === level - 1);
-        if (chapter) {
-          hide = !chapter.expanded;
+        chapterData = this.chapterData.find(cd => cd.sequence === sequence && cd.level === level - 1);
+        if (chapterData) {
+          hide = !chapterData.expanded;
         }
       }
       return hide;
@@ -107,32 +108,39 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       filter(params => params.id))
     .subscribe(
       params => {
-        this.bookId = params['id'];
+        const bookId = params['id'];
         this.userLanCode = params['lan'];
-        this.processNewBookId();
+        this.processNewBookId(bookId);
+        this.processNewBook(bookId);
       }
     );
   }
 
-  private processNewBookId() {
-    if (this.bookId && this.bookId.length === 24) {
+  private processNewBookId(bookId: string) {
+    // First load book only for better responsiveness
+    if (bookId && bookId.length === 24) {
       this.isLoadingRevision = true;
-      zip(
-        this.readnListenService.fetchBook(this.bookId, this.bookType),
-        this.readnListenService.fetchChapterHeaders(this.bookId, this.bookType),
-        this.revisionService.fetchSessionData(this.bookId, 'read', this.userLanCode)
-      )
-      .pipe(takeWhile(() => this.componentActive), delay(2000))
-      .subscribe(res => {
-        this.book = res[0];
-        // this.chapters = res[1];
-        // this.sessions = res[2];
-        this.chapterData = this.processChapters(res[1]);
-        this.processSessions(res[2]);
+      this.readnListenService
+      .fetchBook(bookId, this.bookType)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(book => {
+        this.book = book;
       });
     } else {
       this.msg = this.text['InvalidBookId'];
     }
+  }
+
+  private processNewBook(bookId: string) {
+    zip(
+      this.readnListenService.fetchChapterHeaders(bookId, this.bookType),
+      this.revisionService.fetchSessionData(bookId, 'read', this.userLanCode)
+    )
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(res => {
+      this.chapterData = this.processChapters(res[0]);
+      this.processSessions(res[1]);
+    });
   }
 
   private processChapters(chapters: Chapter[]): ChapterData[] {
@@ -162,12 +170,14 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         j++;
       }
       chapterData.push({
+        chapterId: chapter._id,
         title,
         sequence: chapter.sequence,
         level: chapter.level,
-        nrOfSentences: sentences.length,
-        sentences,
-        expanded: false
+        nrOfSentences: chapter.nrOfSentences,
+        sentences: sentences,
+        expanded: false,
+        ready: false
       });
     });
     this.isLoadingRevision = false;
@@ -177,6 +187,24 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   private processSessions(sessions: SessionData[]) {
     console.log('session data', sessions);
     console.log('Chapter Data', this.chapterData);
+  }
+
+  private fetchChapter(chapter: ChapterData, i: number) {
+    this.isLoadingChapter[i] = true;
+    this.revisionService
+    .fetchChapter(chapter.chapterId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(data => {
+      this.isLoadingChapter[i] = false;
+      console.log('loaded chapter', data, chapter.sentences);
+      if (data && data.sentences) {
+        data.sentences.forEach((sentence, i) => {
+          chapter.sentences[i].sentence = sentence;
+        });
+      }
+      chapter.ready = true;
+      console.log('chapter data', data);
+    });
   }
 
   private getDependables(lan) {

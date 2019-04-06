@@ -151,6 +151,7 @@ module.exports = {
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
 
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
+    router.get('/revision/chapter/:chapterId', revision.getChapterData);
     router.get('/revision/translations/:bookId/:bookLan/:userLan', revision.getTranslationData);
 
     router.get('/wordlist/:bookId', wordlist.getWordList);

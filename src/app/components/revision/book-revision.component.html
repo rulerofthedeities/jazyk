@@ -5,7 +5,7 @@
     [bookLanCode]="book?.lanCode"
     [userLanCode]="userLanCode"
     [bookTitle]="book?.title"
-    [chapterTitle]="currentChapterTitle"
+    [chapterTitle]="''"
   ></km-book-title>
   <div class="panel panel-default">
     <div class="panel-body">
@@ -14,31 +14,36 @@
         [msg]="text['LoadingChapters']">
       </km-loader>
       <ul *ngIf="!isLoadingRevision && !!chapterData" class="list-group">
-        <li *ngFor="let chapter of chapterData"
-          class="list-group-item level"
-          [class.hidden]="showChapter(chapter)"
-          [ngClass]="'level-' + chapter.level"
-          (click)="onToggleChapter(chapter)">
-          <span
-            class="fa fa-spacing chevron"
-            [ngClass]="{
-              'fa-chevron-down': chapter.expanded,
-              'fa-chevron-right': !chapter.expanded
-            }">
-          </span>
-          {{chapter.title}} ({{chapter.nrOfSentences}})
-          <!--
-
-          <span *ngIf="!item.isHeader" class="fa fa-arrow-right"></span>
-          <span *ngIf="item.isHeader">
-              &nbsp;{{item.title}}
-          </span>
-          -->
-        </li>
+        <ng-template ngFor [ngForOf]="chapterData" let-chapter let-i="index">
+          <li
+            class="list-group-item chapter-header"
+            [class.hidden]="showChapter(chapter)"
+            [ngClass]="'level-' + chapter.level"
+            (click)="onToggleChapter(chapter, i)">
+            <span
+              class="fa fa-spacing chevron"
+              [ngClass]="{
+                'fa-chevron-down': chapter.expanded,
+                'fa-chevron-right': !chapter.expanded
+              }">
+            </span>
+            {{chapter.title}} ({{chapter.nrOfSentences}})
+          </li>
+          <li *ngIf="chapter.expanded"
+            class="list-group-item chapter-sentences"
+            [ngClass]="'level-' + (chapter.level + 1)">
+            <div *ngIf="!isLoadingChapter[i]">
+              {{chapter.sentences|json}}
+            </div>
+            <km-loader *ngIf="isLoadingChapter[i] && !isError"
+              [showBackground]="false"
+              [msg]="text['LoadingChapterData']">
+            </km-loader>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>
 </section>
-
 <km-info-msg [msg]="msg" *ngIf="msg">
 </km-info-msg>

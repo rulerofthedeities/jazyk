@@ -3,6 +3,7 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Session = require('../models/book').session,
+      Chapter = require('../models/book').chapter,
       Translation = require('../models/book').translation;
 
 module.exports = {
@@ -25,6 +26,15 @@ module.exports = {
     Session.find(query, projection, options, (err, sessions) => {
       response.handleError(err, res, 400, 'Error fetching session data', () => {
         response.handleSuccess(res, sessions);
+      });
+    });
+  },
+  getChapterData: (req, res) => {
+    const chapterId = req.params.chapterId,
+          projection = {sentences: 1};
+    Chapter.findById(chapterId, projection, (err, chapter) => {
+      response.handleError(err, res, 400, 'Error fetching chapter data', () => {
+        response.handleSuccess(res, chapter);
       });
     });
   },

@@ -1,9 +1,6 @@
 .panel-body {
   padding: 15px;
 }
-.level {
-  cursor: pointer;
-}
 .level-2 {
   margin-left: 15px;
 }
@@ -15,4 +12,18 @@
 }
 .level-5 {
   margin-left: 60px;
+}
+.chapter-header {
+  font-size: 22px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+.list-group-item:hover {
+  background-color: #e1f4fa;
+}
+.chapter-sentences:hover {
+  background-color: #fff;
+}
+.list-group {
+  margin-bottom: 0;
 }
