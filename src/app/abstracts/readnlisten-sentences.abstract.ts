@@ -391,20 +391,16 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     // if latest session sequence/sentence is higher, use this one
     if (sessionPosition && !this.isRestart && (bookmarkPosition.repeatCount === sessionPosition.repeatCount)) {
       if (sessionPosition.chapterSequence > bookmarkPosition.chapterSequence) {
-        console.log('Session has later chapter, use session');
         return sessionPosition;
       } else if (
         sessionPosition.chapterSequence === bookmarkPosition.chapterSequence &&
         sessionPosition.sentenceNrChapter > bookmarkPosition.sentenceNrChapter
       ) {
-        console.log('Session has later sentence nr, use session position');
         return sessionPosition;
       } else {
-        console.log('Use bookmark position');
         return bookmarkPosition;
       }
     } else {
-      console.log('No session, use bookmark position');
       return bookmarkPosition;
     }
   }

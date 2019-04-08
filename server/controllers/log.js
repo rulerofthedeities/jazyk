@@ -26,9 +26,7 @@ module.exports = {
     });
   },
   logError: (err, code, src, msg, module) => {
-    console.log('Error code', code, err);
     if (err) {
-      console.log(msg);
       const error = new ErrorModel({
         code,
         src,
