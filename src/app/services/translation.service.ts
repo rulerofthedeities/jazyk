@@ -84,6 +84,7 @@ export class TranslationService {
     bookLanCode: string,
     userLanCode: string,
     bookId: string,
+    chapterSequence: number,
     sentence: string,
     translation: string,
     note: string,
@@ -93,7 +94,16 @@ export class TranslationService {
   ): Observable<TranslatedData> {
     return this.http
     .post<TranslatedData>('/api/book/translation/', {
-      bookLanCode, userLanCode, bookId, sentence, translation, note, isMachine, machine, isDuplicate
+      bookLanCode,
+      userLanCode,
+      bookId,
+      chapterSequence: chapterSequence || 1,
+      sentence,
+      translation,
+      note,
+      isMachine,
+      machine,
+      isDuplicate
     });
   }
 

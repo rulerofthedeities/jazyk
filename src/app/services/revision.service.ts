@@ -27,11 +27,11 @@ export class RevisionService {
     .pipe(retry(3));
   }
 
-  /*
+  /* legacy */
   fetchTranslations(bookId: string, bookLanCode: string, userLanCode: string): Observable<RevisionTranslations[]> {
     return this.http
     .get<RevisionTranslations[]>(`/api/revision/translations/${bookId}/${bookLanCode}/${userLanCode}`)
     .pipe(retry(3));
   }
-  */
+
 }

@@ -15,6 +15,7 @@
       </km-loader>
       <ul *ngIf="!isLoadingRevision && !!chapterData" class="list-group">
         <ng-template ngFor [ngForOf]="chapterData" let-chapter let-i="index">
+          <!-- CHAPTER HEADER -->
           <li
             class="list-group-item chapter-header"
             [class.hidden]="showChapter(chapter)"
@@ -33,7 +34,10 @@
             class="list-group-item chapter-sentences"
             [ngClass]="'level-' + (chapter.level + 1)">
             <div *ngIf="!isLoadingChapter[i]">
-              {{chapter.sentences|json}}
+              <!-- SENTENCES -->
+              <km-revision-sentences
+                [sentences]="chapter.sentences">
+              </km-revision-sentences>
             </div>
             <km-loader *ngIf="isLoadingChapter[i] && !isError"
               [showBackground]="false"

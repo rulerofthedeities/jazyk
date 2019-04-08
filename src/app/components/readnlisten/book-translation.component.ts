@@ -18,6 +18,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() bookLanCode: string;
   @Input() text: Object;
   @Input() bookId: string;
+  @Input() chapterSequence: number;
   @Input() sentence: string;
   @Input() isRevision = false;
   @Input() private answersReceived: Subject<{answers: string, isResults: boolean}>;
@@ -240,6 +241,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       this.bookLanCode,
       this.userLanCode,
       this.bookId,
+      this.chapterSequence,
       this.sentence,
       translation,
       note)

@@ -14,6 +14,7 @@ export class MachineTranslationComponent implements OnDestroy {
   @Input() text: Object;
   @Input() source: string;
   @Input() bookId: string;
+  @Input() chapterSequence: number;
   @Input() sentence: string;
   @Input() lanPair: LanPair;
   @Input() hasTranslations: boolean;
@@ -70,6 +71,7 @@ export class MachineTranslationComponent implements OnDestroy {
       this.lanPair.from,
       this.lanPair.to,
       this.bookId,
+      this.chapterSequence,
       this.sentence,
       translation,
       note,

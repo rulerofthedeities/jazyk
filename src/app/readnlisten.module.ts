@@ -24,6 +24,7 @@ import { AudioFileComponent } from './components/fields/audio-file.component';
 import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
+import { BookRevisionSentencesComponent } from './components/revision/book-revision-sentences.component';
 import { BookWordListComponent } from './components/wordlist/word-list.component';
 import { ExternalWordTranslationComponent } from './components/wordlist/external-translation.component';
 import { UserWordTranslationComponent } from './components/wordlist/user-translation.component';
@@ -55,6 +56,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     SentenceComponent,
     ModalPromotionComponent,
     BookRevisionComponent,
+    BookRevisionSentencesComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
     UserWordTranslationComponent,
@@ -85,6 +87,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     SentenceComponent,
     ModalPromotionComponent,
     BookRevisionComponent,
+    BookRevisionSentencesComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
     UserWordTranslationComponent,

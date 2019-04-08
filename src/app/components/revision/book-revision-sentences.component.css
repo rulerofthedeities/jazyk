@@ -1,0 +1,18 @@
+.newline-space {
+  line-height: 8px;
+}
+.paragraph-space {
+  height: 1px;
+  margin: 1px;
+}
+.sentence {
+  line-height: 12px;
+}
+.paragraph::before {
+  content: '\00a0\00a0\00a0'
+}
+.header {
+  display: block;
+  font-weight: bold;
+  margin: 12px 0;
+}

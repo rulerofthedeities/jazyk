@@ -311,6 +311,7 @@ module.exports = {
           note = req.body.note,
           lanCode = req.body.userLanCode,
           bookLanCode = req.body.bookLanCode,
+          chapterSequence = req.body.chapterSequence,
           sentence = req.body.sentence,
           bookId = req.body.bookId,
           isMachine = !!req.body.isMachine,
@@ -328,6 +329,7 @@ module.exports = {
     const update = {
             lanCode: bookLanCode,
             bookId,
+            chapterSequence,
             sentence,
             $push: {translations: {$each: [ newTranslation ], "$position": 0}}
           };

@@ -6,30 +6,9 @@ import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
 import { Book, UserBook, Chapter, Sentence, SessionData,
          RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
+import { SentenceData, ChapterData } from 'app/models/revision.model';
 import { takeWhile, filter, delay } from 'rxjs/operators';
 import { zip, Subject } from 'rxjs';
-
-interface SentenceData {
-  sentenceNrChapter: number;
-  sentenceNrTotal: number;
-  sentence?: Sentence;
-  // sentenceId?: string;
-  answers?: string;
-  // lastAnswer?: string;
-  // translations?: SentenceTranslation[];
-  // bestTranslation?: SentenceTranslation;
-}
-
-interface ChapterData {
-  chapterId: string;
-  title: string;
-  level: number;
-  sequence: number;
-  nrOfSentences: number;
-  sentences: SentenceData[];
-  expanded: boolean;
-  ready: boolean; // all data for this chapter has been loaded
-}
 
 @Component({
   templateUrl: 'book-revision.component.html',
@@ -47,6 +26,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   msg: string;
   chapterData: ChapterData[] = [];
   userId: string;
+  isError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -191,19 +171,21 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   private fetchChapter(chapter: ChapterData, i: number) {
     this.isLoadingChapter[i] = true;
-    this.revisionService
-    .fetchChapter(chapter.chapterId)
+    zip(
+      this.revisionService.fetchChapter(chapter.chapterId),
+      // this.revisionService.fetchTranslations(chapter.sequence)
+    )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       this.isLoadingChapter[i] = false;
       console.log('loaded chapter', data, chapter.sentences);
-      if (data && data.sentences) {
-        data.sentences.forEach((sentence, i) => {
+      if (data[0] && data[0].sentences) {
+        data[0].sentences.forEach((sentence, i) => {
           chapter.sentences[i].sentence = sentence;
         });
       }
       chapter.ready = true;
-      console.log('chapter data', data);
+      console.log('chapter data', data[0]);
     });
   }
 
