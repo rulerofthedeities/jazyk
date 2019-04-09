@@ -27,10 +27,14 @@ export class RevisionService {
     .pipe(retry(3));
   }
 
-  /* legacy */
-  fetchTranslations(bookId: string, bookLanCode: string, userLanCode: string): Observable<RevisionTranslations[]> {
+  fetchChapterTranslations(
+    bookId: string,
+    bookLanCode: string,
+    userLanCode: string,
+    chapterSequence: number
+  ): Observable<RevisionTranslations[]> {
     return this.http
-    .get<RevisionTranslations[]>(`/api/revision/translations/${bookId}/${bookLanCode}/${userLanCode}`)
+    .get<RevisionTranslations[]>(`/api/revision/translations/${bookId}/${bookLanCode}/${userLanCode}/${chapterSequence}`)
     .pipe(retry(3));
   }
 

@@ -160,8 +160,8 @@ export interface MSTranslations {
 }
 
 export interface RevisionTranslations {
-  sentence: string,
-  translations: SentenceTranslation[]
+  sentence: string;
+  translations: SentenceTranslation[];
 }
 
 export interface Bookmark {

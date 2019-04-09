@@ -1,4 +1,4 @@
-import { Sentence } from './book.model';
+import { Sentence, SentenceTranslation } from './book.model';
 
 export interface SentenceData {
   sentenceNrChapter: number;
@@ -7,8 +7,8 @@ export interface SentenceData {
   // sentenceId?: string;
   answers?: string;
   // lastAnswer?: string;
-  // translations?: SentenceTranslation[];
-  // bestTranslation?: SentenceTranslation;
+  translations?: SentenceTranslation[];
+  bestTranslation?: SentenceTranslation;
 }
 
 export interface ChapterData {

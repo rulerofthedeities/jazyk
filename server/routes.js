@@ -152,7 +152,7 @@ module.exports = {
 
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
     router.get('/revision/chapter/:chapterId', revision.getChapterData);
-    router.get('/revision/translations/:bookId/:bookLan/:userLan', revision.getTranslationData);
+    router.get('/revision/translations/:bookId/:bookLan/:userLan/:chapterSequence', revision.getTranslationData);
 
     router.get('/wordlist/:bookId', wordlist.getWordList);
     router.get('/userwordlist/:bookId', wordlist.getUserWordList);

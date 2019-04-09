@@ -118,12 +118,12 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
-      this.chapterData = this.processChapters(res[0]);
+      this.chapterData = this.processChapterHeaders(res[0]);
       this.processSessions(res[1]);
     });
   }
 
-  private processChapters(chapters: Chapter[]): ChapterData[] {
+  private processChapterHeaders(chapters: Chapter[]): ChapterData[] {
     // Merge chapters without a chapter title
     const newChapters: Chapter[] = [];
     chapters.forEach((chapter, i) => {
@@ -173,20 +173,41 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     this.isLoadingChapter[i] = true;
     zip(
       this.revisionService.fetchChapter(chapter.chapterId),
-      // this.revisionService.fetchTranslations(chapter.sequence)
+      this.revisionService.fetchChapterTranslations(this.book._id, this.book.lanCode, this.userLanCode, chapter.sequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      this.isLoadingChapter[i] = false;
       console.log('loaded chapter', data, chapter.sentences);
       if (data[0] && data[0].sentences) {
         data[0].sentences.forEach((sentence, i) => {
           chapter.sentences[i].sentence = sentence;
         });
       }
+      const translations = data[1];
+      // Map translations with chapter sentences
+      if (translations) {
+        let sentence: SentenceData;
+        console.log('translations', translations);
+        translations.forEach(translation => {
+          sentence = chapter.sentences.find(chapterSentence => chapterSentence.sentence.text === translation.sentence);
+          sentence.translations = translation.translations;
+          sentence.bestTranslation = this.getBestTranslation(translation.translations);
+        });
+      }
+      this.isLoadingChapter[i] = false;
       chapter.ready = true;
-      console.log('chapter data', data[0]);
+      console.log('chapter data', chapter);
     });
+  }
+
+  private getBestTranslation(translations: SentenceTranslation[]): SentenceTranslation {
+    let bestTranslation: SentenceTranslation;
+    translations.forEach(translation => {
+      if (!bestTranslation || bestTranslation.score < translation.score) {
+        bestTranslation = translation;
+      }
+    });
+    return bestTranslation;
   }
 
   private getDependables(lan) {

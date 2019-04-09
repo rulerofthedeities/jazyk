@@ -1,11 +1,28 @@
-<span  *ngFor="let sentence of sentences; let i= index">
-  <p *ngIf="sentence.sentence.isEmptyLine" class="newline-space">&nbsp;</p>
-  <p *ngIf="sentence.sentence.isNewParagraph" class="paragraph-space">&nbsp;</p>
-  <span
-    class="sentence"
-    [ngClass]="{
-      paragraph: sentence.sentence.isNewParagraph,
-      header: sentence.sentence.isHeader
-    }">{{sentence.sentence.text}}
-  </span>
-</span>
+<div class="row">
+  <div class="col-xs-6">
+    <span  *ngFor="let sentence of sentences; let i= index">
+      <p *ngIf="sentence.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
+      <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
+      <span
+        class="sentence"
+        [ngClass]="{
+          paragraph: sentence.sentence?.isNewParagraph,
+          header: sentence.sentence?.isHeader
+        }">{{sentence.sentence?.text}}
+      </span>
+    </span>
+  </div>
+  <div class="col-xs-6">
+    <span  *ngFor="let sentence of sentences; let i= index">
+      <p *ngIf="sentence.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
+      <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
+      <span
+        class="sentence"
+        [ngClass]="{
+          paragraph: sentence.sentence?.isNewParagraph,
+          header: sentence.sentence?.isHeader
+        }">{{sentence.bestTranslation?.translation}}
+      </span>
+    </span>
+  </div>
+</div>

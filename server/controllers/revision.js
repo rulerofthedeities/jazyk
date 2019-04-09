@@ -42,8 +42,10 @@ module.exports = {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           bookLan = req.params.bookLan,
           userLan = req.params.userLan,
+          chapterSequence = parseInt(req.params.chapterSequence, 10) || 1,
           query = {
             bookId,
+            chapterSequence,
             lanCode: bookLan,
             'translations.lanCode': userLan
           },
