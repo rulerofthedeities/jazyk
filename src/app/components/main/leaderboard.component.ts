@@ -25,7 +25,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   text: Object;
   currentLeader: Map<Leader> = {};
   gender = 'm';
-  tab = 'month';
+  tabs: string[];
+  tab = 'week';
   tpe = 'everyone'; // everyone or following
 
   constructor(
@@ -36,7 +37,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getTranslations();
+    this.getDependables();
     this.gender = this.userService.user.main.gender || 'm';
   }
 
@@ -57,6 +58,14 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       } else {
         this.getLeaders();
       }
+    }
+  }
+
+  showTab(tpe: string) {
+    if (this.tabs.find(tab => tab === tpe)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -180,18 +189,25 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getTranslations() {
+  private getDependables() {
+    const options = {
+      lan: this.userService.user.main.lan,
+      component: 'UserComponent',
+      getTranslations: true,
+      getLeaderBoards: true
+    };
+
     this.sharedService
-    .fetchTranslations(this.userService.user.main.lan, 'UserComponent')
+    .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
-      translations => {
-        if (translations) {
-          this.text = this.sharedService.getTranslatedText(translations);
-          this.sharedService.setPageTitle(this.text, 'Leaderboard');
-          this.isReady = true;
-          this.getLeaders();
-        }
+      dependables => {
+        this.tabs = dependables.leaderBoards.split('|');
+        this.tab = this.tabs[0];
+        this.text = this.sharedService.getTranslatedText(dependables.translations);
+        this.sharedService.setPageTitle(this.text, 'Leaderboard');
+        this.isReady = true;
+        this.getLeaders();
       }
     );
   }

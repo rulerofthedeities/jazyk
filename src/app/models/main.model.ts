@@ -49,6 +49,7 @@ export interface Dependables {
   bookLanguages: Language[];
   licenseUrls: LicenseUrl[];
   invalidNames: string;
+  leaderBoards: string;
 }
 
 export interface DependableOptions {
@@ -58,6 +59,7 @@ export interface DependableOptions {
   getLanguages?: boolean;
   getLicenses?: boolean;
   getInvalidNames?: boolean;
+  getLeaderBoards?: boolean;
 }
 
 export interface Option {

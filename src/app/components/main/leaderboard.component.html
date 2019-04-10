@@ -20,16 +20,14 @@
     <div class="panel-body">
       <div>
         <ul class="nav nav-tabs">
-          <!--
-          <li
+          <li *ngIf="showTab('week')"
             [class.active]="tab==='week'"
             (click)="onSelectTab('week')">
             <a>
               {{text["Last7days"]}}
             </a>
           </li>
-          -->
-          <li
+          <li *ngIf="showTab('month')"
             [class.active]="tab==='month'"
             (click)="onSelectTab('month')">
             <a>

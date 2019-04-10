@@ -75,7 +75,7 @@ module.exports = {
         ];
     // const hd = new memwatch.HeapDiff();
     const getData = async () => {
-      let translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames;
+      let translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames, leaderBoards;
       if (params.getTranslations === 'true') {
         translations = await Translation.aggregate(translationPipeline);
       }
@@ -91,8 +91,12 @@ module.exports = {
         const names = await Config.findOne({tpe: 'invalid'}, {_id: 0, name: 1});
         invalidNames = names ? names.name : '';
       }
+      if (params.getLeaderBoards === 'true') {
+        const names = await Config.findOne({tpe: 'leaderboards'}, {_id: 0, name: 1});
+        leaderBoards = names ? names.name : '';
+      }
 
-      return {translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames};
+      return {translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames, leaderBoards};
     };
 
     getData().then((results) => {
