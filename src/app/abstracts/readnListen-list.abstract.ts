@@ -120,8 +120,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   protected setActiveLanguages(bookLanguages: Language[]) {
     this.bookLanguages = bookLanguages;
-    const allLanguage = this.sharedService.getAllLanguage();
-    this.bookLanguages.unshift(allLanguage);
+    // const allLanguage = this.sharedService.getAllLanguage();
+    // this.bookLanguages.unshift(allLanguage);
     this.bookLanguage = this.userService.getUserReadLanguage(this.bookLanguages);
   }
 

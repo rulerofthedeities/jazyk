@@ -165,6 +165,7 @@ export class SharedService {
     return Math.max(min, Math.min(max, val));
   }
 
+  /*
   getAllLanguage(): Language {
     return {
       code: 'eu',
@@ -175,6 +176,7 @@ export class SharedService {
       article: false
     };
   }
+  */
 
   getContentLanguageCode(lanCode: string): string {
     let contentLan = lanCode;
