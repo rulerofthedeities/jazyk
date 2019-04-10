@@ -27,6 +27,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   chapterData: ChapterData[] = [];
   userId: string;
   isError = false;
+  hasChapters: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +44,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   }
 
   onToggleChapter(chapter: ChapterData, i: number) {
-    console.log('selected chapter', chapter);
     chapter.expanded = !chapter.expanded;
     if (chapter.expanded && !chapter.ready) {
       if (!chapter.ready) {
@@ -160,13 +160,49 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         ready: false
       });
     });
+    if (chapterData.length < 2 && chapterData[0].title === '') {
+      this.hasChapters = false;
+      chapterData[0].expanded = true;
+      this.fetchChapter(chapterData[0], 0);
+    } else {
+      this.hasChapters = true;
+    }
     this.isLoadingRevision = false;
     return chapterData;
   }
 
   private processSessions(sessions: SessionData[]) {
     console.log('session data', sessions);
-    console.log('Chapter Data', this.chapterData);
+    console.log('Chapter Data', ...this.chapterData);
+    // Loop through all session data and map with chapter
+    // If chapterSentenceNr or chapter sequence is available, this gets priority
+    let chapterSequence = 1,
+        sentenceNr = 0,
+        currentRepeatCount = -1,
+        repeatCount: number;
+    sessions.forEach(session => {
+      repeatCount = session.repeatCount || 0;
+      if (repeatCount > currentRepeatCount) {
+        currentRepeatCount = repeatCount;
+        chapterSequence = 1;
+        sentenceNr = 0;
+      }
+      if (session.chapterSequence) {
+        chapterSequence = session.chapterSequence;
+        sentenceNr = session.sentenceNrChapter || 0;
+      }
+      for (let i = 0; i < session.answers.length; i++) {
+        this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers =
+          this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers || '';
+        this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers += session.answers[i];
+        this.chapterData[chapterSequence - 1].sentences[sentenceNr].lastAnswer = session.answers[i];
+        sentenceNr++;
+        if (sentenceNr >= this.chapterData[chapterSequence - 1].nrOfSentences) {
+          chapterSequence++;
+          sentenceNr = 0;
+        }
+      }
+    });
   }
 
   private fetchChapter(chapter: ChapterData, i: number) {
@@ -178,20 +214,29 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       console.log('loaded chapter', data, chapter.sentences);
-      if (data[0] && data[0].sentences) {
-        data[0].sentences.forEach((sentence, i) => {
-          chapter.sentences[i].sentence = sentence;
-        });
-      }
-      const translations = data[1];
-      // Map translations with chapter sentences
-      if (translations) {
-        let sentence: SentenceData;
-        console.log('translations', translations);
-        translations.forEach(translation => {
-          sentence = chapter.sentences.find(chapterSentence => chapterSentence.sentence.text === translation.sentence);
-          sentence.translations = translation.translations;
-          sentence.bestTranslation = this.getBestTranslation(translation.translations);
+      const chapters = data[0],
+            translations = data[1];
+      let translationData: RevisionTranslations;
+      if (chapters && chapters.sentences) {
+        chapters.sentences.forEach((sentence, j) => {
+          chapter.sentences[j].sentence = sentence;
+          // Map translations with chapter sentences
+          translationData = translations.find(translation => chapter.sentences[j].sentence.text === translation.sentence);
+          if (translationData) {
+            chapter.sentences[j].hasTranslation = true;
+            chapter.sentences[j].translations = translationData.translations;
+            chapter.sentences[j].bestTranslation = this.getBestTranslation(translationData.translations);
+          } else {
+            chapter.sentences[j].hasTranslation = false;
+            chapter.sentences[j].bestTranslation = {
+              translation: chapter.sentences[j].sentence.text,
+              userId: null,
+              note: '',
+              isMachine: false,
+              lanCode: this.userLanCode,
+              score: 0
+            };
+          }
         });
       }
       this.isLoadingChapter[i] = false;

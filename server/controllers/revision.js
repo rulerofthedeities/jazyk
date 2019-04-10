@@ -22,7 +22,7 @@ module.exports = {
             lastChapterSequence: 1,
             lastSentenceNrChapter: 1
           },
-          options = {sort: {repeatCount: 1, 'dt.start': 1}};
+          options = {sort: {repeatCount: 1, 'dt.end': 1}};
     Session.find(query, projection, options, (err, sessions) => {
       response.handleError(err, res, 400, 'Error fetching session data', () => {
         response.handleSuccess(res, sessions);

@@ -13,10 +13,10 @@
         [showBackground]="false"
         [msg]="text['LoadingChapters']">
       </km-loader>
-      <ul *ngIf="!isLoadingRevision && !!chapterData" class="list-group">
+      <ul *ngIf="!isLoadingRevision&& !!chapterData" class="list-group">
         <ng-template ngFor [ngForOf]="chapterData" let-chapter let-i="index">
           <!-- CHAPTER HEADER -->
-          <li
+          <li *ngIf="hasChapters"
             class="list-group-item chapter-header"
             [class.hidden]="showChapter(chapter)"
             [ngClass]="'level-' + chapter.level"

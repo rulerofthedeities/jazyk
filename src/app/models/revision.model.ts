@@ -6,7 +6,8 @@ export interface SentenceData {
   sentence?: Sentence;
   // sentenceId?: string;
   answers?: string;
-  // lastAnswer?: string;
+  lastAnswer?: string;
+  hasTranslation?: boolean;
   translations?: SentenceTranslation[];
   bestTranslation?: SentenceTranslation;
 }

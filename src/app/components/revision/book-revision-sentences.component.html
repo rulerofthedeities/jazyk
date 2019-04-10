@@ -4,10 +4,16 @@
       <p *ngIf="sentence.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
       <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
       <span
+        (mouseover)="onHoverSentence(i)"
+        (mouseout)="onCancelHoverSentence()"
         class="sentence"
         [ngClass]="{
           paragraph: sentence.sentence?.isNewParagraph,
-          header: sentence.sentence?.isHeader
+          header: sentence.sentence?.isHeader,
+          hovered: hoverSentence === i,
+          yes: sentence.lastAnswer?.toLowerCase() === 'y',
+          maybe: sentence.lastAnswer?.toLowerCase() === 'm',
+          no: sentence.lastAnswer?.toLowerCase() === 'n'
         }">{{sentence.sentence?.text}}
       </span>
     </span>
@@ -17,10 +23,12 @@
       <p *ngIf="sentence.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
       <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
       <span
-        class="sentence"
+        class="sentence translation"
         [ngClass]="{
           paragraph: sentence.sentence?.isNewParagraph,
-          header: sentence.sentence?.isHeader
+          header: sentence.sentence?.isHeader,
+          hovered: hoverSentence === i,
+          'hide-tl': !sentence.hasTranslation
         }">{{sentence.bestTranslation?.translation}}
       </span>
     </span>

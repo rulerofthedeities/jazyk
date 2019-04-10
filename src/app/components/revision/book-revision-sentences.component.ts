@@ -9,5 +9,12 @@ import { SentenceData } from 'app/models/revision.model';
 
 export class BookRevisionSentencesComponent {
   @Input() sentences: SentenceData[];
+  hoverSentence: number;
 
+  onHoverSentence(i: number) {
+    this.hoverSentence = i;
+}
+  onCancelHoverSentence() {
+    this.hoverSentence = null;
+  }
 }
