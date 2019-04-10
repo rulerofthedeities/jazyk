@@ -7,6 +7,7 @@ export interface Map<T> {
 export interface Language {
   name: string;
   nativeName: string;
+  interfaceName?: string;
   code: string;
   interface: boolean;
   active: boolean;

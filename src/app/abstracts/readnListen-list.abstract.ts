@@ -119,9 +119,9 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   protected setActiveLanguages(bookLanguages: Language[]) {
+    bookLanguages.map(lan => lan.interfaceName = this.text[lan.name]);
+    bookLanguages.sort((a, b) => a.interfaceName > b.interfaceName ? 1 : b.interfaceName > a.interfaceName ? -1 : 0);
     this.bookLanguages = bookLanguages;
-    // const allLanguage = this.sharedService.getAllLanguage();
-    // this.bookLanguages.unshift(allLanguage);
     this.bookLanguage = this.userService.getUserReadLanguage(this.bookLanguages);
   }
 
@@ -210,6 +210,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   protected filterUserLanguages() {
     // filter out selected book language
     this.myLanguages = this.userLanguages.filter(lan => lan.code !== this.bookLanguage.code);
+    this.myLanguages.map(lan => lan.interfaceName = this.text[lan.name]);
+    this.myLanguages.sort((a, b) => a.interfaceName > b.interfaceName ? 1 : b.interfaceName > a.interfaceName ? -1 : 0);
     // check if current language is in list
     let isInList = this.myLanguages.find(lan => lan.code === this.myLanguage.code);
     if (!isInList) {
