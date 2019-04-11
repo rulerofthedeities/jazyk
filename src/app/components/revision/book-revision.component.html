@@ -36,7 +36,7 @@
             <div *ngIf="!isLoadingChapter[i]">
               <!-- SENTENCES -->
               <km-revision-sentences
-                [sentences]="chapter.sentences">
+                [paragraphs]="chapter.paragraphs">
               </km-revision-sentences>
             </div>
             <km-loader *ngIf="isLoadingChapter[i] && !isError"

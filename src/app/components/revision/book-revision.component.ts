@@ -156,6 +156,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         level: chapter.level,
         nrOfSentences: chapter.nrOfSentences,
         sentences: sentences,
+        paragraphs: [],
         expanded: false,
         ready: false
       });
@@ -211,11 +212,11 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      const chapters = data[0],
+      const chapterData = data[0],
             translations = data[1];
       let translationData: RevisionTranslations;
-      if (chapters && chapters.sentences) {
-        chapters.sentences.forEach((sentence, j) => {
+      if (chapterData && chapterData.sentences) {
+        chapterData.sentences.forEach((sentence, j) => {
           chapter.sentences[j].sentence = sentence;
           // Map translations with chapter sentences
           translationData = translations.find(translation => chapter.sentences[j].sentence.text === translation.sentence);
@@ -236,9 +237,29 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
           }
         });
       }
+      // Transform into paragraphs
+      this.buildParagraphs(chapter);
       this.isLoadingChapter[i] = false;
       chapter.ready = true;
     });
+  }
+
+  private buildParagraphs(chapterData: ChapterData) {
+    // For display arrange sentences per paragraph
+    let pCnt = -1,
+        sCnt = 0;
+        chapterData.paragraphs = [];
+        chapterData.sentences.forEach(sentence => {
+      if (sCnt === 0 || sentence.sentence.isNewParagraph) {
+        pCnt++;
+        sCnt = 0;
+        chapterData.paragraphs[pCnt] = [];
+      }
+      chapterData.paragraphs[pCnt][sCnt] = sentence;
+      sCnt++;
+    });
+    chapterData.sentences = [];
+    console.log('paragraphs', chapterData.paragraphs);
   }
 
   private getBestTranslation(translations: SentenceTranslation[]): SentenceTranslation {

@@ -1,5 +1,5 @@
 .newline-space {
-  line-height: 8px;
+  line-height: 6px;
 }
 .paragraph-space {
   height: 1px;
@@ -10,11 +10,12 @@
   cursor: pointer;
   padding: 2px;
   border: 1px solid white;
+  border-radius: 2px;
 }
 .tl.hovered {
   background-color: rgba( 204, 255, 0, 0.2);
 }
-.paragraph::before {
+.new-paragraph::before {
   content: '\00a0\00a0\00a0'
 }
 .header {

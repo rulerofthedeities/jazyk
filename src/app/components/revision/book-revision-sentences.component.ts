@@ -8,23 +8,37 @@ import { SentenceData } from 'app/models/revision.model';
 })
 
 export class BookRevisionSentencesComponent {
-  @Input() sentences: SentenceData[];
-  hoverSentence: number;
-  translateSentence: number;
+  @Input() paragraphs: SentenceData[][];
+  hoverSentenceParNr: number;
+  hoverSentenceLineNr: number;
+  translateSentenceParNr: number;
+  translateSentenceLineNr: number;
 
-  onHoverSentence(i: number) {
-    this.hoverSentence = i;
-  }
-
-  onToggleSentence(i: number) {
-    this.hoverSentence = this.hoverSentence ? null : i;
+  onHoverSentence(parNr: number, lineNr: number) {
+    this.hoverSentenceParNr = parNr;
+    this.hoverSentenceLineNr = lineNr;
   }
 
   onCancelHoverSentence() {
-    this.hoverSentence = null;
+    this.hoverSentenceParNr = null;
+    this.hoverSentenceLineNr = null;
   }
 
-  onSentenceTranslation(i: number) {
-    this.translateSentence = i;
+  onClickSentence(tpe: string, parNr: number, lineNr: number) {
+    if (tpe === 'translation') {
+      this.sentenceTranslation(parNr, lineNr);
+    } else {
+      this.toggleSentence(parNr, lineNr);
+    }
+  }
+
+  private toggleSentence(parNr: number, lineNr: number) {
+    this.hoverSentenceParNr = this.hoverSentenceParNr ? null : parNr;
+    this.hoverSentenceLineNr = this.hoverSentenceLineNr ? null : lineNr;
+  }
+
+  private sentenceTranslation(parNr: number, lineNr: number) {
+    this.translateSentenceParNr = parNr;
+    this.translateSentenceLineNr = lineNr;
   }
 }

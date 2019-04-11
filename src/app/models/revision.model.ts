@@ -19,6 +19,7 @@ export interface ChapterData {
   sequence: number;
   nrOfSentences: number;
   sentences: SentenceData[];
+  paragraphs: SentenceData[][]; // For revision
   expanded: boolean;
   ready: boolean; // all data for this chapter has been loaded
 }
