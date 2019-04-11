@@ -91,7 +91,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         const bookId = params['id'];
         this.userLanCode = params['lan'];
         this.processNewBookId(bookId);
-        this.processNewBook(bookId);
       }
     );
   }
@@ -105,6 +104,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(book => {
         this.book = book;
+        this.processNewBook(bookId);
       });
     } else {
       this.msg = this.text['InvalidBookId'];
@@ -172,8 +172,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   }
 
   private processSessions(sessions: SessionData[]) {
-    console.log('session data', sessions);
-    console.log('Chapter Data', ...this.chapterData);
     // Loop through all session data and map with chapter
     // If chapterSentenceNr or chapter sequence is available, this gets priority
     let chapterSequence = 1,
@@ -213,7 +211,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      console.log('loaded chapter', data, chapter.sentences);
       const chapters = data[0],
             translations = data[1];
       let translationData: RevisionTranslations;
@@ -241,7 +238,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       }
       this.isLoadingChapter[i] = false;
       chapter.ready = true;
-      console.log('chapter data', chapter);
     });
   }
 

@@ -11,7 +11,7 @@
   padding: 2px;
   border: 1px solid white;
 }
-.translation.hovered {
+.tl.hovered {
   background-color: rgba( 204, 255, 0, 0.2);
 }
 .paragraph::before {

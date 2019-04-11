@@ -10,11 +10,21 @@ import { SentenceData } from 'app/models/revision.model';
 export class BookRevisionSentencesComponent {
   @Input() sentences: SentenceData[];
   hoverSentence: number;
+  translateSentence: number;
 
   onHoverSentence(i: number) {
     this.hoverSentence = i;
-}
+  }
+
+  onToggleSentence(i: number) {
+    this.hoverSentence = this.hoverSentence ? null : i;
+  }
+
   onCancelHoverSentence() {
     this.hoverSentence = null;
+  }
+
+  onSentenceTranslation(i: number) {
+    this.translateSentence = i;
   }
 }

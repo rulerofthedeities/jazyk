@@ -5,6 +5,7 @@
       <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
       <span
         (mouseover)="onHoverSentence(i)"
+        (click)="onToggleSentence(i)"
         (mouseout)="onCancelHoverSentence()"
         class="sentence"
         [ngClass]="{
@@ -23,7 +24,10 @@
       <p *ngIf="sentence.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
       <p *ngIf="sentence.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
       <span
-        class="sentence translation"
+        class="sentence tl"
+        (mouseover)="onHoverSentence(i)"
+        (click)="onSentenceTranslation(i)"
+        (mouseout)="onCancelHoverSentence()"
         [ngClass]="{
           paragraph: sentence.sentence?.isNewParagraph,
           header: sentence.sentence?.isHeader,
