@@ -4,11 +4,11 @@ import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
-import { Book, UserBook, Chapter, Sentence, SessionData,
+import { Book, Chapter, SessionData,
          RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
 import { SentenceData, ChapterData } from 'app/models/revision.model';
-import { takeWhile, filter, delay } from 'rxjs/operators';
-import { zip, Subject } from 'rxjs';
+import { takeWhile, filter } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 @Component({
   templateUrl: 'book-revision.component.html',
@@ -259,7 +259,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       sCnt++;
     });
     chapterData.sentences = [];
-    console.log('paragraphs', chapterData.paragraphs);
   }
 
   private getBestTranslation(translations: SentenceTranslation[]): SentenceTranslation {

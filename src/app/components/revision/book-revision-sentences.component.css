@@ -1,9 +1,8 @@
 .newline-space {
-  line-height: 6px;
+  line-height: 4px;
 }
-.paragraph-space {
-  height: 1px;
-  margin: 1px;
+.paragraph {
+  margin-bottom: 8px;
 }
 .sentence {
   line-height: 23px;

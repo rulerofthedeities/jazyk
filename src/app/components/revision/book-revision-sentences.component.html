@@ -1,4 +1,4 @@
-<div class="row" *ngFor="let paragraph of paragraphs; let pCnt=index">
+<div class="row paragraph" *ngFor="let paragraph of paragraphs; let pCnt=index">
   <div class="col-xs-6">
     <span *ngFor="let sentence of paragraph; let sCnt=index">
       <ng-container *ngTemplateOutlet="sentenceTemplate;context:{
@@ -25,7 +25,6 @@
 
 <ng-template #sentenceTemplate let-sentenceData=sentenceData let-parNr=parNr let-lineNr=lineNr let-tpe=tpe let-text=text>
   <p *ngIf="sentenceData.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
-  <p *ngIf="sentenceData.sentence?.isNewParagraph" class="paragraph-space">&nbsp;</p>
   <span
     (mouseover)="onHoverSentence(parNr, lineNr)"
     (click)="onClickSentence(tpe, parNr, lineNr)"
