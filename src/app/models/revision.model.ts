@@ -1,4 +1,4 @@
-import { Sentence, SentenceTranslation } from './book.model';
+import { Sentence, SentenceTranslation, MergedChapter } from './book.model';
 
 export interface SentenceData {
   sentenceNrChapter: number;
@@ -14,6 +14,7 @@ export interface SentenceData {
 
 export interface ChapterData {
   chapterId: string;
+  mergedChapters?: MergedChapter[];
   title: string;
   level: number;
   sequence: number;

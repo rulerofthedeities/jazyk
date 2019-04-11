@@ -129,8 +129,14 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     chapters.forEach((chapter, i) => {
       if (i > 0 && chapter.title.trim() === '') {
         // merge with previous chapter
+        const currentSentenceNr = newChapters[newChapters.length - 1].nrOfSentences;
         newChapters[newChapters.length - 1].nrOfSentences += chapter.nrOfSentences;
+        newChapters[newChapters.length - 1].mergedChapters.push({
+          chapterId: chapter._id,
+          sentenceNrStart: currentSentenceNr
+        });
       } else {
+        chapter.mergedChapters = [];
         newChapters.push(chapter);
       }
     });
@@ -151,6 +157,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       }
       chapterData.push({
         chapterId: chapter._id,
+        mergedChapters: chapter.mergedChapters,
         title,
         sequence: chapter.sequence,
         level: chapter.level,
@@ -204,7 +211,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchChapter(chapter: ChapterData, i: number) {
+  private fetchChapter(chapter: ChapterData, i: number, sentenceNrStart = 0) {
     this.isLoadingChapter[i] = true;
     zip(
       this.revisionService.fetchChapter(chapter.chapterId),
@@ -217,30 +224,43 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       let translationData: RevisionTranslations;
       if (chapterData && chapterData.sentences) {
         chapterData.sentences.forEach((sentence, j) => {
-          chapter.sentences[j].sentence = sentence;
-          // Map translations with chapter sentences
-          translationData = translations.find(translation => chapter.sentences[j].sentence.text === translation.sentence);
-          if (translationData) {
-            chapter.sentences[j].hasTranslation = true;
-            chapter.sentences[j].translations = translationData.translations;
-            chapter.sentences[j].bestTranslation = this.getBestTranslation(translationData.translations);
-          } else {
-            chapter.sentences[j].hasTranslation = false;
-            chapter.sentences[j].bestTranslation = {
-              translation: chapter.sentences[j].sentence.text,
-              userId: null,
-              note: '',
-              isMachine: false,
-              lanCode: this.userLanCode,
-              score: 0
-            };
+          if (!chapter.sentences[sentenceNrStart + j].sentence) {
+            chapter.sentences[sentenceNrStart + j].sentence = sentence;
+            // Map translations with chapter sentences
+            translationData = translations.find(translation =>
+              chapter.sentences[sentenceNrStart + j].sentence.text === translation.sentence
+            );
+            if (translationData) {
+              chapter.sentences[sentenceNrStart + j].hasTranslation = true;
+              chapter.sentences[sentenceNrStart + j].translations = translationData.translations;
+              chapter.sentences[sentenceNrStart + j].bestTranslation = this.getBestTranslation(translationData.translations);
+            } else {
+              chapter.sentences[sentenceNrStart + j].hasTranslation = false;
+              chapter.sentences[sentenceNrStart + j].bestTranslation = {
+                translation: chapter.sentences[sentenceNrStart + j].sentence.text,
+                userId: null,
+                note: '',
+                isMachine: false,
+                lanCode: this.userLanCode,
+                score: 0
+              };
+            }
           }
         });
       }
       // Transform into paragraphs
       this.buildParagraphs(chapter);
-      this.isLoadingChapter[i] = false;
-      chapter.ready = true;
+      if (chapter.mergedChapters.length > 0) {
+        chapter.chapterId = chapter.mergedChapters[0].chapterId;
+        chapter.sequence++;
+        const newSentenceNrStart = chapter.mergedChapters[0].sentenceNrStart;
+        chapter.mergedChapters.shift();
+        this.fetchChapter(chapter, i, newSentenceNrStart);
+      } else {
+        this.isLoadingChapter[i] = false;
+        chapter.ready = true;
+        chapterData.sentences = [];
+      }
     });
   }
 
@@ -249,16 +269,17 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     let pCnt = -1,
         sCnt = 0;
         chapterData.paragraphs = [];
-        chapterData.sentences.forEach(sentence => {
-      if (sCnt === 0 || sentence.sentence.isNewParagraph) {
+    chapterData.sentences.forEach(sentenceData => {
+      if (sCnt === 0 || (sentenceData.sentence && sentenceData.sentence.isNewParagraph)) {
         pCnt++;
         sCnt = 0;
         chapterData.paragraphs[pCnt] = [];
       }
-      chapterData.paragraphs[pCnt][sCnt] = sentence;
+      if (!chapterData.paragraphs[pCnt][sCnt]) {
+        chapterData.paragraphs[pCnt][sCnt] = sentenceData;
+      }
       sCnt++;
     });
-    chapterData.sentences = [];
   }
 
   private getBestTranslation(translations: SentenceTranslation[]): SentenceTranslation {

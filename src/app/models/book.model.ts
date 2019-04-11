@@ -25,6 +25,11 @@ export interface TestAnswer {
   answerLetter: string;
 }
 
+export interface MergedChapter {
+  chapterId: string;
+  sentenceNrStart: number;
+}
+
 export interface Chapter {
   _id: string;
   bookId: string;
@@ -42,7 +47,7 @@ export interface Chapter {
   nrOfSentences?: number;
   activeSentences?: Sentence[];
   activeAudioSentences?: AudioSentence[];
-  merged?: string[]; // list of other chapter ids to merge
+  mergedChapters?: MergedChapter[]; // list of other chapter ids to merge in revision
   toRemove?: boolean;
 }
 
