@@ -27,7 +27,7 @@ export class DashboardService {
 
   fetchRecentBooks(): Observable<RecentBook[]> {
     return this.http
-    .get<RecentBook[]>('/api/dashboard/books/5')
+    .get<RecentBook[]>('/api/dashboard/books/10')
     .pipe(retry(3));
   }
 

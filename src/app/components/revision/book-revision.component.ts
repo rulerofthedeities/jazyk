@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { RevisionService } from '../../services/revision.service';
 import { SharedService } from '../../services/shared.service';
+import { Language } from '../../models/main.model';
 import { Book, Chapter, SessionData,
-         RevisionTranslations, SentenceTranslation } from 'app/models/book.model';
+         RevisionTranslations, SentenceTranslation, UserBook } from 'app/models/book.model';
 import { SentenceData, ChapterData } from 'app/models/revision.model';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip } from 'rxjs';
@@ -22,15 +24,18 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   book: Book;
   isLoadingRevision = false;
   isLoadingChapter: boolean[] = [];
-  userLanCode: string;
+  targetLanCode: string;
   msg: string;
   chapterData: ChapterData[] = [];
   userId: string;
   isError = false;
   hasChapters: boolean;
+  userLanguages: Language[];
+  bookRead: boolean;
 
   constructor(
     private route: ActivatedRoute,
+    private location: Location,
     private userService: UserService,
     private sharedService: SharedService,
     private revisionService: RevisionService,
@@ -38,7 +43,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.userId = this.userService.user._id.toString();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
   }
@@ -89,7 +93,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         const bookId = params['id'];
-        this.userLanCode = params['lan'];
+        this.targetLanCode = this.checkValidLan(params['lan'], bookId);
         this.processNewBookId(bookId);
       }
     );
@@ -99,22 +103,36 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     // First load book only for better responsiveness
     if (bookId && bookId.length === 24) {
       this.isLoadingRevision = true;
-      this.readnListenService
-      .fetchBook(bookId, this.bookType)
+      zip(
+        this.readnListenService.fetchBook(bookId, this.bookType),
+        this.readnListenService.fetchUserBook(this.targetLanCode, bookId, false)
+      )
       .pipe(takeWhile(() => this.componentActive))
-      .subscribe(book => {
-        this.book = book;
-        this.processNewBook(bookId);
+      .subscribe(data => {
+        this.book = data[0];
+        const userBook = data[1];
+        this.processNewBook(bookId, userBook);
       });
     } else {
       this.msg = this.text['InvalidBookId'];
     }
   }
 
-  private processNewBook(bookId: string) {
+  private processNewBook(bookId: string, userBook: UserBook) {
+    this.bookRead = true;
+    if (userBook && userBook.repeatCount > 0 || (userBook.bookmark && userBook.bookmark.isBookRead)) {
+      this.fetchBookData(bookId);
+    } else {
+      this.bookRead = false;
+      this.isLoadingRevision = false;
+      this.msg = this.text['BookNotReadYet'];
+    }
+  }
+
+  private fetchBookData(bookId: string) {
     zip(
       this.readnListenService.fetchChapterHeaders(bookId, this.bookType),
-      this.revisionService.fetchSessionData(bookId, 'read', this.userLanCode)
+      this.revisionService.fetchSessionData(bookId, 'read', this.targetLanCode)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {
@@ -215,7 +233,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     this.isLoadingChapter[i] = true;
     zip(
       this.revisionService.fetchChapter(chapter.chapterId),
-      this.revisionService.fetchChapterTranslations(this.book._id, this.book.lanCode, this.userLanCode, chapter.sequence)
+      this.revisionService.fetchChapterTranslations(this.book._id, this.book.lanCode, this.targetLanCode, chapter.sequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
@@ -241,7 +259,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
                 userId: null,
                 note: '',
                 isMachine: false,
-                lanCode: this.userLanCode,
+                lanCode: this.targetLanCode,
                 score: 0
               };
             }
@@ -292,11 +310,25 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     return bestTranslation;
   }
 
+  private checkValidLan(lan: string, bookId: string): string {
+    // Check if lan from route is valid
+    // If not, change lan and route
+    const isValidLan = !!this.userLanguages.find(userLan => userLan.code === lan);
+    if (isValidLan) {
+      return lan;
+    } else {
+      const targetLan = this.userService.user.main.myLan;
+      this.location.go('/read/book/' + bookId + '/' + targetLan + '/review');
+      return targetLan;
+    }
+  }
+
   private getDependables(lan) {
     const options = {
       lan,
       component: 'RevisionComponent',
-      getTranslations: true
+      getTranslations: true,
+      getLanguages: true
     };
 
     this.sharedService
@@ -304,6 +336,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
+        this.userLanguages = dependables.userLanguages;
         this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.getBookId();
       }

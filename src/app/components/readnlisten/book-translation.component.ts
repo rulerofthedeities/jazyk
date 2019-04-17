@@ -131,6 +131,14 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     }
   }
 
+  hasTranslations(source: string): boolean {
+    let hasTranslations = false;
+    if (!!this.translations.find(translation => translation.machine === source.toLowerCase())) {
+      hasTranslations = true;
+    }
+    return hasTranslations;
+  }
+
   private setThumbData(translation: SentenceTranslation) {
     if (!this.thumbs[translation.elementId]) {
       this.thumbs[translation.elementId] = {
@@ -194,6 +202,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       translations => {
         this.translations = translations;
         if (this.translations.length) {
+          this.checkUserHasTranslation(translations);
           this.getTranslationThumbs(this.translations[0]._id);
           this.checkIfMachineTranslations(this.translations);
         }
@@ -312,6 +321,15 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     const deeplLanguages = this.translationService.getMachineLanguages('deepl');
     if (deeplLanguages.includes(this.userLanCode) && deeplLanguages.includes(this.bookLanCode)) {
       this.isDeeplAvailable = true;
+    }
+  }
+
+  private checkUserHasTranslation(translations: SentenceTranslation[]) {
+    // Check if the current user has already submitted a translation
+    const userTranslation = translations.find(translation => translation.userId.toString() === this.userId.toString());
+    if (userTranslation) {
+      this.submitted = true;
+      this.canEdit = false;
     }
   }
 

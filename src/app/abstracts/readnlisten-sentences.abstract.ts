@@ -203,6 +203,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     });
   }
 
+  onToRevision() {
+    this.router.navigate(['/read/book/' + this.bookId + '/' + this.userLanCode + '/review']);
+  }
+
   protected changeAnswer(newAnswer: string) {
     if (this.sessionData.answers && this.sessionData.answers.slice(-1) === 'm') {
       newAnswer = newAnswer.toUpperCase();

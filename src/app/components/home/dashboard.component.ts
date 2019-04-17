@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             dtB = new Date(b.dt);
       return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
     });
-    this.recent = recentBooks.slice(0, 5);
+    this.recent = recentBooks.slice(0, 10);
     this.recentReady = true;
   }
 

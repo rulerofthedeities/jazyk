@@ -3,17 +3,17 @@
     [text]="text"
     [bookType]="'revision'"
     [bookLanCode]="book?.lanCode"
-    [userLanCode]="userLanCode"
+    [userLanCode]="targetLanCode"
     [bookTitle]="book?.title"
     [chapterTitle]="''"
   ></km-book-title>
-  <div class="panel panel-default">
+  <div class="panel panel-default" *ngIf="bookRead !== false">
     <div class="panel-body">
       <km-loader *ngIf="isLoadingRevision && !isError"
         [showBackground]="false"
         [msg]="text['LoadingChapters']">
       </km-loader>
-      <ul *ngIf="!isLoadingRevision&& !!chapterData" class="list-group">
+      <ul *ngIf="!isLoadingRevision && !!chapterData" class="list-group">
         <ng-template ngFor [ngForOf]="chapterData" let-chapter let-i="index">
           <!-- CHAPTER HEADER -->
           <li *ngIf="hasChapters"
@@ -36,7 +36,11 @@
             <div *ngIf="!isLoadingChapter[i]">
               <!-- SENTENCES -->
               <km-revision-sentences
-                [paragraphs]="chapter.paragraphs">
+                [text]="text"
+                [paragraphs]="chapter.paragraphs"
+                [bookLanCode]="book.lanCode"
+                [targetLanCode]="targetLanCode"
+                [bookId]="book.bookId || book._id">
               </km-revision-sentences>
             </div>
             <km-loader *ngIf="isLoadingChapter[i] && !isError"

@@ -23,11 +23,11 @@
   </div>
 </div>
 
-<ng-template #sentenceTemplate let-sentenceData=sentenceData let-parNr=parNr let-lineNr=lineNr let-tpe=tpe let-text=text>
+<ng-template #sentenceTemplate let-sentenceData=sentenceData let-parNr=parNr let-lineNr=lineNr let-tpe=tpe let-sentence=text>
   <p *ngIf="sentenceData.sentence?.isEmptyLine" class="newline-space">&nbsp;</p>
   <span
     (mouseover)="onHoverSentence(parNr, lineNr)"
-    (click)="onClickSentence(tpe, parNr, lineNr)"
+    (click)="onClickSentence(tpe, parNr, lineNr, sentenceData.lastAnswer?.toLowerCase())"
     (mouseout)="onCancelHoverSentence()"
     class="sentence"
     [ngClass]="{
@@ -39,6 +39,20 @@
       no: tpe==='sentence' && sentenceData.lastAnswer?.toLowerCase() === 'n',
       tl: tpe === 'translation',
       'hide-tl': tpe === 'translation' && !sentenceData.hasTranslation
-    }">{{text}}
+    }">{{sentence}}
+  </span>
+  <span *ngIf="tpe==='translation' && targetLanCode !== bookLanCode && translateSentenceParNr === parNr && translateSentenceLineNr === lineNr" class="translations">
+    <km-sentence-translations
+      [userId]="userId"
+      [userLanCode]="targetLanCode"
+      [bookLanCode]="bookLanCode"
+      [text]="text"
+      [bookId]="bookId"
+      [sentence]="sentenceData.sentence.text"
+      [answersReceived]="answersObservable"
+      isRevision="true"
+      (confirm)="onCanConfirm()"
+      (translationAdded)="onTranslationAdded($event)">
+    </km-sentence-translations>
   </span>
 </ng-template>
