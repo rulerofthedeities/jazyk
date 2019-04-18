@@ -5,7 +5,7 @@
   <div class="panel-heading" *ngIf="!isRevision">
     <h3 class="panel-title">{{text["Translations"]}} ({{translations.length}})</h3>
   </div>
-  <div class="panel-body">
+  <div class="panel-body" *ngIf="!isLoading">
     <!-- TRANSLATIONS LIST -->
     <div class="translations-container" *ngIf="translations.length">
       <ul class="list-group">
@@ -19,6 +19,7 @@
             (click)="onEditTranslation(i)">
             <span class="fa fa-pencil"></span>
           </button>
+          <span class="fa fa-check pull-right" *ngIf="!canEdit && isRevision && !translation.isMachine && translation.userId?.toString() === userId"></span>
           <div class="vote-block">
             <span class="fa fa-pencil edit-icon" *ngIf="isEditing === i"></span>
             {{i + 1}}.
@@ -140,6 +141,10 @@
       </div>
     </div>
   </div>
+  <km-loader *ngIf="isLoading"
+    [showBackground]="false"
+    [msg]="text['LoadingTranslations']">
+  </km-loader>
 </div>
 
 

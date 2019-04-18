@@ -127,6 +127,7 @@ export interface SentenceTranslation {
   _id?: string;
   userId: string;
   elementId?: string;
+  translationId?: string;
   translation: string;
   note: string;
   isMachine: boolean;

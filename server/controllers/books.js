@@ -282,7 +282,7 @@ module.exports = {
           sentence = req.params.sentence,
           query = {bookId, sentence, 'translations.lanCode': lanCode},
           projection = {
-            _id: 1,
+            translationId: "$_id",
             translation: "$translations.translation",
             note: "$translations.note",
             lanCode: "$translations.lanCode",

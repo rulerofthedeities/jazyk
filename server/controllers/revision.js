@@ -50,7 +50,7 @@ module.exports = {
             'translations.lanCode': userLan
           },
           projection = {
-            _id: 0,
+            _id: 1,
             sentence: 1,
             translations: {
               '$filter': {
@@ -60,9 +60,23 @@ module.exports = {
               }
             },
           },
+          projection2 = {
+            sentence: 1,
+            'translations._id': 1,
+            'translations.translation': 1,
+            'translations.note': 1,
+            'translations.lanCode': 1,
+            'translations.score': 1,
+            'translations.userId': 1,
+            'translations.isMachine': 1,
+            'translations.isDuplicate': 1,
+            'translations.machine': 1,
+            'translations.translationId': "$_id"
+          },
           pipeline = [
             {$match: query},
-            {$project: projection}
+            {$project: projection},
+            {$project: projection2}
           ];
     Translation.aggregate(pipeline, (err, translations) => {
       response.handleError(err, res, 400, 'Error fetching translations', () => {

@@ -16,6 +16,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Input() userId: string;
   @Input() userLanCode: string;
   @Input() bookLanCode: string;
+  @Input() translations: SentenceTranslation[] = []; // optional
   @Input() text: Object;
   @Input() bookId: string;
   @Input() chapterSequence: number;
@@ -27,7 +28,6 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   @Output() nextSentence = new EventEmitter();
   @Output() confirm = new EventEmitter();
   private componentActive = true;
-  translations: SentenceTranslation[] = [];
   submitting = false;
   submitted = false;
   duplicate = false;
@@ -43,6 +43,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   isDeeplAvailable: boolean;
   hasDeeplTranslations: boolean;
   hasMSTranslations: boolean;
+  isLoading = true;
 
   constructor(
     private translationService: TranslationService,
@@ -50,6 +51,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.setElementTranslationIds(); // revision translations don't have elementId
     this.checkMachineTranslationAvailability();
     this.observe();
     this.getSentenceTranslations(this.sentence);
@@ -139,6 +141,12 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     return hasTranslations;
   }
 
+  private setElementTranslationIds() {
+    if (this.translations) {
+      this.translations.map(translation => translation.elementId = translation._id);
+    }
+  }
+
   private setThumbData(translation: SentenceTranslation) {
     if (!this.thumbs[translation.elementId]) {
       this.thumbs[translation.elementId] = {
@@ -156,7 +164,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
     this.thumbs[translation.elementId].savingDown = !up;
     this.thumbs[translation.elementId].savingUp = up;
     this.readnListenService
-    .saveThumb(up,  this.bookId, translation.userId, translation._id, translation.elementId)
+    .saveThumb(up,  this.bookId, translation.userId, translation.translationId, translation.elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       thumb => {
@@ -192,22 +200,44 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   }
 
   private getSentenceTranslations(sentence: string) {
-    this.translationService
-    .fetchSentenceTranslations(
-      this.userLanCode,
-      this.bookId,
-      sentence)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      translations => {
-        this.translations = translations;
-        if (this.translations.length) {
-          this.checkUserHasTranslation(translations);
-          this.getTranslationThumbs(this.translations[0]._id);
-          this.checkIfMachineTranslations(this.translations);
+    if (this.translations && this.translations.length) {
+      // initial translations from @input
+      this.translations = this.processTranslations(this.translations);
+    } else {
+      // no initial translations, or from observable
+      this.translationService
+      .fetchSentenceTranslations(
+        this.userLanCode,
+        this.bookId,
+        sentence)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        translations => {
+          this.translations = this.processTranslations(translations);
         }
-      }
-    );
+      );
+    }
+  }
+
+  private processTranslations(translations: SentenceTranslation[]): SentenceTranslation[] {
+    if (translations.length) {
+      this.sortTranslations(translations);
+      this.checkUserHasTranslation(translations);
+      this.getTranslationThumbs(translations[0].translationId);
+      this.checkIfMachineTranslations(translations);
+      translations = this.removeDuplicateTranslations(translations);
+    } else {
+      this.isLoading = false;
+    }
+    return translations;
+  }
+
+  private removeDuplicateTranslations(translations: SentenceTranslation[]): SentenceTranslation[] {
+    return translations.filter(translation => !translation.isDuplicate);
+  }
+
+  private sortTranslations(translations: SentenceTranslation[]) {
+    translations.sort((a, b) => a.score > b.score ? -1 : (b.score > a.score ? 1 : 0));
   }
 
   private getTranslationThumbs(translationId: string) {
@@ -219,6 +249,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
         thumbs.forEach(thumb => {
           this.thumbs[thumb.translationElementId] = thumb;
         });
+        this.isLoading = false;
       }
     );
   }
@@ -272,7 +303,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   private insertTranslation(newTranslationData: TranslatedData) {
     const newTranslation = newTranslationData.translation;
     newTranslation.elementId = newTranslation._id;
-    newTranslation._id = newTranslationData.translationsId;
+    newTranslation.translationId = newTranslationData.translationsId;
     this.translations.unshift(newTranslation);
     return newTranslation;
   }
@@ -280,7 +311,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
   private updateTranslation(translation: string, note: string) {
     this.translationService
     .updateSentenceTranslation(
-      this.translations[this.isEditing]._id,
+      this.translations[this.isEditing].translationId,
       this.translations[this.isEditing].elementId,
       translation,
       note)
@@ -326,10 +357,13 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
 
   private checkUserHasTranslation(translations: SentenceTranslation[]) {
     // Check if the current user has already submitted a translation
-    const userTranslation = translations.find(translation => translation.userId.toString() === this.userId.toString());
+    const userTranslation = translations.find(translation =>
+      !translation.isMachine && translation.lanCode === this.userLanCode && translation.userId.toString() === this.userId.toString());
     if (userTranslation) {
       this.submitted = true;
-      this.canEdit = false;
+      if (this.isRevision) {
+        this.canEdit = false;
+      }
     }
   }
 
@@ -374,6 +408,8 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
           this.canConfirm = false;
           this.hasDeeplTranslations = false;
           this.hasMSTranslations = false;
+          this.translations = [];
+          this.isLoading = true;
           this.getSentenceTranslations(sentence);
         }
       });

@@ -50,6 +50,9 @@
 .btn-up, .btn-down {
   cursor: pointer;
 }
+.fa-check {
+  color: green;
+}
 .vote-block {
   float: left;
 }
