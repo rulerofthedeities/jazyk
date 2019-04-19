@@ -18,6 +18,7 @@ import { LoaderComponent } from './components/fields/loader.component';
 import { BookSummaryComponent } from './components/readnlisten/book-summary.component';
 import { BookLicenseComponent } from './components/readnlisten/book-license.component';
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
+import { LinkFieldComponent } from './components/fields/link-field.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
 import { PieChartComponent } from './components/readnlisten/pie-chart.component';
@@ -45,6 +46,7 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     BookSummaryComponent,
     BookLicenseComponent,
     ModalRanksComponent,
+    LinkFieldComponent,
     ScorePipe,
     SanitizeHtmlPipe,
     PieChartComponent,
@@ -68,6 +70,7 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     BookSummaryComponent,
     BookLicenseComponent,
     ModalRanksComponent,
+    LinkFieldComponent,
     ScorePipe,
     SanitizeHtmlPipe,
     PieChartComponent,

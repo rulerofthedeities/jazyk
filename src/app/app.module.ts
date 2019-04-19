@@ -34,7 +34,11 @@ import { BooklistComponent } from './components/pages/book-list.component';
   imports: [
     BrowserModule.withServerTransition({appId: 'km-jazyk'}),
     HttpClientModule,
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules, initialNavigation: 'enabled'}),
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules,
+      initialNavigation: 'enabled',
+      scrollPositionRestoration: 'enabled'
+    }),
     CoreModule.forRoot(),
     CookieModule.forRoot(),
     SharedModule,
