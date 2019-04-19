@@ -85,7 +85,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.setDefaultImg();
     this.setSourceLink();
-    // this.setAuthors();
     this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
@@ -402,14 +401,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
   }
-
-  /*
-  private setAuthors() {
-    const authorsLinksTxt = this.sharedService.getAuthorsLinksTxt(this.book);
-    this.authorsTxt = authorsLinksTxt.authorsTxt;
-    this.linksTxt = authorsLinksTxt.linksTxt;
-  }
-  */
 
   private setActivity() {
     if (this.activity) {

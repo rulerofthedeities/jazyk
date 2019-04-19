@@ -14,6 +14,7 @@ interface Link {
 
 export class LinkFieldComponent implements OnInit {
   @Input() private value: string;
+  @Input() separator = ',';
   links: Link[] = [];
 
   ngOnInit() {

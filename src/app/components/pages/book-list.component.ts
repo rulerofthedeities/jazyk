@@ -119,16 +119,6 @@ export class BooklistComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getLinks(booklans: BooksByLan) {
-    let bookLinks: {authorsTxt: string, linksTxt: string};
-    const links: string[] = [];
-    booklans.books.map(book => {
-      bookLinks = this.sharedService.getAuthorsLinksTxt(book) || {authorsTxt: '', linksTxt: ''};
-      links.push(bookLinks.linksTxt);
-    });
-    return links;
-  }
-
   private sortBooks(books: BooksByLan[]): BooksByLan[] {
     const sortedBooks = [];
     let bookList: BooksByLan,
@@ -140,8 +130,7 @@ export class BooklistComponent implements OnInit, OnDestroy {
           books: bookList.books,
           lanCode: bookList.lanCode,
           lanName: lan.lanName,
-          total: bookList.books.length,
-          links: this.getLinks(bookList)
+          total: bookList.books.length
         };
         sortedBooks.push(newList);
       }

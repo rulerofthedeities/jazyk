@@ -16,7 +16,6 @@ export interface BooksByLan {
    lanCode: string;
    lanName?: string;
    books: Book[];
-   links?: string[];
    total: number;
  }
 

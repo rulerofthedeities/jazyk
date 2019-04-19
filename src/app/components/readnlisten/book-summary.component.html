@@ -93,7 +93,10 @@
               [text]="text">
             </km-book-tpe>
             {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
-            <km-link-field [value]="book.authors"></km-link-field>
+            <km-link-field
+              [value]="book.authors"
+              [separator]="' &'"
+            ></km-link-field>
             <!-- <span *ngIf="linksTxt" [innerHTML]="linksTxt | sanitizeHtml"></span> -->
             <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
             <span class="fa fa-copyright info-intro"
@@ -130,7 +133,7 @@
               <div *ngIf="book.narrators">{{text['BookNarrator']}}: <km-link-field [value]="book.narrators"></km-link-field></div>
               <div *ngIf="book.translator">{{text['BookTranslator']}}: <km-link-field [value]="book.translator"></km-link-field></div>
               <div *ngIf="book.cover">{{text['BookCover']}}: <km-link-field [value]="book.cover"></km-link-field></div>
-              <div *ngIf="book.cover">{{text['BookSource']}}: <km-link-field [value]="book.source"></km-link-field></div>
+              <div *ngIf="book.source">{{text['BookSource']}}: <km-link-field [value]="book.source"></km-link-field></div>
             </div>
           </div>
           <!-- BUTTONS -->
