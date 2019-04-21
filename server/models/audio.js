@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 const sentenceSchema = new Schema({
   fileName: {type: String, required: true},

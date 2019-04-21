@@ -101,6 +101,7 @@ module.exports = {
 
     getData().then((results) => {
       response.handleSuccess(res, results);
+      // console.log('heap', process.memoryUsage().heapUsed);
       // const diff = hd.end();
       // console.log('memory diff dependables', JSON.stringify(diff, undefined, 2));
     }).catch((err) => {
