@@ -10,7 +10,7 @@
     "build:watch": "ng build --watch",
     "build:prod": "ng build --prod",
     "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
-    "serve:ssr": "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 dist/server.js",
+    "serve:ssr": "node --optimize_for_size --max_old_space_size=420 --gc_interval=100 dist/server.js",
     "test:ssr": "node --inspect dist/server.js",
     "build:client-and-server-bundles": "ng build --prod && ng run jazyk:server",
     "webpack:server": "webpack --config webpack.server.config.js --progress --colors",
