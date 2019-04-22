@@ -17,6 +17,7 @@ import compression = require('compression');
 import bodyParser = require('body-parser');
 import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
+import * as rateLimit from 'express-rate-limit';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 // import { ModuleMap } from './module-map';
@@ -26,7 +27,11 @@ import { readFileSync } from 'fs';
 // Faster server renders w/ Prod mode
 enableProdMode();
 
-const DIST_FOLDER = join(process.cwd(), 'dist');
+const DIST_FOLDER = join(process.cwd(), 'dist'),
+      apiLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 1000
+      });
 
 // Express server
 const app = express();
@@ -35,6 +40,7 @@ app.set('port', process.env.PORT || 9000);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('host', process.env.BACKEND_URL || '');
 app.set('token_expiration', 604800); // Token expires after 7 days
+app.enable('trust proxy');
 // check for warnings
 checks.checkWarnings(app);
 // middleware
@@ -43,6 +49,7 @@ app.use(bearerToken());
 app.use(sslRedirect());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_TOKEN_SECRET));
+app.use('/api/', apiLimiter);
 
 // console.log('NODE_TLS_REJECT_UNAUTHORIZED', process.env.NODE_TLS_REJECT_UNAUTHORIZED);
 
@@ -81,7 +88,7 @@ app.set('view engine', 'html');
 app.set('views', join(DIST_FOLDER, 'browser'));
 
 // API routes
-routes.apiEndpoints(app, express.Router(), true);
+routes.apiEndpoints(app, express.Router(), rateLimit, true);
 // Use client rendering for all routes that require authorization -> shows app loader i.o. login
 routes.clientRendering(app, express.Router(), DIST_FOLDER);
 

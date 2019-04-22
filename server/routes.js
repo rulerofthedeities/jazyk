@@ -22,7 +22,11 @@ const path = require('path'),
       response = require('./response');
 
 module.exports = {
-  apiEndpoints: (app, router, isSSR = false) => {
+  apiEndpoints: (app, router, rateLimit, isSSR = false) => {
+    const apiSignupLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 5
+      })
     router.use(['/user/refresh', '/user/signin'], (req, res, next) => {
       req.expiresIn = app.get('token_expiration') || 86400;
       next();
@@ -32,7 +36,7 @@ module.exports = {
     router.post('/log/page', log.logPage);
     router.get('/user/check', users.check);
     router.post('/user/signin', users.signin);
-    router.post('/user/signup', users.signup);
+    router.post('/user/signup', users.signup, apiSignupLimiter);
     router.get('/translations/:lan/:component', translations.getTranslations);
     router.get('/dependables', config.getDependables);
     router.get('/pages/booklist/:tpe', page.getBooklist);

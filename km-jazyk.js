@@ -10,6 +10,7 @@ var express = require('express'),
     routes = require('./server/routes'),
     checks = require('./server/checks'),
     {mongoose} = require('./server/mongoose'),
+    rateLimit = require('express-rate-limit'),
     // memwatch = require('memwatch-next'),
     https = require('https');
 
@@ -32,7 +33,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist/browser')));
 
 // routing
-routes.apiEndpoints(app, express.Router());
+routes.apiEndpoints(app, express.Router(), rateLimit);
 
 // server
 if (app.get('env') === 'development') {
