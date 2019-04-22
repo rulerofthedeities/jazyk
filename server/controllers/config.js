@@ -1,7 +1,6 @@
 'use strict';
 
 const response = require('../response'),
-      // memwatch = require('memwatch-next'),
       Config = require('../models/config'),
       Translation = require('../models/translation');
 
@@ -22,6 +21,21 @@ module.exports = {
     Config.findOne(query, projection, (err, welcome) => {
       response.handleError(err, res, 400, 'Error fetching welcome message', () => {
         response.handleSuccess(res, welcome);
+      });
+    });
+  },
+  getTranslations: (req, res) => {
+    const pipeline = [
+            {$match: {components: req.params.component}},
+            {$project: {
+              _id: 0,
+              key:1,
+              txt:'$' + req.params.lan
+            }}
+          ];
+    Translation.aggregate(pipeline, (err, docs) => {
+      response.handleError(err, res, 400, 'Error fetching translations', () => {
+        response.handleSuccess(res, docs);
       });
     });
   },
@@ -73,7 +87,6 @@ module.exports = {
             }},
           {$sort: {code: 1}}
         ];
-    // const hd = new memwatch.HeapDiff();
     const getData = async () => {
       let translations, languages, userLanguages, bookLanguages, licenseUrls, invalidNames, leaderBoards;
       if (params.getTranslations === 'true') {
@@ -101,9 +114,6 @@ module.exports = {
 
     getData().then((results) => {
       response.handleSuccess(res, results);
-      // console.log('heap', process.memoryUsage().heapUsed);
-      // const diff = hd.end();
-      // console.log('memory diff dependables', JSON.stringify(diff, undefined, 2));
     }).catch((err) => {
       response.handleError(err, res, 400, 'Error fetching dependables');
     });

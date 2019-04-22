@@ -7,7 +7,6 @@ const path = require('path'),
       audio = require('./controllers/audiobooks'),
       errors = require('./controllers/errors'),
       config = require('./controllers/config'),
-      translations = require('./controllers/translations'),
       notifications = require('./controllers/notifications'),
       messages = require('./controllers/messages'),
       profiles = require('./controllers/profiles'),
@@ -37,7 +36,7 @@ module.exports = {
     router.get('/user/check', users.check);
     router.post('/user/signin', users.signin);
     router.post('/user/signup', users.signup, apiSignupLimiter);
-    router.get('/translations/:lan/:component', translations.getTranslations);
+    router.get('/translations/:lan/:component', config.getTranslations);
     router.get('/dependables', config.getDependables);
     router.get('/pages/booklist/:tpe', page.getBooklist);
     router.get('/pages/info/:page/:lan/:loggedIn', page.getInfoPage);
@@ -48,7 +47,7 @@ module.exports = {
     router.post('/user/checkresetId', users.checkresetId);
     router.post('/user/resetpw', users.resetpw);
 
-    router.use('/', function(req, res, next) {
+    router.use('/', (req, res, next) => {
       jwt.verify(req.token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
         response.handleError(err, res, 401, 'Authentication failed', () => {
           req.decoded = decoded;

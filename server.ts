@@ -11,6 +11,7 @@ import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 import * as express from 'express';
 import checks = require('./server/checks.js');
 import routes = require('./server/routes');
+import log = require('./server/controllers/log');
 import mongoose = require('./server/mongoose-ssr');
 import sslRedirect = require('heroku-ssl-redirect');
 import compression = require('compression');
@@ -18,6 +19,7 @@ import bodyParser = require('body-parser');
 import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import * as rateLimit from 'express-rate-limit';
+import * as memwatch from 'memwatch-next';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 // import { ModuleMap } from './module-map';
@@ -33,6 +35,10 @@ const DIST_FOLDER = join(process.cwd(), 'dist'),
         max: 1000
       });
 
+memwatch.on('leak', (info) => {
+  log.logError(info, 'MEMLEAK', 'main', `memory leak found`, 'server.ts');
+});
+
 // Express server
 const app = express();
 // config
@@ -40,7 +46,7 @@ app.set('port', process.env.PORT || 9000);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('host', process.env.BACKEND_URL || '');
 app.set('token_expiration', 604800); // Token expires after 7 days
-app.enable('trust proxy');
+app.enable('trust proxy'); // for rate limiter
 // check for warnings
 checks.checkWarnings(app);
 // middleware

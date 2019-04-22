@@ -11,10 +11,10 @@ var express = require('express'),
     checks = require('./server/checks'),
     {mongoose} = require('./server/mongoose'),
     rateLimit = require('express-rate-limit'),
-    // memwatch = require('memwatch-next'),
+    memwatch = require('memwatch-next'),
     https = require('https');
 
-// memwatch.on('leak', (info) => { console.log('memory leakinfo ', info); });
+memwatch.on('leak', (info) => { console.log('main memory leakinfo ', info); });
 // memwatch.on('stats', (stats) => { console.log('memory leak stats', stats); });
 
 // config
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'dist/browser')));
 // routing
 routes.apiEndpoints(app, express.Router(), rateLimit);
 
-// server
+// start server
 if (app.get('env') === 'development') {
   const options = {
     key: fs.readFileSync('../ssl/jazyk.key'),
