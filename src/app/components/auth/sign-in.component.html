@@ -1,5 +1,5 @@
 <div class="panel panel-default more-transparant"
-  kmPressed (hasKeyPressed)="onKeyPressed($event, userForm.value)">
+  kmPressed (hasKeyPressed)="onKeyPressed($event, userForm.value)" *ngIf="isBrowser">
   <div class="panel-body">
     <div class="col-xs-6 col-xs-offset-3">
       <div class="panel panel-primary">

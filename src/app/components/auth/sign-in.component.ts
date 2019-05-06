@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { ValidationService } from '../../services/validation.service';
 import { User, UserSignIn, MailData } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
@@ -27,6 +28,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   forgotPassword = false;
   isForGotPasswordMailSent = false;
   addressForgotPassword: string;
+  isBrowser = false;
 
   constructor(
     private meta: Meta,
@@ -35,10 +37,12 @@ export class SignInComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private sharedService: SharedService,
     private errorService: ErrorService,
+    private platform: PlatformService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.isBrowser = this.platform.isBrowser;
     this.meta.addTag({name: 'robots', content: 'noindex'});
     this.getReturnUrl();
     this.getTranslations(this.userService.user.main.lan);

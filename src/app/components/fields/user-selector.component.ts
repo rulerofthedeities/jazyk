@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { CompactProfile } from '../../models/user.model';
+import { PlatformService } from '../../services/platform.service';
 
 @Component({
   selector: 'km-user-selector',
@@ -19,14 +20,17 @@ export class UserSelectorComponent implements OnInit {
 
   constructor(
     elementRef: ElementRef,
+    private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (!elementRef.nativeElement.contains(event.target)) {
-        // Outside dropdown, close dropdown
-        this.showDropdown = false;
-      }
-    });
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (!elementRef.nativeElement.contains(event.target)) {
+          // Outside dropdown, close dropdown
+          this.showDropdown = false;
+        }
+      });
+    }
   }
 
   ngOnInit() {

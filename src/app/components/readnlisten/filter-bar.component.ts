@@ -1,9 +1,8 @@
 import { Component, Input, EventEmitter, Output, Renderer2, ViewChild, ElementRef, OnInit, OnChanges } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
+import { PlatformService } from '../../services/platform.service';
 import { Option } from '../../models/main.model';
 import { ViewFilter } from '../../models/book.model';
-
-
 
 @Component({
   selector: 'km-filter-bar',
@@ -28,14 +27,17 @@ export class BookFilterBarComponent implements OnInit, OnChanges {
 
   constructor(
     private filterService: FilterService,
+    private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
-        // Outside filter dropdown, close dropdown
-        this.showDropDown = false;
-      }
-    });
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
+          // Outside filter dropdown, close dropdown
+          this.showDropDown = false;
+        }
+      });
+    }
   }
 
   ngOnInit() {

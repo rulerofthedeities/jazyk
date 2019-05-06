@@ -1,20 +1,20 @@
 'use strict';
 
-const uriFormat = require('mongodb-uri');
-var mongoose = require('mongoose'),
-    db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk',
-    options = {
-      autoIndex: true,
-      keepAlive: 1,
-      connectTimeoutMS: 30000,
-      reconnectTries: Number.MAX_VALUE,
-      reconnectInterval: 500,
-      poolSize: 10,
-      promiseLibrary: global.Promise,
-      useCreateIndex: true,
-      useNewUrlParser: true,
-      useFindAndModify: false
-    };
+const uriFormat = require('mongodb-uri'),
+      mongoose = require('mongoose'),
+      db_url = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/km-jazyk',
+      options = {
+        autoIndex: true,
+        keepAlive: 1,
+        connectTimeoutMS: 30000,
+        reconnectTries: Number.MAX_VALUE,
+        reconnectInterval: 500,
+        poolSize: 10,
+        promiseLibrary: global.Promise,
+        useCreateIndex: true,
+        useNewUrlParser: true,
+        useFindAndModify: false
+      };
 
 function encodeMongoURI(urlString) {
   if (urlString) {

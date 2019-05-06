@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { SharedService } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { Message, CompactProfile } from '../../models/user.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
@@ -33,14 +34,17 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService,
+    private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
-        // Outside dropdown, close dropdown
-        this.showActions = false;
-      }
-    });
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.dropdown && !this.dropdown.nativeElement.contains(event.target)) {
+          // Outside dropdown, close dropdown
+          this.showActions = false;
+        }
+      });
+    }
   }
 
   ngOnInit() {

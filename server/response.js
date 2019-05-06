@@ -14,5 +14,6 @@ module.exports = {
   handleSuccess: (res, result) => {
     res.status(200).send(result);
     result = null;
+    res = null;
   }
 }

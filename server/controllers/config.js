@@ -40,6 +40,7 @@ module.exports = {
     });
   },
   getDependables: (req, res) => {
+    // console.log(`dependables|${process.memoryUsage().heapUsed}`);
     const params = req.query,
           lan = params.lan,
           translationPipeline = [

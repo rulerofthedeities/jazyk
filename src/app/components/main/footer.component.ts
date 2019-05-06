@@ -23,6 +23,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   showLog = false;
   platformLabel: string;
   appVersion = environment.version;
+  isBrowser = false;
 
   @ViewChild('log') logElement: ElementRef;
   @ViewChild('message') messageElement: ElementRef;
@@ -34,17 +35,20 @@ export class FooterComponent implements OnInit, OnDestroy {
     private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (this.logElement && this.messageElement && !this.logElement.nativeElement.contains(event.target)) {
-        // Check if the last log message is clicked
-        if (!this.messageElement.nativeElement.contains(event.target)) {
-          // Outside log, close log
-          this.showLog = false;
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.logElement && this.messageElement && !this.logElement.nativeElement.contains(event.target)) {
+          // Check if the last log message is clicked
+          if (!this.messageElement.nativeElement.contains(event.target)) {
+            // Outside log, close log
+            this.showLog = false;
+          }
         }
-      }
-    });
+      });
+    }
   }
   ngOnInit() {
+    this.isBrowser = this.platform.isBrowser;
     if (this.platform.isBrowser) {
       // Client only code.
       this.platformLabel = 'CLIENT';

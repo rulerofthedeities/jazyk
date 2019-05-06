@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, Output, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
 import { Language } from '../../models/main.model';
+import { PlatformService } from '../../services/platform.service';
 
 @Component({
   selector: 'km-language-selector',
@@ -19,14 +20,19 @@ export class LanguageSelectorComponent implements OnChanges {
 
   constructor(
     elementRef: ElementRef,
+    private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (!elementRef.nativeElement.contains(event.target)) {
-        // Outside dropdown, close dropdown
-        this.showDropdown = false;
-      }
-    });
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.platform.isBrowser) {
+          if (!elementRef.nativeElement.contains(event.target)) {
+            // Outside dropdown, close dropdown
+            this.showDropdown = false;
+          }
+        }
+      });
+    }
   }
 
   ngOnChanges() {

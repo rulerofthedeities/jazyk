@@ -45,13 +45,15 @@ export class MainMenuComponent implements OnInit, OnDestroy {
     private platform: PlatformService,
     renderer: Renderer2
   ) {
-    renderer.listen(document, 'click', (event) => {
-      if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
-      this.mobiletrigger && !this.mobiletrigger.nativeElement.contains(event.target)) {
-        // Outside mobile dropdown, close dropdown
-        this.showMobileMenu = false;
-      }
-    });
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.mobile && !this.mobile.nativeElement.contains(event.target) &&
+        this.mobiletrigger && !this.mobiletrigger.nativeElement.contains(event.target)) {
+          // Outside mobile dropdown, close dropdown
+          this.showMobileMenu = false;
+        }
+      });
+    }
   }
 
   ngOnInit() {

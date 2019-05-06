@@ -19,7 +19,6 @@ import bodyParser = require('body-parser');
 import * as cookieParser from 'cookie-parser';
 import bearerToken = require('express-bearer-token');
 import * as rateLimit from 'express-rate-limit';
-import * as memwatch from 'memwatch-next';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 // import { ModuleMap } from './module-map';
@@ -34,10 +33,6 @@ const DIST_FOLDER = join(process.cwd(), 'dist'),
         windowMs: 15 * 60 * 1000, // 15 minutes
         max: 1000
       });
-
-memwatch.on('leak', (info) => {
-  log.logError(info, 'MEMLEAK', 'main', `memory leak found`, 'server.ts');
-});
 
 // Express server
 const app = express();

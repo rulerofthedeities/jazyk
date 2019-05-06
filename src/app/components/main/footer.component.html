@@ -15,7 +15,7 @@
     </small>
   </nav>
 
-  <div class="log" *ngIf="showLog"
+  <div class="log" *ngIf="showLog && isBrowser"
     kmPressed
     (hasKeyPressed)="onKeyPressed($event)" #log>
     <div class="close-log clearfix">

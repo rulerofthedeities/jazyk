@@ -27,6 +27,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (GACode && this.platform.isBrowser) {
       if (ga) {
         ga('create', GACode, 'auto');
+        // log initial entry page
+        ga('send', 'pageview', this.router.url);
       }
       this.router.events
       .pipe(takeWhile(() => this.componentActive))

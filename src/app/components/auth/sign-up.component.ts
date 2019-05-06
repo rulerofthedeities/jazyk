@@ -7,6 +7,7 @@ import { SharedService } from '../../services/shared.service';
 import { AuthService } from '../../services/auth.service';
 import { ErrorService } from '../../services/error.service';
 import { ValidationService } from '../../services/validation.service';
+import { PlatformService } from '../../services/platform.service';
 import { Language } from '../../models/main.model';
 import { User, UserSignIn, MailData } from '../../models/user.model';
 import { takeWhile } from 'rxjs/operators';
@@ -27,6 +28,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   isVerificationMailSent = false;
   passwordColor: string;
   invalidNames: string[] = [];
+  isBrowser = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,11 +36,13 @@ export class SignUpComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private userService: UserService,
     private errorService: ErrorService,
+    private platform: PlatformService,
     private http: HttpClient,
     private router: Router
   ) {}
 
   ngOnInit() {
+    this.isBrowser = this.platform.isBrowser;
     this.getDependables();
   }
 
