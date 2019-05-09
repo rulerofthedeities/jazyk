@@ -59,6 +59,18 @@ module.exports = {
       });
     });
   },
+  getRecipients: (req, res) => {
+    // Get users current user can mail to
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          query = {followId: userId, follow: true},
+          projection = {_id: 0, userId: 1};
+    Follow.find(query, projection, (err, recipients) => {
+      response.handleError(err, res, 400, 'Error fetching recipients', () => {
+        users.getMailData(req, res, recipients);
+      });
+    });
+  }
+  /*
   getTwoWayFollowers: (req, res) => {
     // Get users current user can mail to
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -74,4 +86,5 @@ module.exports = {
       });
     })
   }
+  */
 }

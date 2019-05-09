@@ -211,6 +211,9 @@
       [selectedUser]="selectedRecipient"
       (userSelected)="onRecipientSelected($event, msgField)">
     </km-user-selector>
+    <km-info-msg *ngIf="!recipients[0]"
+      [msg]="text['NoPossibleRecipients']">
+    </km-info-msg>
     <div [style.display]="selectedRecipient ? 'block' : 'none'">
       <km-message
         [sendTxt]="text['Send']"

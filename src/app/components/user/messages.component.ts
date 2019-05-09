@@ -337,8 +337,8 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       recipients => {
-        this.recipients = recipients;
-        if (recipients.length > 0) {
+        this.recipients = recipients || [];
+        if (recipients && recipients.length > 0) {
           this.selectedRecipient = recipients[0];
         }
       },

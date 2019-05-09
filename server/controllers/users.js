@@ -290,7 +290,7 @@ module.exports = {
   getMailData: (req, res, recipients) => {
     if (recipients.length > 0) {
       recipients = recipients.slice(0, 1000); // max 1000 ids
-      const recipientIds = recipients.map(recipient => recipient.recipient),
+      const recipientIds = recipients.map(recipient => recipient.userId),
             query = {'_id': {$in: recipientIds}},
             projection = {userName: 1, email: 1},
             options = {sort: {userName: 1}};
