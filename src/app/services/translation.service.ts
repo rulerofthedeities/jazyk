@@ -74,9 +74,11 @@ export class TranslationService {
   fetchSentenceTranslations(
     userLanCode: string,
     bookId: string,
+    chapterSequence: number,
     sentence: string): Observable<SentenceTranslation[]> {
     return this.http
-    .get<SentenceTranslation[]>('/api/book/translations/' + bookId + '/' + userLanCode + '/' + encodeURIComponent(sentence))
+    .get<SentenceTranslation[]>(
+      '/api/book/translations/' + bookId + '/' + userLanCode + '/' + chapterSequence + '/' + encodeURIComponent(sentence))
     .pipe(retry(3));
   }
 

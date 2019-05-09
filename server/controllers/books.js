@@ -279,8 +279,14 @@ module.exports = {
   getTranslations: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           lanCode = req.params.lan,
+          chapterSequence = parseInt(req.params.chapterSequence, 10) || 0,
           sentence = req.params.sentence,
-          query = {bookId, sentence, 'translations.lanCode': lanCode},
+          query = {
+            bookId,
+            chapterSequence,
+            sentence,
+            'translations.lanCode': lanCode
+          },
           projection = {
             translationId: "$_id",
             translation: "$translations.translation",
@@ -319,7 +325,7 @@ module.exports = {
           isDuplicate = !!req.body.isDuplicate,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           newTranslation = {translation, note, lanCode, userId},
-          query = {bookId, sentence},
+          query = {bookId, chapterSequence, sentence},
           options = {upsert: true, new: true};
     if (isMachine) {
       newTranslation['isMachine'] = true;
@@ -361,7 +367,7 @@ module.exports = {
       });
     });
   },
-  getBookTranslations: (req, res) => {
+  getTranslationsCount: (req, res) => {
     const userLan = req.params.lan,
           query = {'translations.lanCode': userLan},
           projection = {

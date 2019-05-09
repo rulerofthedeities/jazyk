@@ -121,10 +121,10 @@ module.exports = {
     router.get('/book/chapter/:bookId/:sequence', books.getChapter);
     router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter); // For read
     router.get('/book/chapterheaders/:bookId', books.getChapterHeaders);
-    router.get('/book/translations/:bookId/:lan/:sentence', books.getTranslations);
+    router.get('/book/translations/:bookId/:lan/:chapterSequence/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
     router.put('/book/translation/', books.updateTranslation);
-    router.get('/book/translation/:lan', books.getBookTranslations);
+    router.get('/book/translation/:lan', books.getTranslationsCount);
     router.post('/book/machinetranslation/deepl', books.getDeeplTranslation);
     router.post('/book/machinetranslation/microsoft', books.getMicrosoftTranslation);
     router.put('/book/bookmark', books.updateBookmark);

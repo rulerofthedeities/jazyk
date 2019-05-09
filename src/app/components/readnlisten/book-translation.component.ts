@@ -209,6 +209,7 @@ export class BookTranslationComponent implements OnInit, OnDestroy {
       .fetchSentenceTranslations(
         this.userLanCode,
         this.bookId,
+        this.chapterSequence,
         sentence)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
