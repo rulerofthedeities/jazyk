@@ -129,10 +129,8 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
               book.difficulty.weight < currentWeight + yesDelta
             );
         if (suggestedBooks) {
-          if (!this.isResults) {
-            // Get max 3 random
-            suggestedBooks = this.getRandomElements(suggestedBooks, 3);
-          }
+          const maxSuggestions = this.isResults ? 5 : 3;
+          suggestedBooks = this.getRandomElements(suggestedBooks, maxSuggestions);
           // Sort books according to weight
           suggestedBooks.sort(
             (a, b) => (a.difficulty.weight > b.difficulty.weight) ? 1 :

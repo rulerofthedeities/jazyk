@@ -155,18 +155,18 @@
           </km-book-suggestions>
 
           <span *ngIf="sessionData?.resultData?.isFinished">
-              <button type="button" *ngIf="bookType==='read'"
-                class="btn btn-info"
-                (click)="onToRevision()">
-                <span class="fa fa-file-text fa-spacing"></span>
-                {{text["Revision"]}}
-              </button>
-              <button type="button"
-                class="btn btn-primary"
-                (click)="onRepeat()">
-                <span class="fa fa-repeat fa-spacing"></span>
-                {{bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"]}}
-              </button>
+            <button type="button" *ngIf="bookType==='read'"
+              class="btn btn-info"
+              (click)="onToRevision()">
+              <span class="fa fa-file-text fa-spacing"></span>
+              {{text["Revision"]}}
+            </button>
+            <button type="button"
+              class="btn btn-primary"
+              (click)="onRepeat()">
+              <span class="fa fa-repeat fa-spacing"></span>
+              {{bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"]}}
+            </button>
           </span>
 
           <button type="button" *ngIf="currentStep === steps.Results"
