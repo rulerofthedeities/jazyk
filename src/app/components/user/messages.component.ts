@@ -6,6 +6,8 @@ import { SharedService } from '../../services/shared.service';
 import { PlatformService } from '../../services/platform.service';
 import { Message, CompactProfile } from '../../models/user.model';
 import { takeWhile, filter } from 'rxjs/operators';
+import { zip } from 'rxjs';
+import { relativeTimeRounding } from 'moment';
 
 @Component({
   templateUrl: 'messages.component.html',
@@ -26,6 +28,7 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   infoMsg = '';
   recipients: CompactProfile[] = [];
   selectedRecipient: CompactProfile;
+  isReady = false;
   @ViewChild('dropdown') dropdown: ElementRef;
 
   constructor(
@@ -332,18 +335,44 @@ export class UserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private getPossibleRecipients() {
-    this.userService
-    .fetchRecipients()
+    zip(
+      this.userService.fetchRecipients(),
+      this.userService.fetchAdmins()
+    )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       recipients => {
-        this.recipients = recipients || [];
-        if (recipients && recipients.length > 0) {
-          this.selectedRecipient = recipients[0];
+        this.recipients = this.addAdmins(recipients[0], recipients[1]);
+        this.recipients = this.removeCurrentUser();
+        if (this.recipients.length) {
+          this.selectedRecipient = this.recipients[0];
         }
+        this.isReady = true;
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  private addAdmins(recipients: CompactProfile[], admins: CompactProfile[]): CompactProfile[] {
+    // Add admins if they aren't in the recipient list already
+    const allRecipients = recipients;
+    let adminRecipient: CompactProfile;
+    admins.forEach(admin => {
+      adminRecipient = allRecipients.find(recipient => recipient._id === admin._id);
+      if (adminRecipient) {
+        adminRecipient.isAdmin = true;
+      } else {
+        admin.isAdmin = true;
+        allRecipients.unshift(admin);
+      }
+    });
+    return allRecipients;
+  }
+
+  private removeCurrentUser(): CompactProfile[] {
+    const currentUserId = this.userService.user._id,
+          recipients = this.recipients;
+    return recipients.filter( recipient => recipient._id !== currentUserId);
   }
 
   private getTranslations() {

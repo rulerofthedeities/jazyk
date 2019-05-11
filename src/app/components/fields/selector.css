@@ -48,3 +48,7 @@
 .disabled .btn-default:active {
   box-shadow: inherit;
 }
+.admin {
+  color: grey;
+  font-size: 12px;
+}

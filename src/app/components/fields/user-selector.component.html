@@ -7,12 +7,12 @@
           <img kmGravatar [hash]="selectedUser.emailHash" [width]="20" *ngIf="gravatarSelected===0" class="gravatar">
           <img kmGravatar [hash]="selectedUser.emailHash" [width]="20" *ngIf="gravatarSelected===1" class="gravatar">
         </span>
-        {{selectedUser.userName}}
+        {{selectedUser.userName}} <span class="admin">{{selectedUser.isAdmin ? '(' + text["Admin"] + ')' : ''}}</span>
         <span class="caret" *ngIf="!disabled"></span>
       </div>
     </div>
     <ul class="list-group dropdown" *ngIf="showDropdown">
-      <li 
+      <li
         class="list-group-item"
         *ngFor="let user of users; let i:index"
         [ngClass]="{active:user._id===selectedDropdown}"

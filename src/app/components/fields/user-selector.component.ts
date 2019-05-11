@@ -8,6 +8,7 @@ import { PlatformService } from '../../services/platform.service';
   styleUrls: ['selector.css']
 })
 export class UserSelectorComponent implements OnInit {
+  @Input() text: Object;
   @Input() prefix: string;
   @Input() users: CompactProfile[];
   @Input() selectedUser: CompactProfile = null;

@@ -202,10 +202,11 @@
 
 <!-- NEW MESSAGE -->
 <ng-template #newMessage>
-  <div
+  <div *ngIf="isReady"
     kmPressed
     (hasKeyPressed)="onKeyPressed($event)">
     <km-user-selector *ngIf="recipients[0]"
+      [text]="text"
       [prefix]="text['To'] + ':'"
       [users]="recipients"
       [selectedUser]="selectedRecipient"

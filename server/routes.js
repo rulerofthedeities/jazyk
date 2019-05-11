@@ -85,6 +85,7 @@ module.exports = {
     router.get('/user/followers/:userId', follows.getFollowers);
     router.get('/user/following', follows.getFollowing);
     router.get('/user/recipients', follows.getRecipients);
+    router.get('/user/admins', users.getAdmins);
     router.put('/user/notification', notifications.saveNotification);
     router.get('/user/notifications', notifications.getNotifications);
     router.delete('/user/notifications', notifications.removeNotifications);

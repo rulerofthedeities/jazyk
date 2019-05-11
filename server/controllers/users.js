@@ -301,8 +301,19 @@ module.exports = {
         });
       });
     } else {
-      response.handleSuccess(res, null);
+      response.handleSuccess(res, []);
     }
+  },
+  getAdmins: (req, res) => {
+    // get admins as message recipients
+    const query = {isAdmin: true},
+          projection = {userName: 1, email: 1};
+    User.find(query, projection, (err, recipients) => {
+      response.handleError(err, res, 400, 'Error fetching admin recipients', () => {
+        recipients.forEach(doc => setEmailHash(doc));
+        response.handleSuccess(res, recipients);
+      });
+    });
   },
   sendMailVerification: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),

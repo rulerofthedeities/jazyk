@@ -403,6 +403,12 @@ export class UserService {
     .pipe(retry(3));
   }
 
+  fetchAdmins(): Observable<CompactProfile[]> {
+    return this.http
+    .get<CompactProfile[]>('/api/user/admins')
+    .pipe(retry(3));
+  }
+
   updatePassword(oldPw: string, newPw: string): Observable<boolean> {
     return this.http
     .patch<boolean>('/api/user/password', JSON.stringify({old: oldPw, new: newPw}));

@@ -40,6 +40,7 @@ export interface CompactProfile {
   _id: string;
   userName?: string;
   emailHash?: string;
+  isAdmin?: boolean;
 }
 
 interface AppDates {

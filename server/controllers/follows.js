@@ -60,7 +60,7 @@ module.exports = {
     });
   },
   getRecipients: (req, res) => {
-    // Get users current user can mail to
+    // Get users current user can message to
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {followId: userId, follow: true},
           projection = {_id: 0, userId: 1};
