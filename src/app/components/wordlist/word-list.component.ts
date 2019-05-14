@@ -41,6 +41,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   isLoadingTranslations = false;
   hasOmegaWikiTranslations: boolean[][] = [];
   hasDeepLTranslations: boolean[][] = [];
+  hasMSTranslations: boolean[][] = [];
   isDeeplAvailable = false;
   canEdit = false;
   userId: string;
@@ -76,17 +77,21 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
-    if (this.wordTranslations[this.currentPage - 1][data.i]) {
-      this.wordTranslations[this.currentPage - 1][data.i].translations.push(...data.translations.translations);
+    let currentTranslation = this.wordTranslations[this.currentPage - 1][data.i];
+    if (currentTranslation) {
+      currentTranslation.translations.push(...data.translations.translations);
     } else {
-      this.wordTranslations[this.currentPage - 1][data.i] = data.translations;
+      currentTranslation = data.translations;
     }
-    this.sortTranslations(this.wordTranslations[this.currentPage - 1][data.i]);
+    currentTranslation.summary = this.wordListService.createTranslationsSummary(currentTranslation);
+    this.sortTranslations(currentTranslation);
     data.translations.translations.forEach(tl => {
       if (tl.source === 'OmegaWiki') {
         this.hasOmegaWikiTranslations[this.currentPage - 1][data.i] = true;
       } else if (tl.source === 'DeepL') {
         this.hasDeepLTranslations[this.currentPage - 1][data.i] = true;
+      } else if (tl.source === 'Microsoft') {
+        this.hasMSTranslations[this.currentPage - 1][data.i] = true;
       }
     });
   }
@@ -117,6 +122,10 @@ export class BookWordListComponent implements OnInit, OnDestroy {
 
   onCancelTranslation() {
     this.editingTranslationId = null;
+  }
+
+  onExpand(word: Word, expand: boolean) {
+    word.expanded = expand;
   }
 
   getCounter(nr: number): number[] {
@@ -247,7 +256,8 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     this.wordTranslations[pageNr - 1] = [];
     this.hasOmegaWikiTranslations[pageNr - 1] = [];
     this.hasDeepLTranslations[pageNr - 1] = [];
-    const words = this.displayWords.map(w => w.root ? w.root : w.word);
+    this.hasMSTranslations[pageNr - 1] = [];
+    const words = this.displayWords.map(w => w.word);
     this.translationService
     .fetchTranslations(this.book, this.userLanCode, words)
     .pipe(takeWhile(() => this.componentActive))
@@ -263,6 +273,8 @@ export class BookWordListComponent implements OnInit, OnDestroy {
           tl = wordTranslations.find(t => t.word === w);
           if (tl) {
             this.sortTranslations(tl);
+            // Create translation summary
+            tl.summary = this.wordListService.createTranslationsSummary(tl);
             this.wordTranslations[pageNr - 1][i] = tl;
             // Check if omegaWiki translation button should be shown
             const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
@@ -274,15 +286,21 @@ export class BookWordListComponent implements OnInit, OnDestroy {
             if (deepLTranslations.length > 0) {
               this.hasDeepLTranslations[pageNr - 1][i] = true;
             }
+            // Check if Microsoft translation button can be shown
+            const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
+            if (msTranslations.length > 0) {
+              this.hasMSTranslations[pageNr - 1][i] = true;
+            }
           } else {
+            // No translation found
+            this.displayWords[i].expanded = true;
             this.wordTranslations[pageNr - 1][i] = {
               lanCode: this.bookLan.code,
               word: w,
               translations: []
-            }
+            };
           }
         });
-        // this.wordTranslations[pageNr - 1] = wordTranslations;
         this.isLoadingTranslations = false;
       }
     );

@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, Output, EventEmitter } from '@angular/core
 import { TranslationService } from '../../services/translation.service';
 import { Language } from 'app/models/main.model';
 import { OmegaDefinitions, OmegaDefinition, WordTranslation, WordTranslations } from '../../models/word.model';
-import { DeepLTranslations } from '../../models/book.model';
+import { DeepLTranslations, MSTranslations } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -38,6 +38,8 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       this.getOmegaDefinitionLocal();
     } else if (this.source === 'DeepL') {
       this.getDeepLTranslation();
+    } else if (this.source === 'Microsoft') {
+      this.getMSTranslation();
     }
   }
 
@@ -212,6 +214,32 @@ export class ExternalWordTranslationComponent implements OnDestroy {
             source: 'DeepL'
           }];
           this.saveNewTranslations(deepLTranslations);
+        }
+      }
+    });
+  }
+
+  private getMSTranslation() {
+    const lanPair = {
+      from: this.bookLan.code,
+      to: this.targetLan.code
+    };
+    this.isLoading = true;
+    this.translationService
+    .fetchMachineTranslation('microsoft', lanPair, this.word)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe((translation: MSTranslations) => {
+      this.isLoading = false;
+      if (translation) {
+        const msTranslations = translation[0] ? translation[0].translations : [];
+        if (msTranslations[0] && msTranslations[0].text) {
+          const newTranslations: WordTranslation[] = [{
+            translation: msTranslations[0].text,
+            definition: '',
+            lanCode: this.targetLan.code,
+            source: 'Microsoft'
+          }];
+          this.saveNewTranslations(newTranslations);
         }
       }
     });

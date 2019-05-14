@@ -11,6 +11,8 @@ export interface Word {
   article: string;
   audio: File[];
   pinned?: boolean;
+  expanded?: boolean;
+  translationSummary?: boolean;
 }
 
 export interface UserWord {
@@ -60,6 +62,7 @@ export interface WordTranslations {
   lanCode: string;
   word: string;
   translations: WordTranslation[];
+  summary?: string;
 }
 
 interface OmegaTranslationDefinition {

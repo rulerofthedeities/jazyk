@@ -47,6 +47,7 @@ table {
 }
 .tl-word {
   font-weight: bold;
+  font-size: 18px;
 }
 .tl-definition {
   margin-left: 32px;
@@ -62,4 +63,29 @@ table {
 }
 .no-translation {
   color: orange;
+}
+.summary {
+  font-size: 22px;
+  margin-left: 28px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.chevron > .fa {
+  font-size: 22px;
+  cursor: pointer;
+}
+.details {
+  margin-left: 28px;
+  margin-top: 10px;
+}
+.fa-chevron-left {
+  padding-top: 2px;
+}
+.fa-chevron-right {
+  padding-top: 6px;
+}
+.no-translations {
+  color: grey;
+  font-style: italic;
+  font-size: 18px;
 }
