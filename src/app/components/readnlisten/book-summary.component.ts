@@ -162,7 +162,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onWordList() {
-    this.router.navigate(['/' + this.bookType + '/book/' + this.book._id + '/' + this.userLanCode + '/wordlist']);
+    this.router.navigate(['/glossaries/glossary/' + this.book._id + '/' + this.userLanCode]);
   }
 
   onRevision() {

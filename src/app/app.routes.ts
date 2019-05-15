@@ -47,6 +47,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'glossaries',
+        loadChildren: './glossary.module#GlossaryModule',
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'user',
         loadChildren: './user.module#UserModule',
         canActivate: [AuthGuard]

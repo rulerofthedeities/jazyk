@@ -25,9 +25,9 @@ import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
 import { BookRevisionSentencesComponent } from './components/revision/book-revision-sentences.component';
-import { BookWordListComponent } from './components/wordlist/word-list.component';
-import { ExternalWordTranslationComponent } from './components/wordlist/external-translation.component';
-import { UserWordTranslationComponent } from './components/wordlist/user-translation.component';
+import { BookWordListComponent } from './components/glossaries/word-list.component';
+import { ExternalWordTranslationComponent } from './components/glossaries/external-translation.component';
+import { UserWordTranslationComponent } from './components/glossaries/user-translation.component';
 import { BookTitleComponent } from './components/readnlisten/book-title.component';
 
 import { FocusDirective } from './directives/focus.directive';
