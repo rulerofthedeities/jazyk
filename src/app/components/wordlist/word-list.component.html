@@ -58,7 +58,7 @@
 
 <ng-template #wordRow let-i=i let-word=word>
   <td class="text-right">
-    {{i + 1 + ((currentPage - 1) * wordsPerPage)}}.
+    <span class="index">{{i + 1 + ((currentPage - 1) * wordsPerPage)}}.</span>
   </td>
   <td class="word-cell">
     <div>
@@ -105,15 +105,13 @@
     </div>
   </td>
   <td>
-    <!--
     <span class="fa fa-thumb-tack"
       [class.pinned]="word.pinned"
-      [tooltip]="text['AddToMyWordList']"
+      [tooltip]="text[word.pinned ? 'InMyWordList' : 'AddToMyWordList']"
       placement="top"
       hide-delay="0"
-      (click)="onToggleMyWordList(word)">
+      (click)="onAddToMyWordList(word, i)">
     </span>
-    -->
   </td>
 </ng-template>
 

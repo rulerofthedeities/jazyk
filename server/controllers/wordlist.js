@@ -31,13 +31,17 @@ module.exports = {
           bookId = new mongoose.Types.ObjectId(req.body.bookId),
           word = req.body.word,
           pin = req.body.pin,
+          summary = req.body.summary,
           query = {
             wordId: word._id,
             bookId,
             userId,
             lanCode: word.lanCode
           },
-          update = {pinned: pin};
+          update = {
+            pinned: pin,
+            translations: summary
+          };
     UserWordList.findOneAndUpdate(query, update, {upsert: true, isNew: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
         response.handleSuccess(res, result);

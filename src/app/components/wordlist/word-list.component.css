@@ -23,6 +23,7 @@ table {
   font-size: 24px;
   color: grey;
   cursor: pointer;
+  margin-top: 4px;
 }
 .word {
   font-size: 28px;
@@ -44,6 +45,7 @@ table {
 }
 .pinned {
   color: #428bca;
+  cursor: default;
 }
 .tl-word {
   font-weight: bold;
@@ -88,4 +90,8 @@ table {
   color: grey;
   font-style: italic;
   font-size: 18px;
+}
+.index {
+  position: relative;
+  top: 13px;
 }

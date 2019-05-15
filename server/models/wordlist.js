@@ -14,6 +14,7 @@ const userWordSchema = new Schema({
   userId: {type: Schema.Types.ObjectId, required: true},
   wordId: {type: Schema.Types.ObjectId, required: true},
   lanCode: String,
+  translations: String,
   pinned: Boolean
 });
 

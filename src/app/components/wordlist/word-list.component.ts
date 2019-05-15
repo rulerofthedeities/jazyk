@@ -70,8 +70,12 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     this.goToPage(newPageNr);
   }
 
-  onToggleMyWordList(word: Word) {
-    this.toggleMyWordList(word);
+  onAddToMyWordList(word: Word, i: number) {
+    if (!word.pinned) {
+      const translations = this.wordTranslations ? this.wordTranslations[this.currentPage - 1][i] : null,
+            summary = this.wordListService.createTranslationsSummary(translations, '|');
+      this.addToMyWordList(word, summary);
+    }
   }
 
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
@@ -147,14 +151,14 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private toggleMyWordList(word: Word) {
-    word.pinned = !word.pinned;
+  private addToMyWordList(word: Word, summary: string) {
+    word.pinned = true;
     this.wordListService
-    .pinWord(word, this.book._id, word.pinned)
+    .pinWord(word, this.book._id, summary, word.pinned)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(newWord => {
       if (newWord) {
-        word.pinned = newWord.pinned;
+        word.pinned = true;
       }
     });
   }

@@ -21,6 +21,7 @@ export interface UserWord {
   wordId: string;
   lanCode: string;
   pinned: boolean;
+  translations: string;
 }
 
 interface File {
