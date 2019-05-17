@@ -153,8 +153,8 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.userLanCode = lan.code;
     this.location.go(`/glossaries/glossary/${this.bookId}/${this.userLanCode}`);
-    // TODO : change url
     this.processUserWords();
+    this.getTranslations(this.currentPage);
   }
 
   getCounter(nr: number): number[] {
@@ -287,6 +287,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getTranslations(pageNr: number) {
     // Get translations for words
+    this.isLoadingTranslations = true;
     this.wordTranslations[pageNr - 1] = [];
     this.hasOmegaWikiTranslations[pageNr - 1] = [];
     this.hasDeepLTranslations[pageNr - 1] = [];
@@ -297,47 +298,51 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
-        // Only translations in target language
-        wordTranslations.forEach(wt => {
-          wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
-        });
-        // Place the translations in the right order
-        let tl: WordTranslations;
-        words.forEach((w, i) => {
-          tl = wordTranslations.find(t => t.word === w);
-          if (tl) {
-            this.sortTranslations(tl);
-            // Create translation summary
-            tl.summary = this.wordListService.createTranslationsSummary(tl);
-            this.wordTranslations[pageNr - 1][i] = tl;
-            // Check if omegaWiki translation button should be shown
-            const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
-            if (omegaWikiTranslations.length > 0) {
-              this.hasOmegaWikiTranslations[pageNr - 1][i] = true;
-            }
-            // Check if deepL translation button can be shown
-            const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
-            if (deepLTranslations.length > 0) {
-              this.hasDeepLTranslations[pageNr - 1][i] = true;
-            }
-            // Check if Microsoft translation button can be shown
-            const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
-            if (msTranslations.length > 0) {
-              this.hasMSTranslations[pageNr - 1][i] = true;
-            }
-          } else {
-            // No translation found
-            this.displayWords[i].expanded = true;
-            this.wordTranslations[pageNr - 1][i] = {
-              lanCode: this.bookLan.code,
-              word: w,
-              translations: []
-            };
-          }
-        });
+        this.processTranslations(wordTranslations, words, pageNr);
         this.isLoadingTranslations = false;
       }
     );
+  }
+
+  private processTranslations(wordTranslations: WordTranslations[], words: string[], pageNr: number) {
+    // Only translations in target language
+    wordTranslations.forEach(wt => {
+      wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
+    });
+    // Place the translations in the right order
+    let tl: WordTranslations;
+    words.forEach((w, i) => {
+      tl = wordTranslations.find(t => t.word === w);
+      if (tl) {
+        this.sortTranslations(tl);
+        // Create translation summary
+        tl.summary = this.wordListService.createTranslationsSummary(tl);
+        this.wordTranslations[pageNr - 1][i] = tl;
+        // Check if omegaWiki translation button should be shown
+        const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
+        if (omegaWikiTranslations.length > 0) {
+          this.hasOmegaWikiTranslations[pageNr - 1][i] = true;
+        }
+        // Check if deepL translation button can be shown
+        const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
+        if (deepLTranslations.length > 0) {
+          this.hasDeepLTranslations[pageNr - 1][i] = true;
+        }
+        // Check if Microsoft translation button can be shown
+        const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
+        if (msTranslations.length > 0) {
+          this.hasMSTranslations[pageNr - 1][i] = true;
+        }
+      } else {
+        // No translation found
+        this.displayWords[i].expanded = true;
+        this.wordTranslations[pageNr - 1][i] = {
+          lanCode: this.bookLan.code,
+          word: w,
+          translations: []
+        };
+      }
+    });
   }
 
   private sortTranslations(translations: WordTranslations) {
