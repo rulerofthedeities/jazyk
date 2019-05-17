@@ -2,10 +2,94 @@
 
 const response = require('../response'),
       mongoose = require('mongoose'),
+      Book = require('../models/book').book,
       WordList = require('../models/wordlist').word,
       UserWordList = require('../models/wordlist').userword;
 
 module.exports = {
+  getBooksCount: (req, res) => {
+    const query = {
+            isPublished: true,
+            wordListPublished: true
+          },
+          projection = {
+            _id: 0,
+            lanCode: '$_id',
+            count: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$lanCode',
+              count: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    Book.aggregate(pipeline, (err, result) => {
+      response.handleError(err, res, 400, 'Error fetching glossaries count', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  getUserWordListCount: (req, res) => {
+    // total # of user words per book
+    const targetLan = req.params.lan;
+
+    /*
+    const userLan = req.params.lan,
+          query = {'translations.lanCode': targetLan},
+          projection = {
+            _id: 0,
+            bookId: '$_id',
+            count: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$bookId',
+              count: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    Translation.aggregate(pipeline, (err, translations) => {
+      response.handleError(err, res, 400, 'Error fetching translations count', () => {
+        response.handleSuccess(res, translations);
+      });
+    });
+    */
+  },
+  getPublishedLanGlossaries: (req, res) => {
+    const languageId = req.params.lan,
+          sort = req.params.sort,
+          query = {
+            isPublished: true,
+            wordListPublished: true
+          },
+          projection = {};
+    let options = {sort: {'difficulty.weight': 1}};
+    if (languageId !== 'eu') {
+      query['lanCode'] = languageId;
+    }
+    switch (sort) {
+      case 'difficulty0':
+        options['sort'] = {'difficulty.weight': -1};
+        break;
+      case 'sentences1':
+        options['sort'] = {'difficulty.nrOfSentences': 1, 'difficulty.weight': 1};
+        break;
+      case 'sentences0':
+        options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
+        break;
+      case 'newest0':
+        options['sort'] = {'dt.published': -1};
+        break;
+    }
+    Book.find(query, projection, options, (err, books) => {
+      response.handleError(err, res, 400, 'Error fetching glossaries', () => {
+        response.handleSuccess(res, books);
+      });
+    });
+  },
   getWordList: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           query = {bookId: bookId},
@@ -39,9 +123,15 @@ module.exports = {
             lanCode: word.lanCode
           },
           update = {
-            pinned: pin,
-            translations: summary
+            $addToSet: {
+              translations: {
+                pinned: pin,
+                lanCode: word.targetLanCode,
+                translations: summary
+              }
+            }
           };
+    console.log('target lan', word.targetLanCode);
     UserWordList.findOneAndUpdate(query, update, {upsert: true, isNew: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
         response.handleSuccess(res, result);

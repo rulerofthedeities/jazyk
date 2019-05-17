@@ -5,22 +5,36 @@
     [bookLanCode]="book?.lanCode"
     [userLanCode]="userLanCode"
     [bookTitle]="book?.title"
-    [chapterTitle]="null"
   ></km-book-title>
 
-  <div class="panel panel-default" *ngIf="!isLoading && words?.length">
+  <div class="panel panel-default">
     <div class="panel-body">
       <!-- LIST -->
       <table class="table table-hover">
         <thead>
           <tr>
             <th></th>
-            <th><img src="/assets/img/flags/{{book.lanCode}}.png" class="flag from"> {{text["DictionaryForm"]}}</th>
-            <th><img src="/assets/img/flags/{{userLanCode}}.png" class="flag to"> {{text["Translation"]}}</th>
+            <th class="source-lan">
+              <span class="fa fa-arrow-right sel-arrow pull-right"></span>
+              <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from">
+              <span class="text">{{text ? text["DictionaryForm"]: ''}}</span>
+            </th>
+            <th>
+              <div
+                [tooltip]="text ? text['TranslationLanguage'] : ''"
+                [options]="tooltipOptions" id="tooltip1">
+                <km-language-selector *ngIf="!isLoading && words?.length"
+                  [languages]="userLanguages"
+                  [currentLanguage]="translationLan"
+                  [text]="text"
+                  (languageSelected)="onMyLanguageSelected($event)">
+                </km-language-selector>
+              </div>
+            </th>
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody *ngIf="!isLoading && words?.length">
           <tr *ngFor="let word of displayWords; let i = index"
             class="current-word">
             <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>

@@ -20,6 +20,12 @@ export class WordListService {
     private http: HttpClient
   ) {}
 
+  fetchUserWordCounts(targetLanCode: string): Observable<any> {
+    return this.http
+    .get<any[]>(`/api/userwordlists/count/${targetLanCode}`)
+    .pipe(retry(3));
+  }
+
   fetchWordList(bookId: string): Observable<Word[]> {
     return this.http
     .get<Word[]>(`/api/wordlist/${bookId}`)
@@ -65,4 +71,5 @@ export class WordListService {
     }
     return summary.join(separator);
   }
+
 }

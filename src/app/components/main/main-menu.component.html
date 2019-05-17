@@ -40,6 +40,15 @@
             <span class="bar"></span>
           </a>
         </li>
+        <li *ngIf="isLoggedIn"
+          routerLinkActive="active"
+          class="desktop">
+          <a routerLink="/glossaries">
+            <span class="fa fa-list"></span>
+            {{text["Glossaries"]}}
+            <span class="bar"></span>
+          </a>
+        </li>
       </ul>
 
       <ul class="pull-right nav-items right-menu">
@@ -190,7 +199,14 @@
           (click)="onCloseMobileMenu()">
           <span class="fa fa-volume-up"></span>
           {{text["Listen"]}}
-          <span class="alpha">alpha</span>
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/glossaries"
+          routerLinkActive="active"
+          (click)="onCloseMobileMenu()">
+          <span class="fa fa-list"></span>
+          {{text["Glossaries"]}}
         </a>
       </li>
     </ul>

@@ -37,6 +37,12 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
+  fetchPublishedGlossaries(readLanCode: string, sort: string): Observable<Book[]> {
+    return this.http
+    .get<Book[]>('/api/wordlists/published/' + readLanCode + '/' + sort)
+    .pipe(retry(3));
+  }
+
   fetchBook(bookId: string, bookType: string): Observable<Book> {
     // gets published book only
     const bookPath = bookType === 'listen' ? 'audiobook' : 'book';
@@ -178,10 +184,10 @@ export class ReadnListenService {
 
   /*** Translation count */
 
-  fetchTranslationData(userLanCode: string, bookType: string): Observable<TranslationData[]> {
+  fetchTranslationData(targetLanCode: string, bookType: string): Observable<TranslationData[]> {
     // count the # of translations for all books into a specific language
     return this.http
-    .get<TranslationData[]>('/api/book/translation/' + userLanCode);
+    .get<TranslationData[]>('/api/book/translation/' + targetLanCode);
   }
 
   /*** Thumbs ***/

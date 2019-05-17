@@ -1,3 +1,9 @@
+.panel {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+tbody {
+  background-color: white;
+}
 tr:last-child td {
   border-bottom: 1px solid #ddd;
 }
@@ -94,4 +100,16 @@ table {
 .index {
   position: relative;
   top: 13px;
+}
+.source-lan {
+  padding-bottom: 15px;
+}
+.source-lan .text {
+  font-size: 18px;
+  font-weight: 100;
+  padding-left: 6px;
+}
+.source-lan .flag {
+  position: relative;
+  top: -2px;
 }

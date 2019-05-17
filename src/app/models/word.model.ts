@@ -12,7 +12,14 @@ export interface Word {
   audio: File[];
   pinned?: boolean;
   expanded?: boolean;
+  targetLanCode?: string;
   translationSummary?: boolean;
+}
+
+interface UserWordTranslation {
+  lanCode: string;
+  translations: string;
+  pinned: boolean;
 }
 
 export interface UserWord {
@@ -20,8 +27,7 @@ export interface UserWord {
   userId: string;
   wordId: string;
   lanCode: string;
-  pinned: boolean;
-  translations: string;
+  translations: UserWordTranslation[];
 }
 
 interface File {

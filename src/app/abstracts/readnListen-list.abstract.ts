@@ -110,7 +110,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
         this.setActiveLanguages(dependables.bookLanguages);
         this.userLanguages = dependables.userLanguages;
         this.myLanguage = this.userService.getUserLanguage(this.userLanguages);
-        this.sharedService.setPageTitle(this.text, this.bookType === 'listen' ? 'Listen' : 'Read');
+        const titleKey = this.bookType === 'glossary' ? 'Glossaries' : (this.bookType === 'listen' ? 'Listen' : 'Read');
+        this.sharedService.setPageTitle(this.text, titleKey);
         this.getBooks();
         this.filterUserLanguages();
         this.isReady = true;
@@ -165,7 +166,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     });
   }
 
-  private processUserBooks(uBooks: UserBook[]) {
+  protected processUserBooks(uBooks: UserBook[]) {
     this.userBooks = {};
     this.userBooksTest = {};
     this.totalFinished = 0;

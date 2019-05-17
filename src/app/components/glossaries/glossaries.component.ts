@@ -4,8 +4,10 @@ import { SharedService } from '../../services/shared.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { FilterService } from 'app/services/filter.service';
 import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
+import { WordListService } from '../../services/word-list.service';
 import { Book } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
+import { zip } from 'rxjs';
 
 @Component({
   templateUrl: 'glossaries.component.html',
@@ -18,13 +20,19 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     readnListenService: ReadnListenService,
     userService: UserService,
     sharedService: SharedService,
-    filterService: FilterService
+    filterService: FilterService,
+    private wordListService: WordListService,
   ) {
-    super(readnListenService, userService, sharedService, filterService);
+    super(
+      readnListenService,
+      userService,
+      sharedService,
+      filterService
+    );
   }
 
   ngOnInit() {
-    this.bookType = 'read';
+    this.bookType = 'glossary';
     this.filterService.initFilter(this.bookType);
     this.filterService.initSort(this.bookType);
     this.getDependables();
@@ -42,7 +50,7 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     this.filteredBooks = [];
     this.isLoading = true;
     this.readnListenService
-    .fetchPublishedBooks(this.bookLanguage.code, this.filterService.sort[this.bookType])
+    .fetchPublishedGlossaries(this.bookLanguage.code, this.filterService.sort[this.bookType])
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       books => {
@@ -57,5 +65,25 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
         this.isBooksReady = true;
       }
     );
+  }
+
+  protected getAllUserData() {
+    this.isBooksReady = false;
+    console.log('getting all data');
+    zip(
+      this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
+      // this.wordListService.fetchUserWordCounts(this.myLanguage.code)
+    )
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(data => {
+      console.log('data', data)
+      if (data && data.length) {
+        this.processUserBooks(data[0]);
+        // this.processUserData(data[1]);
+        // this.processTranslations(data[2]);
+        // this.processActivity(data[3]);
+      }
+      this.isBooksReady = true;
+    });
   }
 }

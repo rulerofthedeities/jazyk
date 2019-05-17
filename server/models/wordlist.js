@@ -4,18 +4,21 @@ const mongoose = require('mongoose'),
       mongooseUniqueValidator = require('mongoose-unique-validator'),
       Schema = mongoose.Schema;
 
-
-
 const wordSchema = new Schema({}, { strict: false }),
       WordModel = mongoose.model('bookword', wordSchema);
+
+const userTranslationSchema = new Schema({
+  lanCode: {type: String, required: true},
+  translations: String,
+  pinned: Boolean
+}, {_id: false});
 
 const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   wordId: {type: Schema.Types.ObjectId, required: true},
   lanCode: String,
-  translations: String,
-  pinned: Boolean
+  translations: [userTranslationSchema]
 });
 
 userWordSchema.index({userId: 1, bookId: 1, lanCode: 1, pinned: 1});

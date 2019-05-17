@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChildren } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { TooltipDirective } from 'ng2-tooltip-directive';
 import { UserService } from '../../services/user.service';
 import { SharedService, awsPath } from '../../services/shared.service';
 import { WordListService } from '../../services/word-list.service';
@@ -16,7 +18,8 @@ import { zip } from 'rxjs';
   styleUrls: ['word-list.component.css']
 })
 
-export class BookWordListComponent implements OnInit, OnDestroy {
+export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChildren(TooltipDirective) tooltipDirective;
   private componentActive = true;
   text: Object;
   book: Book;
@@ -28,6 +31,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   bookType = 'read';
   userLanCode: string;
   bookLanguages: Language[];
+  userLanguages: Language[];
   bookLan: Language;
   translationLan: Language;
   msg: string;
@@ -35,7 +39,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   isError = false;
   errMsg = null;
   currentPage = 1;
-  wordsPerPage = 20;
+  wordsPerPage = 5;
   nrOfPages: number;
   audioPath: string;
   isLoadingTranslations = false;
@@ -47,9 +51,16 @@ export class BookWordListComponent implements OnInit, OnDestroy {
   userId: string;
   noTranslation: {msg: string, i: number};
   editingTranslationId: string;
+  tooltipOptions = {
+    placement: 'top',
+    'z-index': 9000,
+    'hide-delay': 0
+  };
+  tooltip: any;
 
   constructor(
     private route: ActivatedRoute,
+    private location: Location,
     private sharedService: SharedService,
     private userService: UserService,
     private readnListenService: ReadnListenService,
@@ -63,6 +74,10 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     this.clearNoTranslationMsg();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
+  }
+
+  ngAfterViewInit() {
+    this.tooltip = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
   }
 
   onGoToPage(newPageNr) {
@@ -132,6 +147,16 @@ export class BookWordListComponent implements OnInit, OnDestroy {
     word.expanded = expand;
   }
 
+  onMyLanguageSelected(lan: Language) {
+    if (this.tooltip) {
+      this.tooltip.hide();
+    }
+    this.userLanCode = lan.code;
+    this.location.go(`/glossaries/glossary/${this.bookId}/${this.userLanCode}`);
+    // TODO : change url
+    this.processUserWords();
+  }
+
   getCounter(nr: number): number[] {
     return new Array(nr);
   }
@@ -153,6 +178,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
 
   private addToMyWordList(word: Word, summary: string) {
     word.pinned = true;
+    word.targetLanCode = this.userLanCode;
     this.wordListService
     .pinWord(word, this.book._id, summary, word.pinned)
     .pipe(takeWhile(() => this.componentActive))
@@ -222,11 +248,15 @@ export class BookWordListComponent implements OnInit, OnDestroy {
 
   private processUserWords() {
     let word: Word;
-    // Map user word pins to words
     this.userWords.forEach(uWord => {
       word = this.words.find(w => w._id.toString() === uWord.wordId.toString());
       if (word) {
-        word.pinned = uWord.pinned;
+        const translation = uWord.translations.find(tl => tl.lanCode === this.userLanCode);
+        if (translation) {
+          word.pinned = translation.pinned;
+        } else {
+          word.pinned = false;
+        }
       }
     });
   }
@@ -360,6 +390,7 @@ export class BookWordListComponent implements OnInit, OnDestroy {
         this.sharedService.setPageTitle(this.text, 'WordList');
         this.getBookId();
         this.bookLanguages = dependables.bookLanguages;
+        this.userLanguages = dependables.userLanguages;
         this.setTargetLan(dependables.userLanguages); // for omega wiki code
       }
     );

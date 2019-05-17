@@ -158,8 +158,14 @@ module.exports = {
     router.get('/revision/chapter/:chapterId', revision.getChapterData);
     router.get('/revision/translations/:bookId/:bookLan/:userLan/:chapterSequence', revision.getTranslationData);
 
+    /* glossaries */
+
+    router.get('/books/count/glossary', wordlist.getBooksCount);
+    router.get('/wordlists/published/:lan/:sort', wordlist.getPublishedLanGlossaries);
+
     router.get('/wordlist/:bookId', wordlist.getWordList);
     router.get('/userwordlist/:bookId', wordlist.getUserWordList);
+    router.get('/userwordlists/count/:lan', wordlist.getUserWordListCount);
     router.put('/wordlist/my/pin', wordlist.updateMyList);
     router.get('/wordlist/word/definition/omega/local/:word', dictionaries.getOmegawikiDefinitionsLocal);
     router.get('/wordlist/word/definition/omega/ext/:word', dictionaries.getOmegawikiDefinitionsExt);

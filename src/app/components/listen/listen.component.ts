@@ -20,7 +20,12 @@ export class ListenComponent extends ReadnListenListComponent implements OnInit,
     sharedService: SharedService,
     filterService: FilterService
   ) {
-    super(readnListenService, userService, sharedService, filterService);
+    super(
+      readnListenService,
+      userService,
+      sharedService,
+      filterService
+    );
   }
 
   ngOnInit() {
