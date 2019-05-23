@@ -7,6 +7,21 @@
     [bookTitle]="book?.title"
   ></km-book-title>
 
+  <!-- PAGINATION -->
+  <div class="panel panel-default panel-pagination" *ngIf="paginationReady">
+    <div class="panel-body">
+      <ul class="pagination">
+        <li *ngFor="let letterCount of letters;let i = index"
+          [class.clickable]="!!hasLetter[i]"
+          [class.disabled]="!hasLetter[i]"
+          [class.active] = "i === currentLetter"
+          (click)="onGoToLetter(i)">
+          <a class="pagination-letter">{{letters[i]}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   <div class="panel panel-default">
     <div class="panel-body">
       <!-- LIST -->
@@ -42,6 +57,7 @@
         </tbody>
       </table>
       <!-- PAGINATION -->
+      <!--
       <ul class="pagination" *ngIf="nrOfPages > 1">
         <li [class.clickable]="currentPage > 1"
             (click)="onGoToPage(currentPage - 1)">
@@ -58,12 +74,13 @@
           <a>&raquo;</a>
         </li>
       </ul>
+    -->
+      <km-loader *ngIf="isLoading && !isError"
+        [msg]="text['Loading'] || ''">
+      </km-loader>
     </div>
   </div>
 
-  <km-loader *ngIf="isLoading && !isError"
-    [msg]="text['Loading'] || ''">
-  </km-loader>
 
   <km-error-msg [msg]="errMsg">
   </km-error-msg>
@@ -72,7 +89,7 @@
 
 <ng-template #wordRow let-i=i let-word=word>
   <td class="text-right">
-    <span class="index">{{i + 1 + ((currentPage - 1) * wordsPerPage)}}.</span>
+    <span class="index">{{i + 1}}.</span>
   </td>
   <td class="word-cell">
     <div>
@@ -97,11 +114,11 @@
         <span class="fa fa-chevron-right"></span>
       </div>
       <div class="summary" (click)="onExpand(word, true)">
-        <span *ngIf="!wordTranslations[currentPage - 1][i]?.summary" class="no-translations">
+        <span *ngIf="!wordTranslations[currentLetter][i]?.summary" class="no-translations">
           {{text["NoWordTranslations"]}}
         </span>
-        <span *ngIf="!!wordTranslations[currentPage - 1][i]?.summary">
-          {{wordTranslations[currentPage - 1][i]?.summary}}
+        <span *ngIf="!!wordTranslations[currentLetter][i]?.summary">
+          {{wordTranslations[currentLetter][i]?.summary}}
         </span>
       </div>
     </div>
@@ -113,7 +130,7 @@
         <ng-container *ngTemplateOutlet="wordDetail;context:{
           word: word,
           i:i,
-          wordTranslation: wordTranslations[currentPage - 1][i]
+          wordTranslation: wordTranslations[currentLetter][i]
         }"></ng-container>
       </div>
     </div>
@@ -179,7 +196,7 @@
     [i] = "i"
     (newTranslations)="onNewTranslations($event)">
   </km-user-translation>
-  <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentPage - 1][i]"
+  <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentLetter][i]"
     [text]="text"
     [source]="'OmegaWiki'"
     [targetLan]="translationLan"
@@ -190,7 +207,7 @@
     (newTranslations)="onNewTranslations($event)"
     (noTranslations)="onNoTranslations($event)">
   </km-word-translation>
-  <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[currentPage - 1][i] && !isLoadingTranslations"
+  <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[currentLetter][i] && !isLoadingTranslations"
     [text]="text"
     [source]="'DeepL'"
     [targetLan]="translationLan"
@@ -200,7 +217,7 @@
     [i] = "i"
     (newTranslations)="onNewTranslations($event)"
   ></km-word-translation>
-  <km-word-translation *ngIf="!hasMSTranslations[currentPage - 1][i] && !isLoadingTranslations"
+  <km-word-translation *ngIf="!hasMSTranslations[currentLetter][i] && !isLoadingTranslations"
     [text]="text"
     [source]="'Microsoft'"
     [targetLan]="translationLan"

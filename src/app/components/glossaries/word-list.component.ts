@@ -38,9 +38,13 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading = false;
   isError = false;
   errMsg = null;
-  currentPage = 1;
+  currentPage = 0;
+  currentLetter = 0;
   wordsPerPage = 5;
   nrOfPages: number;
+  letters: string[];
+  hasLetter: boolean[];
+  paginationReady = false;
   audioPath: string;
   isLoadingTranslations = false;
   hasOmegaWikiTranslations: boolean[][] = [];
@@ -71,6 +75,8 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.canEdit = this.userService.user.isAdmin;
     this.userId = this.userService.user._id;
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    this.letters = this.getLetters(alphabet);
     this.clearNoTranslationMsg();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
@@ -79,15 +85,22 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     this.tooltip = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
   }
-
+/*
   onGoToPage(newPageNr) {
     this.clearNoTranslationMsg();
     this.goToPage(newPageNr);
   }
+*/
+  onGoToLetter(newLetterNr) {
+    this.clearNoTranslationMsg();
+    if (this.hasLetter[newLetterNr]) {
+      this.goToLetter(newLetterNr);
+    }
+  }
 
   onAddToMyWordList(word: Word, i: number) {
     if (!word.pinned) {
-      const translations = this.wordTranslations ? this.wordTranslations[this.currentPage - 1][i] : null,
+      const translations = this.wordTranslations ? this.wordTranslations[this.currentLetter][i] : null,
             summary = this.wordListService.createTranslationsSummary(translations, '|');
       this.addToMyWordList(word, summary);
     }
@@ -96,7 +109,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
-    let currentTranslation = this.wordTranslations[this.currentPage - 1][data.i];
+    let currentTranslation = this.wordTranslations[this.currentLetter][data.i];
     if (currentTranslation) {
       currentTranslation.translations.push(...data.translations.translations);
     } else {
@@ -106,11 +119,11 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sortTranslations(currentTranslation);
     data.translations.translations.forEach(tl => {
       if (tl.source === 'OmegaWiki') {
-        this.hasOmegaWikiTranslations[this.currentPage - 1][data.i] = true;
+        this.hasOmegaWikiTranslations[this.currentLetter][data.i] = true;
       } else if (tl.source === 'DeepL') {
-        this.hasDeepLTranslations[this.currentPage - 1][data.i] = true;
+        this.hasDeepLTranslations[this.currentLetter][data.i] = true;
       } else if (tl.source === 'Microsoft') {
-        this.hasMSTranslations[this.currentPage - 1][data.i] = true;
+        this.hasMSTranslations[this.currentLetter][data.i] = true;
       }
     });
   }
@@ -118,7 +131,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   onUpdatedTranslation(data: {translations: WordTranslations, i: number}) {
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
-    this.wordTranslations[this.currentPage - 1][data.i].translations = data.translations.translations;
+    this.wordTranslations[this.currentLetter][data.i].translations = data.translations.translations;
   }
 
   onNoTranslations(data: {msg: string, i: number}) {
@@ -135,7 +148,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   onRemoveTranslation(i: number, translation: WordTranslation) {
     this.clearNoTranslationMsg();
     if (this.canEdit) {
-      this.removeTranslation(this.wordTranslations[this.currentPage - 1][i]._id, translation._id);
+      this.removeTranslation(this.wordTranslations[this.currentLetter][i]._id, translation._id);
     }
   }
 
@@ -154,7 +167,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userLanCode = lan.code;
     this.location.go(`/glossaries/glossary/${this.bookId}/${this.userLanCode}`);
     this.processUserWords();
-    this.getTranslations(this.currentPage);
+    this.getWordTranslations();
   }
 
   getCounter(nr: number): number[] {
@@ -165,6 +178,15 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.noTranslation = {msg: '', i: 0};
   }
 
+  private getLetters(alphabet: string): string[] {
+    const letters = [];
+    for (let i = 0; i < alphabet.length; i++) {
+      letters.push(alphabet[i]);
+    }
+    return letters;
+  }
+
+  /*
   private goToPage(newPageNr) {
     if (newPageNr > 0 && newPageNr <= this.nrOfPages) {
       this.displayWords = this.getWordsForPage(newPageNr);
@@ -172,6 +194,19 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!this.wordTranslations[this.currentPage - 1]) {
         this.isLoadingTranslations = true;
         this.getTranslations(this.currentPage);
+      }
+    }
+  }
+  */
+
+  private goToLetter(newLetterNr) {
+    if (newLetterNr >= 0 && newLetterNr < this.letters.length) {
+      this.displayWords = this.getWordsForLetter(newLetterNr);
+      this.currentLetter = newLetterNr;
+      this.currentPage = 0;
+      if (!this.wordTranslations[this.currentLetter]) {
+        this.isLoadingTranslations = true;
+        this.getTranslationsLetter(this.currentLetter);
       }
     }
   }
@@ -199,9 +234,27 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  /*
   private getWordsForPage(pageNr: number): Word[] {
     const start = (pageNr - 1) * this.wordsPerPage;
     return this.words.slice(start, start + this.wordsPerPage);
+  }
+  */
+
+  private getWordsForLetter(letterNr): Word[] {
+    const letter = this.letters[letterNr];
+    return this.words.filter(word => this.getDictionaryLetter(word.word) === letter);
+  }
+
+  private getDictionaryLetter(word: string): string {
+    const firstLetter = word.substr(0, 1).toLowerCase();
+    switch (firstLetter) {
+      case 'é':
+      case 'è':
+      case 'ê':
+        return 'e';
+      default: return firstLetter;
+    }
   }
 
   private processNewBookId() {
@@ -218,12 +271,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.setBookLan(this.bookLanguages); // for omega wiki code
         this.checkDeepLTranslationAvailability();
         this.words = data[1];
+        this.processWords();
         this.userWords = data[2];
         this.processUserWords();
         this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
-        this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
-        this.setPaginationLetters();
-        this.goToPage(1);
+        // this.nrOfPages = this.words.length > 0 ? Math.floor((this.words.length - 1) / this.wordsPerPage) + 1 : 1;
+        this.getWordTranslations();
         this.isLoading = false;
       },
       error => {
@@ -237,13 +290,26 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  setPaginationLetters() {
-    // TODO: if same as previous, use more than one letter!!
-    let wordIndex = 0;
-    for(let i = 0; i < this.nrOfPages; i++) {
-      wordIndex = i * this.wordsPerPage;
-      // console.log('page letter', wordIndex, this.words[wordIndex].sortWord[0]);
+  private processWords() {
+    let firstLetter: string,
+        pos: number,
+        letterCount = 0;
+    this.hasLetter = [];
+    console.log('checking letters');
+    for (let i = 0; i < this.words.length; i++) {
+      firstLetter = this.getDictionaryLetter(this.words[i].word);
+      pos = this.letters.indexOf(firstLetter);
+      if (pos > -1 && pos < this.letters.length) {
+        if (!this.hasLetter[pos]) {
+          letterCount++;
+          this.hasLetter[pos] = true;
+          if (letterCount === this.letters.length) {
+            break; // There are words for all letters in the alphabet
+          }
+        }
+      }
     }
+    this.paginationReady = true;
   }
 
   private processUserWords() {
@@ -285,64 +351,106 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.bookLan = lan;
   }
 
-  private getTranslations(pageNr: number) {
-    // Get translations for words
+  private getWordTranslations() {
+    console.log('total words', this.words.length);
+    if (this.words.length > 500) {
+      // Load translations per letter
+      this.getTranslationsLetter(this.currentLetter);
+    } else {
+      console.log('load all translations');
+      // Load all translations at once
+      this.getAllTranslations();
+    }
+  }
+
+  private getTranslationsLetter(letter: number) {
+    // Get translations for words for selected letter
     this.isLoadingTranslations = true;
-    this.wordTranslations[pageNr - 1] = [];
-    this.hasOmegaWikiTranslations[pageNr - 1] = [];
-    this.hasDeepLTranslations[pageNr - 1] = [];
-    this.hasMSTranslations[pageNr - 1] = [];
     const words = this.displayWords.map(w => w.word);
+    console.log('fetching translations for ', this.letters[letter]);
     this.translationService
-    .fetchTranslations(this.book, this.userLanCode, words)
+    .fetchTranslationsLetter(this.book, this.userLanCode, this.letters[letter])
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
-        this.processTranslations(wordTranslations, words, pageNr);
+        this.processTranslationsLetter(wordTranslations, words, letter);
         this.isLoadingTranslations = false;
       }
     );
   }
 
-  private processTranslations(wordTranslations: WordTranslations[], words: string[], pageNr: number) {
-    // Only translations in target language
-    wordTranslations.forEach(wt => {
-      wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
-    });
-    // Place the translations in the right order
-    let tl: WordTranslations;
-    words.forEach((w, i) => {
-      tl = wordTranslations.find(t => t.word === w);
-      if (tl) {
-        this.sortTranslations(tl);
-        // Create translation summary
-        tl.summary = this.wordListService.createTranslationsSummary(tl);
-        this.wordTranslations[pageNr - 1][i] = tl;
-        // Check if omegaWiki translation button should be shown
-        const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
-        if (omegaWikiTranslations.length > 0) {
-          this.hasOmegaWikiTranslations[pageNr - 1][i] = true;
-        }
-        // Check if deepL translation button can be shown
-        const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
-        if (deepLTranslations.length > 0) {
-          this.hasDeepLTranslations[pageNr - 1][i] = true;
-        }
-        // Check if Microsoft translation button can be shown
-        const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
-        if (msTranslations.length > 0) {
-          this.hasMSTranslations[pageNr - 1][i] = true;
-        }
-      } else {
-        // No translation found
-        this.displayWords[i].expanded = true;
-        this.wordTranslations[pageNr - 1][i] = {
-          lanCode: this.bookLan.code,
-          word: w,
-          translations: []
-        };
+  private getAllTranslations() {
+    // Get translations for words
+    this.isLoadingTranslations = true;
+    console.log('fetching all translations');
+    this.translationService
+    .fetchWordTranslations(this.book, this.userLanCode)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      wordTranslations => {
+        console.log('translations', wordTranslations);
+        let letterTranslations: WordTranslations[],
+            words: string[];
+        // Process translations for each letter
+        this.letters.forEach((letter, letterNr) => {
+          this.displayWords = this.getWordsForLetter(letterNr);
+          words = this.displayWords.map(w => w.word);
+          letterTranslations = wordTranslations.filter(tl => this.getDictionaryLetter(tl.word) === letter);
+          if (words && letterTranslations) {
+            this.processTranslationsLetter(letterTranslations, words, letterNr);
+          }
+        });
+        this.goToLetter(0);
+        this.isLoadingTranslations = false;
       }
-    });
+    );
+  }
+
+  private processTranslationsLetter(wordTranslations: WordTranslations[], words: string[], letter: number) {
+    if (wordTranslations) {
+      this.wordTranslations[letter] = [];
+      this.hasOmegaWikiTranslations[letter] = [];
+      this.hasDeepLTranslations[letter] = [];
+      this.hasMSTranslations[letter] = [];
+      // Only translations in target language
+      wordTranslations.forEach(wt => {
+        wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
+      });
+      // Place the translations in the right order
+      let tl: WordTranslations;
+      words.forEach((w, i) => {
+        tl = wordTranslations.find(t => t.word === w);
+        if (tl) {
+          this.sortTranslations(tl);
+          // Create translation summary
+          tl.summary = this.wordListService.createTranslationsSummary(tl);
+          this.wordTranslations[letter][i] = tl;
+          // Check if omegaWiki translation button should be shown
+          const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
+          if (omegaWikiTranslations.length > 0) {
+            this.hasOmegaWikiTranslations[letter][i] = true;
+          }
+          // Check if deepL translation button can be shown
+          const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
+          if (deepLTranslations.length > 0) {
+            this.hasDeepLTranslations[letter][i] = true;
+          }
+          // Check if Microsoft translation button can be shown
+          const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
+          if (msTranslations.length > 0) {
+            this.hasMSTranslations[letter][i] = true;
+          }
+        } else {
+          // No translation found
+          this.displayWords[i].expanded = true;
+          this.wordTranslations[letter][i] = {
+            lanCode: this.bookLan.code,
+            word: w,
+            translations: []
+          };
+        }
+      });
+    }
   }
 
   private sortTranslations(translations: WordTranslations) {
@@ -371,7 +479,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .removeWordTranslation(translationId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      const tl = this.wordTranslations[this.currentPage - 1].find(wt => wt._id.toString() === translationId);
+      const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id.toString() === translationId);
       if (tl) {
         tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
       }

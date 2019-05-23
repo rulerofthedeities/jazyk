@@ -56,6 +56,7 @@ const wordTranslationsSchema = new Schema({
         bookId: {type: Schema.Types.ObjectId, required: true},
         lanCode: {type: String, required: true},
         word: {type: String, required: true},
+        sortWord: {type: String, required: true},
         translations: [wordTranslationSchema]
       }),
       TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);

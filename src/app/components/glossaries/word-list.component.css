@@ -1,6 +1,17 @@
 .panel {
   background-color: rgba(255, 255, 255, 0.9);
 }
+.panel-pagination {
+  margin-bottom: 2px;
+}
+.panel-pagination .panel-body {
+  padding: 0 0 0 6px;
+}
+.pagination {
+  padding: 4px 0 0 0;
+  margin: 0;
+  font-size: 20px;
+}
 tbody {
   background-color: white;
 }
@@ -112,4 +123,7 @@ table {
 .source-lan .flag {
   position: relative;
   top: -2px;
+}
+.disabled > .pagination-letter {
+  color: #ddd;
 }

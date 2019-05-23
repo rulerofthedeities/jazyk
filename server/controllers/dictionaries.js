@@ -28,6 +28,14 @@ const fetchOmegawikiData = (url) => {
     });
   });
 }
+
+const getSortWord = (word) => {
+  // replace all diacritics with standard letters for sorting
+  const sortWord = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  console.log('sortword', word, sortWord);
+  return sortWord;
+};
+
 module.exports = {
   getOmegawikiDefinitionsLocal: (req, res) => {
     const query = {
@@ -62,9 +70,10 @@ module.exports = {
     const lanCode = req.body.bookLanCode,
           bookId = req.body.bookId,
           word = req.body.word,
+          sortWord = getSortWord(word),
           translations = req.body.translations,
           query = {bookId, lanCode, word},
-          update = {$addToSet: {translations: {$each: translations}}};
+          update = {sortWord, $addToSet: {translations: {$each: translations}}};
     Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
         response.handleSuccess(res, result);
@@ -103,14 +112,37 @@ module.exports = {
     });
 
   },
-  getTranslations: (req, res) => {
+  getLetterTranslations: (req, res) => {
     const bookLan = req.body.bookLan,
           bookId = req.body.bookId,
           targetLan = req.body.targetLan,
-          words = req.body.words,
-          query = {bookId, lanCode: bookLan, word: {$in: words}, 'translations.lanCode': targetLan};
+          firstLetter = req.body.letter,
+          query = {
+            bookId,
+            lanCode: bookLan,
+            sortWord: {$regex: '^' + firstLetter, $options:'i'},
+            'translations.lanCode': targetLan
+          };
+        console.log('firstletter', firstLetter);
     Translations.find(query, (err, translations) => {
-      response.handleError(err, res, 400, 'Error fetching word translations', () => {
+      console.log('translations', translations);
+      response.handleError(err, res, 400, `Error fetching word translations for letter ${firstLetter}`, () => {
+        response.handleSuccess(res, translations);
+      });
+    });
+  },
+  getAllTranslations: (req, res) => {
+    const bookLan = req.body.bookLan,
+          bookId = req.body.bookId,
+          targetLan = req.body.targetLan,
+          query = {
+            bookId,
+            lanCode: bookLan,
+            'translations.lanCode': targetLan
+          };
+    Translations.find(query, (err, translations) => {
+      console.log('translations', translations);
+      response.handleError(err, res, 400, `Error fetching word translations`, () => {
         response.handleSuccess(res, translations);
       });
     });

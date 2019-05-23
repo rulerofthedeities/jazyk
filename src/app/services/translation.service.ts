@@ -44,9 +44,15 @@ export class TranslationService {
     .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
   }
 
-  fetchTranslations(book: Book, targetLan: string, words: string[]): Observable<WordTranslations[]> {
+  fetchTranslationsLetter(book: Book, targetLan: string, letter: string): Observable<WordTranslations[]> {
     return this.http
-    .put<WordTranslations[]>(`/api/wordlist/word/translations`, {words, bookId: book._id, bookLan: book.lanCode, targetLan})
+    .put<WordTranslations[]>(`/api/wordlist/letter/translations/`, {letter, bookId: book._id, bookLan: book.lanCode, targetLan})
+    .pipe(retry(3));
+  }
+
+  fetchWordTranslations(book: Book, targetLan: string): Observable<WordTranslations[]> {
+    return this.http
+    .put<WordTranslations[]>(`/api/wordlist/all/translations/`, {bookId: book._id, bookLan: book.lanCode, targetLan})
     .pipe(retry(3));
   }
 
