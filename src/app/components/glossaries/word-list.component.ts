@@ -12,6 +12,7 @@ import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
+import { relativeTimeRounding } from 'moment';
 
 @Component({
   templateUrl: 'word-list.component.html',
@@ -40,10 +41,11 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   errMsg = null;
   currentPage = 0;
   currentLetter = 0;
-  wordsPerPage = 5;
+  maxWordsPerPage = 100;
   nrOfPages: number;
   letters: string[];
   hasLetter: boolean[];
+  allLetters = false;
   paginationReady = false;
   audioPath: string;
   isLoadingTranslations = false;
@@ -93,6 +95,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 */
   onGoToLetter(newLetterNr) {
     this.clearNoTranslationMsg();
+    this.allLetters = newLetterNr === -1;
     if (this.hasLetter[newLetterNr]) {
       this.goToLetter(newLetterNr);
     }
@@ -208,6 +211,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isLoadingTranslations = true;
         this.getTranslationsLetter(this.currentLetter);
       }
+    } else if (newLetterNr === -1) {
+      // All letters
+      this.displayWords = this.words;
+      this.currentLetter = -1;
+      this.allLetters = true;
+      this.currentPage = 0;
     }
   }
 
@@ -248,11 +257,28 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getDictionaryLetter(word: string): string {
     const firstLetter = word.substr(0, 1).toLowerCase();
+    // FR
     switch (firstLetter) {
+      case 'â':
+      case 'à':
+        return 'a';
+      case 'ç':
+        return 'c';
       case 'é':
       case 'è':
       case 'ê':
+      case 'ë':
         return 'e';
+      case 'î':
+      case 'ï':
+        return 'i';
+      case 'ô':
+      case 'œ':
+        return 'o';
+      case 'ù':
+      case 'û':
+      case 'ü':
+        return 'u';
       default: return firstLetter;
     }
   }
@@ -382,13 +408,11 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   private getAllTranslations() {
     // Get translations for words
     this.isLoadingTranslations = true;
-    console.log('fetching all translations');
     this.translationService
     .fetchWordTranslations(this.book, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
-        console.log('translations', wordTranslations);
         let letterTranslations: WordTranslations[],
             words: string[];
         // Process translations for each letter
@@ -400,18 +424,26 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
             this.processTranslationsLetter(letterTranslations, words, letterNr);
           }
         });
-        this.goToLetter(0);
+        this.processTranslationsLetter(wordTranslations, this.words.map(w => w.word), -1);
+        this.hasLetter[-1] = true;
+        this.goToLetter(this.words.length > 25 ? 0 : -1);
         this.isLoadingTranslations = false;
       }
     );
   }
 
-  private processTranslationsLetter(wordTranslations: WordTranslations[], words: string[], letter: number) {
+  /*
+  private processAllTranslations(wordTranslations: WordTranslations[], words: string[]) {
+    // For showing all translations at once
     if (wordTranslations) {
-      this.wordTranslations[letter] = [];
-      this.hasOmegaWikiTranslations[letter] = [];
-      this.hasDeepLTranslations[letter] = [];
-      this.hasMSTranslations[letter] = [];
+      this.initTranslationArrays(-1);
+    }
+  }
+  */
+
+  private processTranslationsLetter(wordTranslations: WordTranslations[], words: string[], letterNr: number) {
+    if (wordTranslations) {
+      this.initTranslationArrays(letterNr);
       // Only translations in target language
       wordTranslations.forEach(wt => {
         wt.translations = wt.translations.filter(tl => tl.lanCode === this.userLanCode)
@@ -424,26 +456,26 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
           this.sortTranslations(tl);
           // Create translation summary
           tl.summary = this.wordListService.createTranslationsSummary(tl);
-          this.wordTranslations[letter][i] = tl;
+          this.wordTranslations[letterNr][i] = tl;
           // Check if omegaWiki translation button should be shown
           const omegaWikiTranslations = tl.translations.filter(tl2 => tl2.source === 'OmegaWiki');
           if (omegaWikiTranslations.length > 0) {
-            this.hasOmegaWikiTranslations[letter][i] = true;
+            this.hasOmegaWikiTranslations[letterNr][i] = true;
           }
           // Check if deepL translation button can be shown
           const deepLTranslations = tl.translations.filter(tl2 => tl2.source === 'DeepL');
           if (deepLTranslations.length > 0) {
-            this.hasDeepLTranslations[letter][i] = true;
+            this.hasDeepLTranslations[letterNr][i] = true;
           }
           // Check if Microsoft translation button can be shown
           const msTranslations = tl.translations.filter(tl2 => tl2.source === 'Microsoft');
           if (msTranslations.length > 0) {
-            this.hasMSTranslations[letter][i] = true;
+            this.hasMSTranslations[letterNr][i] = true;
           }
         } else {
           // No translation found
           this.displayWords[i].expanded = true;
-          this.wordTranslations[letter][i] = {
+          this.wordTranslations[letterNr][i] = {
             lanCode: this.bookLan.code,
             word: w,
             translations: []
@@ -451,6 +483,13 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     }
+  }
+
+  private initTranslationArrays(letterNr: number) {
+    this.wordTranslations[letterNr] = [];
+    this.hasOmegaWikiTranslations[letterNr] = [];
+    this.hasDeepLTranslations[letterNr] = [];
+    this.hasMSTranslations[letterNr] = [];
   }
 
   private sortTranslations(translations: WordTranslations) {
