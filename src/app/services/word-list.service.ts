@@ -2,8 +2,7 @@ import { Injectable, ɵlooseIdentical } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Book } from '../models/book.model';
-import { Word, UserWord, WordDefinition, OmegaDefinitions, OmegaDefinition,
-         OmegaTranslation, WordTranslation, WordTranslations } from '../models/word.model';
+import { Word, UserWord, WordTranslations, UserWordData } from '../models/word.model';
 import { retry } from 'rxjs/operators';
 
 interface TranslationScore {
@@ -20,9 +19,9 @@ export class WordListService {
     private http: HttpClient
   ) {}
 
-  fetchUserWordCounts(targetLanCode: string): Observable<any> {
+  fetchUserWordCounts(bookLanCode: string): Observable<UserWordData[]> {
     return this.http
-    .get<any[]>(`/api/userwordlists/count/${targetLanCode}`)
+    .get<UserWordData[]>(`/api/userwordlists/count/${bookLanCode}`)
     .pipe(retry(3));
   }
 

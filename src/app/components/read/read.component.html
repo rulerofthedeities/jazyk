@@ -8,7 +8,7 @@
     [myLanguage]="myLanguage"
     (newBookLanguage)="onBookLanguageSelected($event)"
     (newMyLanguage)="onMyLanguageSelected($event)"
-    (newBookType)="onChangeBookType($event)"
+    (newBookType)="onChangeListType($event)"
   ></km-languages-bar>
 
   <km-filter-bar
@@ -28,7 +28,7 @@
       [infiniteScrollThrottle]="50"
       (scrolled)="onScrollBooks()">
       <li *ngFor="let book of displayBooks; let i=index">
-        <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
+        <km-book-summary
           [book]="book"
           [userBook]="userBooks[book._id]"
           [userData]="userData[book._id]"

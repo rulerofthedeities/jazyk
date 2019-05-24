@@ -231,7 +231,7 @@
   top: 2px;
   margin-left: 2px;
 }
-.sentences {
+.sentences, .glossary-words {
   font-weight: bold;
 }
 .translations {

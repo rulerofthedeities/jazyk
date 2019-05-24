@@ -5,6 +5,7 @@ import { SharedService } from '../services/shared.service';
 import { FilterService } from '../services/filter.service';
 import { Map, Language, LicenseUrl } from '../models/main.model';
 import { Book, UserBook, UserBookActivity, UserData, TranslationData, ViewFilter } from '../models/book.model';
+import { UserWordData } from '../models/word.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 
@@ -18,6 +19,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   userBooksTest: Map<UserBook> = {};
   userData: Map<UserData>[] = [];
   userDataTest: Map<UserData>[] = [];
+  userWordData: Map<UserWordData> = {}; // glossary
   translationData: Map<TranslationData> = {};
   userBookActivity: Map<UserBookActivity> = {};
   bookLanguage: Language;
@@ -32,7 +34,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   isBooksReady = false;
   itemTxt: string;
   nrOfBooks: number;
-  bookType: string; // read or listen
+  bookType: string; // read or listen or glossary
   listTpe = 'all';
   scrollCutOff = 15; // nr of books shown - increases with scrolling
   totalFinished = 0;
@@ -71,7 +73,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     this.getAllUserData();
   }
 
-  protected onChangeBookType(tpe: string) {
+  protected onChangeListType(tpe: string) {
     this.listTpe = tpe;
     this.filterBooks();
   }
@@ -255,10 +257,17 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     // List type: my list or all
     switch (this.listTpe) {
       case 'my':
-      this.filteredBooks = this.books.filter(
-        b => (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed) ||
-             (!!this.userBooksTest[b._id] && this.userBooksTest[b._id].subscribed)
-        );
+        if (this.bookType === 'glossary') {
+          this.filteredBooks = this.books.filter(b =>
+            this.userWordData[b._id] && this.userWordData[b._id].count > 0
+          );
+          console.log('glossary', this.filteredBooks);
+        } else {
+          this.filteredBooks = this.books.filter(
+            b => (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed) ||
+                 (!!this.userBooksTest[b._id] && this.userBooksTest[b._id].subscribed)
+            );
+        }
       break;
       default:
         if (this.books) {
@@ -347,6 +356,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     this.scrollCutOff = 15;
     if (this.filteredBooks) {
       this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
+      console.log('glossary2', this.displayBooks);
     }
   }
 

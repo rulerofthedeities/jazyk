@@ -30,6 +30,11 @@ export interface UserWord {
   translations: UserWordTranslation[];
 }
 
+export interface UserWordData {
+  bookId: string;
+  count: number;
+}
+
 interface File {
   fileName: string;
   hasMp3: boolean;

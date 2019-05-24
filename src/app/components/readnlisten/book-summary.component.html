@@ -138,46 +138,62 @@
           </div>
           <!-- BUTTONS -->
           <div class="buttons" *ngIf="book.lanCode !== userLanCode">
-            <button *ngIf="!isFinished && !userBookStatus.isBookRead && (!isTest || tpe!=='home')"
-              type="button"
-              class="btn btn-primary"
-              [class.btn-lg]="tpe!=='home'"
-              (click)="onStartReadingListening(false, false, $event)">
-              <span class="fa fa-arrow-right fa-spacing"></span>
-              {{userBookStatus.isStarted ?
-                  (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
-                  : (userBook && userBook.repeatCount > 0 ?
-                    (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
-                    : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
-                  )
-              }}
-            </button>
-            <button *ngIf="!isTestFinished && !userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
-              type="button"
-              class="btn btn-warning"
-              [class.btn-lg]="tpe!=='home'"
-              (click)="onStartListeningTest()">
-              <span class="fa fa-flask fa-spacing"></span>
-              {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
-            </button>
-            <span *ngIf="isFinished || isTestFinished">
-              <!--
-              <span class="book-read" *ngIf="isAllFinished">
-                <span class="fa fa-check"></span>
-                {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+            <span *ngIf="bookType ==='read' || bookType==='listen'">
+              <button *ngIf="!isFinished && !userBookStatus.isBookRead && (!isTest || tpe!=='home')"
+                type="button"
+                class="btn btn-primary"
+                [class.btn-lg]="tpe!=='home'"
+                (click)="onStartReadingListening(false, false, $event)">
+                <span class="fa fa-arrow-right fa-spacing"></span>
+                {{userBookStatus.isStarted ?
+                    (bookType==='listen' ? text["ContinueListening"] : text["ContinueReading"])
+                    : (userBook && userBook.repeatCount > 0 ?
+                      (bookType==='listen' ? text["ListenAgain"] : text["ReadAgain"])
+                      : (bookType==='listen' ? text["StartListening"] : text["StartReading"])
+                    )
+                }}
+              </button>
+              <button *ngIf="!isTestFinished && !userBookStatusTest.isBookRead && bookType==='listen' && (isTest || tpe!=='home')"
+                type="button"
+                class="btn btn-warning"
+                [class.btn-lg]="tpe!=='home'"
+                (click)="onStartListeningTest()">
+                <span class="fa fa-flask fa-spacing"></span>
+                {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
+              </button>
+              <span *ngIf="isFinished || isTestFinished">
+                <!--
+                <span class="book-read" *ngIf="isAllFinished">
+                  <span class="fa fa-check"></span>
+                  {{text[bookType==='listen' ? 'AudioListened' : 'BookRead']}}
+                </span>
+                -->
+                <button type="button" *ngIf="isFinished"
+                  (click)="onStartReadingListening(true, false, $event)"
+                  class="btn btn-primary"
+                  [class.btn-lg]="tpe!=='home'">
+                  <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
+                </button>
+                <button type="button" *ngIf="isTestFinished"
+                  (click)="onStartReadingListening(true, true, $event)"
+                  class="btn btn-warning"
+                  [class.btn-lg]="tpe!=='home'">
+                  <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+                </button>
               </span>
-              -->
-              <button type="button" *ngIf="isFinished"
-                (click)="onStartReadingListening(true, false, $event)"
+            </span>
+            <span *ngIf="bookType==='glossary' && !!userGlossary?.count">
+              <button type="button"
+                (click)="onStartVocabularyTest()"
                 class="btn btn-primary"
                 [class.btn-lg]="tpe!=='home'">
-                <span class="fa fa-repeat fa-spacing"></span>{{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
+                <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
               </button>
-              <button type="button" *ngIf="isTestFinished"
-                (click)="onStartReadingListening(true, true, $event)"
-                class="btn btn-warning"
+              <button type="button"
+                (click)="onStartFlashcards()"
+                class="btn btn-primary"
                 [class.btn-lg]="tpe!=='home'">
-                <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+                <span class="fa fa-folder-o fa-spacing"></span>{{text['FlashCards']}}
               </button>
             </span>
             <span *ngIf="book.wordListPublished">
@@ -209,31 +225,39 @@
           </div>
           <!-- INFO -->
           <div class="info" *ngIf="!isCompact && tpe !== 'home'">
-            <div class="sentences">
-              {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
-              <span *ngIf="translationData?.count" class="translations">
-                ({{translationString}} {{text["translatedinto"]}} {{text[userLanCode]}}<span *ngIf="isTranslated"
-                  class="fa fa-check"
-                  [tooltip]="text['FullyTranslated']"
-                  placement="top"
-                  hide-delay="50">
-                </span>)
-              </span>
+            <div *ngIf="bookType !== 'glossary'">
+              <div class="sentences">
+                {{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}
+                <span *ngIf="translationData?.count" class="translations">
+                  ({{translationString}} {{text["translatedinto"]}} {{text[userLanCode]}}<span *ngIf="isTranslated"
+                    class="fa fa-check"
+                    [tooltip]="text['FullyTranslated']"
+                    placement="top"
+                    hide-delay="50">
+                  </span>)
+                </span>
+              </div>
+              <div class="words">
+                {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}}
+                <span *ngIf="!book.wordListPublished">({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})</span>
+                <span *ngIf="book.wordListPublished">({{book.nrOfWordsInList | score}} {{text["inwordlist"]}})</span>
+              </div>
+              <div *ngIf="tpe!=='home'">
+                <ng-container *ngTemplateOutlet="actionTemplate;context:{
+                  isCompact: isCompact,
+                  tpe: tpe,
+                  text: text,
+                  userBookStatus: userBookStatus,
+                  userBookStatusTest: userBookStatusTest
+                }">
+                </ng-container>
+              </div>
             </div>
-            <div class="words">
-              {{book.difficulty?.nrOfUniqueWords | score}} {{text["uniquewords"]}}
-              <span *ngIf="!book.wordListPublished">({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})</span>
-              <span *ngIf="book.wordListPublished">({{book.nrOfWordsInList | score}} {{text["inwordlist"]}})</span>
-            </div>
-            <div *ngIf="tpe!=='home'">
-              <ng-container *ngTemplateOutlet="actionTemplate;context:{
-                isCompact: isCompact,
-                tpe: tpe,
-                text: text,
-                userBookStatus: userBookStatus,
-                userBookStatusTest: userBookStatusTest
-              }">
-              </ng-container>
+            <div *ngIf="bookType === 'glossary'">
+              <div class="glossary-words">
+                {{book.nrOfWordsInList | score}} {{text["words"]}}
+                <span *ngIf="!!userGlossary?.count"> ({{userGlossary.count | score}} {{text["inMyWordList"]}})</span>
+              </div>
             </div>
             {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
             ({{difficultyPerc}}%)

@@ -5,7 +5,9 @@ import { ReadnListenService } from '../../services/readnlisten.service';
 import { FilterService } from 'app/services/filter.service';
 import { ReadnListenListComponent } from '../../abstracts/readnListen-list.abstract';
 import { WordListService } from '../../services/word-list.service';
+import { Map } from '../../models/main.model';
 import { Book } from '../../models/book.model';
+import { UserWordData } from '../../models/word.model';
 import { takeWhile } from 'rxjs/operators';
 import { zip } from 'rxjs';
 
@@ -72,18 +74,25 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     console.log('getting all data');
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
-      // this.wordListService.fetchUserWordCounts(this.myLanguage.code)
+      this.wordListService.fetchUserWordCounts(this.bookLanguage.code)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       console.log('data', data)
       if (data && data.length) {
         this.processUserBooks(data[0]);
-        // this.processUserData(data[1]);
+        this.processUserWordData(data[1]);
         // this.processTranslations(data[2]);
         // this.processActivity(data[3]);
       }
       this.isBooksReady = true;
     });
+  }
+
+  private processUserWordData(userwords: UserWordData[]) {
+    userwords.forEach(word => {
+      this.userWordData[word.bookId] = word;
+    });
+    console.log('processed user word data', this.userWordData)
   }
 }

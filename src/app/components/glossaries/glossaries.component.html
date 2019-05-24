@@ -1,4 +1,3 @@
-GLOSSARIES
 <section *ngIf="isReady">
   <km-languages-bar
     bookType='glossary'
@@ -9,7 +8,7 @@ GLOSSARIES
     [myLanguage]="myLanguage"
     (newBookLanguage)="onBookLanguageSelected($event)"
     (newMyLanguage)="onMyLanguageSelected($event)"
-    (newBookType)="onChangeBookType($event)"
+    (newBookType)="onChangeListType($event)"
   ></km-languages-bar>
 
   <!--
@@ -31,10 +30,12 @@ GLOSSARIES
       [infiniteScrollThrottle]="50"
       (scrolled)="onScrollBooks()">
       <li *ngFor="let book of displayBooks; let i=index">
-        <km-book-summary *ngIf="listTpe === 'all' || !!userBooks[book._id]?.subscribed"
+        <km-book-summary
           [book]="book"
-          [userBook]="userBooks[book._id]"
-          [userData]="userData[book._id]"
+          [bookType]="'glossary'"
+          [userBook]="null"
+          [userData]="null"
+          [userGlossary]="userWordData[book._id]"
           [translationData]="null"
           [activity]="userBookActivity[book._id]"
           [userLanCode]="myLanguage.code"

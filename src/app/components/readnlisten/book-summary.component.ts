@@ -2,6 +2,7 @@ import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges } 
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData, UserBookActivity } from '../../models/book.model';
 import { LicenseUrl } from '../../models/main.model';
+import { UserWordData } from '../../models/word.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
@@ -31,12 +32,13 @@ interface ColorHistory {
 
 export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() book: Book;
-  @Input() bookType = 'read'; // read or listen
+  @Input() bookType = 'read'; // read or listen or glossary
   @Input() isTest = false; // only true in dashboard
   @Input() userBook: UserBook;
   @Input() userBookTest: UserBook;
   @Input() userData: UserData[];
   @Input() userDataTest: UserData[];
+  @Input() userGlossary: UserWordData;
   @Input() translationData: TranslationData;
   @Input() private activity: UserBookActivity;
   @Input() userLanCode: string;
@@ -159,6 +161,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onStopReadingListening() {
     this.unsubscribe();
     this.unsubscribeTest();
+  }
+
+  onStartFlashcards() {
+    console.log('start flash cards');
+  }
+
+  onStartVocabularyTest() {
+    console.log('start vocabulary test');
   }
 
   onWordList() {

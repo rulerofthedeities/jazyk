@@ -33,11 +33,12 @@ module.exports = {
   },
   getUserWordListCount: (req, res) => {
     // total # of user words per book
-    const targetLan = req.params.lan;
-
-    /*
-    const userLan = req.params.lan,
-          query = {'translations.lanCode': targetLan},
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookLan = req.params.lan,
+          query = {
+            userId,
+            lanCode: bookLan
+          },
           projection = {
             _id: 0,
             bookId: '$_id',
@@ -51,12 +52,12 @@ module.exports = {
             }},
             {$project: projection}
           ];
-    Translation.aggregate(pipeline, (err, translations) => {
-      response.handleError(err, res, 400, 'Error fetching translations count', () => {
-        response.handleSuccess(res, translations);
+    console.log('query', query);
+    UserWordList.aggregate(pipeline, (err, result) => {
+      response.handleError(err, res, 400, 'Error fetching user word count', () => {
+        response.handleSuccess(res, result);
       });
     });
-    */
   },
   getPublishedLanGlossaries: (req, res) => {
     const languageId = req.params.lan,
