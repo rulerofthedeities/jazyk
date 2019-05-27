@@ -86,7 +86,14 @@ export abstract class ReadnListenListComponent implements OnDestroy {
   }
 
   protected getNoBooksMessage(bookType: string): string {
-    let msg = bookType === 'listen' ? this.text['NoAudioBooks'] : this.text['NoBooks'];
+    let msgKey: string;
+    switch(bookType) {
+      case 'listen' : msgKey = 'NoAudioBooksLan'; break;
+      case 'glossary' : msgKey = 'NoGlossariesLan'; break;
+      default : msgKey = 'NoBooksLan';
+    }
+    let msg = this.text[msgKey];
+    msg = msg.replace('%s', this.bookLanguage.interfaceName);
     if (this.books.length > this.filterBooks.length) {
       msg += '. ' + this.text['RemoveFilters'];
     }
@@ -261,7 +268,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
           this.filteredBooks = this.books.filter(b =>
             this.userWordData[b._id] && this.userWordData[b._id].count > 0
           );
-          console.log('glossary', this.filteredBooks);
         } else {
           this.filteredBooks = this.books.filter(
             b => (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed) ||
@@ -356,7 +362,6 @@ export abstract class ReadnListenListComponent implements OnDestroy {
     this.scrollCutOff = 15;
     if (this.filteredBooks) {
       this.displayBooks = this.filteredBooks.slice(0, this.scrollCutOff);
-      console.log('glossary2', this.displayBooks);
     }
   }
 

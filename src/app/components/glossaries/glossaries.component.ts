@@ -71,14 +71,12 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
 
   protected getAllUserData() {
     this.isBooksReady = false;
-    console.log('getting all data');
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
       this.wordListService.fetchUserWordCounts(this.bookLanguage.code)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      console.log('data', data)
       if (data && data.length) {
         this.processUserBooks(data[0]);
         this.processUserWordData(data[1]);
@@ -93,6 +91,5 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     userwords.forEach(word => {
       this.userWordData[word.bookId] = word;
     });
-    console.log('processed user word data', this.userWordData)
   }
 }

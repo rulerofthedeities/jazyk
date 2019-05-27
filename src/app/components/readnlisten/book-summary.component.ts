@@ -99,6 +99,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkSentencesDone();
     this.checkTranslated();
     this.setActivity();
+    this.setGlossaryImage();
   }
 
   onShowRepeatHistory(isTest: boolean) {
@@ -422,6 +423,14 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private setDefaultImg() {
     this.defaultImage = this.bookType === 'listen' ? '/assets/img/books/blankrecord.png' : '/assets/img/books/blankcover.png';
+  }
+
+  private setGlossaryImage() {
+    if (this.bookType === 'glossary' && this.book.img) {
+      const readPath = '/jazyk/books/' + this.book.lanCode + '/',
+            glossaryPath = readPath + 'glossary/';
+      this.book.img = this.book.img.replace(readPath, glossaryPath);
+    }
   }
 
   private setSourceLink() {

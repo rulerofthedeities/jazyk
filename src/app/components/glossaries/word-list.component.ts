@@ -321,7 +321,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         pos: number,
         letterCount = 0;
     this.hasLetter = [];
-    console.log('checking letters');
     for (let i = 0; i < this.words.length; i++) {
       firstLetter = this.getDictionaryLetter(this.words[i].word);
       pos = this.letters.indexOf(firstLetter);
@@ -378,12 +377,10 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getWordTranslations() {
-    console.log('total words', this.words.length);
     if (this.words.length > 500) {
       // Load translations per letter
       this.getTranslationsLetter(this.currentLetter);
     } else {
-      console.log('load all translations');
       // Load all translations at once
       this.getAllTranslations();
     }
@@ -393,7 +390,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Get translations for words for selected letter
     this.isLoadingTranslations = true;
     const words = this.displayWords.map(w => w.word);
-    console.log('fetching translations for ', this.letters[letter]);
     this.translationService
     .fetchTranslationsLetter(this.book, this.userLanCode, this.letters[letter])
     .pipe(takeWhile(() => this.componentActive))
