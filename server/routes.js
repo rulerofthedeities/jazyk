@@ -167,6 +167,7 @@ module.exports = {
     router.get('/userwordlist/:bookId', wordlist.getUserWordList);
     router.get('/userwordlists/count/:lan', wordlist.getUserWordListCount);
     router.put('/wordlist/my/pin', wordlist.updateMyList);
+    router.put('/wordlist/my/pins', wordlist.addAllToMyList);
     router.get('/wordlist/word/definition/omega/local/:word', dictionaries.getOmegawikiDefinitionsLocal);
     router.get('/wordlist/word/definition/omega/ext/:word', dictionaries.getOmegawikiDefinitionsExt);
     router.get('/wordlist/word/translate/omega/:lanId/:dmid', dictionaries.getOmegawikiTranslation);

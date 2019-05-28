@@ -138,5 +138,47 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     });
+  },
+  addAllToMyList: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          words = req.body.words,
+          summary = 'test';
+    console.log('bulk write', words);
+    if (words.length > 0) {
+      let docs = words.map(word => {
+        let query = {
+          wordId: word._id,
+          bookId,
+          userId,
+          lanCode: word.lanCode
+        };
+        return {
+          updateOne: {
+            filter: query,
+            update: {
+              $set: query,
+              $addToSet: {
+                translations: {
+                  pinned: true,
+                  lanCode: word.targetLanCode,
+                  translations: summary
+                }
+              }
+            },
+            upsert: true
+          }
+        }
+      });
+      console.log('bulk write 2');
+      UserWordList.collection.bulkWrite(docs, (err, bulkResult) => {
+        response.handleError(err, res, 400, 'Error pinning all words', () => {
+          console.log('result', bulkResult);
+          response.handleSuccess(res, true);
+        });
+      })
+    } else {
+      response.handleSuccess(res, true);
+    }
   }
 }

@@ -127,3 +127,10 @@ table {
 .disabled > .pagination-letter {
   color: #ddd;
 }
+.lan-header {
+  padding-right: 0;
+}
+.pin-all {
+  font-size: 28px;
+  padding: 6px;
+}

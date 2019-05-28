@@ -8,25 +8,36 @@
   ></km-book-title>
 
   <!-- PAGINATION -->
-  <div class="panel panel-default panel-pagination" *ngIf="paginationReady">
-    <div class="panel-body">
-      <ul class="pagination">
-        <li *ngIf="words.length <= maxWordsPerPage"
-          [class.clickable]="!allLetters"
-          [class.disabled]="false"
-          [class.active] = "allLetters"
-          (click)="onGoToLetter(-1)">
-          <a>{{text["All"]}}</a>
-        </li>
-        <li *ngFor="let letterCount of letters;let i = index"
-          [class.clickable]="!!hasLetter[i]"
-          [class.disabled]="!hasLetter[i]"
-          [class.active] = "i === currentLetter"
-          (click)="onGoToLetter(i)">
-          <a class="pagination-letter">{{letters[i]}}</a>
-        </li>
-      </ul>
+  <div class="col-xs-11">
+    <div class="panel panel-default panel-pagination" *ngIf="paginationReady">
+      <div class="panel-body">
+        <ul class="pagination">
+          <li *ngIf="words.length <= maxWordsPerPage"
+            [class.clickable]="!allLetters"
+            [class.disabled]="false"
+            [class.active] = "allLetters"
+            (click)="onGoToLetter(-1)">
+            <a>{{text["All"]}}</a>
+          </li>
+          <li *ngFor="let letterCount of letters;let i = index"
+            [class.clickable]="!!hasLetter[i]"
+            [class.disabled]="!hasLetter[i]"
+            [class.active] = "i === currentLetter"
+            (click)="onGoToLetter(i)">
+            <a class="pagination-letter">{{letters[i]}}</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
+  <div class="col-xs-1" *ngIf="paginationReady">
+    <span class="fa fa-thumb-tack pull-right pin-all"
+      [class.pinned]="isAllPinned"
+      [tooltip]="text[isAllPinned ? 'AllInMyWordList' : 'AddAllToMyWordList']"
+      placement="top"
+      hide-delay="0"
+      (click)="onAddAllToMyWordList()">
+    </span>
   </div>
 
   <div class="panel panel-default">
@@ -41,7 +52,7 @@
               <img src="/assets/img/flags/{{book?.lanCode}}.png" class="flag from">
               <span class="text">{{text ? text["DictionaryForm"]: ''}}</span>
             </th>
-            <th>
+            <th colspan="2" class="lan-header">
               <div
                 [tooltip]="text ? text['TranslationLanguage'] : ''"
                 [options]="tooltipOptions" id="tooltip1">
@@ -53,7 +64,6 @@
                 </km-language-selector>
               </div>
             </th>
-            <th></th>
           </tr>
         </thead>
         <tbody *ngIf="!isLoading && words?.length">

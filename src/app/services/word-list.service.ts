@@ -43,6 +43,12 @@ export class WordListService {
     .pipe(retry(3));
   }
 
+  pinWords(words: Word[], bookId: string): Observable<boolean> {
+    return this.http
+    .put<boolean>(`/api/wordlist/my/pins`, {words, bookId})
+    .pipe(retry(3));
+  }
+
   createTranslationsSummary(wordTranslations: WordTranslations, separator = ', '): string {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],

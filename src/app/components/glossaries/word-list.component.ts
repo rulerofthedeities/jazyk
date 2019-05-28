@@ -41,7 +41,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   errMsg = null;
   currentPage = 0;
   currentLetter = 0;
-  maxWordsPerPage = 100;
+  maxWordsPerPage = 500; // All tab is shown in paginator
   nrOfPages: number;
   letters: string[];
   hasLetter: boolean[];
@@ -63,6 +63,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     'hide-delay': 0
   };
   tooltip: any;
+  isAllPinned = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -107,6 +108,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
             summary = this.wordListService.createTranslationsSummary(translations, '|');
       this.addToMyWordList(word, summary);
     }
+  }
+
+  onAddAllToMyWordList() {
+    // Get words that are not pinned
+    const notPinnedWords = this.words.filter(word => !word.pinned);
+    this.addAllToMyWordList(notPinnedWords);
   }
 
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
@@ -233,6 +240,26 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  private addAllToMyWordList(words: Word[]) {
+    words.forEach(word => {
+      word.pinned = true;
+      word.targetLanCode = this.userLanCode;
+    })
+    this.wordListService
+    .pinWords(words, this.book._id)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(newWords => {
+      if (newWords) {
+        this.isAllPinned = true;
+      }
+    },
+    error => {
+      words.forEach(word => {
+        word.pinned = false;
+      })
+    });
+  }
+
   private getBookType() {
     // read or listen
     this.route
@@ -339,6 +366,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private processUserWords() {
     let word: Word;
+    // Check for pinned words
     this.userWords.forEach(uWord => {
       word = this.words.find(w => w._id.toString() === uWord.wordId.toString());
       if (word) {
@@ -350,6 +378,13 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+    // Check if all words are pinned
+    this.isAllPinned = this.words.every(this.checkPinned);
+    console.log('all pinned', this.isAllPinned);
+  }
+
+  private checkPinned(word: Word): boolean {
+    return word.pinned;
   }
 
   private getBookId() {
