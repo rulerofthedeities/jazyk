@@ -13,10 +13,10 @@ export interface Word {
   pinned?: boolean;
   expanded?: boolean;
   targetLanCode?: string;
-  translationSummary?: boolean;
+  translationSummary?: string;
 }
 
-interface UserWordTranslation {
+export interface UserWordTranslation {
   lanCode: string;
   translations: string;
   pinned: boolean;

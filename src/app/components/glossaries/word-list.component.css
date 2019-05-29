@@ -1,6 +1,10 @@
 .panel {
   background-color: rgba(255, 255, 255, 0.9);
 }
+.main-panel {
+  border-top-left-radius: 0;
+  border-top: 0;
+}
 .panel-pagination {
   margin-bottom: 2px;
 }
@@ -133,4 +137,35 @@ table {
 .pin-all {
   font-size: 28px;
   padding: 6px;
+}
+.nav {
+  font-size: 26px;
+}
+ul.nav-tabs {
+  border-bottom: 0;
+  position: relative;
+  top: -1px;
+}
+ul.nav-tabs li {
+  cursor: pointer;
+}
+ul.nav-tabs li > a {
+  text-decoration: none;
+  background-color: rgba(200, 200, 200, 0.85);
+  color: #555;
+}
+ul.nav-tabs li > a:hover {
+  color: #337ab7;
+}
+ul.nav-tabs li.active {
+  cursor: default;
+}
+ul.nav li.active > a {
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+ul.nav-tabs li.active > a {
+  border-color: none;
 }

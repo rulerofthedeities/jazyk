@@ -37,9 +37,9 @@ export class WordListService {
     .pipe(retry(3));
   }
 
-  pinWord(word: Word, bookId: string, summary: string, pin: boolean): Observable<Word> {
+  pinWord(word: Word, bookId: string, summary: string, pin: boolean): Observable<boolean> {
     return this.http
-    .put<Word>(`/api/wordlist/my/pin`, {word, bookId, summary, pin})
+    .put<boolean>(`/api/wordlist/my/pin`, {word, bookId, summary, pin})
     .pipe(retry(3));
   }
 

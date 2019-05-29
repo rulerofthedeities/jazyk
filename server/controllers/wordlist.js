@@ -115,10 +115,11 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.body.bookId),
           word = req.body.word,
+          wordId = new mongoose.Types.ObjectId(word._id),
           pin = req.body.pin,
           summary = req.body.summary,
           query = {
-            wordId: word._id,
+            wordId,
             bookId,
             userId,
             lanCode: word.lanCode
@@ -135,24 +136,24 @@ module.exports = {
     console.log('target lan', word.targetLanCode);
     UserWordList.findOneAndUpdate(query, update, {upsert: true, isNew: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
-        response.handleSuccess(res, result);
+        response.handleSuccess(res, true);
       });
     });
   },
   addAllToMyList: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.body.bookId),
-          words = req.body.words,
-          summary = 'test';
+          words = req.body.words;
     console.log('bulk write', words);
     if (words.length > 0) {
       let docs = words.map(word => {
-        let query = {
-          wordId: word._id,
-          bookId,
-          userId,
-          lanCode: word.lanCode
-        };
+        const wordId = new mongoose.Types.ObjectId(word._id),
+              query = {
+                wordId,
+                bookId,
+                userId,
+                lanCode: word.lanCode
+              };
         return {
           updateOne: {
             filter: query,
@@ -162,7 +163,7 @@ module.exports = {
                 translations: {
                   pinned: true,
                   lanCode: word.targetLanCode,
-                  translations: summary
+                  translations: word.translationSummary
                 }
               }
             },

@@ -7,41 +7,52 @@
     [bookTitle]="book?.title"
   ></km-book-title>
 
-  <!-- PAGINATION -->
-  <div class="col-xs-11">
-    <div class="panel panel-default panel-pagination" *ngIf="paginationReady">
-      <div class="panel-body">
-        <ul class="pagination">
-          <li *ngIf="words.length <= maxWordsPerPage"
-            [class.clickable]="!allLetters"
-            [class.disabled]="false"
-            [class.active] = "allLetters"
-            (click)="onGoToLetter(-1)">
-            <a>{{text["All"]}}</a>
-          </li>
-          <li *ngFor="let letterCount of letters;let i = index"
-            [class.clickable]="!!hasLetter[i]"
-            [class.disabled]="!hasLetter[i]"
-            [class.active] = "i === currentLetter"
-            (click)="onGoToLetter(i)">
-            <a class="pagination-letter">{{letters[i]}}</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="col-xs-1" *ngIf="paginationReady">
-    <span class="fa fa-thumb-tack pull-right pin-all"
-      [class.pinned]="isAllPinned"
-      [tooltip]="text[isAllPinned ? 'AllInMyWordList' : 'AddAllToMyWordList']"
-      placement="top"
-      hide-delay="0"
-      (click)="onAddAllToMyWordList()">
-    </span>
-  </div>
-
-  <div class="panel panel-default">
+  <!-- TABS -->
+  <ul class="nav nav-tabs" *ngIf="paginationReady">
+    <li
+      [class.active]="tab==='glossary'"
+      (click)="onSelectTab('glossary')">
+      <a>
+        {{text["WordList"]}} ({{totalWords['glossary']}})
+      </a>
+    </li>
+    <li
+      [class.active]="tab==='mywords'"
+      (click)="onSelectTab('mywords')">
+      <a>
+        {{text["MyWords"]}} ({{totalWords['mywords']}})
+      </a>
+    </li>
+  </ul>
+  <div class="panel panel-default main-panel">
     <div class="panel-body">
+      <!-- PAGINATION -->
+      <ul class="pagination col-xs-11" *ngIf="paginationReady">
+        <li *ngIf="words.length <= maxWordsPerPage"
+          [class.clickable]="!allLetters"
+          [class.disabled]="false"
+          [class.active] = "allLetters"
+          (click)="onGoToLetter(-1)">
+          <a>{{text["All"]}}</a>
+        </li>
+        <li *ngFor="let letterCount of letters;let i = index"
+          [class.clickable]="!!hasLetter[tab][i]"
+          [class.disabled]="!hasLetter[tab][i]"
+          [class.active] = "i === currentLetter"
+          (click)="onGoToLetter(i)">
+          <a class="pagination-letter">{{letters[i]}}</a>
+        </li>
+      </ul>
+      <div class="col-xs-1" *ngIf="paginationReady">
+        <span *ngIf="tab==='glossary'"
+          class="fa fa-thumb-tack pull-right pin-all"
+          [class.pinned]="isAllPinned"
+          [tooltip]="text[isAllPinned ? 'AllInMyWordList' : 'AddAllToMyWordList']"
+          placement="top"
+          hide-delay="0"
+          (click)="onAddAllToMyWordList()">
+        </span>
+      </div>
       <!-- LIST -->
       <table class="table table-hover">
         <thead>
@@ -126,7 +137,7 @@
     </div>
   </td>
   <td class="translation-cell">
-    <div *ngIf="!word.expanded">
+    <div *ngIf="tab==='glossary' && !word.expanded">
       <div class="chevron pull-left" (click)="onExpand(word, true)">
         <span class="fa fa-chevron-right"></span>
       </div>
@@ -139,26 +150,39 @@
         </span>
       </div>
     </div>
-    <div *ngIf="word.expanded">
+    <div *ngIf="tab==='glossary' && word.expanded">
       <div class="chevron pull-left" (click)="onExpand(word, false)">
         <span class="fa fa-chevron-down"></span>
       </div>
-      <div class="details">
-        <ng-container *ngTemplateOutlet="wordDetail;context:{
-          word: word,
-          i:i,
-          wordTranslation: wordTranslations[currentLetter][i]
-        }"></ng-container>
-      </div>
+      <ng-container *ngTemplateOutlet="wordDetail;context:{
+        word: word,
+        i:i,
+        wordTranslation: wordTranslations[currentLetter][i]
+      }"></ng-container>
+    </div>
+    <div class="summary" *ngIf="tab==='mywords'">
+      <ng-container *ngTemplateOutlet="myWordDetail;context:{
+        word: word,
+        i:i,
+        wordTranslation: myWordTranslations[currentLetter][i]
+      }"></ng-container>
     </div>
   </td>
   <td>
-    <span class="fa fa-thumb-tack"
+    <span *ngIf="tab==='glossary'"
+      class="fa fa-thumb-tack"
       [class.pinned]="word.pinned"
       [tooltip]="text[word.pinned ? 'InMyWordList' : 'AddToMyWordList']"
       placement="top"
       hide-delay="0"
       (click)="onAddToMyWordList(word, i)">
+    </span>
+    <span *ngIf="tab==='mywords'"
+      class="fa fa-times"
+      [tooltip]="text['RemoveFromMyWordList']"
+      placement="top"
+      hide-delay="0"
+      (click)="onRemoveFromMyWordList(word, i)">
     </span>
   </td>
 </ng-template>
@@ -247,4 +271,8 @@
   <div *ngIf="noTranslation.i === i" class="no-translation">
     {{noTranslation.msg}}
   </div>
+</ng-template>
+
+<ng-template #myWordDetail let-i=i let-word=word let-wordTranslation=wordTranslation>
+  {{getUserTranslations(wordTranslation)}}
 </ng-template>
