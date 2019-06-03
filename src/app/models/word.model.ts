@@ -16,18 +16,14 @@ export interface Word {
   translationSummary?: string;
 }
 
-export interface UserWordTranslation {
-  lanCode: string;
-  translations: string;
-  pinned: boolean;
-}
-
 export interface UserWord {
   bookId: string;
   userId: string;
   wordId: string;
-  lanCode: string;
-  translations: UserWordTranslation[];
+  bookLanCode: string;
+  targetLanCode: string;
+  pinned: boolean;
+  translations: string;
 }
 
 export interface UserWordData {

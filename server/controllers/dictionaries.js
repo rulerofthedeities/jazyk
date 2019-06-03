@@ -32,7 +32,6 @@ const fetchOmegawikiData = (url) => {
 const getSortWord = (word) => {
   // replace all diacritics with standard letters for sorting
   const sortWord = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  console.log('sortword', word, sortWord);
   return sortWord;
 };
 
@@ -123,9 +122,7 @@ module.exports = {
             sortWord: {$regex: '^' + firstLetter, $options:'i'},
             'translations.lanCode': targetLan
           };
-        console.log('firstletter', firstLetter);
     Translations.find(query, (err, translations) => {
-      console.log('translations', translations);
       response.handleError(err, res, 400, `Error fetching word translations for letter ${firstLetter}`, () => {
         response.handleSuccess(res, translations);
       });
@@ -141,7 +138,6 @@ module.exports = {
             'translations.lanCode': targetLan
           };
     Translations.find(query, (err, translations) => {
-      console.log('translations', translations);
       response.handleError(err, res, 400, `Error fetching word translations`, () => {
         response.handleSuccess(res, translations);
       });

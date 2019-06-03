@@ -31,15 +31,21 @@ export class WordListService {
     .pipe(retry(3));
   }
 
-  fetchUserWordList(bookId: string): Observable<UserWord[]> {
+  fetchUserWordList(bookId: string, userLanCode: string): Observable<UserWord[]> {
     return this.http
-    .get<UserWord[]>(`/api/userwordlist/${bookId}`)
+    .get<UserWord[]>(`/api/userwordlist/${bookId}/${userLanCode}`)
     .pipe(retry(3));
   }
 
   pinWord(word: Word, bookId: string, summary: string, pin: boolean): Observable<boolean> {
     return this.http
     .put<boolean>(`/api/wordlist/my/pin`, {word, bookId, summary, pin})
+    .pipe(retry(3));
+  }
+
+  unPinWord(word: Word, bookId: string, userLanCode: string): Observable<boolean> {
+    return this.http
+    .put<boolean>(`/api/wordlist/my/unpin`, {word, bookId, userLanCode})
     .pipe(retry(3));
   }
 

@@ -7,21 +7,18 @@ const mongoose = require('mongoose'),
 const wordSchema = new Schema({}, { strict: false }),
       WordModel = mongoose.model('bookword', wordSchema);
 
-const userTranslationSchema = new Schema({
-  lanCode: {type: String, required: true},
-  translations: String,
-  pinned: Boolean
-}, {_id: false});
-
 const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   wordId: {type: Schema.Types.ObjectId, required: true},
-  lanCode: String,
-  translations: [userTranslationSchema]
+  bookLanCode: String,
+  targetLanCode: String,
+  pinned: Boolean,
+  translations: String
 });
 
-userWordSchema.index({userId: 1, bookId: 1, lanCode: 1, pinned: 1});
+userWordSchema.index({userId: 1, bookId: 1, pinned: 1});
+userWordSchema.index({userId: 1, bookId: 1, wordId: 1, targetLanCode: 1}, {unique: true});
 const UserWordModel = mongoose.model('userWord', userWordSchema);
 UserWordModel.ensureIndexes();
 

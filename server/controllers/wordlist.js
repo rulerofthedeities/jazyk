@@ -37,7 +37,7 @@ module.exports = {
           bookLan = req.params.lan,
           query = {
             userId,
-            lanCode: bookLan
+            bookLanCode: bookLan
           },
           projection = {
             _id: 0,
@@ -52,7 +52,6 @@ module.exports = {
             }},
             {$project: projection}
           ];
-    console.log('query', query);
     UserWordList.aggregate(pipeline, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching user word count', () => {
         response.handleSuccess(res, result);
@@ -103,8 +102,14 @@ module.exports = {
     });
   },
   getUserWordList: (req, res) => {
-    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
-          query = {bookId};
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          userLanCode = req.params.lan,
+          query = {
+            userId,
+            bookId,
+            targetLanCode: userLanCode
+          };
     UserWordList.find(query, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching user word list', () => {
         response.handleSuccess(res, words);
@@ -122,21 +127,47 @@ module.exports = {
             wordId,
             bookId,
             userId,
-            lanCode: word.lanCode
+            targetLanCode: word.targetLanCode
           },
           update = {
-            $addToSet: {
-              translations: {
-                pinned: pin,
-                lanCode: word.targetLanCode,
-                translations: summary
-              }
+            $set: {
+              pinned: pin,
+              translations: summary
+            },
+            $setOnInsert: {
+              bookLanCode: word.lanCode
+            }
+          },
+          options = {
+            upsert: true,
+            isNew: true
+          };
+    UserWordList.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
+        response.handleSuccess(res, pin);
+      });
+    });
+  },
+  removeFromMyList: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          word = req.body.word,
+          userLanCode = req.body.userLanCode,
+          wordId = new mongoose.Types.ObjectId(word._id),
+          query = {
+            wordId,
+            bookId,
+            userId,
+            targetLanCode: userLanCode
+          },
+          update = {
+            $set: {
+              pinned: false
             }
           };
-    console.log('target lan', word.targetLanCode);
-    UserWordList.findOneAndUpdate(query, update, {upsert: true, isNew: true}, (err, result) => {
-      response.handleError(err, res, 400, 'Error toggling word in user word list', () => {
-        response.handleSuccess(res, true);
+    UserWordList.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error removing word from list', () => {
+        response.handleSuccess(res, false);
       });
     });
   },
@@ -144,7 +175,6 @@ module.exports = {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.body.bookId),
           words = req.body.words;
-    console.log('bulk write', words);
     if (words.length > 0) {
       let docs = words.map(word => {
         const wordId = new mongoose.Types.ObjectId(word._id),
@@ -152,29 +182,26 @@ module.exports = {
                 wordId,
                 bookId,
                 userId,
-                lanCode: word.lanCode
+                targetLanCode: word.targetLanCode
               };
         return {
           updateOne: {
             filter: query,
             update: {
-              $set: query,
-              $addToSet: {
-                translations: {
-                  pinned: true,
-                  lanCode: word.targetLanCode,
-                  translations: word.translationSummary
-                }
+              $set: {
+                pinned: true
+              },
+              $setOnInsert: {
+                bookLanCode: word.lanCode,
+                translations: word.translationSummary
               }
             },
             upsert: true
           }
         }
       });
-      console.log('bulk write 2');
       UserWordList.collection.bulkWrite(docs, (err, bulkResult) => {
         response.handleError(err, res, 400, 'Error pinning all words', () => {
-          console.log('result', bulkResult);
           response.handleSuccess(res, true);
         });
       })

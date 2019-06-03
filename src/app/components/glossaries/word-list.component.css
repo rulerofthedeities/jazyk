@@ -46,6 +46,11 @@ table {
   cursor: pointer;
   margin-top: 4px;
 }
+.fa-times {
+  font-size: 24px;
+  color: red;
+  cursor: pointer;
+}
 .word {
   font-size: 28px;
 }

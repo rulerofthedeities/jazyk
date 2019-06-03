@@ -6,7 +6,6 @@
     [userLanCode]="userLanCode"
     [bookTitle]="book?.title"
   ></km-book-title>
-
   <!-- TABS -->
   <ul class="nav nav-tabs" *ngIf="paginationReady">
     <li
@@ -109,6 +108,8 @@
     </div>
   </div>
 
+  <km-info-msg [msg]="infoMsg">
+  </km-info-msg>
 
   <km-error-msg [msg]="errMsg">
   </km-error-msg>
@@ -142,10 +143,10 @@
         <span class="fa fa-chevron-right"></span>
       </div>
       <div class="summary" (click)="onExpand(word, true)">
-        <span *ngIf="!wordTranslations[currentLetter][i]?.summary" class="no-translations">
+        <span *ngIf="!hasSummary(i)" class="no-translations">
           {{text["NoWordTranslations"]}}
         </span>
-        <span *ngIf="!!wordTranslations[currentLetter][i]?.summary">
+        <span *ngIf="hasSummary(i)">
           {{wordTranslations[currentLetter][i]?.summary}}
         </span>
       </div>
@@ -160,11 +161,10 @@
         wordTranslation: wordTranslations[currentLetter][i]
       }"></ng-container>
     </div>
-    <div class="summary" *ngIf="tab==='mywords'">
+    <div *ngIf="tab==='mywords'" class="summary">
       <ng-container *ngTemplateOutlet="myWordDetail;context:{
         word: word,
-        i:i,
-        wordTranslation: myWordTranslations[currentLetter][i]
+        i:i
       }"></ng-container>
     </div>
   </td>
@@ -180,9 +180,9 @@
     <span *ngIf="tab==='mywords'"
       class="fa fa-times"
       [tooltip]="text['RemoveFromMyWordList']"
-      placement="top"
-      hide-delay="0"
-      (click)="onRemoveFromMyWordList(word, i)">
+      [options]="tooltipOptions"
+      [id]="'tooltipRemove' + i"
+      (click)="onRemoveFromMyWordList(word)">
     </span>
   </td>
 </ng-template>
@@ -273,6 +273,6 @@
   </div>
 </ng-template>
 
-<ng-template #myWordDetail let-i=i let-word=word let-wordTranslation=wordTranslation>
-  {{getUserTranslations(wordTranslation)}}
-</ng-template>
+<ng-template #myWordDetail let-i=i let-word=word>
+    {{getUserTranslations(word.translationSummary)}}
+  </ng-template>
