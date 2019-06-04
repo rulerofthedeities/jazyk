@@ -12,6 +12,7 @@ import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
+import { relativeTimeRounding } from 'moment';
 
 @Component({
   templateUrl: 'word-list.component.html',
@@ -85,8 +86,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.canEdit = this.userService.user.isAdmin;
     this.userId = this.userService.user._id;
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    this.letters = this.getLetters(alphabet);
     this.clearNoTranslationMsg();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
@@ -253,14 +252,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.noTranslation = {msg: '', i: 0};
   }
 
-  private getLetters(alphabet: string): string[] {
-    const letters = [];
-    for (let i = 0; i < alphabet.length; i++) {
-      letters.push(alphabet[i]);
-    }
-    return letters;
-  }
-
   private goToLetter(newLetterNr: number) {
     if (newLetterNr >= 0 && newLetterNr < this.letters.length) {
       this.currentLetter = newLetterNr;
@@ -289,7 +280,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .subscribe(newWord => {
       if (newWord) {
         word.translationSummary = summary;
-        // TODO SORT AFTER PUSH
         this.myWords.push(word);
         this.myWords.sort((a, b) => a.word > b.word ? 1 : (a.word < b.word ? -1 : 0));
         this.checkLetter(word);
@@ -316,7 +306,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .subscribe(newWords => {
       if (newWords) {
         this.isAllPinned = true;
-        // TODO SORT AFTER PUSH
         this.myWords = this.myWords.concat(words);
         this.myWords.sort((a, b) => a.word > b.word ? 1 : (a.word < b.word ? -1 : 0));
         this.checkLetters('mywords');
@@ -363,9 +352,9 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     const letter = this.letters[letterNr];
     if (letter) {
       if (tab === 'mywords') {
-        return words.filter(word => word.pinned && this.getDictionaryLetter(word.word) === letter);
+        return words.filter(word => word.pinned && word.dictionaryLetter === letter);
       } else {
-        return words.filter(word => this.getDictionaryLetter(word.word) === letter);
+        return words.filter(word => word.dictionaryLetter === letter);
       }
     } else {
       return words;
@@ -373,31 +362,18 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getDictionaryLetter(word: string): string {
-    const firstLetter = word.substr(0, 1).toLowerCase();
-    // FR
-    switch (firstLetter) {
-      case 'â':
-      case 'à':
-        return 'a';
-      case 'ç':
-        return 'c';
-      case 'é':
-      case 'è':
-      case 'ê':
-      case 'ë':
-        return 'e';
-      case 'î':
-      case 'ï':
-        return 'i';
-      case 'ô':
-      case 'œ':
-        return 'o';
-      case 'ù':
-      case 'û':
-      case 'ü':
-        return 'u';
-      default: return firstLetter;
-    }
+    const firstLetter = word.substr(0, 1).toLowerCase(),
+          mapping = this.bookLan.letterMap,
+          letterMaps = mapping.split('|');
+    let letter: string[];
+
+    for (let i = 0; i < letterMaps.length; i++) {
+      letter = letterMaps[i].split(',');
+      if (letter[0] === firstLetter) {
+        return letter[1];
+      }
+    };
+    return firstLetter;
   }
 
   private processNewBookId() {
@@ -411,10 +387,11 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         this.book = data[0];
-        this.setBookLan(this.bookLanguages); // for omega wiki code
+        this.setBookLan(this.bookLanguages); // for omega wiki code + alphabet
         this.checkDeepLTranslationAvailability();
         this.words = data[1];
         this.userWords = data[2];
+        this.processWords();
         this.processUserWords();
         this.getWordTranslations();
         this.checkLetters('glossary');
@@ -440,7 +417,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     const words = tab === 'mywords' ? this.myWords : this.glossaryWords;
     this.hasLetter[tab] = [];
     for (let i = 0; i < words.length; i++) {
-      firstLetter = this.getDictionaryLetter(words[i].word);
+      firstLetter = words[i].dictionaryLetter;
       pos = this.letters.indexOf(firstLetter);
       if (pos > -1 && pos < this.letters.length) {
         if (!this.hasLetter[tab][pos]) {
@@ -456,11 +433,18 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private checkLetter(word: Word, tab = 'mywords') {
-    const firstLetter = this.getDictionaryLetter(word.word),
+    const firstLetter = word.dictionaryLetter,
           pos = this.letters.indexOf(firstLetter);
     if (pos > -1 && pos < this.letters.length) {
       this.hasLetter[tab][pos] = true;
     }
+  }
+
+  private processWords() {
+    // Set dictionary letter for each word
+    this.words.forEach(word => {
+      word.dictionaryLetter = this.getDictionaryLetter(word.word);
+    });
   }
 
   private processUserWords() {
@@ -504,6 +488,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   private setBookLan(bookLans: Language[]) {
     const lan = bookLans.find(l => l.code === this.book.lanCode);
     this.bookLan = lan;
+    this.letters = this.bookLan.alphabet.split('|');
   }
 
   private getWordTranslations() {
@@ -527,6 +512,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       wordTranslations => {
+        this.processWordTranslations(wordTranslations);
         this.processTranslationsLetter(wordTranslations, words, letter);
         this.isLoadingTranslations = false;
       }
@@ -544,11 +530,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         let letterTranslations: WordTranslations[],
             words: string[],
             glossaryWords: Word[];
+        this.processWordTranslations(wordTranslations);
         // Process translations for each letter
         this.letters.forEach((letter, letterNr) => {
           glossaryWords = this.getWordsForLetter(this.words, letterNr);
           words = glossaryWords.map(w => w.word);
-          letterTranslations = wordTranslations.filter(tl => this.getDictionaryLetter(tl.word) === letter);
+          letterTranslations = wordTranslations.filter(tl => tl.dictionaryLetter === letter);
           if (words && letterTranslations) {
             this.processTranslationsLetter(letterTranslations, words, letterNr);
           }
@@ -560,6 +547,13 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isLoadingTranslations = false;
       }
     );
+  }
+
+  private processWordTranslations(wordTranslations: WordTranslations[]) {
+    // Get dictionary letter for each translation's word
+    wordTranslations.forEach(wt => {
+      wt.dictionaryLetter = this.getDictionaryLetter(wt.word);
+    });
   }
 
   private processTranslationsLetter(wordTranslations: WordTranslations[], words: string[], letterNr: number) {

@@ -84,7 +84,9 @@ module.exports = {
               name: 1,
               nativeName: 1,
               omegaLanId: 1,
-              active: 1
+              active: 1,
+              alphabet: 1,
+              letterMap: 1
             }},
           {$sort: {code: 1}}
         ];

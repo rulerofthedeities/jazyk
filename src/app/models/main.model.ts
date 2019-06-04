@@ -16,6 +16,8 @@ export interface Language {
   regions?: string[];
   count?: number;
   omegaLanId?: string;
+  alphabet?: string;
+  letterMap?: string; // Maps diacritics with letters in the alphabet
 }
 
 export interface LanPair {

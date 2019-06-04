@@ -14,6 +14,7 @@ export interface Word {
   expanded?: boolean;
   targetLanCode?: string;
   translationSummary?: string;
+  dictionaryLetter?: string;
 }
 
 export interface UserWord {
@@ -71,6 +72,7 @@ export interface WordTranslations {
   word: string;
   translations: WordTranslation[];
   summary?: string;
+  dictionaryLetter?: string;
 }
 
 interface OmegaTranslationDefinition {
