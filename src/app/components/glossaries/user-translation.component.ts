@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'km-user-translation',
@@ -6,15 +6,20 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['user-translation.component.css']
 })
 
-export class UserWordTranslationComponent {
-  @Input() translation: string;
+export class UserWordTranslationComponent implements OnInit {
+  @Input() text: Object;
+  @Input() private translations: string;
   @Output() newTranslation = new EventEmitter<string>();
   @Output() cancelTranslation = new EventEmitter();
   isAnswered = false;
+  updatedTranslations: string;
+
+  ngOnInit() {
+    this.updatedTranslations =  this.translations.replace(new RegExp(/\|/g), '\n');
+  }
 
   onSubmitTranslation() {
-    console.log('new translation', this.translation);
-    this.newTranslation.emit(this.translation);
+    this.newTranslation.emit(this.updatedTranslations);
   }
 
   onCancelTranslation() {

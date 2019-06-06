@@ -1,7 +1,6 @@
-import { Injectable, ɵlooseIdentical } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Book } from '../models/book.model';
 import { Word, UserWord, WordTranslations, UserWordData } from '../models/word.model';
 import { retry } from 'rxjs/operators';
 

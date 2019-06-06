@@ -66,7 +66,7 @@
               <div
                 [tooltip]="text ? text['TranslationLanguage'] : ''"
                 [options]="tooltipOptions" id="tooltip1">
-                <km-language-selector *ngIf="!isLoading && words?.length"
+                <km-language-selector *ngIf="!isLoading"
                   [languages]="userLanguages"
                   [currentLanguage]="translationLan"
                   [text]="text"
@@ -76,13 +76,17 @@
             </th>
           </tr>
         </thead>
-        <tbody *ngIf="!isLoading && words?.length">
+        <tbody *ngIf="!isLoading && !isLoadingTranslations && displayWords?.length">
           <tr *ngFor="let word of displayWords; let i = index"
             class="current-word">
             <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>
           </tr>
         </tbody>
       </table>
+      <div *ngIf="!isLoading && !isLoadingTranslations && !displayWords?.length">
+        <km-info-msg [msg]="getNoWordsMessage()">
+        </km-info-msg>
+      </div>
       <!-- PAGINATION -->
       <!--
       <ul class="pagination" *ngIf="nrOfPages > 1">
@@ -283,7 +287,8 @@
 <ng-template #myWordDetail let-i=i let-word=word>
     <div *ngIf="editingWord === i">
       <km-user-translation
-        [translation]="getUserTranslations(word.translationSummary)"
+        [text]="text"
+        [translations]="word.translationSummary"
         (newTranslation)="onNewUserTranslation($event, word, i)"
         (cancelTranslation)="onCancelUserTranslation()">
       </km-user-translation>

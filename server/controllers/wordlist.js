@@ -226,9 +226,7 @@ module.exports = {
               translations: newTranslations
             }
           };
-        console.log(query, update);
     UserWordList.findOneAndUpdate(query, update, (err, result) => {
-      console.log(err);
       response.handleError(err, res, 400, 'Error updating user word translation', () => {
         response.handleSuccess(res, false);
       });

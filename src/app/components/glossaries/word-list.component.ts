@@ -12,7 +12,7 @@ import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
-import { relativeTimeRounding } from 'moment';
+import { delay } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'word-list.component.html',
@@ -138,7 +138,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onEditMyWordTranslation(word: Word, i: number) {
-    console.log('editing word', word);
     this.editingWord = i;
     this.tooltipEdit = this.tooltipDirective.find(elem => elem.id === ('tooltipEdit' + i.toString()));
     if (this.tooltipEdit) {
@@ -213,6 +212,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.tooltip.hide();
     }
     this.userLanCode = lan.code;
+    this.translationLan = lan;
     this.location.go(`/glossaries/glossary/${this.bookId}/${this.userLanCode}`);
     // Clear data
     this.words.forEach(word => {
@@ -224,7 +224,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .fetchUserWordList(this.bookId, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(userWords => {
-      console.log('new user words', userWords);
       this.userWords = userWords;
       this.processUserWords();
       this.getWordTranslations();
@@ -248,10 +247,21 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getUserTranslations(translations: string): string {
     if (translations) {
-      return translations.replace(new RegExp(/\|/g), ', ')
+      return translations.replace(new RegExp(/\|/g), ', ');
     } else {
       return '';
     }
+  }
+
+  getNoWordsMessage(): string {
+    let msg = '';
+    msg = this.text['NoWordsInYourList'];
+    if (this.currentLetter > -1 ) {
+      msg += ' ' + this.text['StartingWithLetter'] + ` '${this.letters[this.currentLetter]}'`;
+    }
+    msg += ' ' + this.text['ForTheLanguage'] + ` '${this.text[this.translationLan.name]}'.`;
+    msg += ' ' + this.text['ToAddWords'];
+    return msg;
   }
 
   private setDisplayWords(tab: string) {
@@ -358,6 +368,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getBookType() {
+    this.isLoading = true;
     // read or listen
     this.route
     .data
@@ -397,7 +408,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private processNewBookId() {
     if (this.bookId && this.bookId.length === 24) {
-      this.isLoading = true;
       zip(
         this.readnListenService.fetchBook(this.bookId, this.bookType || 'read'),
         this.wordListService.fetchWordList(this.bookId),
@@ -468,7 +478,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private processUserWords() {
     let word: Word;
-    console.log('processing user words', this.userWords);
     // Check for pinned words
     this.userWords.forEach(uWord => {
       word = this.words.find(w => w._id.toString() === uWord.wordId.toString());
@@ -533,7 +542,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       wordTranslations => {
         this.processWordTranslations(wordTranslations);
         this.processTranslationsLetter(wordTranslations, words, letter);
-        this.isLoadingTranslations = false;
       }
     );
   }
@@ -573,6 +581,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     wordTranslations.forEach(wt => {
       wt.dictionaryLetter = this.getDictionaryLetter(wt.word);
     });
+    this.isLoadingTranslations = false;
   }
 
   private processTranslationsLetter(wordTranslations: WordTranslations[], words: string[], letterNr: number) {
@@ -663,7 +672,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateUserTranslation(newTranslation: string, word: Word, i: number) {
-    newTranslation = newTranslation.replace(/;/g, '|');
+    newTranslation = newTranslation.replace(/;|\n/g, '|');
     this.wordListService
     .updateUserTranslation(this.book._id, word._id, newTranslation, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
