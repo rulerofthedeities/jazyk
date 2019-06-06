@@ -55,6 +55,12 @@ export class WordListService {
     .pipe(retry(3));
   }
 
+  updateUserTranslation(bookId: string, wordId: string, newTranslation: string, userLanCode: string) {
+    return this.http
+    .put<boolean>(`/api/userwordlist/word`, {bookId, wordId, newTranslation, userLanCode})
+    .pipe(retry(3));
+  }
+
   createTranslationsSummary(wordTranslations: WordTranslations, separator = ', '): string {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],

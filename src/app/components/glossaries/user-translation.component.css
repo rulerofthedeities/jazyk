@@ -1,3 +1,10 @@
-.duplicate {
-  color: red;
+.submit {
+  padding: 0;
+  height: 50px;
+}
+.submit button {
+  height: 50%;
+  width: 100%;
+  margin-right: 0;
+  display: block;
 }

@@ -68,10 +68,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   tooltip: any;
   tooltipRemove: any;
+  tooltipEdit: any;
   isAllPinned = false;
   tabs: string[] = ['glossary', 'mywords'];
   tab = 'glossary';
   totalWords: number[] = [];
+  editingWord: number = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -133,6 +135,23 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (word.pinned) {
       this.removeFromMyWordList(word);
     }
+  }
+
+  onEditMyWordTranslation(word: Word, i: number) {
+    console.log('editing word', word);
+    this.editingWord = i;
+    this.tooltipEdit = this.tooltipDirective.find(elem => elem.id === ('tooltipEdit' + i.toString()));
+    if (this.tooltipEdit) {
+      this.tooltipEdit.hide();
+    }
+  }
+
+  onNewUserTranslation(newTranslation: string, word: Word, i: number) {
+    this.updateUserTranslation(newTranslation, word, i);
+  }
+
+  onCancelUserTranslation() {
+    this.editingWord = null;
   }
 
   onNewTranslations(data: {translations: WordTranslations, i: number}) {
@@ -640,6 +659,18 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       if (tl) {
         tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
       }
+    });
+  }
+
+  private updateUserTranslation(newTranslation: string, word: Word, i: number) {
+    newTranslation = newTranslation.replace(/;/g, '|');
+    this.wordListService
+    .updateUserTranslation(this.book._id, word._id, newTranslation, this.userLanCode)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe( result => {
+      this.editingWord = null;
+      const wordToUpdate = this.words.find(w => w._id === word._id);
+      wordToUpdate.translationSummary = newTranslation;
     });
   }
 

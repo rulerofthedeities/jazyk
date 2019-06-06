@@ -138,6 +138,30 @@
     </div>
   </td>
   <td class="translation-cell">
+    <div class="pull-right">
+      <span *ngIf="tab==='glossary'"
+        class="fa fa-thumb-tack"
+        [class.pinned]="word.pinned"
+        [tooltip]="text[word.pinned ? 'InMyWordList' : 'AddToMyWordList']"
+        placement="top"
+        hide-delay="0"
+        (click)="onAddToMyWordList(word, i)">
+      </span>
+      <span *ngIf="tab==='mywords' && editingWord === null"
+        class="fa fa-times pull-right"
+        [tooltip]="text['RemoveFromMyWordList']"
+        [options]="tooltipOptions"
+        [id]="'tooltipRemove' + i"
+        (click)="onRemoveFromMyWordList(word)">
+      </span>
+      <span *ngIf="tab==='mywords' && editingWord === null"
+        class="fa fa-pencil"
+        [tooltip]="text['EditMyWordTranslation']"
+        [options]="tooltipOptions"
+        [id]="'tooltipEdit' + i"
+        (click)="onEditMyWordTranslation(word, i)">
+      </span>
+    </div>
     <div *ngIf="tab==='glossary' && !word.expanded">
       <div class="chevron pull-left" (click)="onExpand(word, true)">
         <span class="fa fa-chevron-right"></span>
@@ -168,23 +192,6 @@
       }"></ng-container>
     </div>
   </td>
-  <td>
-    <span *ngIf="tab==='glossary'"
-      class="fa fa-thumb-tack"
-      [class.pinned]="word.pinned"
-      [tooltip]="text[word.pinned ? 'InMyWordList' : 'AddToMyWordList']"
-      placement="top"
-      hide-delay="0"
-      (click)="onAddToMyWordList(word, i)">
-    </span>
-    <span *ngIf="tab==='mywords'"
-      class="fa fa-times"
-      [tooltip]="text['RemoveFromMyWordList']"
-      [options]="tooltipOptions"
-      [id]="'tooltipRemove' + i"
-      (click)="onRemoveFromMyWordList(word)">
-    </span>
-  </td>
 </ng-template>
 
 <ng-template #wordDetail let-i=i let-word=word let-wordTranslation=wordTranslation>
@@ -205,7 +212,7 @@
             <span class="fa fa-trash-o"></span>
           </button>
         </div>
-        <km-user-translation *ngIf="editingTranslationId === translation._id && canEdit"
+        <km-admin-translation *ngIf="editingTranslationId === translation._id && canEdit"
           [text]="text"
           [book]="book"
           [targetLan]="translationLan"
@@ -217,7 +224,7 @@
           [elementNr]="j"
           (cancelTranslation)="onCancelTranslation()"
           (updatedTranslations)="onUpdatedTranslation($event)">
-        </km-user-translation>
+        </km-admin-translation>
         <div class="definition" *ngIf="editingTranslationId !== translation._id">
           <div class="tl-word">{{translation.translation}}</div>
           <div class="tl-definition">{{translation.definition}}</div>
@@ -227,7 +234,7 @@
       </div>
     </div>
   </div>
-  <km-user-translation *ngIf="!isLoadingTranslations && canEdit"
+  <km-admin-translation *ngIf="!isLoadingTranslations && canEdit"
     [text]="text"
     [book]="book"
     [targetLan]="translationLan"
@@ -236,7 +243,7 @@
     [userId]="userId"
     [i] = "i"
     (newTranslations)="onNewTranslations($event)">
-  </km-user-translation>
+  </km-admin-translation>
   <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentLetter][i]"
     [text]="text"
     [source]="'OmegaWiki'"
@@ -274,5 +281,14 @@
 </ng-template>
 
 <ng-template #myWordDetail let-i=i let-word=word>
-    {{getUserTranslations(word.translationSummary)}}
+    <div *ngIf="editingWord === i">
+      <km-user-translation
+        [translation]="getUserTranslations(word.translationSummary)"
+        (newTranslation)="onNewUserTranslation($event, word, i)"
+        (cancelTranslation)="onCancelUserTranslation()">
+      </km-user-translation>
+    </div>
+    <div *ngIf="editingWord !== i">
+        {{getUserTranslations(word.translationSummary)}}
+    </div>
   </ng-template>

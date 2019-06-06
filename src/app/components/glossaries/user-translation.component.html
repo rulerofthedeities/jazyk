@@ -1,39 +1,28 @@
-<button *ngIf="!showTranslationForm"
-  type="button"
-  class="btn btn-primary btn-xs"
-  (click)="onAddTranslation()">
-  <span class="fa fa-plus fa-spacing"></span>{{text["AddUserTranslation"]}}
-</button>
-<div *ngIf="showTranslationForm">
-  <input type="text"
-    class="form-control"
+<div class="input-group">
+  <textarea *ngIf="!isAnswered" kmFocus
+    type="text"
+    class="form-control input-lg"
+    id="translation"
     autofocus
-    rows="3"
-    autocomplete=”off”
-    [placeholder]="getTranslationPlaceHolder()"
-    [(ngModel)]="translationEdit"
-    #translation="ngModel">
-  <input type="text"
-    class="form-control"
-    [placeholder]="text['AddTranslationNote']"
-    autocomplete=”off”
-    [(ngModel)]="translationNote"
-    #tlnote="ngModel">
-  <button
-    type="button"
-    [disabled]="submitting"
-    class="btn btn-primary"
-    (click)="onAddUpdateTranslation(translation.value, tlnote.value)">
-    <span class="fa fa-envelope fa-spacing"></span>
-    {{isEditing ? text["UpdateTranslation"] : text["SubmitTranslation"]}}
-  </button>
-  <button
-    type="button"
-    class="btn btn-warning"
-    (click)="onCancel()">
-    <span class="fa fa-times fa-spacing"></span>{{text["cancel"]}}
-  </button>
-  <div *ngIf="duplicate" class="duplicate">
-    {{text["TranslationExists"]}}
+    rows="2"
+    maxlength="200"
+    autocomplete="off"
+    spellcheck="false"
+    [attr.disabled]="isAnswered ? '' : null"
+    [(ngModel)]="translation">
+  ></textarea>
+  <div class="input-group-addon submit">
+
+    <button type="button"
+      class="btn btn-success"
+      (click)="onSubmitTranslation()">
+      <span class="fa fa-check"></span>
+    </button>
+    <button type="button"
+      class="btn btn-warning"
+      (click)="onCancelTranslation()">
+      <span class="fa fa-times"></span>
+    </button>
+
   </div>
 </div>

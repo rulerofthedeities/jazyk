@@ -208,5 +208,30 @@ module.exports = {
     } else {
       response.handleSuccess(res, true);
     }
+  },
+  updateUserWordTranslation: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          wordId = new mongoose.Types.ObjectId(req.body.wordId),
+          newTranslations = req.body.newTranslation,
+          targetLanCode = req.body.userLanCode,
+          query = {
+            userId,
+            bookId,
+            wordId,
+            targetLanCode: targetLanCode
+          },
+          update = {
+            $set: {
+              translations: newTranslations
+            }
+          };
+        console.log(query, update);
+    UserWordList.findOneAndUpdate(query, update, (err, result) => {
+      console.log(err);
+      response.handleError(err, res, 400, 'Error updating user word translation', () => {
+        response.handleSuccess(res, false);
+      });
+    });
   }
 }

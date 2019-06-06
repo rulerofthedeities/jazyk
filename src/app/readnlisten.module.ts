@@ -27,6 +27,7 @@ import { BookRevisionComponent } from './components/revision/book-revision.compo
 import { BookRevisionSentencesComponent } from './components/revision/book-revision-sentences.component';
 import { BookWordListComponent } from './components/glossaries/word-list.component';
 import { ExternalWordTranslationComponent } from './components/glossaries/external-translation.component';
+import { AdminWordTranslationComponent } from './components/glossaries/admin-translation.component';
 import { UserWordTranslationComponent } from './components/glossaries/user-translation.component';
 import { BookTitleComponent } from './components/readnlisten/book-title.component';
 
@@ -59,6 +60,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     BookRevisionSentencesComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
+    AdminWordTranslationComponent,
     UserWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
@@ -90,7 +92,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     BookRevisionSentencesComponent,
     BookWordListComponent,
     ExternalWordTranslationComponent,
-    UserWordTranslationComponent,
+    AdminWordTranslationComponent,
     BookTitleComponent,
     FocusDirective,
     WordColorDirective
