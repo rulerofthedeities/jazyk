@@ -5,10 +5,6 @@
   <div *ngIf="(readingStarted && !isError && !isLoading) else loading">
     <!-- READING MODE HEADER -->
     <div class="exercise-header" [class.has-chapter]="currentChapter.title?.trim()">
-      <span *ngIf="currentStep < steps.Results"
-        class="fa fa-times pull-right close-reading"
-        (click)="onExitReading()">
-      </span>
       <km-book-title
         [text]="text"
         [bookType]="bookType"
@@ -17,6 +13,8 @@
         [userLanCode]="userLanCode"
         [bookTitle]="book?.title"
         [chapterTitle]="currentChapter?.title"
+        [canClose]="currentStep < steps.Results"
+        (close)="onExitReading()"
       ></km-book-title>
     </div>
     <km-countdown

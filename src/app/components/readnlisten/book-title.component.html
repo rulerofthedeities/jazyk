@@ -1,27 +1,35 @@
-<div [class.has-chapter]= "chapterTitle?.trim()">
-  <div class="panel panel-default panel-type">
-    <span
-      class="fa"
-      [ngClass]="{
-        'fa-volume-up': bookType==='listen',
-        'fa-book': bookType==='read',
-        'fa-list': bookType==='wordlist',
-        'fa-file-text': bookType==='revision',
-        'test': isTest
-      }"
-      [tooltip]="getToolTip()"
-      placement="bottom">
-    </span>
-  </div>
-  <div class="panel panel-default panel-header">
-    <div class="panel-body book-header">
-      <h1 class="book-title">
-        <img src="/assets/img/flags/{{bookLanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
-        {{bookTitle}}
-        <small class="book-chapter">
-          {{chapterTitle}}
-        </small>
-      </h1>
+
+<div class="exercise-header">
+  <span *ngIf="canClose"
+    class="fa fa-times pull-right close-reading"
+    (click)="onExit()">
+  </span>
+  <div [class.has-chapter]= "chapterTitle?.trim()">
+    <div class="panel panel-default panel-type">
+      <span
+        class="fa"
+        [ngClass]="{
+          'fa-volume-up': bookType==='listen',
+          'fa-book': bookType==='read',
+          'fa-list': bookType==='wordlist',
+          'fa-file-text': bookType==='revision',
+          'fa-clone': bookType==='flashcards',
+          'test': isTest
+        }"
+        [tooltip]="getToolTip()"
+        placement="bottom">
+      </span>
+    </div>
+    <div class="panel panel-default panel-header">
+      <div class="panel-body book-header">
+        <h1 class="book-title">
+          <img src="/assets/img/flags/{{bookLanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{userLanCode}}.png" class="flag">
+          {{bookTitle}}
+          <small class="book-chapter">
+            {{chapterTitle}}
+          </small>
+        </h1>
+      </div>
     </div>
   </div>
 </div>

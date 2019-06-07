@@ -1,0 +1,26 @@
+
+<section>
+    <div class="exercise-header">
+      <km-book-title *ngIf="!!book"
+        [text]="text"
+        [bookType]="'flashcards'"
+        [bookLanCode]="book?.lanCode"
+        [userLanCode]="userLanCode"
+        [bookTitle]="book?.title"
+        [canClose]="true"
+        (close)="onExitReading()"
+      ></km-book-title>
+    </div>
+  <km-countdown
+    *ngIf="isCountDown"
+    [counter]="settings.delay"
+    (countedDown)="onCountDownFinished()">
+  </km-countdown>
+  <div *ngIf="isReady && !isCountDown">
+    <div class="panel panel-default main-panel">
+      <div class="panel-body">
+        FLASHCARDS
+      </div>
+    </div>
+  </div>
+</section>

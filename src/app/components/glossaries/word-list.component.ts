@@ -7,12 +7,11 @@ import { SharedService, awsPath } from '../../services/shared.service';
 import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { TranslationService } from '../../services/translation.service';
-import { takeWhile, filter } from 'rxjs/operators';
 import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { zip } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { takeWhile, filter, delay } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'word-list.component.html',

@@ -32,7 +32,7 @@
   margin: 14px 0 0 4px;
   color: #428bca;
 }
-.fa-volume-up, .fa-list, .fa-file-text {
+.fa-volume-up, .fa-list, .fa-file-text, .fa-clone {
   font-size: 32px;
   margin: 14px 0 0 4px;
   color: #428bca;
@@ -42,4 +42,12 @@
 }
 .fa-volume-up.test {
   color: #ffa500;
+}
+.close-reading {
+  font-size: 36px;
+  color: red;
+  text-shadow: 1px 1px 1px #333;
+  cursor: pointer;
+  margin-right: 12px;
+  margin-top: 6px;
 }

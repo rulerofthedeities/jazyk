@@ -106,7 +106,7 @@
         </li>
       </ul>
     -->
-      <km-loader *ngIf="isLoading && !isError"
+      <km-loader *ngIf="isLoading && text && !isError"
         [msg]="text['Loading'] || ''">
       </km-loader>
     </div>

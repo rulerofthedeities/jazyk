@@ -13,7 +13,6 @@ import { BookTranslationComponent } from '../components/readnlisten/book-transla
 import { environment } from 'environments/environment';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
-import { cp } from '@angular/core/src/render3';
 
 interface Position {
   // user's position in book
