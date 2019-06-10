@@ -1,0 +1,66 @@
+<div class="card" *ngIf="card">
+  <div class="flip-card">
+    <div class="flip-card-inner" [class.flipped]="isFlipped">
+      <div class="flip-card-front" (click)="onFlip()">
+        <div class="front-content">
+          <ng-container *ngTemplateOutlet="word;context:{side: 'front'}"></ng-container>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <div *ngIf="!answered">
+          <ng-container *ngTemplateOutlet="word;context:{side: 'back'}"></ng-container>
+          <h1 class="translations">
+            <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag to">
+            {{card.translations}}
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="instruction">
+    <div *ngIf="!isFlipped">
+      <span class="fa fa-info-circle fa-spacing"></span>{{text["ThinkOfMeaning"]}}
+    </div>
+    <div *ngIf="showButtons">
+      <span class="fa fa-info-circle fa-spacing"></span>{{text["WereYouRight"]}}
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="row answer-buttons" *ngIf="showButtons">
+    <div class="col-xs-5 col-xs-offset-1">
+      <button type="button" class="btn btn-success btn-big" (click)="onAnswer('y')">
+        <div class="btn-text-wrapper">
+          {{text["Yes"]}}
+        </div>
+        <div class="short-key">[1]</div>
+      </button>
+    </div>
+    <div class="col-xs-5">
+      <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('n')">
+        <div class="btn-text-wrapper">
+          {{text["No"]}}
+        </div>
+        <div class="short-key">[3]</div>
+      </button>
+    </div>
+    <div class="col-xs-1">
+    </div>
+  </div>
+</div>
+<!-- CARD -->
+<ng-template #word let-side=side>
+  <h1 class="word">
+    <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag from">
+    {{card.word}}<small *ngIf="card.genus"> ({{card.genus}})</small>
+  </h1>
+  <div class="word-type">{{card.wordType}}</div>
+  <div class="audio" *ngIf="card.audio && card.audio.length > 0">
+    <km-audio-file *ngFor="let audio of card.audio"
+      [fileUrl]="audioPath + audio.s3"
+      size="32"
+      class="audio-item">
+    </km-audio-file>
+  </div>
+</ng-template>

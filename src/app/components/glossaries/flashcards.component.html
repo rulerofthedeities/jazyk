@@ -1,4 +1,3 @@
-
 <section>
     <div class="exercise-header">
       <km-book-title *ngIf="!!book"
@@ -19,7 +18,18 @@
   <div *ngIf="isReady && !isCountDown">
     <div class="panel panel-default main-panel">
       <div class="panel-body">
-        FLASHCARDS
+        <km-book-bullets
+          [data]="sessionData">
+        </km-book-bullets>
+        <div class="flashcard">
+          <km-flashcard
+            [text]="text"
+            [lanPair]="{from: book.lanCode, to: userLanCode}"
+            [audioPath]="audioPath"
+            [newFlashCard]="newFlashCard"
+            (answer)="onGotAnswer($event)">
+          </km-flashcard>
+        </div>
       </div>
     </div>
   </div>

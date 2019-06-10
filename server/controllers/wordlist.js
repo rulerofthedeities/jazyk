@@ -116,6 +116,34 @@ module.exports = {
       });
     });
   },
+  getFlashcardWords: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          userLanCode = req.params.lan,
+          maxWords = req.params.max || 10,
+          query = {
+            userId,
+            bookId,
+            targetLanCode: userLanCode
+          },
+          userWordPipeline = [
+            {$match: query},
+            {$sample: {size: parseInt(maxWords, 10)}}
+          ];
+    UserWordList.aggregate(userWordPipeline, (err, userWords) => {
+      response.handleError(err, res, 400, 'Error fetching user word list for flashcards', () => {
+        console.log('user words', userWords);
+        // For each user word, find matching word
+        const wordIds = userWords.map(uWord => uWord.wordId),
+              query = {_id: {$in: wordIds}};
+        WordList.find(query, (err, words) => {
+          response.handleError(err, res, 400, 'Error fetching word list for flashcards', () => {
+            response.handleSuccess(res, {userWords, words});
+          });
+        });
+      });
+    });
+  },
   updateMyList: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.body.bookId),

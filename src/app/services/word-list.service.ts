@@ -36,6 +36,12 @@ export class WordListService {
     .pipe(retry(3));
   }
 
+  fetchFlashcardWords(bookId: string, userLanCode: string, max: number): Observable<{userWords: UserWord[], words: Word[]}> {
+    return this.http
+    .get<{userWords: UserWord[], words: Word[]}>(`/api/userwordlist/flashcards/${bookId}/${userLanCode}/${max}`)
+    .pipe(retry(3));
+  }
+
   pinWord(word: Word, bookId: string, summary: string, pin: boolean): Observable<boolean> {
     return this.http
     .put<boolean>(`/api/wordlist/my/pin`, {word, bookId, summary, pin})

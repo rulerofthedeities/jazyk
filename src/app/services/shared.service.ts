@@ -165,6 +165,26 @@ export class SharedService {
     return Math.max(min, Math.min(max, val));
   }
 
+  shuffleArray(arr: any[]): any[] {
+    // Fisher-Yates (aka Knuth) Shuffle.
+    let currentIndex = arr.length,
+        randomIndex,
+        temporaryValue;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      // And swap it with the current element.
+      temporaryValue = arr[currentIndex];
+      arr[currentIndex] = arr[randomIndex];
+      arr[randomIndex] = temporaryValue;
+    }
+
+    return arr;
+  }
+
   getContentLanguageCode(lanCode: string): string {
     let contentLan = lanCode;
 

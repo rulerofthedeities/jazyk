@@ -27,6 +27,15 @@ export interface UserWord {
   translations: string;
 }
 
+export interface Flashcard {
+  word: string;
+  wordType: string;
+  genus: string;
+  article: string;
+  audio: File[];
+  translations: string;
+}
+
 export interface UserWordData {
   bookId: string;
   count: number;

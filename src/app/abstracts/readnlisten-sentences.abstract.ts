@@ -670,7 +670,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   }
 
   protected getScoreMultiplier(): number {
-    const listen = this.book.tpe === 'listen' ? 0.2 : 0;
+    const listen = this.book.tpe === 'listen' ? 0.4 : 0;
     return 1.1 + this.book.difficulty.avgWordScore / 1000 + listen;
   }
 

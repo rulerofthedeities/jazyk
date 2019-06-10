@@ -1,0 +1,123 @@
+/* https://www.w3schools.com/howto/howto_css_flip_card.asp */
+
+.flip-card {
+  background-color: transparent;
+  width: 100%;
+  height: 260px;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 1.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card .flipped {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #333;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, .5);
+  cursor: pointer;
+
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: #628197;
+  color: white;
+  transform: rotateY(180deg);
+  border-radius: 12px;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, .5);
+}
+
+.flip-card-back > h1.word {
+  margin-top: 50px;
+  color: #ddd;
+}
+h1.word small {
+  color: #ccc;
+  font-size: 45%;
+}
+
+.front-content {
+  text-align: center;
+}
+h1.word {
+  margin-top: 90px;
+}
+.word-type {
+  color: #ccc;
+  position: relative;
+  top: -12px;
+  left: -4px;
+}
+.audio{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+.audio-item {
+  margin-left: 8px;
+}
+h1.translations {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+.instruction {
+  text-align: left;
+  margin: 10px 6px 6px 6px;
+  font-size: 1.6rem;
+  font-style: italic;
+  color: #bbb;
+}
+.btn-big {
+  position: relative;
+  width: 100%;
+  padding-top: 86%;
+  border-radius: 10%;
+}
+.btn-text-wrapper{
+  position: absolute;
+  top: 30%;
+  left: 0;
+  width: 100%;
+  font-size: 2vw;
+}
+.short-key {
+  font-size: 0.8em;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+}
+
+@media screen and (max-width: 991px) {
+  .btn-text-wrapper {
+    font-size: 3vw;
+  }
+}
+@media screen and (max-width: 767px) {
+  .btn-text-wrapper {
+    font-size: 4vw;
+  }
+}
