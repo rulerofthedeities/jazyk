@@ -1,4 +1,4 @@
-<div class="card" *ngIf="card">
+<div class="card" *ngIf="card" kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <div class="flip-card">
     <div class="flip-card-inner" [class.flipped]="isFlipped">
       <div class="flip-card-front" (click)="onFlip()">
@@ -30,7 +30,9 @@
   <!-- BUTTONS -->
   <div class="row answer-buttons" *ngIf="showButtons">
     <div class="col-xs-5 col-xs-offset-1">
-      <button type="button" class="btn btn-success btn-big" (click)="onAnswer('y')">
+      <button type="button"
+        class="btn btn-success btn-big"
+        (click)="onAnswer('y')">
         <div class="btn-text-wrapper">
           {{text["Yes"]}}
         </div>
@@ -38,7 +40,9 @@
       </button>
     </div>
     <div class="col-xs-5">
-      <button type="button" class="btn btn-danger btn-big" (click)="onAnswer('n')">
+      <button type="button"
+        class="btn btn-danger btn-big"
+        (click)="onAnswer('n')">
         <div class="btn-text-wrapper">
           {{text["No"]}}
         </div>

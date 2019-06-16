@@ -28,7 +28,6 @@ export class BookFlashcardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('observe new flash card');
     this.newFlashCard
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
@@ -40,15 +39,37 @@ export class BookFlashcardComponent implements OnInit, OnDestroy {
   }
 
   onFlip() {
+    this.flip();
+  }
+
+  onKeyPressed(key: string) {
+    if (!this.isFlipped) {
+      if (key === 'Enter') {
+        this.flip();
+      }
+    } else {
+      if (key === '1') {
+        this.hasAnswered('y');
+      }
+      if (key === '3') {
+        this.hasAnswered('n');
+      }
+    }
+  }
+
+  onAnswer(answer: string) {
+    this.hasAnswered(answer);
+  }
+
+  private flip() {
     this.isFlipped = true;
     this.waitForFlip();
   }
 
-  onAnswer(answer: string) {
+  private hasAnswered(answer: string) {
     this.showButtons = false;
     this.answered = true;
     this.answer.next(answer);
-
     console.log('answer', answer);
   }
 
