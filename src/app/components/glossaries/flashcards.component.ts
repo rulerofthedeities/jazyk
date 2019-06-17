@@ -4,19 +4,19 @@ import { SharedService, awsPath } from 'app/services/shared.service';
 import { WordListService } from 'app/services/word-list.service';
 import { ReadnListenService } from 'app/services/readnlisten.service';
 import { UserService } from 'app/services/user.service';
+import { Map } from 'app/models/main.model';
 import { Book, SessionData } from 'app/models/book.model';
 import { ReadSettings } from 'app/models/user.model';
-import { Word, Flashcard } from 'app/models/word.model';
+import { Word, FlashCard, AnswerData } from 'app/models/word.model';
 import { takeWhile, filter } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-
 @Component({
   selector: 'km-flashcards',
   templateUrl: 'flashcards.component.html',
   styleUrls: ['flashcards.component.css']
 })
 
-export class BookFlashcardsComponent implements OnInit, OnDestroy {
+export class BookFlashCardsComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object;
   isCountDown = false;
@@ -24,15 +24,17 @@ export class BookFlashcardsComponent implements OnInit, OnDestroy {
   bookId: string;
   userLanCode: string;
   book: Book;
-  private words: Word[];
   isReady = false;
   startedExercises = false;
   nrofCards = 10;
-  flashCards: Flashcard[];
-  currentFlashCard: Flashcard;
-  newFlashCard: BehaviorSubject<Flashcard> = new BehaviorSubject(null);
+  flashCards: FlashCard[];
+  flashCardsDone: FlashCard[]; // for results
+  currentFlashCard: FlashCard;
+  newFlashCard: BehaviorSubject<FlashCard> = new BehaviorSubject(null);
   audioPath: string;
   sessionData: SessionData;
+  answerData: Map<AnswerData> = {}; // Answer per word Id
+  isFinished = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,17 +59,43 @@ export class BookFlashcardsComponent implements OnInit, OnDestroy {
   }
 
   onGotAnswer(answer: string) {
-    console.log('answered', answer);
+    const wordId = this.flashCards[0].wordId,
+          points = this.getSentencePoints(this.flashCards[0]),
+          answers = this.answerData[wordId] ? this.answerData[wordId].answers || '' : '';
     this.sessionData.answers += answer;
+    this.sessionData.points.words += points;
+    this.answerData[wordId] = {
+      answers: answers + answer,
+      points: points
+    };
+    console.log('answer', wordId, this.answerData[wordId].answers);
+    if (answer === 'n' && this.answerData[wordId].answers.length < 3) {
+      // Incorrect answer, place card to the back of the stack if there have been less than 3 wrong answers
+      this.flashCards.push(this.flashCards[0]);
+    }
+    if (!this.flashCardsDone.find(flashCard => flashCard.wordId === wordId)) {
+      // flashcard to be shown on results page
+      this.flashCardsDone.push(this.flashCards[0]);
+    }
+    // Remove current flashCard from stack
     this.flashCards.shift();
+    console.log('cards', this.flashCards);
     this.getNextFlashCard();
+  }
+
+  private getSentencePoints(flashCard: FlashCard): number {
+    const scorePoints = (1000 - flashCard.score) / 100, // 0-10
+          lengthPoints = Math.min(5, flashCard.word.length / 3); // 0 - 5
+    return Math.max(Math.trunc((scorePoints + lengthPoints) / 3 * 2), 1); // 1-10
   }
 
   private setFlashCards(words: Word[]) {
     const flashCards = [];
     words.forEach(word => {
       flashCards.push({
+        wordId: word._id,
         word: word.word,
+        score: word.score || 50,
         wordType: word.wordType,
         genus: word.genus,
         article: word.article,
@@ -76,6 +104,7 @@ export class BookFlashcardsComponent implements OnInit, OnDestroy {
       });
     });
     this.flashCards = this.sharedService.shuffleArray(flashCards);
+    this.flashCardsDone = [];
     console.log('flashcards', this.flashCards);
     this.getNextFlashCard();
     this.isReady = true;
@@ -84,10 +113,9 @@ export class BookFlashcardsComponent implements OnInit, OnDestroy {
   private getNextFlashCard() {
     if (this.flashCards && this.flashCards.length) {
       this.currentFlashCard = this.flashCards[0];
-      console.log('send new card');
       this.newFlashCard.next(this.currentFlashCard);
     } else {
-      // FINISHED
+      this.isFinished = true;
     }
   }
 

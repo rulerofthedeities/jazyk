@@ -10,6 +10,7 @@ export interface Word {
   genus: string;
   article: string;
   audio: File[];
+  score?: number;
   pinned?: boolean;
   expanded?: boolean;
   targetLanCode?: string;
@@ -27,13 +28,25 @@ export interface UserWord {
   translations: string;
 }
 
-export interface Flashcard {
+export interface FlashCard {
+  wordId: string;
   word: string;
   wordType: string;
   genus: string;
   article: string;
   audio: File[];
   translations: string;
+  score: number;
+}
+
+export interface FlashCardResult extends FlashCard {
+  points: number;
+  answers: string;
+}
+
+export interface AnswerData {
+  answers: string;
+  points: number;
 }
 
 export interface UserWordData {

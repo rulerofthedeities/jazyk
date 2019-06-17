@@ -7,8 +7,9 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { routes } from './glossary.routes';
 import { GlossariesComponent } from './components/glossaries/glossaries.component';
-import { BookFlashcardsComponent } from './components/glossaries/flashcards.component';
-import { BookFlashcardComponent } from './components/glossaries/flashcard.component';
+import { BookFlashCardsComponent } from './components/glossaries/flashcards.component';
+import { BookFlashCardComponent } from './components/glossaries/flashcard.component';
+import { BookFlashCardsResultComponent } from './components/glossaries/flashcards-result.component';
 import { FilterService } from './services/filter.service';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -29,8 +30,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   ],
   declarations: [
     GlossariesComponent,
-    BookFlashcardsComponent,
-    BookFlashcardComponent
+    BookFlashCardsComponent,
+    BookFlashCardComponent,
+    BookFlashCardsResultComponent
   ]
 })
 export class GlossaryModule {}

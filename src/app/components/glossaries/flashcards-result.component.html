@@ -1,0 +1,29 @@
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      {{text["FlashCardResults"]}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div *ngFor="let flashCard of flashCards">
+
+      {{flashCard.word}}
+
+      <km-book-bullets *ngIf="!isFinished"
+        [data]="{answers: flashCard.answers}">
+      </km-book-bullets>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title ">
+      {{text["PointsEarned"]}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="points">
+      {{totalPoints | score}}
+    </div>
+  </div>

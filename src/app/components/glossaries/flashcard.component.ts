@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { PlatformService } from '../../services/platform.service';
-import { Flashcard } from 'app/models/word.model';
+import { FlashCard } from 'app/models/word.model';
 import { LanPair } from '../../models/main.model';
 import { timer, Subject } from 'rxjs';
 import { takeWhile, delay } from 'rxjs/operators';
@@ -11,13 +11,13 @@ import { takeWhile, delay } from 'rxjs/operators';
   styleUrls: ['flashcard.component.css']
 })
 
-export class BookFlashcardComponent implements OnInit, OnDestroy {
+export class BookFlashCardComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() lanPair: LanPair;
   @Input() audioPath: string;
-  @Input() private newFlashCard: Subject<Flashcard>;
+  @Input() private newFlashCard: Subject<FlashCard>;
   @Output() answer = new EventEmitter<string>();
-  card: Flashcard;
+  card: FlashCard;
   private componentActive = true;
   isFlipped = false;
   showButtons = false;
@@ -63,7 +63,8 @@ export class BookFlashcardComponent implements OnInit, OnDestroy {
 
   private flip() {
     this.isFlipped = true;
-    this.waitForFlip();
+    this.showButtons = true;
+    this.answered = false;
   }
 
   private hasAnswered(answer: string) {
@@ -74,10 +75,14 @@ export class BookFlashcardComponent implements OnInit, OnDestroy {
   }
 
   private waitForFlip() {
+
     // wait for card to flip
+    /*
     if (this.platform.isBrowser) {
       // Client only code
-      const timerObservable = timer(800);
+      const wait = this.isFlipped ? 100 : 800;
+      console.log('wait', wait);
+      const timerObservable = timer(wait);
       timerObservable
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(t => {
@@ -88,6 +93,7 @@ export class BookFlashcardComponent implements OnInit, OnDestroy {
       this.showButtons = true;
       this.answered = false;
     }
+    */
   }
 
   ngOnDestroy() {

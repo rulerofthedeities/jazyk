@@ -18,10 +18,10 @@
   <div *ngIf="isReady && !isCountDown">
     <div class="panel panel-default main-panel">
       <div class="panel-body">
-        <km-book-bullets
+        <km-book-bullets *ngIf="!isFinished"
           [data]="sessionData">
         </km-book-bullets>
-        <div class="flashcard">
+        <div class="flashcard" *ngIf="!isFinished">
           <km-flashcard
             [text]="text"
             [lanPair]="{from: book.lanCode, to: userLanCode}"
@@ -29,6 +29,13 @@
             [newFlashCard]="newFlashCard"
             (answer)="onGotAnswer($event)">
           </km-flashcard>
+        </div>
+        <div class="result" *ngIf="isFinished">
+          <km-flashcards-result
+            [text]="text"
+            [answers]="answerData"
+            [flashCards]="flashCardsDone">
+          </km-flashcards-result>
         </div>
       </div>
     </div>
