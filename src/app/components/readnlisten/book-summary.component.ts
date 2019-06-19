@@ -430,6 +430,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     if (this.bookType === 'glossary' && this.book.img) {
       const readPath = '/jazyk/books/' + this.book.lanCode + '/',
             glossaryPath = readPath + 'glossary/';
+            console.log('img path', this.book.img, readPath, glossaryPath);
       this.book.img = this.book.img.replace(readPath, glossaryPath);
     }
   }

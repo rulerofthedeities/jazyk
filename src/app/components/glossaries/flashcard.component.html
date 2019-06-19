@@ -55,16 +55,11 @@
 </div>
 <!-- CARD -->
 <ng-template #word let-side=side>
-  <h1 class="word">
-    <img src="/assets/img/flags/{{lanPair.from}}.png" class="flag from">
-    {{card.word}}<small *ngIf="card.genus"> ({{card.genus}})</small>
-  </h1>
-  <div class="word-type">{{card.wordType}}</div>
-  <div class="audio" *ngIf="card.audio && card.audio.length > 0">
-    <km-audio-file *ngFor="let audio of card.audio"
-      [fileUrl]="audioPath + audio.s3"
-      size="32"
-      class="audio-item">
-    </km-audio-file>
-  </div>
+  <km-glossary-word
+    [flashCard]="card"
+    [lanFrom]="lanPair.from"
+    [audioPath]="audioPath"
+    [showWordType]="true"
+    [showAudio]="true">
+  </km-glossary-word>
 </ng-template>

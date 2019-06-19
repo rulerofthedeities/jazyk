@@ -5,14 +5,14 @@
     </h3>
   </div>
   <div class="panel-body">
-    <div *ngFor="let flashCard of flashCards">
 
-      {{flashCard.word}}
-
-      <km-book-bullets *ngIf="!isFinished"
-        [data]="{answers: flashCard.answers}">
-      </km-book-bullets>
-    </div>
+    <table class="table table-hover">
+      <tbody>
+        <tr *ngFor="let flashCard of flashCards; let i = index">
+          <ng-container *ngTemplateOutlet="resultRow;context:{nr:i, flashCard:flashCard}"></ng-container>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -27,3 +27,29 @@
       {{totalPoints | score}}
     </div>
   </div>
+</div>
+
+<ng-template #resultRow let-i=nr let-flashCard=flashCard>
+  <td class="text-right nr">
+    {{i + 1}}.
+  </td>
+  <td width="40%">
+    <km-glossary-word
+      [flashCard]="flashCard"
+      [lanFrom]="lanPair.from"
+      [audioPath]="audioPath"
+      [showWordType]="false"
+      [showAudio]="false">
+    </km-glossary-word>
+  </td>
+  <td class="translations" width="40%">
+    <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag to">
+    {{flashCard.translations}}
+  </td>
+  <td width="20%">
+    <km-book-bullets *ngIf="!isFinished"
+      class="bullets"
+      [data]="{answers: flashCard.answers}">
+    </km-book-bullets>
+  </td>
+</ng-template>

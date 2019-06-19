@@ -10,6 +10,7 @@ import { GlossariesComponent } from './components/glossaries/glossaries.componen
 import { BookFlashCardsComponent } from './components/glossaries/flashcards.component';
 import { BookFlashCardComponent } from './components/glossaries/flashcard.component';
 import { BookFlashCardsResultComponent } from './components/glossaries/flashcards-result.component';
+import { GlossaryWordComponent} from './components/glossaries/glossary-word.component';
 import { FilterService } from './services/filter.service';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -30,6 +31,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   ],
   declarations: [
     GlossariesComponent,
+    GlossaryWordComponent,
     BookFlashCardsComponent,
     BookFlashCardComponent,
     BookFlashCardsResultComponent

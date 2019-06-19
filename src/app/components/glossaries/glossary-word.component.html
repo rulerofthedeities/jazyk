@@ -1,0 +1,13 @@
+
+  <h1 class="word" [class.nomargin]="!showWordType && !showAudio">
+    <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from">
+    {{flashCard.word}}<small *ngIf="flashCard.genus"> ({{flashCard.genus}})</small>
+  </h1>
+  <div class="word-type" *ngIf="showWordType">{{flashCard.wordType}}</div>
+  <div class="audio" *ngIf="showAudio && flashCard.audio && flashCard.audio.length > 0">
+    <km-audio-file *ngFor="let audio of flashCard.audio"
+      [fileUrl]="audioPath + audio.s3"
+      size="32"
+      class="audio-item">
+    </km-audio-file>
+  </div>

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Map } from 'app/models/main.model';
+import { Map, LanPair } from 'app/models/main.model';
 import { FlashCardResult, AnswerData } from 'app/models/word.model';
 
 @Component({
@@ -10,6 +10,8 @@ import { FlashCardResult, AnswerData } from 'app/models/word.model';
 
 export class BookFlashCardsResultComponent implements OnInit {
   @Input() text: Object;
+  @Input() lanPair: LanPair;
+  @Input() audioPath: string;
   @Input() answers: Map<AnswerData>;
   @Input() flashCards: FlashCardResult[];
   totalPoints: number;

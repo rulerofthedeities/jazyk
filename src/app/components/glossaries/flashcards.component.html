@@ -33,6 +33,8 @@
         <div class="result" *ngIf="isFinished">
           <km-flashcards-result
             [text]="text"
+            [lanPair]="{from: book.lanCode, to: userLanCode}"
+            [audioPath]="audioPath"
             [answers]="answerData"
             [flashCards]="flashCardsDone">
           </km-flashcards-result>
