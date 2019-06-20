@@ -165,7 +165,8 @@ module.exports = {
 
     router.get('/wordlist/:bookId', wordlist.getWordList);
     router.get('/userwordlist/:bookId/:lan', wordlist.getUserWordList);
-    router.get('/userwordlists/count/:lan', wordlist.getUserWordListCount);
+    router.get('/userwordlists/count/:lan/:targetLan', wordlist.getUserWordListCount);
+    router.get('/bookwordlists/count/:lan/:targetLan', wordlist.getBookWordListCount);
     router.put('/userwordlist/word', wordlist.updateUserWordTranslation);
     router.get('/userwordlist/flashcards/:bookId/:lan/:max', wordlist.getFlashcardWords);
     router.put('/wordlist/my/pin', wordlist.updateMyList);

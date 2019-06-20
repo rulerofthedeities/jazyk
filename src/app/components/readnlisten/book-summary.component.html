@@ -182,19 +182,30 @@
                 </button>
               </span>
             </span>
-            <span *ngIf="bookType==='glossary' && !!userGlossary?.count">
+            <span *ngIf="bookType==='glossary'" #flashcardDropdown>
               <button type="button"
                 (click)="onStartVocabularyTest()"
                 class="btn btn-primary"
                 [class.btn-lg]="tpe!=='home'">
                 <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
               </button>
-              <button type="button"
-                (click)="onStartFlashcards()"
-                class="btn btn-primary"
-                [class.btn-lg]="tpe!=='home'">
-                <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
-              </button>
+              <span class="dropdown">
+                <button class="btn btn-primary"
+                  [class.dropdown-toggle]="showFlashCardDropdown"
+                  [class.btn-lg]="tpe!=='home'"
+                  type="button"
+                  (click)="onToggleFlashCardDropdown()">
+                  <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
+                  <span class="caret" *ngIf="showFlashCardDropdown">
+                  </span>
+                </button>
+                <ul
+                  class="dropdown-menu"
+                  [style.display]="showFlashCardDropdown ? 'block' : 'none'">
+                  <li><a >{{text["AppGlossary"]}} ({{glossaryData?.countTranslation | score}})</a></li>
+                  <li><a (click)="onStartFlashcards()">{{text["MyGlossary"]}} ({{userGlossary?.countTranslation | score}})</a></li>
+                </ul>
+              </span>
             </span>
             <span *ngIf="book.wordListPublished">
               <button type="button"
@@ -255,8 +266,10 @@
             </div>
             <div *ngIf="bookType === 'glossary'">
               <div class="glossary-words">
-                {{book.nrOfWordsInList | score}} {{text["words"]}}
-                <span *ngIf="!!userGlossary?.count"> ({{userGlossary.count | score}} {{text["inMyWordList"]}})</span>
+                {{book.nrOfWordsInList | score}} {{text["words"]}} ({{glossaryData?.countTranslation}} {{text["translated"]}})
+                <div *ngIf="!!userGlossary?.countTotal">
+                  {{userGlossary.countTotal | score}} {{text["words"]}} {{text["inMyWordList"]}} ({{userGlossary.countTranslation}} {{text["translated"]}})
+                </div>
               </div>
             </div>
             {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>

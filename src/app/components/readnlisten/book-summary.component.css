@@ -459,6 +459,17 @@ span.canrecommend:hover {
 .corner-ribbon.yellow{
   background: rgb(255, 255, 173);
 }
+.dropdown-menu {
+  top: 30px;
+  background-color: #286090;
+}
+.dropdown-menu a {
+  color: white;
+}
+.dropdown-menu a:hover {
+  color: #286090;
+  cursor: pointer;
+}
 /* Compact */
 .compact.panel-book {
   min-height: 36px;

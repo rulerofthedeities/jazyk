@@ -18,9 +18,15 @@ export class WordListService {
     private http: HttpClient
   ) {}
 
-  fetchUserWordCounts(bookLanCode: string): Observable<UserWordData[]> {
+  fetchUserWordCounts(bookLanCode: string, targetLanCode: string): Observable<UserWordData[]> {
     return this.http
-    .get<UserWordData[]>(`/api/userwordlists/count/${bookLanCode}`)
+    .get<UserWordData[]>(`/api/userwordlists/count/${bookLanCode}/${targetLanCode}`)
+    .pipe(retry(3));
+  }
+
+  fetchBookWordCounts(bookLanCode: string, targetLanCode: string): Observable<UserWordData[]> {
+    return this.http
+    .get<UserWordData[]>(`/api/bookwordlists/count/${bookLanCode}/${targetLanCode}`)
     .pipe(retry(3));
   }
 

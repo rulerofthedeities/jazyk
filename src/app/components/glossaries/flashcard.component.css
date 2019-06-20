@@ -48,35 +48,8 @@
   border-radius: 12px;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, .5);
 }
-
-.flip-card-back > h1.word {
-  margin-top: 50px;
-  color: #ddd;
-}
-h1.word small {
-  color: #ccc;
-  font-size: 45%;
-}
-
 .front-content {
   text-align: center;
-}
-h1.word {
-  margin-top: 90px;
-}
-.word-type {
-  color: #ccc;
-  position: relative;
-  top: -12px;
-  left: -4px;
-}
-.audio{
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-.audio-item {
-  margin-left: 8px;
 }
 h1.translations {
   color: white;

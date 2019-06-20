@@ -4,7 +4,8 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
       WordList = require('../models/wordlist').word,
-      UserWordList = require('../models/wordlist').userword;
+      UserWordList = require('../models/wordlist').userword,
+      WordTranslations = require('../models/wordlist').translations;
 
 module.exports = {
   getBooksCount: (req, res) => {
@@ -32,28 +33,61 @@ module.exports = {
     });
   },
   getUserWordListCount: (req, res) => {
-    // total # of user words per book
+    // total + translated # of user words per book
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookLan = req.params.lan,
+          targetLan = req.params.targetLan,
           query = {
             userId,
-            bookLanCode: bookLan
+            bookLanCode: bookLan,
+            targetLanCode: targetLan
           },
           projection = {
             _id: 0,
             bookId: '$_id',
-            count: 1
+            countTotal: 1,
+            countTranslation: 1
           },
           pipeline = [
             {$match: query},
             {$group: {
               _id: '$bookId',
-              count: {'$sum': 1}
+              countTotal: {'$sum': 1},
+              countTranslation: {'$sum': {'$cond': [{'$eq': ['$translations', '']}, 0, 1]}}
             }},
             {$project: projection}
           ];
     UserWordList.aggregate(pipeline, (err, result) => {
       response.handleError(err, res, 400, 'Error fetching user word count', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  getBookWordListCount: (req, res) => {
+    // translated # of words in glossary per book
+    const bookLan = req.params.lan,
+          targetLan = req.params.targetLan,
+          query = {
+            lanCode: bookLan,
+            'translations.lanCode': targetLan
+          },
+          projection = {
+            _id: 0,
+            bookId: '$_id',
+            countTranslation: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: '$bookId',
+              countTranslation: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+    WordTranslations.aggregate(pipeline, (err, result) => {
+      console.log('err', err);
+      console.log('result', result);
+      response.handleError(err, res, 400, 'Error fetching word translations count', () => {
         response.handleSuccess(res, result);
       });
     });

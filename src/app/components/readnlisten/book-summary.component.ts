@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, Renderer2, ViewChild, ElementRef, EventEmitter, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Book, UserBook, UserData, TranslationData, UserBookActivity } from '../../models/book.model';
 import { LicenseUrl } from '../../models/main.model';
@@ -6,6 +6,7 @@ import { UserWordData } from '../../models/word.model';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
+import { PlatformService } from '../../services/platform.service';
 import { takeWhile } from 'rxjs/operators';
 
 interface UserBookStatus {
@@ -39,6 +40,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() userData: UserData[];
   @Input() userDataTest: UserData[];
   @Input() userGlossary: UserWordData;
+  @Input() glossaryData: UserWordData;
   @Input() translationData: TranslationData;
   @Input() private activity: UserBookActivity;
   @Input() userLanCode: string;
@@ -49,6 +51,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() licenses: LicenseUrl[];
   @Output() removedSubscription = new EventEmitter<Book>();
   @Output() addedSubscription = new EventEmitter<Book>();
+  @ViewChild('flashcardDropdown') flashcardDropdown: ElementRef;
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
@@ -65,6 +68,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isFinished = false; // non-test
   isTestFinished = false;
   isCompact = false;
+  showFlashCardDropdown = false;
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
@@ -79,10 +83,21 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private router: Router,
+    private platform: PlatformService,
     private userService: UserService,
     private readnListenService: ReadnListenService,
-    private sharedService: SharedService
-  ) {}
+    private sharedService: SharedService,
+    renderer: Renderer2
+  ) {
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        if (this.flashcardDropdown && !this.flashcardDropdown.nativeElement.contains(event.target)) {
+          // Outside flashcard dropdown, close dropdown
+          this.showFlashCardDropdown = false;
+        }
+      });
+    }
+  }
 
   ngOnInit() {
     this.setDefaultImg();
@@ -180,6 +195,10 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   onRevision() {
     this.log(`Start revision for ${this.book.title}`);
     this.router.navigate(['/' + this.bookType + '/book/' + this.book._id + '/' + this.userLanCode + '/review']);
+  }
+
+  onToggleFlashCardDropdown() {
+    this.showFlashCardDropdown = !this.showFlashCardDropdown;
   }
 
   onToggleIntro() {
@@ -428,10 +447,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private setGlossaryImage() {
     if (this.bookType === 'glossary' && this.book.img) {
-      const readPath = '/jazyk/books/' + this.book.lanCode + '/',
-            glossaryPath = readPath + 'glossary/';
-            console.log('img path', this.book.img, readPath, glossaryPath);
-      this.book.img = this.book.img.replace(readPath, glossaryPath);
+      if (!this.book.img.includes('glossary')) {
+        const readPath = '/jazyk/books/' + this.book.lanCode + '/',
+              glossaryPath = readPath + 'glossary/';
+        console.log('img path', this.book.img, readPath, glossaryPath);
+        this.book.img = this.book.img.replace(readPath, glossaryPath);
+      }
     }
   }
 

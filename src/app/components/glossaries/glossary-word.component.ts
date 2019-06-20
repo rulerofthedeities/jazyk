@@ -12,6 +12,7 @@ export class GlossaryWordComponent {
   @Input() flashCard: FlashCard;
   @Input() lanFrom: string;
   @Input() audioPath: string;
+  @Input() side = 'none';
   @Input() showWordType = true;
   @Input() showAudio = true;
 }

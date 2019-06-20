@@ -2,3 +2,31 @@ h1.nomargin {
   margin-top: 0;
   margin-bottom: 0;
 }
+.audio {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+.audio-item {
+  margin-left: 8px;
+}
+h1.word {
+  margin-top: 90px;
+}
+h1.word small {
+  color: #ccc;
+  font-size: 45%;
+}
+.back > h1.word {
+  margin-top: 50px;
+  color: #ddd;
+}
+.none > h1.word {
+  margin-top: 0;
+}
+.word-type {
+  color: #ccc;
+  position: relative;
+  top: -12px;
+  left: -4px;
+}

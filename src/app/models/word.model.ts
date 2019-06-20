@@ -51,7 +51,8 @@ export interface AnswerData {
 
 export interface UserWordData {
   bookId: string;
-  count: number;
+  countTotal: number;
+  countTranslation: number;
 }
 
 interface File {

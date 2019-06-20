@@ -17,6 +17,7 @@ import { zip } from 'rxjs';
 })
 
 export class GlossariesComponent extends ReadnListenListComponent implements OnInit, OnDestroy {
+  bookWordData: Map<UserWordData> = {}; // glossary translations
 
   constructor(
     readnListenService: ReadnListenService,
@@ -73,14 +74,15 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     this.isBooksReady = false;
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
-      this.wordListService.fetchUserWordCounts(this.bookLanguage.code)
+      this.wordListService.fetchUserWordCounts(this.bookLanguage.code, this.myLanguage.code),
+      this.wordListService.fetchBookWordCounts(this.bookLanguage.code, this.myLanguage.code)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       if (data && data.length) {
         this.processUserBooks(data[0]);
         this.processUserWordData(data[1]);
-        // this.processTranslations(data[2]);
+        this.processWordTranslations(data[2]);
         // this.processActivity(data[3]);
       }
       this.isBooksReady = true;
@@ -88,8 +90,16 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
   }
 
   private processUserWordData(userwords: UserWordData[]) {
-    userwords.forEach(word => {
-      this.userWordData[word.bookId] = word;
+    userwords.forEach(count => {
+      this.userWordData[count.bookId] = count;
+    });
+    console.log('userwords', userwords, this.userWordData);
+  }
+
+  private processWordTranslations(translations: UserWordData[]) {
+    console.log('translations', translations);
+    translations.forEach(count => {
+      this.bookWordData[count.bookId] = count;
     });
   }
 }

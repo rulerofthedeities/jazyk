@@ -1,4 +1,4 @@
-
+<span [ngClass]="side">
   <h1 class="word" [class.nomargin]="!showWordType && !showAudio">
     <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from">
     {{flashCard.word}}<small *ngIf="flashCard.genus"> ({{flashCard.genus}})</small>
@@ -11,3 +11,4 @@
       class="audio-item">
     </km-audio-file>
   </div>
+</span>
