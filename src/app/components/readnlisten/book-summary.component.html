@@ -202,8 +202,8 @@
                 <ul
                   class="dropdown-menu"
                   [style.display]="showFlashCardDropdown ? 'block' : 'none'">
-                  <li><a >{{text["AppGlossary"]}} ({{glossaryData?.countTranslation | score}})</a></li>
-                  <li><a (click)="onStartFlashcards()">{{text["MyGlossary"]}} ({{userGlossary?.countTranslation | score}})</a></li>
+                  <li><a (click)="onStartFlashcards('all')" >{{text["AppGlossary"]}} ({{glossaryData?.countTranslation | score}})</a></li>
+                  <li><a (click)="onStartFlashcards('my')">{{text["MyGlossary"]}} ({{userGlossary?.countTranslation | score}})</a></li>
                 </ul>
               </span>
             </span>

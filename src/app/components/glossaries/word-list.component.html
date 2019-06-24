@@ -242,7 +242,7 @@
     [text]="text"
     [book]="book"
     [targetLan]="translationLan"
-    [word]="word.root ? word.root : word.word"
+    [word]="word"
     [translations]="wordTranslation"
     [userId]="userId"
     [i] = "i"
@@ -254,7 +254,7 @@
     [targetLan]="translationLan"
     [bookLan]="bookLan"
     [bookId]="book?._id"
-    [word]="word.root ? word.root : word.word"
+    [word]="word"
     [i] = "i"
     (newTranslations)="onNewTranslations($event)"
     (noTranslations)="onNoTranslations($event)">
@@ -265,7 +265,7 @@
     [targetLan]="translationLan"
     [bookLan]="bookLan"
     [bookId]="book?._id"
-    [word]="word.root ? word.root : word.word"
+    [word]="word"
     [i] = "i"
     (newTranslations)="onNewTranslations($event)"
   ></km-word-translation>
@@ -275,7 +275,7 @@
     [targetLan]="translationLan"
     [bookLan]="bookLan"
     [bookId]="book?._id"
-    [word]="word.root ? word.root : word.word"
+    [word]="word"
     [i] = "i"
     (newTranslations)="onNewTranslations($event)"
   ></km-word-translation>

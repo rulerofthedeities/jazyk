@@ -17,8 +17,15 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'flashcards/:id/:lan',
+    path: 'flashcards/:id/:lan/all',
     component: BookFlashCardsComponent,
+    data : {tpe : 'all'},
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'flashcards/:id/:lan/my',
+    component: BookFlashCardsComponent,
+    data : {tpe : 'my'},
     canActivate: [AuthGuard]
   }
 ];

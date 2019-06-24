@@ -69,10 +69,17 @@ module.exports = {
     const lanCode = req.body.bookLanCode,
           bookId = req.body.bookId,
           word = req.body.word,
-          sortWord = getSortWord(word),
+          sortWord = getSortWord(word.word),
           translations = req.body.translations,
-          query = {bookId, lanCode, word},
-          update = {sortWord, $addToSet: {translations: {$each: translations}}};
+          query = {
+            bookId,
+            wordId: word._id,
+            lanCode},
+          update = {
+            sortWord,
+            word: word.word,
+            $addToSet: {translations: {$each: translations}}
+          };
     Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
         response.handleSuccess(res, result);

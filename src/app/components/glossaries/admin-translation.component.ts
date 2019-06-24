@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { Book } from 'app/models/book.model';
-import { WordTranslations, WordTranslation } from 'app/models/word.model';
+import { Word, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() targetLan: Language;
   @Input() book: Book;
-  @Input() word: string;
+  @Input() word: Word;
   @Input() translations: WordTranslations;
   @Input() userId: string;
   @Input() i: number;
@@ -121,7 +121,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
     this.newTranslations.emit({
       translations: {
         lanCode: this.book.lanCode,
-        word: this.word,
+        word: this.word.word,
         translations: newTranslations
       },
       i: this.i

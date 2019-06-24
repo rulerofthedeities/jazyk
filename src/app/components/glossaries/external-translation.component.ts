@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { Language } from 'app/models/main.model';
-import { OmegaDefinitions, OmegaDefinition, WordTranslation, WordTranslations } from '../../models/word.model';
+import { Word, OmegaDefinitions, OmegaDefinition, WordTranslation, WordTranslations } from '../../models/word.model';
 import { DeepLTranslations, MSTranslations } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
 
@@ -14,7 +14,7 @@ import { takeWhile } from 'rxjs/operators';
 export class ExternalWordTranslationComponent implements OnDestroy {
   @Input() text: Object;
   @Input() source: string;
-  @Input() word: string;
+  @Input() word: Word;
   @Input() targetLan: Language;
   @Input() bookLan: Language;
   @Input() bookId: string;
@@ -43,10 +43,14 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     }
   }
 
+  private getWord(): string {
+    return this.word.root ? this.word.root : this.word.word;
+  }
+
   private getOmegaDefinitionLocal() {
     // TODO: first check if it exists locally
     this.translationService
-    .fetchOmegaDefinitionLocal(this.word)
+    .fetchOmegaDefinitionLocal(this.getWord())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(omegaDefinitions => {
       if (omegaDefinitions.length) {
@@ -56,13 +60,12 @@ export class ExternalWordTranslationComponent implements OnDestroy {
         this.getOmegaDefinitionExternal();
       }
     });
-
   }
 
   private getOmegaDefinitionExternal() {
     this.isLoading = true;
     this.translationService
-    .fetchOmegaDefinitionExternal(this.word)
+    .fetchOmegaDefinitionExternal(this.getWord())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
       if (result && result.omega && result.omega['ow_express']) {
@@ -104,7 +107,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     // note: also save if no data?
     this.definitions = {
       source: 'OmegaWiki',
-      word: this.word,
+      word: this.getWord(),
       omegaWord: data['expression'],
       omegaDefinitions: definitions
     };
@@ -200,7 +203,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     };
     this.isLoading = true;
     this.translationService
-    .fetchMachineTranslation('deepl', lanPair, this.word)
+    .fetchMachineTranslation('deepl', lanPair, this.getWord())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((translation: DeepLTranslations) => {
       this.isLoading = false;
@@ -226,7 +229,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     };
     this.isLoading = true;
     this.translationService
-    .fetchMachineTranslation('microsoft', lanPair, this.word)
+    .fetchMachineTranslation('microsoft', lanPair, this.getWord())
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((translation: MSTranslations) => {
       this.isLoading = false;
@@ -264,7 +267,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       this.newTranslations.emit({
         translations: {
           lanCode: this.bookLan.code,
-          word: this.word,
+          word: this.getWord(),
           translations: newTranslations
         },
         i: this.i

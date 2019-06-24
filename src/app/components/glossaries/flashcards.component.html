@@ -6,7 +6,7 @@
         [bookLanCode]="book?.lanCode"
         [userLanCode]="userLanCode"
         [bookTitle]="book?.title"
-        [canClose]="true"
+        [canClose]="!isFinished"
         (close)="onExitReading()"
       ></km-book-title>
     </div>
@@ -22,6 +22,7 @@
           [data]="sessionData">
         </km-book-bullets>
         <div class="flashcard" *ngIf="!isFinished">
+          <!-- Flashcard -->
           <km-flashcard
             [text]="text"
             [lanPair]="{from: book.lanCode, to: userLanCode}"
@@ -31,6 +32,7 @@
           </km-flashcard>
         </div>
         <div class="result" *ngIf="isFinished">
+          <!-- Results -->
           <km-flashcards-result
             [text]="text"
             [lanPair]="{from: book.lanCode, to: userLanCode}"
@@ -38,6 +40,19 @@
             [answers]="answerData"
             [flashCards]="flashCardsDone">
           </km-flashcards-result>
+          <!-- Buttons -->
+          <button type="button"
+            class="btn btn-primary"
+            (click)="onBackToList()">
+            <span class="fa fa-th-list fa-spacing"></span>
+            {{text["BackGlossaries"]}}
+          </button>
+          <button type="button"
+            class="btn btn-primary"
+            (click)="onMoreFlashCards()">
+            <span class="fa fa-clone fa-spacing"></span>
+            {{text["MoreFlashCards"]}}
+          </button>
         </div>
       </div>
     </div>

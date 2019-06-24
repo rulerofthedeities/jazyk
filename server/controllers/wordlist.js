@@ -2,8 +2,10 @@
 
 const response = require('../response'),
       mongoose = require('mongoose'),
+      log = require('./log'),
       Book = require('../models/book').book,
       WordList = require('../models/wordlist').word,
+      Session = require('../models/book').session,
       UserWordList = require('../models/wordlist').userword,
       WordTranslations = require('../models/wordlist').translations;
 
@@ -40,7 +42,8 @@ module.exports = {
           query = {
             userId,
             bookLanCode: bookLan,
-            targetLanCode: targetLan
+            targetLanCode: targetLan,
+            pinned: true
           },
           projection = {
             _id: 0,
@@ -150,7 +153,7 @@ module.exports = {
       });
     });
   },
-  getFlashcardWords: (req, res) => {
+  getMyFlashcardWords: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.params.bookId),
           userLanCode = req.params.lan,
@@ -158,21 +161,55 @@ module.exports = {
           query = {
             userId,
             bookId,
-            targetLanCode: userLanCode
+            targetLanCode: userLanCode,
+            pinned: true,
+            translations: {$ne: ''}
           },
           userWordPipeline = [
             {$match: query},
             {$sample: {size: parseInt(maxWords, 10)}}
           ];
+    // Get uwer words first, then get corresponding words
     UserWordList.aggregate(userWordPipeline, (err, userWords) => {
-      response.handleError(err, res, 400, 'Error fetching user word list for flashcards', () => {
-        console.log('user words', userWords);
+      response.handleError(err, res, 400, 'Error fetching user word list for my flashcards', () => {
         // For each user word, find matching word
         const wordIds = userWords.map(uWord => uWord.wordId),
               query = {_id: {$in: wordIds}};
         WordList.find(query, (err, words) => {
-          response.handleError(err, res, 400, 'Error fetching word list for flashcards', () => {
-            response.handleSuccess(res, {userWords, words});
+          response.handleError(err, res, 400, 'Error fetching word list for my flashcards', () => {
+            response.handleSuccess(res, {userWords, words, translations: null});
+          });
+        });
+      });
+    });
+  },
+  getAllFlashcardWords: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          userLanCode = req.params.lan,
+          maxWords = req.params.max || 10,
+          query = {
+            bookId,
+            translations: {
+              $elemMatch: {
+                lanCode: userLanCode,
+                translation: {$ne: ''}
+              }
+            }
+          },
+          translationPipeline = [
+            {$match: query},
+            {$sample: {size: parseInt(maxWords, 10)}}
+          ];
+    // Get translations first (to ensure there are translations for a word), then get corresponding words
+    WordTranslations.aggregate(translationPipeline, (err, translations) => {
+      response.handleError(err, res, 400, 'Error fetching word translations for all flashcards', () => {
+        // For each word translation, find matching word
+        const wordIds = translations.map(tl => tl.wordId),
+        query = {_id: {$in: wordIds}};
+        WordList.find(query, (err, words) => {
+          console.log('words', words);
+          response.handleError(err, res, 400, 'Error fetching word list for all flashcards', () => {
+            response.handleSuccess(res, {userWords: null, words, translations: translations});
           });
         });
       });
@@ -266,7 +303,7 @@ module.exports = {
         response.handleError(err, res, 400, 'Error pinning all words', () => {
           response.handleSuccess(res, true);
         });
-      })
+      });
     } else {
       response.handleSuccess(res, true);
     }
@@ -293,5 +330,68 @@ module.exports = {
         response.handleSuccess(res, false);
       });
     });
+  },
+  addSession: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          sessionData = req.body.sessionData;
+    sessionData.userId = userId;
+    sessionData.dt = {
+      start: Date.now(),
+      end: Date.now(),
+      diff: 0
+    };
+    const session = new Session(sessionData);
+    session.save((err, result) => {
+      log.logError(err, 'ERREXE09', 'addSession', `Error adding session for ${userId}, Status code: ${response && response.statusCode}`, 'flashcards');
+      response.handleError(err, res, 400, 'Error saving new session data', () => {
+        response.handleSuccess(res, true);
+      });
+    });
+  },
+  saveAnswers: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          targetLanCode = req.body.targetLanCode,
+          bookLanCode = req.body.bookLanCode,
+          flashcards = req.body.flashCardsToSave;
+    console.log('flashcards', flashcards);
+    if (flashcards.length > 0 && flashcards[0].answers) {
+      console.log('ok');
+      let docs = flashcards.map(flashcard => {
+        console.log('answer', flashcard.answers, flashcard.answers.slice(-1));
+        const wordId = new mongoose.Types.ObjectId(flashcard.wordId),
+              translations = flashcard.translations.split(', ').join('|'),
+              lastAnswer = flashcard.answers.slice(-1),
+              query = {
+                wordId,
+                bookId,
+                userId,
+                targetLanCode
+              };
+        return {
+          updateOne: {
+            filter: query,
+            update: {
+              $set: {
+                // answers: {$concat: [ "$answers", flashcard.answers]} // Only from v4.2 on
+                lastAnswer: lastAnswer,
+                dtFlashcard: new Date()
+              },
+              $setOnInsert: {
+                bookLanCode: bookLanCode,
+                translations: translations,
+                pinned: false
+              }
+            },
+            upsert: true
+          }
+        }
+      });
+      UserWordList.collection.bulkWrite(docs, (err, bulkResult) => {
+        response.handleError(err, res, 400, 'Error saving flashcard answers', () => {
+          response.handleSuccess(res, true);
+        });
+      });
+    }
   }
 }

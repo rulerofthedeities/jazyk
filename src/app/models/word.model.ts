@@ -37,6 +37,13 @@ export interface FlashCard {
   audio: File[];
   translations: string;
   score: number;
+  answers?: string;
+}
+
+export interface FlashCardData {
+  userWords: UserWord[];
+  words: Word[];
+  translations: WordTranslations[];
 }
 
 export interface FlashCardResult extends FlashCard {
@@ -91,6 +98,7 @@ export interface WordTranslation {
 
 export interface WordTranslations {
   _id?: string;
+  wordId?: string;
   lanCode: string;
   word: string;
   translations: WordTranslation[];

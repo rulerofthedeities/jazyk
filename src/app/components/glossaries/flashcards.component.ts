@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { SharedService, awsPath } from 'app/services/shared.service';
 import { WordListService } from 'app/services/word-list.service';
@@ -7,9 +8,11 @@ import { UserService } from 'app/services/user.service';
 import { Map } from 'app/models/main.model';
 import { Book, SessionData } from 'app/models/book.model';
 import { ReadSettings } from 'app/models/user.model';
-import { Word, FlashCard, AnswerData } from 'app/models/word.model';
+import { Word, FlashCard, FlashCardData, AnswerData } from 'app/models/word.model';
+import { environment } from 'environments/environment';
 import { takeWhile, filter } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+
 @Component({
   selector: 'km-flashcards',
   templateUrl: 'flashcards.component.html',
@@ -35,8 +38,10 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   sessionData: SessionData;
   answerData: Map<AnswerData> = {}; // Answer per word Id
   isFinished = false;
+  glossaryType: string;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private sharedService: SharedService,
     private wordlistService: WordListService,
@@ -46,6 +51,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settings = this.userService.user.jazyk.read;
+    this.getType();
     this.getDependables(this.userService.user.main.lan);
   }
 
@@ -83,6 +89,19 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.getNextFlashCard();
   }
 
+  onBackToList() {
+    console.log('back to list');
+    this.router.navigate([`/glossaries`]);
+  }
+
+  onMoreFlashCards() {
+    console.log('more flashcards');
+    this.isReady = false;
+    this.isFinished = false;
+    this.answerData = {};
+    this.processNewBookId();
+  }
+
   private getSentencePoints(flashCard: FlashCard): number {
     const scorePoints = (1000 - flashCard.score) / 100, // 0-10
           lengthPoints = Math.min(5, flashCard.word.length / 3); // 0 - 5
@@ -115,7 +134,9 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       this.currentFlashCard = this.flashCards[0];
       this.newFlashCard.next(this.currentFlashCard);
     } else {
+      this.saveResults();
       this.isFinished = true;
+      this.sharedService.changeExerciseMode(false);
     }
   }
 
@@ -149,6 +170,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
             lanCode: this.userLanCode,
             bookType: 'flashcard',
             isTest: false,
+            version: environment.version,
             repeatCount: undefined,
             answers: '',
             translations: 0,
@@ -171,22 +193,76 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   private getWords() {
     this.wordlistService
-    .fetchFlashcardWords(this.bookId, this.userLanCode, this.nrofCards)
+    .fetchFlashcardWords(this.bookId, this.userLanCode, this.nrofCards, this.glossaryType)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        const words = data.words,
-              userWords = data.userWords;
-        // Put user translations in words
-        words.forEach(word => {
-          const userWord = userWords.find(uWord => uWord.wordId === word._id);
-          if (userWord) {
-            word.translationSummary = userWord.translations;
-          }
-        });
+        const words = this.mapTranslationsWithWords(data);
         this.setFlashCards(words);
       }
     );
+  }
+
+  private mapTranslationsWithWords(data: FlashCardData): Word[] {
+    console.log('lancode', this.userLanCode);
+    const words = data.words,
+          userWords = data.userWords, // only for my glossary
+          translations = data.translations; // only for all glossary
+    if (userWords) {
+      // My glossary: map word with user translation
+      words.forEach(word => {
+        const userWord = userWords.find(uWord => uWord.wordId === word._id);
+        if (userWord) {
+          word.translationSummary = userWord.translations;
+        }
+      });
+    } else {
+      // All glossary: map word with default translations
+      console.log('translations', data.translations, translations);
+      words.forEach(word => {
+        const translation = translations.find(tl => tl.wordId === word._id);
+        console.log('translation', translation);
+        if (translation) {
+          translation.translations = translation.translations.filter(tl => tl.lanCode === this.userLanCode);
+          word.translationSummary = this.wordlistService.createTranslationsSummary(translation, '|');
+        }
+      });
+    }
+    return words;
+  }
+
+  private saveResults() {
+    if (this.sessionData.answers) {
+      // Save session data
+      this.wordlistService
+      .saveSession(this.sessionData)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        result => {
+          console.log('session saved');
+        }
+      );
+      // Add answers to flashcards
+      const flashCardsToSave: FlashCard[] = [];
+      this.flashCardsDone.forEach(flashCard => {
+        const answer = this.answerData[flashCard.wordId];
+        if (answer) {
+          flashCard.answers = answer.answers;
+          flashCardsToSave.push(flashCard);
+        }
+      })
+      // Save answers in user wordlist
+      console.log('flashcards done', flashCardsToSave);
+      console.log('flashcards answer', flashCardsToSave[0].answers);
+      this.wordlistService
+      .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        result => {
+          console.log('answers saved');
+        }
+      );
+    }
   }
 
   private exitReading() {
@@ -203,6 +279,17 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       this.sharedService.changeExerciseMode(false);
       this.sharedService.stopAudio();
     }
+  }
+
+  private getType() {
+    // Get flashcard type (words from app (all) or from user list (my))
+    this.route
+    .data
+    .pipe(takeWhile(() => this.componentActive))
+      .subscribe(data => {
+        this.glossaryType = data.tpe === 'my' ? 'my' : 'all';
+        console.log('flashcards type', this.glossaryType);
+    });
   }
 
   private getDependables(lan) {

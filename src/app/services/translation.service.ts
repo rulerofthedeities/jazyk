@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Book, TranslatedData, SentenceTranslation, DeepLTranslations, MSTranslations } from '../models/book.model';
-import { WordDefinition, OmegaDefinitions, OmegaDefinition,
+import { Word, WordDefinition, OmegaDefinitions, OmegaDefinition,
          OmegaTranslation, WordTranslation, WordTranslations } from '../models/word.model';
 import { LanPair } from '../models/main.model';
 import { retry } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class TranslationService {
     .pipe(retry(3));
   }
 
-  saveTranslations(bookLanCode: string, bookId: string, word: string, translations: WordTranslation[]): Observable<WordTranslation[]> {
+  saveTranslations(bookLanCode: string, bookId: string, word: Word, translations: WordTranslation[]): Observable<WordTranslation[]> {
     return this.http
     .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
   }

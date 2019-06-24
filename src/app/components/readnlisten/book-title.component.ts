@@ -20,7 +20,6 @@ export class BookTitleComponent {
   constructor() { }
 
   onExit() {
-    console.log('closing title');
     this.close.emit(true);
   }
 

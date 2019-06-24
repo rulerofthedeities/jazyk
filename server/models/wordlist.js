@@ -14,7 +14,9 @@ const userWordSchema = new Schema({
   bookLanCode: String,
   targetLanCode: String,
   pinned: Boolean,
-  translations: String
+  lastAnswer: String,
+  dtFlashcard: {type: Date, default: Date.now},
+  translations: {type: String, trim: true}
 });
 
 userWordSchema.index({userId: 1, bookId: 1, pinned: 1});
@@ -51,13 +53,14 @@ const wordTranslationSchema = new Schema({
 
 const wordTranslationsSchema = new Schema({
         bookId: {type: Schema.Types.ObjectId, required: true},
+        wordId: {type: Schema.Types.ObjectId, required: true},
         lanCode: {type: String, required: true},
         word: {type: String, required: true},
         sortWord: {type: String, required: true},
         translations: [wordTranslationSchema]
       }),
       TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);
-wordTranslationsSchema.index({bookId: 1, lanCode: 1, word: 1});
+wordTranslationsSchema.index({bookId: 1, wordId: 1, lanCode: 1});
 TranslationsModel.ensureIndexes();
 
 module.exports = {

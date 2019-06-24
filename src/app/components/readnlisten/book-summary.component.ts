@@ -179,9 +179,9 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.unsubscribeTest();
   }
 
-  onStartFlashcards() {
+  onStartFlashcards(tpe: string) {
     this.log(`Start flash cards for ${this.book.title}`);
-    this.router.navigate(['/glossaries/flashcards/' + this.book._id + '/' + this.userLanCode]);
+    this.router.navigate([`/glossaries/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
   }
 
   onStartVocabularyTest() {

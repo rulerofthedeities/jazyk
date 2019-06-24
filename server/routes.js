@@ -168,7 +168,10 @@ module.exports = {
     router.get('/userwordlists/count/:lan/:targetLan', wordlist.getUserWordListCount);
     router.get('/bookwordlists/count/:lan/:targetLan', wordlist.getBookWordListCount);
     router.put('/userwordlist/word', wordlist.updateUserWordTranslation);
-    router.get('/userwordlist/flashcards/:bookId/:lan/:max', wordlist.getFlashcardWords);
+    router.get('/userwordlist/flashcards/:bookId/:lan/:max', wordlist.getMyFlashcardWords);
+    router.get('/wordlist/flashcards/:bookId/:lan/:max', wordlist.getAllFlashcardWords);
+    router.post('/wordlist/flashcards/session', wordlist.addSession);
+    router.post('/wordlist/flashcards/answers', wordlist.saveAnswers);
     router.put('/wordlist/my/pin', wordlist.updateMyList);
     router.put('/wordlist/my/unpin', wordlist.removeFromMyList);
     router.put('/wordlist/my/pins', wordlist.addAllToMyList);
@@ -180,7 +183,7 @@ module.exports = {
     router.put('/wordlist/letter/translations', dictionaries.getLetterTranslations);
     router.put('/wordlist/all/translations', dictionaries.getAllTranslations);
     router.put('/wordlist/word/translation', dictionaries.updateTranslation);
-    router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation)
+    router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation);
 
     app.use('/api/', router);
 
