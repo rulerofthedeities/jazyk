@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { SharedService, awsPath } from 'app/services/shared.service';
@@ -9,6 +9,7 @@ import { Map } from 'app/models/main.model';
 import { Book, SessionData } from 'app/models/book.model';
 import { ReadSettings } from 'app/models/user.model';
 import { Word, FlashCard, FlashCardData, AnswerData } from 'app/models/word.model';
+import { ModalConfirmComponent } from 'app/components/modals/modal-confirm.component';
 import { environment } from 'environments/environment';
 import { takeWhile, filter } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
@@ -29,6 +30,8 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   book: Book;
   isReady = false;
   startedExercises = false;
+  isFinished = false;
+  modalActive = false;
   nrofCards = 10;
   flashCards: FlashCard[];
   flashCardsDone: FlashCard[]; // for results
@@ -37,8 +40,9 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   audioPath: string;
   sessionData: SessionData;
   answerData: Map<AnswerData> = {}; // Answer per word Id
-  isFinished = false;
   glossaryType: string;
+  msg: string;
+  @ViewChildren(ModalConfirmComponent) confirm:  QueryList<ModalConfirmComponent>;
 
   constructor(
     private router: Router,
@@ -60,8 +64,25 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   }
 
   onExitReading() {
-    console.log('exiting');
     this.exitReading();
+  }
+
+  onExitConfirmed(exitOk: boolean) {
+    this.modalActive = false;
+    if (exitOk) {
+      this.log('Flashcards aborted');
+      this.finish();
+    }
+  }
+
+  onKeyPressed(key: string) {
+    switch (key) {
+      case 'Escape':
+        if (!this.isFinished && !this.modalActive) {
+          this.exitReading();
+        }
+        break;
+    }
   }
 
   onGotAnswer(answer: string) {
@@ -74,7 +95,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       answers: answers + answer,
       points: points
     };
-    console.log('answer', wordId, this.answerData[wordId].answers);
     if (answer === 'n' && this.answerData[wordId].answers.length < 3) {
       // Incorrect answer, place card to the back of the stack if there have been less than 3 wrong answers
       this.flashCards.push(this.flashCards[0]);
@@ -85,17 +105,14 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     }
     // Remove current flashCard from stack
     this.flashCards.shift();
-    console.log('cards', this.flashCards);
     this.getNextFlashCard();
   }
 
   onBackToList() {
-    console.log('back to list');
     this.router.navigate([`/glossaries`]);
   }
 
   onMoreFlashCards() {
-    console.log('more flashcards');
     this.isReady = false;
     this.isFinished = false;
     this.answerData = {};
@@ -124,7 +141,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     });
     this.flashCards = this.sharedService.shuffleArray(flashCards);
     this.flashCardsDone = [];
-    console.log('flashcards', this.flashCards);
     this.getNextFlashCard();
     this.isReady = true;
   }
@@ -134,9 +150,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       this.currentFlashCard = this.flashCards[0];
       this.newFlashCard.next(this.currentFlashCard);
     } else {
-      this.saveResults();
-      this.isFinished = true;
-      this.sharedService.changeExerciseMode(false);
+      this.finish();
     }
   }
 
@@ -272,13 +286,28 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       this.log('Countdown aborted');
       abortNow = true;
     } else {
-      this.log('Flashcards aborted');
-      abortNow = true;
+      if (this.sessionData && this.sessionData.answers) {
+        const confirm = this.confirm.find(c => c.name === 'exit');
+        if (confirm) {
+          confirm.showModal = true;
+          this.modalActive = true;
+        }
+      } else {
+        this.log('Flashcards aborted');
+        abortNow = true;
+      }
     }
     if (abortNow) {
       this.sharedService.changeExerciseMode(false);
       this.sharedService.stopAudio();
+      this.router.navigate(['/glossaries']);
     }
+  }
+
+  private finish() {
+    this.saveResults();
+    this.isFinished = true;
+    this.sharedService.changeExerciseMode(false);
   }
 
   private getType() {

@@ -1,4 +1,4 @@
-<section>
+<section kmPressed (hasKeyPressed)="onKeyPressed($event)">
     <div class="exercise-header">
       <km-book-title *ngIf="!!book"
         [text]="text"
@@ -57,4 +57,17 @@
       </div>
     </div>
   </div>
+
+  <km-info-msg [msg]="msg" *ngIf="msg">
+  </km-info-msg>
+
+  <km-modal-confirm *ngIf="text"
+    [level]="'warning'"
+    [text]="text"
+    name="exit"
+    (confirmed)="onExitConfirmed($event)">
+    <div title>{{text["Warning"]}}</div>
+    <div message>{{text["ConfirmStop"]}}</div>
+  </km-modal-confirm>
+
 </section>
