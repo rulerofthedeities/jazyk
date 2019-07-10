@@ -71,6 +71,7 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
   }
 
   protected getAllUserData() {
+    console.log('getting user data glossary');
     this.isBooksReady = false;
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
@@ -90,14 +91,25 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
   }
 
   private processUserWordData(userwords: UserWordData[]) {
+    // First clear data (if different language has been selected)
+    Object.keys(this.userWordData).forEach((key, index) => {
+      this.userWordData[key].countTotal = 0;
+      this.userWordData[key].countTranslation = 0;
+    });
+    // Add new data
     userwords.forEach(count => {
       this.userWordData[count.bookId] = count;
     });
-    console.log('userwords', userwords, this.userWordData);
   }
 
   private processWordTranslations(translations: UserWordData[]) {
-    console.log('translations', translations);
+    // First clear data (if different language has been selected)
+    Object.keys(this.bookWordData).forEach((key, index) => {
+      this.bookWordData[key].countTotal = 0;
+      this.bookWordData[key].countTranslation = 0;
+    });
+
+    // Add new data
     translations.forEach(count => {
       this.bookWordData[count.bookId] = count;
     });

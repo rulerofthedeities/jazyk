@@ -25,6 +25,8 @@ export interface UserWord {
   bookLanCode: string;
   targetLanCode: string;
   pinned: boolean;
+  answers: string;
+  lastAnswer: string;
   translations: string;
 }
 
@@ -43,7 +45,6 @@ export interface FlashCard {
 export interface FlashCardData {
   userWords: UserWord[];
   words: Word[];
-  translations: WordTranslations[];
 }
 
 export interface FlashCardResult extends FlashCard {
@@ -53,6 +54,7 @@ export interface FlashCardResult extends FlashCard {
 
 export interface AnswerData {
   answers: string;
+  previousAnswers: string;
   points: number;
 }
 

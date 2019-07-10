@@ -138,6 +138,19 @@ module.exports = {
       });
     });
   },
+  getChapterWordList: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
+          targetLanCode = req.params.lan,
+          key = 'translationSummary.' + targetLanCode,
+          query = {bookId, chapterSequence, [key]: {$exists: true}};
+    console.log('fetching words for chapter', query);
+    WordList.find(query, (err, words) => {
+      response.handleError(err, res, 400, 'Error fetching chapter word list', () => {
+        response.handleSuccess(res, words);
+      });
+    });
+  },
   getUserWordList: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.params.bookId),
@@ -177,7 +190,7 @@ module.exports = {
               query = {_id: {$in: wordIds}};
         WordList.find(query, (err, words) => {
           response.handleError(err, res, 400, 'Error fetching word list for my flashcards', () => {
-            response.handleSuccess(res, {userWords, words, translations: null});
+            response.handleSuccess(res, {userWords, words});
           });
         });
       });
@@ -187,31 +200,40 @@ module.exports = {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           userLanCode = req.params.lan,
           maxWords = req.params.max || 10,
+          key = 'translationSummary.' + userLanCode,
           query = {
             bookId,
-            translations: {
-              $elemMatch: {
-                lanCode: userLanCode,
-                translation: {$ne: ''}
-              }
-            }
+            [key]: {$exists: true}
           },
-          translationPipeline = [
+          wordsPipeline = [
             {$match: query},
             {$sample: {size: parseInt(maxWords, 10)}}
           ];
+    console.log('key', key);
+    console.log('query', query);
     // Get translations first (to ensure there are translations for a word), then get corresponding words
-    WordTranslations.aggregate(translationPipeline, (err, translations) => {
+    WordList.aggregate(wordsPipeline, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching word translations for all flashcards', () => {
+        // Translation summary should be string io object
+        words.forEach(word => {
+          word.translationSummary = word.translationSummary[userLanCode];
+        })
         // For each word translation, find matching word
-        const wordIds = translations.map(tl => tl.wordId),
-        query = {_id: {$in: wordIds}};
-        WordList.find(query, (err, words) => {
-          console.log('words', words);
-          response.handleError(err, res, 400, 'Error fetching word list for all flashcards', () => {
-            response.handleSuccess(res, {userWords: null, words, translations: translations});
-          });
-        });
+        const wordIds = words.map(w => w._id),
+        query = {wordId: {$in: wordIds}};
+        console.log('user words', query);
+        //WordList.find(query, (err, words) => {
+          //console.log('words', words);
+          // response.handleError(err, res, 400, 'Error fetching word list for all flashcards', () => {
+            // Get all userword answer for words
+            UserWordList.find(query, (err, userWords) => {
+              console.log('userwords', userWords);
+              response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
+                response.handleSuccess(res, {userWords: userWords, words});
+              });
+            });
+          //});
+        //});
       });
     });
   },
@@ -362,6 +384,7 @@ module.exports = {
         const wordId = new mongoose.Types.ObjectId(flashcard.wordId),
               translations = flashcard.translations.split(', ').join('|'),
               lastAnswer = flashcard.answers.slice(-1),
+              answers = flashcard.answers,
               query = {
                 wordId,
                 bookId,
@@ -373,6 +396,7 @@ module.exports = {
             filter: query,
             update: {
               $set: {
+                answers: answers,
                 // answers: {$concat: [ "$answers", flashcard.answers]} // Only from v4.2 on
                 lastAnswer: lastAnswer,
                 dtFlashcard: new Date()
@@ -393,5 +417,23 @@ module.exports = {
         });
       });
     }
+  },
+  updateSummary: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          wordId = new mongoose.Types.ObjectId(req.body.wordId),
+          targetLanCode = req.body.userLanCode,
+          summary = req.body.summary,
+          query = {_id: wordId, bookId},
+          key = 'translationSummary.' + targetLanCode,
+          update = {
+            $set: {
+              [key]: summary
+            }
+          };
+    WordList.findOneAndUpdate(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error setting summary in word', () => {
+        response.handleSuccess(res, result);
+      });
+    });
   }
 }

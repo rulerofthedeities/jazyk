@@ -91,10 +91,16 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           answers = this.answerData[wordId] ? this.answerData[wordId].answers || '' : '';
     this.sessionData.answers += answer;
     this.sessionData.points.words += points;
-    this.answerData[wordId] = {
-      answers: answers + answer,
-      points: points
-    };
+    if (this.answerData[wordId]) {
+      this.answerData[wordId].answers = answers + answer;
+      this.answerData[wordId].points = points;
+    } else {
+      this.answerData[wordId] = {
+        answers: answers + answer,
+        previousAnswers: '',
+        points: points
+      };
+    }
     if (answer === 'n' && this.answerData[wordId].answers.length < 3) {
       // Incorrect answer, place card to the back of the stack if there have been less than 3 wrong answers
       this.flashCards.push(this.flashCards[0]);
@@ -128,6 +134,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   private setFlashCards(words: Word[]) {
     const flashCards = [];
     words.forEach(word => {
+      console.log('translationSummary', word.translationSummary);
       flashCards.push({
         wordId: word._id,
         word: word.word,
@@ -211,34 +218,31 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        const words = this.mapTranslationsWithWords(data);
+        console.log('got words', data);
+        const words = this.mapUserData(data);
         this.setFlashCards(words);
       }
     );
   }
 
-  private mapTranslationsWithWords(data: FlashCardData): Word[] {
+  private mapUserData(data: FlashCardData): Word[] {
     console.log('lancode', this.userLanCode);
     const words = data.words,
-          userWords = data.userWords, // only for my glossary
-          translations = data.translations; // only for all glossary
+          userWords = data.userWords; // only for my glossary
+          // translations = data.translations; // only for all glossary
+    console.log('userwords mapping', userWords);
     if (userWords) {
       // My glossary: map word with user translation
       words.forEach(word => {
         const userWord = userWords.find(uWord => uWord.wordId === word._id);
         if (userWord) {
           word.translationSummary = userWord.translations;
-        }
-      });
-    } else {
-      // All glossary: map word with default translations
-      console.log('translations', data.translations, translations);
-      words.forEach(word => {
-        const translation = translations.find(tl => tl.wordId === word._id);
-        console.log('translation', translation);
-        if (translation) {
-          translation.translations = translation.translations.filter(tl => tl.lanCode === this.userLanCode);
-          word.translationSummary = this.wordlistService.createTranslationsSummary(translation, '|');
+          this.answerData[word._id] = {
+            answers: '',
+            previousAnswers: userWord.answers, // previous answers necessary until mongo v4.2
+            points: 0
+          };
+          console.log('answerdata', word._id, this.answerData[word._id]);
         }
       });
     }
@@ -261,7 +265,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       this.flashCardsDone.forEach(flashCard => {
         const answer = this.answerData[flashCard.wordId];
         if (answer) {
-          flashCard.answers = answer.answers;
+          flashCard.answers = (answer.previousAnswers || '') + answer.answers;
           flashCardsToSave.push(flashCard);
         }
       })

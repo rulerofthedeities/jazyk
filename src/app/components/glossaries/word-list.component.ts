@@ -113,7 +113,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   onAddToMyWordList(word: Word, i: number) {
     if (!word.pinned) {
       const translations = this.wordTranslations ? this.wordTranslations[this.currentLetter][i] : null,
-            summary = this.wordListService.createTranslationsSummary(translations, '|');
+            summary = this.wordListService.createTranslationsSummary(translations);
       this.addToMyWordList(word, summary, i);
     }
   }
@@ -152,7 +152,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.editingWord = null;
   }
 
-  onNewTranslations(data: {translations: WordTranslations, i: number}) {
+  onNewTranslations(data: {translations: WordTranslations, i: number}, word: Word) {
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
     let currentTranslation = this.wordTranslations[this.currentLetter][data.i];
@@ -162,6 +162,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       currentTranslation = data.translations;
     }
     currentTranslation.summary = this.wordListService.createTranslationsSummary(currentTranslation);
+    this.setWordTranslationSummary(word, currentTranslation.summary);
     this.sortTranslations(currentTranslation);
     data.translations.translations.forEach(tl => {
       if (tl.source === 'OmegaWiki') {
@@ -174,7 +175,9 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  onUpdatedTranslation(data: {translations: WordTranslations, i: number}) {
+  onUpdatedTranslation(data: {translations: WordTranslations, i: number}, word: Word) {
+    console.log('updated translation', data);
+    this.setWordTranslationSummary(word, data.translations.summary);
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
     this.wordTranslations[this.currentLetter][data.i].translations = data.translations.translations;
@@ -191,10 +194,17 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  onRemoveTranslation(i: number, translation: WordTranslation) {
+  onRemoveTranslation(i: number, translation: WordTranslation, word: Word) {
     this.clearNoTranslationMsg();
     if (this.canEdit) {
-      this.removeTranslation(this.wordTranslations[this.currentLetter][i]._id, translation._id);
+      this.removeTranslation(this.wordTranslations[this.currentLetter][i]._id, translation._id, word);
+    }
+  }
+
+  onSetTranslationToNone(i: number, translation: WordTranslation, word: Word) {
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.setTranslationToNone(this.wordTranslations[this.currentLetter][i]._id, translation._id, word);
     }
   }
 
@@ -261,6 +271,10 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     msg += ' ' + this.text['ForTheLanguage'] + ` '${this.text[this.translationLan.name]}'.`;
     msg += ' ' + this.text['ToAddWords'];
     return msg;
+  }
+
+  getSummary(currentLetter: number, i: number) {
+    return this.wordTranslations[currentLetter][i] ? this.wordTranslations[currentLetter][i].summary.replace(/\|/g, ', ') : '';
   }
 
   private setDisplayWords(tab: string) {
@@ -658,14 +672,34 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private removeTranslation(translationId: string, elementId: string) {
+  private removeTranslation(translationId: string, elementId: string, word: Word) {
     this.translationService
     .removeWordTranslation(translationId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id.toString() === translationId);
+      console.log('remove tl', this.wordTranslations[this.currentLetter]);
+      const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id && wt._id.toString() === translationId);
       if (tl) {
         tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
+        tl.summary = this.wordListService.createTranslationsSummary(tl);
+        console.log('remove user translation', word, tl.summary);
+        this.setWordTranslationSummary(word, tl.summary);
+      }
+    });
+  }
+
+  private setTranslationToNone(translationId: string, elementId: string, word: Word) {
+    this.translationService
+    .setWordTranslationToNone(translationId, elementId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe( result => {
+      console.log('set tl to none', this.wordTranslations[this.currentLetter]);
+      const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id && wt._id.toString() === translationId);
+      if (tl) {
+        tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
+        tl.summary = this.wordListService.createTranslationsSummary(tl);
+        console.log('set user translation to none', word, tl.summary);
+        this.setWordTranslationSummary(word, tl.summary);
       }
     });
   }
@@ -679,6 +713,19 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.editingWord = null;
       const wordToUpdate = this.words.find(w => w._id === word._id);
       wordToUpdate.translationSummary = newTranslation;
+      console.log('update user translation', newTranslation);
+      this.setWordTranslationSummary(word, newTranslation);
+    });
+  }
+
+  private setWordTranslationSummary(word: Word, summary: string) {
+    // Add summary to book word
+    console.log('adding summary to word', summary, word);
+    this.wordListService
+    .updateTranslationSummary(this.book._id, word._id, summary, this.userLanCode)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe( result => {
+      console.log('updated summary', result);
     });
   }
 

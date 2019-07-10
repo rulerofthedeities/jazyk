@@ -182,14 +182,16 @@
                 </button>
               </span>
             </span>
-            <span *ngIf="bookType==='glossary'" #flashcardDropdown>
+            <span *ngIf="bookType==='glossary'">
+              <!--
               <button type="button"
                 (click)="onStartVocabularyTest()"
                 class="btn btn-primary"
                 [class.btn-lg]="tpe!=='home'">
                 <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
               </button>
-              <span class="dropdown">
+              -->
+              <span class="dropdown" #flashcardDropdown *ngIf="hasFlashCards">
                 <button class="btn btn-primary"
                   [class.dropdown-toggle]="showFlashCardDropdown"
                   [class.btn-lg]="tpe!=='home'"
@@ -207,7 +209,7 @@
                 </ul>
               </span>
             </span>
-            <span *ngIf="book.wordListPublished">
+            <span *ngIf="book.wordListPublished && bookType==='glossary'">
               <button type="button"
                 (click)="onWordList()"
                 class="btn btn-info"

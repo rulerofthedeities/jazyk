@@ -85,12 +85,18 @@ export class WordListService {
     .put<boolean>(`/api/userwordlist/word`, {bookId, wordId, newTranslation, userLanCode});
   }
 
-  createTranslationsSummary(wordTranslations: WordTranslations, separator = ', '): string {
+  updateTranslationSummary(bookId: string, wordId: string, summary: string, userLanCode: string) {
+    return this.http
+    .put<boolean>(`/api/wordlist/summary`, {bookId, wordId, summary, userLanCode});
+  }
+
+  createTranslationsSummary(wordTranslations: WordTranslations, separator = '|'): string {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],
         sameTranslation: TranslationScore;
     if (wordTranslations) {
       wordTranslations.translations.forEach((tl, i) => {
+        console.log(tl.translation);
         if (tl.translation !== '<none>') {
           sameTranslation = translations.find(t => t.word === tl.translation);
           if (sameTranslation) {

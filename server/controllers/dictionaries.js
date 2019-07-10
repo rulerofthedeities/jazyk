@@ -116,7 +116,24 @@ module.exports = {
         response.handleSuccess(res, true);
       });
     });
-
+  },
+  translationtonone: (req, res) => {
+    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
+          options = {
+            multi: false
+          },
+          query = {
+            _id: translationId,
+            translations: {$elemMatch: {_id: translationElementId}},
+          },
+          update = {$set: {'translations.$.translation': '<none>'}};
+    Translations.findOneAndUpdate(query, update, options, (err, result) => {
+      console.log('err', err);
+      response.handleError(err, res, 400, 'Error setting word translation to none', () => {
+        response.handleSuccess(res, true);
+      });
+    });
   },
   getLetterTranslations: (req, res) => {
     const bookLan = req.body.bookLan,

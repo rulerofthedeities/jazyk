@@ -151,6 +151,7 @@
         hide-delay="0"
         (click)="onAddToMyWordList(word, i)">
       </span>
+      <!-- MY WORDS EDITING -->
       <span *ngIf="tab==='mywords' && editingWord === null"
         class="fa fa-times pull-right"
         [tooltip]="text['RemoveFromMyWordList']"
@@ -175,7 +176,7 @@
           {{text["NoWordTranslations"]}}
         </span>
         <span *ngIf="hasSummary(i)">
-          {{wordTranslations[currentLetter][i]?.summary}}
+          {{getSummary(currentLetter, i)}}
         </span>
       </div>
     </div>
@@ -212,10 +213,17 @@
           <button *ngIf="translation._id"
             type="button"
             class="btn btn-danger"
-            (click)="onRemoveTranslation(i, translation)">
+            (click)="onRemoveTranslation(i, translation, word)">
             <span class="fa fa-trash-o"></span>
           </button>
+          <button *ngIf="translation._id && (translation.source !== 'OmegaWiki')"
+            type="button"
+            class="btn btn-danger"
+            (click)="onSetTranslationToNone(i, translation, word)">
+            <span class="fa fa-trash-o fa-spacing"></span>Set None
+          </button>
         </div>
+        <!-- SINGLE TRANSLATION -->
         <km-admin-translation *ngIf="editingTranslationId === translation._id && canEdit"
           [text]="text"
           [book]="book"
@@ -227,7 +235,7 @@
           [i]="i"
           [elementNr]="j"
           (cancelTranslation)="onCancelTranslation()"
-          (updatedTranslations)="onUpdatedTranslation($event)">
+          (updatedTranslations)="onUpdatedTranslation($event, word)">
         </km-admin-translation>
         <div class="definition" *ngIf="editingTranslationId !== translation._id">
           <div class="tl-word">{{translation.translation}}</div>
@@ -238,6 +246,7 @@
       </div>
     </div>
   </div>
+  <!-- TRANSLATION BUTTONS -->
   <km-admin-translation *ngIf="!isLoadingTranslations && canEdit"
     [text]="text"
     [book]="book"
@@ -246,7 +255,7 @@
     [translations]="wordTranslation"
     [userId]="userId"
     [i] = "i"
-    (newTranslations)="onNewTranslations($event)">
+    (newTranslations)="onNewTranslations($event, word)">
   </km-admin-translation>
   <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentLetter][i]"
     [text]="text"
@@ -256,7 +265,7 @@
     [bookId]="book?._id"
     [word]="word"
     [i] = "i"
-    (newTranslations)="onNewTranslations($event)"
+    (newTranslations)="onNewTranslations($event, word)"
     (noTranslations)="onNoTranslations($event)">
   </km-word-translation>
   <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[currentLetter][i] && !isLoadingTranslations"
@@ -267,8 +276,8 @@
     [bookId]="book?._id"
     [word]="word"
     [i] = "i"
-    (newTranslations)="onNewTranslations($event)"
-  ></km-word-translation>
+    (newTranslations)="onNewTranslations($event, word)">
+  </km-word-translation>
   <km-word-translation *ngIf="!hasMSTranslations[currentLetter][i] && !isLoadingTranslations"
     [text]="text"
     [source]="'Microsoft'"
@@ -277,8 +286,8 @@
     [bookId]="book?._id"
     [word]="word"
     [i] = "i"
-    (newTranslations)="onNewTranslations($event)"
-  ></km-word-translation>
+    (newTranslations)="onNewTranslations($event, word)">
+  </km-word-translation>
   <div *ngIf="noTranslation.i === i" class="no-translation">
     {{noTranslation.msg}}
   </div>

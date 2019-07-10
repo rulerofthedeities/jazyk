@@ -411,10 +411,12 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private getAudioAndChapter(bookId: string, position: Position) {
     zip(
       this.readnListenService.fetchChapter(bookId, this.bookType, position.chapterSequence),
-      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence)
+      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence),
+      this.readnListenService.fetchWordList(this.book, position.chapterSequence, this.userLanCode)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
+      console.log('word list', data[2]);
       this.processChapter(data[0], data[1], position);
       this.isLoading = false;
     });

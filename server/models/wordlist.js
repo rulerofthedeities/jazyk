@@ -4,8 +4,10 @@ const mongoose = require('mongoose'),
       mongooseUniqueValidator = require('mongoose-unique-validator'),
       Schema = mongoose.Schema;
 
-const wordSchema = new Schema({}, { strict: false }),
-      WordModel = mongoose.model('bookword', wordSchema);
+const wordSchema = new Schema({}, { strict: false });
+
+wordSchema.index({bookId: 1});
+const WordModel = mongoose.model('bookword', wordSchema)
 
 const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
@@ -15,6 +17,7 @@ const userWordSchema = new Schema({
   targetLanCode: String,
   pinned: Boolean,
   lastAnswer: String,
+  answers: String,
   dtFlashcard: {type: Date, default: Date.now},
   translations: {type: String, trim: true}
 });

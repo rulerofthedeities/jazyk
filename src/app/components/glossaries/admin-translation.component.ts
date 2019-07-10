@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
+import { WordListService } from '../../services/word-list.service';
 import { Book } from 'app/models/book.model';
 import { Word, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language } from '../../models/main.model';
@@ -33,7 +34,8 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
   translationNote: string;
 
   constructor(
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private wordlistService: WordListService
   ) {}
 
   ngOnInit() {
@@ -106,6 +108,9 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
         this.submitting = false;
         this.translations.translations[this.elementNr].translation = translation;
         this.translations.translations[this.elementNr].definition = note;
+        console.log('summary', translation, this.wordlistService.createTranslationsSummary(this.translations));
+        this.translations.summary = this.wordlistService.createTranslationsSummary(this.translations);
+        console.log('updated tl', this.translations);
         this.updatedTranslations.emit({translations: this.translations, i: this.i});
     });
   }

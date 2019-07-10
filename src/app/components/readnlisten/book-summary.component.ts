@@ -69,6 +69,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   isTestFinished = false;
   isCompact = false;
   showFlashCardDropdown = false;
+  hasFlashCards = false;
   defaultImage: string;
   authorsTxt: string;
   linksTxt: string;
@@ -115,6 +116,11 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkTranslated();
     this.setActivity();
     this.setGlossaryImage();
+    this.hasFlashCards = false;
+    console.log('checking has flashcard', this.book.title, this.glossaryData, this.userGlossary);
+    if ((this.glossaryData && this.glossaryData.countTranslation > 0) || (this.userGlossary && this.userGlossary.countTranslation > 0)) {
+      this.hasFlashCards = true;
+    }
   }
 
   onShowRepeatHistory(isTest: boolean) {

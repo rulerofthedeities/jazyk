@@ -164,6 +164,7 @@ module.exports = {
     router.get('/wordlists/published/:lan/:sort', wordlist.getPublishedLanGlossaries);
 
     router.get('/wordlist/:bookId', wordlist.getWordList);
+    router.get('/wordlist/:bookId/:lan/:sequence', wordlist.getChapterWordList);
     router.get('/userwordlist/:bookId/:lan', wordlist.getUserWordList);
     router.get('/userwordlists/count/:lan/:targetLan', wordlist.getUserWordListCount);
     router.get('/bookwordlists/count/:lan/:targetLan', wordlist.getBookWordListCount);
@@ -184,6 +185,8 @@ module.exports = {
     router.put('/wordlist/all/translations', dictionaries.getAllTranslations);
     router.put('/wordlist/word/translation', dictionaries.updateTranslation);
     router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation);
+    router.put('/wordlist/word/translationtonone', dictionaries.translationtonone);
+    router.put('/wordlist/summary', wordlist.updateSummary);
 
     app.use('/api/', router);
 

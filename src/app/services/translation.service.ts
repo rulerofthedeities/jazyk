@@ -75,6 +75,13 @@ export class TranslationService {
     });
   }
 
+  setWordTranslationToNone(translationId: string, translationElementId: string): Observable<boolean> {
+    return this.http
+    .put<boolean>('/api/wordlist/word/translationtonone', {
+      translationId, translationElementId
+    });
+  }
+
   /*** Sentence Translations ***/
 
   fetchSentenceTranslations(
