@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChildren } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TooltipDirective } from 'ng2-tooltip-directive';
 import { UserService } from '../../services/user.service';
 import { SharedService, awsPath } from '../../services/shared.service';
@@ -73,8 +73,10 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   tab = 'glossary';
   totalWords: number[] = [];
   editingWord: number = null;
+  hasFlashcards = false;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private location: Location,
     private sharedService: SharedService,
@@ -100,6 +102,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.tab = newTab;
     this.setDisplayWords(newTab);
     this.goToLetter(this.currentLetter);
+    this.checkIfFlashcardsAvailable();
   }
 
   onGoToLetter(newLetterNr) {
@@ -108,6 +111,12 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.hasLetter[this.tab][newLetterNr]) {
       this.goToLetter(newLetterNr);
     }
+  }
+
+  onStartFlashcards(tab: string, count: number) {
+    const tpe = tab === 'mywords' ? 'my' : 'all';
+    this.log(`Start flash cards for ${this.book.title}`);
+    this.router.navigate([`/glossaries/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
   }
 
   onAddToMyWordList(word: Word, i: number) {
@@ -176,7 +185,6 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onUpdatedTranslation(data: {translations: WordTranslations, i: number}, word: Word) {
-    console.log('updated translation', data);
     this.setWordTranslationSummary(word, data.translations.summary);
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
@@ -217,6 +225,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMyLanguageSelected(lan: Language) {
+    this.userService.setUserLanCode(lan.code);
     if (this.tooltip) {
       this.tooltip.hide();
     }
@@ -239,6 +248,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.checkLetters('mywords');
       this.setDisplayWords(this.tab);
       this.countWords();
+      this.checkIfFlashcardsAvailable();
     });
   }
 
@@ -542,6 +552,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       // Load all translations at once
       this.getAllTranslations();
     }
+    this.checkIfFlashcardsAvailable();
   }
 
   private getTranslationsLetter(letter: number) {
@@ -584,6 +595,7 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.hasLetter['glossary'][-1] = true;
         this.hasLetter['mywords'][-1] = true;
         this.goToLetter(this.words.length > this.maxWordsPerPage ? 0 : -1);
+        this.checkIfFlashcardsAvailable();
         this.isLoadingTranslations = false;
       }
     );
@@ -677,12 +689,10 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .removeWordTranslation(translationId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      console.log('remove tl', this.wordTranslations[this.currentLetter]);
       const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id && wt._id.toString() === translationId);
       if (tl) {
         tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
         tl.summary = this.wordListService.createTranslationsSummary(tl);
-        console.log('remove user translation', word, tl.summary);
         this.setWordTranslationSummary(word, tl.summary);
       }
     });
@@ -693,12 +703,10 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
     .setWordTranslationToNone(translationId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      console.log('set tl to none', this.wordTranslations[this.currentLetter]);
       const tl = this.wordTranslations[this.currentLetter].find(wt => wt._id && wt._id.toString() === translationId);
       if (tl) {
         tl.translations = tl.translations.filter(tlElement => tlElement._id.toString() !== elementId);
         tl.summary = this.wordListService.createTranslationsSummary(tl);
-        console.log('set user translation to none', word, tl.summary);
         this.setWordTranslationSummary(word, tl.summary);
       }
     });
@@ -713,20 +721,33 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.editingWord = null;
       const wordToUpdate = this.words.find(w => w._id === word._id);
       wordToUpdate.translationSummary = newTranslation;
-      console.log('update user translation', newTranslation);
       this.setWordTranslationSummary(word, newTranslation);
     });
   }
 
   private setWordTranslationSummary(word: Word, summary: string) {
     // Add summary to book word
-    console.log('adding summary to word', summary, word);
     this.wordListService
     .updateTranslationSummary(this.book._id, word._id, summary, this.userLanCode)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      console.log('updated summary', result);
+      this.checkIfFlashcardsAvailable();
     });
+  }
+
+  private checkIfFlashcardsAvailable() {
+    // Check if there are translations for current tab & language so we know when to show the flashcards button
+    if (this.tab === 'glossary') {
+      if (this.wordTranslations[-1]) {
+        const tl = this.wordTranslations[-1].find(wtl => !!wtl.summary);
+        this.hasFlashcards = !!tl;
+      } else {
+        this.hasFlashcards = false;
+      }
+    } else {
+      const filteredWords = this.words.filter(word => word.pinned && !!word.translationSummary);
+      this.hasFlashcards = !!filteredWords.length;
+    }
   }
 
   private getDependables(lan) {
@@ -750,6 +771,13 @@ export class BookWordListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.setTargetLan(dependables.userLanguages); // for omega wiki code
       }
     );
+  }
+
+  private log(message: string) {
+    this.sharedService.sendEventMessage({
+      message,
+      source: 'BookWordListComponent'
+    });
   }
 
   ngOnDestroy() {

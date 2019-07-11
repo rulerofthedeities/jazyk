@@ -71,7 +71,6 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
   }
 
   protected getAllUserData() {
-    console.log('getting user data glossary');
     this.isBooksReady = false;
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),

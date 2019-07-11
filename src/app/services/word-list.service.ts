@@ -96,7 +96,6 @@ export class WordListService {
         sameTranslation: TranslationScore;
     if (wordTranslations) {
       wordTranslations.translations.forEach((tl, i) => {
-        console.log(tl.translation);
         if (tl.translation !== '<none>') {
           sameTranslation = translations.find(t => t.word === tl.translation);
           if (sameTranslation) {

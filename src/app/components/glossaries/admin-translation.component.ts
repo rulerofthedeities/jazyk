@@ -108,9 +108,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
         this.submitting = false;
         this.translations.translations[this.elementNr].translation = translation;
         this.translations.translations[this.elementNr].definition = note;
-        console.log('summary', translation, this.wordlistService.createTranslationsSummary(this.translations));
         this.translations.summary = this.wordlistService.createTranslationsSummary(this.translations);
-        console.log('updated tl', this.translations);
         this.updatedTranslations.emit({translations: this.translations, i: this.i});
     });
   }

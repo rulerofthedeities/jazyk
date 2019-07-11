@@ -129,7 +129,6 @@ module.exports = {
           },
           update = {$set: {'translations.$.translation': '<none>'}};
     Translations.findOneAndUpdate(query, update, options, (err, result) => {
-      console.log('err', err);
       response.handleError(err, res, 400, 'Error setting word translation to none', () => {
         response.handleSuccess(res, true);
       });

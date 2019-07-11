@@ -497,6 +497,10 @@ span.canrecommend:hover {
   top: 18px;
   right: -10px;
 }
+.glossary .icons {
+  position: relative;
+  top: 25px;
+}
 .compact .icons .fa {
   font-size: 18px;
 }

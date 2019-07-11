@@ -134,7 +134,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   private setFlashCards(words: Word[]) {
     const flashCards = [];
     words.forEach(word => {
-      console.log('translationSummary', word.translationSummary);
       flashCards.push({
         wordId: word._id,
         word: word.word,
@@ -218,7 +217,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        console.log('got words', data);
         const words = this.mapUserData(data);
         this.setFlashCards(words);
       }
@@ -226,11 +224,9 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   }
 
   private mapUserData(data: FlashCardData): Word[] {
-    console.log('lancode', this.userLanCode);
     const words = data.words,
           userWords = data.userWords; // only for my glossary
           // translations = data.translations; // only for all glossary
-    console.log('userwords mapping', userWords);
     if (userWords) {
       // My glossary: map word with user translation
       words.forEach(word => {
@@ -242,7 +238,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
             previousAnswers: userWord.answers, // previous answers necessary until mongo v4.2
             points: 0
           };
-          console.log('answerdata', word._id, this.answerData[word._id]);
         }
       });
     }
@@ -256,9 +251,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       .saveSession(this.sessionData)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
-        result => {
-          console.log('session saved');
-        }
+        result => {}
       );
       // Add answers to flashcards
       const flashCardsToSave: FlashCard[] = [];
@@ -270,15 +263,11 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
         }
       })
       // Save answers in user wordlist
-      console.log('flashcards done', flashCardsToSave);
-      console.log('flashcards answer', flashCardsToSave[0].answers);
       this.wordlistService
       .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
-        result => {
-          console.log('answers saved');
-        }
+        result => {}
       );
     }
   }
@@ -321,7 +310,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         this.glossaryType = data.tpe === 'my' ? 'my' : 'all';
-        console.log('flashcards type', this.glossaryType);
     });
   }
 

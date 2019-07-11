@@ -416,7 +416,6 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      console.log('word list', data[2]);
       this.processChapter(data[0], data[1], position);
       this.isLoading = false;
     });

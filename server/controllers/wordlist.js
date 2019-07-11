@@ -88,8 +88,6 @@ module.exports = {
             {$project: projection}
           ];
     WordTranslations.aggregate(pipeline, (err, result) => {
-      console.log('err', err);
-      console.log('result', result);
       response.handleError(err, res, 400, 'Error fetching word translations count', () => {
         response.handleSuccess(res, result);
       });
@@ -144,7 +142,6 @@ module.exports = {
           targetLanCode = req.params.lan,
           key = 'translationSummary.' + targetLanCode,
           query = {bookId, chapterSequence, [key]: {$exists: true}};
-    console.log('fetching words for chapter', query);
     WordList.find(query, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching chapter word list', () => {
         response.handleSuccess(res, words);
@@ -209,8 +206,6 @@ module.exports = {
             {$match: query},
             {$sample: {size: parseInt(maxWords, 10)}}
           ];
-    console.log('key', key);
-    console.log('query', query);
     // Get translations first (to ensure there are translations for a word), then get corresponding words
     WordList.aggregate(wordsPipeline, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching word translations for all flashcards', () => {
@@ -221,19 +216,12 @@ module.exports = {
         // For each word translation, find matching word
         const wordIds = words.map(w => w._id),
         query = {wordId: {$in: wordIds}};
-        console.log('user words', query);
-        //WordList.find(query, (err, words) => {
-          //console.log('words', words);
-          // response.handleError(err, res, 400, 'Error fetching word list for all flashcards', () => {
-            // Get all userword answer for words
-            UserWordList.find(query, (err, userWords) => {
-              console.log('userwords', userWords);
-              response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
-                response.handleSuccess(res, {userWords: userWords, words});
-              });
-            });
-          //});
-        //});
+        // Get all userword answer for words
+        UserWordList.find(query, (err, userWords) => {
+          response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
+            response.handleSuccess(res, {userWords: userWords, words});
+          });
+        });
       });
     });
   },
@@ -376,11 +364,8 @@ module.exports = {
           targetLanCode = req.body.targetLanCode,
           bookLanCode = req.body.bookLanCode,
           flashcards = req.body.flashCardsToSave;
-    console.log('flashcards', flashcards);
     if (flashcards.length > 0 && flashcards[0].answers) {
-      console.log('ok');
       let docs = flashcards.map(flashcard => {
-        console.log('answer', flashcard.answers, flashcard.answers.slice(-1));
         const wordId = new mongoose.Types.ObjectId(flashcard.wordId),
               translations = flashcard.translations.split(', ').join('|'),
               lastAnswer = flashcard.answers.slice(-1),

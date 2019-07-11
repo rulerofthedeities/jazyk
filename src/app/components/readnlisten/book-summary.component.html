@@ -4,6 +4,7 @@
       dashboard:tpe==='home',
       audiobook:bookType==='listen',
       readbook:bookType==='read',
+      glossary:bookType==='glossary',
       compact:isCompact
     }">
     <div class="read-bar" *ngIf="isAllFinished">
@@ -204,8 +205,8 @@
                 <ul
                   class="dropdown-menu"
                   [style.display]="showFlashCardDropdown ? 'block' : 'none'">
-                  <li><a (click)="onStartFlashcards('all')" >{{text["AppGlossary"]}} ({{glossaryData?.countTranslation | score}})</a></li>
-                  <li><a (click)="onStartFlashcards('my')">{{text["MyGlossary"]}} ({{userGlossary?.countTranslation | score}})</a></li>
+                  <li><a (click)="onStartFlashcards('all', glossaryData?.countTranslation)" >{{text["AppGlossary"]}} ({{glossaryData?.countTranslation | score}})</a></li>
+                  <li><a (click)="onStartFlashcards('my', userGlossary?.countTranslation)">{{text["MyGlossary"]}} ({{userGlossary?.countTranslation | score}})</a></li>
                 </ul>
               </span>
             </span>
@@ -255,20 +256,20 @@
                 <span *ngIf="!book.wordListPublished">({{book.difficulty?.nrOfWords | score}} {{text["intotal"]}})</span>
                 <span *ngIf="book.wordListPublished">({{book.nrOfWordsInList | score}} {{text["inwordlist"]}})</span>
               </div>
-              <div *ngIf="tpe!=='home'">
-                <ng-container *ngTemplateOutlet="actionTemplate;context:{
-                  isCompact: isCompact,
-                  tpe: tpe,
-                  text: text,
-                  userBookStatus: userBookStatus,
-                  userBookStatusTest: userBookStatusTest
-                }">
-                </ng-container>
-              </div>
+            </div>
+            <div *ngIf="tpe!=='home'">
+              <ng-container *ngTemplateOutlet="actionTemplate;context:{
+                isCompact: isCompact,
+                tpe: tpe,
+                text: text,
+                userBookStatus: userBookStatus,
+                userBookStatusTest: userBookStatusTest
+              }">
+              </ng-container>
             </div>
             <div *ngIf="bookType === 'glossary'">
               <div class="glossary-words">
-                {{book.nrOfWordsInList | score}} {{text["words"]}} ({{glossaryData?.countTranslation}} {{text["translated"]}})
+                {{book.nrOfWordsInList | score}} {{text["words"]}} ({{glossaryData?.countTranslation || text["None"]}} {{text["translated"]}})
                 <div *ngIf="!!userGlossary?.countTotal">
                   {{userGlossary.countTotal | score}} {{text["words"]}} {{text["inMyWordList"]}} ({{userGlossary.countTranslation}} {{text["translated"]}})
                 </div>

@@ -22,6 +22,13 @@
         {{text["MyWords"]}} ({{totalWords['mywords']}})
       </a>
     </li>
+    <li class="pull-right">
+      <button class="btn btn-primary btn-lg" *ngIf="hasFlashcards"
+        type="button"
+        (click)="onStartFlashcards(tab)">
+        <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
+      </button>
+    </li>
   </ul>
   <div class="panel panel-default main-panel">
     <div class="panel-body">

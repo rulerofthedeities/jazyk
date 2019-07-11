@@ -266,7 +266,8 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       case 'my':
         if (this.bookType === 'glossary') {
           this.filteredBooks = this.books.filter(b =>
-            this.userWordData[b._id] && this.userWordData[b._id].countTotal > 0
+            (this.userWordData[b._id] && this.userWordData[b._id].countTotal > 0) &&
+            (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed)
           );
         } else {
           this.filteredBooks = this.books.filter(

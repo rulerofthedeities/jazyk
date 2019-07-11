@@ -33,7 +33,7 @@
         <km-book-summary
           [book]="book"
           [bookType]="'glossary'"
-          [userBook]="null"
+          [userBook]="userBooks[book._id]"
           [userData]="null"
           [userGlossary]="userWordData[book._id]"
           [glossaryData]="bookWordData[book._id]"

@@ -23,7 +23,5 @@ export class BookFlashCardsResultComponent implements OnInit {
       flashCard.points = this.answers[flashCard.wordId].points;
       this.totalPoints += flashCard.points;
     });
-
-    console.log(this.answers, this.flashCards);
   }
 }

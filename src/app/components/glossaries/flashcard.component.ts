@@ -31,7 +31,6 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
     this.newFlashCard
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
-      console.log('got new card', event);
       this.isFlipped = false;
       this.showButtons = false;
       this.card = event;
@@ -71,29 +70,6 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
     this.showButtons = false;
     this.answered = true;
     this.answer.next(answer);
-    console.log('answer', answer);
-  }
-
-  private waitForFlip() {
-
-    // wait for card to flip
-    /*
-    if (this.platform.isBrowser) {
-      // Client only code
-      const wait = this.isFlipped ? 100 : 800;
-      console.log('wait', wait);
-      const timerObservable = timer(wait);
-      timerObservable
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(t => {
-        this.showButtons = true;
-        this.answered = false;
-      });
-    } else {
-      this.showButtons = true;
-      this.answered = false;
-    }
-    */
   }
 
   ngOnDestroy() {

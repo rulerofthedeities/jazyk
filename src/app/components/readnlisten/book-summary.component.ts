@@ -116,11 +116,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.checkTranslated();
     this.setActivity();
     this.setGlossaryImage();
-    this.hasFlashCards = false;
-    console.log('checking has flashcard', this.book.title, this.glossaryData, this.userGlossary);
-    if ((this.glossaryData && this.glossaryData.countTranslation > 0) || (this.userGlossary && this.userGlossary.countTranslation > 0)) {
-      this.hasFlashCards = true;
-    }
+    this.checkHasFlashCards();
   }
 
   onShowRepeatHistory(isTest: boolean) {
@@ -185,13 +181,15 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.unsubscribeTest();
   }
 
-  onStartFlashcards(tpe: string) {
-    this.log(`Start flash cards for ${this.book.title}`);
-    this.router.navigate([`/glossaries/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
+  onStartFlashcards(tpe: string, count: number) {
+    if (count > 0) {
+      this.log(`Start flash cards for ${this.book.title}`);
+      this.router.navigate([`/glossaries/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
+    }
   }
 
   onStartVocabularyTest() {
-    console.log('start vocabulary test');
+    // console.log('start vocabulary test');
   }
 
   onWordList() {
@@ -425,6 +423,13 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private checkHasFlashCards() {
+    this.hasFlashCards = false;
+    if ((this.glossaryData && this.glossaryData.countTranslation > 0) || (this.userGlossary && this.userGlossary.countTranslation > 0)) {
+      this.hasFlashCards = true;
+    }
+  }
+
   private checkSentencesDone() {
     this.checkSentencesDoneEach(this.currentUserData, this.userBookStatus);
     this.checkSentencesDoneEach(this.currentUserTestData, this.userBookStatusTest);
@@ -456,7 +461,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.book.img.includes('glossary')) {
         const readPath = '/jazyk/books/' + this.book.lanCode + '/',
               glossaryPath = readPath + 'glossary/';
-        console.log('img path', this.book.img, readPath, glossaryPath);
         this.book.img = this.book.img.replace(readPath, glossaryPath);
       }
     }
