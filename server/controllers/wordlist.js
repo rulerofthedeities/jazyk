@@ -212,7 +212,9 @@ module.exports = {
         // Translation summary should be string io object
         words.forEach(word => {
           word.translationSummary = word.translationSummary[userLanCode];
-        })
+        });
+        response.handleSuccess(res, {userWords: null, words});
+        /*
         // For each word translation, find matching word
         const wordIds = words.map(w => w._id),
         query = {wordId: {$in: wordIds}};
@@ -222,6 +224,7 @@ module.exports = {
             response.handleSuccess(res, {userWords: userWords, words});
           });
         });
+        */
       });
     });
   },
