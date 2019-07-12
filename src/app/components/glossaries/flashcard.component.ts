@@ -1,8 +1,7 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { PlatformService } from '../../services/platform.service';
 import { FlashCard } from 'app/models/word.model';
 import { LanPair } from '../../models/main.model';
-import { timer, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeWhile, delay } from 'rxjs/operators';
 
 @Component({
@@ -17,15 +16,12 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
   @Input() audioPath: string;
   @Input() private newFlashCard: Subject<FlashCard>;
   @Output() answer = new EventEmitter<string>();
+  flipping: Subject<boolean> = new Subject();
   card: FlashCard;
   private componentActive = true;
   isFlipped = false;
   showButtons = false;
   answered = false;
-
-  constructor (
-    private platform: PlatformService
-  ) {}
 
   ngOnInit() {
     this.newFlashCard
@@ -61,6 +57,7 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
   }
 
   private flip() {
+    this.flipping.next(true);
     this.isFlipped = true;
     this.showButtons = true;
     this.answered = false;

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FlashCard } from 'app/models/word.model';
-import { LanPair } from 'app/models/main.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'km-glossary-word',
@@ -15,4 +15,5 @@ export class GlossaryWordComponent {
   @Input() side = 'none';
   @Input() showWordType = true;
   @Input() showAudio = true;
+  @Input() flipped: Subject<boolean>;
 }
