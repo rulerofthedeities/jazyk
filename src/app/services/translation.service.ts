@@ -43,13 +43,13 @@ export class TranslationService {
     return this.http
     .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
   }
-
+/*
   fetchTranslationsLetter(book: Book, targetLan: string, letter: string): Observable<WordTranslations[]> {
     return this.http
     .put<WordTranslations[]>(`/api/wordlist/letter/translations/`, {letter, bookId: book._id, bookLan: book.lanCode, targetLan})
     .pipe(retry(3));
   }
-
+*/
   fetchWordTranslations(book: Book, targetLan: string): Observable<WordTranslations[]> {
     return this.http
     .put<WordTranslations[]>(`/api/wordlist/all/translations/`, {bookId: book._id, bookLan: book.lanCode, targetLan})
@@ -57,28 +57,28 @@ export class TranslationService {
   }
 
   updateWordTranslation(
-    translationId: string,
+    wordId: string,
     translationElementId: string,
     translation: string,
     note: string
   ): Observable<boolean>  {
     return this.http
     .put<boolean>('/api/wordlist/word/translation', {
-      translationId, translationElementId, translation, note
+      wordId, translationElementId, translation, note
     });
   }
 
-  removeWordTranslation(translationId: string, translationElementId: string): Observable<boolean> {
+  removeWordTranslation(wordId: string, translationElementId: string): Observable<boolean> {
     return this.http
     .put<boolean>('/api/wordlist/word/removetranslation', {
-      translationId, translationElementId
+      wordId, translationElementId
     });
   }
 
-  setWordTranslationToNone(translationId: string, translationElementId: string): Observable<boolean> {
+  setWordTranslationToNone(wordId: string, translationElementId: string): Observable<boolean> {
     return this.http
     .put<boolean>('/api/wordlist/word/translationtonone', {
-      translationId, translationElementId
+      wordId, translationElementId
     });
   }
 

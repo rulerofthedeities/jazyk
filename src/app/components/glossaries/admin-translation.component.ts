@@ -17,13 +17,11 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
   @Input() targetLan: Language;
   @Input() book: Book;
   @Input() word: Word;
-  @Input() translations: WordTranslations;
+  @Input() translation: WordTranslation;
   @Input() userId: string;
-  @Input() i: number;
-  @Input() elementNr: number;
   @Input() isEditing = false;
-  @Output() newTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
-  @Output() updatedTranslations = new EventEmitter<{translations: WordTranslations, i: number}>();
+  @Output() newTranslations = new EventEmitter<{translations: WordTranslations}>();
+  @Output() updatedTranslation = new EventEmitter<{translation: string, note: string, translationId: string}>();
   @Output() cancelTranslation = new EventEmitter<boolean>();
 
   private componentActive = true;
@@ -40,7 +38,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.isEditing) {
-      const tl = this.translations.translations[this.elementNr];
+      const tl = this.translation;
       this.translationEdit = tl.translation;
       this.translationNote = tl.definition;
     }
@@ -77,8 +75,10 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
     translationnote = translationnote || '';
     translationnote = translationnote.trim();
 
-    const translations = this.translations.translations;
-    const duplicate = translations.find(t => t.translation === translation && t.definition === translationnote);
+    let duplicate = false;
+    if (this.word.translations && this.word.translations.length) {
+      duplicate = !!this.word.translations.find(t => t.translation === translation && t.definition === translationnote);
+    }
     if (translation && !duplicate) {
       if (this.isEditing) {
         this.updateTranslation(translation, translationnote);
@@ -94,11 +94,10 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
   }
 
   private updateTranslation(translation: string, note: string) {
-    const elementId = this.translations.translations[this.elementNr]._id;
     this.translationService
     .updateWordTranslation(
-      this.translations._id,
-      elementId,
+      this.word._id,
+      this.translation._id,
       translation,
       note)
     .pipe(takeWhile(() => this.componentActive))
@@ -106,10 +105,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
       result => {
         this.showTranslationForm = false;
         this.submitting = false;
-        this.translations.translations[this.elementNr].translation = translation;
-        this.translations.translations[this.elementNr].definition = note;
-        this.translations.summary = this.wordlistService.createTranslationsSummary(this.translations);
-        this.updatedTranslations.emit({translations: this.translations, i: this.i});
+        this.updatedTranslation.emit({translation, note, translationId: this.translation._id});
     });
   }
 
@@ -126,8 +122,7 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
         lanCode: this.book.lanCode,
         word: this.word.word,
         translations: newTranslations
-      },
-      i: this.i
+      }
     });
     // Save
     this.translationService

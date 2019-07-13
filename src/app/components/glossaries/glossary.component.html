@@ -179,11 +179,11 @@
         <span class="fa fa-chevron-right"></span>
       </div>
       <div class="summary" (click)="onExpand(word, true)">
-        <span *ngIf="!hasSummary(i)" class="no-translations">
+        <span *ngIf="!hasTranslation(word)" class="no-translations">
           {{text["NoWordTranslations"]}}
         </span>
-        <span *ngIf="hasSummary(i)">
-          {{getSummary(currentLetter, i)}}
+        <span *ngIf="hasTranslation(word)">
+          {{getTranslation(word)}}
         </span>
       </div>
     </div>
@@ -194,7 +194,7 @@
       <ng-container *ngTemplateOutlet="wordDetail;context:{
         word: word,
         i:i,
-        wordTranslation: wordTranslations[currentLetter][i]
+        wordTranslation: word.translations
       }"></ng-container>
     </div>
     <div *ngIf="tab==='mywords'" class="summary">
@@ -207,14 +207,14 @@
 </ng-template>
 
 <ng-template #wordDetail let-i=i let-word=word let-wordTranslation=wordTranslation>
-  <div *ngIf="!isLoadingTranslations && wordTranslation.translations.length">
-    <div *ngFor="let translation of wordTranslation.translations; let j=index">
+  <div *ngIf="!isLoadingTranslations && word.translations && word.translations.length">
+    <div *ngFor="let translation of word.translations; let j=index">
       <div *ngIf="translation.translation !== '<none>'">
         <div class="buttons pull-right" *ngIf="canEdit && editingTranslationId !== translation._id">
           <button *ngIf="translation.source === 'Jazyk'"
             type="button"
             class="btn btn-primary"
-            (click)="onEditTranslation(j, translation)">
+            (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
           <button *ngIf="translation._id"
@@ -235,14 +235,12 @@
           [text]="text"
           [book]="book"
           [targetLan]="translationLan"
-          [word]="word.root ? word.root : word.word"
+          [word]="word"
           [isEditing]="true"
-          [translations]="wordTranslation"
+          [translation]="translation"
           [userId]="userId"
-          [i]="i"
-          [elementNr]="j"
           (cancelTranslation)="onCancelTranslation()"
-          (updatedTranslations)="onUpdatedTranslation($event, word)">
+          (updatedTranslation)="onUpdatedTranslation($event, word)">
         </km-admin-translation>
         <div class="definition" *ngIf="editingTranslationId !== translation._id">
           <div class="tl-word">{{translation.translation}}</div>
@@ -259,12 +257,11 @@
     [book]="book"
     [targetLan]="translationLan"
     [word]="word"
-    [translations]="wordTranslation"
+    [translation]="wordTranslation"
     [userId]="userId"
-    [i] = "i"
     (newTranslations)="onNewTranslations($event, word)">
   </km-admin-translation>
-  <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[currentLetter][i]"
+  <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[word._id]"
     [text]="text"
     [source]="'OmegaWiki'"
     [targetLan]="translationLan"
@@ -275,7 +272,7 @@
     (newTranslations)="onNewTranslations($event, word)"
     (noTranslations)="onNoTranslations($event)">
   </km-word-translation>
-  <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[currentLetter][i] && !isLoadingTranslations"
+  <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[word._id] && !isLoadingTranslations"
     [text]="text"
     [source]="'DeepL'"
     [targetLan]="translationLan"
@@ -285,7 +282,7 @@
     [i] = "i"
     (newTranslations)="onNewTranslations($event, word)">
   </km-word-translation>
-  <km-word-translation *ngIf="!hasMSTranslations[currentLetter][i] && !isLoadingTranslations"
+  <km-word-translation *ngIf="!hasMSTranslations[word._id] && !isLoadingTranslations"
     [text]="text"
     [source]="'Microsoft'"
     [targetLan]="translationLan"
@@ -304,12 +301,12 @@
     <div *ngIf="editingWord === i">
       <km-user-translation
         [text]="text"
-        [translations]="word.translationSummary"
+        [translations]="word.userTranslationSummary"
         (newTranslation)="onNewUserTranslation($event, word, i)"
         (cancelTranslation)="onCancelUserTranslation()">
       </km-user-translation>
     </div>
     <div *ngIf="editingWord !== i">
-        {{getUserTranslations(word.translationSummary)}}
+        {{getTranslation(word, 'mywords')}}
     </div>
   </ng-template>

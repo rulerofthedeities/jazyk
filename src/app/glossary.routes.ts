@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { GlossariesComponent } from './components/glossaries/glossaries.component';
-import { BookWordListComponent } from './components/glossaries/word-list.component';
+import { BookGlossaryComponent } from './components/glossaries/glossary.component';
 import { BookFlashCardsComponent } from './components/glossaries/flashcards.component';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'glossary/:id/:lan',
-    component: BookWordListComponent,
+    component: BookGlossaryComponent,
     data : {tpe : 'glossary'},
     canActivate: [AuthGuard]
   },

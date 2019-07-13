@@ -94,7 +94,7 @@ export class WordListService {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],
         sameTranslation: TranslationScore;
-    if (wordTranslations) {
+    if (wordTranslations && wordTranslations.translations) {
       wordTranslations.translations.forEach((tl, i) => {
         if (tl.translation !== '<none>') {
           sameTranslation = translations.find(t => t.word === tl.translation);

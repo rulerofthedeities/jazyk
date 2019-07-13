@@ -87,16 +87,16 @@ module.exports = {
     });
   },
   updateTranslation: (req, res) => {
-    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+    const wordId = new mongoose.Types.ObjectId(req.body.wordId),
           translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
           translation = req.body.translation,
           note = req.body.note,
           options = {new: true},
           query = {
-            _id: translationId,
+            wordId: wordId,
             translations: {$elemMatch: {_id: translationElementId}},
           },
-          update = {$set: {'translations.$.translation': translation, 'translations.$.note': note}};
+          update = {$set: {'translations.$.translation': translation, 'translations.$.definition': note}};
     Translations.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error updating word translation', () => {
         response.handleSuccess(res, true);
@@ -104,11 +104,11 @@ module.exports = {
     });
   },
   removeTranslation: (req, res) => {
-    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+    const wordId = new mongoose.Types.ObjectId(req.body.wordId),
           translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
           options = {multi: false},
           query = {
-            _id: translationId
+            wordId: wordId
           },
           update = {$pull: {'translations': {'_id': translationElementId}}};
     Translations.findOneAndUpdate(query, update, options, (err, result) => {
@@ -118,13 +118,13 @@ module.exports = {
     });
   },
   translationtonone: (req, res) => {
-    const translationId = new mongoose.Types.ObjectId(req.body.translationId),
+    const wordId = new mongoose.Types.ObjectId(req.body.wordId),
           translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
           options = {
             multi: false
           },
           query = {
-            _id: translationId,
+            wordId: wordId,
             translations: {$elemMatch: {_id: translationElementId}},
           },
           update = {$set: {'translations.$.translation': '<none>'}};
@@ -134,6 +134,7 @@ module.exports = {
       });
     });
   },
+  /*
   getLetterTranslations: (req, res) => {
     const bookLan = req.body.bookLan,
           bookId = req.body.bookId,
@@ -151,6 +152,7 @@ module.exports = {
       });
     });
   },
+  */
   getAllTranslations: (req, res) => {
     const bookLan = req.body.bookLan,
           bookId = req.body.bookId,

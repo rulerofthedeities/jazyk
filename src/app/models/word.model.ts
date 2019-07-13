@@ -15,6 +15,8 @@ export interface Word {
   expanded?: boolean;
   targetLanCode?: string;
   translationSummary?: string;
+  userTranslationSummary?: string;
+  translations?: WordTranslation[];
   dictionaryLetter?: string;
 }
 

@@ -181,7 +181,7 @@ module.exports = {
     router.get('/wordlist/word/translate/omega/:lanId/:dmid', dictionaries.getOmegawikiTranslation);
     router.post('/wordlist/word/definition/omega', dictionaries.saveOmegaDefinitions);
     router.post('/wordlist/word/translation', dictionaries.saveTranslation);
-    router.put('/wordlist/letter/translations', dictionaries.getLetterTranslations);
+    // router.put('/wordlist/letter/translations', dictionaries.getLetterTranslations);
     router.put('/wordlist/all/translations', dictionaries.getAllTranslations);
     router.put('/wordlist/word/translation', dictionaries.updateTranslation);
     router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation);

@@ -25,7 +25,7 @@ import { RegionFlagComponent } from './components/fields/region-flag.component';
 import { ModalPromotionComponent } from './components/modals/modal-promotion.component';
 import { BookRevisionComponent } from './components/revision/book-revision.component';
 import { BookRevisionSentencesComponent } from './components/revision/book-revision-sentences.component';
-import { BookWordListComponent } from './components/glossaries/word-list.component';
+import { BookGlossaryComponent } from './components/glossaries/glossary.component';
 import { ExternalWordTranslationComponent } from './components/glossaries/external-translation.component';
 import { AdminWordTranslationComponent } from './components/glossaries/admin-translation.component';
 import { UserWordTranslationComponent } from './components/glossaries/user-translation.component';
@@ -58,7 +58,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     ModalPromotionComponent,
     BookRevisionComponent,
     BookRevisionSentencesComponent,
-    BookWordListComponent,
+    BookGlossaryComponent,
     ExternalWordTranslationComponent,
     AdminWordTranslationComponent,
     UserWordTranslationComponent,
@@ -90,7 +90,7 @@ import { WordColorDirective } from './directives/word-color.directive';
     ModalPromotionComponent,
     BookRevisionComponent,
     BookRevisionSentencesComponent,
-    BookWordListComponent,
+    BookGlossaryComponent,
     ExternalWordTranslationComponent,
     AdminWordTranslationComponent,
     BookTitleComponent,
