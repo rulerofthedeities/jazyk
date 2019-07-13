@@ -19,9 +19,11 @@ export class UserScoreComponent implements OnInit, OnDestroy {
   text: Object = {};
   bookScores: SingleBookScore[] = [];
   audiobookScores: SingleBookScore[] = [];
+  glossarybookScores: SingleBookScore[] = [];
   bookTotal: number;
   audiobookTotal: number;
   overallTotal: number;
+  glossarybookTotal: number;
   rank: number;
   gender: string;
   trophies: Trophy[] = [];
@@ -53,18 +55,23 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     this.loadingBookScores = true;
     zip(
       this.userService.fetchScoreBooks('read'),
-      this.userService.fetchScoreBooks('listen')
+      this.userService.fetchScoreBooks('listen'),
+      this.userService.fetchScoreBooks('flashcard')
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
         const readData = data[0],
-              listenData = data[1];
+              listenData = data[1],
+              glossaryData = data[2];
+              console.log(data);
         this.bookScores = readData.scores.filter(score => score.points > 0);
         this.audiobookScores = listenData.scores.filter(score => score.points > 0);
+        this.glossarybookScores = glossaryData.scores.filter(score => score.points > 0);
         this.bookTotal = readData.total || 0;
         this.audiobookTotal = listenData.total || 0;
-        this.overallTotal = this.bookTotal + this.audiobookTotal;
+        this.glossarybookTotal = glossaryData.total || 0;
+        this.overallTotal = this.bookTotal + this.audiobookTotal + this.glossarybookTotal;
         this.gender = this.userService.user.main.gender || 'm';
         this.rank = this.sharedService.getRank(this.overallTotal);
         this.loadingBookScores = false;

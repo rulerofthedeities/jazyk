@@ -54,6 +54,14 @@
     bookType: 'listen'
   }">
   </ng-container>
+  <ng-container *ngTemplateOutlet="scoreTemplate;context:{
+    title: text['ScoreOverviewGlossarybooks'],
+    bookScores: glossarybookScores,
+    bookTotal: glossarybookTotal,
+    loadingBookScores: loadingBookScores,
+    bookType: 'glossary'
+  }">
+  </ng-container>
 
   <ng-template #scoreTemplate
     let-title=title
