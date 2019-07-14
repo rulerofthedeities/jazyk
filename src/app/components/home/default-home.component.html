@@ -48,18 +48,16 @@
       <div class="panel-body">
         <div *ngIf="!isLoadingStats">
           <span class="stat col-xs-4">
-            <strong>{{stats?.nrOfBooks | score}}</strong> {{text["Books"]?.toLowerCase()}}
+            <div><strong>{{stats?.nrOfBooks | score}}</strong> {{text["Books"]?.toLowerCase()}}</div>
+            <div><strong>{{stats?.nrOfAudioBooks | score}}</strong> {{text["AudioBooks"]?.toLowerCase()}}</div>
           </span>
-          <!--
-          <span class="stat col-xs-3">
-            <strong>{{stats?.nrOfAudioBooks | score}}</strong> {{text["AudioBooks"]?.toLowerCase()}}
-          </span>
-          -->
           <span class="stat col-xs-4">
-            <strong>{{stats?.nrOfSentences | score}}</strong> {{text["Sentences"]?.toLowerCase()}}
+            <div><strong>{{stats?.nrOfSentences | score}}</strong> {{text["Sentences"]?.toLowerCase()}}</div>
+            <div><strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"]?.toLowerCase()}}</div>
           </span>
-            <span class="stat col-xs-4">
-              <strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"]?.toLowerCase()}}
+          <span class="stat col-xs-4">
+            <div><strong>{{stats?.nrOfGlossaries | score}}</strong> {{text["Glossaries"]?.toLowerCase()}}</div>
+            <div><strong>{{stats?.nrOfWords | score}}</strong> {{text["words"]?.toLowerCase()}}</div>
           </span>
         </div>
         <km-loader *ngIf="isLoadingStats" style="height: 20px;"

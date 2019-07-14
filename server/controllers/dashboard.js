@@ -203,54 +203,72 @@ module.exports = {
   },
   getHomeStats: (req, res) => {
     const sentencePipeline = [
+            {$match: {
+              isPublished: true
+            }},
             {$group: {
-                _id: '$bookId',
-                sentencesCount: { $sum: "$nrOfSentences" }
+                _id: null,
+                sentencesCount: { $sum: "$difficulty.nrOfSentences" }
             }},
             {$project: {
               _id: 0,
-              bookId: '$_id',
-              sentencesCount: 1
-            }},
+              sentencesCount: '$sentencesCount'
+            }}
           ],
           translationPipeline2 = [
             {$unwind: "$translations"},
             {$count: "translationCount"},
+          ],
+          glossaryPipeline = [
+            {$match: {
+              isPublished: true,
+              wordListPublished: true
+            }},
+            {$group: {
+                _id: null,
+                glossaryCount: { $sum: 1 },
+                wordCount: { $sum: "$nrOfWordsInList" }
+            }},
+            {$project: {
+              _id: 0,
+              wordCount: '$wordCount',
+              glossaryCount: '$glossaryCount'
+            }}
           ];
 
     const getStats = async () => {
-      const audioBooks = await AudioBook.find({isPublished: true}, {_id: 1}),
-            books = await Book.find({isPublished: true}, {_id: 1}),
-            sentencesCount = await BookChapter.aggregate(sentencePipeline),
-            translationsCount = await Translation.aggregate(translationPipeline2);
+      const audioBooksCount = await AudioBook.countDocuments({isPublished: true}),
+            booksCount = await Book.countDocuments({isPublished: true}),
+            sentencesCount = await Book.aggregate(sentencePipeline),
+            translationsCount = await Translation.aggregate(translationPipeline2),
+            glossariesCount = await Book.aggregate(glossaryPipeline);
       return {
-        audioBooks,
-        books,
+        audioBooksCount,
+        booksCount,
         sentencesCount,
-        translationsCount
+        translationsCount,
+        glossariesCount
       };
     };
 
     getStats().then((results) => {
-      const audioBooks = results.audioBooks,
-            books = results.books,
+      const audioBooksCount = results.audioBooksCount,
+            booksCount = results.booksCount,
             sentencesCount = results.sentencesCount,
-            translationsCount = results.translationsCount;
-      let nrOfSentences = 0;
-      books.forEach(book => {
-        const count = sentencesCount.find(count => count.bookId.toString() === book._id.toString());
-        if (count) {
-          nrOfSentences += count.sentencesCount;
-        }
-      });
+            translationsCount = results.translationsCount,
+            glossariesCount = results.glossariesCount;
       const stats = {
-        nrOfAudioBooks: audioBooks.length,
-        nrOfBooks: books.length,
-        nrOfSentences,
-        nrOfTranslations: translationsCount[0].translationCount
+        nrOfAudioBooks: audioBooksCount,
+        nrOfBooks: booksCount,
+        nrOfSentences: sentencesCount[0].sentencesCount,
+        nrOfTranslations: translationsCount[0].translationCount,
+        nrOfGlossaries: glossariesCount[0].glossaryCount,
+        nrOfWords: glossariesCount[0].wordCount
       }
+      console.log('result', results, stats);
       response.handleSuccess(res, stats);
     }).catch((err) => {
+      console.log('err', err);
       response.handleError(err, res, 500, 'Error fetching home stats');
     });
   }

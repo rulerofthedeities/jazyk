@@ -33,4 +33,6 @@ export interface HomeStats {
   nrOfBooks: number;
   nrOfSentences: number;
   nrOfTranslations: number;
+  nrOfGlossaries: number;
+  nrOfWords: number;
 }
