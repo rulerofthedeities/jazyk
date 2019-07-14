@@ -35,9 +35,9 @@
           {{text["Listen"]}}
         </div>
         <div class="teach preview-text"
-          (mouseover)="onShowModule('Test')"
-          (click)="onGoToRoute('listen')">
-          {{text["Test"]}}
+          (mouseover)="onShowModule('Glossaries')"
+          (click)="onGoToRoute('glossaries')">
+          {{text["Learn"]}}
         </div>
       </div>
       <div class="btn-icon btn-sub unselectable">
@@ -56,8 +56,8 @@
             <div><strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"]?.toLowerCase()}}</div>
           </span>
           <span class="stat col-xs-4">
-            <div><strong>{{stats?.nrOfGlossaries | score}}</strong> {{text["Glossaries"]?.toLowerCase()}}</div>
-            <div><strong>{{stats?.nrOfWords | score}}</strong> {{text["words"]?.toLowerCase()}}</div>
+            <div><strong>{{stats?.nrOfGlossaries | score}}</strong> {{text["Glossaries"]?.toLowerCase()}}<span class="new">{{text["New"].toLowerCase()}}</span></div>
+            <div><strong>{{stats?.nrOfWords | score}}</strong> {{text["words"]?.toLowerCase()}}<span class="new">{{text["New"].toLowerCase()}}</span></div>
           </span>
         </div>
         <km-loader *ngIf="isLoadingStats" style="height: 20px;"
@@ -82,9 +82,9 @@
         <img class="preview-img" src="/assets/img/screenshots/listen.jpg">
       </div>
       <div class="module-child" [ngStyle]="{
-        left: currentModule === 'test' ? '0' : '-1000px',
-        visibility: currentModule === 'test' ? 'visible': 'hidden'}">
-        <img class="preview-img" src="/assets/img/screenshots/test.jpg">
+        left: currentModule === 'glossaries' ? '0' : '-1000px',
+        visibility: currentModule === 'glossaries' ? 'visible': 'hidden'}">
+        <img class="preview-img" src="/assets/img/screenshots/glossaries.jpg">
       </div>
       <div class="clearfix"></div>
     </div>

@@ -1,5 +1,12 @@
 @import url(https://fonts.googleapis.com/css?family=EB+Garamond|Droid+Serif|Playfair+Display|Open+Sans+Condensed:300);
 
+.new {
+  color: red;
+  font-size: 10px;
+  position: relative;
+  top: -6px;
+  left: 2px;
+}
 .info {
   height: 496px;
 }
