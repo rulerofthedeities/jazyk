@@ -64,7 +64,6 @@ export class UserScoreComponent implements OnInit, OnDestroy {
         const readData = data[0],
               listenData = data[1],
               glossaryData = data[2];
-              console.log(data);
         this.bookScores = readData.scores.filter(score => score.points > 0);
         this.audiobookScores = listenData.scores.filter(score => score.points > 0);
         this.glossarybookScores = glossaryData.scores.filter(score => score.points > 0);

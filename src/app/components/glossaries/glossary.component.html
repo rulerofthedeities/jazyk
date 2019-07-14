@@ -74,7 +74,7 @@
                 [tooltip]="text ? text['TranslationLanguage'] : ''"
                 [options]="tooltipOptions" id="tooltip1">
                 <km-language-selector *ngIf="!isLoading"
-                  [languages]="userLanguages"
+                  [languages]="glossaryLanguages"
                   [currentLanguage]="translationLan"
                   [text]="text"
                   (languageSelected)="onMyLanguageSelected($event)">
@@ -94,25 +94,6 @@
         <km-info-msg [msg]="getNoWordsMessage()">
         </km-info-msg>
       </div>
-      <!-- PAGINATION -->
-      <!--
-      <ul class="pagination" *ngIf="nrOfPages > 1">
-        <li [class.clickable]="currentPage > 1"
-            (click)="onGoToPage(currentPage - 1)">
-          <a>&laquo;</a>
-        </li>
-        <li *ngFor="let pageCount of getCounter(nrOfPages);let i = index"
-          class="clickable"
-          [class.active] = "i + 1 === currentPage"
-          (click)="onGoToPage(i + 1)">
-          <a>{{i + 1}}</a>
-        </li>
-        <li [class.clickable]="currentPage < nrOfPages"
-          (click)="onGoToPage(currentPage + 1)">
-          <a>&raquo;</a>
-        </li>
-      </ul>
-    -->
       <km-loader *ngIf="isLoading && text && !isError"
         [msg]="text['Loading'] || ''">
       </km-loader>

@@ -31,6 +31,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   userLanCode: string;
   bookLanguages: Language[];
   userLanguages: Language[];
+  glossaryLanguages: Language[];
   bookLan: Language;
   translationLan: Language;
   msg: string;
@@ -572,6 +573,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   private setBookLan(bookLans: Language[]) {
     const lan = bookLans.find(l => l.code === this.book.lanCode);
     this.bookLan = lan;
+    this.glossaryLanguages = this.userLanguages.filter(l => l.code !== this.bookLan.code);
     this.letters = this.bookLan.alphabet.split('|');
   }
 

@@ -265,10 +265,8 @@ module.exports = {
         nrOfGlossaries: glossariesCount[0].glossaryCount,
         nrOfWords: glossariesCount[0].wordCount
       }
-      console.log('result', results, stats);
       response.handleSuccess(res, stats);
     }).catch((err) => {
-      console.log('err', err);
       response.handleError(err, res, 500, 'Error fetching home stats');
     });
   }
