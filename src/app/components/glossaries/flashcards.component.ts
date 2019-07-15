@@ -61,6 +61,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   onCountDownFinished() {
     this.isCountDown = false;
+    this.subscribeToBook();
   }
 
   onExitReading() {
@@ -311,6 +312,13 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.glossaryType = data.tpe === 'my' ? 'my' : 'all';
     });
+  }
+
+  private subscribeToBook() {
+    this.readnListenService
+    .subscribeToBook(this.book._id, this.userLanCode, 'glossary', false)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(subscription => {});
   }
 
   private getDependables(lan) {

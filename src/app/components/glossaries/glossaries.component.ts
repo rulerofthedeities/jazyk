@@ -18,6 +18,7 @@ import { zip } from 'rxjs';
 
 export class GlossariesComponent extends ReadnListenListComponent implements OnInit, OnDestroy {
   bookWordData: Map<UserWordData> = {}; // glossary translations
+  userWordData: Map<UserWordData> = {}; // glossary
 
   constructor(
     readnListenService: ReadnListenService,
