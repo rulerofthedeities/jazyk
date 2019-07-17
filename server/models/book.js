@@ -16,7 +16,6 @@ var difficultySchema = new Schema({
 
 var bookSchema = new Schema({
   title: {type: String, required: true},
-  category: String,
   source: String,
   lanCode: String,
   img: String,

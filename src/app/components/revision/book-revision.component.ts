@@ -105,7 +105,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       this.isLoadingRevision = true;
       zip(
         this.readnListenService.fetchBook(bookId, this.bookType),
-        this.readnListenService.fetchUserBook(this.targetLanCode, bookId, false)
+        this.readnListenService.fetchUserBook(this.targetLanCode, bookId, this.bookType, false)
       )
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {

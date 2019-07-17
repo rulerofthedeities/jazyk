@@ -72,7 +72,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   private selectWord(allWords: Word[]) {
     let words: Word[];
     this.word = null;
-    let nr;
+    let nr: number;
     // select the word the user has to enter
     // skip rarest and most common words
     let minScore = 0;

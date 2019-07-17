@@ -116,8 +116,8 @@ module.exports = {
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/books/count/read', books.getBooksCount);
     router.get('/books/activity/:lan/:bookType', books.getActivity)
-    router.get('/book/user/:lan/:bookId/:isTest', books.getUserBook);
-    router.get('/book/user/:lan/:bookId', books.getUserBook);
+    router.get('/book/user/:lan/:bookId/:bookType/:isTest', books.getUserBook);
+    router.get('/book/user/:lan/:bookId/:bookType', books.getUserBook);
     router.get('/book/:bookId', books.getBook);
     router.get('/book/chapter/:bookId/:sequence', books.getChapter);
     router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter); // For read
@@ -206,6 +206,8 @@ module.exports = {
             '/read/*',
             '/listen',
             '/listen/*',
+            '/glossaries',
+            '/glossaries/*',
             '/auth/*',
             '/user/*',
             '/u/:name',

@@ -36,7 +36,7 @@ module.exports = {
     });
   },
   getBook: (req, res) => {
-    const bookId = req.params.bookId,
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           query = {_id: bookId, isPublished: true};
     Book.findOne(query, (err, book) => {
       response.handleError(err, res, 400, 'Error fetching audio book', () => {
@@ -66,7 +66,7 @@ module.exports = {
     });
   },
   getChapter: (req, res) => {
-    const audioBookId = req.params.bookId,
+    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = parseInt(req.params.sequence, 10) || 1,
           query = {audioBookId, sequence},
           projection = {content: 0};
@@ -78,7 +78,7 @@ module.exports = {
   },
   getAudioChapter: (req, res) => {
     // Audio for read book
-    const audioBookId = req.params.bookId,
+    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           query = {audioBookId, sequence},
           projection = {

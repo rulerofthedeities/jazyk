@@ -14,7 +14,7 @@ const sentenceSchema = new Schema({
 }, {_id: false});
 
 const audioChapterSchema = new Schema({
-  audioBookId: {type: Schema.Types.ObjectId, required: true},
+  bookId: {type: Schema.Types.ObjectId, required: true},
   lanCode: {type: String, required: true},
   directory: {type: String, required: true},
   fileName: {type: String, required: true},
@@ -27,7 +27,7 @@ const audioChapterSchema = new Schema({
   totalScore: Number
 });
 
-audioChapterSchema.index({audioBookId: 1, sequence: 1}, {unique: true});
+audioChapterSchema.index({bookId: 1, sequence: 1}, {unique: true});
 const ChapterModel = mongoose.model('Audiochapter', audioChapterSchema);
 
 ChapterModel.ensureIndexes();

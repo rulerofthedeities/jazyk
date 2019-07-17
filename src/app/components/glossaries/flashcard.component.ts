@@ -16,9 +16,9 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
   @Input() audioPath: string;
   @Input() private newFlashCard: Subject<FlashCard>;
   @Output() answer = new EventEmitter<string>();
+  private componentActive = true;
   flipping: Subject<boolean> = new Subject();
   card: FlashCard;
-  private componentActive = true;
   isFlipped = false;
   showButtons = false;
   answered = false;

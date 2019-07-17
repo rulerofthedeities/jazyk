@@ -214,17 +214,6 @@ module.exports = {
           word.translationSummary = word.translationSummary[userLanCode];
         });
         response.handleSuccess(res, {userWords: null, words});
-        /*
-        // For each word translation, find matching word
-        const wordIds = words.map(w => w._id),
-        query = {wordId: {$in: wordIds}};
-        // Get all userword answer for words
-        UserWordList.find(query, (err, userWords) => {
-          response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
-            response.handleSuccess(res, {userWords: userWords, words});
-          });
-        });
-        */
       });
     });
   },

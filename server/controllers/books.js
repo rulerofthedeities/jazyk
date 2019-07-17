@@ -241,9 +241,10 @@ module.exports = {
   getUserBook: (req, res) => {
     const bookId = req.params.bookId,
           lanCode = req.params.lan,
+          bookType = req.params.bookType,
           isTest = req.params.isTest === '1' ? true : false,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId, bookId, lanCode, isTest};
+          query = {userId, bookId, lanCode, bookType, isTest};
     UserBook.findOne(query, (err, book) => {
       response.handleError(err, res, 400, 'Error fetching user book', () => {
         response.handleSuccess(res, book);

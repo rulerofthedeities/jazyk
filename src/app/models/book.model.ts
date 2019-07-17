@@ -99,7 +99,7 @@ export interface Book {
   cover?: string;
   source: string;
   sourceLink: string;
-  categories: string[];
+  categories?: string[];
   lanCode: string;
   lanRegion: string;
   authors: string;

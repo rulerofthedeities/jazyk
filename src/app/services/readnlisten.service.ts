@@ -52,9 +52,9 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  fetchUserBook(userLanCode: string, bookId: string, isTest: boolean): Observable<UserBook> {
+  fetchUserBook(userLanCode: string, bookId: string, bookType: string, isTest: boolean): Observable<UserBook> {
     return this.http
-    .get<UserBook>('/api/book/user/' + userLanCode + '/' + bookId + '/' + (isTest ? '1' : '0'))
+    .get<UserBook>('/api/book/user/' + userLanCode + '/' + bookId + '/' + bookType + '/' + (isTest ? '1' : '0'))
     .pipe(retry(3));
   }
 
