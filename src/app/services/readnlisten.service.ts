@@ -46,9 +46,8 @@ export class ReadnListenService {
 
   fetchBook(bookId: string, bookType: string): Observable<Book> {
     // gets published book only
-    const bookPath = bookType === 'listen' ? 'audiobook' : 'book';
     return this.http
-    .get<Book>(`/api/${bookPath}/${bookId}`)
+    .get<Book>(`/api/books/book/${bookId}/${bookType}`)
     .pipe(retry(3));
   }
 
@@ -65,13 +64,9 @@ export class ReadnListenService {
   }
 
   fetchAudioChapter(book: Book, sequence: number): Observable<AudioChapter> {
-    if (book.audioId) {
-      return this.http
-      .get<AudioChapter>(`/api/book/audiochapter/${book.audioId}/${sequence}`)
-      .pipe(retry(3));
-    } else {
-      return of({title: '', directory: '', sentences: []});
-    }
+    return this.http
+    .get<AudioChapter>(`/api/book/audiochapter/${book._id}/${sequence}`)
+    .pipe(retry(3));
   }
 
   startNewBook(book: Book) {
@@ -183,15 +178,15 @@ export class ReadnListenService {
     .put<SessionData>('/api/book/sessionchange', {sessionData});
   }
 
-  fetchPreviousAnswers(bookId: string, userLanCode: string): Observable<string[]> {
+  fetchPreviousAnswers(bookId: string, userLanCode: string, bookType: string): Observable<string[]> {
     return this.http
-    .get<string[]>('/api/book/sessions/book/' + bookId + '/' + userLanCode)
+    .get<string[]>('/api/book/sessions/book/' + bookId + '/' + bookType + '/' + userLanCode)
     .pipe(retry(3));
   }
 
-  fetchLatestSession(userLanCode: string, bookId: string, isTest: boolean): Observable<SessionData> {
+  fetchLatestSession(userLanCode: string, bookId: string, bookType: string, isTest: boolean): Observable<SessionData> {
     return this.http
-    .get<SessionData>('/api/book/sessions/latest/' + bookId + '/' + userLanCode + '/' + (isTest ? '1' : '0'))
+    .get<SessionData>('/api/book/sessions/latest/' + bookId + '/' + bookType + '/' + userLanCode + '/' + (isTest ? '1' : '0'))
     .pipe(retry(3));
   }
 

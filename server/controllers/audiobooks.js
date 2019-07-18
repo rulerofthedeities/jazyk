@@ -2,14 +2,17 @@
 
 const response = require('../response'),
       mongoose = require('mongoose'),
-      Book = require('../models/book').audiobook,
+      Book = require('../models/book').book,
       Chapter = require('../models/audio').audiochapter;
 
 module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
           sort = req.params.sort,
-          query = {isPublished: true},
+          query = {
+            isPublished: true,
+            audioPublished: true
+          },
           projection = {};
     let options = {sort: {'difficulty.weight': 1}};
     if (languageId !== 'eu') {
@@ -26,7 +29,7 @@ module.exports = {
         options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
         break;
       case 'newest0':
-        options['sort'] = {'dt.published': -1};
+        options['sort'] = {'dt.publishedAudio': -1};
         break;
     }
     Book.find(query, projection, options, (err, books) => {
@@ -35,17 +38,11 @@ module.exports = {
       });
     });
   },
-  getBook: (req, res) => {
-    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
-          query = {_id: bookId, isPublished: true};
-    Book.findOne(query, (err, book) => {
-      response.handleError(err, res, 400, 'Error fetching audio book', () => {
-        response.handleSuccess(res, book);
-      });
-    });
-  },
   getBooksCount: (req, res) => {
-    const query = {isPublished: true},
+    const query = {
+            isPublished: true,
+            audioPublished: true
+          },
           projection = {
             _id: 0,
             lanCode: '$_id',
@@ -66,9 +63,9 @@ module.exports = {
     });
   },
   getChapter: (req, res) => {
-    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = parseInt(req.params.sequence, 10) || 1,
-          query = {audioBookId, sequence},
+          query = {bookId, sequence},
           projection = {content: 0};
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching audio chapter', () => {
@@ -78,9 +75,9 @@ module.exports = {
   },
   getAudioChapter: (req, res) => {
     // Audio for read book
-    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
-          query = {audioBookId, sequence},
+          query = {bookId, sequence},
           projection = {
             title: 1,
             directory: 1,
@@ -97,8 +94,8 @@ module.exports = {
 
   },
   getChapterHeaders: (req, res) => {
-    const audioBookId = new mongoose.Types.ObjectId(req.params.bookId),
-          query = {audioBookId},
+    const bookid = new mongoose.Types.ObjectId(req.params.bookId),
+          query = {bookid},
           projection = {content: 0, sentences: 0},
           chapterPipeline = [
             {$match: query},

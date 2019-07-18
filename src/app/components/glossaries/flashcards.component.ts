@@ -177,7 +177,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   private processNewBookId() {
     this.readnListenService
-    .fetchBook(this.bookId, 'read')
+    .fetchBook(this.bookId, 'glossary')
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       book => {

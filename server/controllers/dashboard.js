@@ -3,8 +3,6 @@
 const response = require('../response'),
       mongoose = require('mongoose'),
       Book = require('../models/book').book,
-      BookChapter = require('../models/book').chapter,
-      AudioBook = require('../models/book').audiobook,
       UserBook = require('../models/userbook').userBook,
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
@@ -29,7 +27,7 @@ module.exports = {
             }}
           ],
           booksReadingPipeline = [
-            {$match: {userId}},
+            {$match: {userId, bookType: 'read'}},
             {$group: {
               _id: null,
               countStarted: {'$sum': {$cond: ["$bookmark", 1, 0]}},
@@ -122,7 +120,7 @@ module.exports = {
               const userLan = uBook.lanCode;
               let book = null;
               if (uBook.bookType === 'listen') {
-                book = await AudioBook.findOne({_id: uBook.bookId, isPublished: true});
+                book = await Book.findOne({_id: uBook.bookId, audioPublished: true});
               } else {
                 book = await Book.findOne({_id: uBook.bookId, isPublished: true});
               }
@@ -237,7 +235,7 @@ module.exports = {
           ];
 
     const getStats = async () => {
-      const audioBooksCount = await AudioBook.countDocuments({isPublished: true}),
+      const audioBooksCount = await Book.countDocuments({isPublished: true, audioPublished: true}),
             booksCount = await Book.countDocuments({isPublished: true}),
             sentencesCount = await Book.aggregate(sentencePipeline),
             translationsCount = await Translation.aggregate(translationPipeline2),

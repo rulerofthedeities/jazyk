@@ -118,9 +118,9 @@ module.exports = {
     router.get('/books/activity/:lan/:bookType', books.getActivity)
     router.get('/book/user/:lan/:bookId/:bookType/:isTest', books.getUserBook);
     router.get('/book/user/:lan/:bookId/:bookType', books.getUserBook);
-    router.get('/book/:bookId', books.getBook);
+    router.get('/books/book/:bookId/:bookType', books.getBook);
     router.get('/book/chapter/:bookId/:sequence', books.getChapter);
-    router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter); // For read
+    router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter);
     router.get('/book/chapterheaders/:bookId', books.getChapterHeaders);
     router.get('/book/translations/:bookId/:lan/:chapterSequence/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
@@ -133,8 +133,8 @@ module.exports = {
     router.put('/book/session', books.updateSession);
     router.put('/book/sessionchange', books.changeSessionAnswer);
     router.get('/book/sessions/:lan/:bookType', books.getSessions);
-    router.get('/book/sessions/book/:bookId/:lan', books.getBookSessions);
-    router.get('/book/sessions/latest/:bookId/:lan/:isTest', books.getLastestSession);
+    router.get('/book/sessions/book/:bookId/:bookType/:lan', books.getBookSessions);
+    router.get('/book/sessions/latest/:bookId/:bookType/:lan/:isTest', books.getLastestSession);
     router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
     router.post('/book/thumb', books.addThumb);
     router.get('/book/trophies/user/:userId', books.getTrophies);
@@ -150,7 +150,6 @@ module.exports = {
 
     router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
     router.get('/books/count/listen', audio.getBooksCount);
-    router.get('/audiobook/:bookId', audio.getBook);
     router.get('/audiobook/chapter/:bookId/:sequence', audio.getChapter);
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
 

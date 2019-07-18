@@ -276,7 +276,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       this.isLoading = true;
       zip(
         this.readnListenService.fetchUserBook(this.userLanCode, this.bookId, this.bookType, this.isTest),
-        this.readnListenService.fetchLatestSession(this.userLanCode, this.bookId, this.isTest),
+        this.readnListenService.fetchLatestSession(this.userLanCode, this.bookId, this.bookType, this.isTest),
         this.sharedService.fetchTranslations(this.userService.user.main.lan, 'ReadComponent'),
         this.readnListenService.fetchBook(this.bookId, this.bookType)
       )

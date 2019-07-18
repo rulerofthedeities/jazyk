@@ -183,8 +183,17 @@ module.exports = {
     });
   },
   getBook: (req, res) => {
-    const bookId = req.params.bookId,
-          query = {_id: bookId, isPublished: true};
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          bookType = req.params.bookType,
+          query = {
+            _id: bookId,
+            isPublished: true
+          };
+    if (bookType === 'listen') {
+      query.audioPublished = true;
+    } else if (bookType === 'glossary') {
+      query.wordListPublished = true;
+    }
     Book.findOne(query, (err, book) => {
       response.handleError(err, res, 400, 'Error fetching book', () => {
         response.handleSuccess(res, book);
@@ -547,9 +556,10 @@ module.exports = {
   },
   getBookSessions: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          bookId = req.params.bookId,
+          bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          bookType = req.params.bookType,
           userLanCode = req.params.lan,
-          query = {userId, bookId, lanCode: userLanCode},
+          query = {userId, bookId, bookType, lanCode: userLanCode},
           projection = {answers: 1, _id: 0},
           options = {sort: {'dt.end': 1}};
     Session.find(query, projection, options, (err, sessions) => {
@@ -560,11 +570,12 @@ module.exports = {
     });
   },
   getLastestSession: (req, res) => {
-    const bookId = req.params.bookId,
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+    userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           lanCode = req.params.lan,
+          bookType = req.params.bookType,
           isTest = req.params.isTest === '1' ? true : false,
-          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId, bookId, lanCode, isTest},
+          query = {userId, bookId, bookType, lanCode, isTest},
           projection = {},
           options = {sort: {'dt.end': -1}};
     Session.findOne(query, projection, options, (err, session) => {
@@ -727,7 +738,7 @@ module.exports = {
     // increase repeatCount
     // remove bookmark
     // set subscribed to true
-    const userId = req.decoded.user._id,
+    const userId = mongoose.Types.ObjectId(req.decoded.user._id),
           data = req.body,
           bookId = mongoose.Types.ObjectId(data.bookId),
           lanCode = data.lanCode,

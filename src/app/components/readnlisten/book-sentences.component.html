@@ -44,7 +44,7 @@
               [sentence]="currentSentence"
               [audioSentence]="currentAudioSentence"
               [bookType]="bookType"
-              [directory]="bookType === 'listen' ? book.directory : (currentAudioChapter ? currentAudioChapter.directory : '')"
+              [directory]="bookType === 'listen' ? book.audioDirectory : (currentAudioChapter ? currentAudioChapter.directory : '')"
               [lanCode]="book.lanCode"
               [showSentence]="currentStep >= steps.Answered">
             </km-sentence>

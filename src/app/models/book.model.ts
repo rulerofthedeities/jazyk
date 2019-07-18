@@ -82,6 +82,8 @@ interface Difficulty {
 
 export interface BookDates {
   published?: Date;
+  publishedAudio?: Date;
+  publishedGlossary?: Date;
   created?: Date;
 }
 
@@ -91,7 +93,7 @@ export interface Book {
   audioId?: string; // Link to audiobook
   title: string;
   series: string;
-  directory?: string;
+  audioDirectory?: string;
   intro: string;
   credits: string;
   translator?: string;
@@ -115,6 +117,10 @@ export interface Book {
   dt: BookDates;
   nrOfWordsInList?: number;
   wordListPublished?: boolean;
+  audioPublished?: boolean;
+  uploadedMp3?: boolean;
+  hasMp3?: boolean;
+  mp3Count?: number;
 }
 
 export interface UserBookDates {

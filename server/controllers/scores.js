@@ -83,7 +83,7 @@ module.exports = {
             }},
             {$sort: {'totalPoints': -1}},
             {$lookup: {
-              from: bookType === 'listen' ? 'audiobooks' : 'books',
+              from: 'books',
               localField: '_id.bookId',
               foreignField: '_id',
               as: 'book'

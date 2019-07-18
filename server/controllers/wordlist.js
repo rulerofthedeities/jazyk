@@ -116,7 +116,7 @@ module.exports = {
         options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
         break;
       case 'newest0':
-        options['sort'] = {'dt.published': -1};
+        options['sort'] = {'dt.publishedGlossary': -1};
         break;
     }
     Book.find(query, projection, options, (err, books) => {

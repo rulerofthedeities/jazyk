@@ -51,7 +51,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
         this.readnListenService.fetchPublishedAudioBooks(this.book.lanCode, 'difficulty1') :
         this.readnListenService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
       this.readnListenService.fetchUserBooks(this.userLanCode, this.bookType),
-      this.readnListenService.fetchPreviousAnswers(this.book._id, this.userLanCode)
+      this.readnListenService.fetchPreviousAnswers(this.book._id, this.userLanCode, this.bookType)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(res => {

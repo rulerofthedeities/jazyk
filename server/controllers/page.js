@@ -2,8 +2,7 @@
 
 const response = require('../response'),
       Page = require('../models/page'),
-      Book = require('../models/book').book,
-      Audiobook = require('../models/book').audiobook;
+      Book = require('../models/book').book;
 
 module.exports = {
   getInfoPage: (req, res) => {
@@ -28,8 +27,7 @@ module.exports = {
   },
   getBooklist: (req, res) => {
     const tpe = req.params.tpe,
-          Model = tpe === 'listen' ? Audiobook : Book,
-          query = {isPublished: true},
+          query = tpe === 'listen' ? {audioPublished: true} : {isPublished: true},
           options = {sort: {lanCode: 1, title: 1}},
           pipeline = [
             {$match: query},
@@ -44,7 +42,7 @@ module.exports = {
               books: "$docs"
             }}
           ];
-    Model.aggregate(pipeline, (err, books) => {
+    Book.aggregate(pipeline, (err, books) => {
       response.handleError(err, res, 400, `Error getting book list for type "${tpe}"`, () => {
         response.handleSuccess(res, books);
       });
