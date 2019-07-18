@@ -55,7 +55,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.audio) {
         this.audio = new Audio();
         this.audio.src = this.getSource(this.fileUrl);
-        console.log('source', this.audio.src);
         this.audio.load();
       } else {
         if (this.audio.ended || this.audio.paused) {
@@ -86,8 +85,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
     if (this.supportsOgg === undefined) {
       this.checkAudioTypeSupport('ogg');
     }
-    this.supportsOgg = '';
-    console.log('iOs', this.isIOS());
     if (this.supportsOgg === 'probably' && !this.isIOS()) {
       return fileName;
     } else {
