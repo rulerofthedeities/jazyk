@@ -86,6 +86,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
     if (this.supportsOgg === undefined) {
       this.checkAudioTypeSupport('ogg');
     }
+    this.supportsOgg = '';
     console.log('iOs', this.isIOS());
     if (this.supportsOgg === 'probably' && !this.isIOS()) {
       return fileName;
