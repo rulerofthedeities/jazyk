@@ -125,7 +125,8 @@
     <div class="audio" *ngIf="word.audio && word.audio.length > 0">
       <km-audio-file *ngFor="let audio of word.audio"
         [fileUrl]="audioPath + audio.s3"
-        class="audio-item">
+        class="audio-item"
+        (ended)="onAudioEnded($event)">
       </km-audio-file>
     </div>
   </td>

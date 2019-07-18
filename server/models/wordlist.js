@@ -22,8 +22,8 @@ const userWordSchema = new Schema({
   translations: {type: String, trim: true}
 });
 
-userWordSchema.index({userId: 1, bookId: 1, pinned: 1});
-userWordSchema.index({userId: 1, bookId: 1, wordId: 1, targetLanCode: 1}, {unique: true});
+userWordSchema.index({userId: 1, bookId: 1, wordId: 1, targetLanCode: 1});
+userWordSchema.index({userId: 1, bookId: 1, bookLanCode: 1, targetLanCode: 1, pinned: 1});
 const UserWordModel = mongoose.model('userWord', userWordSchema);
 UserWordModel.ensureIndexes();
 
