@@ -125,13 +125,11 @@
     <div class="audio" *ngIf="word.audio && word.audio.length > 0">
       <km-audio-file *ngFor="let audio of word.audio"
         [fileUrl]="audioPath + audio.s3"
-        class="audio-item">
+        [autoPlay]="false"
+        class="audio-item"
+        (ended)="onAudioEnded($event)">
       </km-audio-file>
     </div>
-    <km-audio-file
-      fileUrl="https://jazyk.s3.eu-central-1.amazonaws.com/audiobooks/fr/abeletbellina10/mp3_5cf422fa44a3981c7c7d6f6e"
-      class="audio-item">
-    </km-audio-file>
   </td>
   <td class="translation-cell">
     <div class="pull-right">

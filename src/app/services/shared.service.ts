@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
 export const appTitle = 'Jazyk';
-export const awsPath = 's3.eu-central-1.amazonaws.com/jazyk/';
+export const awsPath = 'jazyk.s3.eu-central-1.amazonaws.com/';
 
 @Injectable()
 export class SharedService {

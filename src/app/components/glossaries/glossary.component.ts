@@ -255,6 +255,10 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  onAudioEnded(isEnded: boolean) {
+    this.readnListenService.audioHasEnded(isEnded);
+  }
+
   hasTranslation(word: Word) {
     if (this.tab === 'mywords') {
       return !!word.userTranslationSummary;

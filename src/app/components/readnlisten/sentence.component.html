@@ -5,6 +5,13 @@
     [autoPlay]="true"
     (ended)="onAudioEnded($event)">
   </km-audio-file>
+  word test:
+  <km-audio-file
+    [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/mp3_5c7ff34fd963d573c4551cd3'"
+    [size]="40"
+    [autoPlay]="false"
+    (ended)="onAudioEnded($event)">
+  </km-audio-file>
 </div>
 <div class="sentence" *ngIf="bookType==='read' || showSentence">
   <div class="audio-read pull-left" *ngIf="bookType!=='listen' && s3">

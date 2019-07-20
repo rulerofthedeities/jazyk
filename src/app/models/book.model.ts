@@ -106,6 +106,7 @@ export interface Book {
   lanRegion: string;
   authors: string;
   narrators?: string;
+  glossaryNarrators?: string;
   narratorLicense?: String;
   year: number;
   img: string;

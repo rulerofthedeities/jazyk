@@ -132,6 +132,7 @@
               <div *ngIf="book.authors">{{text['Author']}}: <km-link-field [value]="book.authors"></km-link-field></div>
               <div *ngIf="book.adaptation">{{text['AdaptedBy']}}: <km-link-field [value]="book.adaptation"></km-link-field></div>
               <div *ngIf="book.narrators">{{text['BookNarrator']}}: <km-link-field [value]="book.narrators"></km-link-field></div>
+              <div *ngIf="book.glossaryNarrators">{{text['GlossaryNarrator']}}: <km-link-field [value]="book.glossaryNarrators"></km-link-field></div>
               <div *ngIf="book.translator">{{text['BookTranslator']}}: <km-link-field [value]="book.translator"></km-link-field></div>
               <div *ngIf="book.cover">{{text['BookCover']}}: <km-link-field [value]="book.cover"></km-link-field></div>
               <div *ngIf="book.source">{{text['BookSource']}}: <km-link-field [value]="book.source"></km-link-field></div>
