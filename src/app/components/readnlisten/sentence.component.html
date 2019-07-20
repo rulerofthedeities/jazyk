@@ -5,15 +5,16 @@
     [autoPlay]="true"
     (ended)="onAudioEnded($event)">
   </km-audio-file>
-  <!--
   word test 2:
   <km-audio-file
-    [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/mp3test'"
+    [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/fra-il_a.mp3'"
     [size]="40"
     [autoPlay]="false"
     (ended)="onAudioEnded($event)">
   </km-audio-file>
-  -->
+  <audio src="https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/fra-il_a.mp3" controls="controls">
+    your browser doesn't support HTML5 audio
+  </audio>
 </div>
 <div class="sentence" *ngIf="bookType==='read' || showSentence">
   <div class="audio-read pull-left" *ngIf="bookType!=='listen' && s3">
