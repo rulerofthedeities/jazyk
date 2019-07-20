@@ -370,7 +370,6 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
             published = this.book.dt.publishedGlossary;
           break;
       }
-      console.log('published', this.bookType, published);
     }
     if (published) {
       const oneDay = 24 * 60 * 60 * 1000, // hours * minutes * seconds * milliseconds
