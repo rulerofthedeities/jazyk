@@ -357,7 +357,21 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIfNew() {
-    const published = this.book.dt ? this.book.dt.published : null;
+    let published = null;
+    if (this.book.dt) {
+      switch (this.bookType) {
+        case 'read':
+            published = this.book.dt.published;
+          break;
+        case 'listen':
+            published = this.book.dt.publishedAudio;
+          break;
+        case 'glossary':
+            published = this.book.dt.publishedGlossary;
+          break;
+      }
+      console.log('published', this.bookType, published);
+    }
     if (published) {
       const oneDay = 24 * 60 * 60 * 1000, // hours * minutes * seconds * milliseconds
             dtPublished = new Date(published),
