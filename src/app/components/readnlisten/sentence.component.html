@@ -5,7 +5,8 @@
     [autoPlay]="true"
     (ended)="onAudioEnded($event)">
   </km-audio-file>
-  word test 3:
+  {{'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + sentence?.s3}}
+  word test 4:
   <km-audio-file
     [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/fra-il_a.mp3'"
     [size]="60"

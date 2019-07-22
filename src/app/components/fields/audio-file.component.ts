@@ -49,6 +49,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
       aif: 'audio/x-aiff'
     };
     this.supportsOgg = this.audio.canPlayType(formats[type] || type);
+    this.debug += 'ogg' + this.supportsOgg + ' - ';
   }
 
   private play() {
@@ -56,13 +57,11 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.audio) {
         this.debug += 'init - ';
         this.audio = new Audio();
-        this.audio.src = this.getSource(this.fileUrl);
-        if (this.supportsOgg !== 'probably') {
-          this.audio.play();
-        } else {
-          this.debug += 'loading - ';
-          this.audio.load();
-        }
+        const src = this.getSource(this.fileUrl);
+        this.debug += 'src ' + src + ' - ';
+        this.audio.src = src;
+        this.debug += 'loading - ';
+        this.audio.load();
       } else {
         this.debug += 'play? - ';
         if (this.audio.ended || this.audio.paused) {

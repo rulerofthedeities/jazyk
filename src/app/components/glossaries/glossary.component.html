@@ -129,6 +129,23 @@
         class="audio-item"
         (ended)="onAudioEnded($event)">
       </km-audio-file>
+      sentence test:
+      <km-audio-file
+        [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/audiobooks/fr/jesaisfabriquer/5c641e8f2e04823b8c36f237 '"
+        [size]="60"
+        [autoPlay]="false"
+        (ended)="onAudioEnded($event)">
+      </km-audio-file>
+      word test 4:
+      <km-audio-file
+        [fileUrl]="'https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/fra-il_a.mp3'"
+        [size]="60"
+        [autoPlay]="false"
+        (ended)="onAudioEnded($event)">
+      </km-audio-file>
+      <audio src="https://jazyk.s3.eu-central-1.amazonaws.com/words/fr/fra-il_a.mp3" controls="controls">
+        your browser doesn't support HTML5 audio
+      </audio>
     </div>
   </td>
   <td class="translation-cell">
