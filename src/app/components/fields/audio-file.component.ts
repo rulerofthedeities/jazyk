@@ -57,12 +57,16 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         this.debug += 'init - ';
         this.audio = new Audio();
         this.audio.src = this.getSource(this.fileUrl);
-        this.audio.load();
-        this.debug += 'loading - ';
+        if (this.supportsOgg !== 'probably') {
+          this.audio.play();
+        } else {
+          this.debug += 'loading - ';
+          this.audio.load();
+        }
       } else {
         this.debug += 'play? - ';
         if (this.audio.ended || this.audio.paused) {
-          this.debug += 'play - ';
+          this.debug += 'playing - ';
           this.audio.play();
         } else {
           this.debug += 'pause - ';
