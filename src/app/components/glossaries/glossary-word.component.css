@@ -10,26 +10,34 @@ h1.nomargin {
 .audio-item {
   margin-left: 8px;
 }
-h1.word {
+h1.word-box {
   margin-top: 90px;
 }
-h1.word small {
+h1.word-box small {
   color: #ccc;
   font-size: 45%;
 }
-.back > h1.word {
+.back > h1.word-box {
   margin-top: 50px;
   color: #ddd;
 }
-.none > h1.word {
+.none > h1.word-box {
   margin-top: 0;
 }
 .word-type {
   color: #fff;
-  position: relative;
-  top: -12px;
-  left: -4px;
+  font-style: italic;
+  font-size: 14px;
 }
 .back .word-type {
   color: #ccc;
+}
+.word {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+}
+.flag {
+  position: relative;
+  top: -19px;
 }

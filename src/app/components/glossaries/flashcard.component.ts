@@ -29,6 +29,7 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
     .subscribe(event => {
       this.isFlipped = false;
       this.showButtons = false;
+      this.answered = true;
       this.card = event;
     });
   }
@@ -64,6 +65,7 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
   }
 
   private hasAnswered(answer: string) {
+    this.isFlipped = false;
     this.showButtons = false;
     this.answered = true;
     this.answer.next(answer);

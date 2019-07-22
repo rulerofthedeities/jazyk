@@ -55,7 +55,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       }
     }
   }
-
+/*
   showChapter(chapter: ChapterData) {
     const level = chapter.level;
     let sequence = chapter.sequence,
@@ -69,12 +69,12 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
           hide = !chapterData.expanded;
         }
       }
-      return hide;
+      return false;
     } else {
       return false;
     }
   }
-
+*/
   private getBookType() {
     // read or listen
     this.route
@@ -215,15 +215,18 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         chapterSequence = session.chapterSequence;
         sentenceNr = session.sentenceNrChapter || 0;
       }
+      let chapterData = this.chapterData[chapterSequence - 1];
       for (let i = 0; i < session.answers.length; i++) {
-        this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers =
-          this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers || '';
-        this.chapterData[chapterSequence - 1].sentences[sentenceNr].answers += session.answers[i];
-        this.chapterData[chapterSequence - 1].sentences[sentenceNr].lastAnswer = session.answers[i];
-        sentenceNr++;
-        if (sentenceNr >= this.chapterData[chapterSequence - 1].nrOfSentences) {
-          chapterSequence++;
-          sentenceNr = 0;
+        if (chapterData) {
+          chapterData.sentences[sentenceNr].answers = chapterData.sentences[sentenceNr].answers || '';
+          chapterData.sentences[sentenceNr].answers += session.answers[i];
+          chapterData.sentences[sentenceNr].lastAnswer = session.answers[i];
+          sentenceNr++;
+          if (sentenceNr >= chapterData.nrOfSentences) {
+            chapterSequence++;
+            chapterData = this.chapterData[chapterSequence - 1];
+            sentenceNr = 0;
+          }
         }
       }
     });

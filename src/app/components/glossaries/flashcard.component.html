@@ -56,6 +56,7 @@
 <!-- CARD -->
 <ng-template #word let-side=side>
   <km-glossary-word
+    [text]="text"
     [flashCard]="card"
     [lanFrom]="lanPair.from"
     [audioPath]="audioPath"

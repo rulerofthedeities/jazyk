@@ -17,6 +17,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   private componentActive = true;
   private supportsOgg: string;
   audio: any;
+  debug = '';
 
   constructor(
     private sharedService: SharedService
@@ -53,27 +54,37 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   private play() {
     if (this.active) {
       if (!this.audio) {
+        this.debug += 'init - ';
         this.audio = new Audio();
         this.audio.src = this.getSource(this.fileUrl);
         this.audio.load();
+        this.debug += 'loading - ';
       } else {
+        this.debug += 'play? - ';
         if (this.audio.ended || this.audio.paused) {
+          this.debug += 'play - ';
           this.audio.play();
         } else {
+          this.debug += 'pause - ';
           this.audio.pause();
         }
       }
       this.audio.addEventListener('ended', e => {
         // The audio has ended
+        this.debug += 'ended - ';
+        console.log('ended', this.audio);
+        this.audio = null;
         this.ended.emit(true);
       });
       this.audio.addEventListener('loadeddata', e => {
         // The audio has loaded
         if (this.audio) {
+          this.debug += 'loaded - ';
           const promise = this.audio.play();
           if (promise !== undefined) {
             promise.then(_ => {
               // Autoplay started!
+              this.debug += 'autoplay started - ';
             }).catch(error => {});
           }
         }

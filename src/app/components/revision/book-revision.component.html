@@ -18,7 +18,6 @@
           <!-- CHAPTER HEADER -->
           <li *ngIf="hasChapters"
             class="list-group-item chapter-header"
-            [class.hidden]="showChapter(chapter)"
             [ngClass]="'level-' + chapter.level"
             (click)="onToggleChapter(chapter, i)">
             <span

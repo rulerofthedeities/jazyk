@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 })
 
 export class GlossaryWordComponent {
+  @Input() text: Object;
   @Input() flashCard: FlashCard;
   @Input() lanFrom: string;
   @Input() audioPath: string;
