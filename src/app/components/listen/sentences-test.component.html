@@ -33,7 +33,7 @@
             </km-book-context>
             <!-- SENTENCE -->
             <div class="sentence-count">
-              {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
+              {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}} <span *ngIf="book?.nrOfChapters > 1" class="chapter-nr">({{text["Chapter"]}} {{currentChapter.sequence}}/{{book.nrOfChapters}})</span>:
             </div>
             <km-sentence
               [sentence]="currentSentence"

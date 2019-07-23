@@ -50,6 +50,9 @@
 .confirm button {
   margin-bottom: 12px;
 }
+.chapter-nr {
+  color: #999;
+}
 
 @media screen and (max-width: 991px) {
   .btn-text-wrapper {

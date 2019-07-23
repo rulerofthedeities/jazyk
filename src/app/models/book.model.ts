@@ -122,6 +122,7 @@ export interface Book {
   uploadedMp3?: boolean;
   hasMp3?: boolean;
   mp3Count?: number;
+  nrOfChapters?: number;
 }
 
 export interface UserBookDates {

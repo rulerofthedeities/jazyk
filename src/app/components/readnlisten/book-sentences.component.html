@@ -37,7 +37,7 @@
                 {{text["ChapterTitle"]}}:
               </span>
               <span *ngIf="!currentSentence?.isHeader">
-                {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}}:
+              {{text["Sentence"]}} {{currentSentenceNr}}/{{currentSentenceTotal}} <span *ngIf="book?.nrOfChapters > 1" class="chapter-nr">({{text["Chapter"]}} {{currentChapter.sequence}}/{{book.nrOfChapters}})</span>:
               </span>
             </div>
             <km-sentence
