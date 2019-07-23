@@ -18,7 +18,7 @@ memwatch.on('leak', (info) => { console.log('main memory leakinfo ', info); });
 // memwatch.on('stats', (stats) => { console.log('memory leak stats', stats); });
 
 // config
-app.set('port', process.env.PORT || 4803);
+app.set('port', process.env.PORT || 4804);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('token_expiration', 604800);// Token expires after 7 days
 

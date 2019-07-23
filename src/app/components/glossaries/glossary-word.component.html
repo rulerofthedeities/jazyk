@@ -1,6 +1,6 @@
 <span [ngClass]="side">
   <h1 class="word-box" [class.nomargin]="!showWordType && !showAudio">
-    <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from">
+    <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from" [class.no-word-type]="!showWordType">
     <span class="word">{{flashCard.word}}<small *ngIf="flashCard.genus"> ({{text[flashCard.genus]}})</small>
       <div class="word-type" *ngIf="showWordType">{{text[flashCard.wordType]}}</div>
     </span>

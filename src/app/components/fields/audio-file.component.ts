@@ -17,7 +17,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   private componentActive = true;
   private supportsOgg: string;
   audio: any;
-  debug = '';
 
   constructor(
     private sharedService: SharedService
@@ -49,45 +48,34 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
       aif: 'audio/x-aiff'
     };
     this.supportsOgg = this.audio.canPlayType(formats[type] || type);
-    this.debug += 'ogg' + this.supportsOgg + ' - ';
   }
 
   private play() {
     if (this.active) {
       if (!this.audio) {
-        this.debug += 'init - ';
         this.audio = new Audio();
         const src = this.getSource(this.fileUrl);
-        this.debug += 'src ' + src + ' - ';
         this.audio.src = src;
-        this.debug += 'loading - ';
         this.audio.load();
       } else {
-        this.debug += 'play? - ';
         if (this.audio.ended || this.audio.paused) {
-          this.debug += 'playing - ';
           this.audio.play();
         } else {
-          this.debug += 'pause - ';
           this.audio.pause();
         }
       }
       this.audio.addEventListener('ended', e => {
         // The audio has ended
-        this.debug += 'ended - ';
-        console.log('ended', this.audio);
         this.audio = null;
         this.ended.emit(true);
       });
       this.audio.addEventListener('loadeddata', e => {
         // The audio has loaded
         if (this.audio) {
-          this.debug += 'loaded - ';
           const promise = this.audio.play();
           if (promise !== undefined) {
             promise.then(_ => {
               // Autoplay started!
-              this.debug += 'autoplay started - ';
             }).catch(error => {});
           }
         }
@@ -110,11 +98,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         return fileName;
       }
     }
-  }
-
-  private isIOS(): boolean {
-    // canPlayType on iOS not reliable
-    return /iPad|iPhone|iPod/.test(navigator.userAgent);
   }
 
   private observe() {
@@ -145,6 +128,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.audio = null;
     this.componentActive = false;
   }
 }

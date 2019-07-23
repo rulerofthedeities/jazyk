@@ -134,6 +134,24 @@ module.exports = {
       });
     });
   },
+  translationToLower: (req, res) => {
+    const wordId = new mongoose.Types.ObjectId(req.body.wordId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
+          newTranslation = req.body.newTranslation,
+          options = {
+            multi: false
+          },
+          query = {
+            wordId: wordId,
+            translations: {$elemMatch: {_id: translationElementId}},
+          },
+          update = {$set: {'translations.$.translation': newTranslation}};
+    Translations.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error setting word translation to lowercase', () => {
+        response.handleSuccess(res, true);
+      });
+    });
+  },
   /*
   getLetterTranslations: (req, res) => {
     const bookLan = req.body.bookLan,

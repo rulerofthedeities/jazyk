@@ -82,6 +82,13 @@ export class TranslationService {
     });
   }
 
+  setWordTranslationToLowerCase(wordId: string, translationElementId: string, newTranslation: string): Observable<string> {
+    return this.http
+    .put<string>('/api/wordlist/word/translationtolower', {
+      wordId, translationElementId, newTranslation
+    });
+  }
+
   /*** Sentence Translations ***/
 
   fetchSentenceTranslations(

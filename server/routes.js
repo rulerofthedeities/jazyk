@@ -185,6 +185,7 @@ module.exports = {
     router.put('/wordlist/word/translation', dictionaries.updateTranslation);
     router.put('/wordlist/word/removetranslation', dictionaries.removeTranslation);
     router.put('/wordlist/word/translationtonone', dictionaries.translationtonone);
+    router.put('/wordlist/word/translationtolower', dictionaries.translationToLower);
     router.put('/wordlist/summary', wordlist.updateSummary);
 
     app.use('/api/', router);

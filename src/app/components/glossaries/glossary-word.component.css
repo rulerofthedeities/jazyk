@@ -41,3 +41,6 @@ h1.word-box small {
   position: relative;
   top: -19px;
 }
+.flag.no-word-type {
+  top: 0;
+}

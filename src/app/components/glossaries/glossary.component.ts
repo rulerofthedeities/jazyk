@@ -216,6 +216,14 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  onSetTranslationToLowerCase(i: number, translation: WordTranslation, word: Word) {
+    // Set first letter of translation to lowercase
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.setTranslationToLowerCase(word._id, translation._id, word);
+    }
+  }
+
   onCancelTranslation() {
     this.editingTranslationId = null;
   }
@@ -294,6 +302,14 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     msg += ' ' + this.text['ForTheLanguage'] + ` '${this.text[this.translationLan.name]}'.`;
     msg += ' ' + this.text['ToAddWords'];
     return msg;
+  }
+
+  isUpperCase(translation: WordTranslation): boolean {
+    if (translation.translation && translation.translation[0]) {
+      return translation.translation[0] === translation.translation[0].toUpperCase();
+    } else {
+      return false;
+    }
   }
 
   private setDisplayWords(tab: string) {
@@ -657,6 +673,25 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       this.setWordTranslationSummary(word, null, translations);
     });
+  }
+
+  private setTranslationToLowerCase(wordId: string, elementId: string, word: Word) {
+    const updatedTranslation = word.translations.find(tlElement => tlElement._id.toString() === elementId);
+    if (updatedTranslation) {
+      const lcTranslation = updatedTranslation.translation.charAt(0).toLowerCase() + updatedTranslation.translation.substr(1);
+      this.translationService
+      .setWordTranslationToLowerCase(wordId, elementId, lcTranslation)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe( result => {
+        updatedTranslation.translation = lcTranslation;
+        const translations: WordTranslations = {
+          translations: word.translations,
+          lanCode: this.userLanCode,
+          word: word.word
+        }
+        this.setWordTranslationSummary(word, null, translations);
+      });
+    }
   }
 
   private updateUserTranslation(newTranslation: string, word: Word, i: number) {
