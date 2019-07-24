@@ -122,6 +122,16 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  onRebuildTranslationSummary(word: Word, i: number) {
+    console.log('summary word', word , i);
+    const translations: WordTranslations = {
+      translations: word.translations,
+      lanCode: this.userLanCode,
+      word: word.word
+    };
+    this.setWordTranslationSummary(word, null, translations);
+  }
+
   onAddAllToMyWordList() {
     // Get words that are not pinned
     const notPinnedWords = this.words.filter(word => !word.pinned);
@@ -184,7 +194,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
         translations: word.translations,
         lanCode: this.userLanCode,
         word: word.word
-      }
+      };
       this.setWordTranslationSummary(word, null, translations);
     }
     this.clearNoTranslationMsg();
@@ -711,6 +721,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       summary = this.wordListService.createTranslationsSummary(translations);
       word.translationSummary = summary.replace(/\|/g, ', ');
     }
+    console.log('summary', summary);
     // Add summary to book word
     this.wordListService
     .updateTranslationSummary(this.book._id, word._id, summary, this.userLanCode)

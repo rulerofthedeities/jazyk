@@ -6,7 +6,6 @@ import { retry } from 'rxjs/operators';
 import { SessionData } from 'app/models/book.model';
 
 interface TranslationScore {
-  position: number;
   count: number;
   word: string;
   score?: number;
@@ -93,26 +92,27 @@ export class WordListService {
   createTranslationsSummary(wordTranslations: WordTranslations, separator = '|'): string {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],
-        sameTranslation: TranslationScore;
+        sameTranslation: TranslationScore,
+        increase: number;
     if (wordTranslations && wordTranslations.translations) {
       wordTranslations.translations.forEach((tl, i) => {
         if (tl.translation !== '<none>') {
+          console.log(tl);
+          increase = tl.source === 'Jazyk' ? 3 : 1; // Jazyk translation is sorted higher
           sameTranslation = translations.find(t => t.word === tl.translation);
           if (sameTranslation) {
-            sameTranslation.count ++;
-            sameTranslation.position = Math.min(sameTranslation.position, i);
+            sameTranslation.count += increase;
           } else {
             translations.push({
-              position: i,
               word: tl.translation,
-              count: 1
+              count: increase
             });
           }
         }
       });
-      translations.map(tl => tl.score = tl.count - (tl.position * 2));
-      // Sort by score
-      translations.sort((a, b) => (a.position > b.position) ? -1 : ((b.position > a.position) ? 1 : 0));
+      console.log(translations);
+      // Sort by count
+      translations.sort((a, b) => (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0));
       summary = translations.map(tl => tl.word);
     }
     return summary.join(separator);

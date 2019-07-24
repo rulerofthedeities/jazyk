@@ -46,7 +46,7 @@ table {
   cursor: pointer;
   margin-top: 4px;
 }
-.fa-times {
+.fa-times, .fa-refresh  {
   font-size: 24px;
   color: red;
   cursor: pointer;

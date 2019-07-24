@@ -134,6 +134,13 @@
   </td>
   <td class="translation-cell">
     <div class="pull-right">
+      <span *ngIf="canEdit && tab==='glossary'"
+        class="fa fa-refresh fa-spacing"
+        [tooltip]="text['RebuildSummary']"
+        placement="top"
+        hide-delay="0"
+        (click)="onRebuildTranslationSummary(word, i)">
+      </span>
       <span *ngIf="tab==='glossary'"
         class="fa fa-thumb-tack"
         [class.pinned]="word.pinned"
