@@ -112,7 +112,7 @@ export class WordListService {
       });
       translations.map(tl => tl.score = tl.count - (tl.position * 2));
       // Sort by score
-      translations.sort((a, b) => (a.score > b.score) ? -1 : ((b.score > a.score) ? 1 : 0));
+      translations.sort((a, b) => (a.position > b.position) ? -1 : ((b.position > a.position) ? 1 : 0));
       summary = translations.map(tl => tl.word);
     }
     return summary.join(separator);
