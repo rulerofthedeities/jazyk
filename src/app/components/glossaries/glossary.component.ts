@@ -123,7 +123,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onRebuildTranslationSummary(word: Word, i: number) {
-    console.log('summary word', word , i);
     const translations: WordTranslations = {
       translations: word.translations,
       lanCode: this.userLanCode,
@@ -721,7 +720,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       summary = this.wordListService.createTranslationsSummary(translations);
       word.translationSummary = summary.replace(/\|/g, ', ');
     }
-    console.log('summary', summary);
     // Add summary to book word
     this.wordListService
     .updateTranslationSummary(this.book._id, word._id, summary, this.userLanCode)

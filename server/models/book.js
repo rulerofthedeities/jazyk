@@ -25,7 +25,7 @@ var bookSchema = new Schema({
   wordListPublished: {type: Boolean, default: false},
   audioPublished: {type: Boolean, default: false}
 });
-bookSchema.index({isPublished: 1, audioPublished: 1, wordListPublished: 1, lanCode: 1, 'difficulty.weight': 1, 'difficulty.nrOfSentences': 1});
+bookSchema.index({isPublished: 1, audioPublished: 1, wordListPublished: 1, lanCode: 1});
 const BookModel = mongoose.model('Book', bookSchema);
 
 var sentenceSchema = new Schema({

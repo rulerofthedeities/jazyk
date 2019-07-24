@@ -97,7 +97,6 @@ export class WordListService {
     if (wordTranslations && wordTranslations.translations) {
       wordTranslations.translations.forEach((tl, i) => {
         if (tl.translation !== '<none>') {
-          console.log(tl);
           increase = tl.source === 'Jazyk' ? 3 : 1; // Jazyk translation is sorted higher
           sameTranslation = translations.find(t => t.word === tl.translation);
           if (sameTranslation) {
@@ -110,7 +109,6 @@ export class WordListService {
           }
         }
       });
-      console.log(translations);
       // Sort by count
       translations.sort((a, b) => (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0));
       summary = translations.map(tl => tl.word);
