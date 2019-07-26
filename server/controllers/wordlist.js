@@ -173,7 +173,7 @@ module.exports = {
             bookId,
             targetLanCode: userLanCode,
             pinned: true,
-            translations: {$ne: ''}
+            translations: {$nin: [ null, "" ]}
           },
           userWordPipeline = [
             {$match: query},
@@ -200,7 +200,7 @@ module.exports = {
           key = 'translationSummary.' + userLanCode,
           query = {
             bookId,
-            [key]: {$exists: true}
+            [key]: {$exists: true, $nin: [ null, "" ] }
           },
           wordsPipeline = [
             {$match: query},
@@ -213,7 +213,14 @@ module.exports = {
         words.forEach(word => {
           word.translationSummary = word.translationSummary[userLanCode];
         });
-        response.handleSuccess(res, {userWords: null, words});
+        // For each word, find matching user word if it exists
+        const wordIds = words.map(word => word._id),
+              query = {wordId: {$in: wordIds}};
+        UserWordList.find(query, (err, userWords) => {
+          response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
+            response.handleSuccess(res, {userWords, words});
+          });
+        });
       });
     });
   },

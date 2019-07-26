@@ -262,7 +262,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           flashCard.answers = (answer.previousAnswers || '') + answer.answers;
           flashCardsToSave.push(flashCard);
         }
-      })
+      });
       // Save answers in user wordlist
       this.wordlistService
       .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode)
