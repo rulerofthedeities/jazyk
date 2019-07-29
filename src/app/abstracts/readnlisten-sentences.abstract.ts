@@ -455,7 +455,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         sentencesMatch = true;
         activeSentences.forEach((sentence, i) => {
           if (sentence.text !== activeAudioSentences[i].text) {
-            // console.log('Error: TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
+             // console.log('Error: TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
             // Prevent incorrect audio / sentence match
             sentencesMatch = false;
           }

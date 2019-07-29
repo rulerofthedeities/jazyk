@@ -203,7 +203,8 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
     let chapterSequence = 1,
         sentenceNr = 0,
         currentRepeatCount = -1,
-        repeatCount: number;
+        repeatCount: number,
+        chapterData: ChapterData;
     sessions.forEach(session => {
       repeatCount = session.repeatCount || 0;
       if (repeatCount > currentRepeatCount) {
@@ -214,9 +215,14 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       if (session.chapterSequence) {
         chapterSequence = session.chapterSequence;
         sentenceNr = session.sentenceNrChapter || 0;
+        chapterData = this.chapterData[chapterSequence - 1];
+        if (chapterData && sentenceNr >= chapterData.nrOfSentences) {
+          chapterSequence++;
+          sentenceNr = 0;
+        }
       }
-      let chapterData = this.chapterData[chapterSequence - 1];
       for (let i = 0; i < session.answers.length; i++) {
+        chapterData = this.chapterData[chapterSequence - 1];
         if (chapterData) {
           chapterData.sentences[sentenceNr].answers = chapterData.sentences[sentenceNr].answers || '';
           chapterData.sentences[sentenceNr].answers += session.answers[i];
@@ -224,7 +230,6 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
           sentenceNr++;
           if (sentenceNr >= chapterData.nrOfSentences) {
             chapterSequence++;
-            chapterData = this.chapterData[chapterSequence - 1];
             sentenceNr = 0;
           }
         }
