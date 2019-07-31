@@ -123,7 +123,16 @@
                 {{text['License']}}:
                 <km-license
                   [text]="text"
-                  [book]="book"
+                  [license]="book.license"
+                  [licenses]="licenses"
+                  >
+                </km-license>
+              </div>
+              <div *ngIf="book.licenseNarrator">
+                {{text['LicenseAudio']}}:
+                <km-license
+                  [text]="text"
+                  [license]="book.licenseNarrator"
                   [licenses]="licenses"
                   >
                 </km-license>

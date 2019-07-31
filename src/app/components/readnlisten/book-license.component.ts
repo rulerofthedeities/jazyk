@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Book } from 'app/models/book.model';
 import { LicenseUrl } from '../../models/main.model';
 
 @Component({
@@ -9,7 +8,7 @@ import { LicenseUrl } from '../../models/main.model';
 
 export class BookLicenseComponent implements OnInit {
   @Input() text: Object;
-  @Input() book: Book;
+  @Input() license: string;
   @Input() licenses: LicenseUrl[];
   licenseUrl: string;
 
@@ -19,7 +18,7 @@ export class BookLicenseComponent implements OnInit {
 
   private setLicenseUrl() {
     if (this.licenses) {
-      const license = this.licenses.find(l => this.book.license === l.license);
+      const license = this.licenses.find(l => this.license === l.license);
       if (license) {
         this.licenseUrl = license.url;
       }

@@ -411,8 +411,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   private getAudioAndChapter(bookId: string, position: Position) {
     zip(
       this.readnListenService.fetchChapter(bookId, this.bookType, position.chapterSequence),
-      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence),
-      this.readnListenService.fetchWordList(this.book, position.chapterSequence, this.userLanCode)
+      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
@@ -434,6 +433,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   private processChapter(chapter: Chapter, audioChapter: AudioChapter, position: Position) {
     if (chapter) {
+      this.getWordTranslations(chapter);
       this.currentChapter = chapter;
       this.currentAudioChapter = audioChapter;
       const activeSentences = chapter.sentences.filter(s => !s.isDisabled),
@@ -512,6 +512,18 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       };
       this.getAudioAndChapter(this.bookId, nextPosition);
     }
+  }
+
+  private getWordTranslations(chapter: Chapter) {
+    // Get word translations for this chapter
+    this.readnListenService
+    .fetchChapterWords(this.book, chapter.sequence, this.userLanCode)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      words => {
+        console.log('Chapter words', words);
+      }
+    );
   }
 
   private processResults(isBookRead: boolean) {

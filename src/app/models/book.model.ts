@@ -107,7 +107,7 @@ export interface Book {
   authors: string;
   narrators?: string;
   glossaryNarrators?: string;
-  narratorLicense?: String;
+  licenseNarrator?: String;
   year: number;
   img: string;
   tpe: string;

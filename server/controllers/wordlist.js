@@ -141,8 +141,24 @@ module.exports = {
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           targetLanCode = req.params.lan,
           key = 'translationSummary.' + targetLanCode,
-          query = {bookId, chapterSequence, [key]: {$exists: true}};
-    WordList.find(query, (err, words) => {
+          query = {bookId, chapterSequence, [key]: {$exists: true}},
+          pipeline = [
+            {$match: query},
+            {$unwind: "$actual"},
+            {$project: {
+              actual: 1,
+              audio: 1,
+              word: 1,
+              wordType: 1,
+              translationSummary: 1,
+              word_length: { $strLenCP: "$word" }
+            }},
+            {$sort: {word_length: -1}},
+            {$project: {
+              word_length: 0
+            }},
+          ];
+    WordList.aggregate(pipeline, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching chapter word list', () => {
         response.handleSuccess(res, words);
       });

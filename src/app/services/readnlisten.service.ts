@@ -91,7 +91,7 @@ export class ReadnListenService {
 
   /*** Words ***/
 
-  fetchWordList(book: Book, sequence: number, userLanCode: string): Observable<Word[]> {
+  fetchChapterWords(book: Book, sequence: number, userLanCode: string): Observable<Word[]> {
     if (book.wordListPublished) {
       return this.http
       .get<Word[]>(`/api/wordlist/${book._id}/${userLanCode}/${sequence}`)
