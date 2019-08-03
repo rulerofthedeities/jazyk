@@ -18,12 +18,14 @@ export interface Word {
   userTranslationSummary?: string;
   translations?: WordTranslation[];
   dictionaryLetter?: string;
+  chapterSequence?: number;
 }
 
 export interface UserWord {
   bookId: string;
   userId: string;
   wordId: string;
+  chapterSequence?: number;
   bookLanCode: string;
   targetLanCode: string;
   pinned: boolean;
@@ -129,4 +131,29 @@ export interface OmegaTranslation {
   langid: number;
   spelling: string;
   syntrans: OmegaTranslationSyntrans;
+}
+
+interface ActualWord {
+  word: string;
+  note: string;
+}
+
+interface MappedWordLocation {
+  start: number;
+  end: number;
+}
+
+interface WordPosition {
+  wordId: string;
+  actual: ActualWord;
+  locations: MappedWordLocation[];
+}
+
+export interface SentenceWord {
+  _id?: string;
+  bookId: string;
+  chapterSequence: number;
+  sentenceSequence: number;
+  text: string;
+  words: WordPosition[];
 }

@@ -7,6 +7,7 @@ const response = require('../response'),
       WordList = require('../models/wordlist').word,
       Session = require('../models/book').session,
       UserWordList = require('../models/wordlist').userword,
+      SentenceWords = require('../models/wordlist').sentenceword,
       WordTranslations = require('../models/wordlist').translations;
 
 module.exports = {
@@ -141,26 +142,47 @@ module.exports = {
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           targetLanCode = req.params.lan,
           key = 'translationSummary.' + targetLanCode,
-          query = {bookId, chapterSequence, [key]: {$exists: true}},
+          query = {bookId, chapterSequence, [key]: {$exists: true, $nin: [ null, "" ]}},
           pipeline = [
             {$match: query},
-            {$unwind: "$actual"},
             {$project: {
-              actual: 1,
               audio: 1,
               word: 1,
               wordType: 1,
-              translationSummary: 1,
-              word_length: { $strLenCP: "$word" }
-            }},
-            {$sort: {word_length: -1}},
-            {$project: {
-              word_length: 0
-            }},
+              translationSummary: 1
+            }}
           ];
     WordList.aggregate(pipeline, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching chapter word list', () => {
         response.handleSuccess(res, words);
+      });
+    });
+  },
+  getChapterUserWordList: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
+          targetLanCode = req.params.lan,
+          query = {
+            bookId,
+            userId,
+            chapterSequence,
+            targetLanCode,
+            pinned: true
+          };
+    UserWordList.find(query, (err, words) => {
+      response.handleError(err, res, 400, 'Error fetching chapter user word list', () => {
+        response.handleSuccess(res, words);
+      });
+    });
+  },
+  getSentenceWords: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
+          query = {bookId, chapterSequence};
+    SentenceWords.find(query, (err, docs) => {
+      response.handleError(err, res, 400, 'Error fetching sentence words', () => {
+        response.handleSuccess(res, docs);
       });
     });
   },
@@ -259,7 +281,8 @@ module.exports = {
               translations: summary
             },
             $setOnInsert: {
-              bookLanCode: word.lanCode
+              bookLanCode: word.lanCode,
+              chapterSequence: word.chapterSequence
             }
           },
           options = {
@@ -317,7 +340,8 @@ module.exports = {
               },
               $setOnInsert: {
                 bookLanCode: word.lanCode,
-                translations: word.translationSummary
+                translations: word.translationSummary,
+                chapterSequence: word.chapterSequence
               }
             },
             upsert: true

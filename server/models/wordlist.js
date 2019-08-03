@@ -7,12 +7,17 @@ const mongoose = require('mongoose'),
 const wordSchema = new Schema({}, { strict: false });
 
 wordSchema.index({bookId: 1});
-const WordModel = mongoose.model('bookword', wordSchema)
+const WordModel = mongoose.model('bookword', wordSchema);
+
+const sentenceWordSchema = new Schema({}, { strict: false });
+sentenceWordSchema.index({ bookId: 1, chapterSequence: 1, sentenceSequence: 1 });
+const SentenceWordModel = mongoose.model('sentenceword', sentenceWordSchema);
 
 const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   wordId: {type: Schema.Types.ObjectId, required: true},
+  chapterSequence: Number,
   bookLanCode: String,
   targetLanCode: String,
   pinned: Boolean,
@@ -69,6 +74,7 @@ TranslationsModel.ensureIndexes();
 module.exports = {
   'word': WordModel,
   'userword': UserWordModel,
+  'sentenceword': SentenceWordModel,
   'definitions': DefinitionsModel,
   'translations': TranslationsModel
 };

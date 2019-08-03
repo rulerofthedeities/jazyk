@@ -32,7 +32,7 @@ export class WordListService {
 
   fetchWordList(bookId: string): Observable<Word[]> {
     return this.http
-    .get<Word[]>(`/api/wordlist/${bookId}`)
+    .get<Word[]>(`/api/wordlist/words/${bookId}`)
     .pipe(retry(3));
   }
 

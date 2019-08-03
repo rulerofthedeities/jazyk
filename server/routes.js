@@ -162,8 +162,10 @@ module.exports = {
     router.get('/books/count/glossary', wordlist.getBooksCount);
     router.get('/wordlists/published/:lan/:sort', wordlist.getPublishedLanGlossaries);
 
-    router.get('/wordlist/:bookId', wordlist.getWordList);
-    router.get('/wordlist/:bookId/:lan/:sequence', wordlist.getChapterWordList);
+    router.get('/wordlist/words/:bookId', wordlist.getWordList);
+    router.get('/wordlist/words/:bookId/:lan/:sequence', wordlist.getChapterWordList);
+    router.get('/wordlist/userwords/:bookId/:lan/:sequence', wordlist.getChapterUserWordList);
+    router.get('/wordlist/sentences/:bookId/:sequence', wordlist.getSentenceWords);
     router.get('/userwordlist/:bookId/:lan', wordlist.getUserWordList);
     router.get('/userwordlists/count/:lan/:targetLan', wordlist.getUserWordListCount);
     router.get('/bookwordlists/count/:lan/:targetLan', wordlist.getBookWordListCount);

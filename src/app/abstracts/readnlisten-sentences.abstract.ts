@@ -8,6 +8,7 @@ import { ErrorService } from '../services/error.service';
 import { SessionData, UserBook, Bookmark, Book, Chapter,
          Sentence, SentenceSteps, AudioChapter, AudioSentence } from '../models/book.model';
 import { ReadSettings } from '../models/user.model';
+import { Word } from '../models/word.model';
 import { ModalConfirmComponent } from '../components/modals/modal-confirm.component';
 import { BookTranslationComponent } from '../components/readnlisten/book-translation.component';
 import { environment } from 'environments/environment';
@@ -516,14 +517,19 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   private getWordTranslations(chapter: Chapter) {
     // Get word translations for this chapter
-    this.readnListenService
-    .fetchChapterWords(this.book, chapter.sequence, this.userLanCode)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      words => {
-        console.log('Chapter words', words);
-      }
-    );
+    if (this.book.wordListPublished) {
+      zip(
+        this.readnListenService.fetchChapterWords(this.book, chapter.sequence, this.userLanCode),
+        this.readnListenService.fetchChapterUserWords(this.book, chapter.sequence, this.userLanCode),
+        this.readnListenService.fetchSentenceWords(this.book, chapter.sequence)
+      )
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        data => {
+          console.log('word translations', data);
+        }
+      );
+    }
   }
 
   private processResults(isBookRead: boolean) {

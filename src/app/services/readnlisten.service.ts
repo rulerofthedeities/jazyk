@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark, UserBookActivity,
          SessionData, Thumbs, Trophy, BookCount, AudioChapter } from '../models/book.model';
-import { Word } from '../models/word.model';
+import { Word, SentenceWord, UserWord } from '../models/word.model';
 import { Observable, Subject, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -92,13 +92,21 @@ export class ReadnListenService {
   /*** Words ***/
 
   fetchChapterWords(book: Book, sequence: number, userLanCode: string): Observable<Word[]> {
-    if (book.wordListPublished) {
       return this.http
-      .get<Word[]>(`/api/wordlist/${book._id}/${userLanCode}/${sequence}`)
+      .get<Word[]>(`/api/wordlist/words/${book._id}/${userLanCode}/${sequence}`)
       .pipe(retry(3));
-    } else {
-      return of([]);
-    }
+  }
+
+  fetchChapterUserWords(book: Book, sequence: number, userLanCode: string): Observable<UserWord[]> {
+    return this.http
+    .get<UserWord[]>(`/api/wordlist/userwords/${book._id}/${userLanCode}/${sequence}`)
+    .pipe(retry(3));
+  }
+
+  fetchSentenceWords(book: Book, sequence: number): Observable<SentenceWord[]> {
+    return this.http
+    .get<SentenceWord[]>(`/api/wordlist/sentences/${book._id}/${sequence}`)
+    .pipe(retry(3));
   }
 
   /*** Subscriptions ***/
