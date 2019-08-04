@@ -68,7 +68,7 @@ export interface UserWordData {
   countTranslation: number;
 }
 
-interface File {
+export interface File {
   fileName: string;
   hasMp3: boolean;
   s3: string;
@@ -143,10 +143,12 @@ interface MappedWordLocation {
   end: number;
 }
 
-interface WordPosition {
+export interface WordPosition {
   wordId: string;
   actual: ActualWord;
   locations: MappedWordLocation[];
+  translations?: string;
+  word?: Word;
 }
 
 export interface SentenceWord {

@@ -41,12 +41,15 @@
               </span>
             </div>
             <km-sentence
+              [text]="text"
               [sentence]="currentSentence"
               [audioSentence]="currentAudioSentence"
               [bookType]="bookType"
               [directory]="bookType === 'listen' ? book.audioDirectory : (currentAudioChapter ? currentAudioChapter.directory : '')"
               [lanCode]="book.lanCode"
-              [showSentence]="currentStep >= steps.Answered">
+              [lanToCode]="userLanCode"
+              [showSentence]="currentStep >= steps.Answered"
+              [sentenceWords]="getSentenceWords()">
             </km-sentence>
             <div class="question" *ngIf="currentStep === steps.Question">
               {{text["DoYouUnderstand"]}}

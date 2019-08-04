@@ -142,12 +142,13 @@ module.exports = {
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           targetLanCode = req.params.lan,
           key = 'translationSummary.' + targetLanCode,
-          query = {bookId, chapterSequence, [key]: {$exists: true, $nin: [ null, "" ]}},
+          query = {bookId, chapterSequence},
           pipeline = [
             {$match: query},
             {$project: {
               audio: 1,
               word: 1,
+              genus: 1,
               wordType: 1,
               translationSummary: 1
             }}

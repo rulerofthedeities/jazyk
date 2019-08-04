@@ -1,4 +1,5 @@
 <div class="audio-listen" *ngIf="bookType==='listen'">
+  <!-- LISTEN -->
   <km-audio-file
     [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + sentence?.s3"
     [size]="120"
@@ -7,6 +8,7 @@
   </km-audio-file>
 </div>
 <div class="sentence" *ngIf="bookType==='read' || showSentence">
+  <!-- AUDIO -->
   <div class="audio-read pull-left" *ngIf="bookType!=='listen' && s3">
     <km-audio-file
       [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + s3"
@@ -15,5 +17,37 @@
       (ended)="onAudioEnded($event)">
     </km-audio-file>
   </div>
-  {{text}}
+  <!-- SENTENCE -->
+  <div *ngIf="!hasWords">
+    {{txt}}
+  </div>
+  <div *ngIf="hasWords">
+    <span *ngFor="let section of sentenceSections; let i = index">
+      <span *ngIf="section.wordId && section.word && section.translations" class="hasId" (click)='onSelectWord($event, i)'>
+        <span class="popup" [class.selected]="i===selected" (click)='onSelectWord($event, null)'>
+          <img src="/assets/img/flags/{{lanCode}}.png" class="flag from pull-left">
+          <span *ngIf="section.word.audio && section.word.audio.length" class="pull-left">
+            <km-audio-file *ngFor="let audio of section.word.audio" class="word-audio"
+              [fileUrl]="'https://' + awsPath + 'words/' + lanCode + '/' + audio.s3"
+              [autoPlay]="false">
+            </km-audio-file>
+          </span>
+          <div class="word-data">
+            <strong>{{section.word.word}}
+              <small *ngIf="section.word.genus" class="word-genus">
+                ({{text[section.word.genus]}})
+              </small>
+            </strong>
+            <div class="word-type">{{text[section.word.wordType]}}</div>
+          </div>
+          <div>
+            <img src="/assets/img/flags/{{lanToCode}}.png" class="flag to">
+            <span class="word-translations">{{section.translations}}</span>
+          </div>
+        </span>
+        <span class="text">{{section.text}}</span>
+      </span>
+      <span *ngIf="!section.wordId || !section.word || !section.translations">{{section.text}}</span>
+    </span>
+  </div>
 </div>

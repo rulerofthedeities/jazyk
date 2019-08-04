@@ -8,7 +8,7 @@ import { ErrorService } from '../services/error.service';
 import { SessionData, UserBook, Bookmark, Book, Chapter,
          Sentence, SentenceSteps, AudioChapter, AudioSentence } from '../models/book.model';
 import { ReadSettings } from '../models/user.model';
-import { Word } from '../models/word.model';
+import { Word, UserWord, SentenceWord } from '../models/word.model';
 import { ModalConfirmComponent } from '../components/modals/modal-confirm.component';
 import { BookTranslationComponent } from '../components/readnlisten/book-translation.component';
 import { environment } from 'environments/environment';
@@ -56,6 +56,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
   showReadMsg = false;
   readingStarted = false;
   canConfirm = false; // If maybe was answered
+  sentenceWords: SentenceWord[];
   nextSentenceObservable: Subject<string> = new Subject();
   sentenceNrObservable: BehaviorSubject<number>;
   chapterObservable: BehaviorSubject<Chapter>;
@@ -205,6 +206,14 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   onToRevision() {
     this.router.navigate(['/read/book/' + this.bookId + '/' + this.userLanCode + '/review']);
+  }
+
+  getSentenceWords(): SentenceWord {
+    if (this.sentenceWords && this.sentenceWords.length) {
+      return this.sentenceWords[this.currentSentenceNr - 1];
+    } else {
+      return null;
+    }
   }
 
   protected changeAnswer(newAnswer: string) {
@@ -526,10 +535,34 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         data => {
-          console.log('word translations', data);
+          this.processWordTranslations(data[0], data[1], data[2]);
         }
       );
     }
+  }
+
+  private processWordTranslations(words: Word[], userWords: UserWord[], sentenceWords: SentenceWord[]) {
+    // add translatons from word or user word (if available) to the sentence words
+    let userWord: UserWord,
+        word: Word;
+    sentenceWords.forEach(s => {
+      s.words.forEach(w => {
+        word = words.find(bw => bw._id === w.wordId);
+        if (word) {
+          w.word = word;
+          // If there is a user word with a translation, use this translation, otherwise use bookword
+          userWord = userWords.find(uw => uw.wordId === w.wordId);
+          if (userWord && !!userWord.translations) {
+            w.translations = userWord.translations;
+          } else {
+            if (word && word.translationSummary) {
+              w.translations = word.translationSummary[this.userLanCode] || '';
+            }
+          }
+        }
+      });
+    });
+    this.sentenceWords = sentenceWords;
   }
 
   private processResults(isBookRead: boolean) {
@@ -743,6 +776,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         this.canConfirm = false;
         this.sessionData = null;
         this.msg = null;
+        this.sentenceWords = null;
         this.processNewBookId();
     });
   }
