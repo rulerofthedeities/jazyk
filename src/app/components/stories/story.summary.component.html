@@ -1,0 +1,425 @@
+<article>
+  <div class="panel panel-default transparant"
+    [ngClass]="{
+      compact: isCompact,
+      read: tab === 'read',
+      listen: tab === 'listen',
+      glossary: tab === 'glossary',
+      'user-glossary': !!userGlossaryCount?.countTotal
+    }">
+    <div class="panel-body panel-book">
+      <!-- NEW BANNER -->
+      <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook">
+        {{text["New"]}}!
+      </div>
+      <!-- COVER IMAGE -->
+      <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
+      <div class="cover-wrapper" [class.has-cover]="hasImage">
+        <div class="img-wrapper">
+            <img src="{{coverImage}}" class="cover-img">
+            <span *ngIf="!hasImage" class="cover-text">{{book.title}}</span>
+        </div>
+        <div class="cover-activity" *ngIf="userCount">
+          <span class="users"
+            [tooltip]="text['UsersStarted']"
+            placement="top"
+            hide-delay="0">
+            <span class="fa fa-user-o"></span>{{userCount}}
+          </span>
+          <span class="thumbs"
+            [tooltip]="text['UsersRecommended']"
+            placement="top"
+            hide-delay="0">
+            <span class="fa fa-thumbs-o-up"></span>{{recommendCount}}
+          </span>
+        </div>
+      </div>
+      <div class="book">
+        <!-- INDEX -->
+        <div class="index-nr pull-right">
+          {{nr}} / {{total}}
+        </div>
+        <!-- TITLE -->
+        <h3>
+          <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{targetLanCode}}.png" class="flag to">
+          <km-audio-file *ngIf="hasAudioTitle"
+            [fileUrl]="audioTitle"
+            [autoPlay]="false"
+            size="36"
+            class="audio-item"
+            (ended)="onAudioEnded($event)">
+          </km-audio-file>
+          <span class="title">{{book.title}}</span>
+        </h3>
+        <div class="book-content">
+          <!-- UNSUBSCRIBE -->
+          <div class="pull-right" *ngIf="(userBookStatus?.isSubscribed || userBookStatusTest?.isSubscribed ) && isMyList">
+            <button type="button" class="btn btn-default stop-btn"
+              (click)="onStopReadingListening()">
+              <span class="fa fa-times-circle fa-spacing"></span>
+              {{text["RemoveFromList"]}}
+            </button>
+          </div>
+          <!-- ICONS -->
+          <div *ngIf="userBookStatus">
+            <ng-container *ngTemplateOutlet="actionTemplate; context:{
+              isCompact: false,
+              tpe: tpe,
+              text: text,
+              userBookStatus: userBookStatus,
+              userBookStatusTest: userBookStatusTest
+            }">
+            </ng-container>
+          </div>
+          <!-- AUTHOR -->
+          <div class="author">
+            <km-book-tpe
+              [tpe]="book.tpe"
+              [text]="text">
+            </km-book-tpe>
+            {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
+            <km-link-field
+              [value]="book.authors"
+              [separator]="' &'"
+            ></km-link-field>
+            <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+            <span class="fa fa-copyright author-credits"
+              [class.selected]="showCredits"
+              [tooltip]="text['Attributions']"
+              placement="top"
+              hide-delay="0"
+              (click)="onToggleCredits()">
+            </span>
+            <span *ngIf="book.series || book.intro"
+              class="fa fa-info-circle author-intro"
+              [class.selected]="showIntro"
+              (click)="onToggleIntro()">
+            </span>
+            <!-- INTRO -->
+            <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
+              <div *ngIf="book.series"><span class="lbl">{{text['BookSeries']}}</span>: {{book.series}}</div>
+              <div *ngIf="book.intro"><span class="lbl">{{text['BookIntroduction']}}</span>: {{book.intro}}</div>
+            </div>
+            <!-- ATTRIBUTION -->
+            <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
+              <div>
+                {{text['License']}}:
+                <km-license
+                  [text]="text"
+                  [license]="book.license"
+                  [licenses]="licenses"
+                  >
+                </km-license>
+              </div>
+              <div *ngIf="book.licenseNarrator">
+                {{text['LicenseAudio']}}:
+                <km-license
+                  [text]="text"
+                  [license]="book.licenseNarrator"
+                  [licenses]="licenses"
+                  >
+                </km-license>
+              </div>
+              <div *ngIf="book.credits">{{text['BookCredits']}}: <km-link-field [value]="book.credits"></km-link-field></div>
+              <div *ngIf="book.authors">{{text['Author']}}: <km-link-field [value]="book.authors"></km-link-field></div>
+              <div *ngIf="book.adaptation">{{text['AdaptedBy']}}: <km-link-field [value]="book.adaptation"></km-link-field></div>
+              <div *ngIf="book.narrators">{{text['BookNarrator']}}: <km-link-field [value]="book.narrators"></km-link-field></div>
+              <div *ngIf="book.glossaryNarrators">{{text['GlossaryNarrator']}}: <km-link-field [value]="book.glossaryNarrators"></km-link-field></div>
+              <div *ngIf="book.translator">{{text['BookTranslator']}}: <km-link-field [value]="book.translator"></km-link-field></div>
+              <div *ngIf="book.cover">{{text['BookCover']}}: <km-link-field [value]="book.cover"></km-link-field></div>
+              <div *ngIf="book.source">{{text['BookSource']}}: <km-link-field [value]="book.source"></km-link-field></div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        <!-- TABS -->
+        <div class="tabs">
+          <ul class="nav nav-tabs">
+            <li class="tab tab-read"
+              [class.active]="tab==='read'"
+              (click)="onSelectTab('read')">
+              <a>
+                <span class="fa fa-file-text-o fa-spacing"></span>{{text["Read"]}}<span class="fa fa-check" *ngIf="finishedTabs?.read"></span>
+              </a>
+            </li>
+            <li class="tab tab-listen" *ngIf="book.audioPublished"
+              [class.active]="tab==='listen'"
+              (click)="onSelectTab('listen')">
+              <a>
+                <span class="fa fa-file-audio-o fa-spacing"></span>{{text["Listen"]}}<span class="fa fa-check" *ngIf="finishedTabs?.listen"></span>
+              </a>
+            </li>
+            <li class="tab tab-glossary" *ngIf="book.wordListPublished"
+              [class.active]="tab==='glossary'"
+              (click)="onSelectTab('glossary')">
+              <a>
+                <span class="fa fa-file-word-o fa-spacing"></span>{{text["Glossary"]}}<span class="fa fa-check" *ngIf="finishedTabs?.glossary"></span>
+              </a>
+              <span class="beta">beta</span>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <km-loader *ngIf="isLoading && !isError"
+              [msg]="text['LoadingData']"
+              [showBackground]="false"
+              margin="35px">
+            </km-loader>
+            <div *ngIf="!isLoading">
+              <!-- INFO -->
+              <div class="info">
+                <!-- DIFFICULTY -->
+                <div class="difficulty pull-right">
+                  {{text["Difficulty"]}}: <span class="difficulty" [style.width]="difficultyWidth + 'px'"></span>
+                  ({{difficultyPerc}}%)
+                </div>
+                <!-- SENTENCES -->
+                <div class="sentences" *ngIf="tab !== 'glossary'">
+                  <span class="strong">{{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}</span>
+                  <span *ngIf="translationCount" class="translations">
+                    ({{translationString}} {{text["translatedinto"]}} {{text[targetLanCode]}}<span *ngIf="isTranslated"
+                      class="fa fa-check"
+                      [tooltip]="text['FullyTranslated']"
+                      placement="top"
+                      hide-delay="50">
+                    </span>)
+                  </span>
+                </div>
+                <!-- WORDS -->
+                <div class="words" *ngIf="tab === 'glossary'">
+                  <span *ngIf="book.wordListPublished"><span class="strong">{{book.nrOfWordsInList | score}} {{text["words"]}}</span> {{text["inwordlist"]}}</span>
+                  <span *ngIf="glossaryCount?.countTranslation"> ({{glossaryCount?.countTranslation}} {{text["translated"]}})</span>
+                  <div *ngIf="!!userGlossaryCount?.countTotal">
+                    <span class="strong">{{userGlossaryCount.countTotal | score}} {{userGlossaryCount.countTotal > 1 ? text["words"] : text["word"]}}</span>
+                    {{text["inMyWordList"]}} <span *ngIf="userGlossaryCount.countTranslation > 0"> ({{userGlossaryCount.countTranslation}} {{text["translated"]}})</span>
+                  </div>
+                </div>
+              </div>
+              <!-- PROGRESS -->
+              <div [class.col-sm-6]="hasTest" class="progress-content">
+                <div [class.progress-panel]="hasTest">
+                  <!-- NOT TEST PIE CHART -->
+                  <div class="pie-content" style="position:relative;">
+                    <div class="pie-chart" *ngIf="userBookStatus?.nrOfSentencesDone > 0">
+                      <km-pie-chart
+                        [size]="hasTest ? 'small' : 'medium'"
+                        [data]="currentUserData">
+                      </km-pie-chart>
+                    </div>
+                  </div>
+                  <!-- NOT TEST BUTTONS -->
+                  <div class="buttons" *ngIf="book.lanCode !== targetLanCode">
+                    <span *ngIf="tab === 'read' || tab === 'listen'">
+                      <button *ngIf="!userBookStatus?.isStarted && !userBookStatus?.isBookRead && !userBookStatus?.isRepeat"
+                        type="button"
+                        class="btn btn-lg btn-success"
+                        (click)="onStartReadingListening(false, false, $event)">
+                        <span class="fa fa-arrow-right fa-spacing"></span>
+                        {{text["Start" + tab]}}
+                      </button>
+                      <button *ngIf="userBookStatus?.isStarted && !userBookStatus?.isBookRead"
+                        type="button"
+                        class="btn btn-lg btn-success"
+                        (click)="onStartReadingListening(false, false, $event)">
+                        <span class="fa fa-arrow-right fa-spacing"></span>
+                        {{text["Continue" + tab]}}
+                      </button>
+                      <button type="button" *ngIf="(userBookStatus?.isBookRead || userBookStatus?.isRepeat) && !userBookStatus?.isStarted"
+                        (click)="onStartReadingListening(true, false, $event)"
+                        class="btn btn-success btn-lg">
+                        <span class="fa fa-repeat fa-spacing"></span>
+                        {{text[tab==='listen' ? 'ListenAgain' :'ReadAgain']}}
+                      </button>
+                    </span>
+                    <span *ngIf="tab === 'read' && (userBookStatus?.isBookRead || userBookStatus?.isRepeat)">
+                      <button type="button"
+                        (click)="onRevision()"
+                        class="btn btn-info btn-lg">
+                        <span class="fa fa-file-text fa-spacing"></span>{{text['Revision']}}
+                      </button>
+                    </span>
+                    <span *ngIf="tab === 'glossary'">
+                      <span class="dropdown" #flashcardDropdown *ngIf="hasFlashCards">
+                        <button class="btn btn-success btn-lg"
+                          [class.dropdown-toggle]="showFlashCardDropdown"
+                          type="button"
+                          (click)="onToggleFlashCardDropdown()">
+                          <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
+                          <span class="caret" *ngIf="showFlashCardDropdown">
+                          </span>
+                        </button>
+                        <ul
+                          class="dropdown-menu"
+                          [style.display]="showFlashCardDropdown ? 'block' : 'none'">
+                          <li>
+                            <a (click)="onStartFlashcards('all', glossaryCount?.countTranslation)" >{{text["AppGlossary"]}} ({{glossaryCount?.countTranslation | score}})</a>
+                          </li>
+                          <li [class.no-userwords]="userGlossaryCount?.countTranslation < 1">
+                            <a (click)="onStartFlashcards('my', userGlossaryCount?.countTranslation)">{{text["MyGlossary"]}} ({{userGlossaryCount?.countTranslation | score}})</a>
+                          </li>
+                        </ul>
+                      </span>
+                    </span>
+                    <span *ngIf="book.wordListPublished && tab === 'glossary'">
+                      <button type="button"
+                        (click)="onWordList()"
+                        class="btn btn-info btn-lg">
+                        <span class="fa fa-th-list fa-spacing"></span>{{text['WordList']}}
+                      </button>
+                    </span>
+                  </div>
+                  <!-- NOT TEST PROGRESS BAR -->
+                  <ng-container *ngTemplateOutlet="progressTemplate;context:{
+                    isTest: false,
+                    userBookStatus: userBookStatus,
+                    userBook: userBook,
+                    userData: userData,
+                    showHistory: showHistoryData[0]
+                  }">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-sm-6 progress-content" *ngIf="hasTest">
+                <div class="progress-panel progress-panel-test">
+                  <!-- TEST PIE CHART -->
+                  <div class="pie-content" style="position:relative;">
+                    <div class="pie-chart" *ngIf="userBookStatusTest?.nrOfSentencesDone > 0">
+                      <km-pie-chart
+                        [size]="'small'"
+                        [data]="currentUserTestData">
+                      </km-pie-chart>
+                    </div>
+                  </div>
+                  <!-- TEST BUTTONS -->
+                  <div class="buttons" *ngIf="book.lanCode !== targetLanCode && userBookStatusTest">
+                    <span *ngIf="tab === 'listen'">
+                      <button *ngIf="!userBookStatusTest.isBookRead"
+                        type="button"
+                        class="btn btn-primary btn-lg"
+                        (click)="onStartListeningTest()">
+                        <span class="fa fa-flask fa-spacing"></span>
+                        {{userBookStatusTest.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
+                      </button>
+                      <button type="button" *ngIf="userBookStatusTest.isBookRead"
+                        (click)="onStartReadingListening(true, true, $event)"
+                        class="btn btn-primary btn-lg">
+                        <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+                      </button>
+                    </span>
+                    <span *ngIf="tab === 'glossary'">
+                      <button type="button"
+                        (click)="onStartVocabularyTest()"
+                        class="btn btn-primary btn-lg">
+                        <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
+                      </button>
+                    </span>
+                  </div>
+                  <!-- TEST PROGRESS BAR -->
+                  <ng-container *ngTemplateOutlet="progressTemplate;context:{
+                    isTest: true,
+                    userBookStatus: userBookStatusTest,
+                    userBook: userBookTest,
+                    userData: userDataTest,
+                    showHistory: showHistoryData[1]
+                  }">
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<ng-template #actionTemplate
+  let-isCompact=isCompact
+  let-tpe=tpe
+  let-text=text
+  let-userBookStatus=userBookStatus
+  let-userBookStatusTest=userBookStatusTest>
+  <div class="icons">
+    <div *ngIf="!isMyList"
+      class="subscribe"
+      [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
+      (click)="onToggleSubscription($event)"
+      [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
+      placement="left"
+      hide-delay="50">
+      <span class="fa fa-thumb-tack"></span>
+    </div>
+    <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
+      [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
+      placement="left"
+      hide-delay="50">
+      <span class="fa"
+        [ngClass]="{
+          'fa-thumbs-o-up': !userBookStatus.isRecommended,
+          'fa-thumbs-up': userBookStatus.isRecommended,
+          'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
+        }"
+        (click)="onToggleRecommend($event)">
+      </span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #progressTemplate
+  let-isTest=isTest
+  let-uBookStatus=userBookStatus
+  let-uBook=userBook
+  let-uData=userData
+  let-showHistory=showHistory>
+  <div *ngIf="uBookStatus?.isStarted || uBookStatus?.isRepeat || uBookStatus?.isBookRead">
+    <div *ngIf="uBook?.repeatCount"
+      (click)="onShowRepeatHistory(isTest)"
+      class="repeat-count pull-right"
+      [class.test]="isTest"
+      [tooltip]="text['RepeatNr']"
+      placement="left"
+      hide-delay="50">
+      {{uBook.repeatCount}}
+    </div>
+    <div class="progress"
+      [ngClass]="{'progress-min': uBookStatus.percDone < 5, 'test': isTest}">
+      <div
+        class="progress-bar progress-bar-striped"
+        [ngClass]="{'progress-bar-primary': isTest, 'progress-bar-success': !isTest}"
+        role="progressbar"
+        [attr.aria-valuenow]="uBookStatus.nrOfSentencesDone"
+        aria-valuemin="0"
+        [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+        [style.width.%]="uBookStatus.percDone">
+        <span>
+          {{uBookStatus.nrOfSentencesDone}}/{{uBookStatus.nrOfSentences}}&nbsp;({{uBookStatus.percDone}}%)
+        </span>
+      </div>
+    </div>
+    <ul class="list-group repeat-history" *ngIf="uData && showHistory">
+      <li *ngFor="let history of uData; let i=index" class="list-group-item history-row">
+        <span class="dt">{{history.start | date:'yyyy/MM/dd'}} - {{history.end | date:'yyyy/MM/dd'}}</span>
+        <span class="color-bar">
+          <div class="column" *ngIf="history.nrNo" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].red +  '%',
+            'background-color': 'red'
+          }">
+          {{history.nrNo}}
+          </div>
+          <div class="column" *ngIf="history.nrMaybe" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].orange +  '%',
+            'background-color': 'orange'
+          }">
+          {{history.nrMaybe}}
+          </div>
+          <div class="column" *ngIf="history.nrYes" [ngStyle]="{
+            'flex': '1 0 ' + userColors[isTest ? 1 : 0][i].green +  '%',
+            'background-color': 'green'
+          }">
+          {{history.nrYes}}
+          </div>
+        </span>
+      </li>
+    </ul>
+  </div>
+</ng-template>

@@ -286,6 +286,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private unsubscribe() {
     // Unsubscribe from non-test
+    /*
     if (this.userBook && this.userBookStatus && this.userBookStatus.isSubscribed) {
       this.readnListenService
       .unSubscribeFromBook(this.userBook._id)
@@ -299,10 +300,12 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
     }
+    */
   }
 
   private unsubscribeTest() {
     // Unsubscribe from test and non-test
+    /*
     if (this.userBookTest && this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
       this.readnListenService
       .unSubscribeFromBook(this.userBookTest._id)
@@ -316,6 +319,7 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
     }
+    */
   }
 
   private getAllCurrentUserData() {
@@ -438,9 +442,11 @@ export class BookSummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   private checkHasFlashCards() {
     this.hasFlashCards = false;
+    /*
     if ((this.glossaryData && this.glossaryData.countTranslation > 0) || (this.userGlossary && this.userGlossary.countTranslation > 0)) {
       this.hasFlashCards = true;
     }
+    */
   }
 
   private checkSentencesDone() {

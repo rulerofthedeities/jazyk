@@ -72,6 +72,7 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
   }
 
   protected getAllUserData() {
+    /*
     this.isBooksReady = false;
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
@@ -88,9 +89,11 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
       }
       this.isBooksReady = true;
     });
+    */
   }
 
   private processUserWordData(userwords: UserWordData[]) {
+    /*
     // First clear data (if different language has been selected)
     Object.keys(this.userWordData).forEach((key, index) => {
       this.userWordData[key].countTotal = 0;
@@ -100,9 +103,11 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     userwords.forEach(count => {
       this.userWordData[count.bookId] = count;
     });
+    */
   }
 
   private processWordTranslations(translations: UserWordData[]) {
+    /*
     // First clear data (if different language has been selected)
     Object.keys(this.bookWordData).forEach((key, index) => {
       this.bookWordData[key].countTotal = 0;
@@ -113,5 +118,6 @@ export class GlossariesComponent extends ReadnListenListComponent implements OnI
     translations.forEach(count => {
       this.bookWordData[count.bookId] = count;
     });
+  */
   }
 }

@@ -204,46 +204,15 @@ module.exports = {
     const lanCode = req.params.lan,
           bookType = req.params.bookType,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {userId, lanCode, bookType};
+          query = {
+            userId,
+            lanCode,
+            bookType
+          };
 
     UserBook.find(query, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching user books', () => {
         response.handleSuccess(res, books);
-      });
-    });
-  },
-  getActivity: (req, res) => {
-    const lanCode = req.params.lan,
-          bookType = req.params.bookType,
-          query = {bookType},
-          projection = {
-            _id: 0,
-            bookId: '$_id.bookId',
-            recommended: 1,
-            started: 1,
-            finished: 1
-          },
-          pipeline = [
-            {$match: query},
-            {$group: {
-              _id: {
-                bookId: '$bookId'
-              },
-              recommended: {
-                $sum: { $cond: ["$recommended", 1, 0] }
-              },
-              started: {
-                $sum: { $cond: [{'$ifNull': ['$bookmark', false]}, 1, 0] }
-              },
-              finished: {
-                $sum: { $cond: [{'$eq': ['$bookmark.isBookRead', true]}, 1, 0] }
-              }
-            }},
-            {$project: projection}
-          ];
-      UserBook.aggregate(pipeline, (err, activity) => {
-      response.handleError(err, res, 400, 'Error fetching user books activity', () => {
-        response.handleSuccess(res, activity);
       });
     });
   },
@@ -377,28 +346,6 @@ module.exports = {
       });
     });
   },
-  getTranslationsCount: (req, res) => {
-    const userLan = req.params.lan,
-          query = {'translations.lanCode': userLan},
-          projection = {
-            _id: 0,
-            bookId: '$_id',
-            count: 1
-          },
-          pipeline = [
-            {$match: query},
-            {$group: {
-              _id: '$bookId',
-              count: {'$sum': 1}
-            }},
-            {$project: projection}
-          ];
-    Translation.aggregate(pipeline, (err, translations) => {
-      response.handleError(err, res, 400, 'Error fetching translations count', () => {
-        response.handleSuccess(res, translations);
-      });
-    });
-  },
   getDeeplTranslation: (req, res) => {
     const lanFrom = req.body.lanPair.from.toUpperCase(),
           lanTo = req.body.lanPair.to.toUpperCase(),
@@ -510,47 +457,6 @@ module.exports = {
     Session.findByIdAndUpdate(sessionData._id, update, (err, result) => {
       response.handleError(err, res, 400, 'Error updating session change', () => {
         response.handleSuccess(res, result);
-      });
-    });
-  },
-  getSessions: (req, res) => {
-    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          lanCode = req.params.lan,
-          bookType = req.params.bookType,
-          query = {userId, lanCode, bookType},
-          projection = {
-            _id: 0,
-            bookId: '$_id.bookId',
-            isTest: '$_id.isTest',
-            repeatCount: '$_id.repeat',
-            nrSentencesDone: 1,
-            nrYes: 1,
-            nrMaybe: 1,
-            nrNo: 1,
-            start: 1,
-            end: 1
-          },
-          pipeline = [
-            {$match: query},
-            {$sort: {'dt.start': 1}},
-            {$group: {
-              _id: {
-                bookId: '$bookId',
-                isTest: '$isTest',
-                repeat: '$repeatCount'
-              },
-              nrSentencesDone: {'$sum': { $strLenCP: "$answers" }},
-              nrYes: {'$sum': "$nrYes" },
-              nrMaybe: {'$sum': "$nrMaybe" },
-              nrNo: {'$sum': "$nrNo" },
-              start: {$first: '$dt.start'},
-              end: {$last: '$dt.end'}
-            }},
-            {$project: projection}
-          ];
-    Session.aggregate(pipeline, (err, sessions) => {
-      response.handleError(err, res, 400, 'Error fetching session data', () => {
-        response.handleSuccess(res, sessions);
       });
     });
   },
@@ -769,19 +675,6 @@ module.exports = {
       });
     });
   },
-  unsubscribeFromBook: (req, res) => {
-    const userId = req.decoded.user._id,
-          ubookId = req.body.ubookId,
-          query = {_id: ubookId, userId},
-          options = {new: true},
-          set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
-          update = {$set: set};
-    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
-      response.handleError(err, res, 400, 'Error unsubscribing from book', () => {
-        response.handleSuccess(res, result);
-      });
-    });
-  },
   recommend: (req, res) => {
     const userId = req.decoded.user._id,
           ubookId = req.body.ubookId,
@@ -791,6 +684,19 @@ module.exports = {
           update = {$set: {recommended}};
     UserBook.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error recommending book', () => {
+        response.handleSuccess(res, result);
+      });
+    });
+  },
+  unsubscribeFromBook: (req, res) => {
+    const userId =  new mongoose.Types.ObjectId(req.decoded.user._id),
+          ubookId =  new mongoose.Types.ObjectId(req.body.ubookId),
+          query = {_id: ubookId, userId},
+          options = {new: true},
+          set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
+          update = {$set: set};
+    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
+      response.handleError(err, res, 400, 'Error unsubscribing from book', () => {
         response.handleSuccess(res, result);
       });
     });

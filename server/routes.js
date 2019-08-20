@@ -14,6 +14,7 @@ const path = require('path'),
       scores = require('./controllers/scores'),
       page = require('./controllers/page'),
       dashboard = require('./controllers/dashboard'),
+      stories = require('./controllers/stories'),
       revision = require('./controllers/revision'),
       wordlist = require('./controllers/wordlist'),
       dictionaries = require('./controllers/dictionaries'),
@@ -115,7 +116,6 @@ module.exports = {
     router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/books/count/read', books.getBooksCount);
-    router.get('/books/activity/:lan/:bookType', books.getActivity)
     router.get('/book/user/:lan/:bookId/:bookType/:isTest', books.getUserBook);
     router.get('/book/user/:lan/:bookId/:bookType', books.getUserBook);
     router.get('/books/book/:bookId/:bookType', books.getBook);
@@ -125,14 +125,12 @@ module.exports = {
     router.get('/book/translations/:bookId/:lan/:chapterSequence/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
     router.put('/book/translation/', books.updateTranslation);
-    router.get('/book/translation/:lan', books.getTranslationsCount);
     router.post('/book/machinetranslation/deepl', books.getDeeplTranslation);
     router.post('/book/machinetranslation/microsoft', books.getMicrosoftTranslation);
     router.put('/book/bookmark', books.updateBookmark);
     router.post('/book/session', books.addSession);
     router.put('/book/session', books.updateSession);
     router.put('/book/sessionchange', books.changeSessionAnswer);
-    router.get('/book/sessions/:lan/:bookType', books.getSessions);
     router.get('/book/sessions/book/:bookId/:bookType/:lan', books.getBookSessions);
     router.get('/book/sessions/latest/:bookId/:bookType/:lan/:isTest', books.getLastestSession);
     router.get('/book/thumb/:bookId/:translationId', books.getThumbs);
@@ -156,6 +154,19 @@ module.exports = {
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
     router.get('/revision/chapter/:chapterId', revision.getChapterData);
     router.get('/revision/translations/:bookId/:bookLan/:userLan/:chapterSequence', revision.getTranslationData);
+
+    /* Stories */
+    router.get('/stories/activity', stories.getActivity);
+    router.get('/stories/userbooks/:lan/:bookType', stories.getUserLanBooks);
+    router.get('/stories/userwords/:lan', stories.getUserLanWords);
+    router.get('/stories/sessions/:lan/:bookType', stories.getSessions);
+    router.get('/stories/translation/:lan', stories.getTranslationsCount);
+    router.get('/stories/finished/:lan', stories.getFinishedStatus);
+    router.get('/story/user/:lan/:bookType/:bookId', stories.getStoryUserLanBooks);
+    router.get('/story/sessions/:lan/:bookType/:bookId', stories.getStorySessions);
+    router.get('/story/userwords/:lan/:bookId', stories.getStoryUserWords);
+    router.get('/story/bookwords/:lan/:bookId', stories.getStoryBookWordCount);
+    router.get('/story/translation/:lan/:bookId', stories.getStoryTranslationsCount);
 
     /* glossaries */
 
@@ -210,6 +221,8 @@ module.exports = {
             '/listen/*',
             '/glossaries',
             '/glossaries/*',
+            '/stories',
+            '/stories/*',
             '/auth/*',
             '/user/*',
             '/u/:name',

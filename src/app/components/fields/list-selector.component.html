@@ -1,0 +1,28 @@
+<div *ngIf="dataReady" class="list">
+  <div class="selector" [class.disabled]="disabled">
+    <div class="input-group col-xs-12">
+      <div class="btn btn-default btn-dropdown btn-lg" (click)="onToggleDropdown()">
+        <span class="caret" *ngIf="!disabled"></span>
+        <span class="fa"
+              [ngClass]="{
+                'fa-book': selectedList === 'read',
+                'fa-volume-up': selectedList === 'listen',
+                'fa-list': selectedList === 'glossary'
+              }">
+        </span>
+        {{listNames[selectedList]}}
+      </div>
+    </div>
+    <ul class="list-group dropdown" *ngIf="showDropdown">
+      <li
+        class="list-group-item"
+        [ngClass]="{active:list===selectedDropdown}"
+        *ngFor="let list of lists; let i=index"
+        (click)="onSelectList(list)"
+        (mouseover)="onHoverList(list)"
+        >
+        <span class="fa" [ngClass]="'fa-' + icons[i]"></span>{{listNames[list]}} {{showCount(list)}}
+      </li>
+    </ul>
+  </div>
+</div>

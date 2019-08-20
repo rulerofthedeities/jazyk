@@ -113,7 +113,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   onStartFlashcards(tab: string, count: number) {
     const tpe = tab === 'mywords' ? 'my' : 'all';
     this.log(`Start flash cards for ${this.book.title}`);
-    this.router.navigate([`/glossaries/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
+    this.router.navigate([`/glossaries/glossary/flashcards/${this.book._id}/${this.userLanCode}/${tpe}`]);
   }
 
   onAddToMyWordList(word: Word, i: number) {
@@ -273,7 +273,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onAudioEnded(isEnded: boolean) {
-    this.readnListenService.audioHasEnded(isEnded);
+    this.sharedService.audioHasEnded(isEnded);
   }
 
   hasTranslation(word: Word) {
@@ -659,7 +659,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     .removeWordTranslation(wordId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      word.translations = word.translations.filter(tlElement => tlElement._id.toString() !== elementId);
+      word.translations = word.translations.filter(tlElement => tlElement._id !== elementId);
       const translations: WordTranslations = {
         translations: word.translations,
         lanCode: this.userLanCode,
@@ -674,7 +674,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     .setWordTranslationToNone(wordId, elementId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe( result => {
-      word.translations = word.translations.filter(tlElement => tlElement._id.toString() !== elementId);
+      word.translations = word.translations.filter(tlElement => tlElement._id !== elementId);
       const translations: WordTranslations = {
         translations: word.translations,
         lanCode: this.userLanCode,
@@ -685,7 +685,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setTranslationToLowerCase(wordId: string, elementId: string, word: Word) {
-    const updatedTranslation = word.translations.find(tlElement => tlElement._id.toString() === elementId);
+    const updatedTranslation = word.translations.find(tlElement => tlElement._id === elementId);
     if (updatedTranslation) {
       const lcTranslation = updatedTranslation.translation.charAt(0).toLowerCase() + updatedTranslation.translation.substr(1);
       this.translationService

@@ -1,0 +1,71 @@
+<section *ngIf="isReady">
+  <div class="shadow" [class.showFilter]="showFilter"></div>
+  <div class="selectors">
+    <km-languages-bar
+      [listType]='listTpe'
+      [text]="text"
+      [bookLanguages]="bookLanguages"
+      [bookLanguage]="bookLanguage"
+      [myLanguages]="targetLanguages"
+      [myLanguage]="targetLanguage"
+      (newBookLanguage)="onBookLanguageSelected($event)"
+      (newMyLanguage)="onMyLanguageSelected($event)"
+      (newListType)="onChangeListType($event)"
+    ></km-languages-bar>
+  </div>
+  <div class="filter" *ngIf="showFilter">
+    <km-filter-bar
+      [text]="text"
+      [hasBooks]="!!filteredBooks.length"
+      [itemTxt]="itemTxt"
+      [listType]="listTpe"
+      [filterChanged]="filterChanged"
+      (newSort)="onChangeSort($event)"
+      (newFilter)="onChangeFilter($event)"
+      (newBookType)="onChangeMyList($event)">
+    </km-filter-bar>
+  </div>
+  <!-- BOOKS LIST -->
+  <div class="list">
+    <div *ngIf="isBooksReady && isActivityReady">
+      <ul class="list-unstyled" *ngIf="displayBooks?.length">
+        <li *ngFor="let book of displayBooks; let i=index; trackBy: onTrackBook">
+          <div class="blank" *ngIf="i < scrollCutOff - 20">
+          </div>
+          <km-story-summary *ngIf="isFinishedDataReady && i > scrollCutOff - 20"
+            [text]="text"
+            [tab]="listTpe"
+            [book]="book"
+            [nr]="i + 1"
+            [total]="filteredBooks.length"
+            [targetLanCode]="targetLanguage.code"
+            [licenses]="licenses"
+            [activity]="userBookActivity[book._id]"
+            [finishedTabs]="finishedTabs[book._id]"
+            [userBook]="userBooks[book._id]"
+            [userBookTest]="userBooksTest[book._id]"
+            [userData]="userData[book._id]"
+            [userDataTest]="userDataTest[book._id]"
+            [translationCount]="translationCount[book._id]"
+            [userGlossaryCount]="userWordCount[book._id]"
+            [userGlossaryData]="userWordData[book._id]"
+            [glossaryCount]="bookWordCount[book._id]"
+            [isMyList]="isMyList"
+            (removedSubscription)="onRemovedSubscription($event)"
+            (addedSubscription)="onAddedSubscription($event)">
+          </km-story-summary>
+        </li>
+      </ul>
+      <!-- No books found for selected language -->
+      <div *ngIf="!isLoading && isBooksReady && !filteredBooks.length">
+        <km-info-msg [msg]="getNoBooksMessage()">
+        </km-info-msg>
+      </div>
+    </div>
+    <km-loader *ngIf="(isLoading || !isBooksReady) && !isError"
+      [msg]="text['LoadingBooks']">
+    </km-loader>
+  </div>
+</section>
+
+

@@ -25,30 +25,11 @@
         <li *ngIf="isLoggedIn"
           routerLinkActive="active"
           class="desktop">
-          <a routerLink="/read">
+          <a routerLink="/stories">
             <span class="fa fa-book"></span>
-            {{text["Read"]}}
+            {{text["Stories"]}}
             <span class="bar"></span>
           </a>
-        </li>
-        <li *ngIf="isLoggedIn"
-          routerLinkActive="active"
-          class="desktop">
-          <a routerLink="/listen">
-            <span class="fa fa-volume-up"></span>
-            {{text["Listen"]}}
-            <span class="bar"></span>
-          </a>
-        </li>
-        <li *ngIf="isLoggedIn"
-          routerLinkActive="active"
-          class="desktop">
-          <a routerLink="/glossaries">
-            <span class="fa fa-list"></span>
-            {{text["Glossaries"]}}
-            <span class="bar"></span>
-          </a>
-          <span class="beta">beta</span>
         </li>
       </ul>
 
@@ -187,27 +168,11 @@
   <nav *ngIf="showMobileMenu" class="navbar-mobile navbar-fixed-top">
     <ul class="nav nav-pills nav-stacked mobile">
       <li *ngIf="isLoggedIn">
-        <a routerLink="/read"
+        <a routerLink="/stories"
           routerLinkActive="active"
           (click)="onCloseMobileMenu()">
           <span class="fa fa-list-alt"></span>
-          {{text["Read"]}}
-        </a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/listen"
-          routerLinkActive="active"
-          (click)="onCloseMobileMenu()">
-          <span class="fa fa-volume-up"></span>
-          {{text["Listen"]}}
-        </a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="/glossaries"
-          routerLinkActive="active"
-          (click)="onCloseMobileMenu()">
-          <span class="fa fa-list"></span>
-          {{text["Glossaries"]}}
+          {{text["Stories"]}}
         </a>
       </li>
     </ul>

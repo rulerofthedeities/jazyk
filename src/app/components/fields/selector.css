@@ -52,3 +52,19 @@
   color: grey;
   font-size: 12px;
 }
+.list .fa {
+  margin-right: 4px;
+}
+.list .fa-book {
+  color: #518bd6;
+}
+.list .fa-volume-up {
+  color: #d6a551;
+}
+.list .fa-list {
+  color: #d66351;
+}
+
+.list li.active .fa {
+  color: white;
+}

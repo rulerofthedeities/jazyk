@@ -111,9 +111,11 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
   private getUserData() {
     // Check if userdata missing for members of this leaderboard
-    const leaderIds = this.leaders[this.tab + this.tpe].map(l => l.userName ? null : l.userId).filter(l => l !== null);
-    this.getUsers(leaderIds);
-    this.loadingBoard = false;
+    if (this.leaders[this.tab + this.tpe]) {
+      const leaderIds = this.leaders[this.tab + this.tpe].map(l => l.userName ? null : l.userId).filter(l => l !== null);
+      this.getUsers(leaderIds);
+      this.loadingBoard = false;
+    }
   }
 
   private getUsers(ids: string[]) {

@@ -62,10 +62,19 @@ export interface AnswerData {
   points: number;
 }
 
-export interface UserWordData {
-  bookId: string;
+export interface UserWordCount {
+  bookId?: string;
   countTotal: number;
   countTranslation: number;
+}
+
+export interface UserWordData {
+  bookId: string;
+  lastAnswerYes: number;
+  lastAnswerNo: number;
+  pinned: number;
+  translated: number;
+  total: number
 }
 
 export interface File {

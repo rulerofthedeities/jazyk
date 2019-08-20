@@ -45,6 +45,7 @@ export class SharedService {
   eventMessage = new Subject<EventMessage>();
   audioEvent = new Subject<string>();
   scoreChanged = new Subject<number>();
+  audioEnded = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -62,6 +63,12 @@ export class SharedService {
       }
     }
     return params;
+  }
+
+  /*** Audio ***/
+
+  audioHasEnded(ended: boolean) {
+    this.audioEnded.next(ended);
   }
 
   fetchDependables(options: DependableOptions): Observable<Dependables> {
@@ -206,5 +213,10 @@ export class SharedService {
     const difficultyWidth = Math.round(difficulty / 5),
           difficultyPerc = Math.round(difficulty / 10);
     return {difficultyWidth, difficultyPerc};
+  }
+
+  getPercentage(a: number, b: number): number {
+    // calculates the truncated percentage
+    return Math.trunc(Math.min(100, (a / b) * 100));
   }
 }

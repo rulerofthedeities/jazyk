@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark, UserBookActivity,
-         SessionData, Thumbs, Trophy, BookCount, AudioChapter } from '../models/book.model';
+         SessionData, Thumbs, Trophy, AudioChapter } from '../models/book.model';
 import { Word, SentenceWord, UserWord } from '../models/word.model';
 import { Observable, Subject, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -11,18 +11,11 @@ export const maxWordScore = 950; // only use words with max this score in listen
 
 @Injectable()
 export class ReadnListenService {
-  audioEnded = new Subject<boolean>();
   readAnotherBook = new Subject<Book>();
 
   constructor(
     private http: HttpClient
   ) {}
-
-  /*** Audio ***/
-
-  audioHasEnded(ended: boolean) {
-    this.audioEnded.next(ended);
-  }
 
   /*** Books ***/
 
@@ -54,12 +47,6 @@ export class ReadnListenService {
   fetchUserBook(userLanCode: string, bookId: string, bookType: string, isTest: boolean): Observable<UserBook> {
     return this.http
     .get<UserBook>('/api/book/user/' + userLanCode + '/' + bookId + '/' + bookType + '/' + (isTest ? '1' : '0'))
-    .pipe(retry(3));
-  }
-
-  fetchBooksCount(bookType: string): Observable<BookCount[]> {
-    return this.http
-    .get<BookCount[]>('/api/books/count/' + bookType)
     .pipe(retry(3));
   }
 
@@ -117,12 +104,6 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  fetchActivity(targetLanCode: string, bookType: string): Observable<UserBookActivity[]> {
-    return this.http
-    .get<UserBookActivity[]>('/api/books/activity/' + targetLanCode + '/' + bookType)
-    .pipe(retry(3));
-  }
-
   placeBookmark(bookId: string, bookmark: Bookmark, lanCode: string, bookType: string, isTest: boolean): Observable<Bookmark> {
     return this.http
     .put<Bookmark>('/api/book/bookmark/', {bookmark, bookId, lanCode, bookType, isTest});
@@ -136,11 +117,6 @@ export class ReadnListenService {
   subscribeRepeat(bookId: string, lanCode: string, bookType: string, bookmark: Bookmark, isTest: boolean): Observable<UserBook> {
     return this.http
     .put<UserBook>('/api/book/subscribe/repeat', {bookId, lanCode, bookType, bookmark, isTest});
-  }
-
-  unSubscribeFromBook(ubookId: string): Observable<UserBook> {
-    return this.http
-    .post<UserBook>('/api/book/unsubscribe', {ubookId});
   }
 
   recommendBook(ubookId: string, recommend: Boolean): Observable<UserBook> {
@@ -161,12 +137,6 @@ export class ReadnListenService {
   }
 
   /*** Session Data ***/
-
-  fetchSessionData(targetLanCode: string, bookType: string): Observable<UserData[]> {
-    return this.http
-    .get<UserData[]>('/api/book/sessions/' + targetLanCode + '/' + bookType)
-    .pipe(retry(3));
-  }
 
   saveSessionData(sessionData: SessionData): Observable<SessionData>  {
     if (sessionData._id) {
@@ -198,13 +168,6 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  /*** Translation count */
-
-  fetchTranslationData(targetLanCode: string, bookType: string): Observable<TranslationData[]> {
-    // count the # of translations for all books into a specific language
-    return this.http
-    .get<TranslationData[]>('/api/book/translation/' + targetLanCode);
-  }
 
   /*** Thumbs ***/
 

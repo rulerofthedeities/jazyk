@@ -87,6 +87,12 @@ export interface BookDates {
   created?: Date;
 }
 
+ interface File {
+  fileName: string;
+  hasMp3?: boolean;
+  s3?: string;
+}
+
 export interface Book {
   _id: string;
   bookId?: string; // In case audiobook = read book
@@ -94,6 +100,7 @@ export interface Book {
   title: string;
   series: string;
   audioDirectory?: string;
+  audioTitle?: File;
   intro: string;
   credits: string;
   translator?: string;
@@ -109,7 +116,8 @@ export interface Book {
   glossaryNarrators?: string;
   licenseNarrator?: String;
   year: number;
-  img: string;
+  img?: string;
+  coverImg: string;
   tpe: string;
   license: string;
   links: string;
@@ -202,6 +210,17 @@ export interface UserBook {
   repeatCount: number;
 }
 
+export interface UserBookLean {
+  // Only data fetched in stories list
+  _id?: string;
+  bookId: string;
+  isTest: boolean;
+  subscribed: boolean;
+  recommended: boolean;
+  bookmark: Bookmark;
+  repeatCount: number;
+}
+
 interface Points {
   words: number;
   translations: number;
@@ -256,14 +275,27 @@ export interface SessionData {
 // Session data returned for one user
 export interface UserData {
   bookId: string;
+  isTest: boolean;
   nrSentencesDone: number;
   nrYes: number;
   nrNo: number;
   nrMaybe: number;
-  isTest: boolean;
   repeatCount: number;
   start?: Date;
   end?: Date;
+}
+
+export interface UserDataLean {
+  // Only data fetched in stories list
+  bookId: string;
+  isTest: boolean;
+  nrSentencesDone: number;
+  nrYes: number;
+  nrNo: number;
+  nrMaybe: number;
+  repeatCount: number;
+  start: Date;
+  end: Date;
 }
 
 export interface Thumbs {
@@ -293,4 +325,19 @@ export interface ViewFilter {
 export interface BookCount {
   lanCode: string;
   count: number;
+}
+
+export interface FinishedData {
+  bookId: string;
+  isTest: string;
+  bookType: string;
+  isFinished: number;
+}
+
+export interface FinishedTab {
+  read: boolean;
+  listen: boolean;
+  listenDefault: boolean;
+  listenTest: boolean;
+  glossary: boolean;
 }

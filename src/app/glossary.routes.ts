@@ -11,7 +11,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'glossary/:id/:lan',
+    path: ':id/:lan',
     component: BookGlossaryComponent,
     data : {tpe : 'glossary'},
     canActivate: [AuthGuard]

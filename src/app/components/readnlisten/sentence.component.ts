@@ -2,7 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { Sentence, AudioSentence } from '../../models/book.model';
 import { SentenceWord, WordPosition, Word, File } from '../../models/word.model';
 import { awsPath } from '../../services/shared.service';
-import { ReadnListenService } from '../../services/readnlisten.service';
+import { SharedService } from '../../services/shared.service';
 
 interface Position {
   wordId: string;
@@ -43,7 +43,7 @@ export class SentenceComponent implements OnChanges {
   selected = null; // Selected translation popup
 
   constructor(
-    private readnListenService: ReadnListenService
+    private sharedService: SharedService
   ) {}
 
   ngOnChanges() {
@@ -53,7 +53,7 @@ export class SentenceComponent implements OnChanges {
   }
 
   onAudioEnded(isEnded: boolean) {
-    this.readnListenService.audioHasEnded(isEnded);
+    this.sharedService.audioHasEnded(isEnded);
   }
 
   onSelectWord(event: MouseEvent, i: number) {

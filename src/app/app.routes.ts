@@ -37,19 +37,66 @@ export const routes: Routes = [
         loadChildren: './auth.module#AuthModule'
       },
       {
-        path: 'read',
-        loadChildren: './read.module#ReadModule',
+        path: 'stories',
+        loadChildren: './stories.module#StoriesModule',
         canActivate: [AuthGuard]
+      },
+      {
+        path: 'read',
+        children: [
+          {
+            path: '',
+            loadChildren: './stories.module#StoriesModule',
+            data :
+            {
+              tpe : 'read'
+            },
+            canActivate: [AuthGuard]
+          },
+          {
+            path: 'book',
+            loadChildren: './read.module#ReadModule',
+            canActivate: [AuthGuard]
+          }
+        ]
       },
       {
         path: 'listen',
-        loadChildren: './listen.module#ListenModule',
-        canActivate: [AuthGuard]
+        children: [
+          {
+            path: '',
+            loadChildren: './stories.module#StoriesModule',
+            data :
+            {
+              tpe : 'listen'
+            },
+            canActivate: [AuthGuard]
+          },
+          {
+            path: 'book',
+            loadChildren: './listen.module#ListenModule',
+            canActivate: [AuthGuard]
+          }
+        ]
       },
       {
         path: 'glossaries',
-        loadChildren: './glossary.module#GlossaryModule',
-        canActivate: [AuthGuard]
+        children: [
+          {
+            path: '',
+            loadChildren: './stories.module#StoriesModule',
+            data :
+            {
+              tpe : 'glossary'
+            },
+            canActivate: [AuthGuard]
+          },
+          {
+            path: 'glossary',
+            loadChildren: './glossary.module#GlossaryModule',
+            canActivate: [AuthGuard]
+          }
+        ]
       },
       {
         path: 'user',
@@ -60,15 +107,27 @@ export const routes: Routes = [
         path: 'info',
         // loadChildren: './page.module#PageModule'
         children: [
-          {path: 'booklist', component: BooklistComponent},
-          {path: ':page', component: InfoComponent}
+          {
+            path: 'booklist',
+            component: BooklistComponent
+          },
+          {
+            path: ':page',
+            component: InfoComponent
+          }
         ]
       },
       {
         path: 'manual',
         children: [
-          {path: '', redirectTo: '/manual/index', pathMatch: 'full' },
-          {path: ':page', component: ManualComponent}
+          {
+            path: '',
+            redirectTo: '/manual/index',
+            pathMatch: 'full' },
+          {
+            path: ':page',
+            component: ManualComponent
+          }
         ]
       },
       {

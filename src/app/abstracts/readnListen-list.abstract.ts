@@ -139,6 +139,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
 
   protected getAllUserData() {
     this.isBooksReady = false;
+    /*
     zip(
       this.readnListenService.fetchUserBooks(this.myLanguage.code, this.bookType),
       this.readnListenService.fetchSessionData(this.myLanguage.code, this.bookType),
@@ -155,6 +156,7 @@ export abstract class ReadnListenListComponent implements OnDestroy {
       }
       this.isBooksReady = true;
     });
+    */
   }
 
   private processActivity(activity: UserBookActivity[]) {

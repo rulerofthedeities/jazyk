@@ -154,7 +154,7 @@ export class SentenceTestComponent implements OnInit, OnChanges {
   }
 
   private observe() {
-    this.readnListenService
+    this.sharedService
     .audioEnded
     .subscribe(
       hasEnded => {

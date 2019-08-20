@@ -1,0 +1,122 @@
+<!-- FILTERS AND SORTING -->
+<div class="container">
+  <div class="form-group form-group-sm">
+    <div class="col-xs-3 selector tpe-selector">
+      <select class="form-control" (change)="onChangeBookType($event.target.value)">
+        <option value="all">{{text['AllLecture']}}</option>
+        <option value="my">{{text['MyLecture']}}</option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <span class="label label-info filter-count pull-right" *ngIf="hasBooks">
+      {{itemTxt}}
+    </span>
+    <div class="form-group form-group-sm pull-left">
+      <select class="form-control sort-control"
+        (change)="onChangeSort($event.target.value)"
+        [tooltip]="text['SortOrder']"
+        placement="top">
+        <option
+          *ngFor="let option of sortOptions"
+          [value]="option.value"
+          [selected]="sort===option.value">
+          {{option.label}}
+        </option>
+      </select>
+    </div>
+    <div class="form-group form-group-sm pull-left filter" #dropdown *ngIf="filter">
+      <div class="form-control"
+          on-mouseover="onShowDropDown(true)"
+          on-mouseout="onShowDropDown(false)"
+          (click)="onToggleDropDown()"
+          [tooltip]="text['Filter']"
+          placement="top">
+        <span class="fa fa-filter fa-spacing"></span><span class="filter-text">{{filterTxt}}</span>
+        <ul
+          class="dropdown-menu"
+          (click)="onSelectDropdown($event)"
+          [style.display]="showDropDown ? 'block' : 'none'">
+          <li>
+            <label class="filter-label">
+              {{text["HideCompletedRead"]}}
+              <input type="checkbox"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideCompleted">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="filter-label">
+              {{text["HideNotTranslated"]}}
+              <input type="checkbox"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideNotTranslated">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="filter-label">
+              {{text["HideOld"]}}
+              <input type="checkbox"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideOld">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="filter-label">
+              {{text["HideEasy"]}}
+              <input type="checkbox"
+                [disabled]="filter.hideMedium && filter.hideAdvanced"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideEasy">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="filter-label">
+              {{text["HideMedium"]}}
+              <input type="checkbox"
+                [disabled]="filter.hideEasy && filter.hideAdvanced"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideMedium">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <label class="filter-label">
+              {{text["HideAdvanced"]}}
+              <input type="checkbox"
+                [disabled]="filter.hideEasy && filter.hideMedium"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.hideAdvanced">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li>
+            <button type="button"
+              class="btn btn-primary btn-sm pull-right"
+              (click)="onShowDropDown(false)">
+              <span class="fa fa-check fa-spacing"></span>{{text["Close"]}}
+            </button>
+            <button type="button" *ngIf="hasFilter"
+              class="btn btn-warning btn-sm pull-right"
+              (click)="onClearFilter()">
+              <span class="fa fa-times fa-spacing"></span>{{text["Clear"]}}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group form-group-sm pull-left clear-filter" [style.display]="hasFilter ? 'block' : 'none'">
+      <div class="form-control"
+          (click)="onClearFilter()"
+          [tooltip]="text['ClearFilter']"
+          hide-delay="0"
+          placement="top">
+        <span class="fa fa-times"></span>
+      </div>
+    </div>
+  </div>
+</div>

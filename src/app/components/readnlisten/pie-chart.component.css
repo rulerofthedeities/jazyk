@@ -1,8 +1,11 @@
 .pie {
   width: 120px;
 }
-.pie.small {
+.pie.medium {
   width: 60px;
+}
+.pie.small {
+  width: 54px;
 }
 
 @media screen and (max-width: 991px) {

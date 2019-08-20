@@ -23,6 +23,7 @@ import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
 import { PieChartComponent } from './components/readnlisten/pie-chart.component';
 import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
+import { AudioFileComponent } from './components/fields/audio-file.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     ScorePipe,
     SanitizeHtmlPipe,
     PieChartComponent,
-    BookTpeComponent
+    BookTpeComponent,
+    AudioFileComponent
   ],
   exports: [
     CommonModule,
@@ -74,7 +76,8 @@ import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
     ScorePipe,
     SanitizeHtmlPipe,
     PieChartComponent,
-    BookTpeComponent
+    BookTpeComponent,
+    AudioFileComponent
   ]
 })
 export class SharedModule {}

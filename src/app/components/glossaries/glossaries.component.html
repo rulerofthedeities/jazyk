@@ -1,4 +1,5 @@
 <section *ngIf="isReady">
+    <!--
   <km-languages-bar
     bookType='glossary'
     [text]="text"
@@ -10,8 +11,6 @@
     (newMyLanguage)="onMyLanguageSelected($event)"
     (newBookType)="onChangeListType($event)"
   ></km-languages-bar>
-
-  <!--
   <km-filter-bar
     [text]="text"
     [hasBooks]="!!filteredBooks.length"
