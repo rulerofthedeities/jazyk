@@ -30,14 +30,10 @@
       <ul class="list-unstyled" *ngIf="displayBooks?.length"
       infiniteScroll
       [infiniteScrollDistance]="2"
-      [infiniteScrollUpDistance]="5"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScrollBooksDown()"
-      (scrolledUp)="onScrollBooksUp()">
+      [infiniteScrollThrottle]="150"
+      (scrolled)="onScrollBooksDown()">
         <li *ngFor="let book of displayBooks; let i=index; trackBy: onTrackBook">
-          <div class="blank" *ngIf="i < scrollCutOff - 20">
-          </div>
-          <km-story-summary *ngIf="isFinishedDataReady && i > scrollCutOff - 20"
+          <km-story-summary *ngIf="isFinishedDataReady"
             [text]="text"
             [tab]="listTpe"
             [book]="book"

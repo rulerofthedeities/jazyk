@@ -131,12 +131,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.scrollBooks();
   }
 
-  onScrollBooksUp() {
-    this.scrollCutOff -= this.scrollDelta;
-    console.log('scroll up', this.scrollCutOff);
-    this.scrollBooks();
-  }
-
   onTrackBook(index: number, item: Book) {
     return item._id;
   }

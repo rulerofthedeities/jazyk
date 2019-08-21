@@ -1,4 +1,5 @@
-import { Component, Input, EventEmitter, Output, Renderer2, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, EventEmitter, Output, Renderer2, ViewChild,
+         ElementRef, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FilterService } from '../../services/filter.service';
 import { PlatformService } from '../../services/platform.service';
 import { Option } from '../../models/main.model';
@@ -8,6 +9,7 @@ import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-filter-bar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'filter-bar.component.html',
   styleUrls: ['filter-bar.component.css']
 })
@@ -82,7 +84,6 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
       this.filter = this.filterService.filter[this.listType];
       this.filterTxt = this.filterService.filterTxt[this.listType];
       this.hasFilter = this.filterService.hasFilter[this.listType];
-      console.log('filter:', this.filterService.filterTxt[this.listType]);
     });
   }
 
