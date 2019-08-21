@@ -1,6 +1,6 @@
 <section *ngIf="isReady">
   <div class="shadow" [class.showFilter]="showFilter"></div>
-  <div class="selectors">
+  <div class="selectors" *ngIf="isBooksReady">
     <km-languages-bar
       [listType]='listTpeChanged'
       [text]="text"
@@ -13,7 +13,7 @@
       (newListType)="onChangeMyList($event)"
     ></km-languages-bar>
   </div>
-  <div class="filter" *ngIf="showFilter">
+  <div class="filter" *ngIf="showFilter && isBooksReady">
     <km-filter-bar
       [text]="text"
       [hasBooks]="!!filteredBooks.length"
@@ -52,6 +52,7 @@
             [userGlossaryData]="userWordData[book._id]"
             [glossaryCount]="bookWordCount[book._id]"
             [isMyList]="isMyList"
+            [dataLoaded]="dataLoaded"
             (removedSubscription)="onRemovedSubscription($event)"
             (addedSubscription)="onAddedSubscription($event)">
           </km-story-summary>

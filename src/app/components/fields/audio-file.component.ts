@@ -1,9 +1,11 @@
-import { Component, OnInit, OnChanges, OnDestroy, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, Input, EventEmitter, Output,
+         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-audio-file',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'audio-file.component.html',
   styleUrls: ['./files.css']
 })
@@ -19,6 +21,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   audio: any;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private sharedService: SharedService
   ) {}
 
@@ -63,11 +66,13 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           this.audio.pause();
         }
+        this.cdr.detectChanges();
       }
       this.audio.addEventListener('ended', e => {
         // The audio has ended
         this.audio = null;
         this.ended.emit(true);
+        this.cdr.detectChanges();
       });
       this.audio.addEventListener('loadeddata', e => {
         // The audio has loaded
@@ -76,6 +81,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
           if (promise !== undefined) {
             promise.then(_ => {
               // Autoplay started!
+          this.cdr.detectChanges();
             }).catch(error => {});
           }
         }
@@ -111,6 +117,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
             if (this.audio) {
               this.audio.pause();
               this.audio = null;
+              this.cdr.detectChanges();
             }
           break;
           case 'pause':
@@ -120,6 +127,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
               } else {
                 this.audio.pause();
               }
+              this.cdr.detectChanges();
             }
           break;
         }

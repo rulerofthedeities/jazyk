@@ -1,20 +1,20 @@
+
+.transparent {
+  background-color: rgba(255, 255, 255, .93);
+}
 /* spinner */
 /* http://tobiasahlin.com/spinkit/ */
-
 .loader {
   margin: 60px auto;
   text-align: center;
 }
-
 .spinner {
   margin: 0 auto;
   width: 88px;
 }
-
 .spinner.small {
   width: 44px;
 }
-
 .spinner > div {
   width: 12px;
   height: 12px;
@@ -24,36 +24,26 @@
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
-
 .spinner.small > div {
   width: 6px;
   height: 6px;
 }
-
 .spinner .bounce0 {
   -webkit-animation-delay: -0.64s;
   animation-delay: -0.64s;
 }
-
 .spinner .bounce1 {
   -webkit-animation-delay: -0.48s;
   animation-delay: -0.48s;
 }
-
 .spinner .bounce2 {
   -webkit-animation-delay: -0.32s;
   animation-delay: -0.32s;
 }
-
 .spinner .bounce3 {
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
 }
-
-.panel-default {
-  background-color: white;
-}
-
 .inline {
   display: inline-block;
 }

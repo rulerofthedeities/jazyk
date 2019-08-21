@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { linkSync } from 'fs';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 interface Link {
   display: string;
@@ -8,6 +7,7 @@ interface Link {
 
 @Component({
   selector: 'km-link-field',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'link-field.component.html',
   styleUrls: ['link-field.component.css']
 })

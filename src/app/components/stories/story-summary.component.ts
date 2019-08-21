@@ -1,5 +1,5 @@
-import { Component, Input, Output, ViewChild, OnInit, OnChanges, OnDestroy,
-         EventEmitter, Renderer2, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, ViewChild, OnInit, OnDestroy, EventEmitter,
+         Renderer2, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedService, awsPath } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
@@ -9,8 +9,8 @@ import { PlatformService } from '../../services/platform.service';
 import { LicenseUrl } from '../../models/main.model';
 import { Book, UserBookActivity, UserBookLean, UserDataLean, FinishedTab, TranslationData } from 'app/models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
-import { takeWhile } from 'rxjs/operators';
-import { zip, of } from 'rxjs';
+import { takeWhile, delay } from 'rxjs/operators';
+import { zip, of, Subject } from 'rxjs';
 
 interface UserBookStatus {
   isSubscribed: boolean;
@@ -31,11 +31,12 @@ interface ColorHistory {
 
 @Component({
   selector: 'km-story-summary',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'story.summary.component.html',
   styleUrls: ['story.summary.component.css']
 })
 
-export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
+export class StorySummaryComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() tab: string;
   @Input() book: Book;
@@ -54,6 +55,7 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() glossaryCount: UserWordCount;
   @Input() translationCount: number;
   @Input() isMyList: boolean;
+  @Input() private dataLoaded: Subject<boolean>;
   @Output() removedSubscription = new EventEmitter<Book>();
   @Output() addedSubscription = new EventEmitter<Book>();
   @ViewChild('flashcardDropdown') flashcardDropdown: ElementRef;
@@ -90,6 +92,7 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private router: Router,
+    private cdr: ChangeDetectorRef,
     private platform: PlatformService,
     private sharedService: SharedService,
     private storiesService: StoriesService,
@@ -109,43 +112,12 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.currentTab = this.tab;
+    this.observe();
     this.setCoverImage();
     this.setAudioFile();
     this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
-  }
-
-  ngOnChanges() {
-    if (!this.userBookStatus || !this.userBookStatusTest) {
-      this.resetStatus();
-    }
-    if (this.tab !== this.currentTab) {
-      this.setTab();
-      // clear current data
-      this.currentUserData = null;
-      this.currentUserTestData = null;
-      this.currentUserBook = null;
-      this.currentUserBookTest = null;
-      this.currentGlossaryCount = null;
-      this.translationString = undefined;
-      this.hasFlashCards = undefined;
-    }
-    if (this.tab !== 'glossary' && ((this.userData && !this.currentUserData) || (this.userDataTest && !this.currentUserTestData))) {
-      this.processAllCurrentUserData();
-    }
-    if (this.tab !== 'glossary' && ((this.userBook && !this.currentUserBook) || (this.userBookTest && !this.currentUserBookTest))) {
-      this.checkStatus();
-      this.currentUserBook = this.userBook;
-      this.currentUserBookTest = this.userBookTest;
-    }
-    if (this.tab === 'glossary' && this.glossaryCount && !this.currentGlossaryCount) {
-      this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
-    }
-    if (this.translationCount && this.translationString === undefined) {
-      this.checkTranslated();
-    }
-    this.isLoading = false;
   }
 
   onAudioEnded(isEnded: boolean) {
@@ -288,6 +260,30 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.unsubscribe();
   }
 
+  private processAsyncData() {
+    if (!this.userBookStatus || !this.userBookStatusTest) {
+      this.resetStatus();
+    }
+    if (this.tab !== this.currentTab) {
+      this.setTab();
+      // clear current data
+      this.currentUserData = null;
+      this.currentUserTestData = null;
+      this.currentUserBook = null;
+      this.currentUserBookTest = null;
+      this.currentGlossaryCount = null;
+      this.translationString = undefined;
+      this.hasFlashCards = undefined;
+    }
+    this.processAllCurrentUserData();
+    this.checkStatus();
+    this.currentUserBook = this.userBook;
+    this.currentUserBookTest = this.userBookTest;
+    this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
+    this.checkTranslated();
+    this.isLoading = false;
+  }
+
   private setTab() {
     this.currentTab = this.tab;
     this.hasTest = this.tab === 'listen' ? true : false;
@@ -328,6 +324,7 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
           this.processTranslationData(data[2]);
         }
         this.isLoading = false;
+        this.cdr.detectChanges();
       });
     } else {
       zip(
@@ -342,6 +339,7 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
           this.processGlossaryData(data[1], data[2]);
         }
         this.isLoading = false;
+        this.cdr.detectChanges();
       });
     }
   }
@@ -633,6 +631,17 @@ export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
     this.sharedService.sendEventMessage({
       message,
       source: 'StorySummaryComponent'
+    });
+  }
+
+  private observe() {
+    this.dataLoaded
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(loaded => {
+      console.log('DATA LOADED', this.book.title, loaded);
+      if (loaded) {
+        this.processAsyncData();
+      }
     });
   }
 

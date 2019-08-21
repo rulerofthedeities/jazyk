@@ -1,6 +1,5 @@
-<div
-  *ngIf="showBackground else loaderTemplate"
-  class="panel panel-default"
+<div *ngIf="showBackground else loaderTemplate"
+  class="panel panel-default transparent"
   [ngStyle]="{visibility : show ? 'visible' : 'hidden'}">
   <div class="panel-body">
     <ng-container *ngTemplateOutlet="loaderTemplate">

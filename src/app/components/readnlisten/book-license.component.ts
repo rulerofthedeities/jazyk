@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { LicenseUrl } from '../../models/main.model';
 
 @Component({
   selector: 'km-license',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'book-license.component.html'
 })
 

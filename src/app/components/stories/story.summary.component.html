@@ -175,7 +175,7 @@
                 <!-- SENTENCES -->
                 <div class="sentences" *ngIf="tab !== 'glossary'">
                   <span class="strong">{{book.difficulty?.nrOfSentences | score}} {{text["sentences"]}}</span>
-                  <span *ngIf="translationCount" class="translations">
+                  <span *ngIf="translationCount > 0" class="translations">
                     ({{translationString}} {{text["translatedinto"]}} {{text[targetLanCode]}}<span *ngIf="isTranslated"
                       class="fa fa-check"
                       [tooltip]="text['FullyTranslated']"

@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UserData } from '../../models/book.model';
 
 @Component({
   selector: 'km-pie-chart',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'pie-chart.component.html',
   styleUrls: ['pie-chart.component.css']
 })

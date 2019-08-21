@@ -9,7 +9,7 @@ import { Map, Language, LicenseUrl } from '../../models/main.model';
 import { Book, UserBookActivity, UserBookLean, UserDataLean, TranslationData,
         FinishedData, FinishedTab, ViewFilter } from '../../models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
-import { takeWhile } from 'rxjs/operators';
+import { takeWhile, delay } from 'rxjs/operators';
 import { zip, of, Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -26,6 +26,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   isTranslationDataReady = false;
   isFinishedDataReady = false;
   isTypeDataReady = false;
+  isWordDataReady = false;
   isLoading = false;
   isMyList = false;
   text: Object = {};
@@ -49,14 +50,15 @@ export class StoryListComponent implements OnInit, OnDestroy {
   userWordCount: Map<UserWordCount> = {}; // glossary count
   userWordData: Map<UserWordData> = {}; // glossary answer data
   nrOfBooks: number;
-  scrollCutOff = 15; // nr of books shown - increases with scrolling
-  initScrollCutOff = 15;
+  scrollCutOff = 10; // nr of books shown
+  initScrollCutOff = 10;
   scrollDelta = 5;
   itemTxt: string; // filter
   showFilter: boolean;
   filterChanged: Subject<boolean> = new Subject();
   listTpeChanged: BehaviorSubject<string> = new BehaviorSubject('read');
   targetLanguageChanged: BehaviorSubject<Language>;
+  dataLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -75,7 +77,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.filterService.initSort(this.listTpe);
     this.getDependables();
   }
-
+/*
   onChangeListType(tpe: string) {
     this.listTpe = tpe;
     this.listTpeChanged.next(tpe);
@@ -85,7 +87,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.filterBooks();
     this.getPostActivityData();
   }
-
+*/
   onBookLanguageSelected(lan: Language) {
     this.userService.setLanCode(lan.code);
     if (lan.code === this.targetLanguage.code) {
@@ -100,7 +102,11 @@ export class StoryListComponent implements OnInit, OnDestroy {
   onMyLanguageSelected(lan: Language) {
     this.userService.setUserLanCode(lan.code);
     this.targetLanguage = lan;
-    this.getTranslationData();
+    if (this.listTpe !== 'glossary') {
+      this.getTranslationData();
+    } else {
+      this.getWordData();
+    }
     this.getFinishedCheck();
   }
 
@@ -113,15 +119,11 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   onChangeSort(newSort: string) {
     this.filterService.sort[this.listTpe] = newSort;
-    // this.displayBooks = [];
-    // this.isBooksReady = false;
     this.getBooks(false);
   }
 
   onChangeFilter(newFilter: ViewFilter) {
     this.filterService.filter[this.listTpe] = newFilter;
-    // this.displayBooks = [];
-    // this.scrollCutOff = 0;
     this.filterBooks();
   }
 
@@ -161,12 +163,12 @@ export class StoryListComponent implements OnInit, OnDestroy {
     }
     return msg;
   }
-
+/*
   private updateUrl(tpe: string) {
     const path = tpe === 'glossary' ? 'glossaries' : tpe;
     this.location.go(`/${path}`);
   }
-
+*/
   private setPageName(tpe: string) {
     let titleKey = 'Stories';
     titleKey += this.listTpe;
@@ -177,6 +179,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     console.log('get books');
     this.filteredBooks = [];
     this.isLoading = true;
+    this.isBooksReady = false;
     zip(
       this.storiesService.fetchPublishedBooks(this.bookLanguage.code, this.filterService.sort[this.listTpe]),
       onlyBooks ? of([]) : this.storiesService.fetchActivity()
@@ -191,11 +194,11 @@ export class StoryListComponent implements OnInit, OnDestroy {
           this.nrOfBooks = this.books.length;
           this.filterBooks();
         }
-        this.isBooksReady = true;
-        this.isLoading = false;
         if (data[1] && data[1].length) {
           this.processActivity(data[1]);
         }
+        this.isBooksReady = true;
+        this.isLoading = false;
       }
     );
   }
@@ -246,6 +249,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
           this.processSessionData(data[1]);
         }
         this.isTypeDataReady = true;
+        this.checkAllDataLoaded();
       });
     } else {
       zip(
@@ -259,11 +263,27 @@ export class StoryListComponent implements OnInit, OnDestroy {
           this.processUserWordData(data[1]);
         }
         this.isTypeDataReady = true;
+        this.checkAllDataLoaded();
       });
     }
   }
 
-  getWordData() {
+  private checkAllDataLoaded() {
+    console.log('checking all loaded');
+    if (this.listTpe === 'glossary') {
+      if (this.isTypeDataReady && this.isFinishedDataReady && this.isWordDataReady) {
+        console.log('all loaded glossary');
+        this.dataLoaded.next(true);
+      }
+    } else {
+      if (this.isTypeDataReady && this.isFinishedDataReady && this.isTranslationDataReady) {
+        console.log('all loaded readwrite');
+        this.dataLoaded.next(true);
+      }
+    }
+  }
+
+  private getWordData() {
     zip(
       this.storiesService.fetchUserWordCounts(this.bookLanguage.code, this.targetLanguage.code),
       this.storiesService.fetchBookWordCounts(this.bookLanguage.code, this.targetLanguage.code)
@@ -274,7 +294,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
         this.processUserWordCount(data[0]);
         this.processWordTranslations(data[1]);
       }
-      this.isBooksReady = true;
+      this.isWordDataReady = true;
+      // this.isBooksReady = true;
     });
   }
 
@@ -326,6 +347,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     .subscribe(translationData => {
       this.processTranslations(translationData);
       this.isTranslationDataReady = true;
+      this.checkAllDataLoaded();
     });
   }
 
@@ -338,6 +360,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     .subscribe(finishedData => {
       this.processFinishedData(finishedData);
       this.isFinishedDataReady = true;
+      this.checkAllDataLoaded();
     });
   }
 
@@ -628,26 +651,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     }
     console.log('SET target lan', this.targetLanguage);
     this.targetLanguageChanged.next(this.targetLanguage);
-  }
-
-  private clearData() {
-    this.displayBooks = [];
-
-    this.isTranslationDataReady = false;
-    this.isFinishedDataReady = false;
-    this.isTypeDataReady = false;
-    this.isLoading = false;
-
-    this.translationCount = {};
-    this.finishedTabs = {};
-    this.userBookActivity = {};
-    this.userBooks = {}; // For sorting
-    this.userBooksTest = {};
-    this.userData = [];
-    this.userDataTest = [];
-    this.bookWordCount = {}; // glossary translations count
-    this.userWordCount = {}; // glossary count
-    this.userWordData = {}; // glossary answer data
   }
 
   ngOnDestroy() {
