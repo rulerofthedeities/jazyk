@@ -75,7 +75,7 @@
                 [options]="tooltipOptions" id="tooltip1">
                 <km-language-selector *ngIf="!isLoading"
                   [languages]="glossaryLanguages"
-                  [currentLanguage]="translationLan"
+                  [language]="translationLanChanged"
                   [text]="text"
                   (languageSelected)="onMyLanguageSelected($event)">
                 </km-language-selector>

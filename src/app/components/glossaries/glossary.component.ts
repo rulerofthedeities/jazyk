@@ -10,7 +10,7 @@ import { TranslationService } from '../../services/translation.service';
 import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
 import { Language, Map } from '../../models/main.model';
-import { zip } from 'rxjs';
+import { zip, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
 
 @Component({
@@ -71,6 +71,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   totalWords: number[] = [];
   editingWord: number = null;
   hasFlashcards = false;
+  translationLanChanged: BehaviorSubject<Language>;
 
   constructor(
     private router: Router,
@@ -597,6 +598,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   private setTargetLan(userLans: Language[]) {
     const lan = userLans.find(l => l.code === this.userLanCode);
     this.translationLan = lan;
+    this.translationLanChanged = new BehaviorSubject(lan);
   }
 
   private setBookLan(bookLans: Language[]) {
