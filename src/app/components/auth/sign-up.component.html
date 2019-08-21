@@ -100,7 +100,7 @@
           </label>
           <km-language-selector
             [languages]="bookLanguages"
-            [currentLanguage]="bookLanguage"
+            [language]="bookLanguageChanged"
             [text]="text"
             (languageSelected)="onBookLanguageSelected($event)">
           </km-language-selector>

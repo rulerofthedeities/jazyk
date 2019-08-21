@@ -10,6 +10,7 @@ import { ValidationService } from '../../services/validation.service';
 import { PlatformService } from '../../services/platform.service';
 import { Language } from '../../models/main.model';
 import { User, UserSignIn, MailData } from '../../models/user.model';
+import { BehaviorSubject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -29,6 +30,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   passwordColor: string;
   invalidNames: string[] = [];
   isBrowser = false;
+  bookLanguageChanged: BehaviorSubject<Language>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -145,6 +147,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
         this.languages = dependables.languages;
         this.bookLanguages = dependables.bookLanguages;
         this.bookLanguage = this.setDefaultBookLanguage(this.bookLanguages);
+        this.bookLanguageChanged = new BehaviorSubject(this.bookLanguage);
         this.invalidNames = dependables.invalidNames ? dependables.invalidNames.split('|') : [];
         this.sharedService.setPageTitle(this.text, 'Signup');
         this.buildForm();
