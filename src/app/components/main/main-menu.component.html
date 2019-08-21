@@ -31,6 +31,25 @@
             <span class="bar"></span>
           </a>
         </li>
+        <li *ngIf="isLoggedIn"
+          routerLinkActive="active"
+          class="desktop">
+          <a routerLink="/listen">
+            <span class="fa fa-volume-up"></span>
+            {{text["Listen"]}}
+            <span class="bar"></span>
+          </a>
+        </li>
+        <li *ngIf="isLoggedIn"
+          routerLinkActive="active"
+          class="desktop">
+          <a routerLink="/glossaries">
+            <span class="fa fa-list"></span>
+            {{text["Glossaries"]}}
+            <span class="bar"></span>
+          </a>
+          <span class="beta">beta</span>
+        </li>
       </ul>
 
       <ul class="pull-right nav-items right-menu">
@@ -173,6 +192,22 @@
           (click)="onCloseMobileMenu()">
           <span class="fa fa-list-alt"></span>
           {{text["Stories"]}}
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/listen"
+          routerLinkActive="active"
+          (click)="onCloseMobileMenu()">
+          <span class="fa fa-volume-up"></span>
+          {{text["Listen"]}}
+        </a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a routerLink="/glossaries"
+          routerLinkActive="active"
+          (click)="onCloseMobileMenu()">
+          <span class="fa fa-list"></span>
+          {{text["Glossaries"]}}
         </a>
       </li>
     </ul>

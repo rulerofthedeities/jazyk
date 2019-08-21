@@ -1,4 +1,5 @@
-import { Component, Input, Output, ViewChild, OnInit, OnChanges, OnDestroy, EventEmitter, Renderer2, ElementRef } from '@angular/core';
+import { Component, Input, Output, ViewChild, OnInit, OnChanges, OnDestroy,
+         EventEmitter, Renderer2, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedService, awsPath } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
@@ -34,7 +35,7 @@ interface ColorHistory {
   styleUrls: ['story.summary.component.css']
 })
 
-export class StorySummaryComponent implements OnInit, OnDestroy {
+export class StorySummaryComponent implements OnInit, OnChanges, OnDestroy {
   @Input() text: Object;
   @Input() tab: string;
   @Input() book: Book;
@@ -114,7 +115,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.checkIfNew();
     this.setDifficulty();
   }
-/*
+
   ngOnChanges() {
     if (!this.userBookStatus || !this.userBookStatusTest) {
       this.resetStatus();
@@ -145,7 +146,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       this.checkTranslated();
     }
     this.isLoading = false;
-  }*/
+  }
 
   onAudioEnded(isEnded: boolean) {
     this.sharedService.audioHasEnded(isEnded);

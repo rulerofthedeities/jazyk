@@ -410,7 +410,7 @@ span.canrecommend:hover {
   font-size: 10px;
   position: absolute;
   display: block;
-  z-index: 10;
+  z-index: 2;
   top: 26px;
   left: 34px;
 }

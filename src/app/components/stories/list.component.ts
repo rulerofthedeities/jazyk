@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserService } from '../../services/user.service';
@@ -10,7 +10,7 @@ import { Book, UserBookActivity, UserBookLean, UserDataLean, TranslationData,
         FinishedData, FinishedTab, ViewFilter } from '../../models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
 import { takeWhile } from 'rxjs/operators';
-import { zip, of, Subject} from 'rxjs';
+import { zip, of, Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -55,6 +55,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
   itemTxt: string; // filter
   showFilter: boolean;
   filterChanged: Subject<boolean> = new Subject();
+  listTpeChanged: BehaviorSubject<string> = new BehaviorSubject('read');
+  targetLanguageChanged: BehaviorSubject<Language>;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,6 +78,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   onChangeListType(tpe: string) {
     this.listTpe = tpe;
+    this.listTpeChanged.next(tpe);
     this.updateUrl(tpe);
     this.setPageName(tpe);
     this.clearData();
@@ -549,10 +552,11 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.route
     .data
     .pipe(takeWhile(() => this.componentActive))
-      .subscribe(data => {
-        if (data && data.tpe) {
-          this.listTpe = data.tpe;
-        }
+    .subscribe(data => {
+      if (data && data.tpe) {
+        this.listTpe = data.tpe;
+        this.listTpeChanged.next(data.tpe);
+      }
     });
   }
 
@@ -576,6 +580,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
         this.userLanguages = dependables.userLanguages;
         this.targetLanguage = this.userService.getUserLanguage(this.userLanguages);
         this.setPageName(this.listTpe);
+        this.targetLanguageChanged = new BehaviorSubject(this.targetLanguage);
         this.filterUserLanguages();
         this.getBooks();
         this.isReady = true;
@@ -627,6 +632,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
         }
       }
     }
+    console.log('SET target lan', this.targetLanguage);
+    this.targetLanguageChanged.next(this.targetLanguage);
   }
 
   private clearData() {

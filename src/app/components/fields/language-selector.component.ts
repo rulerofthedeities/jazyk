@@ -1,18 +1,23 @@
-import { Component, Input, OnChanges, Output, EventEmitter, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Input, Output, OnInit, EventEmitter,
+         ElementRef, Renderer2, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Language } from '../../models/main.model';
 import { PlatformService } from '../../services/platform.service';
+import { takeWhile } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'km-language-selector',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'language-selector.component.html',
   styleUrls: ['selector.css']
 })
-export class LanguageSelectorComponent implements OnChanges {
+export class LanguageSelectorComponent implements OnInit, OnDestroy {
   @Input() languages: [Language];
-  @Input() private currentLanguage: Language;
+  @Input() private language: Subject<Language>;
   @Input() disabled = false;
   @Input() text: Object = {};
   @Output() languageSelected = new EventEmitter<Language>();
+  private componentActive = true;
   selectedLanguage: Language;
   showDropdown = false;
   dataReady = false;
@@ -35,9 +40,8 @@ export class LanguageSelectorComponent implements OnChanges {
     }
   }
 
-  ngOnChanges() {
-    this.selectedLanguage = this.currentLanguage;
-    this.dataReady = true;
+  ngOnInit() {
+    this.observe();
   }
 
   onToggleDropdown() {
@@ -62,5 +66,19 @@ export class LanguageSelectorComponent implements OnChanges {
     if (lan && lan.count !== undefined) {
       return `(${lan.count})`;
     }
+  }
+
+  observe() {
+    this.language
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(lan => {
+      console.log('NEW TPE IN LANGUAGE SELECTOR', lan);
+      this.selectedLanguage = lan;
+      this.dataReady = true;
+    });
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

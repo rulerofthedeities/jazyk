@@ -1,32 +1,33 @@
 <div class="container">
+  <div class="col-xs-4 selector"
+    [tooltip]="text[currentListType === 'audio' ? 'AudioLanguage' : 'BookLanguage']"
+    [options]="tooltipOptions" id="tooltip1">
+    <km-language-selector
+      [languages]="bookLanguages"
+      [language]="bookLanguageChanged"
+      [text]="text"
+      (languageSelected)="onBookLanguageSelected($event)">
+    </km-language-selector>
+  </div>
+  <div class="col-xs-4 selector my-lan-selector"
+    [tooltip]="text['TranslationLanguage']"
+    [options]="tooltipOptions" id="tooltip2">
+    <span class="fa fa-arrow-right sel-arrow"></span>
+    <km-language-selector
+      [languages]="myLanguages"
+      [language]="myLanguage"
+      [text]="text"
+      (languageSelected)="onMyLanguageSelected($event)">
+    </km-language-selector>
+  </div>
   <div class="form-group form-group-lg">
     <div class="col-xs-4 selector tpe-selector">
-      <km-list-selector
-        [currentList]="listType"
-        [text]="text"
-        (listSelected)="onChangeListType($event)">
-      </km-list-selector>
-    </div>
-    <div class="col-xs-4 selector"
-      [tooltip]="text[listType==='audio' ? 'AudioLanguage' : 'BookLanguage']"
-      [options]="tooltipOptions" id="tooltip1">
-      <km-language-selector
-        [languages]="bookLanguages"
-        [currentLanguage]="bookLanguage"
-        [text]="text"
-        (languageSelected)="onBookLanguageSelected($event)">
-      </km-language-selector>
-    </div>
-    <div class="col-xs-4 selector my-lan-selector"
-      [tooltip]="text['TranslationLanguage']"
-      [options]="tooltipOptions" id="tooltip2">
-      <span class="fa fa-arrow-right sel-arrow"></span>
-      <km-language-selector
-        [languages]="myLanguages"
-        [currentLanguage]="myLanguage"
-        [text]="text"
-        (languageSelected)="onMyLanguageSelected($event)">
-      </km-language-selector>
+      <select
+        class="form-control"
+        (change)="onChangeListType($event.target.value)">
+        <option value="all">{{text['AllLecture']}}</option>
+        <option value="my">{{text['MyLecture']}}</option>
+      </select>
     </div>
   </div>
 </div>

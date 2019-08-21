@@ -2,15 +2,15 @@
   <div class="shadow" [class.showFilter]="showFilter"></div>
   <div class="selectors">
     <km-languages-bar
-      [listType]='listTpe'
+      [listType]='listTpeChanged'
       [text]="text"
       [bookLanguages]="bookLanguages"
       [bookLanguage]="bookLanguage"
       [myLanguages]="targetLanguages"
-      [myLanguage]="targetLanguage"
+      [myLanguage]="targetLanguageChanged"
       (newBookLanguage)="onBookLanguageSelected($event)"
       (newMyLanguage)="onMyLanguageSelected($event)"
-      (newListType)="onChangeListType($event)"
+      (newListType)="onChangeMyList($event)"
     ></km-languages-bar>
   </div>
   <div class="filter" *ngIf="showFilter">
@@ -21,14 +21,19 @@
       [listType]="listTpe"
       [filterChanged]="filterChanged"
       (newSort)="onChangeSort($event)"
-      (newFilter)="onChangeFilter($event)"
-      (newBookType)="onChangeMyList($event)">
+      (newFilter)="onChangeFilter($event)">
     </km-filter-bar>
   </div>
   <!-- BOOKS LIST -->
   <div class="list">
     <div *ngIf="isBooksReady && isActivityReady">
-      <ul class="list-unstyled" *ngIf="displayBooks?.length">
+      <ul class="list-unstyled" *ngIf="displayBooks?.length"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollUpDistance]="5"
+      [infiniteScrollThrottle]="50"
+      (scrolled)="onScrollBooksDown()"
+      (scrolledUp)="onScrollBooksUp()">
         <li *ngFor="let book of displayBooks; let i=index; trackBy: onTrackBook">
           <div class="blank" *ngIf="i < scrollCutOff - 20">
           </div>

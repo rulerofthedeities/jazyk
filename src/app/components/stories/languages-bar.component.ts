@@ -1,23 +1,26 @@
-import { Component, Input, EventEmitter, Output, ViewChildren, OnInit, OnChanges, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewChildren,
+         OnInit, AfterViewInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { TooltipDirective } from 'ng2-tooltip-directive';
 import { StoriesService } from '../../services/stories.service';
 import { Language } from '../../models/main.model';
 import { BookCount } from '../../models/book.model';
 import { takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'km-languages-bar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'languages-bar.component.html',
   styleUrls: ['languages-bar.component.css']
 })
 
-export class BookLanguagesBarComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  @Input() listType: string; // read or listen or glossary
+export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() private listType: Subject<string>; // read or listen or glossary
   @Input() text: Object = {};
   @Input() bookLanguages: Language[];
   @Input() bookLanguage: Language;
   @Input() myLanguages: Language[];
-  @Input() myLanguage: Language;
+  @Input() myLanguage: Subject<Language>;
   @Output() newBookLanguage = new EventEmitter<Language>();
   @Output() newMyLanguage = new EventEmitter<Language>();
   @Output() newListType = new EventEmitter<string>();
@@ -31,32 +34,20 @@ export class BookLanguagesBarComponent implements OnInit, OnChanges, OnDestroy, 
   tooltip1: any;
   tooltip2: any;
   currentListType: string;
+  bookLanguageChanged: BehaviorSubject<Language>;
 
   constructor(
     private storiesService: StoriesService
   ) {}
 
   ngOnInit() {
-    this.currentListType = this.listType;
-    this.getBooksCount();
-  }
-
-  ngOnChanges() {
-    if (this.listType !== this.currentListType) {
-      this.currentListType = this.listType;
-      this.bookLanguages.map(b => b.count = undefined); // clear data
-      this.getBooksCount();
-    }
+    this.bookLanguageChanged = new BehaviorSubject(this.bookLanguage);
+    this.observe();
   }
 
   ngAfterViewInit() {
     this.tooltip1 = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
     this.tooltip2 = this.tooltipDirective.find(elem => elem.id === 'tooltip2');
-  }
-
-  onChangeListType(tpe: string) {
-    this.listType = tpe;
-    this.newListType.emit(tpe);
   }
 
   onBookLanguageSelected(lan: Language) {
@@ -73,9 +64,13 @@ export class BookLanguagesBarComponent implements OnInit, OnChanges, OnDestroy, 
     this.newMyLanguage.emit(lan);
   }
 
+  onChangeListType(tpe: string) {
+    this.newListType.emit(tpe);
+  }
+
   private getBooksCount() {
     this.storiesService
-    .fetchBooksCount(this.listType)
+    .fetchBooksCount(this.currentListType)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       (count: BookCount[]) => this.addCountToLanguages(count)
@@ -89,6 +84,17 @@ export class BookLanguagesBarComponent implements OnInit, OnChanges, OnDestroy, 
       if (lan) {
         lan.count = c.count;
       }
+    });
+  }
+
+  observe() {
+    this.listType
+    .pipe(takeWhile( () => this.componentActive))
+    .subscribe(tpe => {
+      console.log('NEW TPE IN LANGUAGES BAR', tpe);
+      this.currentListType = tpe;
+      this.bookLanguages.map(b => b.count = undefined); // clear data
+      this.getBooksCount();
     });
   }
 
