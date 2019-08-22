@@ -62,7 +62,9 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
-  isCompact = false;
+  isFinished = false;
+  showCompact = true;
+  tabChanged = false;
   isNewBook = false;
   isLoading = true;
   userCount = 0;
@@ -141,6 +143,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   onSelectTab(newTab: string) {
     if (newTab !== this.tab) {
       this.tab = newTab;
+      this.tabChanged = true;
       this.setTab();
       this.resetStatus();
       this.getNewTypeData();
@@ -258,6 +261,13 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   onStopReadingListening() {
     this.unsubscribe();
+  }
+
+  onOpen(event: MouseEvent) {
+    event.preventDefault();
+    if (this.showCompact) {
+      this.showCompact = false;
+    }
   }
 
   private processAsyncData() {
@@ -500,9 +510,17 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   private checkCompact() {
     if (this.finishedTabs && this.finishedTabs[this.tab]) {
-      this.isCompact = true;
+      this.isFinished = true;
     } else {
-      this.isCompact = false;
+      this.isFinished = false;
+    }
+    if (!this.tabChanged) {
+      // only show compact format initially, not when a tab is clicked
+      if (this.isFinished && this.userBookStatus && !this.userBookStatus.isStarted) {
+        this.showCompact = true;
+      } else {
+        this.showCompact = false;
+      }
     }
   }
 

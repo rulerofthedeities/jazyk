@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'km-book-title',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'book-title.component.html',
   styleUrls: ['book-title.component.css']
 })
@@ -16,8 +17,6 @@ export class BookTitleComponent {
   @Input() bookTitle: string;
   @Input() chapterTitle: string;
   @Output() close = new EventEmitter<boolean>();
-
-  constructor() { }
 
   onExit() {
     this.close.emit(true);

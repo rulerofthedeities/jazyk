@@ -1,13 +1,14 @@
 <article>
   <div class="panel panel-default transparant"
     [ngClass]="{
-      compact: isCompact,
+      compact: showCompact,
       read: tab === 'read',
       listen: tab === 'listen',
       glossary: tab === 'glossary',
       'user-glossary': !!userGlossaryCount?.countTotal
     }">
-    <div class="panel-body panel-book">
+    <div class="panel-body panel-book"
+         (click)="onOpen($event)">
       <!-- NEW BANNER -->
       <div class="corner-ribbon top-right yellow shadow" *ngIf="isNewBook">
         {{text["New"]}}!
@@ -39,9 +40,33 @@
         <div class="index-nr pull-right">
           {{nr}} / {{total}}
         </div>
+        <!-- COMPACT -->
+        <div *ngIf="showCompact && tab !== 'glossary'"
+          class="compact-buttons">
+          <button type="button" *ngIf="tab==='read'"
+            (click)="onRevision()"
+            class="btn btn-info btn-lg pull-right"
+            [tooltip]="text['Revision']"
+            placement="top"
+            hide-delay="0">
+            <span class="fa fa-file-text"></span>
+          </button>
+          <button type="button"
+            (click)="onStartReadingListening(true, false, $event)"
+            class="btn btn-primary btn-lg pull-right"
+            [tooltip]="tab==='listen' ? text['ListenAgain'] : text['ReadAgain']"
+            placement="top"
+            hide-delay="0">
+            <span class="fa fa-repeat"></span>
+          </button>
+        </div>
         <!-- TITLE -->
         <h3>
-          <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from"><span class="fa fa-arrow-right flag-from"></span><img src="/assets/img/flags/{{targetLanCode}}.png" class="flag to">
+          <span class="flags">
+            <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from">
+            <span class="fa fa-arrow-right flag-from"></span>
+            <img src="/assets/img/flags/{{targetLanCode}}.png" class="flag to">
+          </span>
           <km-audio-file *ngIf="hasAudioTitle"
             [fileUrl]="audioTitle"
             [autoPlay]="false"
@@ -49,6 +74,7 @@
             class="audio-item"
             (ended)="onAudioEnded($event)">
           </km-audio-file>
+          <span *ngIf="isFinished" class="fa fa-check"></span>
           <span class="title">{{book.title}}</span>
         </h3>
         <div class="book-content">
@@ -63,7 +89,6 @@
           <!-- ICONS -->
           <div *ngIf="userBookStatus">
             <ng-container *ngTemplateOutlet="actionTemplate; context:{
-              isCompact: false,
               tpe: tpe,
               text: text,
               userBookStatus: userBookStatus,
@@ -209,7 +234,7 @@
                   <!-- NOT TEST BUTTONS -->
                   <div class="buttons" *ngIf="book.lanCode !== targetLanCode">
                     <span *ngIf="tab === 'read' || tab === 'listen'">
-                      <button *ngIf="!userBookStatus?.isStarted && !userBookStatus?.isBookRead && !userBookStatus?.isRepeat"
+                      <button *ngIf="!userBookStatus?.isStarted && !isFinished"
                         type="button"
                         class="btn btn-lg btn-success"
                         (click)="onStartReadingListening(false, false, $event)">
@@ -223,14 +248,14 @@
                         <span class="fa fa-arrow-right fa-spacing"></span>
                         {{text["Continue" + tab]}}
                       </button>
-                      <button type="button" *ngIf="(userBookStatus?.isBookRead || userBookStatus?.isRepeat) && !userBookStatus?.isStarted"
+                      <button type="button" *ngIf="isFinished && !userBookStatus?.isStarted"
                         (click)="onStartReadingListening(true, false, $event)"
                         class="btn btn-success btn-lg">
                         <span class="fa fa-repeat fa-spacing"></span>
                         {{text[tab==='listen' ? 'ListenAgain' :'ReadAgain']}}
                       </button>
                     </span>
-                    <span *ngIf="tab === 'read' && (userBookStatus?.isBookRead || userBookStatus?.isRepeat)">
+                    <span *ngIf="tab === 'read' && isFinished">
                       <button type="button"
                         (click)="onRevision()"
                         class="btn btn-info btn-lg">
@@ -334,7 +359,6 @@
 </article>
 
 <ng-template #actionTemplate
-  let-isCompact=isCompact
   let-tpe=tpe
   let-text=text
   let-userBookStatus=userBookStatus

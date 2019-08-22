@@ -40,6 +40,10 @@
 .fa-list, .fa-file-text {
   color: lightblue;
 }
+.fa-arrow-right {
+  position: relative;
+  top: -6px;
+}
 .fa-volume-up.test {
   color: #ffa500;
 }

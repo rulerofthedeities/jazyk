@@ -7,7 +7,7 @@
 }
 
 /* panel */
-.panel-body {
+.panel-book {
   position: relative;
   overflow: hidden;
   min-height: 271px;
@@ -116,6 +116,18 @@
 .book {
   margin-left: 174px;
   position: relative;
+}
+.flags {
+  position: relative;
+  top: -2px;
+}
+.fa-arrow-right {
+  position: relative;
+  top: -6px;
+}
+h3 .fa-check {
+  color: green;
+  font-size: 32px;
 }
 /* Author */
 .author {
@@ -250,6 +262,9 @@ li.tab-glossary.active a {
 }
 .icons > div {
   display: inline-block;
+}
+.icons .fa-thumbs-up {
+  margin-left: 2px;
 }
 .subscribe {
   font-size: 3rem;
@@ -441,6 +456,48 @@ span.canrecommend:hover {
 }
 .corner-ribbon.yellow{
   background: rgb(255, 255, 173);
+}
+
+/* Compact */
+.compact.panel {
+  margin-bottom: 10px;
+}
+.compact .panel-book {
+  height: 52px;
+  min-height: initial;
+  padding-top: 12px;
+  cursor: pointer;
+}
+.compact .img-wrapper {
+  overflow: hidden;
+  height: 40px;
+  position: relative;
+  top: -6px;
+}
+.compact .cover-img {
+  position: relative;
+  top: -74px;
+}
+.compact .index-nr {
+  top: -10px;
+}
+.compact .icons {
+  right: -4px;
+  top: 8px;
+}
+.compact .icons .fa {
+  font-size: 18px;
+}
+.compact .corner-ribbon.top-right {
+  right: 120px;
+  top: 14px;
+}
+.compact .cover-activity, .compact .author {
+  display: none;
+}
+.compact-buttons {
+  position: relative;
+  top: -8px;
 }
 @media screen and (max-width: 991px) {
   .pie-chart {
