@@ -1,0 +1,19 @@
+
+/* Flashcard dropdown */
+.dropdown-menu {
+  top: 24px;
+  background-color: #449d44;
+}
+.dropdown-menu.large {
+  top: 30px;
+}
+.dropdown-menu a {
+  color: white;
+}
+.dropdown-menu a:hover {
+  color: #449d44;
+  cursor: pointer;
+}
+.dropdown-menu .no-userwords a:hover {
+  cursor: default;
+}

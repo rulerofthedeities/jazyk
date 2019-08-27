@@ -1,4 +1,4 @@
-import { Injectable, Optional, Inject } from '@angular/core';
+import { Injectable, Optional, Inject, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { EventMessage } from '../models/error.model';
@@ -218,5 +218,23 @@ export class SharedService {
   getPercentage(a: number, b: number): number {
     // calculates the truncated percentage
     return Math.trunc(Math.min(100, (a / b) * 100));
+  }
+
+  getCoverImagePath(book: Book) {
+    if (!!book.coverImg) {
+      return `https://${awsPath}books/covers/${book.lanCode}/${book.coverImg}`;
+    } else {
+      return '/assets/img/books/blankcover.png'; // default book cover
+    }
+  }
+
+  getAudioTitle(book: Book) {
+    return `https://${awsPath}audiobooks/${book.lanCode}/${book.audioDirectory}/${book.audioTitle.s3}`;
+  }
+
+  detectChanges(cdr: ChangeDetectorRef) {
+    if (cdr && !cdr['destroyed']) {
+      cdr.detectChanges();
+    }
   }
 }

@@ -23,9 +23,7 @@ export interface RecentBook {
   uBook: UserBook;
   book: Book;
   sessions: UserData[];
-  translations: TranslationData;
-  userLanCode: string;
-  tpe: string;
+  targetLanCode: string;
 }
 
 export interface HomeStats {

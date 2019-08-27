@@ -122,8 +122,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .fetchRecentBooks()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(books => {
-      this.isLoadingRecent = false;
       this.processRecent(books);
+      this.isLoadingRecent = false;
       },
       error => this.errorService.handleError(error)
     );
@@ -145,13 +145,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private processRecent(books: RecentBook[]) {
     // userBook is key, not Book!
-    const publishedBooks = books.filter(b => b.book && b.book.isPublished); // filter out not published anymore
-    const recentBooks = publishedBooks.sort(function(a, b) {
-      const dtA = new Date(a.dt),
-            dtB = new Date(b.dt);
-      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
-    });
-    this.recent = recentBooks.slice(0, 10);
+    const publishedBooks = books.filter(b => b.book && b.book.isPublished), // filter out not published anymore
+          recentBooks = publishedBooks.sort((a, b) => {
+            const dtA = new Date(a.dt),
+                  dtB = new Date(b.dt);
+            return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
+          });
+    this.recent = recentBooks.slice(0, 8);
     this.recentReady = true;
   }
 

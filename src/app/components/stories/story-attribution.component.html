@@ -1,0 +1,59 @@
+<!-- AUTHOR -->
+<div class="author">
+  <km-book-tpe
+    [tpe]="book.tpe"
+    [text]="text">
+  </km-book-tpe>
+  {{text[book.tpe]}} <span *ngIf="book.authors">{{text["by"]}} </span>
+  <km-link-field
+    [value]="book.authors"
+    [separator]="' &'"
+  ></km-link-field>
+  <span *ngIf="!!book.year">&nbsp;({{book.year}})</span>&nbsp;
+  <span class="fa fa-copyright author-credits"
+    [class.selected]="showCredits"
+    [tooltip]="text['Attributions']"
+    placement="top"
+    hide-delay="0"
+    (click)="onToggleCredits()">
+  </span>
+  <span *ngIf="book.series || book.intro"
+    class="fa fa-info-circle author-intro"
+    [class.selected]="showIntro"
+    [tooltip]="text['Info']"
+    (click)="onToggleIntro()">
+  </span>
+  <!-- INTRO -->
+  <div class="intro" [style.display]="showIntro ? 'block' : 'none'">
+    <div *ngIf="book.series"><span class="lbl">{{text['BookSeries']}}</span>: {{book.series}}</div>
+    <div *ngIf="book.intro"><span class="lbl">{{text['BookIntroduction']}}</span>: {{book.intro}}</div>
+  </div>
+  <!-- ATTRIBUTION -->
+  <div class="credits" [style.display]="showCredits ? 'block' : 'none'">
+  <div>
+    {{text['License']}}:
+    <km-license
+      [text]="text"
+      [license]="book.license"
+      [licenses]="licenses"
+      >
+    </km-license>
+  </div>
+  <div *ngIf="book.licenseNarrator">
+    {{text['LicenseAudio']}}:
+    <km-license
+      [text]="text"
+      [license]="book.licenseNarrator"
+      [licenses]="licenses"
+      >
+    </km-license>
+  </div>
+  <div *ngIf="book.credits">{{text['BookCredits']}}: <km-link-field [value]="book.credits"></km-link-field></div>
+  <div *ngIf="book.authors">{{text['Author']}}: <km-link-field [value]="book.authors"></km-link-field></div>
+  <div *ngIf="book.adaptation">{{text['AdaptedBy']}}: <km-link-field [value]="book.adaptation"></km-link-field></div>
+  <div *ngIf="book.narrators">{{text['BookNarrator']}}: <km-link-field [value]="book.narrators"></km-link-field></div>
+  <div *ngIf="book.glossaryNarrators">{{text['GlossaryNarrator']}}: <km-link-field [value]="book.glossaryNarrators"></km-link-field></div>
+  <div *ngIf="book.translator">{{text['BookTranslator']}}: <km-link-field [value]="book.translator"></km-link-field></div>
+  <div *ngIf="book.cover">{{text['BookCover']}}: <km-link-field [value]="book.cover"></km-link-field></div>
+  <div *ngIf="book.source">{{text['BookSource']}}: <km-link-field [value]="book.source"></km-link-field></div>
+</div>

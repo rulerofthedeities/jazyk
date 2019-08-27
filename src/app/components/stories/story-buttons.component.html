@@ -1,0 +1,122 @@
+
+<!-- NOT TEST BUTTONS -->
+<div *ngIf="!isTest && !isCompact">
+  <span *ngIf="bookType === 'read' || bookType === 'listen'">
+    <button *ngIf="!userBookStatus?.isStarted && !isFinished"
+      type="button"
+      class="btn btn-success"
+      [class.btn-lg]="isLarge"
+      (click)="onStartReadingListening(false, false, $event)">
+      <span class="fa fa-arrow-right fa-spacing"></span>
+      {{text["Start" + bookType]}}
+    </button>
+    <button *ngIf="userBookStatus?.isStarted && !userBookStatus?.isBookRead"
+      type="button"
+      class="btn btn-success"
+      [class.btn-lg]="isLarge"
+      (click)="onStartReadingListening(false, false, $event)">
+      <span class="fa fa-arrow-right fa-spacing"></span>
+      {{text["Continue" + bookType]}}
+    </button>
+    <button type="button" *ngIf="isFinished && !userBookStatus?.isStarted"
+      (click)="onStartReadingListening(true, false, $event)"
+      class="btn btn-success"
+      [class.btn-lg]="isLarge">
+      <span class="fa fa-repeat fa-spacing"></span>
+      {{text[bookType==='listen' ? 'ListenAgain' :'ReadAgain']}}
+    </button>
+  </span>
+  <span *ngIf="bookType === 'read' && isFinished">
+    <button type="button"
+      (click)="onRevision()"
+      class="btn btn-info"
+      [class.btn-lg]="isLarge">
+      <span class="fa fa-file-text fa-spacing"></span>{{text['Revision']}}
+    </button>
+  </span>
+  <span *ngIf="bookType === 'glossary'">
+    <span class="dropdown" #flashcardDropdown *ngIf="hasFlashCards">
+      <button class="btn btn-success"
+        [class.btn-lg]="isLarge"
+        [class.dropdown-toggle]="showFlashCardDropdown"
+        type="button"
+        (click)="onToggleFlashCardDropdown()">
+        <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
+        <span class="caret" *ngIf="showFlashCardDropdown">
+        </span>
+      </button>
+      <ul
+        class="dropdown-menu"
+        [class.large]="isLarge"
+        [style.display]="showFlashCardDropdown ? 'block' : 'none'">
+        <li>
+          <a (click)="onStartFlashcards('all', glossaryCount?.countTranslation)" >
+            {{text["AppGlossary"]}} ({{glossaryCount?.countTranslation | score}})
+          </a>
+        </li>
+        <li [class.no-userwords]="userGlossaryCount?.countTranslation < 1">
+          <a (click)="onStartFlashcards('my', userGlossaryCount?.countTranslation)">
+            {{text["MyGlossary"]}} ({{userGlossaryCount?.countTranslation | score}})
+          </a>
+        </li>
+      </ul>
+    </span>
+  </span>
+  <span *ngIf="book.wordListPublished && bookType === 'glossary'">
+    <button type="button"
+      (click)="onWordList()"
+      class="btn btn-info"
+      [class.btn-lg]="isLarge">
+      <span class="fa fa-th-list fa-spacing"></span>{{text['WordList']}}
+    </button>
+  </span>
+</div>
+
+<div *ngIf="isTest && !isCompact">
+  <span *ngIf="bookType === 'listen'">
+    <button *ngIf="!userBookStatus.isBookRead"
+      type="button"
+      class="btn btn-primary"
+      [class.btn-lg]="isLarge"
+      (click)="onStartListeningTest()">
+      <span class="fa fa-flask fa-spacing"></span>
+      {{userBookStatus.isStarted ? text["ContinueListeningTest"] : text["StartListeningTest"]}}
+    </button>
+    <button *ngIf="userBookStatus.isBookRead"
+      type="button"
+      class="btn btn-primary"
+      [class.btn-lg]="isLarge"
+      (click)="onStartReadingListening(true, true, $event)">
+      <span class="fa fa-repeat fa-spacing"></span>{{text['TestAgain']}}
+    </button>
+  </span>
+  <span *ngIf="bookType === 'glossary'">
+    <button type="button"
+      class="btn btn-primary"
+      [class.btn-lg]="isLarge"
+      (click)="onStartVocabularyTest()">
+      <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
+    </button>
+  </span>
+</div>
+
+<div *ngIf="isCompact">
+  <button type="button" *ngIf="bookType === 'read'"
+    (click)="onRevision()"
+    class="btn btn-info pull-right"
+    [class.btn-lg]="isLarge"
+    [tooltip]="text['Revision']"
+    placement="top"
+    hide-delay="0">
+    <span class="fa fa-file-text"></span>
+  </button>
+  <button type="button"
+    (click)="onStartReadingListening(true, false, $event)"
+    class="btn btn-primary pull-right"
+    [class.btn-lg]="isLarge"
+    [tooltip]="bookType === 'listen' ? text['ListenAgain'] : text['ReadAgain']"
+    placement="top"
+    hide-delay="0">
+    <span class="fa fa-repeat"></span>
+  </button>
+</div>

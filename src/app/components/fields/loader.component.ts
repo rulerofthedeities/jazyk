@@ -35,7 +35,9 @@ export class LoaderComponent implements OnInit, OnDestroy {
       this.subscription = timerObservable.subscribe(t => {
         this.subscription.unsubscribe();
         this.show = true;
-        this.cdr.detectChanges();
+        if (this.cdr && !this.cdr['destroyed']) {
+          this.cdr.detectChanges();
+        }
       });
     }
   }
@@ -44,5 +46,6 @@ export class LoaderComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+    this.cdr.detach();
   }
 }

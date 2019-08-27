@@ -60,6 +60,10 @@
 .glossary .has-cover .img-wrapper {
   background: linear-gradient(to top, #d66351, #d68c81);
 }
+.cover-img { /* Default image */
+  width: 160px;
+  height: 240px;
+}
 .has-cover .cover-img {
   width: 142px;
   height: 184px;
@@ -104,7 +108,6 @@
 }
 /* Title */
 .book h3 {
-  height: 44px;
   font-size: 36px;
   margin-top: -6px;
   margin-bottom: 2px;
@@ -129,39 +132,14 @@ h3 .fa-check {
   color: green;
   font-size: 32px;
 }
-/* Author */
-.author {
-  color: #666;
-  font-style: italic;
-  height: 20px;
+.audio-item {
+  padding-right: 6px;
+}
+.attribution {
   margin-left: 90px;
   display: inline-block;
   position: relative;
-  top: -8px;
-}
-.author-credits, .author-intro {
-  margin-left: 4px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.author-credits.selected, .author-intro.selected,
-.author-credits:hover, .author-intro:hover {
-  color: #428bca;
-}
-.intro, .credits {
-  margin: 6px 0;
-  border: 1px dotted #666;
-  border-radius: 6px;
-  background: linear-gradient(to bottom, #f6f5f5, #f6f5f5 15%, #e2e2e2);
-  margin-right: 42px;
-  padding: 6px;
-}
-.intro .lbl {
-  text-decoration: underline;
-  font-style: normal;
-}
-.audio-item {
-  padding-right: 6px;
+  top: -2px;
 }
 /* index */
 .index-nr {
@@ -214,13 +192,16 @@ li.tab-glossary.active a {
   border-radius: 2px;
   z-index: 2;
   position: relative;
-  min-height: 131px;
+  min-height: 136px;
 }
 .listen .tab-content {
   border-color: #d6a551;
 }
 .glossary .tab-content {
   border-color: #d66351;
+}
+.user-glossary .tab-content {
+  min-height: 156px;
 }
 .tab .fa-check {
   color: green;
@@ -301,14 +282,11 @@ span.canrecommend:hover {
 .progress-content {
   padding: 0;
 }
-.user-glossary .progress-content {
-  min-height: 79px;
-}
 .progress-panel {
   border: 1px dotted #666;
   background-color: #edffed;
-  min-height: 87px;
-  padding: 0 4px;
+  min-height: 92px;
+  padding: 2px 4px;
   border-radius: 3px;
 }
 .progress-panel-test {
@@ -316,12 +294,15 @@ span.canrecommend:hover {
   margin-left: 6px
 }
 .buttons {
-  margin: 6px 0;
+  margin: 10px 0;
   min-height: 57px;
 }
 .progress-panel .buttons {
-  margin: 6px 0;
-  min-height: 47px;
+  margin: 8px 0;
+  min-height: 48px;
+}
+.user-glossary .buttons {
+  min-height: 54px;
 }
 /* Pie */
 .pie-chart {
@@ -336,7 +317,6 @@ span.canrecommend:hover {
   border: 1px solid #5cb85c;
 }
 .progress.test {
-  margin-top: 3px;
   border: 1px solid #337ab7;
 }
 .dashboard .progress {
@@ -403,21 +383,6 @@ span.canrecommend:hover {
   text-align: center;
   overflow: hidden;
   padding: 6px 0;
-}
-/* Flashcard dropdown */
-.dropdown-menu {
-  top: 30px;
-  background-color: #449d44;
-}
-.dropdown-menu a {
-  color: white;
-}
-.dropdown-menu a:hover {
-  color: #449d44;
-  cursor: pointer;
-}
-.dropdown-menu .no-userwords a:hover {
-  cursor: default;
 }
 /* beta */
 .beta {
@@ -492,7 +457,7 @@ span.canrecommend:hover {
   right: 120px;
   top: 14px;
 }
-.compact .cover-activity, .compact .author {
+.compact .cover-activity, .compact .attribution {
   display: none;
 }
 .compact-buttons {

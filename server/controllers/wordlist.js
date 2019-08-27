@@ -4,6 +4,7 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       log = require('./log'),
       Book = require('../models/book').book,
+      UserBook = require('../models/userbook').userBook,
       WordList = require('../models/wordlist').word,
       Session = require('../models/book').session,
       UserWordList = require('../models/wordlist').userword,
@@ -394,7 +395,23 @@ module.exports = {
     session.save((err, result) => {
       log.logError(err, 'ERREXE09', 'addSession', `Error adding session for ${userId}, Status code: ${response && response.statusCode}`, 'flashcards');
       response.handleError(err, res, 400, 'Error saving new session data', () => {
-        response.handleSuccess(res, true);
+        // also update date stamp userbook
+        const query = {
+                userId,
+                bookId: sessionData.bookId,
+                lanCode: sessionData.lanCode,
+                isTest: sessionData.isTest,
+                bookType: 'glossary'
+              },
+              update = {
+                $set: {'bookmark.dt': sessionData.dt.end}
+              }
+        UserBook.updateOne(query, update, (err, result) => {
+          response.handleError(err, res, 400, 'Error updating user userbook', () => {
+            response.handleSuccess(res, false);
+          });
+        });
+       console.log('saved session data', sessionData, query);
       });
     });
   },

@@ -4,7 +4,7 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
-import { SharedModule } from './shared.module';
+import { ListModule } from './list.module';
 import { CookieModule } from 'ngx-cookie';
 
 import { routes } from './app.routes';
@@ -18,6 +18,7 @@ import { BaseComponent } from './components/base.component';
 import { HomeComponent } from './components/home/home.component';
 import { DefaultHomeComponent } from './components/home/default-home.component';
 import { DashboardComponent } from './components/home/dashboard.component';
+import { RecentStoryComponent } from './components/home/recent-story.component';
 import { MainMenuComponent } from './components/main/main-menu.component';
 import { AnnouncementComponent } from './components/main/announcement.component';
 import { FooterComponent } from './components/main/footer.component';
@@ -41,7 +42,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     }),
     CoreModule.forRoot(),
     CookieModule.forRoot(),
-    SharedModule,
+    ListModule,
     TransferHttpCacheModule
   ],
   providers: [
@@ -60,6 +61,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     HomeComponent,
     DefaultHomeComponent,
     DashboardComponent,
+    RecentStoryComponent,
     LeaderboardComponent,
     PageNotFoundComponent,
     InfoComponent,

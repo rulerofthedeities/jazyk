@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { SharedModule } from './shared.module';
-import { CommonModule } from '@angular/common';
 
 import { ReadnListenService } from './services/readnlisten.service';
 import { RevisionService } from './services/revision.service';
@@ -33,8 +31,6 @@ import { WordColorDirective } from './directives/word-color.directive';
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
     SharedModule
   ],
   declarations: [

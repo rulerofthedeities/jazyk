@@ -87,20 +87,11 @@
         <div *ngIf="recentReady">
           <ul class="list-unstyled" *ngIf="recent?.length">
             <li *ngFor="let item of recent">
-              <km-book-summary
-                [book]="item['book']"
-                [bookType]="item['uBook'].bookType"
-                [isTest]="item['uBook'].isTest"
-                [userBook]="item['uBook'].isTest ? null : item['uBook']"
-                [userData]="item['uBook'].isTest ? null : [item['sessions']]"
-                [userBookTest]="item['uBook'].isTest ? item['uBook'] : null"
-                [userDataTest]="item['uBook'].isTest ? [item['sessions']] : null"
-                [translationData]="item['translations']"
-                [userLanCode]="item['userLanCode']"
+              <km-recent-story
                 [text]="text"
                 [licenses]="licenses"
-                tpe="home">
-              </km-book-summary>
+                [item]="item">
+              </km-recent-story>
             </li>
           </ul>
           <div *ngIf="!recent?.length">

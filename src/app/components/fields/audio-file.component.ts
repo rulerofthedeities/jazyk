@@ -30,6 +30,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges() {
+    console.log('AUDIO changed!!');
     if (this.audio && this.fileUrl !== this.audio.src) {
       this.audio = null;
     }
@@ -66,13 +67,13 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           this.audio.pause();
         }
-        this.cdr.detectChanges();
       }
+      this.sharedService.detectChanges(this.cdr);
       this.audio.addEventListener('ended', e => {
         // The audio has ended
         this.audio = null;
         this.ended.emit(true);
-        this.cdr.detectChanges();
+        this.sharedService.detectChanges(this.cdr);
       });
       this.audio.addEventListener('loadeddata', e => {
         // The audio has loaded
@@ -81,7 +82,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
           if (promise !== undefined) {
             promise.then(_ => {
               // Autoplay started!
-          this.cdr.detectChanges();
+              this.sharedService.detectChanges(this.cdr);
             }).catch(error => {});
           }
         }
@@ -117,7 +118,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
             if (this.audio) {
               this.audio.pause();
               this.audio = null;
-              this.cdr.detectChanges();
+              this.sharedService.detectChanges(this.cdr);
             }
           break;
           case 'pause':
@@ -127,7 +128,7 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
               } else {
                 this.audio.pause();
               }
-              this.cdr.detectChanges();
+              this.sharedService.detectChanges(this.cdr);
             }
           break;
         }
@@ -138,5 +139,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     this.audio = null;
     this.componentActive = false;
+    this.cdr.detach();
   }
 }

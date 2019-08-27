@@ -1,0 +1,26 @@
+/* Author */
+.author {
+  color: #666;
+  font-style: italic;
+}
+.author-credits, .author-intro {
+  margin-left: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.author-credits.selected, .author-intro.selected,
+.author-credits:hover, .author-intro:hover {
+  color: #428bca;
+}
+.intro, .credits {
+  margin: 6px 0;
+  border: 1px dotted #666;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #f6f5f5, #f6f5f5 15%, #e2e2e2);
+  margin-right: 42px;
+  padding: 6px;
+}
+.intro .lbl {
+  text-decoration: underline;
+  font-style: normal;
+}

@@ -1,0 +1,94 @@
+<article *ngIf="bookReady">
+  <div class="panel panel-default transparant"
+    [ngClass]="{
+      read: bookType === 'read',
+      listen: bookType === 'listen',
+      glossary: bookType === 'glossary'
+    }">
+    <div class="panel-body panel-book">
+      <!-- COVER IMAGE -->
+      <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}-circle.png" class="circle-flag">
+      <div class="cover-wrapper" [class.has-cover]="hasImage">
+        <div class="img-wrapper">
+            <img src="{{coverImage}}" class="cover-img">
+            <span *ngIf="!hasImage" class="cover-text">{{book.title}}</span>
+        </div>
+      </div>
+      <div class="book">
+        <!-- TYPE -->
+        <div class="book-type">
+          <span class="fa"
+            [ngClass]="{
+              'fa-book':bookType === 'read',
+              'fa-volume-up': bookType === 'listen',
+              'fa-list': bookType === 'glossary'
+            }"
+            [tooltip]="typeToolTip"
+            placement="left">
+          </span>
+        </div>
+        <!-- TITLE -->
+        <h3>
+          <span class="flags">
+            <img src="/assets/img/flags/{{book.lanRegion || book.lanCode}}.png" class="flag from">
+            <span class="fa fa-arrow-right flag-from"></span>
+            <img src="/assets/img/flags/{{targetLanCode}}.png" class="flag to">
+          </span>
+          <km-audio-file *ngIf="hasAudioTitle"
+            [fileUrl]="audioTitle"
+            [autoPlay]="false"
+            size="24"
+            class="audio-item"
+            (ended)="onAudioEnded($event)">
+          </km-audio-file>
+          <span *ngIf="isFinished" class="fa fa-check"></span>
+          <span class="title">{{book.title}}</span>
+        </h3>
+        <km-story-attribution class="attribution"
+          [text]="text"
+          [book]="book"
+          [licenses]="licenses">
+        </km-story-attribution>
+        <div *ngIf="isProgressReady && book.lanCode !== targetLanCode && userBookStatus"
+          class="buttons">
+          <km-story-buttons
+            [text]="text"
+            [bookType]="bookType"
+            [book]="book"
+            [isLarge]="false"
+            [isTest]="userBook.isTest"
+            [targetLanCode]="targetLanCode"
+            [userBook]="userBook"
+            [userBookStatus]="userBookStatus"
+            [isFinished]="isFinished"
+            [hasFlashCards]="hasFlashCards"
+            [glossaryCount]="glossaryCount"
+            [userGlossaryCount]="userGlossaryCount"
+          ></km-story-buttons>
+        </div>
+        <div *ngIf="isProgressReady && userBookStatus && (userBookStatus.isStarted || userBookStatus.isRepeat || userBookStatus.isBookRead)">
+          <div class="progress"
+            [ngClass]="{'progress-min': userBookStatus.percDone < 5, 'test': userBook.isTest}">
+            <div
+              class="progress-bar progress-bar-striped"
+              [ngClass]="{'progress-bar-primary': userBook.isTest, 'progress-bar-success': !userBook.isTest}"
+              role="progressbar"
+              [attr.aria-valuenow]="userBookStatus.nrOfSentencesDone"
+              aria-valuemin="0"
+              [attr.aria-valuemax]="book.difficulty?.nrOfSentences"
+              [style.width.%]="userBookStatus.percDone">
+              <span>
+                {{userBookStatus.nrOfSentencesDone}}/{{userBookStatus.nrOfSentences}}&nbsp;({{userBookStatus.percDone}}%)
+              </span>
+            </div>
+          </div>
+        </div>
+        <km-loader *ngIf="!isProgressReady && !isError"
+          [showBackground]="false"
+          [small]="true"
+          [margin]="0">
+        </km-loader>
+      </div>
+    </div>
+  </div>
+</article>

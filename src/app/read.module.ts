@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SharedModule } from './shared.module';
 import { ReadnListenModule } from './readnlisten.module';
 
 import { routes } from './read.routes';
@@ -10,8 +11,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes),
-    ReadnListenModule
+    SharedModule,
+    ReadnListenModule,
+    RouterModule.forChild(routes)
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

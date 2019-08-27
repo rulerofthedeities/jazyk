@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from './shared.module';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { ReadnListenModule } from './readnlisten.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
@@ -21,13 +20,16 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
-    FormsModule,
     ReadnListenModule,
     InfiniteScrollModule
   ],
   providers: [
     FilterService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   declarations: [
     GlossariesComponent,

@@ -119,10 +119,16 @@ module.exports = {
               // Get book & session data
               const userLan = uBook.lanCode;
               let book = null;
-              if (uBook.bookType === 'listen') {
-                book = await Book.findOne({_id: uBook.bookId, audioPublished: true});
-              } else {
-                book = await Book.findOne({_id: uBook.bookId, isPublished: true});
+              console.log(i, uBook.bookType);
+              switch(uBook.bookType) {
+                case 'listen':
+                  book = await Book.findOne({_id: uBook.bookId, audioPublished: true});
+                  break;
+                case 'glossary':
+                  book = await Book.findOne({_id: uBook.bookId, wordListPublished: true});
+                  break;
+                default:
+                  book = await Book.findOne({_id: uBook.bookId, isPublished: true});
               }
               // Get session count
               const sesQuery = {
@@ -157,32 +163,12 @@ module.exports = {
                       {$project: sesProjection}
                     ];
               const sessions = await Session.aggregate(sesPipeline);
-              // Get translations count
-              const tlQuery = {bookId: uBook.bookId, 'translations.lanCode': userLan},
-                    tlProjection = {
-                      _id: 0,
-                      bookId: '$_id',
-                      count: 1
-                    },
-                    tlPipeline = [
-                      {$match: tlQuery},
-                      {$unwind: "$translations"},
-                      {$match: {'translations.lanCode': userLan}},
-                      {$group: {
-                        _id: '$bookId',
-                        count: {'$sum': 1}
-                      }},
-                      {$project: tlProjection}
-                    ];
-              const translations = await Translation.aggregate(tlPipeline);
               return ({
                 dt: uBook.bookmark ? uBook.bookmark.dt : null,
-                tpe: 'book',
-                userLanCode: userLan,
+                targetLanCode: userLan,
                 uBook,
                 book,
-                sessions: sessions[0],
-                translations: translations[0]
+                sessions: [sessions[0]]
               });
             });
             return Promise.all(bookData);

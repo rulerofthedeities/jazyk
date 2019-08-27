@@ -1,0 +1,72 @@
+.panel-book {
+  min-height: 120px;
+  overflow: initial;
+}
+.book {
+  margin-left: 90px;
+}
+.book-type {
+  float: right;
+  font-size: 24px;
+  color: #428bca;
+}
+/* cover */
+.circle-flag {
+  width: 20px;
+  height: 20px;
+}
+.img-wrapper {
+  width: 80px;
+  height: 102px;
+}
+.cover-img { /* Default image */
+  width: 80px;
+  height: 102px;
+}
+.has-cover .cover-img {
+  width: 71px;
+  height: 92px;
+  left: 4px;
+  top: 4px;
+}
+.cover-wrapper {
+  height: 106px;
+}
+.cover-text {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 75px;
+  height: 100px;
+  font-size: 24px;
+}
+/* Title */
+.flag {
+  width: 21px;
+  height: 14px;
+  margin-right: 1px;
+}
+.flag-from {
+  font-size: 8px;
+}
+h3 .fa-check {
+  font-size: 24px;
+}
+.book h3 {
+  font-size: 24px;
+}
+.attribution {
+  margin-left: 68px;
+}
+/* Buttons */
+.buttons {
+  margin: 5px 0;
+  min-height: initial;
+}
+/* Progress */
+.progress {
+  height: 16px;
+}
+.progress-bar {
+  line-height: 16px;
+}

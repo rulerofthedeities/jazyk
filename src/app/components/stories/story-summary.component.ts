@@ -1,27 +1,13 @@
-import { Component, Input, Output, ViewChild, OnInit, OnDestroy, EventEmitter,
-         Renderer2, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { SharedService, awsPath } from '../../services/shared.service';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter,
+         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
-import { UserService } from '../../services/user.service';
-import { ReadnListenService } from '../../services/readnlisten.service';
-import { PlatformService } from '../../services/platform.service';
 import { LicenseUrl } from '../../models/main.model';
-import { Book, UserBookActivity, UserBookLean, UserDataLean, FinishedTab, TranslationData } from 'app/models/book.model';
+import { Book, UserBookActivity, UserBookLean, UserBookStatus, UserData,
+         FinishedTab, TranslationData } from 'app/models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
 import { takeWhile, delay } from 'rxjs/operators';
 import { zip, of, Subject } from 'rxjs';
-
-interface UserBookStatus {
-  isSubscribed: boolean;
-  isRecommended: boolean;
-  isStarted: boolean;
-  isRepeat: boolean;
-  nrOfSentencesDone: number;
-  nrOfSentences: number;
-  isBookRead: boolean;
-  percDone: number;
-}
 
 interface ColorHistory {
   red: string;
@@ -46,10 +32,10 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   @Input() licenses: LicenseUrl[];
   @Input() private activity: UserBookActivity;
   @Input() finishedTabs: FinishedTab;
-  @Input() private userBook: UserBookLean;
-  @Input() private userBookTest: UserBookLean;
-  @Input() private userData: UserDataLean[];
-  @Input() private userDataTest: UserDataLean[];
+  @Input() userBook: UserBookLean;
+  @Input() userBookTest: UserBookLean;
+  @Input() private userData: UserData[];
+  @Input() private userDataTest: UserData[];
   @Input() userGlossaryCount: UserWordCount;
   @Input() userGlossaryData: UserWordData;
   @Input() glossaryCount: UserWordCount;
@@ -58,7 +44,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   @Input() private dataLoaded: Subject<boolean>;
   @Output() removedSubscription = new EventEmitter<Book>();
   @Output() addedSubscription = new EventEmitter<Book>();
-  @ViewChild('flashcardDropdown') flashcardDropdown: ElementRef;
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
@@ -75,13 +60,10 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   audioTitle: string;
   hasAudioTitle: boolean;
   hasFlashCards: boolean;
-  showFlashCardDropdown = false;
-  showIntro = false;
-  showCredits = false;
   isTranslated = false;
   hasTest = false;
-  currentUserData: UserDataLean;
-  currentUserTestData: UserDataLean;
+  currentUserData: UserData;
+  currentUserTestData: UserData;
   currentUserBook: UserBookLean;
   currentUserBookTest: UserBookLean;
   currentGlossaryCount: UserWordCount;
@@ -93,27 +75,14 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   currentTab: string;
 
   constructor(
-    private router: Router,
     private cdr: ChangeDetectorRef,
-    private platform: PlatformService,
     private sharedService: SharedService,
-    private storiesService: StoriesService,
-    private userService: UserService,
-    private readnListenService: ReadnListenService,
-    renderer: Renderer2
-  ) {
-    if (this.platform.isBrowser) {
-      renderer.listen(document, 'click', (event) => {
-        if (this.flashcardDropdown && !this.flashcardDropdown.nativeElement.contains(event.target)) {
-          // Outside flashcard dropdown, close dropdown
-          this.showFlashCardDropdown = false;
-        }
-      });
-    }
-  }
+    private storiesService: StoriesService
+  ) {}
 
   ngOnInit() {
     this.currentTab = this.tab;
+    this.setTab();
     this.observe();
     this.setCoverImage();
     this.setAudioFile();
@@ -124,20 +93,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   onAudioEnded(isEnded: boolean) {
     this.sharedService.audioHasEnded(isEnded);
-  }
-
-  onToggleIntro() {
-    this.showIntro = !this.showIntro;
-    if (this.showIntro) {
-      this.showCredits = false;
-    }
-  }
-
-  onToggleCredits() {
-    this.showCredits = !this.showCredits;
-    if (this.showCredits) {
-      this.showIntro = false;
-    }
   }
 
   onSelectTab(newTab: string) {
@@ -202,63 +157,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.showHistoryData[historyNr] = !this.showHistoryData[historyNr];
   }
 
-  onStartReadingListening(isRepeat = false, isTest = false, event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.userService.setLanCode(this.book.lanCode);
-    this.userService.setUserLanCode(this.targetLanCode);
-    if (isRepeat) {
-      this.readnListenService
-      .subscribeRepeat(this.book._id, this.targetLanCode, this.tab, this.userBook.bookmark, isTest)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(subscription => {
-        this.startReadingListening(this.book._id, this.targetLanCode, this.tab, isTest);
-      });
-    } else {
-      this.readnListenService
-      .subscribeToBook(this.book._id, this.targetLanCode, this.tab, isTest)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(subscription => {
-        this.startReadingListening(this.book._id, this.targetLanCode, this.tab, isTest);
-      });
-    }
-  }
-
-  onStartListeningTest() {
-    this.userService.setLanCode(this.book.lanCode);
-    this.userService.setUserLanCode(this.targetLanCode);
-    this.readnListenService
-    .subscribeToBook(this.book._id, this.targetLanCode, 'listen', true)
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(subscription => {
-      this.startReadingListening(this.book._id, this.targetLanCode, this.tab, true);
-    });
-  }
-
-  onStartVocabularyTest() {
-    // console.log('start vocabulary test');
-  }
-
-  onWordList() {
-    this.router.navigate([`/glossaries/glossary/${this.book._id}/${this.targetLanCode}`]);
-  }
-
-  onToggleFlashCardDropdown() {
-    this.showFlashCardDropdown = !this.showFlashCardDropdown;
-  }
-
-  onStartFlashcards(tpe: string, count: number) {
-    if (count > 0) {
-      this.log(`Start flash cards for '${this.book.title}'`);
-      this.router.navigate([`/glossaries/glossary/flashcards/${this.book._id}/${this.targetLanCode}/${tpe}`]);
-    }
-  }
-
-  onRevision() {
-    this.log(`Start revision for '${this.book.title}'`);
-    this.router.navigate([`/read/book/${this.book._id}/${this.targetLanCode}/review`]);
-  }
-
   onStopReadingListening() {
     this.unsubscribe();
   }
@@ -299,21 +197,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.hasTest = this.tab === 'listen' ? true : false;
   }
 
-  private startReadingListening(bookId: string, targetLanCode: string, bookType: string, isTest: boolean) {
-    if (isTest) {
-      this.log(`Start listening test for '${this.book.title}'`);
-      this.router.navigate([`/listen/book/${bookId}/${targetLanCode}/test`]);
-    } else {
-      if (bookType === 'listen') {
-        this.log(`Start listening to '${this.book.title}'`);
-        this.router.navigate([`/listen/book/${bookId}/${targetLanCode}`]);
-      } else {
-        this.log(`Start reading '${this.book.title}'`);
-        this.router.navigate([`/read/book/${bookId}/${targetLanCode}`]);
-      }
-    }
-  }
-
   private getNewTypeData() {
     // Reload type data
     // glossary: userbooks + userWords + bookWords
@@ -334,7 +217,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
           this.processTranslationData(data[2]);
         }
         this.isLoading = false;
-        this.cdr.detectChanges();
+        this.sharedService.detectChanges(this.cdr);
       });
     } else {
       zip(
@@ -349,7 +232,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
           this.processGlossaryData(data[1], data[2]);
         }
         this.isLoading = false;
-        this.cdr.detectChanges();
+        this.sharedService.detectChanges(this.cdr);
       });
     }
   }
@@ -368,7 +251,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.checkStatus();
   }
 
-  private processSessionData(sessionData: UserDataLean[]) {
+  private processSessionData(sessionData: UserData[]) {
     this.userData = [];
     this.userDataTest = [];
     sessionData.forEach(session => {
@@ -392,19 +275,14 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private setCoverImage() {
-    const defaultImage = '/assets/img/books/blankcover.png';
     this.hasImage = !!this.book.coverImg;
-    if (this.hasImage) {
-      this.coverImage = `https://${awsPath}books/covers/${this.book.lanCode}/${this.book.coverImg}`;
-    } else {
-      this.coverImage = defaultImage;
-    }
+    this.coverImage = this.sharedService.getCoverImagePath(this.book);
   }
 
   private setAudioFile() {
     if (this.book.audioTitle && this.book.audioTitle.s3 && this.book.audioTitle.hasMp3) {
       this.hasAudioTitle = true;
-      this.audioTitle = `https://${awsPath}audiobooks/${this.book.lanCode}/${this.book.audioDirectory}/${this.book.audioTitle.s3}`;
+      this.audioTitle = this.sharedService.getAudioTitle(this.book);
     } else {
       this.hasAudioTitle = false;
     }
@@ -437,78 +315,18 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private resetStatus() {
-    this.userBookStatus = this.resetBook();
-    this.userBookStatusTest = this.resetBook();
+    this.userBookStatus = this.storiesService.resetBookStatus();
+    this.userBookStatusTest = this.storiesService.resetBookStatus();
   }
 
   private checkStatus() {
-    this.initBook(this.userBookStatus, this.userBook);
-    this.initBook(this.userBookStatusTest, this.userBookTest);
+    this.storiesService.initBookStatus(this.book, this.userBookStatus, this.userBook);
+    this.storiesService.initBookStatus(this.book, this.userBookStatusTest, this.userBookTest);
     this.checkCompact();
-  }
-
-  private initBook(status: UserBookStatus, userBook: UserBookLean) {
-    if (userBook) {
-      status.isSubscribed = !!userBook.subscribed;
-      status.isRecommended = !!userBook.recommended;
-      status.isRepeat = userBook.repeatCount > 0;
-      if (userBook.bookmark && userBook.bookmark.chapterId) {
-        status.isStarted = true;
-        if (userBook.bookmark.isBookRead) {
-          status.nrOfSentencesDone = this.book.difficulty.nrOfSentences;
-          status.isBookRead = true;
-          status.percDone = 100;
-          status.isStarted = false;
-        }
-      }
-    }
-  }
-
-  private checkGlossaryStatus(status: UserBookStatus, userBook: UserBookLean, userData: UserWordData) {
-    if (userData) {
-      const yes = userData.lastAnswerNo || 0,
-            no = userData.lastAnswerYes || 0,
-            words = yes + no,
-            totalWords = this.book.nrOfWordsInList,
-            totalWordTranslated = this.glossaryCount.countTranslation;
-      if (words > 0) {
-        status.isStarted = true;
-      }
-      status.nrOfSentencesDone = words;
-      status.percDone = this.sharedService.getPercentage(words, totalWordTranslated);
-      status.nrOfSentences = totalWordTranslated;
-      status.isBookRead = !!(words >= totalWordTranslated);
-      if (userBook) {
-        status.isSubscribed = !!userBook.subscribed;
-        status.isRecommended = !!userBook.recommended;
-        status.isRepeat = !!(userBook.repeatCount > 0);
-      }
-      if (!this.userGlossaryCount) { // Clicked on tab, data not available from parent component
-        this.userGlossaryCount = {
-          countTotal: userData.pinned || 0,
-          countTranslation: userData.translated || 0
-        };
-      }
-    }
-    this.checkCompact();
-  }
-
-  private checkSentencesDone() {
-    this.checkSentencesDoneEach(this.currentUserData, this.userBookStatus);
-    this.checkSentencesDoneEach(this.currentUserTestData, this.userBookStatusTest);
-  }
-
-  private checkSentencesDoneEach(userData: UserDataLean, status: UserBookStatus) {
-    if (userData) {
-      if (userData.nrSentencesDone > 0) {
-        status.nrOfSentencesDone = userData.nrSentencesDone;
-        status.nrOfSentences = this.book.difficulty.nrOfSentences;
-        status.percDone = this.sharedService.getPercentage(status.nrOfSentencesDone, this.book.difficulty.nrOfSentences);
-      }
-    }
   }
 
   private checkCompact() {
+    console.log('checking compact');
     if (this.finishedTabs && this.finishedTabs[this.tab]) {
       this.isFinished = true;
     } else {
@@ -536,28 +354,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkHasFlashCards() {
-    this.hasFlashCards = false;
-    console.log('glossarycount', this.glossaryCount, this.userGlossaryCount);
-    if ((this.glossaryCount && this.glossaryCount.countTranslation > 0) ||
-        (this.userGlossaryCount && this.userGlossaryCount.countTranslation > 0)) {
-      this.hasFlashCards = true;
-    }
-  }
-
-  private resetBook(): UserBookStatus {
-    return {
-      isSubscribed: false,
-      isRecommended: false,
-      isStarted: false,
-      isBookRead: false,
-      isRepeat: false,
-      nrOfSentencesDone: 0,
-      nrOfSentences: 0,
-      percDone: 0
-    };
-  }
-
   private setActivity() {
     if (this.activity) {
       this.userCount = this.activity.started;
@@ -573,31 +369,29 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processAllCurrentUserData() {
-    // Use the most recent repeat for current user data
-    this.currentUserData = this.getCurrentUserData(this.userData);
-    this.currentUserTestData = this.getCurrentUserData(this.userDataTest);
+    this.currentUserData = this.storiesService.getCurrentUserData(this.userData);
+    this.currentUserTestData = this.storiesService.getCurrentUserData(this.userDataTest);
     this.checkSentencesDone();
   }
 
-  private getCurrentUserData(userData: UserDataLean[]): UserDataLean {
-    if (userData && userData.length) {
-      if (userData.length > 1) {
-        userData.map(data => data.repeatCount = data.repeatCount || 0);
-        userData.sort(
-          (a, b) => (a.repeatCount > b.repeatCount) ? -1 : ((b.repeatCount > a.repeatCount) ? 1 : 0)
-        );
-      }
-      return userData[0];
-    } else {
-      return null;
-    }
+  private checkSentencesDone() {
+    this.storiesService.checkSentencesDone(this.book, this.currentUserData, this.userBookStatus);
+    this.storiesService.checkSentencesDone(this.book, this.currentUserTestData, this.userBookStatusTest);
   }
 
   private processGlossaryData(glossaryData: UserWordData, translationCount: UserWordCount) {
     this.glossaryCount = translationCount;
     this.currentGlossaryCount = this.glossaryCount;
-    this.checkHasFlashCards();
-    this.checkGlossaryStatus(this.userBookStatus, this.userBook, glossaryData);
+    this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
+    this.storiesService.checkGlossaryStatus(
+      this.book,
+      this.glossaryCount,
+      this.userGlossaryCount,
+      this.userBookStatus,
+      this.userBook,
+      glossaryData
+    );
+    this.checkCompact();
   }
 
   private unsubscribe() {
@@ -645,13 +439,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     );
   }
 
-  private log(message: string) {
-    this.sharedService.sendEventMessage({
-      message,
-      source: 'StorySummaryComponent'
-    });
-  }
-
   private observe() {
     this.dataLoaded
     .pipe(takeWhile( () => this.componentActive))
@@ -665,5 +452,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.componentActive = false;
+    this.cdr.detach();
   }
 }

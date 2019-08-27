@@ -189,7 +189,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           this.sessionData = {
             bookId: this.bookId,
             lanCode: this.userLanCode,
-            bookType: 'flashcard',
+            bookType: 'glossary',
             isTest: false,
             version: environment.version,
             repeatCount: undefined,

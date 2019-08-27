@@ -29,6 +29,7 @@
       [infiniteScrollThrottle]="50"
       (scrolled)="onScrollBooks()">
       <li *ngFor="let book of displayBooks; let i=index">
+        <!--
         <km-book-summary
           [book]="book"
           [bookType]="'glossary'"
@@ -47,6 +48,7 @@
           (removedSubscription)="onRemovedSubscription($event)"
           (addedSubscription)="onAddedSubscription($event)">
         </km-book-summary>
+        -->
       </li>
     </ul>
 

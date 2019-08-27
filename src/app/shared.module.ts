@@ -15,13 +15,10 @@ import { GravatarDirective } from './directives/gravatar.directive';
 import { GetKeyPressDirective } from './directives/get-key-pressed.directive';
 import { ToggleComponent } from './components/fields/toggle.component';
 import { LoaderComponent } from './components/fields/loader.component';
-import { BookSummaryComponent } from './components/readnlisten/book-summary.component';
-import { BookLicenseComponent } from './components/readnlisten/book-license.component';
+// import { BookSummaryComponent } from './components/readnlisten/book-summary.component';
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
-import { LinkFieldComponent } from './components/fields/link-field.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';
-import { PieChartComponent } from './components/readnlisten/pie-chart.component';
 import { BookTpeComponent } from './components/readnlisten/book-tpe.component';
 import { AudioFileComponent } from './components/fields/audio-file.component';
 
@@ -44,18 +41,15 @@ import { AudioFileComponent } from './components/fields/audio-file.component';
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    BookSummaryComponent,
-    BookLicenseComponent,
     ModalRanksComponent,
-    LinkFieldComponent,
     ScorePipe,
     SanitizeHtmlPipe,
-    PieChartComponent,
     BookTpeComponent,
     AudioFileComponent
   ],
   exports: [
     CommonModule,
+    FormsModule,
     TooltipModule,
     ErrorMessageComponent,
     InfoMessageComponent,
@@ -69,13 +63,9 @@ import { AudioFileComponent } from './components/fields/audio-file.component';
     GetKeyPressDirective,
     ToggleComponent,
     LoaderComponent,
-    BookSummaryComponent,
-    BookLicenseComponent,
     ModalRanksComponent,
-    LinkFieldComponent,
     ScorePipe,
     SanitizeHtmlPipe,
-    PieChartComponent,
     BookTpeComponent,
     AudioFileComponent
   ]

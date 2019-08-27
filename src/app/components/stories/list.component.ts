@@ -6,7 +6,7 @@ import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
 import { FilterService } from 'app/services/filter.service';
 import { Map, Language, LicenseUrl } from '../../models/main.model';
-import { Book, UserBookActivity, UserBookLean, UserDataLean, TranslationData,
+import { Book, UserBookActivity, UserBookLean, UserData, TranslationData,
         FinishedData, FinishedTab, ViewFilter } from '../../models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
 import { takeWhile, delay } from 'rxjs/operators';
@@ -44,8 +44,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
   userBookActivity: Map<UserBookActivity> = {};
   userBooks: Map<UserBookLean> = {}; // For sorting
   userBooksTest: Map<UserBookLean> = {};
-  userData: Map<UserDataLean>[] = [];
-  userDataTest: Map<UserDataLean>[] = [];
+  userData: Map<UserData>[] = [];
+  userDataTest: Map<UserData>[] = [];
   bookWordCount: Map<UserWordCount> = {}; // glossary translations count
   userWordCount: Map<UserWordCount> = {}; // glossary count
   userWordData: Map<UserWordData> = {}; // glossary answer data
@@ -415,7 +415,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private processSessionData(sessionData: UserDataLean[]) {
+  private processSessionData(sessionData: UserData[]) {
     this.userData = [];
     this.userDataTest = [];
     // Arrange all sessions per book

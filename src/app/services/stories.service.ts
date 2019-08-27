@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Book, BookCount, UserBookActivity, UserBookLean, UserDataLean, TranslationData,
-        FinishedData, UserBook } from '../models/book.model';
+import { SharedService } from '../services/shared.service';
+import { Book, BookCount, UserBookActivity, UserBookLean, UserData, TranslationData,
+        FinishedData, UserBook, UserBookStatus } from '../models/book.model';
 import { UserWordCount, UserWordData } from '../models/word.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -10,7 +11,8 @@ import { retry } from 'rxjs/operators';
 export class StoriesService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private sharedService: SharedService
   ) {}
 
   fetchBooksCount(bookType: string): Observable<BookCount[]> {
@@ -61,15 +63,15 @@ export class StoriesService {
     .pipe(retry(3));
   }
 
-  fetchSessionData(targetLanCode: string, bookType: string): Observable<UserDataLean[]> {
+  fetchSessionData(targetLanCode: string, bookType: string): Observable<UserData[]> {
     return this.http
-    .get<UserDataLean[]>(`/api/stories/sessions/${targetLanCode}/${bookType}`)
+    .get<UserData[]>(`/api/stories/sessions/${targetLanCode}/${bookType}`)
     .pipe(retry(3));
   }
 
-  fetchStorySessionData(targetLanCode: string, bookType: string, bookId: string): Observable<UserDataLean[]> {
+  fetchStorySessionData(targetLanCode: string, bookType: string, bookId: string): Observable<UserData[]> {
     return this.http
-    .get<UserDataLean[]>(`/api/story/sessions/${targetLanCode}/${bookType}/${bookId}`)
+    .get<UserData[]>(`/api/story/sessions/${targetLanCode}/${bookType}/${bookId}`)
     .pipe(retry(3));
   }
 
@@ -115,5 +117,99 @@ export class StoriesService {
     return this.http
     .get<UserWordCount[]>(`/api/bookwordlists/count/${bookLanCode}/${targetLanCode}`)
     .pipe(retry(3));
+  }
+
+  resetBookStatus(): UserBookStatus {
+    return {
+      isSubscribed: false,
+      isRecommended: false,
+      isStarted: false,
+      isBookRead: false,
+      isRepeat: false,
+      nrOfSentencesDone: 0,
+      nrOfSentences: 0,
+      percDone: 0
+    };
+  }
+
+  initBookStatus(book: Book, status: UserBookStatus, userBook: UserBookLean) {
+    if (userBook) {
+      status.isSubscribed = !!userBook.subscribed;
+      status.isRecommended = !!userBook.recommended;
+      status.isRepeat = userBook.repeatCount > 0;
+      if (userBook.bookmark && userBook.bookmark.chapterId) {
+        status.isStarted = true;
+        if (userBook.bookmark.isBookRead) {
+          status.nrOfSentencesDone = book.difficulty.nrOfSentences;
+          status.isBookRead = true;
+          status.percDone = 100;
+          status.isStarted = false;
+        }
+      }
+    }
+  }
+
+  hasFlashCards(glossaryCount: UserWordCount, userGlossaryCount: UserWordCount): boolean {
+    return ((glossaryCount && glossaryCount.countTranslation > 0) ||
+            (userGlossaryCount && userGlossaryCount.countTranslation > 0));
+  }
+
+  checkGlossaryStatus(
+    book: Book,
+    glossaryCount: UserWordCount,
+    userGlossaryCount: UserWordCount,
+    status: UserBookStatus,
+    userBook: UserBookLean,
+    userData: UserWordData) {
+    if (userData) {
+      const yes = userData.lastAnswerNo || 0,
+            no = userData.lastAnswerYes || 0,
+            words = yes + no,
+            totalWords = book.nrOfWordsInList,
+            totalWordTranslated = glossaryCount.countTranslation;
+      if (words > 0) {
+        status.isStarted = true;
+      }
+      status.nrOfSentencesDone = words;
+      status.percDone = this.sharedService.getPercentage(words, totalWordTranslated);
+      status.nrOfSentences = totalWordTranslated;
+      status.isBookRead = !!(words >= totalWordTranslated);
+      if (userBook) {
+        status.isSubscribed = !!userBook.subscribed;
+        status.isRecommended = !!userBook.recommended;
+        status.isRepeat = !!(userBook.repeatCount > 0);
+      }
+      if (!userGlossaryCount) { // Clicked on tab, data not available from parent component
+        userGlossaryCount = {
+          countTotal: userData.pinned || 0,
+          countTranslation: userData.translated || 0
+        };
+      }
+    }
+  }
+
+  checkSentencesDone(book: Book, userData: UserData, status: UserBookStatus) {
+    if (userData) {
+      if (userData.nrSentencesDone > 0) {
+        status.nrOfSentencesDone = userData.nrSentencesDone;
+        status.nrOfSentences = book.difficulty.nrOfSentences;
+        status.percDone = this.sharedService.getPercentage(status.nrOfSentencesDone, book.difficulty.nrOfSentences);
+      }
+    }
+  }
+
+  getCurrentUserData(userData: UserData[]): UserData {
+    // Use the most recent repeat for current user data
+    if (userData && userData.length) {
+      if (userData.length > 1) {
+        userData.map(data => data.repeatCount = data.repeatCount || 0);
+        userData.sort(
+          (a, b) => (a.repeatCount > b.repeatCount) ? -1 : ((b.repeatCount > a.repeatCount) ? 1 : 0)
+        );
+      }
+      return userData[0];
+    } else {
+      return null;
+    }
   }
 }

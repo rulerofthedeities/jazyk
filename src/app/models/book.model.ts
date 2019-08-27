@@ -221,6 +221,17 @@ export interface UserBookLean {
   repeatCount: number;
 }
 
+export interface UserBookStatus {
+  isSubscribed: boolean;
+  isRecommended: boolean;
+  isStarted: boolean;
+  isRepeat: boolean;
+  nrOfSentencesDone: number;
+  nrOfSentences: number;
+  isBookRead: boolean;
+  percDone: number;
+}
+
 interface Points {
   words: number;
   translations: number;
@@ -283,19 +294,6 @@ export interface UserData {
   repeatCount: number;
   start?: Date;
   end?: Date;
-}
-
-export interface UserDataLean {
-  // Only data fetched in stories list
-  bookId: string;
-  isTest: boolean;
-  nrSentencesDone: number;
-  nrYes: number;
-  nrNo: number;
-  nrMaybe: number;
-  repeatCount: number;
-  start: Date;
-  end: Date;
 }
 
 export interface Thumbs {
