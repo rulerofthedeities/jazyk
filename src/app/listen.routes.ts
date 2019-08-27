@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ListenComponent } from './components/listen/listen.component';
 import { BookSentencesComponent } from './components/readnlisten/book-sentences.component';
 import { SentencesTestComponent } from './components/listen/sentences-test.component';
 import { BookRevisionComponent } from './components/revision/book-revision.component';

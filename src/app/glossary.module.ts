@@ -5,7 +5,6 @@ import { ReadnListenModule } from './readnlisten.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { routes } from './glossary.routes';
-import { GlossariesComponent } from './components/glossaries/glossaries.component';
 import { BookFlashCardsComponent } from './components/glossaries/flashcards.component';
 import { BookFlashCardComponent } from './components/glossaries/flashcard.component';
 import { BookFlashCardsResultComponent } from './components/glossaries/flashcards-result.component';
@@ -32,7 +31,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     }
   ],
   declarations: [
-    GlossariesComponent,
     GlossaryWordComponent,
     BookFlashCardsComponent,
     BookFlashCardComponent,
