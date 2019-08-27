@@ -404,7 +404,10 @@ module.exports = {
                 bookType: 'glossary'
               },
               update = {
-                $set: {'bookmark.dt': sessionData.dt.end}
+                $set: {
+                  'bookmark.lastGlossaryType': sessionData.glossaryType,
+                  'bookmark.dt': sessionData.dt.end
+                }
               }
         UserBook.updateOne(query, update, (err, result) => {
           response.handleError(err, res, 400, 'Error updating user userbook', () => {

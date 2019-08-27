@@ -192,6 +192,7 @@ export interface Bookmark {
   sentenceNrChapter: number;
   isChapterRead: boolean;
   isBookRead?: boolean;
+  lastGlossaryType?: string;
   dt?: Date;
 }
 
@@ -272,6 +273,7 @@ export interface SessionData {
   translations: number;
   points: Points;
   repeatCount?: number;
+  glossaryType?: string;
   dt?: SessionDates;
   resultData?: ResultData; // For results page
   chapterId?: string; // For revision

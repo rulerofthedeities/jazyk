@@ -15,6 +15,7 @@ var bookmarkSchema = new Schema({
   sentenceNrChapter: {type: Number, required: true},
   isChapterRead: {type: Boolean, default: false},
   isBookRead: {type: Boolean, default: false},
+  lastGlossaryType: String,
   dt: {type: Date, default: new Date()}
 }, {_id : false});
 

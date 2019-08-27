@@ -160,17 +160,28 @@ export class StoriesService {
     userGlossaryCount: UserWordCount,
     status: UserBookStatus,
     userBook: UserBookLean,
-    userData: UserWordData) {
+    userData: UserWordData
+  ) {
     if (userData) {
+      if (!userGlossaryCount) { // Clicked on tab, data not available from parent component
+        userGlossaryCount = {
+          countTotal: userData.pinned || 0,
+          countTranslation: userData.translated || 0
+        };
+      }
       const yes = userData.lastAnswerNo || 0,
             no = userData.lastAnswerYes || 0,
             words = yes + no,
+            glossaryType = userBook.bookmark ? userBook.bookmark.lastGlossaryType : 'all',
             totalWords = book.nrOfWordsInList,
-            totalWordTranslated = glossaryCount.countTranslation;
+            totalWordTranslated = glossaryType === 'all' ? glossaryCount.countTranslation : userGlossaryCount.countTranslation;
+            console.log('GLOSSARY STATUS', glossaryCount, userGlossaryCount);
+      console.log('GLOSSARY TYPE', glossaryType);
       if (words > 0) {
         status.isStarted = true;
       }
-      status.nrOfSentencesDone = words;
+      console.log('WORDS', book.title, words, totalWordTranslated);
+      status.nrOfSentencesDone = words > totalWordTranslated ? totalWordTranslated : words;
       status.percDone = this.sharedService.getPercentage(words, totalWordTranslated);
       status.nrOfSentences = totalWordTranslated;
       status.isBookRead = !!(words >= totalWordTranslated);
@@ -179,12 +190,7 @@ export class StoriesService {
         status.isRecommended = !!userBook.recommended;
         status.isRepeat = !!(userBook.repeatCount > 0);
       }
-      if (!userGlossaryCount) { // Clicked on tab, data not available from parent component
-        userGlossaryCount = {
-          countTotal: userData.pinned || 0,
-          countTranslation: userData.translated || 0
-        };
-      }
+      console.log('WORD TRANSLATION COUNT', book.title, userGlossaryCount, userData.translated);
     }
   }
 

@@ -20,6 +20,7 @@ export class StoryButtonsComponent implements OnDestroy {
   @Input() text: Object;
   @Input() book: Book;
   @Input() bookType: string;
+  @Input() glossaryType = 'all';
   @Input() targetLanCode: string;
   @Input() isTest = false;
   @Input() isCompact = false;

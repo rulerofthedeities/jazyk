@@ -35,31 +35,42 @@
     </button>
   </span>
   <span *ngIf="bookType === 'glossary'">
-    <span class="dropdown" #flashcardDropdown *ngIf="hasFlashCards">
+    <span *ngIf="isLarge">
+      <!-- FLASHCARD DROPDOWN -->
+      <span class="dropdown" #flashcardDropdown *ngIf="hasFlashCards">
+        <button class="btn btn-success"
+          [class.btn-lg]="isLarge"
+          [class.dropdown-toggle]="showFlashCardDropdown"
+          type="button"
+          (click)="onToggleFlashCardDropdown()">
+          <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
+          <span class="fa fa-caret-right" *ngIf="!showFlashCardDropdown"></span>
+          <span class="fa fa-caret-down" *ngIf="showFlashCardDropdown"></span>
+        </button>
+        <ul
+          class="dropdown-menu"
+          [class.large]="isLarge"
+          [style.display]="showFlashCardDropdown ? 'block' : 'none'">
+          <li>
+            <a (click)="onStartFlashcards('all', glossaryCount?.countTranslation)">
+              {{text["AppGlossary"]}} ({{glossaryCount?.countTranslation | score}})
+            </a>
+          </li>
+          <li [class.no-userwords]="userGlossaryCount?.countTranslation < 1">
+            <a (click)="onStartFlashcards('my', userGlossaryCount?.countTranslation)">
+              {{text["MyGlossary"]}} ({{userGlossaryCount?.countTranslation | score}})
+            </a>
+          </li>
+        </ul>
+      </span>
+    </span>
+    <span *ngIf="!isLarge">
       <button class="btn btn-success"
-        [class.btn-lg]="isLarge"
-        [class.dropdown-toggle]="showFlashCardDropdown"
         type="button"
-        (click)="onToggleFlashCardDropdown()">
-        <span class="fa fa-clone fa-spacing"></span>{{text['FlashCards']}}
-        <span class="caret" *ngIf="showFlashCardDropdown">
-        </span>
+        (click)="onStartFlashcards(glossaryType, glossaryType === 'all' ? glossaryCount?.countTranslation : userGlossaryCount?.countTranslation)">
+        <span class="fa fa-arrow-right fa-spacing"></span>
+        {{text['FlashCards']}}
       </button>
-      <ul
-        class="dropdown-menu"
-        [class.large]="isLarge"
-        [style.display]="showFlashCardDropdown ? 'block' : 'none'">
-        <li>
-          <a (click)="onStartFlashcards('all', glossaryCount?.countTranslation)" >
-            {{text["AppGlossary"]}} ({{glossaryCount?.countTranslation | score}})
-          </a>
-        </li>
-        <li [class.no-userwords]="userGlossaryCount?.countTranslation < 1">
-          <a (click)="onStartFlashcards('my', userGlossaryCount?.countTranslation)">
-            {{text["MyGlossary"]}} ({{userGlossaryCount?.countTranslation | score}})
-          </a>
-        </li>
-      </ul>
     </span>
   </span>
   <span *ngIf="book.wordListPublished && bookType === 'glossary'">

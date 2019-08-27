@@ -25,6 +25,7 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
   sessions: UserData[];
   currentUserData: UserData;
   bookType: string;
+  glossaryType: string;
   targetLanCode: string;
   isError = false;
   bookReady = false;
@@ -53,6 +54,7 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
       this.userBook = this.item.uBook;
       this.sessions = this.item.sessions;
       this.bookType = this.userBook ? this.userBook.bookType : '';
+      this.glossaryType = this.userBook && this.userBook.bookmark ? this.userBook.bookmark.lastGlossaryType : 'all';
       this.targetLanCode = this.item.targetLanCode;
       this.setStatus();
       this.setCoverImage();

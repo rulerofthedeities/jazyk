@@ -101,6 +101,7 @@ var sessionSchema = new Schema({
   repeatCount: Number,
   dt: dtSchema,
   points: pointsSchema,
+  glossaryType: String,
   chapterId: String,
   chapterSequence: Number,
   sentenceNrChapter: Number,
