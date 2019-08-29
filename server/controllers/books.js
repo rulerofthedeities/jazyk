@@ -217,7 +217,7 @@ module.exports = {
     });
   },
   getUserBook: (req, res) => {
-    const bookId = req.params.bookId,
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           lanCode = req.params.lan,
           bookType = req.params.bookType,
           isTest = req.params.isTest === '1' ? true : false,
@@ -230,7 +230,7 @@ module.exports = {
     });
   },
   getChapter: (req, res) => {
-    const bookId = req.params.bookId,
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = parseInt(req.params.sequence, 10) || 1,
           query = {bookId, sequence},
           projection = {content: 0};
@@ -298,7 +298,7 @@ module.exports = {
           bookLanCode = req.body.bookLanCode,
           chapterSequence = req.body.chapterSequence,
           sentence = req.body.sentence,
-          bookId = req.body.bookId,
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
           isMachine = !!req.body.isMachine,
           machine = req.body.machine,
           isDuplicate = !!req.body.isDuplicate,
@@ -392,7 +392,7 @@ module.exports = {
   },
   updateBookmark: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          bookId = req.body.bookId,
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
           lanCode = req.body.lanCode,
           isTest = req.body.isTest,
           bookType = req.body.bookType,
@@ -542,13 +542,21 @@ module.exports = {
   addThumb: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           up = req.body.up,
-          bookId = req.body.bookId,
-          translatorId = req.body.translatorId,
-          translationId = req.body.translationId,
-          translationElementId = req.body.translationElementId,
+          bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          translatorId = new mongoose.Types.ObjectId(req.body.translatorId),
+          translationId = new mongoose.Types.ObjectId(req.body.translationId),
+          translationElementId = new mongoose.Types.ObjectId(req.body.translationElementId),
           isOwnTranslation = userId.toString() === translatorId.toString(),
-          query = {userId, bookId, translationId, translationElementId},
-          update = {$set: {up, isOwnTranslation}, $setOnInsert: {translatorId}},
+          query = {
+            userId,
+            bookId,
+            translationId,
+            translationElementId
+          },
+          update = {
+            $set: {up, isOwnTranslation},
+            $setOnInsert: {translatorId}
+          },
           options = {upsert: true, new: true};
     UserBookThumb.findOneAndUpdate(query, update, options, (err, result) =>  {
       response.handleError(err, res, 400, 'Error saving thumb', () => {
@@ -594,7 +602,7 @@ module.exports = {
     const userId = req.decoded.user._id,
           data = req.body;
     if (data && data.bookId) {
-      const bookId = mongoose.Types.ObjectId(data.bookId),
+      const bookId = new mongoose.Types.ObjectId(data.bookId),
             lanCode = data.lanCode,
             bookType = data.bookType,
             isTest = data.isTest,
@@ -613,10 +621,10 @@ module.exports = {
     }
   },
   setBookFinished: (req, res) => {
-    const userId = req.decoded.user._id,
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           data = req.body;
     if (data && data.bookId) {
-      const bookId = mongoose.Types.ObjectId(data.bookId),
+      const bookId = new mongoose.Types.ObjectId(data.bookId),
             lanCode = data.lanCode,
             bookType = data.bookType,
             isTest = data.isTest,
@@ -644,9 +652,9 @@ module.exports = {
     // increase repeatCount
     // remove bookmark
     // set subscribed to true
-    const userId = mongoose.Types.ObjectId(req.decoded.user._id),
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           data = req.body,
-          bookId = mongoose.Types.ObjectId(data.bookId),
+          bookId = new mongoose.Types.ObjectId(data.bookId),
           lanCode = data.lanCode,
           bookType = data.bookType,
           isTest = data.isTest,
@@ -676,28 +684,56 @@ module.exports = {
     });
   },
   recommend: (req, res) => {
-    const userId = req.decoded.user._id,
-          ubookId = req.body.ubookId,
-          recommended = req.body.recommend,
-          query = {_id: ubookId, userId},
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          ubookId = new mongoose.Types.ObjectId(req.body.ubookId),
+          query = {
+            _id: ubookId,
+            userId
+          },
           options = {},
-          update = {$set: {recommended}};
+          update = {$set: {
+            recommended: true
+          }};
     UserBook.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error recommending book', () => {
-        response.handleSuccess(res, result);
+        response.handleSuccess(res, true);
       });
     });
   },
   unsubscribeFromBook: (req, res) => {
     const userId =  new mongoose.Types.ObjectId(req.decoded.user._id),
-          ubookId =  new mongoose.Types.ObjectId(req.body.ubookId),
-          query = {_id: ubookId, userId},
-          options = {new: true},
-          set = {subscribed: false, 'dt.dtLastUnSubscribed': Date.now()},
-          update = {$set: set};
-    UserBook.findOneAndUpdate(query, update, options, (err, result) => {
+          bookId =  new mongoose.Types.ObjectId(req.body.bookId),
+          targetLanCode = req.body.targetLanCode,
+          query = {
+            bookId,
+            userId,
+            lanCode: targetLanCode
+          },
+          update = {$set: {
+            subscribed: false,
+            'dt.dtLastUnSubscribed': Date.now()
+          }};
+    UserBook.updateMany(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error unsubscribing from book', () => {
-        response.handleSuccess(res, result);
+        response.handleSuccess(res, true);
+      });
+    });
+  },
+  unRecommend: (req, res) => {
+    const userId =  new mongoose.Types.ObjectId(req.decoded.user._id),
+          bookId =  new mongoose.Types.ObjectId(req.body.bookId),
+          targetLanCode = req.body.targetLanCode,
+          query = {
+            bookId,
+            userId,
+            lanCode: targetLanCode
+          },
+          update = {$set: {
+            recommended: false
+          }};
+    UserBook.updateMany(query, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error unrecommending from book', () => {
+        response.handleSuccess(res, true);
       });
     });
   }

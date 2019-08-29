@@ -49,7 +49,6 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.item) {
-      console.log(this.item);
       this.book = this.item.book;
       this.userBook = this.item.uBook;
       this.sessions = this.item.sessions;
@@ -106,7 +105,6 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
     this.userBookStatus = this.storiesService.resetBookStatus();
     this.storiesService.initBookStatus(this.book, this.userBookStatus, this.userBook);
     this.currentUserData = this.sessions[0]; // backend takes care of sorting
-    console.log('current user data', this.currentUserData);
     this.storiesService.checkSentencesDone(this.book, this.currentUserData, this.userBookStatus);
   }
 

@@ -423,7 +423,8 @@ module.exports = {
           bookId = new mongoose.Types.ObjectId(req.body.bookId),
           targetLanCode = req.body.targetLanCode,
           bookLanCode = req.body.bookLanCode,
-          flashcards = req.body.flashCardsToSave;
+          flashcards = req.body.flashCardsToSave,
+          glossaryType = req.body.glossaryType;
     if (flashcards.length > 0 && flashcards[0].answers) {
       let docs = flashcards.map(flashcard => {
         const wordId = new mongoose.Types.ObjectId(flashcard.wordId),
@@ -435,17 +436,24 @@ module.exports = {
                 bookId,
                 userId,
                 targetLanCode
+              },
+              mySet = {
+                answersMy: answers,
+                // answers: {$concat: [ "$answers", flashcard.answers]} // Only from v4.2 on
+                lastAnswerMy: lastAnswer,
+                dtFlashcard: new Date()
+              },
+              allSet = {
+                answersAll: answers,
+                // answers: {$concat: [ "$answers", flashcard.answers]} // Only from v4.2 on
+                lastAnswerAll: lastAnswer,
+                dtFlashcard: new Date()
               };
         return {
           updateOne: {
             filter: query,
             update: {
-              $set: {
-                answers: answers,
-                // answers: {$concat: [ "$answers", flashcard.answers]} // Only from v4.2 on
-                lastAnswer: lastAnswer,
-                dtFlashcard: new Date()
-              },
+              $set: glossaryType === 'my' ? mySet: allSet ,
               $setOnInsert: {
                 bookLanCode: bookLanCode,
                 translations: translations,

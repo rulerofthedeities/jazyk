@@ -230,6 +230,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           userWords = data.userWords; // only for my glossary
           // translations = data.translations; // only for all glossary
     if (userWords) {
+      console.log('userWords', userWords);
       // My glossary: map word with user translation
       words.forEach(word => {
         const userWord = userWords.find(uWord => uWord.wordId === word._id);
@@ -237,7 +238,8 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           word.translationSummary = userWord.translations;
           this.answerData[word._id] = {
             answers: '',
-            previousAnswers: userWord.answers, // previous answers necessary until mongo v4.2
+             // previous answers necessary until mongo v4.2
+            previousAnswers: this.glossaryType === 'my' ? userWord.answersMy : userWord.answersAll,
             points: 0
           };
         }
@@ -266,7 +268,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       });
       // Save answers in user wordlist
       this.wordlistService
-      .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode)
+      .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode, this.glossaryType)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         result => {}

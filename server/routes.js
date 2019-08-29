@@ -145,6 +145,7 @@ module.exports = {
     router.post('/book/unsubscribe', books.unsubscribeFromBook);
     router.put('/book/finished', books.setBookFinished);
     router.put('/book/recommend', books.recommend);
+    router.put('/book/unrecommend', books.unRecommend);
 
     router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
     router.get('/books/count/listen', audio.getBooksCount);
@@ -157,7 +158,7 @@ module.exports = {
 
     /* Stories */
     router.get('/stories/activity', stories.getActivity);
-    router.get('/stories/userbooks/:lan/:bookType', stories.getUserLanBooks);
+    router.get('/stories/userbooks/:lan', stories.getUserLanBooks);
     router.get('/stories/userwords/:lan', stories.getUserLanWords);
     router.get('/stories/sessions/:lan/:bookType', stories.getSessions);
     router.get('/stories/translation/:lan', stories.getTranslationsCount);

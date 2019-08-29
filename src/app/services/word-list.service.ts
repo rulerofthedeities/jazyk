@@ -62,9 +62,21 @@ export class WordListService {
     .post<boolean>(`/api/wordlist/flashcards/session`, {sessionData});
   }
 
-  saveAnswers(flashCardsToSave: FlashCard[], bookId: string, bookLanCode: string, targetLanCode: string): Observable<boolean> {
+  saveAnswers(
+    flashCardsToSave: FlashCard[],
+    bookId: string,
+    bookLanCode: string,
+    targetLanCode: string,
+    glossaryType: string
+  ): Observable<boolean> {
     return this.http
-    .post<boolean>(`/api/wordlist/flashcards/answers`, {flashCardsToSave, bookId, bookLanCode, targetLanCode});
+    .post<boolean>(`/api/wordlist/flashcards/answers`, {
+      flashCardsToSave,
+      bookId,
+      bookLanCode,
+      targetLanCode,
+      glossaryType
+    });
   }
 
   updateUserTranslation(bookId: string, wordId: string, newTranslation: string, userLanCode: string) {

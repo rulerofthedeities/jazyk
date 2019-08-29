@@ -100,8 +100,13 @@ module.exports = {
   },
   setAllMessagesRead: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          query = {'recipient.id': userId, 'recipient.read': false},
-          update = {'recipient.read': true};
+          query = {
+            'recipient.id': userId,
+            'recipient.read': false
+          },
+          update = {
+            'recipient.read': true
+          };
     Message.updateMany(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error marking all messages unread', () => {
         response.handleSuccess(res, true);

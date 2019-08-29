@@ -21,8 +21,10 @@ const userWordSchema = new Schema({
   bookLanCode: String,
   targetLanCode: String,
   pinned: Boolean,
-  lastAnswer: String,
-  answers: String,
+  lastAnswerMy: String,
+  lastAnswerAll: String,
+  answersMy: String,
+  answersAll: String,
   dtFlashcard: {type: Date, default: Date.now},
   translations: {type: String, trim: true}
 });

@@ -58,12 +58,10 @@ module.exports = {
   },
   getUserLanBooks: (req, res) => {
     const lanCode = req.params.lan,
-          bookType = req.params.bookType,
           userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           query = {
             userId,
-            lanCode,
-            bookType
+            lanCode
           },
           projection = {
             bookId: 1,
@@ -71,7 +69,8 @@ module.exports = {
             subscribed: 1,
             recommended: 1,
             repeatCount: 1,
-            bookmark: 1
+            bookmark: 1,
+            bookType: 1
           };
 
     UserBook.find(query, projection, (err, books) => {
@@ -205,14 +204,13 @@ module.exports = {
           targetLanCode = req.params.lan,
           query = {
             userId,
-            targetLanCode,
-            lastAnswer: {$exists: true}
+            targetLanCode
           },
           projection = {
             _id: 0,
             bookId: '$_id.bookId',
-            lastAnswerYes: 1,
-            lastAnswerNo: 1,
+            lastAnswerAllYes: 1,
+            lastAnswerMyYes: 1,
             pinned: 1
           },
           pipeline = [
@@ -221,8 +219,8 @@ module.exports = {
               _id: {
                 bookId: '$bookId'
               },
-              lastAnswerYes: {'$sum': { $cond: [{'$eq': ['$lastAnswer', 'y']}, 1, 0] }},
-              lastAnswerNo: {'$sum': { $cond: [{'$eq': ['$lastAnswer', 'y']}, 0, 1] }},
+              lastAnswerAllYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'y']}, 1, 0] }},
+              lastAnswerMyYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'y']}, 1, 0] }},
               pinned: {'$sum': { $cond: [{'$eq': ['$pinned', true]}, 1, 0] }}
             }},
             {$project: projection}
@@ -247,8 +245,8 @@ module.exports = {
           projection = {
             _id: 0,
             bookId: '$_id.bookId',
-            lastAnswerYes: 1,
-            lastAnswerNo: 1,
+            lastAnswerAllYes: 1,
+            lastAnswerMyYes: 1,
             pinned: 1,
             translated: 1,
             total: 1
@@ -259,8 +257,8 @@ module.exports = {
               _id: {
                 bookId: '$bookId'
               },
-              lastAnswerYes: {'$sum': { $cond: [{'$eq': ['$lastAnswer', 'y']}, 1, 0] }},
-              lastAnswerNo: {'$sum': { $cond: [{'$eq': ['$lastAnswer', 'n']}, 1, 0] }},
+              lastAnswerAllYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'y']}, 1, 0] }},
+              lastAnswerMyYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'y']}, 1, 0] }},
               pinned: {'$sum': { $cond: [{'$eq': ['$pinned', true]}, 1, 0] }},
               total: {'$sum': 1},
               translated: {'$sum': { $cond: [{'$and': [{'$eq': ['$pinned', true]}, {'$ne': ['$translations', '']}]}, 1, 0] }}
@@ -334,7 +332,6 @@ module.exports = {
         response.handleSuccess(res, {count: translations});
       });
     });
-
   },
   getFinishedStatus: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -358,13 +355,12 @@ module.exports = {
                 tpe: '$bookType'
               },
               isRead: {
-                $sum: { $cond: [{'$eq': ['$bookmark.isBookRead', true]}, 1, 0] }
+                $sum: { $cond: [{'$eq': ['$bookmark.isBookRead', true]}, 1, 0]}
               },
               repeatCount: {$sum: '$repeatCount'}
             }},
             {$project: projection}
           ];
-
     UserBook.aggregate(pipeline, (err, userBooks) => {
       response.handleError(err, res, 400, 'Error fetching finished data', () => {
         response.handleSuccess(res, userBooks);

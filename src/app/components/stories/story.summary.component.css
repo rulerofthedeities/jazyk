@@ -247,6 +247,9 @@ li.tab-glossary.active a {
 .icons .fa-thumbs-up {
   margin-left: 2px;
 }
+.icons .fa-times {
+  color: red;
+}
 .subscribe {
   font-size: 3rem;
   color: grey;

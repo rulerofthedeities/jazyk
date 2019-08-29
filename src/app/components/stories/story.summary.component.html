@@ -74,7 +74,7 @@
         </h3>
         <div class="book-content">
           <!-- UNSUBSCRIBE -->
-          <div class="pull-right" *ngIf="(userBookStatus?.isSubscribed || userBookStatusTest?.isSubscribed ) && isMyList">
+          <div class="pull-right" *ngIf="isSubscribed && isMyList">
             <button type="button" class="btn btn-default stop-btn"
               (click)="onStopReadingListening()">
               <span class="fa fa-times-circle fa-spacing"></span>
@@ -251,24 +251,34 @@
   let-text=text
   let-userBookStatus=userBookStatus
   let-userBookStatusTest=userBookStatusTest>
-  <div class="icons">
+  <div class="icons" *ngIf="isIconsReady">
     <div *ngIf="!isMyList"
       class="subscribe"
-      [class.mylist]="userBookStatus.isSubscribed || userBookStatusTest.isSubscribed"
+      [class.mylist]="isSubscribed"
       (click)="onToggleSubscription($event)"
-      [tooltip]="text[(userBookStatus.isSubscribed || userBookStatusTest.isSubscribed) ? 'RemoveFromList' : 'AddToList']"
+      [tooltip]="text[isSubscribed ? 'RemoveFromList' : 'AddToList']"
       placement="left"
       hide-delay="50">
       <span class="fa fa-thumb-tack"></span>
     </div>
+    <div *ngIf="isMyList"
+      class="subscribe"
+      [class.mylist]="isSubscribed"
+      (click)="onStopReadingListening()"
+      [tooltip]="text['RemoveFromList']"
+      id="tooltipRemove"
+      placement="left"
+      hide-delay="50">
+      <span class="fa fa-times"></span>
+    </div>
     <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
-      [tooltip]="text[userBookStatus.isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
+      [tooltip]="text[isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
       placement="left"
       hide-delay="50">
       <span class="fa"
         [ngClass]="{
-          'fa-thumbs-o-up': !userBookStatus.isRecommended,
-          'fa-thumbs-up': userBookStatus.isRecommended,
+          'fa-thumbs-o-up': !isRecommended,
+          'fa-thumbs-up': isRecommended,
           'canrecommend': userBookStatus.isBookRead || userBookStatus.isRepeat
         }"
         (click)="onToggleRecommend($event)">

@@ -29,8 +29,10 @@ export interface UserWord {
   bookLanCode: string;
   targetLanCode: string;
   pinned: boolean;
-  answers: string;
-  lastAnswer: string;
+  answersAll: string;
+  answersMy: string;
+  lastAnswerMy: string;
+  lastAnswerAll: string;
   translations: string;
 }
 
@@ -70,11 +72,11 @@ export interface UserWordCount {
 
 export interface UserWordData {
   bookId: string;
-  lastAnswerYes: number;
-  lastAnswerNo: number;
+  lastAnswerAllYes: number;
+  lastAnswerMyYes: number;
   pinned: number;
   translated: number;
-  total: number
+  total: number;
 }
 
 export interface File {

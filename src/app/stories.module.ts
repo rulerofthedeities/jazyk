@@ -12,7 +12,7 @@ import { BookLanguagesBarComponent } from './components/stories/languages-bar.co
 import { BookFilterBarComponent } from './components/stories/filter-bar.component';
 import { ListSelectorComponent } from './components/fields/list-selector.component';
 import { StorySummaryComponent } from './components/stories/story-summary.component';
-import { PieChartComponent } from './components/readnlisten/pie-chart.component';
+import { PieChartComponent } from './components/stories/pie-chart.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';

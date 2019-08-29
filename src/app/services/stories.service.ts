@@ -33,9 +33,9 @@ export class StoriesService {
     .pipe(retry(3));
   }
 
-  fetchUserBooks(targetLanCode: string, bookType: string): Observable<UserBookLean[]> {
+  fetchUserBooks(targetLanCode: string): Observable<UserBookLean[]> {
     return this.http
-    .get<UserBookLean[]>('/api/stories/userbooks/' + targetLanCode + '/' + bookType)
+    .get<UserBookLean[]>(`/api/stories/userbooks/${targetLanCode}`)
     .pipe(retry(3));
   }
 
@@ -92,9 +92,9 @@ export class StoriesService {
     .get<FinishedData[]>('/api/stories/finished/' + targetLanCode);
   }
 
-  unSubscribeFromBook(ubookId: string): Observable<UserBook> {
+  unSubscribeFromBook(bookId: string, targetLanCode: string): Observable<boolean> {
     return this.http
-    .post<UserBook>('/api/book/unsubscribe', {ubookId});
+    .post<boolean>('/api/book/unsubscribe', {bookId, targetLanCode});
   }
 
   subscribeToBook(bookId: string, lanCode: string, bookType: string, isTest: boolean): Observable<UserBook> {
@@ -102,9 +102,14 @@ export class StoriesService {
     .post<UserBook>('/api/book/subscribe', {bookId, lanCode, bookType, isTest});
   }
 
-  recommendBook(ubookId: string, recommend: Boolean): Observable<UserBook> {
+  recommendBook(ubookId: string): Observable<boolean> {
     return this.http
-    .put<UserBook>('/api/book/recommend', {ubookId, recommend});
+    .put<boolean>('/api/book/recommend', {ubookId, recommend: true});
+  }
+
+  unRecommendBook(bookId: string, targetLanCode: string): Observable<boolean> {
+    return this.http
+    .put<boolean>('/api/book/unrecommend', {bookId, targetLanCode});
   }
 
   fetchUserWordCounts(bookLanCode: string, targetLanCode: string): Observable<UserWordCount[]> {
@@ -121,8 +126,6 @@ export class StoriesService {
 
   resetBookStatus(): UserBookStatus {
     return {
-      isSubscribed: false,
-      isRecommended: false,
       isStarted: false,
       isBookRead: false,
       isRepeat: false,
@@ -134,8 +137,6 @@ export class StoriesService {
 
   initBookStatus(book: Book, status: UserBookStatus, userBook: UserBookLean) {
     if (userBook) {
-      status.isSubscribed = !!userBook.subscribed;
-      status.isRecommended = !!userBook.recommended;
       status.isRepeat = userBook.repeatCount > 0;
       if (userBook.bookmark && userBook.bookmark.chapterId) {
         status.isStarted = true;
@@ -169,28 +170,21 @@ export class StoriesService {
           countTranslation: userData.translated || 0
         };
       }
-      const yes = userData.lastAnswerNo || 0,
-            no = userData.lastAnswerYes || 0,
-            words = yes + no,
-            glossaryType = userBook.bookmark ? userBook.bookmark.lastGlossaryType : 'all',
+      const glossaryType = userBook && userBook.bookmark ? userBook.bookmark.lastGlossaryType : 'all',
+            yes = glossaryType === 'my' ? (userData.lastAnswerMyYes || 0) : (userData.lastAnswerAllYes || 0),
+            words = yes,
             totalWords = book.nrOfWordsInList,
-            totalWordTranslated = glossaryType === 'all' ? glossaryCount.countTranslation : userGlossaryCount.countTranslation;
-            console.log('GLOSSARY STATUS', glossaryCount, userGlossaryCount);
-      console.log('GLOSSARY TYPE', glossaryType);
+            totalWordTranslated = glossaryType === 'my' ? userGlossaryCount.countTranslation : glossaryCount.countTranslation;
       if (words > 0) {
         status.isStarted = true;
       }
-      console.log('WORDS', book.title, words, totalWordTranslated);
       status.nrOfSentencesDone = words > totalWordTranslated ? totalWordTranslated : words;
       status.percDone = this.sharedService.getPercentage(words, totalWordTranslated);
       status.nrOfSentences = totalWordTranslated;
       status.isBookRead = !!(words >= totalWordTranslated);
       if (userBook) {
-        status.isSubscribed = !!userBook.subscribed;
-        status.isRecommended = !!userBook.recommended;
         status.isRepeat = !!(userBook.repeatCount > 0);
       }
-      console.log('WORD TRANSLATION COUNT', book.title, userGlossaryCount, userData.translated);
     }
   }
 

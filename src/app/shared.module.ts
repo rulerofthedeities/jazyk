@@ -15,7 +15,6 @@ import { GravatarDirective } from './directives/gravatar.directive';
 import { GetKeyPressDirective } from './directives/get-key-pressed.directive';
 import { ToggleComponent } from './components/fields/toggle.component';
 import { LoaderComponent } from './components/fields/loader.component';
-// import { BookSummaryComponent } from './components/readnlisten/book-summary.component';
 import { ModalRanksComponent } from './components/modals/modal-ranks.component';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ScorePipe } from './pipes/score.pipe';

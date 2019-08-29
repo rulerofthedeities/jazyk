@@ -216,6 +216,7 @@ export interface UserBookLean {
   _id?: string;
   bookId: string;
   isTest: boolean;
+  bookType: string;
   subscribed: boolean;
   recommended: boolean;
   bookmark: Bookmark;
@@ -223,8 +224,8 @@ export interface UserBookLean {
 }
 
 export interface UserBookStatus {
-  isSubscribed: boolean;
-  isRecommended: boolean;
+  // isSubscribed: boolean; now per story summary, not per userbook
+  // isRecommended: boolean; now per story summary, not per userbook
   isStarted: boolean;
   isRepeat: boolean;
   nrOfSentencesDone: number;

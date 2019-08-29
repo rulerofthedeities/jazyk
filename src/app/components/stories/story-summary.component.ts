@@ -1,5 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter,
-         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+         ChangeDetectionStrategy, ChangeDetectorRef, ViewChildren } from '@angular/core';
+import { TooltipDirective } from 'ng2-tooltip-directive';
 import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
 import { LicenseUrl } from '../../models/main.model';
@@ -44,6 +45,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   @Input() private dataLoaded: Subject<boolean>;
   @Output() removedSubscription = new EventEmitter<Book>();
   @Output() addedSubscription = new EventEmitter<Book>();
+  @ViewChildren(TooltipDirective) tooltipDirective;
   private componentActive = true;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
@@ -52,6 +54,9 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   tabChanged = false;
   isNewBook = false;
   isLoading = true;
+  isIconsReady = false;
+  isSubscribed = false;
+  isRecommended = false;
   userCount = 0;
   recommendCount = 0;
   popularity = 0;
@@ -108,18 +113,8 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   onToggleSubscription(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if ((this.userBookStatus && !this.userBookStatus.isSubscribed) || !this.userBookStatus) {
-      this.storiesService
-      .subscribeToBook(this.book._id, this.targetLanCode, this.tab, false)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(
-        userBook => {
-          if (userBook && userBook.subscribed) {
-            this.userBookStatus.isSubscribed = true;
-            this.addedSubscription.emit(this.book);
-          }
-        }
-      );
+    if (!this.isSubscribed) {
+      this.doSubscribe();
     } else {
       this.unsubscribe();
     }
@@ -129,7 +124,11 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     if (this.userBookStatus && (this.userBookStatus.isBookRead || this.userBookStatus.isRepeat)) {
-      this.saveRecommend();
+      if (this.isRecommended) {
+        this.unRecommend();
+      } else {
+        this.doRecommend();
+      }
     }
   }
 
@@ -169,6 +168,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processAsyncData() {
+    console.log('async data', this.book.title, this.userBook);
     if (!this.userBookStatus || !this.userBookStatusTest) {
       this.resetStatus();
     }
@@ -187,6 +187,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.checkStatus();
     this.currentUserBook = this.userBook;
     this.currentUserBookTest = this.userBookTest;
+    this.setIcons();
     this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
     this.checkTranslated();
     this.isLoading = false;
@@ -368,6 +369,13 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.difficultyPerc = difficulty.difficultyPerc;
   }
 
+  private setIcons() {
+    this.isSubscribed = this.currentUserBook ? this.currentUserBook.subscribed : false;
+    this.isRecommended = this.currentUserBook ? this.currentUserBook.recommended : false;
+    console.log('set icons for', this.book.title);
+    this.isIconsReady = true;
+  }
+
   private processAllCurrentUserData() {
     this.currentUserData = this.storiesService.getCurrentUserData(this.userData);
     this.currentUserTestData = this.storiesService.getCurrentUserData(this.userDataTest);
@@ -394,29 +402,30 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.checkCompact();
   }
 
-  private unsubscribe() {
-    // Unsubscribe from test and non-test
-    if (this.userBook && this.userBookStatus && this.userBookStatus.isSubscribed) {
-      this.storiesService
-      .unSubscribeFromBook(this.userBook._id)
-      .pipe(takeWhile(() => this.componentActive))
-      .subscribe(
-        userBook => {
-          if (userBook && !userBook.subscribed) {
-            this.userBookStatus.isSubscribed = false;
-            this.removedSubscription.emit(this.book);
-          }
+  private doSubscribe() {
+    this.storiesService
+    .subscribeToBook(this.book._id, this.targetLanCode, this.tab, false)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      userBook => {
+        if (userBook && userBook.subscribed) {
+          this.isSubscribed = true;
+          this.addedSubscription.emit(this.book);
         }
-      );
-    }
-    if (this.userBookTest && this.userBookStatusTest && this.userBookStatusTest.isSubscribed) {
+      }
+    );
+  }
+
+  private unsubscribe() {
+    // Unsubscribe from all userbooks for this book / user / targetlan
+    if (this.isSubscribed) {
       this.storiesService
-      .unSubscribeFromBook(this.userBookTest._id)
+      .unSubscribeFromBook(this.book._id, this.targetLanCode)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         userBook => {
-          if (userBook && !userBook.subscribed) {
-            this.userBookStatusTest.isSubscribed = false;
+          if (userBook) {
+            this.isSubscribed = false;
             this.removedSubscription.emit(this.book);
           }
         }
@@ -424,17 +433,36 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private saveRecommend() {
+  private doRecommend() {
     this.storiesService
-    .recommendBook(this.userBook._id, !this.userBookStatus.isRecommended)
+    .recommendBook(this.userBook._id)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       updated => {
-        this.userBookStatus.isRecommended = !this.userBookStatus.isRecommended;
-        this.userBook.recommended = this.userBookStatus.isRecommended;
-        this.activity.recommended += this.userBookStatus.isRecommended ? 1 : -1;
-        this.activity.recommended = this.activity.recommended < 0 ? 0 : this.activity.recommended;
-        this.recommendCount = this.activity.recommended;
+        if (updated) {
+          this.isRecommended = true;
+          this.userBook.recommended = true;
+          this.activity.recommended += 1;
+          this.recommendCount = this.activity.recommended;
+        }
+      }
+    );
+  }
+
+  private unRecommend() {
+    // Unrecommend from all userbooks for this book / user / targetlan
+    this.storiesService
+    .unRecommendBook(this.book._id, this.targetLanCode)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(
+      updated => {
+        if (updated) {
+          this.isRecommended = false;
+          this.userBook.recommended = false;
+          this.activity.recommended -= 1;
+          this.activity.recommended = this.activity.recommended < 0 ? 0 : this.activity.recommended;
+          this.recommendCount = this.activity.recommended;
+        }
       }
     );
   }
@@ -443,7 +471,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.dataLoaded
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(loaded => {
-      console.log('DATA LOADED', this.book.title, loaded);
       if (loaded) {
         this.processAsyncData();
       }
@@ -451,6 +478,10 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    const tooltipRemove = this.tooltipDirective.find(elem => elem.id === ('tooltipRemove'));
+    if (tooltipRemove) {
+      tooltipRemove.hide();
+    }
     this.componentActive = false;
     this.cdr.detach();
   }

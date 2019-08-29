@@ -91,7 +91,6 @@ export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewIn
     this.listType
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(tpe => {
-      console.log('NEW TPE IN LANGUAGES BAR', tpe);
       this.currentListType = tpe;
       this.bookLanguages.map(b => b.count = undefined); // clear data
       this.getBooksCount();

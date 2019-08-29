@@ -72,7 +72,6 @@ export class LanguageSelectorComponent implements OnInit, OnDestroy {
     this.language
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(lan => {
-      console.log('NEW TPE IN LANGUAGE SELECTOR', lan);
       this.selectedLanguage = lan;
       this.dataReady = true;
     });

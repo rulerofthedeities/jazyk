@@ -5,7 +5,7 @@ import { StoriesService } from './services/stories.service';
 
 import { StoryAttributionComponent } from './components/stories/story-attribution.component';
 import { StoryButtonsComponent } from './components/stories/story-buttons.component';
-import { BookLicenseComponent } from './components/readnlisten/book-license.component';
+import { BookLicenseComponent } from './components/stories/book-license.component';
 import { LinkFieldComponent } from './components/fields/link-field.component';
 
 import { AuthInterceptor } from './interceptors/auth.interceptor';
