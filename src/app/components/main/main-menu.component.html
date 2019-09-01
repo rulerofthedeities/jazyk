@@ -25,9 +25,9 @@
         <li *ngIf="isLoggedIn"
           routerLinkActive="active"
           class="desktop">
-          <a routerLink="/stories">
+          <a routerLink="/read">
             <span class="fa fa-book"></span>
-            {{text["Stories"]}}
+            {{text["Read"]}}
             <span class="bar"></span>
           </a>
         </li>
@@ -156,7 +156,7 @@
                 <span class="fa fa-trophy"></span> {{text["Score"]}}
               </a>
             </li>
-            <li (click)="onGoto($event, 'manual')" *ngIf="intLan?.code==='en'">
+            <li (click)="onGoto($event, 'manual')">
               <a class="dropdown-item">
                 <span class="fa fa-question-circle-o"></span> {{text["Manual"]}}
               </a>
@@ -187,11 +187,11 @@
   <nav *ngIf="showMobileMenu" class="navbar-mobile navbar-fixed-top">
     <ul class="nav nav-pills nav-stacked mobile">
       <li *ngIf="isLoggedIn">
-        <a routerLink="/stories"
+        <a routerLink="/read"
           routerLinkActive="active"
           (click)="onCloseMobileMenu()">
           <span class="fa fa-list-alt"></span>
-          {{text["Stories"]}}
+          {{text["Read"]}}
         </a>
       </li>
       <li *ngIf="isLoggedIn">

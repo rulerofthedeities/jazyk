@@ -22,7 +22,8 @@ export class FilterService {
       hideOld: false,
       hideEasy: false,
       hideMedium: false,
-      hideAdvanced: false
+      hideAdvanced: false,
+      bookId: null
     };
     this.filterTxt[bookType] = '';
     this.hasFilter[bookType] = false;
@@ -31,6 +32,13 @@ export class FilterService {
   initSort(bookType: string) {
     if (!this.sort[bookType]) {
       this.sort[bookType] = 'difficulty1';
+    }
+  }
+
+  setBookId(bookId: string, bookType: string) {
+    // filter only a single story
+    if (bookId.length === 24) {
+      this.filter[bookType].bookId = bookId;
     }
   }
 

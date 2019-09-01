@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
 import { FilterService } from 'app/services/filter.service';
 import { Map, Language, LicenseUrl } from '../../models/main.model';
 import { Book, UserBookActivity, UserBookLean, UserData, TranslationData,
-        FinishedData, FinishedTab, ViewFilter } from '../../models/book.model';
+        FinishedData, FinishedTab, ViewFilter, StoryData } from '../../models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
-import { takeWhile, delay } from 'rxjs/operators';
-import { zip, of, Subject, BehaviorSubject } from 'rxjs';
+import { takeWhile, filter, delay } from 'rxjs/operators';
+import { zip, of, BehaviorSubject } from 'rxjs';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -29,6 +29,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   isWordDataReady = false;
   isLoading = false;
   isMyList = false;
+  isSingleBook = false;
   text: Object = {};
   listTpe: string; // read, listen or glossary
   licenses: LicenseUrl[];
@@ -55,10 +56,10 @@ export class StoryListComponent implements OnInit, OnDestroy {
   scrollDelta = 5;
   itemTxt: string; // filter
   showFilter: boolean;
-  filterChanged: Subject<boolean> = new Subject();
+  filterChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
   listTpeChanged: BehaviorSubject<string> = new BehaviorSubject('read');
   targetLanguageChanged: BehaviorSubject<Language>;
-  dataLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  dataLoaded: Map<BehaviorSubject<StoryData>> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -73,8 +74,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.showFilter = true;
     this.listTpe = 'read';
     this.getListTpe();
-    this.filterService.initFilter(this.listTpe);
-    this.filterService.initSort(this.listTpe);
     this.getDependables();
   }
 
@@ -93,15 +92,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.userService.setUserLanCode(lan.code);
     this.targetLanguage = lan;
     this.getPostActivityData();
-    /*
-    if (this.listTpe !== 'glossary') {
-      this.getTranslationData();
-    } else {
-      this.getWordData();
-    }
-    // this.getTypeData();
-    this.getFinishedCheck();
-    */
   }
 
   onChangeMyList(tpe: string) {
@@ -155,12 +145,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     }
     return msg;
   }
-/*
-  private updateUrl(tpe: string) {
-    const path = tpe === 'glossary' ? 'glossaries' : tpe;
-    this.location.go(`/${path}`);
-  }
-*/
+
   private setPageName(tpe: string) {
     let titleKey = 'Stories';
     titleKey += this.listTpe;
@@ -179,7 +164,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     .subscribe(
       data => {
         this.books = data[0];
-        console.log('books', this.books);
         this.displayBooks = [];
         if (this.books && this.books.length) {
           this.nrOfBooks = this.books.length;
@@ -188,6 +172,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
         if (data[1] && data[1].length) {
           this.processActivity(data[1]);
         }
+        this.books.forEach(book => {
+          this.dataLoaded[book._id] = new BehaviorSubject(null);
+        });
         this.isBooksReady = true;
         this.isLoading = false;
       }
@@ -261,13 +248,34 @@ export class StoryListComponent implements OnInit, OnDestroy {
   private checkAllDataLoaded() {
     if (this.listTpe === 'glossary') {
       if (this.isTypeDataReady && this.isFinishedDataReady && this.isWordDataReady) {
-        this.dataLoaded.next(true);
+        this.sendDataToStory();
       }
     } else {
       if (this.isTypeDataReady && this.isFinishedDataReady && this.isTranslationDataReady) {
-        this.dataLoaded.next(true);
+        this.sendDataToStory();
       }
     }
+  }
+
+  private sendDataToStory() {
+    // Put all data in one object per story
+    let story: StoryData,
+        bookId: string;
+    console.log('>>SENDING DATA');
+    this.filteredBooks.forEach(book => {
+      bookId = book._id;
+      story = {
+        userBook: this.userBooks[bookId],
+        userBookTest: this.userBooksTest[bookId],
+        userData: this.userData[bookId],
+        userDataTest: this.userDataTest[bookId],
+        translationCount: this.translationCount[bookId],
+        userGlossaryCount: this.userWordCount[bookId],
+        userGlossaryData: this.userWordData[bookId],
+        glossaryCount: this.bookWordCount[bookId]
+      };
+      this.dataLoaded[bookId].next(story);
+    });
   }
 
   private getWordData() {
@@ -275,15 +283,16 @@ export class StoryListComponent implements OnInit, OnDestroy {
       this.storiesService.fetchUserWordCounts(this.bookLanguage.code, this.targetLanguage.code),
       this.storiesService.fetchBookWordCounts(this.bookLanguage.code, this.targetLanguage.code)
     )
-    .pipe(takeWhile(() => this.componentActive))
+    .pipe(takeWhile(() => this.componentActive), delay(2000))
     .subscribe(data => {
       if (data && data.length) {
         this.processUserWordCount(data[0]);
         this.processWordTranslations(data[1]);
         this.processFinishedGlossary();
       }
+      console.log('word data loaded', this.bookWordCount);
       this.isWordDataReady = true;
-      // this.isBooksReady = true;
+      this.checkAllDataLoaded();
     });
   }
 
@@ -301,7 +310,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private processUserWordData(userwords: UserWordData[]) {
-    console.log('userwrds', userwords);
     // First clear data (if different language has been selected)
     Object.keys(this.userWordData).forEach((key, index) => {
       this.userWordData[key].lastAnswerMyYes = 0;
@@ -353,7 +361,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private processFinishedData(finishedData: FinishedData[]) {
-    console.log('finished data', finishedData);
     finishedData.forEach(finished => {
       this.finishedTabs[finished.bookId] = !!this.finishedTabs[finished.bookId] ? this.finishedTabs[finished.bookId] : {
         read: false,
@@ -507,65 +514,77 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
     // Apply filters
     const filters: string[] = [],
-          filter = this.filterService.filter[this.listTpe];
+          currentFilter = this.filterService.filter[this.listTpe];
+    let filteredBook: Book;
 
-    if (filter) {
-      if (filter.hideCompleted) {
-        this.filteredBooks = this.filteredBooks.filter(b =>
-          !(this.userBooks[b._id] && this.userBooks[b._id].bookmark &&
-            (this.userBooks[b._id].bookmark.isBookRead || (this.userBooks[b._id].repeatCount || 0 > 0)))
-        );
-        filters.push(this.text['CompletedOnly']);
+    this.isSingleBook = false;
+    if (currentFilter) {
+      if (currentFilter.bookId) {
+        // Check if book with this bookId exists
+        filteredBook = this.books.find(book => book._id.toString() === currentFilter.bookId);
       }
-      if (filter.hideNotTranslated) {
-        this.filteredBooks = this.filteredBooks.filter(b => {
-          const bookId = b.bookId ? b.bookId : b._id;
-          return this.translationCount[bookId] >= b.difficulty.nrOfUniqueSentences;
+      if (filteredBook) {
+        console.log('Show only filtered book', filteredBook);
+        this.filteredBooks = [filteredBook];
+        this.isSingleBook = true;
+      } else {
+        if (currentFilter.hideCompleted) {
+          this.filteredBooks = this.filteredBooks.filter(b =>
+            !(this.userBooks[b._id] && this.userBooks[b._id].bookmark &&
+              (this.userBooks[b._id].bookmark.isBookRead || (this.userBooks[b._id].repeatCount || 0 > 0)))
+          );
+          filters.push(this.text['CompletedOnly']);
+        }
+        if (currentFilter.hideNotTranslated) {
+          this.filteredBooks = this.filteredBooks.filter(b => {
+            const bookId = b.bookId ? b.bookId : b._id;
+            return this.translationCount[bookId] >= b.difficulty.nrOfUniqueSentences;
+          });
+          filters.push(this.text['TranslatedOnly']);
+        }
+        if (currentFilter.hideOld) {
+          this.filteredBooks = this.filteredBooks.filter(b => b.year >= 1945);
+          filters.push(this.text['ModernOnly']);
+        }
+        if (currentFilter.hideEasy) {
+          this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight > 400);
+        }
+        if (currentFilter.hideAdvanced) {
+          this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight < 480);
+        }
+        if (currentFilter.hideMedium) {
+          this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight <= 400 || b.difficulty.weight >= 480);
+        }
+        if (currentFilter.hideEasy && currentFilter.hideMedium && !currentFilter.hideAdvanced) {
+          filters.push(this.text['AdvancedOnly']);
+        }
+        if (currentFilter.hideEasy && !currentFilter.hideMedium && !currentFilter.hideAdvanced) {
+          filters.push(this.text['AdvancedMediumOnly']);
+        }
+        if (currentFilter.hideEasy && !currentFilter.hideMedium && currentFilter.hideAdvanced) {
+          filters.push(this.text['MediumOnly']);
+        }
+        if (!currentFilter.hideEasy && currentFilter.hideMedium && currentFilter.hideAdvanced) {
+          filters.push(this.text['EasyOnly']);
+        }
+        if (!currentFilter.hideEasy && !currentFilter.hideMedium && currentFilter.hideAdvanced) {
+          filters.push(this.text['EasyMediumOnly']);
+        }
+        if (!currentFilter.hideEasy && currentFilter.hideMedium && !currentFilter.hideAdvanced) {
+          filters.push(this.text['EasyAdvancedOnly']);
+        }
+      }
+      // Sort by popularity
+      if (this.filterService.sort[this.listTpe] === 'popular0') {
+        let popularityA: number,
+            popularityB: number;
+        this.filteredBooks.sort((a, b) => {
+          popularityA = this.userBookActivity[a._id] ? this.userBookActivity[a._id].popularity || 0 : 0;
+          popularityB = this.userBookActivity[b._id] ? this.userBookActivity[b._id].popularity || 0 : 0;
+          return popularityA > popularityB ? -1 : (popularityA < popularityB ? 1 : 0);
         });
-        filters.push(this.text['TranslatedOnly']);
       }
-      if (filter.hideOld) {
-        this.filteredBooks = this.filteredBooks.filter(b => b.year >= 1945);
-        filters.push(this.text['ModernOnly']);
       }
-      if (filter.hideEasy) {
-        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight > 400);
-      }
-      if (filter.hideAdvanced) {
-        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight < 480);
-      }
-      if (filter.hideMedium) {
-        this.filteredBooks = this.filteredBooks.filter(b => b.difficulty.weight <= 400 || b.difficulty.weight >= 480);
-      }
-      if (filter.hideEasy && filter.hideMedium && !filter.hideAdvanced) {
-        filters.push(this.text['AdvancedOnly']);
-      }
-      if (filter.hideEasy && !filter.hideMedium && !filter.hideAdvanced) {
-        filters.push(this.text['AdvancedMediumOnly']);
-      }
-      if (filter.hideEasy && !filter.hideMedium && filter.hideAdvanced) {
-        filters.push(this.text['MediumOnly']);
-      }
-      if (!filter.hideEasy && filter.hideMedium && filter.hideAdvanced) {
-        filters.push(this.text['EasyOnly']);
-      }
-      if (!filter.hideEasy && !filter.hideMedium && filter.hideAdvanced) {
-        filters.push(this.text['EasyMediumOnly']);
-      }
-      if (!filter.hideEasy && filter.hideMedium && !filter.hideAdvanced) {
-        filters.push(this.text['EasyAdvancedOnly']);
-      }
-    }
-    // Sort by popularity
-    if (this.filterService.sort[this.listTpe] === 'popular0') {
-      let popularityA: number,
-          popularityB: number;
-      this.filteredBooks.sort((a, b) => {
-        popularityA = this.userBookActivity[a._id] ? this.userBookActivity[a._id].popularity || 0 : 0;
-        popularityB = this.userBookActivity[b._id] ? this.userBookActivity[b._id].popularity || 0 : 0;
-        return popularityA > popularityB ? -1 : (popularityA < popularityB ? 1 : 0);
-      });
-    }
     // Set display text
     this.setFilterDisplayTxt(filters);
     this.resetScroll();
@@ -602,15 +621,34 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private getListTpe() {
     this.listTpe = 'read';
-    this.route
-    .data
+    this.route.data
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       if (data && data.tpe) {
         this.listTpe = data.tpe;
         this.listTpeChanged.next(data.tpe);
+        this.setFilter();
       }
     });
+  }
+
+  private setFilter() {
+    this.filterService.initFilter(this.listTpe);
+    this.filterService.initSort(this.listTpe);
+    console.log('set filter');
+    this.route.queryParams
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.id))
+    .subscribe(
+      params => {
+        console.log('got id', params['id']);
+        if (params['id']) {
+          this.filterService.setBookId(params['id'], this.listTpe);
+          this.location.go(`/${this.listTpe}`);
+        }
+      }
+    );
   }
 
   private getDependables() {

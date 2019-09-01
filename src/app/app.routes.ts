@@ -37,11 +37,6 @@ export const routes: Routes = [
         loadChildren: './auth.module#AuthModule'
       },
       {
-        path: 'stories',
-        loadChildren: './stories.module#StoriesModule',
-        canActivate: [AuthGuard]
-      },
-      {
         path: 'read',
         children: [
           {

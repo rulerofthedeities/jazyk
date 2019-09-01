@@ -6,41 +6,7 @@
     </h3>
   </div>
 </div>
-<div class="panel panel-info" *ngIf="!isRepeat && isFinished">
-  <div class="panel-heading">
-    <h3 class="panel-title ">
-      {{text["Recommend"]}}
-    </h3>
-  </div>
-  <div class="panel-body recommend">
-    <div class="buttons" *ngIf="!hasRecommended">
-      <button
-        type="button"
-        class="btn btn-success"
-        [disabled]="isRecommending"
-        (click)="onRecommend(true)">
-        <span class="fa fa-thumbs-o-up fa-spacing">
-        </span>{{text["IRecommend"]}}
-      </button>
-      <button
-        type="button"
-        class="btn btn-danger"
-        [disabled]="isRecommending"
-        (click)="onRecommend(false)">
-        <span class="fa fa-thumbs-o-down fa-spacing">
-        </span>{{text["IDontRecommend"]}}
-      </button>
-    </div>
-    <div *ngIf="hasRecommended">
-      <div *ngIf="recommend===true">
-        <span class="fa fa-thumbs-up fa-spacing"></span>{{text["IRecommend"]}}
-      </div>
-      <div *ngIf="recommend===false">
-        <span class="fa fa-thumbs-down fa-spacing"></span>{{text["IDontRecommend"]}}
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Results -->
 <div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">
@@ -90,7 +56,6 @@
     <div class="panel panel-info" *ngIf="showDetails">
       <div class="panel-body panel-details">
         <div class="details">
-          <!-- TODO: nog te lezen zinnen in boek -->
           <div class="main-details">
             <div>{{text[bookType==='listen' ? "SentencesListened" : "SentencesRead"]}}: {{total}}</div>
             <div>{{text["TranslationsSubmitted"]}}: {{data.translations}}</div>
@@ -113,6 +78,7 @@
     </div>
   </div>
 </div>
+<!-- Trophies -->
 <div class="row">
   <div class="col-xs-12" [class.col-sm-8]="newTrophies.length">
     <div class="panel panel-info">
@@ -168,6 +134,42 @@
             [tooltip]="text['trophy' + trophy] || ''"
             placement="top">
         </span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Recommend -->
+<div class="panel panel-info" *ngIf="!isRepeat && isFinished">
+  <div class="panel-heading">
+    <h3 class="panel-title ">
+      {{text["Recommend"]}}
+    </h3>
+  </div>
+  <div class="panel-body recommend">
+    <div class="buttons" *ngIf="!hasRecommended">
+      <button
+        type="button"
+        class="btn btn-success"
+        [disabled]="isRecommending"
+        (click)="onRecommend(true)">
+        <span class="fa fa-thumbs-o-up fa-spacing">
+        </span>{{text["IRecommend"]}}
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        [disabled]="isRecommending"
+        (click)="onRecommend(false)">
+        <span class="fa fa-thumbs-o-down fa-spacing">
+        </span>{{text["IDontRecommend"]}}
+      </button>
+    </div>
+    <div *ngIf="hasRecommended">
+      <div *ngIf="recommend===true">
+        <span class="fa fa-thumbs-up fa-spacing"></span>{{text["IRecommend"]}}
+      </div>
+      <div *ngIf="recommend===false">
+        <span class="fa fa-thumbs-down fa-spacing"></span>{{text["IDontRecommend"]}}
       </div>
     </div>
   </div>

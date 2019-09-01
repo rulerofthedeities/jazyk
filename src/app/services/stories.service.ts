@@ -170,6 +170,7 @@ export class StoriesService {
           countTranslation: userData.translated || 0
         };
       }
+      console.log('glossarycount', book.title, glossaryCount);
       const glossaryType = userBook && userBook.bookmark ? userBook.bookmark.lastGlossaryType : 'all',
             yes = glossaryType === 'my' ? (userData.lastAnswerMyYes || 0) : (userData.lastAnswerAllYes || 0),
             words = yes,

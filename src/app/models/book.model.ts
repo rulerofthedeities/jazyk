@@ -1,4 +1,5 @@
 export enum SentenceSteps { Question, Answered, Translations, Results }
+import { UserWordCount, UserWordData } from './word.model';
 
 export interface Word {
   word: string;
@@ -321,6 +322,7 @@ export interface ViewFilter {
   hideEasy: boolean;
   hideMedium: boolean;
   hideAdvanced: boolean;
+  bookId: string;
 }
 
 export interface BookCount {
@@ -341,4 +343,15 @@ export interface FinishedTab {
   listenDefault: boolean;
   listenTest: boolean;
   glossary: boolean;
+}
+
+export interface StoryData {
+  userBook: UserBookLean;
+  userBookTest: UserBookLean;
+  userData: UserData[];
+  userDataTest: UserData[];
+  translationCount: number;
+  userGlossaryCount: UserWordCount;
+  userGlossaryData: UserWordData;
+  glossaryCount: UserWordCount;
 }

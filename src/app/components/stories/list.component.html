@@ -43,16 +43,9 @@
             [licenses]="licenses"
             [activity]="userBookActivity[book._id]"
             [finishedTabs]="finishedTabs[book._id]"
-            [userBook]="userBooks[book._id]"
-            [userBookTest]="userBooksTest[book._id]"
-            [userData]="userData[book._id]"
-            [userDataTest]="userDataTest[book._id]"
-            [translationCount]="translationCount[book._id]"
-            [userGlossaryCount]="userWordCount[book._id]"
-            [userGlossaryData]="userWordData[book._id]"
-            [glossaryCount]="bookWordCount[book._id]"
             [isMyList]="isMyList"
-            [dataLoaded]="dataLoaded"
+            [isSingleBook]="isSingleBook"
+            [dataLoaded]="dataLoaded[book._id]"
             (removedSubscription)="onRemovedSubscription($event)"
             (addedSubscription)="onAddedSubscription($event)">
           </km-story-summary>

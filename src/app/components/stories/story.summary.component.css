@@ -241,6 +241,9 @@ li.tab-glossary.active a {
   right: 0;
   top: 36px;
 }
+.new .icons {
+  right: 60px;
+}
 .icons > div {
   display: inline-block;
 }

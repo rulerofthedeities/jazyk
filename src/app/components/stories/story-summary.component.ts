@@ -5,7 +5,7 @@ import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
 import { LicenseUrl } from '../../models/main.model';
 import { Book, UserBookActivity, UserBookLean, UserBookStatus, UserData,
-         FinishedTab, TranslationData } from 'app/models/book.model';
+         FinishedTab, TranslationData, StoryData } from 'app/models/book.model';
 import { UserWordCount, UserWordData } from '../../models/word.model';
 import { takeWhile, delay } from 'rxjs/operators';
 import { zip, of, Subject } from 'rxjs';
@@ -33,24 +33,27 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   @Input() licenses: LicenseUrl[];
   @Input() private activity: UserBookActivity;
   @Input() finishedTabs: FinishedTab;
-  @Input() userBook: UserBookLean;
-  @Input() userBookTest: UserBookLean;
-  @Input() private userData: UserData[];
-  @Input() private userDataTest: UserData[];
-  @Input() userGlossaryCount: UserWordCount;
-  @Input() userGlossaryData: UserWordData;
-  @Input() glossaryCount: UserWordCount;
-  @Input() translationCount: number;
   @Input() isMyList: boolean;
-  @Input() private dataLoaded: Subject<boolean>;
+  @Input() isSingleBook = false;
+  @Input() private dataLoaded: Subject<StoryData>;
   @Output() removedSubscription = new EventEmitter<Book>();
   @Output() addedSubscription = new EventEmitter<Book>();
   @ViewChildren(TooltipDirective) tooltipDirective;
   private componentActive = true;
+  private userData: UserData[];
+  private userDataTest: UserData[];
+  currentUserData: UserData;
+  currentUserTestData: UserData;
   userBookStatus: UserBookStatus;
   userBookStatusTest: UserBookStatus;
+  userBook: UserBookLean;
+  userBookTest: UserBookLean;
+  userGlossaryCount: UserWordCount;
+  userGlossaryData: UserWordData;
+  glossaryCount: UserWordCount;
+  translationCount: number;
   isFinished = false;
-  showCompact = true;
+  showCompact: boolean;
   tabChanged = false;
   isNewBook = false;
   isLoading = true;
@@ -67,11 +70,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   hasFlashCards: boolean;
   isTranslated = false;
   hasTest = false;
-  currentUserData: UserData;
-  currentUserTestData: UserData;
-  currentUserBook: UserBookLean;
-  currentUserBookTest: UserBookLean;
-  currentGlossaryCount: UserWordCount;
   translationString: string;
   difficultyWidth: number;
   difficultyPerc: number;
@@ -86,6 +84,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.showCompact = !this.isSingleBook;
     this.currentTab = this.tab;
     this.setTab();
     this.observe();
@@ -94,6 +93,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
+    this.cdr.detectChanges();
   }
 
   onAudioEnded(isEnded: boolean) {
@@ -165,32 +165,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     if (this.showCompact) {
       this.showCompact = false;
     }
-  }
-
-  private processAsyncData() {
-    console.log('async data', this.book.title, this.userBook);
-    if (!this.userBookStatus || !this.userBookStatusTest) {
-      this.resetStatus();
-    }
-    if (this.tab !== this.currentTab) {
-      this.setTab();
-      // clear current data
-      this.currentUserData = null;
-      this.currentUserTestData = null;
-      this.currentUserBook = null;
-      this.currentUserBookTest = null;
-      this.currentGlossaryCount = null;
-      this.translationString = undefined;
-      this.hasFlashCards = undefined;
-    }
-    this.processAllCurrentUserData();
-    this.checkStatus();
-    this.currentUserBook = this.userBook;
-    this.currentUserBookTest = this.userBookTest;
-    this.setIcons();
-    this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
-    this.checkTranslated();
-    this.isLoading = false;
   }
 
   private setTab() {
@@ -278,6 +252,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private setCoverImage() {
     this.hasImage = !!this.book.coverImg;
     this.coverImage = this.sharedService.getCoverImagePath(this.book);
+    console.log('set cover image for ', this.coverImage);
   }
 
   private setAudioFile() {
@@ -336,7 +311,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     if (!this.tabChanged) {
       // only show compact format initially, not when a tab is clicked
       if (this.isFinished && this.userBookStatus && !this.userBookStatus.isStarted) {
-        this.showCompact = true;
+        this.showCompact = !this.isSingleBook; // do not show compact if it is a filtered book
       } else {
         this.showCompact = false;
       }
@@ -370,30 +345,27 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private setIcons() {
-    this.isSubscribed = this.currentUserBook ? this.currentUserBook.subscribed : false;
-    this.isRecommended = this.currentUserBook ? this.currentUserBook.recommended : false;
-    console.log('set icons for', this.book.title);
+    this.isSubscribed = this.userBook ? this.userBook.subscribed : false;
+    this.isRecommended = this.userBook ? this.userBook.recommended : false;
     this.isIconsReady = true;
   }
 
   private processAllCurrentUserData() {
     this.currentUserData = this.storiesService.getCurrentUserData(this.userData);
     this.currentUserTestData = this.storiesService.getCurrentUserData(this.userDataTest);
-    this.checkSentencesDone();
+    this.checkSentencesDone(this.currentUserData, this.currentUserTestData);
   }
 
-  private checkSentencesDone() {
-    this.storiesService.checkSentencesDone(this.book, this.currentUserData, this.userBookStatus);
-    this.storiesService.checkSentencesDone(this.book, this.currentUserTestData, this.userBookStatusTest);
+  private checkSentencesDone(currentUserData: UserData, currentUserTestData: UserData) {
+    this.storiesService.checkSentencesDone(this.book, currentUserData, this.userBookStatus);
+    this.storiesService.checkSentencesDone(this.book, currentUserTestData, this.userBookStatusTest);
   }
 
-  private processGlossaryData(glossaryData: UserWordData, translationCount: UserWordCount) {
-    this.glossaryCount = translationCount;
-    this.currentGlossaryCount = this.glossaryCount;
+  private processGlossaryData(glossaryData: UserWordData, glossaryCount: UserWordCount) {
     this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
     this.storiesService.checkGlossaryStatus(
       this.book,
-      this.glossaryCount,
+      glossaryCount,
       this.userGlossaryCount,
       this.userBookStatus,
       this.userBook,
@@ -470,11 +442,35 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private observe() {
     this.dataLoaded
     .pipe(takeWhile( () => this.componentActive))
-    .subscribe(loaded => {
-      if (loaded) {
-        this.processAsyncData();
+    .subscribe(storyData => {
+      if (storyData) {
+        console.log('loaded', this.book.title, storyData);
+        this.processAsyncData(storyData);
       }
     });
+  }
+
+  private processAsyncData(storyData: StoryData) {
+    if (!this.userBookStatus || !this.userBookStatusTest) {
+      this.resetStatus();
+    }
+    console.log('tab', this.tab, this.currentTab);
+    this.userData = storyData.userData;
+    this.userDataTest = storyData.userDataTest;
+    this.userBook = storyData.userBook;
+    this.userBookTest = storyData.userBookTest;
+    this.glossaryCount = storyData.glossaryCount;
+    this.userGlossaryCount = storyData.userGlossaryCount;
+    this.userGlossaryData = storyData.userGlossaryData;
+    this.translationCount = storyData.translationCount;
+
+    this.processAllCurrentUserData();
+    this.checkStatus();
+    this.setIcons();
+    this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
+    this.checkTranslated();
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy() {

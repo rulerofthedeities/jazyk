@@ -5,7 +5,8 @@
       read: tab === 'read',
       listen: tab === 'listen',
       glossary: tab === 'glossary',
-      'user-glossary': !!userGlossaryCount?.countTotal
+      'user-glossary': !!userGlossaryCount?.countTotal,
+      new: isNewBook
     }">
     <div class="panel-body panel-book"
          (click)="onOpen($event)">

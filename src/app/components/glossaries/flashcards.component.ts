@@ -230,7 +230,6 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           userWords = data.userWords; // only for my glossary
           // translations = data.translations; // only for all glossary
     if (userWords) {
-      console.log('userWords', userWords);
       // My glossary: map word with user translation
       words.forEach(word => {
         const userWord = userWords.find(uWord => uWord.wordId === word._id);
