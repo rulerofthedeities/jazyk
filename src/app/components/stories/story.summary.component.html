@@ -165,7 +165,7 @@
                 <div [class.progress-panel]="hasTest">
                   <!-- NOT TEST PIE CHART -->
                   <div class="pie-content" style="position:relative;">
-                    <div class="pie-chart" *ngIf="userBookStatus?.nrOfSentencesDone > 0">
+                    <div class="pie-chart" *ngIf="currentUserData && userBookStatus?.nrOfSentencesDone > 0">
                       <km-pie-chart
                         [size]="hasTest ? 'small' : 'medium'"
                         [data]="currentUserData">
@@ -203,7 +203,7 @@
                 <div class="progress-panel progress-panel-test">
                   <!-- TEST PIE CHART -->
                   <div class="pie-content" style="position:relative;">
-                    <div class="pie-chart" *ngIf="userBookStatusTest?.nrOfSentencesDone > 0">
+                    <div class="pie-chart" *ngIf="currentUserTestData && userBookStatusTest?.nrOfSentencesDone > 0">
                       <km-pie-chart
                         [size]="'small'"
                         [data]="currentUserTestData">

@@ -346,12 +346,12 @@ export interface FinishedTab {
 }
 
 export interface StoryData {
-  userBook: UserBookLean;
-  userBookTest: UserBookLean;
-  userData: UserData[];
-  userDataTest: UserData[];
-  translationCount: number;
-  userGlossaryCount: UserWordCount;
-  userGlossaryData: UserWordData;
-  glossaryCount: UserWordCount;
+  userBook?: UserBookLean;
+  userBookTest?: UserBookLean;
+  userData?: UserData[];
+  userDataTest?: UserData[];
+  translationCount?: number;
+  userGlossaryCount?: UserWordCount;
+  userGlossaryData?: UserWordData;
+  glossaryCount?: UserWordCount;
 }

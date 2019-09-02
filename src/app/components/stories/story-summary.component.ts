@@ -195,6 +195,8 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
         this.sharedService.detectChanges(this.cdr);
       });
     } else {
+      this.currentUserData = null;
+      this.currentUserTestData = null;
       zip(
         this.storiesService.fetchStoryUserBooks(this.targetLanCode, this.tab, this.book._id),
         this.storiesService.fetchStoryUserWords(this.targetLanCode, this.book._id),
@@ -252,7 +254,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private setCoverImage() {
     this.hasImage = !!this.book.coverImg;
     this.coverImage = this.sharedService.getCoverImagePath(this.book);
-    console.log('set cover image for ', this.coverImage);
   }
 
   private setAudioFile() {
@@ -351,6 +352,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processAllCurrentUserData() {
+    console.log('current user data 1', this.currentUserData);
     this.currentUserData = this.storiesService.getCurrentUserData(this.userData);
     this.currentUserTestData = this.storiesService.getCurrentUserData(this.userDataTest);
     this.checkSentencesDone(this.currentUserData, this.currentUserTestData);
@@ -359,9 +361,11 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private checkSentencesDone(currentUserData: UserData, currentUserTestData: UserData) {
     this.storiesService.checkSentencesDone(this.book, currentUserData, this.userBookStatus);
     this.storiesService.checkSentencesDone(this.book, currentUserTestData, this.userBookStatusTest);
+    console.log('current user data 2', this.currentUserData);
   }
 
   private processGlossaryData(glossaryData: UserWordData, glossaryCount: UserWordCount) {
+    console.log('processing glossary data', glossaryData);
     this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
     this.storiesService.checkGlossaryStatus(
       this.book,
@@ -451,12 +455,11 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processAsyncData(storyData: StoryData) {
-    if (!this.userBookStatus || !this.userBookStatusTest) {
-      this.resetStatus();
-    }
+    this.resetStatus();
     console.log('tab', this.tab, this.currentTab);
     this.userData = storyData.userData;
     this.userDataTest = storyData.userDataTest;
+    console.log('user data', this.userData);
     this.userBook = storyData.userBook;
     this.userBookTest = storyData.userBookTest;
     this.glossaryCount = storyData.glossaryCount;
@@ -464,11 +467,14 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.userGlossaryData = storyData.userGlossaryData;
     this.translationCount = storyData.translationCount;
 
-    this.processAllCurrentUserData();
+    if (this.tab === 'glossary') {
+      this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
+    } else {
+      this.processAllCurrentUserData();
+      this.checkTranslated();
+    }
     this.checkStatus();
     this.setIcons();
-    this.processGlossaryData(this.userGlossaryData, this.glossaryCount);
-    this.checkTranslated();
     this.isLoading = false;
     this.cdr.detectChanges();
   }

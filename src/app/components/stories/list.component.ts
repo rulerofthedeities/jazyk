@@ -40,16 +40,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
   books: Book[];
   filteredBooks: Book[];
   displayBooks: Book[];
-  translationCount: Map<number> = {};
   finishedTabs: Map<FinishedTab> = {};
   userBookActivity: Map<UserBookActivity> = {};
-  userBooks: Map<UserBookLean> = {}; // For sorting
-  userBooksTest: Map<UserBookLean> = {};
-  userData: Map<UserData>[] = [];
-  userDataTest: Map<UserData>[] = [];
-  bookWordCount: Map<UserWordCount> = {}; // glossary translations count
-  userWordCount: Map<UserWordCount> = {}; // glossary count
-  userWordData: Map<UserWordData> = {}; // glossary answer data
+  storyData: Map<StoryData> = {};
   nrOfBooks: number;
   scrollCutOff = 10; // nr of books shown
   initScrollCutOff = 10;
@@ -85,12 +78,22 @@ export class StoryListComponent implements OnInit, OnDestroy {
     }
     this.bookLanguage = lan;
     this.filterUserLanguages();
+    // Clear existing post activity data
+    this.books.forEach(book => {
+      this.storyData[book._id] = {};
+      this.finishedTabs[book._id] = null;
+    });
     this.getBooks();
   }
 
   onMyLanguageSelected(lan: Language) {
     this.userService.setUserLanCode(lan.code);
     this.targetLanguage = lan;
+    // Clear existing post activity data
+    this.books.forEach(book => {
+      this.storyData[book._id] = {};
+      this.finishedTabs[book._id] = null;
+    });
     this.getPostActivityData();
   }
 
@@ -120,14 +123,14 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   onAddedSubscription(book: Book) {
-    if (this.userBooks[book._id]) {
-      this.userBooks[book._id].subscribed = true;
+    if (this.storyData[book._id].userBook) {
+      this.storyData[book._id].userBook.subscribed = true;
     }
     this.filterBooks();
   }
 
   onRemovedSubscription(book: Book) {
-    this.userBooks[book._id].subscribed = false;
+    this.storyData[book._id].userBook.subscribed = false;
     this.filterBooks();
   }
 
@@ -174,6 +177,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
         }
         this.books.forEach(book => {
           this.dataLoaded[book._id] = new BehaviorSubject(null);
+          this.storyData[book._id] = {};
         });
         this.isBooksReady = true;
         this.isLoading = false;
@@ -264,16 +268,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     console.log('>>SENDING DATA');
     this.filteredBooks.forEach(book => {
       bookId = book._id;
-      story = {
-        userBook: this.userBooks[bookId],
-        userBookTest: this.userBooksTest[bookId],
-        userData: this.userData[bookId],
-        userDataTest: this.userDataTest[bookId],
-        translationCount: this.translationCount[bookId],
-        userGlossaryCount: this.userWordCount[bookId],
-        userGlossaryData: this.userWordData[bookId],
-        glossaryCount: this.bookWordCount[bookId]
-      };
+      story = this.storyData[book._id];
       this.dataLoaded[bookId].next(story);
     });
   }
@@ -283,54 +278,35 @@ export class StoryListComponent implements OnInit, OnDestroy {
       this.storiesService.fetchUserWordCounts(this.bookLanguage.code, this.targetLanguage.code),
       this.storiesService.fetchBookWordCounts(this.bookLanguage.code, this.targetLanguage.code)
     )
-    .pipe(takeWhile(() => this.componentActive), delay(2000))
+    .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
       if (data && data.length) {
         this.processUserWordCount(data[0]);
         this.processWordTranslations(data[1]);
         this.processFinishedGlossary();
       }
-      console.log('word data loaded', this.bookWordCount);
       this.isWordDataReady = true;
       this.checkAllDataLoaded();
     });
   }
 
   private processUserWordCount(userwords: UserWordCount[]) {
-    // First clear data (if different language has been selected)
-    Object.keys(this.userWordCount).forEach((key, index) => {
-      this.userWordCount[key].countTotal = 0;
-      this.userWordCount[key].countTranslation = 0;
-    });
-    // Add new data
     userwords.forEach(count => {
-      this.userWordCount[count.bookId] = count;
+      this.storyData[count.bookId].userGlossaryCount = count;
       delete count.bookId;
     });
   }
 
   private processUserWordData(userwords: UserWordData[]) {
-    // First clear data (if different language has been selected)
-    Object.keys(this.userWordData).forEach((key, index) => {
-      this.userWordData[key].lastAnswerMyYes = 0;
-      this.userWordData[key].lastAnswerAllYes = 0;
-    });
-    // Add new data
     userwords.forEach(data => {
-      this.userWordData[data.bookId] = data;
+      this.storyData[data.bookId].userGlossaryData = data;
       delete data.bookId;
     });
   }
 
   private processWordTranslations(translations: UserWordCount[]) {
-    // First clear data (if different language has been selected)
-    Object.keys(this.bookWordCount).forEach((key, index) => {
-      this.bookWordCount[key].countTotal = 0;
-      this.bookWordCount[key].countTranslation = 0;
-    });
-    // Add new data
     translations.forEach(count => {
-      this.bookWordCount[count.bookId] = count;
+      this.storyData[count.bookId].glossaryCount = count;
       delete count.bookId;
     });
   }
@@ -397,24 +373,26 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private processFinishedGlossary() {
     const glossaryBooks = this.books.filter(book => book.wordListPublished);
+    let storyData: StoryData;
     glossaryBooks.forEach(book => {
-      if (this.userBooks[book._id] && this.userBooks[book._id].bookmark && this.userBooks[book._id].bookmark.lastGlossaryType) {
-        const glossaryType = this.userBooks[book._id].bookmark.lastGlossaryType;
+      storyData = this.storyData[book._id];
+      if (storyData.userBook && storyData.userBook.bookmark && storyData.userBook.bookmark.lastGlossaryType) {
+        const glossaryType = storyData.userBook.bookmark.lastGlossaryType;
         let totalWords: number,
             userWords: number;
         if (glossaryType === 'my') {
-          if (this.bookWordCount[book._id]) {
-            totalWords = this.userWordCount[book._id].countTranslation;
+          if (storyData.userGlossaryCount) {
+            totalWords = storyData.userGlossaryCount.countTranslation;
           }
-          if (this.userWordData[book._id]) {
-            userWords = this.userWordData[book._id].lastAnswerMyYes;
+          if (storyData.userGlossaryData) {
+            userWords = storyData.userGlossaryData.lastAnswerMyYes;
           }
         } else {
-          if (this.userWordCount[book._id]) {
-            totalWords = this.bookWordCount[book._id].countTranslation;
+          if (storyData.glossaryCount) {
+            totalWords = storyData.glossaryCount.countTranslation;
           }
-          if (this.userWordData[book._id]) {
-            userWords = this.userWordData[book._id].lastAnswerAllYes;
+          if (storyData.userGlossaryData) {
+            userWords = storyData.userGlossaryData.lastAnswerAllYes;
           }
         }
         if (userWords >= totalWords) {
@@ -438,22 +416,22 @@ export class StoryListComponent implements OnInit, OnDestroy {
     // Then filter out user books for current type
     const uBooksCurrentType = uBooks.filter(uBook => uBook.bookType === this.listTpe);
     let allUBooks: UserBookLean[];
-    this.userBooks = {};
-    this.userBooksTest = {};
     uBooksCurrentType.forEach(uBook => {
-      // Map userbook per book id
-      if (uBook.isTest) {
-        this.userBooksTest[uBook.bookId] = uBook;
-      } else {
-        // Merge thumbs and recommends per book into current type
-        allUBooks = uBooks.filter(auBook => auBook.bookId === uBook.bookId);
-        if (allUBooks.length > 1) {
-          uBook.recommended = !!allUBooks.find(auBook => auBook.recommended);
-          uBook.subscribed = !!allUBooks.find(auBook => auBook.subscribed);
+      if (this.storyData[uBook.bookId]) {
+        // Map userbook per book id
+        if (uBook.isTest) {
+          this.storyData[uBook.bookId].userBookTest = uBook;
+        } else {
+          // Merge thumbs and recommends per book into current type
+          allUBooks = uBooks.filter(auBook => auBook.bookId === uBook.bookId);
+          if (allUBooks.length > 1) {
+            uBook.recommended = !!allUBooks.find(auBook => auBook.recommended);
+            uBook.subscribed = !!allUBooks.find(auBook => auBook.subscribed);
+          }
+          this.storyData[uBook.bookId].userBook = uBook;
         }
-        this.userBooks[uBook.bookId] = uBook;
+        delete uBook.bookId;
       }
-      delete uBook.bookId;
     });
     uBooks = undefined;
     if (this.isMyList || (this.filterService.filter[this.listTpe] && this.filterService.filter[this.listTpe].hideCompleted)) {
@@ -462,26 +440,29 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private processSessionData(sessionData: UserData[]) {
-    this.userData = [];
-    this.userDataTest = [];
+    let storyData: StoryData;
     // Arrange all sessions per book
     sessionData.forEach(session => {
-      if (session.isTest) {
-        this.userDataTest[session.bookId] = this.userDataTest[session.bookId] ? this.userDataTest[session.bookId] : [];
-        this.userDataTest[session.bookId].push(session);
-      } else {
-        this.userData[session.bookId] = this.userData[session.bookId] ? this.userData[session.bookId] : [];
-        this.userData[session.bookId].push(session);
+      storyData = this.storyData[session.bookId];
+      if (storyData) {
+        if (session.isTest) {
+          storyData.userDataTest = storyData.userDataTest ? storyData.userDataTest : [];
+          storyData.userDataTest.push(session);
+        } else {
+          storyData.userData = storyData.userData ? storyData.userData : [];
+          storyData.userData.push(session);
+        }
+        delete session.bookId;
       }
-      delete session.bookId;
     });
     sessionData = undefined;
   }
 
   private processTranslations(translationData: TranslationData[]) {
-    this.translationCount = {};
     translationData.forEach(translation => {
-      this.translationCount[translation.bookId] = translation.count;
+      if (this.storyData[translation.bookId]) {
+        this.storyData[translation.bookId].translationCount = translation.count;
+      }
     });
     translationData = undefined;
     if (this.filterService.filter[this.listTpe] && this.filterService.filter[this.listTpe].hideNotTranslated) {
@@ -508,7 +489,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     // List type: my list or all
     if (this.isMyList) {
       this.filteredBooks = this.filteredBooks.filter(
-        b => (!!this.userBooks[b._id] && this.userBooks[b._id].subscribed)
+        b => (!!this.storyData[b._id].userBook && this.storyData[b._id].userBook.subscribed)
       );
     }
 
@@ -530,15 +511,15 @@ export class StoryListComponent implements OnInit, OnDestroy {
       } else {
         if (currentFilter.hideCompleted) {
           this.filteredBooks = this.filteredBooks.filter(b =>
-            !(this.userBooks[b._id] && this.userBooks[b._id].bookmark &&
-              (this.userBooks[b._id].bookmark.isBookRead || (this.userBooks[b._id].repeatCount || 0 > 0)))
+            !(this.storyData[b._id].userBook && this.storyData[b._id].userBook.bookmark &&
+              (this.storyData[b._id].userBook.bookmark.isBookRead || (this.storyData[b._id].userBook.repeatCount || 0 > 0)))
           );
           filters.push(this.text['CompletedOnly']);
         }
         if (currentFilter.hideNotTranslated) {
           this.filteredBooks = this.filteredBooks.filter(b => {
             const bookId = b.bookId ? b.bookId : b._id;
-            return this.translationCount[bookId] >= b.difficulty.nrOfUniqueSentences;
+            return this.storyData[bookId].translationCount >= b.difficulty.nrOfUniqueSentences;
           });
           filters.push(this.text['TranslatedOnly']);
         }
