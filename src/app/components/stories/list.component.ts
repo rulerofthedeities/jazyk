@@ -509,6 +509,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
         this.filteredBooks = [filteredBook];
         this.isSingleBook = true;
       } else {
+        currentFilter.bookId = null;
         if (currentFilter.hideCompleted) {
           this.filteredBooks = this.filteredBooks.filter(b =>
             !(this.storyData[b._id].userBook && this.storyData[b._id].userBook.bookmark &&
@@ -616,7 +617,22 @@ export class StoryListComponent implements OnInit, OnDestroy {
   private setFilter() {
     this.filterService.initFilter(this.listTpe);
     this.filterService.initSort(this.listTpe);
-    console.log('set filter');
+    // Clear previous book filter
+    this.filterService.filter[this.listTpe].bookId = null;
+    this.route.params
+    .pipe(
+      takeWhile(() => this.componentActive),
+      filter(params => params.id))
+    .subscribe(
+      params => {
+        console.log('got id', params['id']);
+        if (params['id']) {
+          this.filterService.setBookId(params['id'], this.listTpe);
+          this.location.go(`/${this.listTpe}`);
+        }
+      }
+    );
+    /*
     this.route.queryParams
     .pipe(
       takeWhile(() => this.componentActive),
@@ -630,6 +646,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
         }
       }
     );
+    */
   }
 
   private getDependables() {
