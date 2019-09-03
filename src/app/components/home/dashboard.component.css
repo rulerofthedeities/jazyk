@@ -14,7 +14,7 @@
   background-color: rgb(243, 156, 17);
 }
 .notifications, .status {
-  height: 222px;
+  height: 174px;
   overflow: hidden;
 }
 .rank {
@@ -37,7 +37,9 @@
   margin: 0;
 }
 .learning {
+  margin-top: 10px;
   font-size: 16px;
+  line-height: 28px;
 }
 .unread {
   font-weight: bold;

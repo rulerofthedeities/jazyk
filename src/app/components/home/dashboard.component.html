@@ -8,16 +8,21 @@
       </div>
       <div class="panel-body panel-summary">
         <div *ngIf="summaryData">
-          <div class="rank info" (click)="onShowRankings(ranks)">
-            <img src="/assets/img/ranks/rank{{getRank()}}_64.png" class="img">
-            <span class="rank-name">{{getRankName()}}</span>
+          <div class="col-xs-6">
+            <div class="rank info" (click)="onShowRankings(ranks)">
+              <img src="/assets/img/ranks/rank{{getRank()}}_64.png" class="img">
+              <span class="rank-name">{{getRankName()}}</span>
+            </div>
+            <div class="score info">
+              <a routerLink="/user/score" class="points">{{summaryData.score | score}} {{text["points"]}}</a>
+            </div>
           </div>
-          <div class="score info">
-            <a routerLink="/user/score" class="points">{{summaryData.score | score}} {{text["points"]}}</a>
-          </div>
-          <div class="learning info">
-            {{summaryData.booksReading.total}} {{summaryData.booksReading.total === 1 ? text["bookStarted"] : text["booksStarted"]}}<br>
-            {{summaryData.booksReading.completed}} {{summaryData.booksReading.completed === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
+          <div class="col-xs-6">
+            <div class="learning info">
+              <strong>{{summaryData.booksReading.total || 0}}</strong> {{summaryData.booksReading.total === 1 ? text["bookStarted"] : text["booksStarted"]}}<br>
+              <strong>{{summaryData.booksReading.completed || 0}}</strong> {{summaryData.booksReading.completed === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
+              <strong>{{summaryData.booksReading.wordsMemorized || 0}}</strong> {{summaryData.booksReading.wordsMemorized === 1 ? text["wordMemorized"] : text["wordsMemorized"]}}
+            </div>
           </div>
         </div>
         <km-loader *ngIf="isLoadingOverview && !isError"

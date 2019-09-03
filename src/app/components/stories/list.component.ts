@@ -109,6 +109,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   onChangeFilter(newFilter: ViewFilter) {
+    console.log('new filter', newFilter);
     this.filterService.filter[this.listTpe] = newFilter;
     this.filterBooks();
   }
@@ -265,8 +266,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
     // Put all data in one object per story
     let story: StoryData,
         bookId: string;
-    console.log('>>SENDING DATA');
-    this.filteredBooks.forEach(book => {
+    console.log('>>SENDING DATA', this.books.length, this.filteredBooks.length);
+    this.books.forEach(book => {
       bookId = book._id;
       story = this.storyData[book._id];
       this.dataLoaded[bookId].next(story);

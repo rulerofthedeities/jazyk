@@ -110,6 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .subscribe(
       data => {
         this.isLoadingOverview = false;
+        console.log('data', data);
         this.summaryData = data;
       },
       error => this.errorService.handleError(error)

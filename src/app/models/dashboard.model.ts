@@ -6,6 +6,7 @@ interface Learning {
   unsubscribed: number;
   total: number;
   completed?: number;
+  wordsMemorized: number;
 }
 
 export interface SummaryData {

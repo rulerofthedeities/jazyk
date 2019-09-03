@@ -7,6 +7,7 @@ const response = require('../response'),
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
       Message = require('../models/message'),
+      UserWordList = require('../models/wordlist').userword,
       Notification = require('../models/notification');
 
 module.exports = {
@@ -34,11 +35,16 @@ module.exports = {
               countNotSubscribed: {'$sum': {$cond: ["$subscribed", 0, 1]}},
               read: {'$sum': {$cond: ["$bookmark.isBookRead", 1, 0]}}
             }}
-          ];
+          ],
+          wordsQuery = {
+            userId,
+            $or: [{lastAnswer: {$eq: 'y'}}, {lastAnswerAll: {$eq: 'y'}}]
+          };
 
     const getCount = async () => {
       const scoreBooks = await Session.aggregate(scoreBooksPipeline),
             booksReading = await UserBook.aggregate(booksReadingPipeline),
+            wordsMemorized = await UserWordList.countDocuments(wordsQuery),
             startedBooks = booksReading[0] ? booksReading[0].countStarted || 0 : 0,
             unsubscribedBooks = booksReading[0] ? booksReading[0].countNotSubscribed || 0 : 0,
             readBooks = booksReading[0] ? booksReading[0].read || 0 : 0,
@@ -49,12 +55,14 @@ module.exports = {
           subscribed: startedBooks,
           unsubscribed: unsubscribedBooks,
           total: startedBooks + unsubscribedBooks,
-          completed: readBooks
+          completed: readBooks,
+          wordsMemorized
         }
       };
     };
 
     getCount().then((results) => {
+      console.log('results', results);
       response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
