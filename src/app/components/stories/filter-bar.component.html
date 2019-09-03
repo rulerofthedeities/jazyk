@@ -29,7 +29,7 @@
           class="dropdown-menu"
           (click)="onSelectDropdown($event)"
           [style.display]="showDropDown ? 'block' : 'none'">
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideCompletedRead"]}}
               <input type="checkbox"
@@ -38,7 +38,7 @@
               <span class="checkmark"></span>
             </label>
           </li>
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideNotTranslated"]}}
               <input type="checkbox"
@@ -47,7 +47,7 @@
               <span class="checkmark"></span>
             </label>
           </li>
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideOld"]}}
               <input type="checkbox"
@@ -56,7 +56,7 @@
               <span class="checkmark"></span>
             </label>
           </li>
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideEasy"]}}
               <input type="checkbox"
@@ -66,7 +66,7 @@
               <span class="checkmark"></span>
             </label>
           </li>
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideMedium"]}}
               <input type="checkbox"
@@ -76,13 +76,22 @@
               <span class="checkmark"></span>
             </label>
           </li>
-          <li>
+          <li *ngIf="!filter.bookId">
             <label class="filter-label">
               {{text["HideAdvanced"]}}
               <input type="checkbox"
                 [disabled]="filter.hideEasy && filter.hideMedium"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideAdvanced">
+              <span class="checkmark"></span>
+            </label>
+          </li>
+          <li *ngIf="filter.bookId">
+            <label class="filter-label">
+              {{text["OnlySelectedStory"]}}
+              <input type="checkbox"
+                (change)="onChangeFilter()"
+                [(ngModel)]="filter.bookId">
               <span class="checkmark"></span>
             </label>
           </li>

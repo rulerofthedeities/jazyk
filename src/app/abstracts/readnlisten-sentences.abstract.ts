@@ -194,6 +194,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     this.router.navigate(['/' + this.bookType]);
   }
 
+  onBackToStory() {
+    this.router.navigate(['/' + this.bookType + '/' + this.book._id]);
+  }
+
   onRepeat() {
     // Start story again from results page
     this.readnListenService

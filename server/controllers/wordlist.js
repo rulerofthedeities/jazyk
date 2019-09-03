@@ -414,7 +414,6 @@ module.exports = {
             response.handleSuccess(res, false);
           });
         });
-       console.log('saved session data', sessionData, query);
       });
     });
   },

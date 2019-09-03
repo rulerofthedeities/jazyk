@@ -119,6 +119,10 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.router.navigate([`/glossaries`]);
   }
 
+  onBackToStory() {
+    this.router.navigate([`/glossaries/${this.book._id}`]);
+  }
+
   onMoreFlashCards() {
     this.isReady = false;
     this.isFinished = false;

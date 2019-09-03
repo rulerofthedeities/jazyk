@@ -119,7 +119,6 @@ module.exports = {
               // Get book & session data
               const userLan = uBook.lanCode;
               let book = null;
-              console.log(i, uBook.bookType);
               switch(uBook.bookType) {
                 case 'listen':
                   book = await Book.findOne({_id: uBook.bookId, audioPublished: true});

@@ -107,6 +107,15 @@
             (click)="onBackToList()">
             {{text["BackListening"]}}
           </button>
+
+          <button type="button" *ngIf="currentStep === steps.Results"
+            class="btn btn-success"
+            (click)="onBackToStory()">
+            <span
+              class="fa fa-volume-up fa-spacing">
+            </span>
+            {{text["BackToStory"]}}
+          </button>
         </div>
       </div>
     </div>

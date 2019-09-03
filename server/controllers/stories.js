@@ -227,7 +227,6 @@ module.exports = {
           ];
     UserWordList.aggregate(pipeline, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching user words', () => {
-        console.log('err', err);
         response.handleSuccess(res, words);
       });
     });

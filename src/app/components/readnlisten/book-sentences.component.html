@@ -176,6 +176,19 @@
             <span class="fa fa-th-list fa-spacing"></span>
             {{text[bookType === 'listen' ? "BackListening" : "BackReading"]}}
           </button>
+
+          <button type="button" *ngIf="currentStep === steps.Results"
+            class="btn btn-success"
+            (click)="onBackToStory()">
+            <span
+              class="fa fa-spacing"
+              [ngClass]="{
+                'fa-volume-up': bookType === 'listen',
+                'fa-book': bookType === 'read'
+              }">
+            </span>
+            {{text["BackToStory"]}}
+          </button>
         </div>
       </div>
     </div>

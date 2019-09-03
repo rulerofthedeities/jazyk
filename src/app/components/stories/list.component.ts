@@ -170,15 +170,15 @@ export class StoryListComponent implements OnInit, OnDestroy {
         this.displayBooks = [];
         if (this.books && this.books.length) {
           this.nrOfBooks = this.books.length;
+          this.books.forEach(book => {
+            this.dataLoaded[book._id] = new BehaviorSubject(null);
+            this.storyData[book._id] = {};
+          });
           this.filterBooks();
         }
         if (data[1] && data[1].length) {
           this.processActivity(data[1]);
         }
-        this.books.forEach(book => {
-          this.dataLoaded[book._id] = new BehaviorSubject(null);
-          this.storyData[book._id] = {};
-        });
         this.isBooksReady = true;
         this.isLoading = false;
       }
@@ -508,6 +508,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
         console.log('Show only filtered book', filteredBook);
         this.filteredBooks = [filteredBook];
         this.isSingleBook = true;
+        filters.push(this.text['SelectedStory']);
       } else {
         currentFilter.bookId = null;
         if (currentFilter.hideCompleted) {
@@ -602,6 +603,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private getListTpe() {
+    console.log('getting list type');
     this.listTpe = 'read';
     this.route.data
     .pipe(takeWhile(() => this.componentActive))
@@ -615,6 +617,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private setFilter() {
+    console.log('setting filter');
     this.filterService.initFilter(this.listTpe);
     this.filterService.initSort(this.listTpe);
     // Clear previous book filter
@@ -628,28 +631,14 @@ export class StoryListComponent implements OnInit, OnDestroy {
         console.log('got id', params['id']);
         if (params['id']) {
           this.filterService.setBookId(params['id'], this.listTpe);
-          this.location.go(`/${this.listTpe}`);
+          this.location.go(`/${this.listTpe === 'glossary' ? 'glossaries': this.listTpe}`);
         }
       }
     );
-    /*
-    this.route.queryParams
-    .pipe(
-      takeWhile(() => this.componentActive),
-      filter(params => params.id))
-    .subscribe(
-      params => {
-        console.log('got id', params['id']);
-        if (params['id']) {
-          this.filterService.setBookId(params['id'], this.listTpe);
-          this.location.go(`/${this.listTpe}`);
-        }
-      }
-    );
-    */
   }
 
   private getDependables() {
+    console.log('getting dependables');
     const options = {
       lan: this.userService.user.main.lan,
       component: 'StoriesComponent',
@@ -663,6 +652,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
+        console.log('got dependables');
         this.licenses = dependables.licenseUrls;
         this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.setBookLanguages(dependables.bookLanguages);
