@@ -63,6 +63,9 @@ body {
   margin-right: 3px;
   border-radius: 2px;
 }
+.progress {
+  border-radius: 2px;
+}
 .table-hover > tbody > tr:hover, .list-group-item:hover {
   background-color: #e1f4fa;
 }

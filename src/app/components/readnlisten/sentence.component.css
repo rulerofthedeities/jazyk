@@ -43,11 +43,10 @@
   border-style: solid;
   border-color: #e1f4fa transparent transparent transparent;
 }
-.selected {
-  visibility: visible;
-}
-.word-audio {
-  margin-right: 3px;
+.popup .fa-times {
+  color: red;
+  font-size: 24px;
+  text-shadow: 1px 1px #333;
 }
 .popup .flag {
   position: relative;
@@ -56,6 +55,12 @@
 }
 .popup .flag.from {
   top: 2px;
+}
+.selected {
+  visibility: visible;
+}
+.word-audio {
+  margin-right: 3px;
 }
 .word-type {
   font-size: 14px;
