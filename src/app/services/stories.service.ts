@@ -161,19 +161,21 @@ export class StoriesService {
     userGlossaryCount: UserWordCount,
     status: UserBookStatus,
     userBook: UserBookLean,
-    userData: UserWordData
-  ) {
-    if (userData) {
+    userWordData: UserWordData
+  ): UserData {
+    let userData: UserData;
+    if (userWordData) {
       if (!userGlossaryCount) { // Clicked on tab, data not available from parent component
         userGlossaryCount = {
-          countTotal: userData.pinned || 0,
-          countTranslation: userData.translated || 0
+          countTotal: userWordData.pinned || 0,
+          countTranslation: userWordData.translated || 0
         };
       }
-      console.log('glossarycount', book.title, userData);
+      console.log('glossarycount', book.title, userWordData);
       const glossaryType = userBook && userBook.bookmark ? userBook.bookmark.lastGlossaryType : 'all',
-            yes = glossaryType === 'my' ? (userData.lastAnswerMyYes || 0) : (userData.lastAnswerAllYes || 0),
-            words = yes,
+            yes = glossaryType === 'my' ? (userWordData.lastAnswerMyYes || 0) : (userWordData.lastAnswerAllYes || 0),
+            no = glossaryType === 'my' ? (userWordData.lastAnswerMyNo || 0) : (userWordData.lastAnswerAllNo || 0),
+            words = yes + no,
             totalWords = book.nrOfWordsInList,
             totalWordTranslated = glossaryType === 'my' ?
                                   userGlossaryCount.countTranslation :
@@ -181,6 +183,17 @@ export class StoriesService {
       if (words > 0) {
         status.isStarted = true;
       }
+      // pie chart
+     userData = {
+        bookId: book._id,
+        isTest: false,
+        nrSentencesDone: yes + no,
+        nrYes: yes,
+        nrNo: no,
+        nrMaybe: 0,
+        repeatCount: 0
+      };
+      // progress bar
       status.nrOfSentencesDone = words > totalWordTranslated ? totalWordTranslated : words;
       status.percDone = this.sharedService.getPercentage(words, totalWordTranslated);
       status.nrOfSentences = totalWordTranslated;
@@ -189,10 +202,12 @@ export class StoriesService {
         status.isRepeat = !!(userBook.repeatCount > 0);
       }
     }
+    return userData;
   }
 
   checkSentencesDone(book: Book, userData: UserData, status: UserBookStatus) {
     if (userData) {
+      console.log('userdata sentences', userData);
       if (userData.nrSentencesDone > 0) {
         status.nrOfSentencesDone = userData.nrSentencesDone;
         status.nrOfSentences = book.difficulty.nrOfSentences;

@@ -211,6 +211,8 @@ module.exports = {
             bookId: '$_id.bookId',
             lastAnswerAllYes: 1,
             lastAnswerMyYes: 1,
+            lastAnswerAllNo: 1,
+            lastAnswerMyNo: 1,
             pinned: 1
           },
           pipeline = [
@@ -220,8 +222,15 @@ module.exports = {
                 bookId: '$bookId'
               },
               lastAnswerAllYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'y']}, 1, 0] }},
+              lastAnswerAllNo: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'n']}, 1, 0] }},
               lastAnswerMyYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'y']}, 1, 0] }},
-              pinned: {'$sum': { $cond: [{'$eq': ['$pinned', true]}, 1, 0] }}
+              lastAnswerMyNo: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'n']}, 1, 0] }},
+              pinned: {'$sum': { $cond: [
+                {$and: [
+                  {'$eq': ['$pinned', true]},
+                  {'$ne': ['$translations', '']}
+                ]}, 1, 0]}
+              }
             }},
             {$project: projection}
           ];
@@ -246,6 +255,8 @@ module.exports = {
             bookId: '$_id.bookId',
             lastAnswerAllYes: 1,
             lastAnswerMyYes: 1,
+            lastAnswerAllNo: 1,
+            lastAnswerMyNo: 1,
             pinned: 1,
             translated: 1,
             total: 1
@@ -257,7 +268,9 @@ module.exports = {
                 bookId: '$bookId'
               },
               lastAnswerAllYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'y']}, 1, 0] }},
+              lastAnswerAllNo: {'$sum': { $cond: [{'$eq': ['$lastAnswerAll', 'n']}, 1, 0] }},
               lastAnswerMyYes: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'y']}, 1, 0] }},
+              lastAnswerMyNo: {'$sum': { $cond: [{'$eq': ['$lastAnswerMy', 'n']}, 1, 0] }},
               pinned: {'$sum': { $cond: [{'$eq': ['$pinned', true]}, 1, 0] }},
               total: {'$sum': 1},
               translated: {'$sum': { $cond: [{'$and': [{'$eq': ['$pinned', true]}, {'$ne': ['$translations', '']}]}, 1, 0] }}

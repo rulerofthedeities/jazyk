@@ -352,7 +352,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processAllCurrentUserData() {
-    console.log('current user data 1', this.currentUserData);
     this.currentUserData = this.storiesService.getCurrentUserData(this.userData);
     this.currentUserTestData = this.storiesService.getCurrentUserData(this.userDataTest);
     this.checkSentencesDone(this.currentUserData, this.currentUserTestData);
@@ -361,13 +360,11 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   private checkSentencesDone(currentUserData: UserData, currentUserTestData: UserData) {
     this.storiesService.checkSentencesDone(this.book, currentUserData, this.userBookStatus);
     this.storiesService.checkSentencesDone(this.book, currentUserTestData, this.userBookStatusTest);
-    console.log('current user data 2', this.currentUserData);
   }
 
   private processGlossaryData(glossaryData: UserWordData, glossaryCount: UserWordCount) {
-    console.log('processing glossary data', glossaryData);
     this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
-    this.storiesService.checkGlossaryStatus(
+    this.currentUserData = this.storiesService.checkGlossaryStatus(
       this.book,
       glossaryCount,
       this.userGlossaryCount,

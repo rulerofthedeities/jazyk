@@ -74,6 +74,8 @@ export interface UserWordData {
   bookId: string;
   lastAnswerAllYes: number;
   lastAnswerMyYes: number;
+  lastAnswerAllNo: number;
+  lastAnswerMyNo: number;
   pinned: number;
   translated: number;
   total: number;
