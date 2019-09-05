@@ -32,12 +32,26 @@
           &nbsp;<a routerLink="/manual/{{getPath(item)}}">{{item.title}}</a>
         </span>
         <span *ngIf="item.isHeader">
-            &nbsp;{{item.title}}
+          &nbsp;{{item.title}}
         </span>
       </li>
     </ul>
     <div *ngIf="!isIndex"
       [innerHTML]="page?.html | sanitizeHtml" (click)="getRoute($event)">
     </div>
+    <button *ngIf="nextPage"
+      type="button"
+      class="btn btn-success next-btn"
+      (click)="onGoToNextPage(nextPage)"
+      >
+      <span class="fa fa-arrow-right fa-spacing"></span>Next: {{nextPage.title}}
+    </button>
+    <button *ngIf="!isIndex && !nextPage"
+      type="button"
+      class="btn btn-success next-btn"
+      (click)="onReturnToIndex()"
+      >
+      <span class="fa fa-arrow-up fa-spacing"></span>Back to index
+    </button>
   </div>
 </div>

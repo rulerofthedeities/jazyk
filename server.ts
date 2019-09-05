@@ -40,7 +40,7 @@ const app = express();
 app.set('port', process.env.PORT || 9000);
 app.set('env', process.env.NODE_ENV || 'development');
 app.set('host', process.env.BACKEND_URL || '');
-app.set('token_expiration', 604800); // Token expires after 7 days
+app.set('token_expiration', 1209600); // Token expires after 14 days
 app.enable('trust proxy'); // for rate limiter
 // check for warnings
 checks.checkWarnings(app);

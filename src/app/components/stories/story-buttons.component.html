@@ -1,4 +1,5 @@
 
+
 <!-- NOT TEST BUTTONS -->
 <div *ngIf="!isTest && !isCompact">
   <span *ngIf="bookType === 'read' || bookType === 'listen'">
@@ -81,8 +82,11 @@
       <span class="fa fa-th-list fa-spacing"></span>{{text['WordList']}}
     </button>
   </span>
+  <ng-container *ngTemplateOutlet="storyCardTemplate">
+  </ng-container>
 </div>
 
+<!-- TEST BUTTONS -->
 <div *ngIf="isTest && !isCompact">
   <span *ngIf="bookType === 'listen'">
     <button *ngIf="!userBookStatus.isBookRead"
@@ -109,6 +113,8 @@
       <span class="fa fa-arrow-right fa-spacing"></span>{{text['StartVocabularyTest']}}
     </button>
   </span>
+  <ng-container *ngTemplateOutlet="storyCardTemplate">
+  </ng-container>
 </div>
 
 <div *ngIf="isCompact">
@@ -131,3 +137,14 @@
     <span class="fa fa-repeat"></span>
   </button>
 </div>
+
+<ng-template #storyCardTemplate>
+  <span *ngIf="!isLarge && !isCompact">
+    <button
+      type="button"
+      class="btn btn-info"
+      (click)="onToStoryCard()">
+      <span class="fa fa-newspaper-o fa-spacing"></span>{{text["FullStoryCard"]}}
+    </button>
+  </span>
+</ng-template>

@@ -1,11 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Meta } from '@angular/platform-browser';
 import { PageService } from '../../services/page.service';
 import { SharedService } from '../../services/shared.service';
-import { AuthService } from '../../services/auth.service';
-import { ErrorService } from '../../services/error.service';
-import { Map } from '../../models/main.model';
 import { Page, ManualIndex } from '../../models/page.model';
 import { takeWhile, filter } from 'rxjs/operators';
 
@@ -18,6 +14,7 @@ export class ManualComponent implements OnInit, OnDestroy {
   private componentActive = true;
   text: Object;
   page: Page;
+  nextPage: ManualIndex;
   index: ManualIndex[];
   isIndex = false;
   sectionClosed: boolean[] = [];
@@ -25,11 +22,8 @@ export class ManualComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private meta: Meta,
-    private authService: AuthService,
     private pageService: PageService,
-    private sharedService: SharedService,
-    private errorService: ErrorService
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -40,15 +34,16 @@ export class ManualComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         if (params['page']) {
+          this.nextPage = null;
           const pageName = params['page'].toLowerCase();
           if (pageName === 'index') {
             this.isIndex = true;
             this.getDependables();
-            this.getManualIndex();
           } else {
             this.isIndex = false;
             this.getManualPage(pageName);
           }
+          this.getManualIndex(); // also required for navigation
         }
       }
     );
@@ -64,6 +59,13 @@ export class ManualComponent implements OnInit, OnDestroy {
 
   onReturnToIndex() {
     this.router.navigate(['/manual/index']);
+  }
+
+  onGoToNextPage(nextPage: Page) {
+    console.log('go to next page', nextPage);
+    if (nextPage) {
+      this.router.navigate(['/manual/', nextPage.name]);
+    }
   }
 
   isSectionClosed(item: ManualIndex): boolean {
@@ -98,8 +100,14 @@ export class ManualComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       index => {
-        this.index = this.processIndex(index);
-        this.setPageTitle();
+        console.log('index?', this.isIndex);
+        if (this.isIndex) {
+          this.index = this.processIndex(index);
+          this.setPageTitle();
+        } else {
+          const nextIndex = index.filter(page => page.isHeader !== true);
+          this.setNextPage(nextIndex);
+        }
       }
     );
   }
@@ -114,6 +122,20 @@ export class ManualComponent implements OnInit, OnDestroy {
         this.setPageTitle();
       }
     );
+  }
+
+  private setNextPage(nextIndex: ManualIndex[]) {
+    let nextPage: ManualIndex,
+        index: number;
+    console.log('page', this.page);
+    console.log('next index', nextIndex);
+    if (nextIndex) {
+      index = nextIndex.findIndex(page => page.name === this.page.name);
+    }
+    if (index) {
+      nextPage = nextIndex[index + 1];
+    }
+    this.nextPage = nextPage;
   }
 
   private processIndex(index: ManualIndex[]): ManualIndex[] {

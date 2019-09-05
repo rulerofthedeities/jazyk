@@ -222,8 +222,6 @@ module.exports = {
             '/listen/*',
             '/glossaries',
             '/glossaries/*',
-            '/stories',
-            '/stories/*',
             '/auth/*',
             '/user/*',
             '/u/:name',

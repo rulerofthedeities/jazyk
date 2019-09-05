@@ -207,7 +207,6 @@ export class StoriesService {
 
   checkSentencesDone(book: Book, userData: UserData, status: UserBookStatus) {
     if (userData) {
-      console.log('userdata sentences', userData);
       if (userData.nrSentencesDone > 0) {
         status.nrOfSentencesDone = userData.nrSentencesDone;
         status.nrOfSentences = book.difficulty.nrOfSentences;

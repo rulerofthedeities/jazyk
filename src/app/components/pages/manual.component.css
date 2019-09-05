@@ -1,8 +1,11 @@
 .fa-arrow-up, .list-group-item, .fa-question-circle {
   cursor: pointer;
 }
-.fa-arrow-right {
+.list-group .fa-arrow-right {
   color: #337ab7;
+}
+.next-btn {
+  margin-top: 12px;
 }
 .level-2 {
   margin-left: 60px;

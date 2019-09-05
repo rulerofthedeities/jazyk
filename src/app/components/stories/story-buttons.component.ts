@@ -112,6 +112,11 @@ export class StoryButtonsComponent implements OnDestroy {
     this.router.navigate([`/read/book/${this.book._id}/${this.targetLanCode}/review`]);
   }
 
+  onToStoryCard() {
+    const path = this.bookType === 'glossary' ? 'glossaries' : this.bookType;
+    this.router.navigate(['/' + path + '/' + this.book._id]);
+  }
+
   private startReadingListening(bookId: string, targetLanCode: string, bookType: string, isTest: boolean) {
     if (isTest) {
       this.log(`Start listening test for '${this.book.title}'`);

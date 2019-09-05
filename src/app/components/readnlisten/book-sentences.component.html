@@ -180,13 +180,7 @@
           <button type="button" *ngIf="currentStep === steps.Results"
             class="btn btn-success"
             (click)="onBackToStory()">
-            <span
-              class="fa fa-spacing"
-              [ngClass]="{
-                'fa-volume-up': bookType === 'listen',
-                'fa-book': bookType === 'read'
-              }">
-            </span>
+            <span class="fa fa-spacing fa-newspaper-o"></span>
             {{text["BackToStory"]}}
           </button>
         </div>

@@ -195,6 +195,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
         this.sharedService.detectChanges(this.cdr);
       });
     } else {
+      console.log('new type data glossary');
       this.currentUserData = null;
       this.currentUserTestData = null;
       zip(
@@ -205,6 +206,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         if (data && data.length) {
+          console.log('story data fetched', data);
           this.processUserBooks(data[0]);
           this.processGlossaryData(data[1], data[2]);
         }
@@ -362,17 +364,26 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.storiesService.checkSentencesDone(this.book, currentUserTestData, this.userBookStatusTest);
   }
 
-  private processGlossaryData(glossaryData: UserWordData, glossaryCount: UserWordCount) {
-    this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
+  private processGlossaryData(userGlossaryData: UserWordData, glossaryCount: UserWordCount) {
+    this.glossaryCount = glossaryCount;
+    this.userGlossaryCount = this.processUserGlossaryData(userGlossaryData);
     this.currentUserData = this.storiesService.checkGlossaryStatus(
       this.book,
       glossaryCount,
       this.userGlossaryCount,
       this.userBookStatus,
       this.userBook,
-      glossaryData
+      userGlossaryData
     );
+    this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
     this.checkCompact();
+  }
+
+  private processUserGlossaryData(userGlossaryData: UserWordData): UserWordCount {
+    return {
+      countTotal: userGlossaryData.pinned,
+      countTranslation: userGlossaryData.translated
+    };
   }
 
   private doSubscribe() {

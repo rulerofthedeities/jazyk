@@ -109,18 +109,13 @@
         </ul>
         <ul class="list-unstyled links">
           <li>
-            <a [routerLink]="['/info/features']" routerLinkActive="router-link-active">
-              <span class="fa fa-chevron-right fa-spacing"></span>{{text["CheckFeatures"]}}
+            <a [routerLink]="['/manual/index']" routerLinkActive="router-link-active">
+              <span class="fa fa-chevron-right fa-spacing"></span>{{text["Manual"]}}
             </a>
           </li>
           <li>
             <a [routerLink]="['/info/booklist']" routerLinkActive="router-link-active">
               <span class="fa fa-chevron-right fa-spacing"></span>{{text["CheckBookList"]}}
-            </a>
-          </li>
-          <li *ngIf="intLan==='en'">
-            <a [routerLink]="['/manual/index']" routerLinkActive="router-link-active">
-              <span class="fa fa-chevron-right fa-spacing"></span>{{text["Manual"]}}
             </a>
           </li>
         </ul>
