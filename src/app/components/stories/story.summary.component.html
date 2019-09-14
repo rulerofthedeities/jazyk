@@ -74,14 +74,6 @@
           <span class="title">{{book.title}}</span>
         </h3>
         <div class="book-content">
-          <!-- UNSUBSCRIBE -->
-          <div class="pull-right" *ngIf="isSubscribed && isMyList">
-            <button type="button" class="btn btn-default stop-btn"
-              (click)="onStopReadingListening()">
-              <span class="fa fa-times-circle fa-spacing"></span>
-              {{text["RemoveFromList"]}}
-            </button>
-          </div>
           <!-- ICONS -->
           <div *ngIf="userBookStatus">
             <ng-container *ngTemplateOutlet="actionTemplate; context:{
@@ -153,10 +145,20 @@
                 <!-- WORDS -->
                 <div class="words" *ngIf="tab === 'glossary'">
                   <span *ngIf="book.wordListPublished"><span class="strong">{{book.nrOfWordsInList | score}} {{text["words"]}}</span> {{text["inwordlist"]}}</span>
-                  <span *ngIf="glossaryCount?.countTranslation"> ({{glossaryCount?.countTranslation}} {{text["translated"]}})</span>
+                  <span *ngIf="glossaryCount?.countTranslation" class="translations"> ({{glossaryCount?.countTranslation}} {{text["translated"]}}<span *ngIf="isTranslated"
+                    class="fa fa-check"
+                    [tooltip]="text['FullyTranslated']"
+                    placement="top"
+                    hide-delay="50">
+                  </span>)</span>
                   <div *ngIf="!!userGlossaryCount?.countTotal">
                     <span class="strong">{{userGlossaryCount.countTotal | score}} {{userGlossaryCount.countTotal > 1 ? text["words"] : text["word"]}}</span>
-                    {{text["inMyWordList"]}} <span *ngIf="userGlossaryCount.countTranslation > 0"> ({{userGlossaryCount.countTranslation}} {{text["translated"]}})</span>
+                    {{text["inMyWordList"]}} <span *ngIf="userGlossaryCount.countTranslation > 0" class="translations"> ({{userGlossaryCount.countTranslation}} {{text["translated"]}}<span *ngIf="isUserTranslated"
+                      class="fa fa-check"
+                      [tooltip]="text['FullyTranslated']"
+                      placement="top"
+                      hide-delay="50">
+                    </span>)</span>
                   </div>
                 </div>
               </div>

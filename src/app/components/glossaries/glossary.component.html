@@ -23,7 +23,7 @@
       </a>
     </li>
     <li class="pull-right">
-      <button class="btn btn-primary btn-lg" *ngIf="hasFlashcards"
+      <button class="btn btn-success btn-lg" *ngIf="hasFlashcards"
         type="button"
         (click)="onStartFlashcards(tab)">
         <span class="fa fa-clone fa-spacing"></span>{{text[tab === 'mywords' ? 'MyFlashCards' : 'FlashCards']}}
@@ -174,7 +174,7 @@
           {{text["NoWordTranslations"]}}
         </span>
         <span *ngIf="hasTranslation(word)">
-          {{getTranslation(word)}}
+          {{word?.translationSummaryDisplay}}
         </span>
       </div>
     </div>
@@ -298,12 +298,12 @@
     <div *ngIf="editingWord === i">
       <km-user-translation
         [text]="text"
-        [translations]="word.userTranslationSummary"
+        [translations]="getTlNewlines(word)"
         (newTranslation)="onNewUserTranslation($event, word, i)"
         (cancelTranslation)="onCancelUserTranslation()">
       </km-user-translation>
     </div>
     <div *ngIf="editingWord !== i">
-        {{getTranslation(word, 'mywords')}}
+        {{word?.userTranslationSummaryDisplay}}
     </div>
   </ng-template>

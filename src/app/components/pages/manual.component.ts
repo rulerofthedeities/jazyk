@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { PageService } from '../../services/page.service';
 import { SharedService } from '../../services/shared.service';
 import { Page, ManualIndex } from '../../models/page.model';
@@ -18,10 +19,12 @@ export class ManualComponent implements OnInit, OnDestroy {
   index: ManualIndex[];
   isIndex = false;
   sectionClosed: boolean[] = [];
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private pageService: PageService,
     private sharedService: SharedService
   ) {}
@@ -35,21 +38,24 @@ export class ManualComponent implements OnInit, OnDestroy {
       params => {
         if (params['page']) {
           this.nextPage = null;
-          const pageName = params['page'].toLowerCase();
+          const pageName: string = params['page'].toLowerCase();
+          this.isLoading = true;
           if (pageName === 'index') {
             this.isIndex = true;
-            this.getDependables();
           } else {
             this.isIndex = false;
-            this.getManualPage(pageName);
           }
-          this.getManualIndex(); // also required for navigation
+          this.getDependables(pageName);
         }
       }
     );
   }
 
-  onGoToManualPage(item: ManualIndex) {
+  onToIndex() {
+    this.router.navigate(['/manual/index']);
+  }
+
+  onToManualPage(item: ManualIndex) {
     if (item.isHeader) {
       this.sectionClosed[item.sort] = !this.sectionClosed[item.sort];
     } else {
@@ -57,12 +63,11 @@ export class ManualComponent implements OnInit, OnDestroy {
     }
   }
 
-  onReturnToIndex() {
-    this.router.navigate(['/manual/index']);
+  onToPreviousPage() {
+    this.location.back();
   }
 
-  onGoToNextPage(nextPage: Page) {
-    console.log('go to next page', nextPage);
+  onToNextPage(nextPage: Page) {
     if (nextPage) {
       this.router.navigate(['/manual/', nextPage.name]);
     }
@@ -94,32 +99,37 @@ export class ManualComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getManualIndex() {
+  private getManualIndex(pageName: string) {
     this.pageService
     .fetchManualIndex()
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       index => {
-        console.log('index?', this.isIndex);
         if (this.isIndex) {
           this.index = this.processIndex(index);
-          this.setPageTitle();
+          this.isLoading = false;
         } else {
           const nextIndex = index.filter(page => page.isHeader !== true);
-          this.setNextPage(nextIndex);
+          this.getManualPage(pageName, nextIndex);
         }
       }
     );
   }
 
-  private getManualPage(pageName: string) {
+  private getManualPage(pageName: string, nextIndex: ManualIndex[]) {
     this.pageService
     .fetchManualPage(pageName)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       page => {
         this.page = page;
-        this.setPageTitle();
+        if (page) {
+          this.setPageTitle();
+          this.setNextPage(nextIndex);
+          this.isLoading = false;
+        } else {
+          this.router.navigate(['/manual/index']);
+        }
       }
     );
   }
@@ -127,12 +137,10 @@ export class ManualComponent implements OnInit, OnDestroy {
   private setNextPage(nextIndex: ManualIndex[]) {
     let nextPage: ManualIndex,
         index: number;
-    console.log('page', this.page);
-    console.log('next index', nextIndex);
-    if (nextIndex) {
+    if (this.page && nextIndex) {
       index = nextIndex.findIndex(page => page.name === this.page.name);
     }
-    if (index) {
+    if (index !== undefined) {
       nextPage = nextIndex[index + 1];
     }
     this.nextPage = nextPage;
@@ -155,7 +163,7 @@ export class ManualComponent implements OnInit, OnDestroy {
     }
   }
 
-private getDependables() {
+private getDependables(pageName: string) {
   const options = {
     lan: 'en',
     component: 'PageComponent',
@@ -168,6 +176,7 @@ private getDependables() {
     dependables => {
       this.text = this.sharedService.getTranslatedText(dependables.translations);
       this.setPageTitle();
+      this.getManualIndex(pageName); // also required for navigation
     }
   );
 }

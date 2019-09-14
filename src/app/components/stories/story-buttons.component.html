@@ -117,6 +117,7 @@
   </ng-container>
 </div>
 
+<!-- COMPACT -->
 <div *ngIf="isCompact">
   <button type="button" *ngIf="bookType === 'read'"
     (click)="onRevision()"
@@ -129,7 +130,7 @@
   </button>
   <button type="button"
     (click)="onStartReadingListening(true, false, $event)"
-    class="btn btn-primary pull-right"
+    class="btn btn-success pull-right"
     [class.btn-lg]="isLarge"
     [tooltip]="bookType === 'listen' ? text['ListenAgain'] : text['ReadAgain']"
     placement="top"

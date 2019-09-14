@@ -19,9 +19,9 @@
           </div>
           <div class="col-xs-6">
             <div class="learning info">
-              <strong>{{summaryData.booksReading.total || 0}}</strong> {{summaryData.booksReading.total === 1 ? text["bookStarted"] : text["booksStarted"]}}<br>
-              <strong>{{summaryData.booksReading.completed || 0}}</strong> {{summaryData.booksReading.completed === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
-              <strong>{{summaryData.booksReading.wordsMemorized || 0}}</strong> {{summaryData.booksReading.wordsMemorized === 1 ? text["wordMemorized"] : text["wordsMemorized"]}}
+              <strong>{{summaryData.read?.finished || 0}}</strong> {{summaryData.read?.finished === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
+              <strong>{{summaryData.listen?.finished || 0}}</strong> {{summaryData.listen?.finished === 1 ? text["bookListened"] : text["booksListened"]}}<br>
+              <strong>{{summaryData.wordsMemorized || 0}}</strong> {{summaryData.wordsMemorized === 1 ? text["wordMemorized"] : text["wordsMemorized"]}}
             </div>
           </div>
         </div>

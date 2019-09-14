@@ -1,4 +1,4 @@
-.fa-arrow-up, .list-group-item, .fa-question-circle {
+.fa-arrow-up, .fa-arrow-left, .fa-arrow-right, .list-group-item, .fa-question-circle {
   cursor: pointer;
 }
 .list-group .fa-arrow-right {

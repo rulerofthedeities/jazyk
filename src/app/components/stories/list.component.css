@@ -8,8 +8,8 @@
   height: 100px;
 }
 .shadow.showFilter {
-  background: linear-gradient(to bottom, #817971 60px, transparent);
-  height: 106px;
+  background: linear-gradient(to bottom, #817971 66px, transparent);
+  height: 96px;
 }
 .selectors {
   position: fixed;

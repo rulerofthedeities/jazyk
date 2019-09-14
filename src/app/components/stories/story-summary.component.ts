@@ -69,6 +69,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   hasAudioTitle: boolean;
   hasFlashCards: boolean;
   isTranslated = false;
+  isUserTranslated = false;
   hasTest = false;
   translationString: string;
   difficultyWidth: number;
@@ -195,7 +196,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
         this.sharedService.detectChanges(this.cdr);
       });
     } else {
-      console.log('new type data glossary');
       this.currentUserData = null;
       this.currentUserTestData = null;
       zip(
@@ -206,7 +206,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         if (data && data.length) {
-          console.log('story data fetched', data);
           this.processUserBooks(data[0]);
           this.processGlossaryData(data[1], data[2]);
         }
@@ -366,6 +365,14 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   private processGlossaryData(userGlossaryData: UserWordData, glossaryCount: UserWordCount) {
     this.glossaryCount = glossaryCount;
+    const translated = glossaryCount ? glossaryCount.countTranslation : 0;
+    if (translated > 0 && translated >= this.book.nrOfWordsInList) {
+      glossaryCount.countTranslation = this.book.nrOfWordsInList;
+      this.isTranslated = true;
+    } else {
+      this.isTranslated = false;
+    }
+
     this.userGlossaryCount = this.processUserGlossaryData(userGlossaryData);
     this.currentUserData = this.storiesService.checkGlossaryStatus(
       this.book,
@@ -375,14 +382,25 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       this.userBook,
       userGlossaryData
     );
+
     this.hasFlashCards = this.storiesService.hasFlashCards(this.glossaryCount, this.userGlossaryCount);
     this.checkCompact();
   }
 
   private processUserGlossaryData(userGlossaryData: UserWordData): UserWordCount {
+    console.log('user glossary data', this.book.title, userGlossaryData);
+    const pinned = userGlossaryData ? userGlossaryData.pinned : 0;
+    const translated = userGlossaryData ? userGlossaryData.translated : 0;
+    if (translated > 0 && translated >= pinned) {
+      userGlossaryData.pinned = pinned;
+      this.isUserTranslated = true;
+    } else {
+      this.isUserTranslated = false;
+    }
+
     return {
-      countTotal: userGlossaryData.pinned,
-      countTranslation: userGlossaryData.translated
+      countTotal: userGlossaryData ? userGlossaryData.pinned : 0,
+      countTranslation: userGlossaryData ? userGlossaryData.translated : 0
     };
   }
 

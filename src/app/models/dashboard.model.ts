@@ -2,16 +2,16 @@ import { Message, Notification } from './user.model';
 import { Book, UserBook, TranslationData, UserData } from './book.model';
 
 interface Learning {
-  subscribed: number;
-  unsubscribed: number;
-  total: number;
-  completed?: number;
-  wordsMemorized: number;
+  countStarted: number;
+  countNotSubscribed: number;
+  finished: number;
 }
 
 export interface SummaryData {
   score: number;
-  booksReading: Learning;
+  wordsMemorized: number;
+  read: Learning;
+  listen: Learning;
 }
 
 export interface CommunicationData {

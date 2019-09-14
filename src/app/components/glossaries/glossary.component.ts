@@ -254,6 +254,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.words.forEach(word => {
         word.pinned = false;
         word.translationSummary = '';
+        word.translationSummaryDisplay = '';
         word.translations = null;
         this.hasOmegaWikiTranslations[word._id] = false;
         this.hasDeepLTranslations[word._id] = false;
@@ -289,20 +290,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     return new Array(nr);
   }
 
-  getTranslation(word: Word): string {
-    let tl = '';
-    if (this.tab === 'mywords') {
-      if (word.userTranslationSummary) {
-        tl = word.userTranslationSummary ? word.userTranslationSummary.replace(/\|/g, ', ') : '';
-      }
-    } else {
-      if (word.translationSummary) {
-        tl = word.translationSummary;
-      }
-    }
-    return tl;
-  }
-
   getNoWordsMessage(): string {
     let msg = '';
     msg = this.text['NoWordsInYourList'];
@@ -312,6 +299,17 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     msg += ' ' + this.text['ForTheLanguage'] + ` '${this.text[this.translationLan.name]}'.`;
     msg += ' ' + this.text['ToAddWords'];
     return msg;
+  }
+
+  getTlNewlines(word: Word): string {
+    // return the translations in edit format
+    console.log('word', word);
+    if (word && word.userTranslationSummary) {
+      const translations = word.userTranslationSummary.split('|').map(tl => tl.trim());
+      return translations.join('\n');
+    } else {
+      return '';
+    }
   }
 
   isUpperCase(translation: WordTranslation): boolean {
@@ -354,6 +352,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   private addToMyWordList(word: Word, i: number) {
     word.pinned = true;
     word.userTranslationSummary = word.translationSummary;
+    word.userTranslationSummaryDisplay = this.setTlDisplay(word.translationSummary);
     word.targetLanCode = this.userLanCode;
     this.wordListService
     .pinWord(word, this.book._id, word.translationSummary, word.pinned)
@@ -370,14 +369,23 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  private setTlDisplay(summary: string): string {
+    if (summary) {
+      return summary.replace(/\|/g, ', ');
+    } else {
+      return '';
+    }
+  }
+
   private addAllToMyWordList(words: Word[]) {
     words.forEach(word => {
       if (!word.pinned) {
         word.pinned = true;
         word.targetLanCode = this.userLanCode;
         word.userTranslationSummary = word.translationSummary;
+        word.userTranslationSummaryDisplay = this.setTlDisplay(word.translationSummary);
       }
-    })
+    });
     this.wordListService
     .pinWords(words, this.book._id)
     .pipe(takeWhile(() => this.componentActive))
@@ -506,6 +514,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       if (word) {
         word.pinned = uWord.pinned;
         word.userTranslationSummary = uWord.translations;
+        word.userTranslationSummaryDisplay = this.setTlDisplay(uWord.translations);
       }
     });
     this.myWords = this.words.filter(w => w.pinned);
@@ -537,7 +546,8 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
             lanCode: this.userLanCode,
             word: w.word
           }
-          w.translationSummary = this.wordListService.createTranslationsSummary(translations, ', ');
+          w.translationSummary = this.wordListService.createTranslationsSummary(translations, '|');
+          w.translationSummaryDisplay = this.setTlDisplay(w.translationSummary);
         });
         this.goToLetter(this.words.length > this.maxWordsPerPage ? 0 : -1);
         this.checkIfFlashcardsAvailable();
@@ -713,14 +723,16 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     .subscribe( result => {
       this.editingWord = null;
       const wordToUpdate = this.words.find(w => w._id === word._id);
-      wordToUpdate.userTranslationSummary = newTranslation.replace(/\|/g, ', ');
+      wordToUpdate.userTranslationSummary = newTranslation;
+      wordToUpdate.userTranslationSummaryDisplay = this.setTlDisplay(newTranslation);
     });
   }
 
   private setWordTranslationSummary(word: Word, summary: string, translations: WordTranslations) {
     if (!summary) {
       summary = this.wordListService.createTranslationsSummary(translations);
-      word.translationSummary = summary.replace(/\|/g, ', ');
+      word.translationSummary = summary;
+      word.translationSummaryDisplay = this.setTlDisplay(summary);
     }
     // Add summary to book word
     this.wordListService

@@ -14,8 +14,10 @@ export interface Word {
   pinned?: boolean;
   expanded?: boolean;
   targetLanCode?: string;
-  translationSummary?: string;
-  userTranslationSummary?: string;
+  translationSummary?: string; // with |
+  translationSummaryDisplay?: string; // with ,
+  userTranslationSummary?: string; // with |
+  userTranslationSummaryDisplay?: string; // with ,
   translations?: WordTranslation[];
   dictionaryLetter?: string;
   chapterSequence?: number;

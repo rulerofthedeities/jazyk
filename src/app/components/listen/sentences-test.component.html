@@ -1,3 +1,4 @@
+
 <section kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <km-book-bullets *ngIf="currentStep < steps.Results"
     [data]="sessionData">
@@ -102,6 +103,15 @@
             [nextSentence]="nextSentenceObservable">
           </km-book-suggestions>
 
+          <span *ngIf="sessionData?.resultData?.isFinished">
+            <button type="button"
+              class="btn btn-primary"
+              (click)="onRepeat()">
+              <span class="fa fa-repeat fa-spacing"></span>
+              {{text["TestAgain"]}}
+            </button>
+          </span>
+
           <button type="button" *ngIf="currentStep === steps.Results"
             class="btn btn-primary"
             (click)="onBackToList()">
@@ -119,7 +129,7 @@
     </div>
   </div>
 
-  <km-info-msg [msg]="msg" *ngIf="msg && !showReadMsg">
+  <km-info-msg [msg]="msg" *ngIf="msg">
   </km-info-msg>
 
   <km-modal-confirm

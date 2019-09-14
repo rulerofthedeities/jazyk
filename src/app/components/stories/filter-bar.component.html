@@ -29,58 +29,61 @@
           class="dropdown-menu"
           (click)="onSelectDropdown($event)"
           [style.display]="showDropDown ? 'block' : 'none'">
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideCompletedRead"]}}
               <input type="checkbox"
+                [disabled]="filter.bookId"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideCompleted">
               <span class="checkmark"></span>
             </label>
           </li>
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideNotTranslated"]}}
               <input type="checkbox"
+                [disabled]="filter.bookId"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideNotTranslated">
               <span class="checkmark"></span>
             </label>
           </li>
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideOld"]}}
               <input type="checkbox"
+                [disabled]="filter.bookId"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideOld">
               <span class="checkmark"></span>
             </label>
           </li>
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideEasy"]}}
               <input type="checkbox"
-                [disabled]="filter.hideMedium && filter.hideAdvanced"
+                [disabled]="filter.bookId || (filter.hideMedium && filter.hideAdvanced)"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideEasy">
               <span class="checkmark"></span>
             </label>
           </li>
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideMedium"]}}
               <input type="checkbox"
-                [disabled]="filter.hideEasy && filter.hideAdvanced"
+                [disabled]="filter.bookId || (filter.hideEasy && filter.hideAdvanced)"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideMedium">
               <span class="checkmark"></span>
             </label>
           </li>
-          <li *ngIf="!filter.bookId">
+          <li>
             <label class="filter-label">
               {{text["HideAdvanced"]}}
               <input type="checkbox"
-                [disabled]="filter.hideEasy && filter.hideMedium"
+                [disabled]="filter.bookId || (filter.hideEasy && filter.hideMedium)"
                 (change)="onChangeFilter()"
                 [(ngModel)]="filter.hideAdvanced">
               <span class="checkmark"></span>

@@ -329,7 +329,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           lastSentenceNrChapter: null,
           version: environment.version
         };
-        if (!userBook || (userBook && !userBook.bookmark)) {
+        if (this.settings.countdown && (!userBook || (userBook && !userBook.bookmark))) {
           this.isCountDown = true;
         }
         this.processBook(res[3]);

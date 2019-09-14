@@ -1,22 +1,32 @@
 <div class="panel panel-default transparant manual">
   <div class="panel-heading">
     <span class="fa fa-question-circle fa-spacing-title"
-      (click)="onReturnToIndex()">
+      (click)="onToIndex()">
     </span>
-    <span *ngIf="!isIndex || text">
-      {{isIndex ? text["Manual"] : page?.title}}
+    <span *ngIf="!isLoading">
+      <span *ngIf="!isIndex || text">
+        {{isIndex ? text["Manual"] : page?.title}}
+      </span>
+      <a *ngIf="!isIndex" routerLink="/manual/index"
+        class="fa fa-arrow-up pull-right back"
+        (click)="onToIndex()">
+      </a>
+      <a *ngIf="!!nextPage"
+        class="fa fa-arrow-right pull-right back"
+        (click)="onToNextPage(nextPage)">
+      </a>
+      <a *ngIf="!isIndex"
+        class="fa fa-arrow-left pull-right back"
+        (click)="onToPreviousPage()">
+      </a>
     </span>
-    <a *ngIf="!isIndex" routerLink="/manual/index"
-      class="fa fa-arrow-up pull-right back"
-      (click)="onReturnToIndex()">
-    </a>
   </div>
-  <div class="panel-body">
+  <div class="panel-body" *ngIf="!isLoading">
     <ul *ngIf="isIndex" class="list-group">
       <li *ngFor="let item of index"
         class="list-group-item"
         [hidden]="isSectionClosed(item)"
-        (click)="onGoToManualPage(item)"
+        (click)="onToManualPage(item)"
         [ngClass]="'level-' + item.level"
         [class.header]="item.isHeader">
         <span
@@ -42,16 +52,21 @@
     <button *ngIf="nextPage"
       type="button"
       class="btn btn-success next-btn"
-      (click)="onGoToNextPage(nextPage)"
+      (click)="onToNextPage(nextPage)"
       >
       <span class="fa fa-arrow-right fa-spacing"></span>Next: {{nextPage.title}}
     </button>
-    <button *ngIf="!isIndex && !nextPage"
+    <button *ngIf="!isIndex"
       type="button"
-      class="btn btn-success next-btn"
-      (click)="onReturnToIndex()"
+      class="btn btn-info next-btn"
+      [class.pull-right]="nextPage"
+      (click)="onToIndex()"
       >
       <span class="fa fa-arrow-up fa-spacing"></span>Back to index
     </button>
   </div>
+  <km-loader *ngIf="isLoading && !isError"
+    [msg]=""
+    [showBackground]="false">
+  </km-loader>
 </div>

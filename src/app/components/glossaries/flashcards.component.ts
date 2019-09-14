@@ -187,7 +187,9 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       book => {
         this.book = book;
         if (this.book) {
-          this.isCountDown = true;
+          if (this.settings.countdown) {
+            this.isCountDown = true;
+          }
           this.startedExercises = true;
           this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
           this.sessionData = {

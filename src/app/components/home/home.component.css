@@ -17,10 +17,10 @@ li {
   color: #eee;
   text-shadow: 1px 1px 1px #333;
   display: block;
-}  
+}
 .btn-mega .btn-sub {
   padding: 25px 32px;
-  border-radius: 6px;
+  border-radius: 2px;
   position: relative;
   box-sizing: border-box;
   min-height: 1px;

@@ -27,13 +27,13 @@ module.exports = {
               points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished', '$totalPointsTest' ]}
             }}
           ],
-          booksReadingPipeline = [
-            {$match: {userId, bookType: 'read'}},
+          booksPipeline = [
+            {$match: {userId}},
             {$group: {
-              _id: null,
+              _id: '$bookType',
               countStarted: {'$sum': {$cond: ["$bookmark", 1, 0]}},
               countNotSubscribed: {'$sum': {$cond: ["$subscribed", 0, 1]}},
-              read: {'$sum': {$cond: ["$bookmark.isBookRead", 1, 0]}}
+              finished: {'$sum': {$cond: ["$bookmark.isBookRead", 1, 0]}}
             }}
           ],
           wordsQuery = {
@@ -43,26 +43,21 @@ module.exports = {
 
     const getCount = async () => {
       const scoreBooks = await Session.aggregate(scoreBooksPipeline),
-            booksReading = await UserBook.aggregate(booksReadingPipeline),
+            books = await UserBook.aggregate(booksPipeline),
             wordsMemorized = await UserWordList.countDocuments(wordsQuery),
-            startedBooks = booksReading[0] ? booksReading[0].countStarted || 0 : 0,
-            unsubscribedBooks = booksReading[0] ? booksReading[0].countNotSubscribed || 0 : 0,
-            readBooks = booksReading[0] ? booksReading[0].read || 0 : 0,
-            pointsBooks = scoreBooks[0] ? scoreBooks[0].points || 0 : 0;
+            pointsBooks = scoreBooks[0] ? scoreBooks[0].points || 0 : 0,
+            read = books.find(b => b._id === 'read'),
+            listen = books.find(b => b._id === 'listen');
       return {
         score: pointsBooks,
-        booksReading: {
-          subscribed: startedBooks,
-          unsubscribed: unsubscribedBooks,
-          total: startedBooks + unsubscribedBooks,
-          completed: readBooks,
-          wordsMemorized
-        }
+        read,
+        listen,
+        wordsMemorized
       };
     };
 
     getCount().then((results) => {
-      console.log('results', results);
+      console.log('!>> books', results);
       response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');

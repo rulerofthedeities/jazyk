@@ -56,7 +56,7 @@ export class UserScoreComponent implements OnInit, OnDestroy {
     zip(
       this.userService.fetchScoreBooks('read'),
       this.userService.fetchScoreBooks('listen'),
-      this.userService.fetchScoreBooks('flashcard')
+      this.userService.fetchScoreBooks('glossary')
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
