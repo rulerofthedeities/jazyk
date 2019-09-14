@@ -20,6 +20,7 @@ export class ManualComponent implements OnInit, OnDestroy {
   isIndex = false;
   sectionClosed: boolean[] = [];
   isLoading = false;
+  isError = false;
 
   constructor(
     private route: ActivatedRoute,

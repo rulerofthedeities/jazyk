@@ -67,7 +67,7 @@
             [userGlossaryCount]="userGlossaryCount"
           ></km-story-buttons>
         </div>
-        <div *ngIf="isProgressReady && userBookStatus && (userBookStatus.isStarted || userBookStatus.isRepeat || userBookStatus.isBookRead)">
+        <div *ngIf="isProgressReady && userBookStatus && userBookStatus.nrOfSentences && (userBookStatus.isStarted || userBookStatus.isRepeat || userBookStatus.isBookRead)">
           <div class="progress"
             [ngClass]="{'progress-min': userBookStatus.percDone < 5, 'test': userBook.isTest}">
             <div

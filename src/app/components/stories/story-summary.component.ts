@@ -77,6 +77,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   showHistoryData: boolean[] = [false, false];
   userColors: ColorHistory[][] = [];
   currentTab: string;
+  isError = false;
 
   constructor(
     private cdr: ChangeDetectorRef,

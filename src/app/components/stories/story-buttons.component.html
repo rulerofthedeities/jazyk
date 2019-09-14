@@ -1,5 +1,3 @@
-
-
 <!-- NOT TEST BUTTONS -->
 <div *ngIf="!isTest && !isCompact">
   <span *ngIf="bookType === 'read' || bookType === 'listen'">
@@ -65,10 +63,10 @@
         </ul>
       </span>
     </span>
-    <span *ngIf="!isLarge">
+    <span *ngIf="!isLarge && ((glossaryType === 'my' && userGlossaryCount?.countTranslation) || (glossaryType === 'all' && glossaryCount?.countTranslation))">
       <button class="btn btn-success"
         type="button"
-        (click)="onStartFlashcards(glossaryType, glossaryType === 'all' ? glossaryCount?.countTranslation : userGlossaryCount?.countTranslation)">
+        (click)="onStartFlashcards(glossaryType, glossaryType === 'my' ? userGlossaryCount?.countTranslation : glossaryCount?.countTranslation)">
         <span class="fa fa-arrow-right fa-spacing"></span>
         {{text['FlashCards']}}
       </button>

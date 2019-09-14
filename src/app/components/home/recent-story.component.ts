@@ -99,6 +99,12 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
       this.userBook,
       glossaryData
     );
+    if (glossaryData && !this.userGlossaryCount) {
+      this.userGlossaryCount = {
+        countTotal: glossaryData.pinned || 0,
+        countTranslation: glossaryData.translated || 0
+      };
+    }
   }
 
   private setStatus() {

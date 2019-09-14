@@ -553,7 +553,7 @@ export class UserService {
       if (this.platform.isBrowser) {
         // Client only code.
         lan = localStorage.getItem('km-jazyk.lan');
-      // if not set in browser, get from navigator
+        // if not set in browser, get from navigator
         if (!lan) {
           lan = this.validateLan(navigator.language.slice(0, 2));
         }
