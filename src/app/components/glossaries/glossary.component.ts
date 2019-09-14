@@ -303,7 +303,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getTlNewlines(word: Word): string {
     // return the translations in edit format
-    console.log('word', word);
     if (word && word.userTranslationSummary) {
       const translations = word.userTranslationSummary.split('|').map(tl => tl.trim());
       return translations.join('\n');

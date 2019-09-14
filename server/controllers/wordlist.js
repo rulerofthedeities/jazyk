@@ -206,12 +206,12 @@ module.exports = {
   getMyFlashcardWords: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           bookId = new mongoose.Types.ObjectId(req.params.bookId),
-          userLanCode = req.params.lan,
+          targetLanCode = req.params.lan,
           maxWords = req.params.max || 10,
           query = {
             userId,
             bookId,
-            targetLanCode: userLanCode,
+            targetLanCode,
             pinned: true,
             translations: {$nin: [ null, "" ]}
           },
@@ -235,9 +235,9 @@ module.exports = {
   },
   getAllFlashcardWords: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
-          userLanCode = req.params.lan,
+          targetLanCode = req.params.lan,
           maxWords = req.params.max || 10,
-          key = 'translationSummary.' + userLanCode,
+          key = 'translationSummary.' + targetLanCode,
           query = {
             bookId,
             [key]: {$exists: true, $nin: [ null, "" ] }
@@ -251,16 +251,9 @@ module.exports = {
       response.handleError(err, res, 400, 'Error fetching word translations for all flashcards', () => {
         // Translation summary should be string io object
         words.forEach(word => {
-          word.translationSummary = word.translationSummary[userLanCode];
+          word.translationSummary = word.translationSummary[targetLanCode];
         });
-        // For each word, find matching user word if it exists
-        const wordIds = words.map(word => word._id),
-              query = {wordId: {$in: wordIds}};
-        UserWordList.find(query, (err, userWords) => {
-          response.handleError(err, res, 400, 'Error fetching user word list for all flashcards', () => {
-            response.handleSuccess(res, {userWords, words});
-          });
-        });
+        response.handleSuccess(res, {userWords: [], words});
       });
     });
   },

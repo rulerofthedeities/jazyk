@@ -30,7 +30,6 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges() {
-    console.log('AUDIO changed!!');
     if (this.audio && this.fileUrl !== this.audio.src) {
       this.audio = null;
     }

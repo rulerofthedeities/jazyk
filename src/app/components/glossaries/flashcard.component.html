@@ -3,7 +3,9 @@
     <div class="flip-card-inner" [class.flipped]="isFlipped">
       <div class="flip-card-front" (click)="onFlip()">
         <div class="front-content">
-          <ng-container *ngTemplateOutlet="word;context:{side: 'front'}"></ng-container>
+          <span *ngIf="answered">
+            <ng-container *ngTemplateOutlet="word;context:{side: 'front'}"></ng-container>
+          </span>
         </div>
       </div>
       <div class="flip-card-back">

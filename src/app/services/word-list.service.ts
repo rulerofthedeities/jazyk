@@ -30,14 +30,14 @@ export class WordListService {
     .pipe(retry(3));
   }
 
-  fetchFlashcardWords(bookId: string, userLanCode: string, max: number, tpe: string): Observable<FlashCardData> {
+  fetchFlashcardWords(bookId: string, targetLanCode: string, max: number, tpe: string): Observable<FlashCardData> {
     if (tpe === 'my') {
       return this.http
-      .get<FlashCardData>(`/api/userwordlist/flashcards/${bookId}/${userLanCode}/${max}`)
+      .get<FlashCardData>(`/api/userwordlist/flashcards/${bookId}/${targetLanCode}/${max}`)
       .pipe(retry(3));
     } else {
       return this.http
-      .get<FlashCardData>(`/api/wordlist/flashcards/${bookId}/${userLanCode}/${max}`)
+      .get<FlashCardData>(`/api/wordlist/flashcards/${bookId}/${targetLanCode}/${max}`)
       .pipe(retry(3));
     }
   }

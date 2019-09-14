@@ -109,7 +109,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   onChangeFilter(newFilter: ViewFilter) {
-    console.log('new filter', newFilter);
     this.filterService.filter[this.listTpe] = newFilter;
     this.filterBooks();
   }
@@ -266,7 +265,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     // Put all data in one object per story
     let story: StoryData,
         bookId: string;
-    console.log('>>SENDING DATA', this.books.length, this.filteredBooks.length);
     this.books.forEach(book => {
       bookId = book._id;
       story = this.storyData[book._id];
@@ -506,7 +504,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
         filteredBook = this.books.find(book => book._id.toString() === currentFilter.bookId);
       }
       if (filteredBook) {
-        console.log('Show only filtered book', filteredBook);
         this.filteredBooks = [filteredBook];
         this.isSingleBook = true;
         filters.push(this.text['SelectedStory']);
@@ -604,7 +601,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private getListTpe() {
-    console.log('getting list type');
     this.listTpe = 'read';
     this.route.data
     .pipe(takeWhile(() => this.componentActive))
@@ -618,7 +614,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private setFilter() {
-    console.log('setting filter');
     this.filterService.initFilter(this.listTpe);
     this.filterService.initSort(this.listTpe);
     // Clear previous book filter
@@ -629,7 +624,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
       filter(params => params.id))
     .subscribe(
       params => {
-        console.log('got id', params['id']);
         if (params['id']) {
           this.filterService.setBookId(params['id'], this.listTpe);
           this.location.go(`/${this.listTpe === 'glossary' ? 'glossaries': this.listTpe}`);
@@ -639,7 +633,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private getDependables() {
-    console.log('getting dependables');
     const options = {
       lan: this.userService.user.main.lan,
       component: 'StoriesComponent',
@@ -653,7 +646,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       dependables => {
-        console.log('got dependables');
         this.licenses = dependables.licenseUrls;
         this.text = this.sharedService.getTranslatedText(dependables.translations);
         this.setBookLanguages(dependables.bookLanguages);

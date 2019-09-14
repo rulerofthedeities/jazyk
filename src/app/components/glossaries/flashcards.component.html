@@ -4,7 +4,7 @@
         [text]="text"
         [bookType]="'flashcards'"
         [bookLanCode]="book?.lanCode"
-        [userLanCode]="userLanCode"
+        [userLanCode]="targetLanCode"
         [bookTitle]="book?.title"
         [canClose]="!isFinished"
         (close)="onExitReading()"
@@ -28,7 +28,7 @@
           <!-- Flashcard -->
           <km-flashcard
             [text]="text"
-            [lanPair]="{from: book.lanCode, to: userLanCode}"
+            [lanPair]="{from: book.lanCode, to: targetLanCode}"
             [audioPath]="audioPath"
             [newFlashCard]="newFlashCard"
             (answer)="onGotAnswer($event)">
@@ -38,7 +38,7 @@
           <!-- Results -->
           <km-flashcards-result
             [text]="text"
-            [lanPair]="{from: book.lanCode, to: userLanCode}"
+            [lanPair]="{from: book.lanCode, to: targetLanCode}"
             [audioPath]="audioPath"
             [answers]="answerData"
             [flashCards]="flashCardsDone">

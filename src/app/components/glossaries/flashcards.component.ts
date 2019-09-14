@@ -26,7 +26,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   isCountDown = false;
   settings: ReadSettings;
   bookId: string;
-  userLanCode: string;
+  targetLanCode: string;
   book: Book;
   isReady = false;
   startedExercises = false;
@@ -173,7 +173,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     .subscribe(
       params => {
         this.bookId = params['id'];
-        this.userLanCode = params['lan'];
+        this.targetLanCode = params['lan'];
         this.processNewBookId();
       }
     );
@@ -194,7 +194,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
           this.audioPath = 'https://' + awsPath + 'words/' + this.book.lanCode + '/';
           this.sessionData = {
             bookId: this.bookId,
-            lanCode: this.userLanCode,
+            lanCode: this.targetLanCode,
             bookType: 'glossary',
             glossaryType: this.glossaryType,
             isTest: false,
@@ -221,7 +221,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   private getWords() {
     this.wordlistService
-    .fetchFlashcardWords(this.bookId, this.userLanCode, this.nrofCards, this.glossaryType)
+    .fetchFlashcardWords(this.bookId, this.targetLanCode, this.nrofCards, this.glossaryType)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
@@ -273,7 +273,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
       });
       // Save answers in user wordlist
       this.wordlistService
-      .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.userLanCode, this.glossaryType)
+      .saveAnswers(flashCardsToSave, this.bookId, this.book.lanCode, this.targetLanCode, this.glossaryType)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         result => {}
@@ -324,7 +324,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   private subscribeToBook() {
     this.readnListenService
-    .subscribeToBook(this.book._id, this.userLanCode, 'glossary', false)
+    .subscribeToBook(this.book._id, this.targetLanCode, 'glossary', false)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(subscription => {});
   }

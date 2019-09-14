@@ -57,7 +57,6 @@ module.exports = {
     };
 
     getCount().then((results) => {
-      console.log('!>> books', results);
       response.handleSuccess(res, results);
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');

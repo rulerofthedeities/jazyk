@@ -304,7 +304,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private checkCompact() {
-    console.log('checking compact');
     if (this.finishedTabs && this.finishedTabs[this.tab]) {
       this.isFinished = true;
     } else {
@@ -388,7 +387,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
   }
 
   private processUserGlossaryData(userGlossaryData: UserWordData): UserWordCount {
-    console.log('user glossary data', this.book.title, userGlossaryData);
     const pinned = userGlossaryData ? userGlossaryData.pinned : 0;
     const translated = userGlossaryData ? userGlossaryData.translated : 0;
     if (translated > 0 && translated >= pinned) {
@@ -474,7 +472,6 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     .pipe(takeWhile( () => this.componentActive))
     .subscribe(storyData => {
       if (storyData) {
-        console.log('loaded', this.book.title, storyData);
         this.processAsyncData(storyData);
       }
     });
@@ -482,10 +479,8 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
 
   private processAsyncData(storyData: StoryData) {
     this.resetStatus();
-    console.log('tab', this.tab, this.currentTab);
     this.userData = storyData.userData;
     this.userDataTest = storyData.userDataTest;
-    console.log('user data', this.userData);
     this.userBook = storyData.userBook;
     this.userBookTest = storyData.userBookTest;
     this.glossaryCount = storyData.glossaryCount;
