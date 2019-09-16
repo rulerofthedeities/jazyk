@@ -264,23 +264,40 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     newTranslations = this.removeDuplicate(newTranslations);
     // Show in list
     if (newTranslations.length) {
-      this.newTranslations.emit({
-        translations: {
-          lanCode: this.bookLan.code,
-          word: this.getWord(),
-          translations: newTranslations
-        },
-        i: this.i
-      });
-      this.isLoading = false;
       // Save
-      if (newTranslations.length) {
-        this.translationService
-        .saveTranslations(this.bookLan.code, this.bookId, this.word, newTranslations)
-        .pipe(takeWhile(() => this.componentActive))
-        .subscribe(result => {
-        });
-      }
+      this.translationService
+      .saveTranslations(this.bookLan.code, this.bookId, this.word, newTranslations)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(result => {
+        if (result) {
+          const addedTranslations: WordTranslation[] = [];
+          let returnedTranslations = result.translations;
+          if (returnedTranslations) {
+            // All translations are returned, filter out the new ones only
+            returnedTranslations = returnedTranslations.filter(tl => tl.lanCode === this.targetLan.code);
+            newTranslations.forEach(newTl => {
+              const addedTranslation = returnedTranslations.find(
+                rTl => rTl.lanCode === newTl.lanCode &&
+                rTl.definition === newTl.definition &&
+                rTl.source === newTl.source &&
+                rTl.translation === newTl.translation
+              );
+              if (addedTranslation) {
+                addedTranslations.push(addedTranslation);
+              }
+            });
+          }
+          this.newTranslations.emit({
+            translations: {
+              lanCode: this.bookLan.code,
+              word: this.getWord(),
+              translations: addedTranslations
+            },
+            i: this.i
+          });
+        }
+        this.isLoading = false;
+      });
     } else {
       this.saveDummyTranslation(this.source);
       this.noTranslationFound();

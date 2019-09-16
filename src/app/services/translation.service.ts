@@ -39,9 +39,9 @@ export class TranslationService {
     .pipe(retry(3));
   }
 
-  saveTranslations(bookLanCode: string, bookId: string, word: Word, translations: WordTranslation[]): Observable<WordTranslation[]> {
+  saveTranslations(bookLanCode: string, bookId: string, word: Word, translations: WordTranslation[]): Observable<WordTranslations> {
     return this.http
-    .post<WordTranslation[]>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
+    .post<WordTranslations>(`/api/wordlist/word/translation`, {bookLanCode, bookId, word, translations});
   }
 /*
   fetchTranslationsLetter(book: Book, targetLan: string, letter: string): Observable<WordTranslations[]> {

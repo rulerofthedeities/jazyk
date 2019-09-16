@@ -201,6 +201,7 @@
   <div *ngIf="!isLoadingTranslations && word.translations && word.translations.length">
     <div *ngFor="let translation of word.translations; let j=index">
       <div *ngIf="translation.translation !== '<none>'">
+        <!-- ADMIN BUTTONS -->
         <div class="buttons pull-right" *ngIf="canEdit && editingTranslationId !== translation._id">
           <button *ngIf="translation.source === 'Jazyk'"
             type="button"
@@ -220,7 +221,13 @@
             (click)="onSetTranslationToLowerCase(i, translation, word)">
             l
           </button>
-          <button *ngIf="translation._id && (translation.source !== 'OmegaWiki')"
+          <button *ngIf="translation._id && isLowerCase(translation)"
+            type="button"
+            class="btn btn-danger"
+            (click)="onSetTranslationToUpperCase(i, translation, word)">
+            U
+          </button>
+          <button *ngIf="translation._id"
             type="button"
             class="btn btn-danger"
             (click)="onSetTranslationToNone(i, translation, word)">

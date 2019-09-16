@@ -12,6 +12,7 @@ import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/wo
 import { Language, Map } from '../../models/main.model';
 import { zip, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
+import { ucs2 } from 'punycode';
 
 @Component({
   templateUrl: 'glossary.component.html',
@@ -230,7 +231,15 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     // Set first letter of translation to lowercase
     this.clearNoTranslationMsg();
     if (this.canEdit) {
-      this.setTranslationToLowerCase(word._id, translation._id, word);
+      this.setTranslationToCase(word._id, translation._id, word, true);
+    }
+  }
+
+  onSetTranslationToUpperCase(i: number, translation: WordTranslation, word: Word) {
+    // Set first letter of translation to lowercase
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.setTranslationToCase(word._id, translation._id, word, false);
     }
   }
 
@@ -314,6 +323,14 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   isUpperCase(translation: WordTranslation): boolean {
     if (translation.translation && translation.translation[0]) {
       return translation.translation[0] === translation.translation[0].toUpperCase();
+    } else {
+      return false;
+    }
+  }
+
+  isLowerCase(translation: WordTranslation): boolean {
+    if (translation.translation && translation.translation[0]) {
+      return translation.translation[0] === translation.translation[0].toLowerCase();
     } else {
       return false;
     }
@@ -695,15 +712,18 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private setTranslationToLowerCase(wordId: string, elementId: string, word: Word) {
+  private setTranslationToCase(wordId: string, elementId: string, word: Word, lower: boolean) {
     const updatedTranslation = word.translations.find(tlElement => tlElement._id === elementId);
     if (updatedTranslation) {
-      const lcTranslation = updatedTranslation.translation.charAt(0).toLowerCase() + updatedTranslation.translation.substr(1);
+      const lc = updatedTranslation.translation.charAt(0).toLowerCase(),
+            uc = updatedTranslation.translation.charAt(0).toUpperCase(),
+            caseLetter = lower ? lc : uc,
+            caseTranslation = caseLetter + updatedTranslation.translation.substr(1);
       this.translationService
-      .setWordTranslationToLowerCase(wordId, elementId, lcTranslation)
+      .setWordTranslationToLowerCase(wordId, elementId, caseTranslation)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe( result => {
-        updatedTranslation.translation = lcTranslation;
+        updatedTranslation.translation = caseTranslation;
         const translations: WordTranslations = {
           translations: word.translations,
           lanCode: this.userLanCode,

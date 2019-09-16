@@ -74,13 +74,18 @@ module.exports = {
           query = {
             bookId,
             wordId: word._id,
-            lanCode},
+            lanCode
+          },
           update = {
             sortWord,
             word: word.word,
             $addToSet: {translations: {$each: translations}}
+          },
+          options = {
+            upsert: true,
+            new: true
           };
-    Translations.findOneAndUpdate(query, update, {upsert: true}, (err, result) => {
+    Translations.findOneAndUpdate(query, update, options, (err, result) => {
       response.handleError(err, res, 400, 'Error saving word translation', () => {
         response.handleSuccess(res, result);
       });
