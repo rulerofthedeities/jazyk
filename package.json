@@ -1,7 +1,7 @@
 {
   "name": "jazyk",
   "description": "Language learning tool",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "ng": "ng",
     "start": "npm run serve:ssr",
@@ -22,7 +22,7 @@
   },
   "engines": {
     "node": "8.11.1",
-    "npm": "6.9.0"
+    "npm": "6.11.3"
   },
   "author": "Kristiaan Van Ermengem",
   "private": true,
@@ -47,7 +47,7 @@
     "@types/mongodb": "^3.1.24",
     "@types/node": "^10.0.4",
     "body-parser": "^1.17.1",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "core-js": "^2.5.6",

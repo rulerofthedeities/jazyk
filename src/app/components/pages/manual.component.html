@@ -7,18 +7,20 @@
       <span *ngIf="!isIndex || text">
         {{isIndex ? text["Manual"] : page?.title}}
       </span>
-      <a *ngIf="!isIndex" routerLink="/manual/index"
-        class="fa fa-arrow-up pull-right back"
-        (click)="onToIndex()">
-      </a>
-      <a *ngIf="!!nextPage"
-        class="fa fa-arrow-right pull-right back"
-        (click)="onToNextPage(nextPage)">
-      </a>
-      <a *ngIf="!isIndex"
-        class="fa fa-arrow-left pull-right back"
-        (click)="onToPreviousPage()">
-      </a>
+      <span class="navigation-arrows">
+        <a *ngIf="!isIndex" routerLink="/manual/index"
+          class="fa fa-arrow-up pull-right back"
+          (click)="onToIndex()">
+        </a>
+        <a *ngIf="!!nextPage"
+          class="fa fa-arrow-right pull-right back"
+          (click)="onToNextPage(nextPage)">
+        </a>
+        <a *ngIf="!isIndex"
+          class="fa fa-arrow-left pull-right back"
+          (click)="onToPreviousPage()">
+        </a>
+      </span>
     </span>
   </div>
   <div class="panel-body" *ngIf="!isLoading">
@@ -37,9 +39,15 @@
             'fa-chevron-right': sectionClosed[item.sort]
           }">
         </span>
-        <span *ngIf="!item.isHeader" class="fa fa-arrow-right"></span>
         <span *ngIf="!item.isHeader">
-          &nbsp;<a routerLink="/manual/{{getPath(item)}}">{{item.title}}</a>
+          <span class="visible-print">
+            <span class="fa fa-arrow-right fa-spacing"></span>
+            <span>{{item.title}}</span>
+          </span>
+          <span class="hidden-print">
+            <span class="fa fa-arrow-right fa-spacing"></span>
+            <a routerLink="/manual/{{getPath(item)}}">{{item.title}}</a>
+          </span>
         </span>
         <span *ngIf="item.isHeader">
           &nbsp;{{item.title}}
@@ -49,21 +57,23 @@
     <div *ngIf="!isIndex"
       [innerHTML]="page?.html | sanitizeHtml" (click)="getRoute($event)">
     </div>
-    <button *ngIf="nextPage"
-      type="button"
-      class="btn btn-success next-btn"
-      (click)="onToNextPage(nextPage)"
-      >
-      <span class="fa fa-arrow-right fa-spacing"></span>Next: {{nextPage.title}}
-    </button>
-    <button *ngIf="!isIndex"
-      type="button"
-      class="btn btn-info next-btn"
-      [class.pull-right]="nextPage"
-      (click)="onToIndex()"
-      >
-      <span class="fa fa-arrow-up fa-spacing"></span>Back to index
-    </button>
+    <div class="buttons">
+      <button *ngIf="nextPage"
+        type="button"
+        class="btn btn-success next-btn"
+        (click)="onToNextPage(nextPage)"
+        >
+        <span class="fa fa-arrow-right fa-spacing"></span>Next: {{nextPage.title}}
+      </button>
+      <button *ngIf="!isIndex"
+        type="button"
+        class="btn btn-info next-btn"
+        [class.pull-right]="nextPage"
+        (click)="onToIndex()"
+        >
+        <span class="fa fa-arrow-up fa-spacing"></span>Back to index
+      </button>
+    </div>
   </div>
   <km-loader *ngIf="isLoading && !isError"
     [msg]=""

@@ -29,3 +29,9 @@ a.back:link, a.back:visited, a.back:hover, a.back:active {
   text-decoration: none;
 }
 [hidden] { display: none !important;}
+
+@media print {
+  .buttons, .navigation-arrows  {
+    display: none;
+  }
+}

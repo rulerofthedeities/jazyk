@@ -62,3 +62,9 @@ a:hover, a:active {
   color: grey;
   margin-left: 6px;
 }
+
+@media print {
+  .footer  {
+    display: none;
+  }
+}
