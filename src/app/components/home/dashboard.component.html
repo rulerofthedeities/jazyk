@@ -7,17 +7,20 @@
         {{text["Summary"]}}
       </div>
       <div class="panel-body panel-summary">
-        <div *ngIf="summaryData">
-          <div class="col-xs-6">
+        <div *ngIf="summaryData && !isLoadingOverview">
+          <div class="col-xs-6 score-col">
             <div class="rank info" (click)="onShowRankings(ranks)">
-              <img src="/assets/img/ranks/rank{{getRank()}}_64.png" class="img">
-              <span class="rank-name">{{getRankName()}}</span>
+              <img src="/assets/img/ranks/rank{{rank}}_64.png" class="img">
+              <span class="rank-name">{{rankName}}</span>
             </div>
             <div class="score info">
               <a routerLink="/user/score" class="points">{{summaryData.score | score}} {{text["points"]}}</a>
             </div>
+            <div class="next-rank" *ngIf="hasNextRank">
+              {{toGoNextRank | score}} {{text["pointsToNextRank"]}}
+            </div>
           </div>
-          <div class="col-xs-6">
+          <div class="col-xs-6 learned-col">
             <div class="learning info">
               <strong>{{summaryData.read?.finished || 0}}</strong> {{summaryData.read?.finished === 1 ? text["bookCompleted"] : text["booksCompleted"]}}<br>
               <strong>{{summaryData.listen?.finished || 0}}</strong> {{summaryData.listen?.finished === 1 ? text["bookListened"] : text["booksListened"]}}<br>
@@ -39,11 +42,14 @@
         <span class="fa fa-envelope-open-o fa-spacing-title"></span>
         {{text["Messages"]}}
       </div>
-      <div class="panel-body">
+      <div class="panel-body panel-messages">
         <div class="list-group">
           <a class="list-group-item"
             *ngFor="let message of communications; let i=index"
             (click)="onSelectMessage(i)">
+            <span class="badge">
+              {{getFromNow(message.dt)}}
+            </span>
             <span class="fa fa-spacing"
               [ngClass]="{
                 'fa-envelope-o': message.tpe==='message',
@@ -65,9 +71,6 @@
               class="content truncate"
               [class.unread]="!message.read">
               {{message.message}}
-            </span>
-            <span class="badge">
-              {{getFromNow(message.dt)}}
             </span>
             <div class="clearfix"></div>
           </a>
@@ -113,6 +116,6 @@
 </div>
 
 <km-modal-ranks #ranks
-  [rank]="getRank()"
+  [rank]="rank"
   [text]="text">
 </km-modal-ranks>

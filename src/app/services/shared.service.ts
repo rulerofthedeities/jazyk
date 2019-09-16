@@ -159,9 +159,21 @@ export class SharedService {
   }
 
   getRank(score: number): number {
-    let i;
+    let i: number;
     for (i = 0; i < this._rankScores.length && score >= this._rankScores[i]; i++) {}
     return i - 1;
+  }
+
+  getNextRank(rank: number): number {
+    if (rank < this._rankScores.length - 1) {
+      return rank + 1;
+    } else {
+      return null;
+    }
+  }
+
+  getPointsToGo(score: number, nextRank: number): number {
+    return this._rankScores[nextRank] - score;
   }
 
   get rankScores(): number[] {

@@ -38,6 +38,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoadingOverview = false;
   recentReady = false;
   isError = false;
+  totalScore: number;
+  rank: number;
+  rankName: string;
+  nextRank: number;
+  nextRankName: string;
+  toGoNextRank: number;
+  hasNextRank: boolean;
 
   constructor(
     private router: Router,
@@ -62,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onShowRankings(rankings: ModalRanksComponent) {
     rankings.showModal = true;
   }
-
+/*
   getRank(): number {
     return this.sharedService.getRank(this.getTotal());
   }
@@ -71,7 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const gender = this.userService.user.main.gender || 'm';
     return this.text['rank' + this.getRank() + gender];
   }
-
+*/
   getFromNow(dt: Date): string {
     moment.updateLocale('en', {
       relativeTime : {
@@ -102,6 +109,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setTotalAndRank(score: number) {
+    this.totalScore = score;
+    this.rank = this.sharedService.getRank(score);
+    const gender = this.userService.user.main.gender || 'm';
+    this.rankName = this.text['rank' + this.rank + gender];
+    const nextRank = this.sharedService.getNextRank(this.rank);
+    if (nextRank) {
+      this.hasNextRank = true;
+      this.nextRankName = this.text['rank' + nextRank + gender];
+      this.toGoNextRank = this.sharedService.getPointsToGo(score, nextRank);
+    } else {
+      this.hasNextRank = false;
+    }
+  }
+
   private getCounts() {
     this.isLoadingOverview = true;
     this.dashboardService
@@ -109,8 +131,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(
       data => {
-        this.isLoadingOverview = false;
         this.summaryData = data;
+        if (this.summaryData) {
+          this.setTotalAndRank(this.summaryData.score || 0);
+        }
+        this.isLoadingOverview = false;
       },
       error => this.errorService.handleError(error)
     );

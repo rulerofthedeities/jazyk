@@ -13,6 +13,9 @@
 .books .panel-heading {
   background-color: rgb(243, 156, 17);
 }
+.panel-summary, .panel-messages {
+  padding: 6px;
+}
 .notifications, .status {
   height: 174px;
   overflow: hidden;
@@ -27,11 +30,27 @@
   width: 64px;
   height: 64px;
 }
+.next-rank {
+  font-size: 12px;
+  font-style: italic;
+  color: #666;
+}
 .score {
   font-size: 20px;
 }
 .panel-summary{
   font-size: 18px;
+}
+.panel-messages .list-group-item {
+  padding: 12px 15px;
+}
+.panel-messages .badge {
+  position: relative;
+  top: 6px;
+}
+.score-col, .learned-col {
+  padding-left: 10px;
+  padding-right: 0;
 }
 .info {
   margin: 0;
@@ -59,7 +78,7 @@
   width: 100px;
 }
 .content.truncate {
-  width: 180px;
+  width: 170px;
 }
 .list-group-item {
   cursor: pointer;
