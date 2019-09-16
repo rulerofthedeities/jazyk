@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -12,6 +12,7 @@ const maxLeaders = 20,
 
 @Component({
   templateUrl: 'leaderboard.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['leaderboard.component.css', '../user/user.css']
 })
 
@@ -30,6 +31,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   tpe = 'everyone'; // everyone or following
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private sharedService: SharedService,
     private userService: UserService,
@@ -115,6 +117,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       const leaderIds = this.leaders[this.tab + this.tpe].map(l => l.userName ? null : l.userId).filter(l => l !== null);
       this.getUsers(leaderIds);
       this.loadingBoard = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -198,7 +201,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       getTranslations: true,
       getLeaderBoards: true
     };
-
     this.sharedService
     .fetchDependables(options)
     .pipe(takeWhile(() => this.componentActive))
@@ -216,5 +218,6 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.componentActive = false;
+    this.cdr.detach();
   }
 }
