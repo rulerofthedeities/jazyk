@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, ViewChild,
+         ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { isDevMode } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
@@ -10,6 +11,7 @@ import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-footer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'footer.component.html',
   styleUrls: ['footer.component.css']
 })
@@ -29,6 +31,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   @ViewChild('message') messageElement: ElementRef;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private userService: UserService,
     private errorService: ErrorService,
     private sharedService: SharedService,
@@ -42,6 +45,7 @@ export class FooterComponent implements OnInit, OnDestroy {
           if (!this.messageElement.nativeElement.contains(event.target)) {
             // Outside log, close log
             this.showLog = false;
+            this.cdr.detectChanges();
           }
         }
       });
@@ -98,6 +102,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         if (translations) {
           this.text = this.sharedService.getTranslatedText(translations);
           this.isReady = true;
+          this.cdr.detectChanges();
         }
       },
       error => this.errorService.handleError(error)
@@ -107,11 +112,15 @@ export class FooterComponent implements OnInit, OnDestroy {
   private observeEventMessages() {
     this.lastEventMessage = this.sharedService.lastEventMessage;
     this.sharedService.eventMessage.subscribe(
-      (newMessage: EventMessage) => this.lastEventMessage = newMessage.message
+      (newMessage: EventMessage) => {
+        this.lastEventMessage = newMessage.message;
+        this.cdr.detectChanges();
+      }
     );
   }
 
   ngOnDestroy() {
     this.componentActive = false;
+    this.cdr.detach();
   }
 }
