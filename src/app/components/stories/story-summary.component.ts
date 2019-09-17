@@ -95,7 +95,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.setActivity();
     this.checkIfNew();
     this.setDifficulty();
-    this.cdr.detectChanges();
+    this.sharedService.detectChanges(this.cdr);
   }
 
   onAudioEnded(isEnded: boolean) {
@@ -498,7 +498,7 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.checkStatus();
     this.setIcons();
     this.isLoading = false;
-    this.cdr.detectChanges();
+    this.sharedService.detectChanges(this.cdr);
   }
 
   ngOnDestroy() {
@@ -507,6 +507,8 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       tooltipRemove.hide();
     }
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

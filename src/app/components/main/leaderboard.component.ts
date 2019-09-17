@@ -117,7 +117,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
       const leaderIds = this.leaders[this.tab + this.tpe].map(l => l.userName ? null : l.userId).filter(l => l !== null);
       this.getUsers(leaderIds);
       this.loadingBoard = false;
-      this.cdr.detectChanges();
+      this.sharedService.detectChanges(this.cdr);
     }
   }
 
@@ -218,6 +218,8 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

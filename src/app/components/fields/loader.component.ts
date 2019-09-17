@@ -46,6 +46,8 @@ export class LoaderComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

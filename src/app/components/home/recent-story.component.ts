@@ -146,6 +146,8 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

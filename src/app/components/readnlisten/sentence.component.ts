@@ -10,11 +10,15 @@ interface Position {
   translations: string;
   start?: number;
   end: number;
+  actualNotes: string[];
+  notes: string[];
 }
 
 interface SentenceSection {
   translations?: string;
   word?: Word;
+  actualNotes?: string;
+  notes?: string;
   text: string;
   wordId: string;
 }
@@ -84,8 +88,10 @@ export class SentenceComponent implements OnChanges {
                 wordId: w.wordId,
                 translations: w.translations ? w.translations.replace(/\|/g, ', ') : '',
                 word: w.word,
+                actualNotes: w.actual && w.actual.note ? w.actual.note.split('|') : [],
                 start: p.start,
-                end: p.end
+                end: p.end,
+                notes: w.notes && w.notes.length ? w.notes.split('|') : []
               };
             }
           });
@@ -95,6 +101,7 @@ export class SentenceComponent implements OnChanges {
         // Split up sentence according to start and end of positions
         let sentencePos = 0;
         const text = this.sentence.text;
+        console.log('positions', positions);
         positions.forEach(p => {
           if (p && p.start >= sentencePos) {
             if (p.start > sentencePos) {
@@ -104,12 +111,32 @@ export class SentenceComponent implements OnChanges {
                 wordId: null
               });
             }
+            // Create notes for actual word
+            const actualNotes: string[] = [];
+            p.actualNotes.forEach(note => {
+              const tl = this.text['note-' + note];
+              if (tl) {
+                actualNotes.push(tl);
+              }
+            });
+            actualNotes.unshift(this.text[p.word.wordType]);
+            // Create notes for word
+            const notes: string[] = [];
+            p.notes.forEach(note => {
+              const tl = this.text['note-' + note];
+              if (tl) {
+                notes.push(tl);
+              }
+            });
+
             // Add word section
             this.sentenceSections.push({
               text: text.substring(p.start, p.end + 1),
               wordId: p.wordId,
               word: p.word,
-              translations: p.translations || ''
+              translations: p.translations || '',
+              actualNotes: actualNotes.join(', '),
+              notes: notes.join(', ')
             });
             sentencePos = p.end + 1;
           }

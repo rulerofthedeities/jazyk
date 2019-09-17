@@ -40,7 +40,8 @@
                 ({{text[section.word.genus]}})
               </small>
             </strong>
-            <div class="word-type">{{text[section.word.wordType]}}</div>
+            <div class="word-type">{{section.actualNotes}}</div>
+            <div class="notes" *ngIf="section.notes">[{{section.notes}}]</div>
           </div>
           <div>
             <img src="/assets/img/flags/{{lanToCode}}.png" class="flag to">

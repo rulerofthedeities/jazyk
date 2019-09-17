@@ -141,6 +141,8 @@ export class StoryButtonsComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

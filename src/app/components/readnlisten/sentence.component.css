@@ -67,8 +67,13 @@
   color: #666;
   font-style: italic;
 }
+.notes {
+  font-size: 14px;
+  color: red;
+}
 .word-data {
   margin-bottom: 6px;
+  display: inline-grid;
 }
 .word-genus {
   font-weight: 100;

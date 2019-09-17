@@ -45,7 +45,7 @@ export class FooterComponent implements OnInit, OnDestroy {
           if (!this.messageElement.nativeElement.contains(event.target)) {
             // Outside log, close log
             this.showLog = false;
-            this.cdr.detectChanges();
+            this.sharedService.detectChanges(this.cdr);
           }
         }
       });
@@ -102,7 +102,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         if (translations) {
           this.text = this.sharedService.getTranslatedText(translations);
           this.isReady = true;
-          this.cdr.detectChanges();
+          this.sharedService.detectChanges(this.cdr);
         }
       },
       error => this.errorService.handleError(error)
@@ -114,13 +114,15 @@ export class FooterComponent implements OnInit, OnDestroy {
     this.sharedService.eventMessage.subscribe(
       (newMessage: EventMessage) => {
         this.lastEventMessage = newMessage.message;
-        this.cdr.detectChanges();
+        this.sharedService.detectChanges(this.cdr);
       }
     );
   }
 
   ngOnDestroy() {
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

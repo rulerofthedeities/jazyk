@@ -138,6 +138,8 @@ export class AudioFileComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     this.audio = null;
     this.componentActive = false;
-    this.cdr.detach();
+    if (this.cdr) {
+      this.cdr.detach();
+    }
   }
 }

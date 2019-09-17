@@ -164,6 +164,7 @@ export interface WordPosition {
   locations: MappedWordLocation[];
   translations?: string;
   word?: Word;
+  notes?: string;
 }
 
 export interface SentenceWord {
