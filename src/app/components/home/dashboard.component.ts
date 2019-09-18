@@ -1,24 +1,12 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { SharedService } from '../../services/shared.service';
 import { UserService } from '../../services/user.service';
 import { ErrorService } from '../../services/error.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { SummaryData, RecentBook } from '../../models/dashboard.model';
-import { Message } from '../../models/user.model';
+import { SummaryData, RecentBook, Progress, ProgressPoints } from '../../models/dashboard.model';
 import { LicenseUrl } from '../../models/main.model';
 import { ModalRanksComponent } from '../modals/modal-ranks.component';
-import * as moment from 'moment';
 import { takeWhile } from 'rxjs/operators';
-
-interface Communication {
-  id: string;
-  tpe: string;
-  from: string;
-  message: string;
-  dt: Date;
-  read: boolean;
-}
 
 @Component({
   selector: 'km-dashboard',
@@ -31,10 +19,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @Input() licenses: LicenseUrl[];
   private componentActive = true;
   summaryData: SummaryData;
-  communications: Communication[];
   recent: RecentBook[];
   isLoadingRecent = false;
-  isLoadingCommunication = false;
+  isLoadingProgress = false;
   isLoadingOverview = false;
   recentReady = false;
   isError = false;
@@ -45,9 +32,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nextRankName: string;
   toGoNextRank: number;
   hasNextRank: boolean;
+  hasChartData: boolean;
+  chartOptions = {
+    scaleShowVerticalLines: false,
+    responsive: false
+  };
+  chartLabels = [];
+  chartType = 'line';
+  chartLegend = false;
+  chartData = null;
 
   constructor(
-    private router: Router,
     private dashboardService: DashboardService,
     private sharedService: SharedService,
     private userService: UserService,
@@ -56,20 +51,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getCounts();
+    this.getProgress();
     this.getRecent();
-    this.getNotificationsAndMessages();
-    this.observe();
-  }
-
-  onSelectMessage(i: number) {
-    const tpe = this.communications[i].tpe;
-    this.router.navigate(['/user/' + tpe + 's' + '/' + this.communications[i].id]);
   }
 
   onShowRankings(rankings: ModalRanksComponent) {
     rankings.showModal = true;
   }
-/*
+
   getRank(): number {
     return this.sharedService.getRank(this.getTotal());
   }
@@ -77,28 +66,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getRankName(): string {
     const gender = this.userService.user.main.gender || 'm';
     return this.text['rank' + this.getRank() + gender];
-  }
-*/
-  getFromNow(dt: Date): string {
-    moment.updateLocale('en', {
-      relativeTime : {
-        future: 'in %s',
-        past: this.text['dtPast'] || '',
-        s  : this.text['dts'] || '',
-        ss : this.text['dtss'] || '',
-        m:  this.text['dtm'] || '',
-        mm: this.text['dtmm'] || '',
-        h:  this.text['dth'] || '',
-        hh: this.text['dthh'] || '',
-        d:  this.text['dtd'] || '',
-        dd: this.text['dtdd'] || '',
-        M:  this.text['dtM'] || '',
-        MM: this.text['dtMM'] || '',
-        y:  this.text['dty'] || '',
-        yy: this.text['dtyy'] || ''
-      }
-    });
-    return moment(dt).fromNow();
   }
 
   private getTotal(): number {
@@ -141,6 +108,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  private getProgress() {
+    // get points for last 7 days
+    this.isLoadingProgress = true;
+    this.dashboardService
+    .fetchProgress()
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe((progress: Progress) => {
+      this.isLoadingProgress = false;
+      this.processChartData(progress);
+    });
+  }
+
+  private processChartData(progress: Progress) {
+    this.hasChartData = false;
+    if (progress) {
+      this.chartData = [
+        {data: []}
+      ];
+      const startDay = new Date(progress.end),
+            day = new Date();
+      let dayStr: string,
+          points: ProgressPoints,
+          j: number;
+      for (let i = 0; i < progress.days; i++) {
+        j = progress.days - i - 1
+        day.setDate(startDay.getDate() - i);
+        dayStr = this.getDayString(day);
+        this.chartLabels[j] = dayStr;
+        points = progress.points.find(p => p.day === dayStr);
+        this.chartData[0].data[j] = 0;
+        if (points) {
+          this.chartData[0].data[j] = points.points;
+        }
+      }
+      this.chartData[0].backgroundColor = 'rgba(92, 184, 92, 0.6)';
+      this.chartData[0].borderColor = 'rgba(92, 184, 92, 0.8)';
+      this.chartData[0].pointBackgroundColor = 'rgba(242, 196, 15, 0.9)';
+      this.chartData[0].pointBorderColor = 'rgba(102, 102, 102, 0.9)';
+      this.chartData[0].pointHoverBackgroundColor = 'rgba(242, 196, 15, 1)';
+      this.chartData[0].pointHoverBorderColor = 'rgba(102, 102, 102, 1)';
+      this.hasChartData = true;
+    }
+  }
+
+  private getDayString(day: Date): string {
+    const year = day.getFullYear(),
+          month = day.getMonth() + 1,
+          date = day.getDate();
+    return `${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+  }
+
   private getRecent() {
     this.isLoadingRecent = true;
     this.dashboardService
@@ -149,20 +167,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .subscribe(books => {
       this.processRecent(books);
       this.isLoadingRecent = false;
-      },
-      error => this.errorService.handleError(error)
-    );
-  }
-
-  private getNotificationsAndMessages() {
-    this.isLoadingCommunication = true;
-    this.dashboardService
-    .fetchCommunication()
-    .pipe(takeWhile(() => this.componentActive))
-    .subscribe(
-      messages => {
-        this.isLoadingCommunication = false;
-        this.processCommunication(messages);
       },
       error => this.errorService.handleError(error)
     );
@@ -178,58 +182,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           });
     this.recent = recentBooks.slice(0, 8);
     this.recentReady = true;
-  }
-
-  private processCommunication(messages: Message[]) {
-    const communications = [];
-    // Combine messages and notifcations
-    messages.forEach(message => {
-      communications.push({
-        id: message._id,
-        tpe: 'message',
-        from: message.sender.userName,
-        message: message.message,
-        dt: message.dt,
-        read: message.recipient.read
-      });
-    });
-    /*
-    data.notifications.forEach(notification => {
-      communications.push({
-        id: notification._id,
-        tpe: 'notification',
-        from: 'jazyk',
-        message: notification.title,
-        dt: notification.dt,
-        read: notification.read
-      });
-    });
-    */
-    // Sort communications
-    this.communications = communications.sort(function(a, b) {
-      const dtA = new Date(a.dt),
-            dtB = new Date(b.dt);
-      return dtA < dtB ? 1 : (dtA > dtB ? -1 : 0);
-    }).slice(0, 4);
-  }
-
-  private observe() {
-    /*
-    this.userService
-    .notificationRead
-    .subscribe(
-      isAllRead => {
-        // Refetch notification in case of a new welcome message
-        this.getNotificationsAndMessages();
-      }
-    );
-    */
-    this.userService
-    .messageRead
-    .pipe(takeWhile( () => this.componentActive))
-    .subscribe(
-      update => this.getNotificationsAndMessages()
-    );
   }
 
   ngOnDestroy() {

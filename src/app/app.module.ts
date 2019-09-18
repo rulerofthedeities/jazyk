@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { ListModule } from './list.module';
 import { CookieModule } from 'ngx-cookie';
+import { ChartsModule } from 'ng2-charts';
 
 import { routes } from './app.routes';
 import { UserResolver } from './resolves/user.resolver';
@@ -43,6 +44,7 @@ import { BooklistComponent } from './components/pages/book-list.component';
     CoreModule.forRoot(),
     CookieModule.forRoot(),
     ListModule,
+    ChartsModule,
     TransferHttpCacheModule
   ],
   providers: [

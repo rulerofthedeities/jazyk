@@ -35,47 +35,24 @@
       </div>
     </div>
   </div>
-  <!-- Notification -->
+  <!-- Progress -->
   <div class="col-md-6 col-xs-12">
-    <div class="panel panel-default notifications transparant">
+    <div class="panel panel-default progress transparant">
       <div class="panel-heading">
-        <span class="fa fa-envelope-open-o fa-spacing-title"></span>
-        {{text["Messages"]}}
+        <span class="fa fa-calendar fa-spacing-title"></span>
+        {{text["Progress10d"]}}
       </div>
-      <div class="panel-body panel-messages">
-        <div class="list-group">
-          <a class="list-group-item"
-            *ngFor="let message of communications; let i=index"
-            (click)="onSelectMessage(i)">
-            <span class="badge">
-              {{getFromNow(message.dt)}}
-            </span>
-            <span class="fa fa-spacing"
-              [ngClass]="{
-                'fa-envelope-o': message.tpe==='message',
-                'fa-bell-o': message.tpe==='notification'
-              }">
-            </span>
-            <span class="fa fa-spacing"
-              [ngClass]="{
-                'fa-circle': !message.read,
-                'fa-circle-o': message.read,
-                'fa-envelope-o': message.tpe==='message',
-                'fa-bell-o': message.tpe==='notification'
-              }">
-            </span>
-            <span class="user truncate">
-              {{message.from}}
-            </span>
-            <span
-              class="content truncate"
-              [class.unread]="!message.read">
-              {{message.message}}
-            </span>
-            <div class="clearfix"></div>
-          </a>
+      <div class="panel-body panel-progress">
+        <div *ngIf="hasChartData" class="canvas-container">
+          <canvas baseChart width="400" height="186"
+                  [datasets]="chartData"
+                  [labels]="chartLabels"
+                  [options]="chartOptions"
+                  [legend]="chartLegend"
+                  [chartType]="chartType">
+          </canvas>
         </div>
-        <km-loader *ngIf="isLoadingCommunication && !isError"
+        <km-loader *ngIf="isLoadingProgress && !isError"
           [msg]="text['Loading']"
           [showBackground]="false">
         </km-loader>

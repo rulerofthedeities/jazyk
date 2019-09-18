@@ -35,3 +35,15 @@ export interface HomeStats {
   nrOfGlossaries: number;
   nrOfWords: number;
 }
+
+export interface ProgressPoints {
+  day: string;
+  points: number;
+}
+
+export interface Progress {
+  days: number;
+  start: Date;
+  end: Date;
+  points: ProgressPoints[];
+}

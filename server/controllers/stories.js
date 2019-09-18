@@ -10,7 +10,9 @@ const response = require('../response'),
 
 module.exports = {
   getActivity: (req, res) => {
-    const query = {},
+    const query = {
+            bookType: {$ne: 'glossary'}
+          },
           projection = {
             _id: 0,
             bookId: '$_id.bookId',
@@ -19,6 +21,7 @@ module.exports = {
             finished: 1
           },
           pipeline = [
+            {$match: query},
             {$group: {
               _id: {
                 bookId: '$bookId',
@@ -31,7 +34,11 @@ module.exports = {
                 $sum: { $cond: [{'$ifNull': ['$bookmark', false]}, 1, 0] }
               },
               finished: {
-                $sum: { $cond: [{'$eq': ['$bookmark.isBookRead', true]}, 1, 0] }
+                $sum: {
+                  $cond: [
+                    {$or: [{'$gt': ['$repeatCount', 0]}, {'$eq': ['$bookmark.isBookRead', true]}]}, 1, 0
+                  ]
+                }
               }
             }},
             {$group: {

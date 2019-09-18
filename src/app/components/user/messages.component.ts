@@ -7,7 +7,6 @@ import { PlatformService } from '../../services/platform.service';
 import { Message, CompactProfile } from '../../models/user.model';
 import { takeWhile, filter } from 'rxjs/operators';
 import { zip } from 'rxjs';
-import { relativeTimeRounding } from 'moment';
 
 @Component({
   templateUrl: 'messages.component.html',

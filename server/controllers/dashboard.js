@@ -62,6 +62,45 @@ module.exports = {
       response.handleError(err, res, 500, 'Error fetching dashboard count data');
     });
   },
+  getProgress: (req, res) => {
+    const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
+          today = new Date(),
+          days = 10,
+          firstDay = new Date(today.getTime() - ((days - 1) * 24 * 60 * 60 * 1000)),
+          query = {
+            userId,
+            'dt.end': {$gte:firstDay}
+          },
+          pipeline = [
+            {$match: query},
+            {$project: {
+              points: 1,
+              yearMonthDay: {$dateToString: {format: "%Y-%m-%d", date: "$dt.end"}}
+            }},
+            {$group: {
+              _id: '$yearMonthDay',
+              totalPointsWords: {'$sum': '$points.words'},
+              totalPointsTranslations: {'$sum': '$points.translations'},
+              totalPointsTest: {'$sum': '$points.test'},
+              totalPointsFinished: {'$sum': '$points.finished'}
+            }},
+            {$project: {
+              _id: 0,
+              day: '$_id',
+              points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished', '$totalPointsTest' ]}
+            }}
+          ];
+    Session.aggregate(pipeline, (err, points) => {
+      response.handleError(err, res, 400, 'Error fetching recent progress', () => {
+        response.handleSuccess(res, {
+          days,
+          start: firstDay,
+          end: today,
+          points
+        });
+      });
+    });
+  },
   /*
   getCommunication: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -85,7 +124,7 @@ module.exports = {
     }).catch((err) => {
       response.handleError(err, res, 500, 'Error fetching dashboard communications data');
     });
-  },*/
+  },
   getRecentMail: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = req.params.max || '5',
@@ -104,6 +143,7 @@ module.exports = {
       });
     });
   },
+  */
   recentBooks: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
           max = parseInt(req.params.max, 10) || 3,

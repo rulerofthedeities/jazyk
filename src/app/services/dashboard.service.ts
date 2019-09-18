@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SummaryData, RecentBook, HomeStats } from '../models/dashboard.model';
+import { SummaryData, RecentBook, HomeStats, Progress } from '../models/dashboard.model';
 import { Leader, Position } from '../models/score.model';
 import { Message } from '../models/user.model';
 import { Observable } from 'rxjs';
@@ -19,6 +19,12 @@ export class DashboardService {
     .pipe(retry(3));
   }
 
+  fetchProgress(): Observable<Progress> {
+    return this.http
+    .get<Progress>('api/dashboard/progress')
+    .pipe(retry(3));
+  }
+
   fetchCommunication(): Observable<Message[]> {
     return this.http
     .get<Message[]>('/api/dashboard/communication/5')
@@ -33,19 +39,19 @@ export class DashboardService {
 
   fetchLeaders(max: number, period: string): Observable<Leader[]> {
     return this.http
-    .get<Leader[]>('/api/dashboard/leaders/' + period + '/' + max.toString())
+    .get<Leader[]>(`/api/dashboard/leaders/${period}/${max.toString()}`)
     .pipe(retry(3));
   }
 
   fetchFollowingLeaders(userIds: string[], max: number, period: string): Observable<Leader[]> {
     return this.http
-    .post<Leader[]>('/api/dashboard/leadersbyid/' + period + '/' + max.toString(), {userIds})
+    .post<Leader[]>(`/api/dashboard/leadersbyid/${period}/${max.toString()}`, {userIds})
     .pipe(retry(3));
   }
 
   fetchUserRank(userId: string, period: string): Observable<Position> {
     return this.http
-    .get<Position>('/api/dashboard/leaderrank/' + period + '/' + userId)
+    .get<Position>(`/api/dashboard/leaderrank/${period}/${userId}`)
     .pipe(retry(3));
   }
 
