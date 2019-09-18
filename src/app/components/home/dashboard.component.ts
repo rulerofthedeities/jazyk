@@ -35,7 +35,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   hasChartData: boolean;
   chartOptions = {
     scaleShowVerticalLines: false,
-    responsive: false
+    responsive: false,
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0,
+          beginAtZero: true,
+          precision: 0
+        }
+      }],
+      xAxes: [{
+          display: false
+      }]
+    }
   };
   chartLabels = [];
   chartType = 'line';

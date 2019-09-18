@@ -45,7 +45,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   storyData: Map<StoryData> = {};
   nrOfBooks: number;
   scrollCutOff = 10; // nr of books shown
-  initScrollCutOff = 10;
+  initScrollCutOff = 15;
   scrollDelta = 5;
   itemTxt: string; // filter
   showFilter: boolean;
