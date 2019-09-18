@@ -101,7 +101,6 @@ export class SentenceComponent implements OnChanges {
         // Split up sentence according to start and end of positions
         let sentencePos = 0;
         const text = this.sentence.text;
-        console.log('positions', positions);
         positions.forEach(p => {
           if (p && p.start >= sentencePos) {
             if (p.start > sentencePos) {
