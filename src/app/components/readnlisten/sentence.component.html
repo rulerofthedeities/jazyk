@@ -40,7 +40,7 @@
                 ({{text[section.word.genus]}})
               </small>
             </strong>
-            <div class="word-type">{{section.actualNotes}}</div>
+            <div class="word-type">{{wordType}}<span *ngIf="section.actualNotes"> ({{section.text}}: {{section.actualNotes}})</span></div>
             <div class="notes" *ngIf="section.notes">[{{section.notes}}]</div>
           </div>
           <div>

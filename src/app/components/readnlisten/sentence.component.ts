@@ -44,7 +44,8 @@ export class SentenceComponent implements OnChanges {
   s3: string;
   hasWords = false;
   sentenceSections: SentenceSection[];
-  selected = null; // Selected translation popup
+  selected: number = null; // Selected translation popup
+  wordType: string;
 
   constructor(
     private sharedService: SharedService
@@ -118,7 +119,8 @@ export class SentenceComponent implements OnChanges {
                 actualNotes.push(tl);
               }
             });
-            actualNotes.unshift(this.text[p.word.wordType]);
+            // actualNotes.unshift(this.text[p.word.wordType]);
+            this.wordType = this.text[p.word.wordType];
             // Create notes for word
             const notes: string[] = [];
             p.notes.forEach(note => {
