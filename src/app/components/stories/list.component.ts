@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { SharedService } from '../../services/shared.service';
 import { StoriesService } from 'app/services/stories.service';
 import { FilterService } from 'app/services/filter.service';
+import { PlatformService } from '../../services/platform.service';
 import { Map, Language, LicenseUrl } from '../../models/main.model';
 import { Book, UserBookActivity, UserBookLean, UserData, TranslationData,
         FinishedData, FinishedTab, ViewFilter, StoryData } from '../../models/book.model';
@@ -56,6 +57,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private platform: PlatformService,
     private location: Location,
     private userService: UserService,
     private sharedService: SharedService,
@@ -77,6 +79,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
       this.targetLanguage = this.bookLanguage;
     }
     this.bookLanguage = lan;
+    this.resetScroll();
     this.filterUserLanguages();
     // Clear existing post activity data
     this.books.forEach(book => {
@@ -89,6 +92,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   onMyLanguageSelected(lan: Language) {
     this.userService.setUserLanCode(lan.code);
     this.targetLanguage = lan;
+    this.resetScroll();
     // Clear existing post activity data
     this.books.forEach(book => {
       this.storyData[book._id] = {};
@@ -105,6 +109,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   onChangeSort(newSort: string) {
     this.filterService.sort[this.listTpe] = newSort;
+    this.resetScroll();
     this.getBooks(false);
   }
 
@@ -590,6 +595,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private resetScroll() {
     this.scrollCutOff = this.initScrollCutOff;
+    if (this.platform.isBrowser) {
+      window.scrollTo(0, 0);
+    }
     this.scrollBooks();
   }
 
