@@ -38,6 +38,7 @@ export interface HomeStats {
 
 export interface ProgressPoints {
   day: string;
+  type: string;
   points: number;
 }
 

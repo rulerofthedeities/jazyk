@@ -131,9 +131,9 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   }
 
   private getSentencePoints(flashCard: FlashCard): number {
-    const scorePoints = (1000 - flashCard.score) / 100, // 0-10
-          lengthPoints = Math.min(5, flashCard.word.length / 3); // 0 - 5
-    return Math.max(Math.trunc((scorePoints + lengthPoints) / 3 * 2), 1); // 1-10
+    const scorePoints = (1000 - flashCard.score) / 50, // 0-20
+          lengthPoints = Math.min(10, flashCard.word.length / 2); // 0 - 10
+    return Math.max(Math.trunc((scorePoints + lengthPoints)), 2); // 2-30
   }
 
   private setFlashCards(words: Word[]) {

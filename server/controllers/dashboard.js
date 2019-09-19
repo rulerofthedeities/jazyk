@@ -75,10 +75,14 @@ module.exports = {
             {$match: query},
             {$project: {
               points: 1,
+              bookType: 1,
               yearMonthDay: {$dateToString: {format: "%Y-%m-%d", date: "$dt.end"}}
             }},
             {$group: {
-              _id: '$yearMonthDay',
+              _id: {
+                day: '$yearMonthDay',
+                type: '$bookType'
+              },
               totalPointsWords: {'$sum': '$points.words'},
               totalPointsTranslations: {'$sum': '$points.translations'},
               totalPointsTest: {'$sum': '$points.test'},
@@ -86,11 +90,13 @@ module.exports = {
             }},
             {$project: {
               _id: 0,
-              day: '$_id',
+              day: '$_id.day',
+              type: '$_id.type',
               points: {'$add' : [ '$totalPointsWords', '$totalPointsTranslations', '$totalPointsFinished', '$totalPointsTest' ]}
             }}
           ];
     Session.aggregate(pipeline, (err, points) => {
+      console.log('points', points);
       response.handleError(err, res, 400, 'Error fetching recent progress', () => {
         response.handleSuccess(res, {
           days,

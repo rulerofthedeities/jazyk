@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     responsive: false,
     scales: {
       yAxes: [{
+        stacked: true,
         ticks: {
           min: 0,
           beginAtZero: true,
@@ -45,12 +46,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       }],
       xAxes: [{
-          display: false
+        stacked: true,
+        display: false
       }]
+    },
+    legend: {
+      display: true,
+      labels: {
+        fontColor: 'rgb(255, 99, 132)'
+      }
     }
   };
   chartLabels = [];
-  chartType = 'line';
+  chartType = 'bar';
   chartLegend = false;
   chartData = null;
 
@@ -128,6 +136,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((progress: Progress) => {
       this.isLoadingProgress = false;
+      console.log('progress', progress);
       this.processChartData(progress);
     });
   }
@@ -136,30 +145,85 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.hasChartData = false;
     if (progress) {
       this.chartData = [
-        {data: []}
+        {
+          data: [],
+          label: this.text['chart-read']
+        },
+        {
+          data: [],
+          label: this.text['chart-listen']
+        },
+        {
+          data: [],
+          label: this.text['chart-glossary']
+        },
+        {
+          data: [],
+          type: 'line',
+          label: this.text['chart-total']
+        }
       ];
       const startDay = new Date(progress.end),
             day = new Date();
       let dayStr: string,
           points: ProgressPoints,
+          pointsArr: ProgressPoints[],
           j: number;
       for (let i = 0; i < progress.days; i++) {
         j = progress.days - i - 1
         day.setDate(startDay.getDate() - i);
         dayStr = this.getDayString(day);
         this.chartLabels[j] = dayStr;
-        points = progress.points.find(p => p.day === dayStr);
+        pointsArr = progress.points.filter(p => p.day === dayStr);
         this.chartData[0].data[j] = 0;
-        if (points) {
-          this.chartData[0].data[j] = points.points;
+        this.chartData[1].data[j] = 0;
+        this.chartData[2].data[j] = 0;
+        if (pointsArr) {
+          console.log('points', pointsArr);
+          points = pointsArr.find(p => p.type === 'read');
+          if (points) {
+            this.chartData[0].data[j] = points.points;
+          }
+          points = pointsArr.find(p => p.type === 'listen');
+          if (points) {
+            this.chartData[1].data[j] = points.points;
+          }
+          points = pointsArr.find(p => p.type === 'glossary');
+          if (points) {
+            this.chartData[2].data[j] = points.points;
+          }
+          // Total line
+          this.chartData[3].data[j] = pointsArr.reduce((total, num) => total + num.points, 0);
         }
       }
-      this.chartData[0].backgroundColor = 'rgba(92, 184, 92, 0.6)';
-      this.chartData[0].borderColor = 'rgba(92, 184, 92, 0.8)';
-      this.chartData[0].pointBackgroundColor = 'rgba(242, 196, 15, 0.9)';
+      this.chartData[0].backgroundColor = 'rgba(129, 166, 214, 0.8)';
+      this.chartData[0].borderColor = 'rgba(81, 139, 241, 0.8)';
+      this.chartData[0].hoverBackgroundColor = 'rgba(129, 166, 214, 1)';
+      this.chartData[0].hoverBorderColor = 'rgba(81, 139, 241, 1)';
+      this.chartData[0].pointBackgroundColor = 'rgba(81, 139, 241, 0.9)';
       this.chartData[0].pointBorderColor = 'rgba(102, 102, 102, 0.9)';
-      this.chartData[0].pointHoverBackgroundColor = 'rgba(242, 196, 15, 1)';
+      this.chartData[0].pointHoverBackgroundColor = 'rgba(81, 139, 241, 1)';
       this.chartData[0].pointHoverBorderColor = 'rgba(102, 102, 102, 1)';
+      this.chartData[1].backgroundColor = 'rgba(214, 183, 129, 0.8)';
+      this.chartData[1].borderColor = 'rgba(214, 165, 81, 0.8)';
+      this.chartData[1].hoverBackgroundColor = 'rgba(214, 183, 129, 1)';
+      this.chartData[1].hoverBorderColor = 'rgba(214, 165, 81, 1)';
+      this.chartData[1].pointBackgroundColor = 'rgba(214, 165, 81, 0.9)';
+      this.chartData[1].pointBorderColor = 'rgba(102, 102, 102, 0.9)';
+      this.chartData[1].pointHoverBackgroundColor = 'rgba(214, 165, 81, 1)';
+      this.chartData[1].pointHoverBorderColor = 'rgba(102, 102, 102, 1)';
+      this.chartData[2].backgroundColor = 'rgba(214, 140, 129, 0.8)';
+      this.chartData[2].borderColor = 'rgba(214, 99, 81, 0.8)';
+      this.chartData[2].hoverBackgroundColor = 'rgba(214, 140, 129, 1)';
+      this.chartData[2].hoverBorderColor = 'rgba(214, 99, 81, 1)';
+      this.chartData[2].pointBackgroundColor = 'rgba(214, 99, 81, 0.9)';
+      this.chartData[2].pointBorderColor = 'rgba(102, 102, 102, 0.9)';
+      this.chartData[2].pointHoverBackgroundColor = 'rgba(214, 99, 81, 1)';
+      this.chartData[2].pointHoverBorderColor = 'rgba(102, 102, 102, 1)';
+      this.chartData[3].backgroundColor = 'rgba(255, 255, 255, 0)';
+      this.chartData[3].borderColor = 'rgba(92, 184, 92, 0.8)';
+      this.chartData[3].hoverBackgroundColor = 'rgba(92, 184, 92, 0.8)';
+      this.chartData[3].hoverBorderColor = 'rgba(92, 184, 92, 1)';
       this.hasChartData = true;
     }
   }

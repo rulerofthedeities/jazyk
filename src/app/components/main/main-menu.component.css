@@ -52,6 +52,24 @@ li.active .bar, li > a:hover .bar {
   position: relative;
   background-color: white;
 }
+li > a:hover .bar.read {
+  background-color: #518bd6  ;
+}
+li > a:hover .bar.listen {
+  background-color: #d6a551;
+}
+li > a:hover .bar.glossary {
+  background-color: #d66351;
+}
+li.active .bar.read {
+  background-color: #81a6d6;
+}
+li.active .bar.listen {
+  background-color: #d6b781;
+}
+li.active .bar.glossary {
+  background-color: #d68c81;
+}
 li > a.inactive:hover .bar {
   display: none;
 }
@@ -70,6 +88,24 @@ li.active span.bar {
   position: relative;
   left: 4px;
   top: -4px;
+}
+.fa-book {
+  color: #81a6d6;
+}
+.fa-volume-up {
+  color: #d6b781;
+}
+.fa-list {
+  color: #d68c81;
+}
+li > a:hover .fa-book {
+  color: #518bd6;
+}
+li > a:hover .fa-volume-up {
+  color: #d6a551;
+}
+li > a:hover .fa-list {
+  color: #d66351;
 }
 .dropdown, .indicator, .manual {
   cursor: pointer;
