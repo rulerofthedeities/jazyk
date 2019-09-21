@@ -181,7 +181,30 @@ module.exports = {
         response.handleSuccess(res, result);
       });
     });
-  },
+  },/*
+  searchBooks: (req, res) => {
+    const bookLanCode = req.params.lan,
+          search = decodeURI(req.params.query),
+          query = {
+            lanCode: bookLanCode,
+            $text: {
+              $search: search,
+              $caseSensitive: false
+            }
+          },
+          projection = {
+            score : {$meta: "textScore"}
+          },
+          options = {
+            sort : {score : {$meta: "textScore" }}
+          };
+    Book.find(query, projection, options, (err, books) => {
+      console.log('search result', books);
+      response.handleError(err, res, 400, 'Error searching books', () => {
+        response.handleSuccess(res, books);
+      });
+    });
+  },*/
   getBook: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           bookType = req.params.bookType,

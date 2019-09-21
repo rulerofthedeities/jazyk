@@ -8,6 +8,9 @@ export class FilterService {
   filter: Map<ViewFilter> = {};
   filterTxt: Map<string> = {};
   hasFilter: Map<boolean> = {};
+  search: Map<string> = {};
+  searchTxt: Map<string> = {};
+  hasSearch: Map<boolean> = {};
 
   initFilter(bookType: string) {
     if (!this.filter[bookType]) {
@@ -27,6 +30,12 @@ export class FilterService {
     };
     this.filterTxt[bookType] = '';
     this.hasFilter[bookType] = false;
+  }
+
+  initSearch(bookType: string) {
+    if (!this.search[bookType]) {
+      this.search[bookType] = '';
+    }
   }
 
   initSort(bookType: string) {

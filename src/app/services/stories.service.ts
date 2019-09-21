@@ -124,6 +124,13 @@ export class StoriesService {
     .pipe(retry(3));
   }
 
+  searchBooks(bookLanCode: string, search: string): Observable<Book[]> {
+    const query = encodeURI(search);
+    return this.http
+    .get<Book[]>(`/api/books/search/${bookLanCode}/${query}`)
+    .pipe(retry(3));
+  }
+
   resetBookStatus(): UserBookStatus {
     return {
       isStarted: false,

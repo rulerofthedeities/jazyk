@@ -136,7 +136,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((progress: Progress) => {
       this.isLoadingProgress = false;
-      console.log('progress', progress);
       this.processChartData(progress);
     });
   }
@@ -179,7 +178,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.chartData[1].data[j] = 0;
         this.chartData[2].data[j] = 0;
         if (pointsArr) {
-          console.log('points', pointsArr);
           points = pointsArr.find(p => p.type === 'read');
           if (points) {
             this.chartData[0].data[j] = points.points;

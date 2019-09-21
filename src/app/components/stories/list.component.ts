@@ -51,6 +51,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   itemTxt: string; // filter
   showFilter: boolean;
   filterChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  searchChanged: BehaviorSubject<boolean> = new BehaviorSubject(false);
   listTpeChanged: BehaviorSubject<string> = new BehaviorSubject('read');
   targetLanguageChanged: BehaviorSubject<Language>;
   dataLoaded: Map<BehaviorSubject<StoryData>> = {};
@@ -118,6 +119,16 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.filterBooks();
   }
 
+  onChangeSearch(newSearch: string) {
+    this.filterService.search[this.listTpe] = newSearch;
+    if (newSearch) {
+      this.searchBooks(newSearch);
+    } else {
+      this.filterBooks();
+      this.setSearchDisplayTxt('');
+    }
+  }
+
   onScrollBooksDown() {
     this.scrollCutOff += this.scrollDelta;
     this.scrollBooks();
@@ -180,6 +191,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.storyData[book._id] = {};
           });
           this.filterBooks();
+          this.setSearchDisplayTxt('');
         }
         if (data[1] && data[1].length) {
           this.processActivity(data[1]);
@@ -188,6 +200,50 @@ export class StoryListComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     );
+  }
+
+  private searchBooks(search: string) {
+    console.log('searching in list for', search, this.bookLanguage.code);
+    // No partial match in mongodb text query, so use filter io text query
+    this.filterBooks();
+    console.log('books', this.filteredBooks);
+    const query = search,
+          options = 'gmi';
+    const re = new RegExp(query, options);
+    // Filter title, author and series
+    const titleResults = this.filteredBooks.filter(b => b.title.match(re)),
+          authorResults = this.filteredBooks.filter(b => b.authors.match(re)),
+          seriesResults = this.filteredBooks.filter(b => b.series && b.series.match(re));
+    // Add weights
+    titleResults.map(b => b.sortScore = 5);
+    authorResults.map(b => b.sortScore = 4);
+    seriesResults.map(b => b.sortScore = 2);
+    // Merge
+    const results = [...titleResults];
+    this.mergeSearchResults(results, authorResults);
+    this.mergeSearchResults(results, seriesResults);
+    // Sort merged results
+    results.sort(
+      (a, b) => (a.sortScore > b.sortScore) ? 1 : ((b.sortScore > a.sortScore) ? -1 : 0)
+    );
+
+    console.log(titleResults, authorResults, seriesResults, results);
+    this.filteredBooks = [...results];
+    this.setSearchDisplayTxt(search);
+    this.resetScroll();
+  }
+
+  private mergeSearchResults(results: Book[], searchResults: Book[]) {
+    let book: Book;
+    searchResults.forEach(bookResult => {
+      // if already in results, add score, otherwise add to results
+      book = results.find(b => b._id === bookResult._id);
+      if (book) {
+        book.sortScore += bookResult.sortScore;
+      } else {
+        results.push(bookResult);
+      }
+    });
   }
 
   private processActivity(activity: UserBookActivity[]) {
@@ -499,11 +555,15 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
     // Apply filters
     const filters: string[] = [],
-          currentFilter = this.filterService.filter[this.listTpe];
+          currentFilter = this.filterService.filter[this.listTpe],
+          currentSearch = this.filterService.search[this.listTpe];
     let filteredBook: Book;
-
     this.isSingleBook = false;
-    if (currentFilter) {
+    console.log('current filter', currentFilter);
+    console.log('current search', currentSearch);
+    if (currentSearch) {
+      console.log('search active, no filter');
+    } else if (currentFilter) {
       if (currentFilter.bookId) {
         // Check if book with this bookId exists
         filteredBook = this.books.find(book => book._id.toString() === currentFilter.bookId);
@@ -570,19 +630,14 @@ export class StoryListComponent implements OnInit, OnDestroy {
           return popularityA > popularityB ? -1 : (popularityA < popularityB ? 1 : 0);
         });
       }
-      }
+    }
     // Set display text
     this.setFilterDisplayTxt(filters);
     this.resetScroll();
   }
 
   private setFilterDisplayTxt(filters: string[]) {
-    let itemTxt = this.text['ShowingItems'];
-    if (itemTxt && this.nrOfBooks && this.filteredBooks) {
-      itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
-      itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
-    }
-    this.itemTxt = itemTxt;
+    this.setItemTxt();
     this.filterService.filterTxt[this.listTpe] = this.text['NoFilter'];
     this.filterService.hasFilter[this.listTpe] = false;
     if (filters.length) {
@@ -591,6 +646,24 @@ export class StoryListComponent implements OnInit, OnDestroy {
       this.filterService.filterTxt[this.listTpe] += filters.join(', ');
     }
     this.filterChanged.next(true);
+  }
+
+  private setSearchDisplayTxt(search: string) {
+    this.setItemTxt();
+    if (!search) {
+      this.filterService.hasSearch[this.listTpe] = false;
+      this.filterService.searchTxt[this.listTpe] = this.text['NoSearch'];
+    }
+    this.searchChanged.next(true);
+  }
+
+  private setItemTxt() {
+    let itemTxt = this.text['ShowingItems'];
+    if (itemTxt && this.nrOfBooks && this.filteredBooks) {
+      itemTxt = itemTxt.replace('%1', this.filteredBooks.length.toString());
+      itemTxt = itemTxt.replace('%2', this.nrOfBooks.toString());
+    }
+    this.itemTxt = itemTxt;
   }
 
   private resetScroll() {
@@ -623,6 +696,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private setFilter() {
     this.filterService.initFilter(this.listTpe);
+    this.filterService.initSearch(this.listTpe);
     this.filterService.initSort(this.listTpe);
     // Clear previous book filter
     this.filterService.filter[this.listTpe].bookId = null;
@@ -634,7 +708,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
       params => {
         if (params['id']) {
           this.filterService.setBookId(params['id'], this.listTpe);
-          this.location.go(`/${this.listTpe === 'glossary' ? 'glossaries': this.listTpe}`);
+          this.location.go(`/${this.listTpe === 'glossary' ? 'glossaries' : this.listTpe}`);
         }
       }
     );

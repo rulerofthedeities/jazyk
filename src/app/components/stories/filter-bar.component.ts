@@ -20,9 +20,12 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   @Input() listType: string;
   @Input() itemTxt: string;
   @Input() filterChanged: Subject<boolean>;
+  @Input() searchChanged: Subject<boolean>;
   @Output() newSort = new EventEmitter<string>();
   @Output() newFilter = new EventEmitter<ViewFilter>();
+  @Output() newSearch = new EventEmitter<string>();
   @ViewChild('dropdown') dropdown: ElementRef;
+  @ViewChild('searchbox') query: ElementRef;
   private componentActive = true;
   showDropDown = false;
   sort: string;
@@ -30,6 +33,10 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   hasFilter = false;
   filterTxt: string;
   filter: ViewFilter;
+  searchActive = false;
+  hasSearch = false;
+  searchTxt: string;
+  search: string;
 
   constructor(
     private filterService: FilterService,
@@ -50,6 +57,15 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
     this.sort = this.filterService.sort[this.listType];
     this.sortOptions = this.filterService.getSortOptions(this.text);
     this.checkFilterChanged();
+  }
+
+  onKeyPressed(key: string) {
+    if (key === 'Enter') {
+      if (this.searchActive && this.query && this.query.nativeElement.value) {
+        console.log('SEARCH', this.query.nativeElement.value);
+        this.doSearch(this.query.nativeElement.value);
+      }
+    }
   }
 
   onChangeSort(sort: string) {
@@ -77,6 +93,26 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
     this.changeFilter();
   }
 
+  onActivateSearch() {
+    this.searchActive = true;
+  }
+
+  onSearch(query: string) {
+    console.log('searching for ', query.trim());
+    this.doSearch(query);
+  }
+
+  onCancelSearch() {
+    this.searchActive = false;
+    this.hasSearch = false;
+    this.newSearch.emit('');
+  }
+
+  private doSearch(query: string) {
+    this.newSearch.emit(query.trim());
+    this.hasSearch = true;
+  }
+
   private checkFilterChanged() {
     this.filterChanged
     .pipe(takeWhile(() => this.componentActive))
@@ -84,6 +120,14 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
       this.filter = this.filterService.filter[this.listType];
       this.filterTxt = this.filterService.filterTxt[this.listType];
       this.hasFilter = this.filterService.hasFilter[this.listType];
+    });
+    this.searchChanged
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(event => {
+      console.log('search changed');
+      this.search = this.filterService.search[this.listType];
+      this.searchTxt = this.filterService.searchTxt[this.listType];
+      this.hasSearch = this.filterService.hasSearch[this.listType];
     });
   }
 

@@ -20,8 +20,10 @@
       [itemTxt]="itemTxt"
       [listType]="listTpe"
       [filterChanged]="filterChanged"
+      [searchChanged]="searchChanged"
       (newSort)="onChangeSort($event)"
-      (newFilter)="onChangeFilter($event)">
+      (newFilter)="onChangeFilter($event)"
+      (newSearch)="onChangeSearch($event)">
     </km-filter-bar>
   </div>
   <!-- BOOKS LIST -->

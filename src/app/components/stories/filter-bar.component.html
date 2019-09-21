@@ -1,10 +1,11 @@
 <!-- FILTERS AND SORTING -->
-<div class="container">
+<div class="container" kmPressed (hasKeyPressed)="onKeyPressed($event)">
   <div>
     <span class="label label-info filter-count pull-right" *ngIf="hasBooks">
       {{itemTxt}}
     </span>
-    <div class="form-group form-group-sm pull-left">
+    <!-- SORT -->
+    <div class="form-group form-group-sm pull-left sort">
       <select class="form-control sort-control"
         (change)="onChangeSort($event.target.value)"
         [tooltip]="text['SortOrder']"
@@ -17,14 +18,38 @@
         </option>
       </select>
     </div>
-    <div class="form-group form-group-sm pull-left filter" #dropdown *ngIf="filter">
-      <div class="form-control"
+    <!-- SEARCH -->
+    <div class="form-group form-group-sm pull-left search" [style.display]="!searchActive && !hasFilter ? 'block' : 'none'">
+      <div class="form-control activate-search"
+        (click)="onActivateSearch()"
+        [tooltip]="text['Search']"
+        hide-delay="0"
+        placement="top">
+        <span class="fa fa-search fa-spacing"></span><span class="search-text">{{searchTxt}}</span>
+      </div>
+    </div>
+    <div class="form-group form-group-sm pull-left search" [style.display]="hasFilter ? 'none' : 'block'">
+      <div class="input-group input-group-sm search-box" *ngIf="searchActive">
+        <input type="text" class="form-control" #searchbox [placeholder]="text['Search...']" autofocus>
+        <span class="input-group-addon search-btn"
+          (click)="onSearch(searchbox.value)">
+            <i class="fa fa-search" [class.active]="hasSearch"></i>
+        </span>
+        <span class="input-group-addon cancel-search"
+          (click)="onCancelSearch()">
+            <i class="fa fa-times"></i>
+        </span>
+      </div>
+    </div>
+    <!-- FILTER -->
+    <div class="form-group form-group-sm pull-left filter" #dropdown *ngIf="filter && !searchActive">
+      <div class="form-control filter-filter"
           on-mouseover="onShowDropDown(true)"
           on-mouseout="onShowDropDown(false)"
           (click)="onToggleDropDown()"
           [tooltip]="text['Filter']"
           placement="top">
-        <span class="fa fa-filter fa-spacing"></span><span class="filter-text">{{filterTxt}}</span>
+        <span class="fa fa-filter fa-spacing" [class.active]="hasFilter"></span><span class="filter-text">{{filterTxt}}</span>
         <ul
           class="dropdown-menu"
           (click)="onSelectDropdown($event)"

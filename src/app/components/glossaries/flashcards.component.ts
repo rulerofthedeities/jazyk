@@ -88,7 +88,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   onGotAnswer(answer: string) {
     const wordId = this.flashCards[0].wordId,
-          points = this.getSentencePoints(this.flashCards[0]),
+          points = this.getSentencePoints(this.flashCards[0], answer),
           answers = this.answerData[wordId] ? this.answerData[wordId].answers || '' : '';
     this.sessionData.answers += answer;
     this.sessionData.points.words += points;
@@ -130,10 +130,10 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.processNewBookId();
   }
 
-  private getSentencePoints(flashCard: FlashCard): number {
+  private getSentencePoints(flashCard: FlashCard, answer: string): number {
     const scorePoints = (1000 - flashCard.score) / 50, // 0-20
           lengthPoints = Math.min(10, flashCard.word.length / 2); // 0 - 10
-    return Math.max(Math.trunc((scorePoints + lengthPoints)), 2); // 2-30
+    return answer === 'y' ? Math.max(Math.trunc(scorePoints + lengthPoints), 1) : 0; // 2-30
   }
 
   private setFlashCards(words: Word[]) {

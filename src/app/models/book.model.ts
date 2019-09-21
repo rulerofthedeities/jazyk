@@ -132,6 +132,7 @@ export interface Book {
   hasMp3?: boolean;
   mp3Count?: number;
   nrOfChapters?: number;
+  sortScore?: number; // For sort of search results
 }
 
 export interface UserBookDates {

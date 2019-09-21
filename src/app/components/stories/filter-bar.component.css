@@ -11,8 +11,33 @@
   cursor: pointer;
   position: relative;
 }
+.filter-filter, .activate-search, .search-box {
+  margin-left: 6px;
+}
+.filter {
+  margin-left: 6px !important;
+}
+.activate-search {
+  cursor: pointer;
+}
+.search-box {
+  width: 250px;
+}
+.search-btn, .cancel-search {
+  cursor: pointer;
+  padding: 2px 8px;
+}
 .clear-filter {
   cursor: pointer;
+}
+.fa {
+  font-size: 16px;
+}
+.clear-filter .fa-times, .cancel-search .fa-times {
+  color: red;
+}
+.fa.active {
+  color: #428bca;
 }
 .dropdown-menu {
   top: -2px;
