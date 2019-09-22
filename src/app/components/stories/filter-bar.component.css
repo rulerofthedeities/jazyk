@@ -35,6 +35,11 @@
 }
 .clear-filter .fa-times, .cancel-search .fa-times {
   color: red;
+  padding-left: 3px;
+}
+.cancel-search .fa-times {
+  padding-left: 0;
+  padding-top: 1px;
 }
 .fa.active {
   color: #428bca;

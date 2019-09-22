@@ -96,7 +96,6 @@ module.exports = {
             }}
           ];
     Session.aggregate(pipeline, (err, points) => {
-      console.log('points', points);
       response.handleError(err, res, 400, 'Error fetching recent progress', () => {
         response.handleSuccess(res, {
           days,

@@ -199,7 +199,6 @@ module.exports = {
             sort : {score : {$meta: "textScore" }}
           };
     Book.find(query, projection, options, (err, books) => {
-      console.log('search result', books);
       response.handleError(err, res, 400, 'Error searching books', () => {
         response.handleSuccess(res, books);
       });

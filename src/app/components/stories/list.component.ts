@@ -203,10 +203,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
   }
 
   private searchBooks(search: string) {
-    console.log('searching in list for', search, this.bookLanguage.code);
     // No partial match in mongodb text query, so use filter io text query
     this.filterBooks();
-    console.log('books', this.filteredBooks);
     const query = search,
           options = 'gmi';
     const re = new RegExp(query, options);
@@ -224,10 +222,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.mergeSearchResults(results, seriesResults);
     // Sort merged results
     results.sort(
-      (a, b) => (a.sortScore > b.sortScore) ? 1 : ((b.sortScore > a.sortScore) ? -1 : 0)
+      (a, b) => (a.sortScore > b.sortScore) ? -1 : ((b.sortScore > a.sortScore) ? 1 : 0)
     );
-
-    console.log(titleResults, authorResults, seriesResults, results);
     this.filteredBooks = [...results];
     this.setSearchDisplayTxt(search);
     this.resetScroll();
@@ -559,10 +555,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
           currentSearch = this.filterService.search[this.listTpe];
     let filteredBook: Book;
     this.isSingleBook = false;
-    console.log('current filter', currentFilter);
-    console.log('current search', currentSearch);
     if (currentSearch) {
-      console.log('search active, no filter');
+      // Search active, no filter
     } else if (currentFilter) {
       if (currentFilter.bookId) {
         // Check if book with this bookId exists

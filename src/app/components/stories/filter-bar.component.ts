@@ -62,7 +62,6 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   onKeyPressed(key: string) {
     if (key === 'Enter') {
       if (this.searchActive && this.query && this.query.nativeElement.value) {
-        console.log('SEARCH', this.query.nativeElement.value);
         this.doSearch(this.query.nativeElement.value);
       }
     }
@@ -98,7 +97,6 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   }
 
   onSearch(query: string) {
-    console.log('searching for ', query.trim());
     this.doSearch(query);
   }
 
@@ -124,7 +122,6 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
     this.searchChanged
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
-      console.log('search changed');
       this.search = this.filterService.search[this.listType];
       this.searchTxt = this.filterService.searchTxt[this.listType];
       this.hasSearch = this.filterService.hasSearch[this.listType];

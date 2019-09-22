@@ -470,12 +470,70 @@ span.canrecommend:hover {
   position: relative;
   top: -8px;
 }
+
+/* iPad vertical */
 @media screen and (max-width: 991px) {
   .pie-chart {
     display: none;
   }
+  .book {
+    margin-left: 87px;
+  }
+  .book h3 {
+    font-size: 28px;
+    top: -2px;
+    position: relative;
+  }
+  .compact .book h3 {
+    top: 0;
+  }
+  .flags {
+    top: -4px;
+  }
+  .flag {
+    width: 20px;
+    height: 15px;
+  }
+  .flag-from {
+    margin: 0 2px 0 0;
+  }
+  .img-wrapper {
+    width: 80px;
+    height: 112px;
+  }
+  .cover-img {
+    width: 80px;
+    height: 120px;
+  }
+  .cover-text {
+    top: 20px;
+    width: 75px;
+    height: 85px;
+    font-size: 16px;
+    font-family: serif;
+  }
+  .has-cover .cover-img {
+    width: 71px;
+    height: 92px;
+    left: 4px;
+  }
+  .compact .cover-img {
+    top: -37px;
+  }
+  .cover-activity {
+    display: none;
+  }
+  .info {
+    font-size: 14px;
+  }
+  .attribution {
+    margin-left: 66px;
+    top: -4px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
   .book h3 {
     font-size: 32px;
-    margin-top: 4px;
   }
 }

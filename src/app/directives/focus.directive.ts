@@ -11,7 +11,6 @@ export class FocusDirective implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    console.log('focus');
     if (this.platform.isBrowser) {
       this.element.nativeElement.focus();
     }

@@ -306,7 +306,7 @@ li {
     padding: 0 !important;
   }
 }
-@media screen and (max-width: 768px) {}
+
 @media screen and (max-width: 991px) {
   .btn-column, .argumentation > div {
     width: 100%;
@@ -315,7 +315,7 @@ li {
     display: none;
   }
 }
-@media screen and (min-width: 992px) and (max-width: 1200px){
+@media screen and (min-width: 992px) and (max-width: 1199px){
   .btn-text {
     font-size: 46px;
     padding-top: 30px !important;

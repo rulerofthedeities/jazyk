@@ -30,14 +30,19 @@
     </div>
     <div class="form-group form-group-sm pull-left search" [style.display]="hasFilter ? 'none' : 'block'">
       <div class="input-group input-group-sm search-box" *ngIf="searchActive">
-        <input type="text" class="form-control" #searchbox [placeholder]="text['Search...']" autofocus>
+        <input
+          type="text"
+          class="form-control"
+          #searchbox
+          [placeholder]="text['Search...']"
+          autofocus>
         <span class="input-group-addon search-btn"
           (click)="onSearch(searchbox.value)">
             <i class="fa fa-search" [class.active]="hasSearch"></i>
         </span>
         <span class="input-group-addon cancel-search"
           (click)="onCancelSearch()">
-            <i class="fa fa-times"></i>
+          <i class="fa fa-times"></i>
         </span>
       </div>
     </div>
