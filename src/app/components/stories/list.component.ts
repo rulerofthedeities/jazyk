@@ -121,12 +121,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   onChangeSearch(newSearch: string) {
     this.filterService.search[this.listTpe] = newSearch;
-    if (newSearch) {
-      this.searchBooks(newSearch);
-    } else {
-      this.filterBooks();
-      this.setSearchDisplayTxt('');
-    }
+    this.filterBooks();
   }
 
   onScrollBooksDown() {
@@ -191,7 +186,6 @@ export class StoryListComponent implements OnInit, OnDestroy {
             this.storyData[book._id] = {};
           });
           this.filterBooks();
-          this.setSearchDisplayTxt('');
         }
         if (data[1] && data[1].length) {
           this.processActivity(data[1]);
@@ -202,10 +196,10 @@ export class StoryListComponent implements OnInit, OnDestroy {
     );
   }
 
-  private searchBooks(search: string) {
+  private searchBooks() {
     // No partial match in mongodb text query, so use filter io text query
-    this.filterBooks();
-    const query = search,
+    const search = this.filterService.search[this.listTpe],
+          query = search,
           options = 'gmi';
     const re = new RegExp(query, options);
     // Filter title, author and series
@@ -557,7 +551,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.isSingleBook = false;
     if (currentSearch) {
       // Search active, no filter
+      this.searchBooks();
     } else if (currentFilter) {
+      this.setSearchDisplayTxt('');
       if (currentFilter.bookId) {
         // Check if book with this bookId exists
         filteredBook = this.books.find(book => book._id.toString() === currentFilter.bookId);

@@ -135,8 +135,28 @@ module.exports = {
   getPublishedLanBooks: (req, res) => {
     const languageId = req.params.lan,
           sort = req.params.sort,
-          query = {isPublished: true},
-          projection = {};
+          query = {
+            isPublished: true
+          },
+          projection = {
+            categories: 0,
+            img: 0,
+            sourceLinkAudio: 0,
+            sourceLink: 0,
+            audioId: 0, // Link to audiobook
+            links: 0,
+            isLocked: 0,
+            isSlang: 0,
+            'difficulty.avgLongestSentences': 0,
+            'difficulty.tpeMultiplicator': 0,
+            'difficulty.slangMultiplicator': 0,
+            'difficulty.avgLengthScore': 0,
+            'difficulty.avgLength': 0,
+            'difficulty.uniqueWordScore': 0,
+            'difficulty.uniqueSentenceScore': 0,
+            'difficulty.totalScore': 0,
+            'difficulty.nrOfUniqueWords': 0
+          };
     let options = {sort: {'difficulty.weight': 1}};
     if (languageId !== 'eu') {
       query['lanCode'] = languageId;

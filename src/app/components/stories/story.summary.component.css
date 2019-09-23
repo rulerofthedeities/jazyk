@@ -38,7 +38,7 @@
 .cover-wrapper {
   float: left;
   position: relative;
-  height: 240px;
+  height: 242px;
 }
 .img-wrapper {
   width: 160px;
@@ -49,7 +49,7 @@
 }
 .has-cover .img-wrapper {
   border: 1px solid #333;
-  box-shadow: 1px 1px 2px grey;
+  box-shadow: 1px 1px 2px #bbb;
 }
 .read .has-cover .img-wrapper {
   background: linear-gradient(to top, #518bd6, #81a6d6);
@@ -193,6 +193,7 @@ li.tab-glossary.active a {
   z-index: 2;
   position: relative;
   min-height: 136px;
+  box-shadow: 1px 1px 2px #bbb;
 }
 .listen .tab-content {
   border-color: #d6a551;

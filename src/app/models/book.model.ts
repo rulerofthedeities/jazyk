@@ -68,17 +68,10 @@ export interface AudioChapter {
 interface Difficulty {
   bookId: string;
   nrOfSentences: number;
-  nrOfUniqueWords: number;
   nrOfUniqueSentences: number;
   nrOfWords: number;
-  totalScore: number;
-  avgLengthScore: number;
   avgWordScore: number;
-  avgLength: number;
   weight: number;
-  uniqueWordScore: number;
-  uniqueSentenceScore: number;
-  tpeMultiplicator: number;
 }
 
 export interface BookDates {
@@ -97,7 +90,6 @@ export interface BookDates {
 export interface Book {
   _id: string;
   bookId?: string; // In case audiobook = read book
-  audioId?: string; // Link to audiobook
   title: string;
   series: string;
   audioDirectory?: string;
@@ -108,8 +100,6 @@ export interface Book {
   adaptation?: string;
   cover?: string;
   source: string;
-  sourceLink: string;
-  categories?: string[];
   lanCode: string;
   lanRegion: string;
   authors: string;
@@ -117,11 +107,9 @@ export interface Book {
   glossaryNarrators?: string;
   licenseNarrator?: String;
   year: number;
-  img?: string;
   coverImg: string;
   tpe: string;
   license: string;
-  links: string;
   difficulty: Difficulty;
   isPublished: boolean;
   dt: BookDates;
