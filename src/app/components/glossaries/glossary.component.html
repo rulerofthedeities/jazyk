@@ -114,6 +114,12 @@
   </td>
   <td class="word-cell">
     <div>
+      <span *ngIf="canEdit && word.exclude" class="fa fa-times"
+        [tooltip]="'Excluded'"
+        placement="top"
+        hide-delay="0"
+        >
+      </span>
       <span class="word" kmWordColor
         [identifier]="word.genus">
         <!--<span class="article" *ngIf="word.article">{{word.article}}</span>-->

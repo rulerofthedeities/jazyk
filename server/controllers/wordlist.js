@@ -132,6 +132,10 @@ module.exports = {
           query = {bookId: bookId},
           projection = {},
           options = {sort: {sortWord: 1}};
+    // Also show excluded word if admin
+    if (!req.decoded.user.isAdmin) {
+      query.exclude = {$ne: true};
+    }
     WordList.find(query, projection, options, (err, words) => {
       response.handleError(err, res, 400, 'Error fetching word list', () => {
         response.handleSuccess(res, words);
@@ -139,11 +143,15 @@ module.exports = {
     });
   },
   getChapterWordList: (req, res) => {
+    // words for sentences -> excluded words must be included!
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           targetLanCode = req.params.lan,
           key = 'translationSummary.' + targetLanCode,
-          query = {bookId, chapterSequence},
+          query = {
+            bookId,
+            chapterSequence
+          },
           pipeline = [
             {$match: query},
             {$project: {
@@ -240,6 +248,7 @@ module.exports = {
           key = 'translationSummary.' + targetLanCode,
           query = {
             bookId,
+            exclude: {$ne: true},
             [key]: {$exists: true, $nin: [ null, "" ] }
           },
           wordsPipeline = [

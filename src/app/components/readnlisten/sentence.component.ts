@@ -53,6 +53,7 @@ export class SentenceComponent implements OnChanges {
 
   ngOnChanges() {
     this.txt = this.sentence.text.trim();
+    this.selected = null;
     this.setS3();
     this.setWordTranslations();
   }
