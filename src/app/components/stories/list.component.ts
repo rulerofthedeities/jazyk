@@ -643,6 +643,9 @@ export class StoryListComponent implements OnInit, OnDestroy {
     if (!search) {
       this.filterService.hasSearch[this.listTpe] = false;
       this.filterService.searchTxt[this.listTpe] = this.text['NoSearch'];
+    } else {
+      this.filterService.hasSearch[this.listTpe] = true;
+      this.filterService.searchTxt[this.listTpe] = search;
     }
     this.searchChanged.next(true);
   }
