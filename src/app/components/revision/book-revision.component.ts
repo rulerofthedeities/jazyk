@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
@@ -35,6 +35,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    protected router: Router,
     private location: Location,
     private userService: UserService,
     private sharedService: SharedService,
@@ -54,6 +55,10 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
         this.fetchChapter(chapter, i);
       }
     }
+  }
+
+  onBackToStory() {
+    this.router.navigate(['/read/' + this.book._id]);
   }
 /*
   showChapter(chapter: ChapterData) {

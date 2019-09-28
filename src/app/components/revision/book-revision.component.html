@@ -49,6 +49,14 @@
           </li>
         </ng-template>
       </ul>
+      <div class="buttons" *ngIf="!isLoadingRevision && text">
+        <button type="button"
+          class="btn btn-success"
+          (click)="onBackToStory()">
+          <span class="fa fa-spacing fa-newspaper-o"></span>
+          {{text["BackToStory"]}}
+        </button>
+      </div>
     </div>
   </div>
 </section>
