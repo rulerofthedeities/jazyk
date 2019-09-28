@@ -67,6 +67,29 @@ export class SentenceComponent implements OnChanges {
     this.selected = i === this.selected ? null : i;
   }
 
+  hasVerbProperty(word: Word): boolean {
+    if (word && word.wordType === 'verb' && (word.aspect || word.transitivity)) {
+        return true;
+    } else {
+      return false;
+    }
+  }
+
+  getVerbProperties(word: Word): string {
+    let properties = '';
+    if (word) {
+      const propertyArr = [];
+      if (word.aspect) {
+        propertyArr.push(this.text[word.aspect]);
+      }
+      if (word.transitivity) {
+        propertyArr.push(this.text[word.transitivity]);
+      }
+      properties = propertyArr.join(', ');
+    }
+    return properties;
+  }
+
   private setS3() {
     if (this.audioSentence && this.audioSentence.text && this.audioSentence.text.trim() === this.txt && this.audioSentence.s3) {
       this.s3 = this.audioSentence.s3;

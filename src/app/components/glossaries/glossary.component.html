@@ -125,7 +125,7 @@
         <!--<span class="article" *ngIf="word.article">{{word.article}}</span>-->
         <span>{{word.word}}</span>
       </span>
-      <span class="genus" *ngIf="word.genus">({{word.genus}})</span>
+      <span class="genus" *ngIf="word.genus">({{text[word.genus?.toLowerCase()]}})</span>
     </div>
     <div class="wordType">{{text[word.wordType]}}</div>
     <div class="audio" *ngIf="word.audio && word.audio.length > 0">
@@ -308,15 +308,15 @@
 </ng-template>
 
 <ng-template #myWordDetail let-i=i let-word=word>
-    <div *ngIf="editingWord === i">
-      <km-user-translation
-        [text]="text"
-        [translations]="getTlNewlines(word)"
-        (newTranslation)="onNewUserTranslation($event, word, i)"
-        (cancelTranslation)="onCancelUserTranslation()">
-      </km-user-translation>
-    </div>
-    <div *ngIf="editingWord !== i">
-        {{word?.userTranslationSummaryDisplay}}
-    </div>
-  </ng-template>
+  <div *ngIf="editingWord === i">
+    <km-user-translation
+      [text]="text"
+      [translations]="getTlNewlines(word)"
+      (newTranslation)="onNewUserTranslation($event, word, i)"
+      (cancelTranslation)="onCancelUserTranslation()">
+    </km-user-translation>
+  </div>
+  <div *ngIf="editingWord !== i">
+      {{word?.userTranslationSummaryDisplay}}
+  </div>
+</ng-template>

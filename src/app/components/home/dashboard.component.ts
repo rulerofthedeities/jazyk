@@ -42,7 +42,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         ticks: {
           min: 0,
           beginAtZero: true,
-          precision: 0
+          precision: 0,
+          suggestedMax: 1000
         }
       }],
       xAxes: [{

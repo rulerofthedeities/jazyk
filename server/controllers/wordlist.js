@@ -157,6 +157,8 @@ module.exports = {
             {$project: {
               audio: 1,
               word: 1,
+              aspect: 1,
+              transitivity: 1,
               genus: 1,
               wordType: 1,
               translationSummary: 1

@@ -29,6 +29,9 @@ h1.word-box small {
   font-style: italic;
   font-size: 14px;
 }
+h1.word-box .word-type small {
+  font-size: 80%;
+}
 .back .word-type {
   color: #ccc;
 }

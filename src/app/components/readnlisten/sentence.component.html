@@ -37,10 +37,13 @@
           <div class="word-data">
             <strong>{{section.word.word}}
               <small *ngIf="section.word.genus" class="word-genus">
-                ({{text[section.word.genus]}})
+                ({{text[section.word.genus?.toLowerCase()]}})
               </small>
             </strong>
-            <div class="word-type">{{section.word.wordType}}<span *ngIf="section.actualNotes"> ({{section.text}}: {{section.actualNotes}})</span></div>
+            <div class="word-type">{{text[section.word.wordType]}}
+              <span *ngIf="section.actualNotes"> ({{section.text}}: {{section.actualNotes}})</span>
+              <span class="verb-properties" *ngIf="hasVerbProperty(section.word)"> ({{getVerbProperties(section.word)}})</span>
+            </div>
             <div class="notes" *ngIf="section.notes">[{{section.notes}}]</div>
           </div>
           <div>

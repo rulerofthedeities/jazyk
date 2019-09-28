@@ -349,8 +349,10 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private processUserWordData(userwords: UserWordData[]) {
     userwords.forEach(data => {
-      this.storyData[data.bookId].userGlossaryData = data;
-      delete data.bookId;
+      if (this.storyData[data.bookId]) {
+        this.storyData[data.bookId].userGlossaryData = data;
+        delete data.bookId;
+      }
     });
   }
 

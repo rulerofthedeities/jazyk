@@ -137,14 +137,15 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   }
 
   private setFlashCards(words: Word[]) {
-    const flashCards = [];
+    const flashCards: FlashCard[] = [];
     words.forEach(word => {
       flashCards.push({
         wordId: word._id,
         word: word.word,
         score: word.score || 50,
-        wordType: word.wordType,
-        genus: word.genus,
+        wordType: this.text[word.wordType],
+        genus: word.genus ? this.text[word.genus.toLowerCase()] : null,
+        verbProperties: this.getVerbProperties(word),
         article: word.article,
         audio: word.audio,
         translations: word.translationSummary.replace(/\|/g, ', ')
@@ -154,6 +155,21 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.flashCardsDone = [];
     this.getNextFlashCard();
     this.isReady = true;
+  }
+
+  private getVerbProperties(word: Word): string {
+    let properties = null;
+    if (word) {
+      const propertyArr = [];
+      if (word.aspect) {
+        propertyArr.push(this.text[word.aspect]);
+      }
+      if (word.transitivity) {
+        propertyArr.push(this.text[word.transitivity]);
+      }
+      properties = propertyArr.join(', ');
+    }
+    return properties;
   }
 
   private getNextFlashCard() {
