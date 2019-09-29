@@ -97,6 +97,10 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.tooltip = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
   }
 
+  onTrackWord(index: number, item: Word) {
+    return item._id;
+  }
+
   onSelectTab(newTab: string) {
     this.tab = newTab;
     this.setDisplayWords(newTab);
@@ -131,6 +135,16 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       word: word.word
     };
     this.setWordTranslationSummary(word, null, translations);
+  }
+
+  onExcludeWord(word: Word, i: number) {
+    // exclude both in bookwords & wordtranslations collections
+    this.excludeWord(word, i, true);
+  }
+
+  onIncludeWord(word: Word, i: number) {
+    // include both in bookwords & wordtranslations collections
+    this.excludeWord(word, i, false);
   }
 
   onAddAllToMyWordList() {
@@ -216,7 +230,13 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   onRemoveTranslation(i: number, translation: WordTranslation, word: Word) {
     this.clearNoTranslationMsg();
     if (this.canEdit) {
-      this.removeTranslation(word._id, translation._id, word);
+      const wikiCount = this.words[i].translations.filter(w => w.source === 'OmegaWiki').length;
+      if (translation.source === 'OmegaWiki' && wikiCount < 2) {
+        // Last entry for OmegaWiki should be set to none
+        this.setTranslationToNone(word._id, translation._id, word);
+      } else {
+        this.removeTranslation(word._id, translation._id, word);
+      }
     }
   }
 
@@ -437,6 +457,15 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     error => {
       word.pinned = true;
+    });
+  }
+
+  private excludeWord(word: Word, i: number, exclude: boolean) {
+    this.wordListService
+    .excludeWord(word._id, this.book._id, exclude)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe(excluded => {
+      word.exclude = exclude;
     });
   }
 

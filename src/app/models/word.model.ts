@@ -23,6 +23,7 @@ export interface Word {
   translations?: WordTranslation[];
   dictionaryLetter?: string;
   chapterSequence?: number;
+  exclude?: boolean; // exclude from glossary list
 }
 
 export interface UserWord {

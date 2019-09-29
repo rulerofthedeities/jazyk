@@ -84,7 +84,7 @@
           </tr>
         </thead>
         <tbody *ngIf="!isLoading && !isLoadingTranslations && displayWords?.length">
-          <tr *ngFor="let word of displayWords; let i = index"
+          <tr *ngFor="let word of displayWords; let i = index; trackBy: onTrackWord"
             class="current-word">
             <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>
           </tr>
@@ -140,6 +140,20 @@
   </td>
   <td class="translation-cell">
     <div class="pull-right">
+      <span *ngIf="canEdit && tab==='glossary' && word.exclude"
+        class="fa fa-check fa-spacing"
+        [tooltip]="text['IncludeWord']"
+        placement="top"
+        hide-delay="0"
+        (click)="onIncludeWord(word, i)">
+      </span>
+      <span *ngIf="canEdit && tab==='glossary' && hasTranslation(word) && !word.exclude"
+        class="fa fa-times fa-spacing"
+        [tooltip]="text['ExcludeWord']"
+        placement="top"
+        hide-delay="0"
+        (click)="onExcludeWord(word, i)">
+      </span>
       <span *ngIf="canEdit && tab==='glossary'"
         class="fa fa-refresh fa-spacing"
         [tooltip]="text['RebuildSummary']"
@@ -233,7 +247,7 @@
             (click)="onSetTranslationToUpperCase(i, translation, word)">
             U
           </button>
-          <button *ngIf="translation._id"
+          <button *ngIf="translation._id && translation.source !== 'OmegaWiki'"
             type="button"
             class="btn btn-danger"
             (click)="onSetTranslationToNone(i, translation, word)">

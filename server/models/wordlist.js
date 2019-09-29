@@ -67,6 +67,7 @@ const wordTranslationsSchema = new Schema({
         lanCode: {type: String, required: true},
         word: {type: String, required: true},
         sortWord: {type: String, required: true},
+        exclude: Boolean,
         translations: [wordTranslationSchema]
       }),
       TranslationsModel = mongoose.model('wordtranslation', wordTranslationsSchema);

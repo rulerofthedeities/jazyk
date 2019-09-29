@@ -303,7 +303,8 @@ module.exports = {
           bookId = new mongoose.Types.ObjectId(req.params.bookId),
           query = {
             bookId,
-            'translations.lanCode': targetLan
+            'translations.lanCode': targetLan,
+            exclude: {$ne: true}
           },
           projection = {
             _id: 0,
@@ -326,7 +327,9 @@ module.exports = {
   },
   getTranslationsCount: (req, res) => {
     const targetLan = req.params.lan,
-          query = {'translations.lanCode': targetLan},
+          query = {
+            'translations.lanCode': targetLan,
+          },
           projection = {
             _id: 0,
             bookId: '$_id',

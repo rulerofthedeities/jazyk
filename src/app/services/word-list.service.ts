@@ -57,6 +57,11 @@ export class WordListService {
     .put<boolean>(`/api/wordlist/my/pins`, {words, bookId});
   }
 
+  excludeWord(wordId: string, bookId: string, exclude: boolean): Observable<boolean> {
+    return this.http
+    .put<boolean>(`/api/wordlist/exclude`, {wordId, bookId, exclude});
+  }
+
   saveSession(sessionData: SessionData): Observable<boolean> {
     return this.http
     .post<boolean>(`/api/wordlist/flashcards/session`, {sessionData});

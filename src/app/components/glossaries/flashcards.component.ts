@@ -115,8 +115,14 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.getNextFlashCard();
   }
 
+  /*
   onBackToList() {
     this.router.navigate([`/glossaries`]);
+  }
+  */
+
+  onBackToGlossary() {
+    this.toGlossary();
   }
 
   onBackToStory() {
@@ -318,8 +324,12 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     if (abortNow) {
       this.sharedService.changeExerciseMode(false);
       this.sharedService.stopAudio();
-      this.router.navigate(['/glossaries']);
+      this.toGlossary();
     }
+  }
+
+  private toGlossary() {
+    this.router.navigate([`/glossaries/glossary/${this.book._id}/${this.targetLanCode}`]);
   }
 
   private finish() {

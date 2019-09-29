@@ -74,7 +74,8 @@ module.exports = {
           targetLan = req.params.targetLan,
           query = {
             lanCode: bookLan,
-            'translations.lanCode': targetLan
+            'translations.lanCode': targetLan,
+            exclude: {$ne: true}
           },
           projection = {
             _id: 0,
@@ -479,7 +480,10 @@ module.exports = {
           wordId = new mongoose.Types.ObjectId(req.body.wordId),
           targetLanCode = req.body.userLanCode,
           summary = req.body.summary,
-          query = {_id: wordId, bookId},
+          query = {
+            _id: wordId,
+            bookId
+          },
           key = 'translationSummary.' + targetLanCode,
           update = {
             $set: {
@@ -489,6 +493,33 @@ module.exports = {
     WordList.findOneAndUpdate(query, update, (err, result) => {
       response.handleError(err, res, 400, 'Error setting summary in word', () => {
         response.handleSuccess(res, result);
+      });
+    });
+  },
+  excludeWord: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.body.bookId),
+          wordId = new mongoose.Types.ObjectId(req.body.wordId),
+          exclude = !!req.body.exclude,
+          wordQuery = {
+            _id: wordId,
+            bookId
+          },
+          tlQuery = {
+            wordId,
+            bookId
+          },
+          update = {
+            $set: {
+              'exclude': exclude
+            }
+          };
+    WordList.findOneAndUpdate(wordQuery, update, (err, result) => {
+      response.handleError(err, res, 400, 'Error updating exclude in word', () => {
+        WordTranslations.findOneAndUpdate(tlQuery, update, (err, result) => {
+          response.handleError(err, res, 400, 'Error updating exclude in word translations', () => {
+            response.handleSuccess(res, true);
+          });
+        });
       });
     });
   }
