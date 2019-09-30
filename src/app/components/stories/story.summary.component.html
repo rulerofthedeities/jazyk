@@ -144,7 +144,7 @@
                 </div>
                 <!-- WORDS -->
                 <div class="words" *ngIf="tab === 'glossary'">
-                  <span *ngIf="book.wordListPublished"><span class="strong">{{book.nrOfWordsInList | score}} {{text["words"]}}</span> {{text["inwordlist"]}}</span>
+                  <span *ngIf="book.wordListPublished"><span class="strong">{{glossaryCount?.countTotal | score}} {{text["words"]}}</span> {{text["inwordlist"]}}</span>
                   <span *ngIf="glossaryCount?.countTranslation" class="translations"> ({{glossaryCount?.countTranslation}} {{text["translated"]}}<span *ngIf="isTranslated"
                     class="fa fa-check"
                     [tooltip]="text['FullyTranslated']"

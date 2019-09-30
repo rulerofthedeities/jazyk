@@ -202,13 +202,14 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
       zip(
         this.storiesService.fetchStoryUserBooks(this.targetLanCode, this.tab, this.book._id),
         this.storiesService.fetchStoryUserWords(this.targetLanCode, this.book._id),
-        this.storiesService.fetchStoryBookWords(this.targetLanCode, this.book._id) // For translation count
+        this.storiesService.fetchStoryWordTranslations(this.targetLanCode, this.book._id), // For translation count
+        this.storiesService.fetchStoryBookWords(this.book._id)
       )
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         if (data && data.length) {
           this.processUserBooks(data[0]);
-          this.processGlossaryData(data[1], data[2]);
+          this.processGlossaryData(data[1], data[2], data[3]);
         }
         this.isLoading = false;
         this.sharedService.detectChanges(this.cdr);
@@ -363,11 +364,21 @@ export class StorySummaryComponent implements OnInit, OnDestroy {
     this.storiesService.checkSentencesDone(this.book, currentUserTestData, this.userBookStatusTest);
   }
 
-  private processGlossaryData(userGlossaryData: UserWordData, glossaryCount: UserWordCount) {
+  private processGlossaryData(userGlossaryData: UserWordData, glossaryCount: UserWordCount, totalCount: UserWordCount = null) {
     this.glossaryCount = glossaryCount;
+    if (totalCount) {
+      if (this.glossaryCount) {
+        this.glossaryCount.countTotal = totalCount.countTotal;
+      } else {
+        this.glossaryCount = {
+          countTotal: totalCount.countTotal,
+          countTranslation: 0
+        }
+      }
+    }
     const translated = glossaryCount ? glossaryCount.countTranslation : 0;
-    if (translated > 0 && translated >= this.book.nrOfWordsInList) {
-      glossaryCount.countTranslation = this.book.nrOfWordsInList;
+    if (translated > 0 && translated >= this.glossaryCount.countTotal) {
+      glossaryCount.countTranslation = this.glossaryCount.countTotal;
       this.isTranslated = true;
     } else {
       this.isTranslated = false;

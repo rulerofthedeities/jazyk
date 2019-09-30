@@ -286,13 +286,15 @@ export class StoryListComponent implements OnInit, OnDestroy {
     } else {
       zip(
         this.storiesService.fetchUserBooks(this.targetLanguage.code),
+        this.storiesService.fetchBookWordCount(this.bookLanguage.code),
         this.storiesService.fetchUserWords(this.targetLanguage.code)
       )
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(data => {
         if (data && data.length) {
           this.processUserBooks(data[0]);
-          this.processUserWordData(data[1]);
+          this.processWordCount(data[1]);
+          this.processUserWordData(data[2]);
         }
         this.isTypeDataReady = true;
         this.checkAllDataLoaded();
@@ -358,7 +360,16 @@ export class StoryListComponent implements OnInit, OnDestroy {
 
   private processWordTranslations(translations: UserWordCount[]) {
     translations.forEach(count => {
-      this.storyData[count.bookId].glossaryCount = count;
+      if (this.storyData[count.bookId]) {
+        if (this.storyData[count.bookId].glossaryCount) {
+          this.storyData[count.bookId].glossaryCount.countTranslation = count.countTranslation;
+        } else {
+          this.storyData[count.bookId].glossaryCount = {
+            countTotal: count.countTranslation,
+            countTranslation: count.countTranslation
+          }
+        }
+      }
       delete count.bookId;
     });
   }
@@ -459,6 +470,22 @@ export class StoryListComponent implements OnInit, OnDestroy {
               glossary: true
             };
           }
+        }
+      }
+    });
+  }
+
+  private processWordCount(count: UserWordCount[]) {
+    // total nr of words per book (excludes), correct book property (includes exclude!)
+    count.forEach(total => {
+      if (this.storyData[total.bookId]) {
+        if (this.storyData[total.bookId].glossaryCount) {
+          this.storyData[total.bookId].glossaryCount.countTotal = total.countTotal;
+        } else {
+          this.storyData[total.bookId].glossaryCount = {
+            countTotal: total.countTotal,
+            countTranslation: 0
+          };
         }
       }
     });

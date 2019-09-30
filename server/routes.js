@@ -164,10 +164,12 @@ module.exports = {
     router.get('/stories/sessions/:lan/:bookType', stories.getSessions);
     router.get('/stories/translation/:lan', stories.getTranslationsCount);
     router.get('/stories/finished/:lan', stories.getFinishedStatus);
+    router.get('/stories/bookwords/count/:lan', stories.getBookWordCount);
     router.get('/story/user/:lan/:bookType/:bookId', stories.getStoryUserLanBooks);
     router.get('/story/sessions/:lan/:bookType/:bookId', stories.getStorySessions);
     router.get('/story/userwords/:lan/:bookId', stories.getStoryUserWords);
-    router.get('/story/bookwords/:lan/:bookId', stories.getStoryBookWordCount);
+    router.get('/story/wordtranslations/:lan/:bookId', stories.getStoryWordTranslationCount);
+    router.get('/story/bookwords/count/:bookId', stories.getStoryBookWordCount);
     router.get('/story/translation/:lan/:bookId', stories.getStoryTranslationsCount);
 
     /* glossaries */

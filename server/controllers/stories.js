@@ -6,6 +6,7 @@ const response = require('../response'),
       Translation = require('../models/book').translation,
       UserBook = require('../models/userbook').userBook,
       UserWordList = require('../models/wordlist').userword,
+      WordList = require('../models/wordlist').word,
       WordTranslations = require('../models/wordlist').translations;
 
 module.exports = {
@@ -249,6 +250,46 @@ module.exports = {
       });
     });
   },
+  getBookWordCount: (req, res) => {
+    const bookLanCode = req.params.lan,
+          query = {
+            lanCode: bookLanCode,
+            exclude: {$ne: true}
+          },
+          projection = {
+            _id: 0,
+            bookId: '$_id.bookId',
+            countTotal: 1
+          },
+          pipeline = [
+            {$match: query},
+            {$group: {
+              _id: {
+                bookId: '$bookId'
+              },
+              countTotal: {'$sum': 1}
+            }},
+            {$project: projection}
+          ];
+
+    WordList.aggregate(pipeline, (err, wordCount) => {
+      response.handleError(err, res, 400, 'Error fetching books word count', () => {
+        response.handleSuccess(res, wordCount);
+      });
+    });
+  },
+  getStoryBookWordCount: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          query = {
+            bookId,
+            exclude: {$ne: true}
+          };
+    WordList.count(query, (err, wordCount) => {
+      response.handleError(err, res, 400, 'Error fetching book word count', () => {
+        response.handleSuccess(res, {countTotal: wordCount});
+      });
+    });
+  },
   getStoryUserWords: (req, res) => {
     // Data for just one book
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
@@ -297,7 +338,7 @@ module.exports = {
       });
     });
   },
-  getStoryBookWordCount: (req, res) => {
+  getStoryWordTranslationCount: (req, res) => {
     // Data for just one book
     const targetLan = req.params.lan,
           bookId = new mongoose.Types.ObjectId(req.params.bookId),

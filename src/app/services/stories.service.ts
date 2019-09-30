@@ -57,9 +57,22 @@ export class StoriesService {
     .pipe(retry(3));
   }
 
-  fetchStoryBookWords(targetLanCode: string, bookId: string): Observable<UserWordCount> {
+  fetchStoryWordTranslations(targetLanCode: string, bookId: string): Observable<UserWordCount> {
     return this.http
-    .get<UserWordCount>(`/api/story/bookwords/${targetLanCode}/${bookId}`)
+    .get<UserWordCount>(`/api/story/wordtranslations/${targetLanCode}/${bookId}`)
+    .pipe(retry(3));
+  }
+
+  fetchStoryBookWords(bookId: string): Observable<UserWordCount> {
+    return this.http
+    .get<UserWordCount>(`/api/story/bookwords/count/${bookId}`)
+    .pipe(retry(3));
+  }
+
+  fetchBookWordCount(readLanCode: string):  Observable<UserWordCount[]> {
+    // get total count of book words per book
+    return this.http
+    .get<UserWordCount[]>(`/api/stories/bookwords/count/${readLanCode}`)
     .pipe(retry(3));
   }
 
