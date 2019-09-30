@@ -285,37 +285,58 @@
     [userId]="userId"
     (newTranslations)="onNewTranslations($event, word)">
   </km-admin-translation>
-  <km-word-translation *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[word._id]"
-    [text]="text"
-    [source]="'OmegaWiki'"
-    [targetLan]="translationLan"
-    [bookLan]="bookLan"
-    [bookId]="book?._id"
-    [word]="word"
-    [i] = "i"
-    (newTranslations)="onNewTranslations($event, word)"
-    (noTranslations)="onNoTranslations($event)">
-  </km-word-translation>
-  <km-word-translation *ngIf="isDeeplAvailable && !hasDeepLTranslations[word._id] && !isLoadingTranslations"
-    [text]="text"
-    [source]="'DeepL'"
-    [targetLan]="translationLan"
-    [bookLan]="bookLan"
-    [bookId]="book?._id"
-    [word]="word"
-    [i] = "i"
-    (newTranslations)="onNewTranslations($event, word)">
-  </km-word-translation>
-  <km-word-translation *ngIf="!hasMSTranslations[word._id] && !isLoadingTranslations"
-    [text]="text"
-    [source]="'Microsoft'"
-    [targetLan]="translationLan"
-    [bookLan]="bookLan"
-    [bookId]="book?._id"
-    [word]="word"
-    [i] = "i"
-    (newTranslations)="onNewTranslations($event, word)">
-  </km-word-translation>
+  <div *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[word._id]">
+    <button type="button" *ngIf="canEdit"
+      class="btn btn-xs btn-danger ignore-translation pull-left"
+      (click)="onSetTranslationAsNone(i, 'OmegaWiki', word)">
+      No OmegaWiki
+    </button>
+    <km-word-translation
+      [text]="text"
+      [source]="'OmegaWiki'"
+      [targetLan]="translationLan"
+      [bookLan]="bookLan"
+      [bookId]="book?._id"
+      [word]="word"
+      [i] = "i"
+      (newTranslations)="onNewTranslations($event, word)"
+      (noTranslations)="onNoTranslations($event)">
+    </km-word-translation>
+  </div>
+  <div *ngIf="isDeeplAvailable && !hasDeepLTranslations[word._id] && !isLoadingTranslations">
+    <button type="button" *ngIf="canEdit"
+      class="btn btn-xs btn-danger ignore-translation pull-left"
+      (click)="onSetTranslationAsNone(i, 'DeepL', word)">
+      No DeepL
+    </button>
+    <km-word-translation
+      [text]="text"
+      [source]="'DeepL'"
+      [targetLan]="translationLan"
+      [bookLan]="bookLan"
+      [bookId]="book?._id"
+      [word]="word"
+      [i] = "i"
+      (newTranslations)="onNewTranslations($event, word)">
+    </km-word-translation>
+  </div>
+  <div *ngIf="!hasMSTranslations[word._id] && !isLoadingTranslations">
+    <button type="button" *ngIf="canEdit"
+      class="btn btn-xs btn-danger ignore-translation pull-left"
+      (click)="onSetTranslationAsNone(i, 'Microsoft', word)">
+      No Microsoft
+    </button>
+    <km-word-translation
+      [text]="text"
+      [source]="'Microsoft'"
+      [targetLan]="translationLan"
+      [bookLan]="bookLan"
+      [bookId]="book?._id"
+      [word]="word"
+      [i] = "i"
+      (newTranslations)="onNewTranslations($event, word)">
+    </km-word-translation>
+  </div>
   <div *ngIf="noTranslation.i === i" class="no-translation">
     {{noTranslation.msg}}
   </div>

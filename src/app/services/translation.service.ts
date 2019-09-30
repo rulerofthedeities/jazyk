@@ -75,6 +75,15 @@ export class TranslationService {
     });
   }
 
+  setWordTranslationAsNone(wordId: string, source: string, targetLanCode: string): Observable<boolean> {
+    return this.http
+    .put<boolean>('/api/wordlist/word/translationasnone', {
+      wordId,
+      source,
+      lanCode: targetLanCode
+    });
+  }
+
   setWordTranslationToNone(wordId: string, translationElementId: string): Observable<boolean> {
     return this.http
     .put<boolean>('/api/wordlist/word/translationtonone', {

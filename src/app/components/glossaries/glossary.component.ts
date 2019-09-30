@@ -240,6 +240,14 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  onSetTranslationAsNone(i: number, source: string, word: Word) {
+    // Hide the translation button for this source
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.setTranslationAsNone(word, source);
+    }
+  }
+
   onSetTranslationToNone(i: number, translation: WordTranslation, word: Word) {
     this.clearNoTranslationMsg();
     if (this.canEdit) {
@@ -723,6 +731,27 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
         word: word.word
       }
       this.setWordTranslationSummary(word, null, translations);
+    });
+  }
+
+  private setTranslationAsNone(word: Word, source: string) {
+    this.translationService
+    .setWordTranslationAsNone(word._id, source, this.translationLan.code)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe( result => {
+      switch(source) {
+        case 'OmegaWiki':
+          this.hasOmegaWikiTranslations[word._id] = true;
+          break;
+        case 'DeepL':
+          this.hasDeepLTranslations[word._id] = true;
+          break;
+        case 'Microsoft':
+          this.hasMSTranslations[word._id] = true;
+          break;
+        default:
+          console.error('Source', source, 'not found');
+      }
     });
   }
 
