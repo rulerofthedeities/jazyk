@@ -1,6 +1,7 @@
 <div class="container">
   <div class="col-xs-4 selector"
     [tooltip]="text[currentListType === 'audio' ? 'AudioLanguage' : 'BookLanguage']"
+    show-delay="300"
     [options]="tooltipOptions" id="tooltip1">
     <km-language-selector
       [languages]="bookLanguages"
@@ -11,6 +12,7 @@
   </div>
   <div class="col-xs-4 selector my-lan-selector"
     [tooltip]="text['TranslationLanguage']"
+    show-delay="300"
     [options]="tooltipOptions" id="tooltip2">
     <span class="fa fa-arrow-right sel-arrow"></span>
     <km-language-selector

@@ -861,5 +861,8 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.componentActive = false;
+    if (this.tooltip) {
+      this.tooltip.hide();
+    }
   }
 }

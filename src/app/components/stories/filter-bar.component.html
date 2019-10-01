@@ -9,6 +9,7 @@
       <select class="form-control sort-control"
         (change)="onChangeSort($event.target.value)"
         [tooltip]="text['SortOrder']"
+        show-delay="300"
         placement="top">
         <option
           *ngFor="let option of sortOptions"
@@ -23,6 +24,7 @@
       <div class="form-control activate-search"
         (click)="onActivateSearch()"
         [tooltip]="text['Search']"
+        show-delay="300"
         hide-delay="0"
         placement="top">
         <span class="fa fa-search fa-spacing" [class.active]="hasSearch"></span>
@@ -33,6 +35,7 @@
       <div class="form-control"
         (click)="onCancelSearch()"
         [tooltip]="text['ClearSearch']"
+        show-delay="300"
         hide-delay="0"
         placement="top">
         <span class="fa fa-times"></span>
@@ -63,6 +66,7 @@
           on-mouseout="onShowDropDown(false)"
           (click)="onToggleDropDown()"
           [tooltip]="text['Filter']"
+          show-delay="300"
           placement="top">
         <span class="fa fa-filter fa-spacing" [class.active]="hasFilter"></span><span class="filter-text">{{filterTxt}}</span>
         <ul
@@ -157,6 +161,7 @@
       <div class="form-control"
         (click)="onClearFilter()"
         [tooltip]="text['ClearFilter']"
+        show-delay="300"
         hide-delay="0"
         placement="top">
         <span class="fa fa-times"></span>

@@ -99,5 +99,11 @@ export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngOnDestroy() {
     this.componentActive = false;
+    if (this.tooltip1) {
+      this.tooltip1.hide();
+    }
+    if (this.tooltip2) {
+      this.tooltip2.hide();
+    }
   }
 }

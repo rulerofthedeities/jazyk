@@ -55,6 +55,7 @@
           [class.pinned]="isAllPinned"
           [tooltip]="text[isAllPinned ? 'AllInMyWordList' : 'AddAllToMyWordList']"
           placement="top"
+          show-delay="300"
           hide-delay="0"
           (click)="onAddAllToMyWordList()">
         </span>
@@ -72,6 +73,7 @@
             <th colspan="2" class="lan-header">
               <div
                 [tooltip]="text ? text['TranslationLanguage'] : ''"
+                show-delay="300"
                 [options]="tooltipOptions" id="tooltip1">
                 <km-language-selector *ngIf="!isLoading"
                   [languages]="glossaryLanguages"
@@ -117,6 +119,7 @@
       <span *ngIf="canEdit && word.exclude" class="fa fa-times"
         [tooltip]="'Excluded'"
         placement="top"
+        show-delay="300"
         hide-delay="0"
         >
       </span>
@@ -144,6 +147,7 @@
         class="fa fa-check fa-spacing"
         [tooltip]="text['IncludeWord']"
         placement="top"
+        show-delay="300"
         hide-delay="0"
         (click)="onIncludeWord(word, i)">
       </span>
@@ -151,6 +155,7 @@
         class="fa fa-times fa-spacing"
         [tooltip]="text['ExcludeWord']"
         placement="top"
+        show-delay="300"
         hide-delay="0"
         (click)="onExcludeWord(word, i)">
       </span>
@@ -158,6 +163,7 @@
         class="fa fa-refresh fa-spacing"
         [tooltip]="text['RebuildSummary']"
         placement="top"
+        show-delay="300"
         hide-delay="0"
         (click)="onRebuildTranslationSummary(word, i)">
       </span>
@@ -166,6 +172,7 @@
         [class.pinned]="word.pinned"
         [tooltip]="text[word.pinned ? 'InMyWordList' : 'AddToMyWordList']"
         placement="top"
+        show-delay="300"
         hide-delay="0"
         (click)="onAddToMyWordList(word, i)">
       </span>
@@ -173,6 +180,7 @@
       <span *ngIf="tab==='mywords' && editingWord === null"
         class="fa fa-times pull-right"
         [tooltip]="text['RemoveFromMyWordList']"
+        show-delay="300"
         [options]="tooltipOptions"
         [id]="'tooltipRemove' + i"
         (click)="onRemoveFromMyWordList(word)">
@@ -180,6 +188,7 @@
       <span *ngIf="tab==='mywords' && editingWord === null"
         class="fa fa-pencil"
         [tooltip]="text['EditMyWordTranslation']"
+        show-delay="300"
         [options]="tooltipOptions"
         [id]="'tooltipEdit' + i"
         (click)="onEditMyWordTranslation(word, i)">
