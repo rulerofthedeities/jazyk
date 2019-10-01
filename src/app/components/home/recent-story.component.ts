@@ -76,7 +76,7 @@ export class RecentStoryComponent implements OnInit, OnDestroy {
   private getGlossaryCount() {
     zip(
       this.storiesService.fetchStoryUserWords(this.targetLanCode, this.book._id),
-      this.storiesService.fetchStoryBookWords(this.targetLanCode, this.book._id)
+      this.storiesService.fetchStoryWordTranslations(this.targetLanCode, this.book._id)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {

@@ -284,7 +284,7 @@ module.exports = {
             bookId,
             exclude: {$ne: true}
           };
-    WordList.count(query, (err, wordCount) => {
+    WordList.countDocuments(query, (err, wordCount) => {
       response.handleError(err, res, 400, 'Error fetching book word count', () => {
         response.handleSuccess(res, {countTotal: wordCount});
       });

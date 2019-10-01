@@ -114,6 +114,14 @@ export class StoryButtonsComponent implements OnDestroy {
 
   onToStoryCard() {
     const path = this.bookType === 'glossary' ? 'glossaries' : this.bookType;
+    if (this.userService.user.jazyk.read.lan !== this.book.lanCode) {
+      // Different book language from selected language, change book language
+      this.userService.setLanCode(this.book.lanCode);
+    }
+    if (this.userService.user.main.myLan !== this.targetLanCode) {
+      // Different target lancode, change
+      this.userService.setUserLanCode(this.targetLanCode);
+    }
     this.router.navigate(['/' + path + '/' + this.book._id]);
   }
 

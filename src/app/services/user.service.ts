@@ -525,6 +525,7 @@ export class UserService {
   setLanCode(lanCode: string) {
     // set read language
     if (lanCode && this._user.jazyk.read.lan !== lanCode) {
+      this.user.jazyk.read.lan = lanCode;
       this.http
       .patch('/api/user/lan/read', JSON.stringify({lanCode}))
       .subscribe(lan => {
@@ -536,6 +537,7 @@ export class UserService {
   setUserLanCode(lanCode: string) {
     // set user language (my language)
     if (lanCode && this._user.main.myLan !== lanCode) {
+      this.user.main.myLan = lanCode;
       this.http
       .patch('/api/user/lan/user', JSON.stringify({lanCode}))
       .subscribe(lan => {
