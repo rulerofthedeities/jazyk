@@ -11,6 +11,7 @@ export interface Word {
   article: string;
   aspect: string;
   transitivity: string;
+  notes?: string;
   audio: File[];
   score?: number;
   pinned?: boolean;
@@ -47,6 +48,7 @@ export interface FlashCard {
   wordType: string;
   genus: string;
   article: string;
+  notes: string;
   verbProperties: string;
   audio: File[];
   translations: string;

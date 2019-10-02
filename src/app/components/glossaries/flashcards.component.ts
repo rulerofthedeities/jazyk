@@ -153,6 +153,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
         genus: word.genus ? this.text[word.genus.toLowerCase()] : null,
         verbProperties: this.getVerbProperties(word),
         article: word.article,
+        notes: this.getNotes(word),
         audio: word.audio,
         translations: word.translationSummary.replace(/\|/g, ', ')
       });
@@ -161,6 +162,14 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
     this.flashCardsDone = [];
     this.getNextFlashCard();
     this.isReady = true;
+  }
+
+  private getNotes(word: Word): string {
+    if (word.notes) {
+      return word.notes.split('|').map(note => this.text['note-' + note.trim()]).join(', ');
+    } else {
+      return null;
+    }
   }
 
   private getVerbProperties(word: Word): string {

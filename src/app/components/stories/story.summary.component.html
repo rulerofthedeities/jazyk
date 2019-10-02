@@ -25,12 +25,14 @@
           <span class="users"
             [tooltip]="text['UsersStarted']"
             placement="top"
+            show-delay="300"
             hide-delay="0">
             <span class="fa fa-user-o"></span>{{userCount}}
           </span>
           <span class="thumbs"
             [tooltip]="text['UsersRecommended']"
             placement="top"
+            show-delay="300"
             hide-delay="0">
             <span class="fa fa-thumbs-o-up"></span>{{recommendCount}}
           </span>
@@ -138,6 +140,7 @@
                       class="fa fa-check"
                       [tooltip]="text['FullyTranslated']"
                       placement="top"
+                      show-delay="300"
                       hide-delay="50">
                     </span>)
                   </span>
@@ -149,6 +152,7 @@
                     class="fa fa-check"
                     [tooltip]="text['FullyTranslated']"
                     placement="top"
+                    show-delay="300"
                     hide-delay="50">
                   </span>)</span>
                   <div *ngIf="!!userGlossaryCount?.countTotal">
@@ -157,6 +161,7 @@
                       class="fa fa-check"
                       [tooltip]="text['FullyTranslated']"
                       placement="top"
+                      show-delay="300"
                       hide-delay="50">
                     </span>)</span>
                   </div>
@@ -261,6 +266,7 @@
       (click)="onToggleSubscription($event)"
       [tooltip]="text[isSubscribed ? 'RemoveFromList' : 'AddToList']"
       placement="left"
+      show-delay="300"
       hide-delay="50">
       <span class="fa fa-thumb-tack"></span>
     </div>
@@ -271,12 +277,14 @@
       [tooltip]="text['RemoveFromList']"
       id="tooltipRemove"
       placement="left"
+      show-delay="300"
       hide-delay="50">
       <span class="fa fa-times"></span>
     </div>
     <div class="recommended" *ngIf="userBookStatus.isBookRead || userBookStatus.isRepeat"
       [tooltip]="text[isRecommended ? 'RetractRecommendation' : 'RecommendStory']"
       placement="left"
+      show-delay="300"
       hide-delay="50">
       <span class="fa"
         [ngClass]="{
@@ -303,6 +311,7 @@
       [class.test]="isTest"
       [tooltip]="text['RepeatNr']"
       placement="left"
+      show-delay="300"
       hide-delay="50">
       {{uBook.repeatCount}}
     </div>

@@ -1,9 +1,12 @@
 <span [ngClass]="side">
   <h1 class="word-box" [class.nomargin]="!showWordType && !showAudio">
-    <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from" [class.no-word-type]="!showWordType">
-    <span class="word">{{flashCard.word}}<small *ngIf="flashCard.genus"> ({{flashCard.genus}})</small>
+    <span class="word">
+      <img src="/assets/img/flags/{{lanFrom}}.png" class="flag from" [class.no-word-type]="!showWordType">
+      {{flashCard.word}}<small *ngIf="flashCard.genus"> ({{flashCard.genus}})</small>
       <div class="word-type" *ngIf="showWordType">{{flashCard.wordType}}
         <small *ngIf="flashCard.verbProperties"> ({{flashCard.verbProperties}})</small>
+      </div>
+      <div class="word-notes" *ngIf="showWordType">{{flashCard.notes}}
       </div>
     </span>
   </h1>

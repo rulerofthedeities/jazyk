@@ -138,6 +138,10 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExcludeWord(word: Word, i: number) {
+    const tooltipExclude = this.tooltipDirective.find(elem => elem.id === ('tooltipExclude'));
+    if (tooltipExclude) {
+      tooltipExclude.hide();
+    }
     // exclude both in bookwords & wordtranslations collections
     this.excludeWord(word, i, true);
   }
@@ -343,6 +347,23 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     if (word && word.userTranslationSummary) {
       const translations = word.userTranslationSummary.split('|').map(tl => tl.trim());
       return translations.join('\n');
+    } else {
+      return '';
+    }
+  }
+
+  getNotes(word: Word): string {
+    const notes: string[] = [];
+    if (word) {
+      if (word.notes) {
+        word.notes.split('|').forEach(note => {
+          notes.push(this.text['note-' + note.trim()]);
+        });
+      }
+      if (word.aspect) {
+        notes.push(this.text[word.aspect]);
+      }
+      return notes.join(', ');
     } else {
       return '';
     }

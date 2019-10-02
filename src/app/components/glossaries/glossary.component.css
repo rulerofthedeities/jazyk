@@ -181,11 +181,12 @@ ul.nav li.active > a {
   background-color: rgba(255, 255, 255, 0.9);
   color: #000;
 }
-
 ul.nav-tabs li.active > a {
   border-color: none;
 }
-
 .ignore-translation {
   margin-top: 1px;
+}
+.word-notes {
+  color: orange;
 }

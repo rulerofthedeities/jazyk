@@ -130,7 +130,7 @@
       </span>
       <span class="genus" *ngIf="word.genus">({{text[word.genus?.toLowerCase()]}})</span>
     </div>
-    <div class="wordType">{{text[word.wordType]}}</div>
+    <div class="wordType">{{text[word.wordType]}}<span *ngIf="word.notes || word.aspect" class="word-notes"> [{{getNotes(word)}}]</span></div>
     <div class="audio" *ngIf="word.audio && word.audio.length > 0">
       <km-audio-file *ngFor="let audio of word.audio"
         [fileUrl]="audioPath + audio.s3"
@@ -154,6 +154,7 @@
       <span *ngIf="canEdit && tab==='glossary' && hasTranslation(word) && !word.exclude"
         class="fa fa-times fa-spacing"
         [tooltip]="text['ExcludeWord']"
+        id="tooltipExclude"
         placement="top"
         show-delay="300"
         hide-delay="0"
@@ -238,7 +239,7 @@
             (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
-          <button *ngIf="translation._id"
+          <button *ngIf="translation._id && translation.source === 'OmegaWiki'"
             type="button"
             class="btn btn-danger"
             (click)="onRemoveTranslation(i, translation, word)">

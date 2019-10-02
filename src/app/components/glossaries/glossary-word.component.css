@@ -24,15 +24,16 @@ h1.word-box small {
 .none > h1.word-box {
   margin-top: 0;
 }
-.word-type {
+.word-type, .word-notes {
   color: #fff;
   font-style: italic;
   font-size: 14px;
+  margin-left: 40px;
 }
 h1.word-box .word-type small {
   font-size: 80%;
 }
-.back .word-type {
+.back .word-type, .back .word-notes {
   color: #ccc;
 }
 .word {
@@ -42,7 +43,7 @@ h1.word-box .word-type small {
 }
 .flag {
   position: relative;
-  top: -19px;
+  margin-right: 0;
 }
 .flag.no-word-type {
   top: 0;
