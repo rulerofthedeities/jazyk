@@ -138,7 +138,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onExcludeWord(word: Word, i: number) {
-    const tooltipExclude = this.tooltipDirective.find(elem => elem.id === ('tooltipExclude'));
+    const tooltipExclude = this.tooltipDirective.find(elem => elem.id === ('tooltipExclude' + i));
     if (tooltipExclude) {
       tooltipExclude.hide();
     }
@@ -147,6 +147,10 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onIncludeWord(word: Word, i: number) {
+    const tooltipInclude = this.tooltipDirective.find(elem => elem.id === ('tooltipInclude' + i));
+    if (tooltipInclude) {
+      tooltipInclude.hide();
+    }
     // include both in bookwords & wordtranslations collections
     this.excludeWord(word, i, false);
   }
