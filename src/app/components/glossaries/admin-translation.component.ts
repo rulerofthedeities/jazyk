@@ -56,7 +56,8 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
   }
 
   onCancel() {
-    this.cancelTranslation.emit(true);
+    this.showTranslationForm = false;
+    // this.cancelTranslation.emit(true);
   }
 
   getTranslationPlaceHolder(): string {
@@ -117,18 +118,19 @@ export class AdminWordTranslationComponent implements OnInit, OnDestroy {
       source: 'Jazyk',
       userId: this.userId
     }];
-    this.newTranslations.emit({
-      translations: {
-        lanCode: this.book.lanCode,
-        word: this.word.word,
-        translations: newTranslations
-      }
-    });
     // Save
     this.translationService
     .saveTranslations(this.book.lanCode, this.book._id, this.word, newTranslations)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
+      newTranslations[0]._id = result._id;
+      this.newTranslations.emit({
+        translations: {
+          lanCode: this.book.lanCode,
+          word: this.word.word,
+          translations: newTranslations
+        }
+      });
       this.showTranslationForm = false;
       this.submitting = false;
     });

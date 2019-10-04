@@ -189,7 +189,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.editingWord = null;
   }
 
-  onNewTranslations(data: {translations: WordTranslations, i: number}, word: Word) {
+  onNewTranslations(data: {translations: WordTranslations, i: number, _id: string}, word: Word) {
     this.clearNoTranslationMsg();
     this.editingTranslationId = null;
     word.translations = word.translations ? word.translations : [];

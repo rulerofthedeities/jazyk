@@ -240,32 +240,32 @@
             (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
-          <button *ngIf="translation._id && translation.source === 'OmegaWiki'"
+          <button *ngIf="translation._id && (translation.source === 'OmegaWiki' || translation.source === 'Jazyk')"
             type="button"
             class="btn btn-danger"
             (click)="onRemoveTranslation(i, translation, word)">
             <span class="fa fa-trash-o"></span>
           </button>
-          <button *ngIf="translation._id && isUpperCase(translation)"
+          <button *ngIf="translation._id && isUpperCase(translation) && translation.source !== 'Jazyk'"
             type="button"
             class="btn btn-danger"
             (click)="onSetTranslationToLowerCase(i, translation, word)">
             l
           </button>
-          <button *ngIf="translation._id && isLowerCase(translation)"
+          <button *ngIf="translation._id && isLowerCase(translation) && translation.source !== 'Jazyk'"
             type="button"
             class="btn btn-danger"
             (click)="onSetTranslationToUpperCase(i, translation, word)">
             U
           </button>
-          <button *ngIf="translation._id && translation.source !== 'OmegaWiki'"
+          <button *ngIf="translation._id && translation.source !== 'OmegaWiki' && translation.source !== 'Jazyk'"
             type="button"
             class="btn btn-danger"
             (click)="onSetTranslationToNone(i, translation, word)">
             <span class="fa fa-trash-o fa-spacing"></span>Set None
           </button>
         </div>
-        <!-- SINGLE TRANSLATION -->
+        <!-- EDIT SINGLE TRANSLATION -->
         <km-admin-translation *ngIf="editingTranslationId === translation._id && canEdit"
           [text]="text"
           [book]="book"
