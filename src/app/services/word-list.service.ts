@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Word, UserWord, WordTranslations, UserWordData, FlashCardData, AnswerData, FlashCard } from '../models/word.model';
+import { Word, UserWord, WordTranslations, UserWordData, FlashCardData, AnswerData, FlashCard, WordTranslation } from '../models/word.model';
 import { retry } from 'rxjs/operators';
 import { SessionData } from 'app/models/book.model';
 
@@ -94,21 +94,36 @@ export class WordListService {
     .put<boolean>(`/api/wordlist/summary`, {bookId, wordId, summary, userLanCode});
   }
 
-  createTranslationsSummary(wordTranslations: WordTranslations, separator = '|'): string {
+  createTranslationsSummary(wordTranslations: WordTranslations, word: Word, separator = '|'): string {
     const translations: TranslationScore[] = [];
     let summary: string[] = [],
         sameTranslation: TranslationScore,
         increase: number;
     if (wordTranslations && wordTranslations.translations) {
+      // First check if it is a verb starting with to and lan = 'en'
+      // if so, prefix to to the other words with the same translation but without 'to'
+      let startsWithTo: WordTranslation,
+          rootVerb: string;
+      if (wordTranslations.lanCode === 'en' && word.wordType === 'verb') {
+        startsWithTo = wordTranslations.translations.find(wtl => wtl.translation.substr(0, 3) === 'to ');
+      }
+      if (startsWithTo) {
+        rootVerb = startsWithTo.translation.substring(3);
+      }
+      // Rank translations by number of appearances
       wordTranslations.translations.forEach((tl, i) => {
-        if (tl.translation !== '<none>') {
+        let currentTl = tl.translation;
+        if (currentTl !== '<none>') {
+          if (startsWithTo && currentTl === rootVerb) {
+            currentTl = 'to ' + rootVerb;
+          }
           increase = tl.source === 'Jazyk' ? 3 : 1; // Jazyk translation is sorted higher
-          sameTranslation = translations.find(t => t.word === tl.translation);
+          sameTranslation = translations.find(t => t.word === currentTl);
           if (sameTranslation) {
             sameTranslation.count += increase;
           } else {
             translations.push({
-              word: tl.translation,
+              word: currentTl,
               count: increase
             });
           }

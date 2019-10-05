@@ -439,7 +439,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setTlDisplay(summary: string): string {
-    if (summary) {
+    if (summary && typeof summary === 'string') {
       return summary.replace(/\|/g, ', ');
     } else {
       return '';
@@ -623,8 +623,8 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
             translations: this.processTranslations(w.translations, w),
             lanCode: this.userLanCode,
             word: w.word
-          }
-          w.translationSummary = this.wordListService.createTranslationsSummary(translations, '|');
+          };
+          w.translationSummary = this.wordListService.createTranslationsSummary(translations, w, '|');
           w.translationSummaryDisplay = this.setTlDisplay(w.translationSummary);
         });
         this.goToLetter(this.words.length > this.maxWordsPerPage ? 0 : -1);
@@ -832,7 +832,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private setWordTranslationSummary(word: Word, summary: string, translations: WordTranslations) {
     if (!summary) {
-      summary = this.wordListService.createTranslationsSummary(translations);
+      summary = this.wordListService.createTranslationsSummary(translations, word);
       word.translationSummary = summary;
       word.translationSummaryDisplay = this.setTlDisplay(summary);
     }
