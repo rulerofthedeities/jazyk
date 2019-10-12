@@ -154,7 +154,7 @@ module.exports = {
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
 
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);
-    router.get('/revision/chapter/:chapterId', revision.getChapterData);
+    router.get('/revision/sentences/:bookId/:chapterId', revision.getSentences);
     router.get('/revision/translations/:bookId/:bookLan/:userLan/:chapterSequence', revision.getTranslationData);
 
     /* Stories */

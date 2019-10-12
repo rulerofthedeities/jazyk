@@ -5,6 +5,7 @@ const response = require('../response'),
       log = require('./log'),
       Book = require('../models/book').book,
       Chapter = require('../models/book').chapter,
+      Sentence = require('../models/book').sentence,
       Translation = require('../models/book').translation,
       Session = require('../models/book').session,
       UserBook = require('../models/userbook').userBook,
@@ -274,11 +275,25 @@ module.exports = {
   getChapter: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           sequence = parseInt(req.params.sequence, 10) || 1,
-          query = {bookId, sequence},
+          query = {
+            bookId,
+            sequence
+          },
           projection = {content: 0};
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching chapter', () => {
-        response.handleSuccess(res, chapter);
+        if (chapter) {
+          Sentence.find({bookId, chapterId: chapter._id}, (err, sentences) => {
+            response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
+              if (sentences && sentences.length) {
+                chapter.sentences = sentences;
+              }
+              response.handleSuccess(res, chapter);
+            });
+          });
+        } else {
+          response.handleSuccess(res, null);
+        }
       });
     });
   },

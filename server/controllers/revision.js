@@ -4,12 +4,13 @@ const response = require('../response'),
       mongoose = require('mongoose'),
       Session = require('../models/book').session,
       Chapter = require('../models/book').chapter,
+      Sentence = require('../models/book').sentence,
       Translation = require('../models/book').translation;
 
 module.exports = {
   getSessionData: (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.decoded.user._id),
-          bookId = req.params.bookId,
+          bookId = new mongoose.Types.ObjectId(req.params.bookId),
           lanCode = req.params.lan,
           bookType = req.params.bookType,
           query = {bookId, userId, lanCode, bookType},
@@ -29,12 +30,23 @@ module.exports = {
       });
     });
   },
-  getChapterData: (req, res) => {
-    const chapterId = req.params.chapterId,
-          projection = {sentences: 1};
-    Chapter.findById(chapterId, projection, (err, chapter) => {
-      response.handleError(err, res, 400, 'Error fetching chapter data', () => {
-        response.handleSuccess(res, chapter);
+  getSentences: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          chapterId = new mongoose.Types.ObjectId(req.params.chapterId);
+    Sentence.find({bookId, chapterId}, (err, sentences) => {
+      response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
+        if (sentences && sentences.length) {
+          console.log('sentences from sentences collection');
+          response.handleSuccess(res, sentences);
+        } else {
+          console.log('sentences from chapter collection');
+          // No sentences found, check if they is legacy data in chapter
+          Chapter.findById(chapterId, (err, chapter) => {
+            response.handleError(err, res, 400, 'Error fetching chapter data', () => {
+              response.handleSuccess(res, chapter.sentences);
+            });
+          });
+        }
       });
     });
   },

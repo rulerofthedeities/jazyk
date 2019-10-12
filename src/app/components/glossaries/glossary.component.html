@@ -1,11 +1,13 @@
 <section>
-  <km-book-title *ngIf="!!book"
-    [text]="text"
-    [bookType]="'wordlist'"
-    [bookLanCode]="book?.lanCode"
-    [userLanCode]="userLanCode"
-    [bookTitle]="book?.title"
-  ></km-book-title>
+  <div *ngIf="!!book">
+    <km-book-title
+      [text]="text"
+      [bookType]="'wordlist'"
+      [bookLanCode]="book?.lanCode"
+      [userLanCode]="userLanCode"
+      [bookTitle]="book?.title"
+    ></km-book-title>
+  </div>
   <!-- TABS -->
   <ul class="nav nav-tabs" *ngIf="paginationReady">
     <li
@@ -30,7 +32,7 @@
       </button>
     </li>
   </ul>
-  <div class="panel panel-default main-panel">
+  <div class="panel panel-default main-panel" *ngIf="!isLoading">
     <div class="panel-body">
       <!-- PAGINATION -->
       <ul class="pagination col-xs-11" *ngIf="paginationReady">
@@ -85,7 +87,7 @@
             </th>
           </tr>
         </thead>
-        <tbody *ngIf="!isLoading && !isLoadingTranslations && displayWords?.length">
+        <tbody *ngIf="!isLoadingTranslations && displayWords?.length">
           <tr *ngFor="let word of displayWords; let i = index; trackBy: onTrackWord"
             class="current-word">
             <ng-container *ngTemplateOutlet="wordRow;context:{word: word, i:i}"></ng-container>
@@ -96,9 +98,6 @@
         <km-info-msg [msg]="getNoWordsMessage()">
         </km-info-msg>
       </div>
-      <km-loader *ngIf="isLoading && text && !isError"
-        [msg]="text['Loading'] || ''">
-      </km-loader>
     </div>
   </div>
 
@@ -107,6 +106,10 @@
 
   <km-error-msg [msg]="errMsg">
   </km-error-msg>
+
+  <km-loader *ngIf="isLoading && text && !isError"
+    [msg]="text['Loading'] || ''">
+  </km-loader>
 
 </section>
 
@@ -240,23 +243,23 @@
             (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
-          <button *ngIf="translation._id && (translation.source === 'OmegaWiki' || translation.source === 'Jazyk')"
-            type="button"
-            class="btn btn-danger"
-            (click)="onRemoveTranslation(i, translation, word)">
-            <span class="fa fa-trash-o"></span>
-          </button>
           <button *ngIf="translation._id && isUpperCase(translation) && translation.source !== 'Jazyk'"
             type="button"
-            class="btn btn-danger"
+            class="btn btn-warning"
             (click)="onSetTranslationToLowerCase(i, translation, word)">
             l
           </button>
           <button *ngIf="translation._id && isLowerCase(translation) && translation.source !== 'Jazyk'"
             type="button"
-            class="btn btn-danger"
+            class="btn btn-warning"
             (click)="onSetTranslationToUpperCase(i, translation, word)">
             U
+          </button>
+          <button *ngIf="translation._id && (translation.source === 'OmegaWiki' || translation.source === 'Jazyk')"
+            type="button"
+            class="btn btn-danger"
+            (click)="onRemoveTranslation(i, translation, word)">
+            <span class="fa fa-trash-o"></span>
           </button>
           <button *ngIf="translation._id && translation.source !== 'OmegaWiki' && translation.source !== 'Jazyk'"
             type="button"

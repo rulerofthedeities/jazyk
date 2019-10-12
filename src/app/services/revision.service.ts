@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SessionData, Chapter, RevisionTranslations } from '../models/book.model';
+import { SessionData, Sentence, RevisionTranslations } from '../models/book.model';
 import { Observable } from 'rxjs';
 import { retry } from 'rxjs/operators';
 
@@ -21,9 +21,9 @@ export class RevisionService {
     .pipe(retry(3));
   }
 
-  fetchChapter(chapterId: string): Observable<Chapter> {
+  fetchChapter(bookId: string, chapterId: string): Observable<Sentence[]> {
     return this.http
-    .get<Chapter>(`/api/revision/chapter/${chapterId}`)
+    .get<Sentence[]>(`/api/revision/sentences/${bookId}/${chapterId}`)
     .pipe(retry(3));
   }
 

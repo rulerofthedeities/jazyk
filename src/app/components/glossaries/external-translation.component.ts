@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { Language } from 'app/models/main.model';
 import { Word, OmegaDefinitions, OmegaDefinition, WordTranslation, WordTranslations } from '../../models/word.model';
@@ -7,6 +7,7 @@ import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-word-translation',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'external-translation.component.html',
   styleUrls: ['external-translation.component.css']
 })
@@ -48,7 +49,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   }
 
   private getOmegaDefinitionLocal() {
-    // TODO: first check if it exists locally
+    this.isLoading = true;
     this.translationService
     .fetchOmegaDefinitionLocal(this.getWord())
     .pipe(takeWhile(() => this.componentActive))
@@ -256,10 +257,10 @@ export class ExternalWordTranslationComponent implements OnDestroy {
       lanCode: this.targetLan.code,
       source: source
     }];
-    this.saveNewTranslations(dummyTranslations);
+    this.saveNewTranslations(dummyTranslations, true);
   }
 
-  private saveNewTranslations(newTranslations: WordTranslation[]) {
+  private saveNewTranslations(newTranslations: WordTranslation[], isDummy = false) {
     // Remove duplicates
     newTranslations = this.removeDuplicate(newTranslations);
     // Show in list
@@ -287,14 +288,16 @@ export class ExternalWordTranslationComponent implements OnDestroy {
               }
             });
           }
-          this.newTranslations.emit({
-            translations: {
-              lanCode: this.bookLan.code,
-              word: this.getWord(),
-              translations: addedTranslations
-            },
-            i: this.i
-          });
+          if (!isDummy) {
+            this.newTranslations.emit({
+              translations: {
+                lanCode: this.bookLan.code,
+                word: this.getWord(),
+                translations: addedTranslations
+              },
+              i: this.i
+            });
+          }
         }
         this.isLoading = false;
       });

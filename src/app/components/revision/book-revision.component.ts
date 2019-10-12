@@ -245,16 +245,16 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
   private fetchChapter(chapter: ChapterData, i: number, sentenceNrStart = 0) {
     this.isLoadingChapter[i] = true;
     zip(
-      this.revisionService.fetchChapter(chapter.chapterId),
+      this.revisionService.fetchChapter(this.book._id, chapter.chapterId),
       this.revisionService.fetchChapterTranslations(this.book._id, this.book.lanCode, this.targetLanCode, chapter.sequence)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
-      const chapterData = data[0],
+      const sentences = data[0],
             translations = data[1];
       let translationData: RevisionTranslations;
-      if (chapterData && chapterData.sentences) {
-        chapterData.sentences.forEach((sentence, j) => {
+      if (sentences) {
+        sentences.forEach((sentence, j) => {
           if (!chapter.sentences[sentenceNrStart + j].sentence) {
             chapter.sentences[sentenceNrStart + j].sentence = sentence;
             // Map translations with chapter sentences
@@ -290,7 +290,7 @@ export class BookRevisionComponent implements OnInit, OnDestroy {
       } else {
         this.isLoadingChapter[i] = false;
         chapter.ready = true;
-        chapterData.sentences = [];
+        // chapterData.sentences = [];
       }
     });
   }

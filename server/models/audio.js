@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 const sentenceSchema = new Schema({
   fileName: {type: String, required: true},
-  text: String,
+  text: {type: String, trim: true},
   isDisabled: Boolean,
   sequence: String, // For sorting
   isHeader: Boolean,

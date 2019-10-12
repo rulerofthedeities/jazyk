@@ -204,7 +204,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     const re = new RegExp(query, options);
     // Filter title, author and series
     const titleResults = this.filteredBooks.filter(b => b.title.match(re)),
-          authorResults = this.filteredBooks.filter(b => b.authors.match(re)),
+          authorResults = this.filteredBooks.filter(b => b.authors && b.authors.match(re)),
           seriesResults = this.filteredBooks.filter(b => b.series && b.series.match(re));
     // Add weights
     titleResults.map(b => b.sortScore = 5);

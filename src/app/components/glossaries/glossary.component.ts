@@ -12,7 +12,6 @@ import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/wo
 import { Language, Map } from '../../models/main.model';
 import { zip, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
-import { ucs2 } from 'punycode';
 
 @Component({
   templateUrl: 'glossary.component.html',
@@ -225,7 +224,11 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onNoTranslations(data: {msg: string, i: number}) {
-    this.noTranslation = {msg: data.msg, i: data.i};
+    this.noTranslation = {
+      msg: data.msg,
+      i: data.i
+    };
+    console.log('no translation', this.noTranslation);
   }
 
   onEditTranslation(word: Word, translation: WordTranslation) {
@@ -238,7 +241,10 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   onRemoveTranslation(i: number, translation: WordTranslation, word: Word) {
     this.clearNoTranslationMsg();
     if (this.canEdit) {
-      const wikiCount = this.words[i].translations.filter(w => w.source === 'OmegaWiki').length;
+      let wikiCount = 0;
+      if (word && word.translations) {
+        wikiCount = word.translations.filter(w => w.source === 'OmegaWiki').length;
+      }
       if (translation.source === 'OmegaWiki' && wikiCount < 2) {
         // Last entry for OmegaWiki should be set to none
         this.setTranslationToNone(word._id, translation._id, word);
@@ -546,6 +552,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private processNewBookId() {
+    this.isLoading = true;
     if (this.bookId && this.bookId.length === 24) {
       zip(
         this.readnListenService.fetchBook(this.bookId, this.bookType || 'read'),

@@ -26,16 +26,25 @@ var bookSchema = new Schema({
   audioPublished: {type: Boolean, default: false}
 });
 bookSchema.index({isPublished: 1, audioPublished: 1, wordListPublished: 1, lanCode: 1});
-/*bookSchema.index(
-  {title: 'text', series: 'text', authors: 'text'},
-  {weights: {title: 5, authors: 3}}
-);*/
 const BookModel = mongoose.model('Book', bookSchema);
 
 var sentenceSchema = new Schema({
   text: {type: String, required: true},
   isNewParagraph: Boolean
 }, {_id: false});
+
+/* Replaces legacy sentenceSchema above */
+const bookSentenceSchema = new Schema({
+  bookId: {type: Schema.Types.ObjectId, required: true},
+  chapterId: {type: Schema.Types.ObjectId, required: true},
+  sequence: {type: Number, required: true},
+  text: {type: String, required: true, trim: true},
+  isNewParagraph: Boolean,
+  isEmptyLine: Boolean,
+  isHeader: Boolean
+}, {_id: false});
+
+const SentenceModel = mongoose.model('Booksentence', bookSentenceSchema);
 
 var chapterSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
@@ -127,6 +136,7 @@ SessionModel.ensureIndexes();
 module.exports = {
   book: BookModel,
   chapter: ChapterModel,
+  sentence: SentenceModel,
   translation: TranslationModel,
   session: SessionModel
 }
