@@ -113,7 +113,7 @@ module.exports = {
     router.post('/users/byid', users.getUsersById);
 
     /* read */
-    router.get('/books/published/:lan/:sort', books.getPublishedLanBooks);
+    router.get('/books/published/:bookType/:lan/:sort', books.getPublishedLanBooks);
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/books/count/read', books.getBooksCount);
     // router.get('/books/search/:lan/:query', books.searchBooks);

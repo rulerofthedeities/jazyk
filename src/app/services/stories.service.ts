@@ -21,9 +21,9 @@ export class StoriesService {
     .pipe(retry(3));
   }
 
-  fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
+  fetchPublishedBooks(bookType: string, readLanCode: string, sort: string): Observable<Book[]> {
     return this.http
-    .get<Book[]>('/api/books/published/' + readLanCode + '/' + sort)
+    .get<Book[]>(`/api/books/published/${bookType}/${readLanCode}/${sort}`)
     .pipe(retry(3));
   }
 

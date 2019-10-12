@@ -171,7 +171,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.isBooksReady = false;
     zip(
-      this.storiesService.fetchPublishedBooks(this.bookLanguage.code, this.filterService.sort[this.listTpe]),
+      this.storiesService.fetchPublishedBooks(this.listTpe, this.bookLanguage.code, this.filterService.sort[this.listTpe]),
       onlyBooks ? of([]) : this.storiesService.fetchActivity()
     )
     .pipe(takeWhile(() => this.componentActive))
