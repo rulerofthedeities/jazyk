@@ -114,6 +114,7 @@ module.exports = {
 
     /* read */
     router.get('/books/published/:bookType/:lan/:sort', books.getPublishedLanBooks);
+    router.get('/books/publishedtype/:bookType/:lan', books.getPublishedTypeBooks)
     router.get('/books/user/:lan/:bookType', books.getUserLanBooks);
     router.get('/books/count/read', books.getBooksCount);
     // router.get('/books/search/:lan/:query', books.searchBooks);
@@ -148,7 +149,6 @@ module.exports = {
     router.put('/book/recommend', books.recommend);
     router.put('/book/unrecommend', books.unRecommend);
 
-    router.get('/audiobooks/published/:lan/:sort', audio.getPublishedLanBooks);
     router.get('/books/count/listen', audio.getBooksCount);
     router.get('/audiobook/chapter/:bookId/:sequence', audio.getChapter);
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);

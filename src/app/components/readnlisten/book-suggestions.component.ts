@@ -47,9 +47,7 @@ export class BookSuggestionsComponent implements OnInit, OnDestroy {
 
   private getBooks() {
     zip(
-      this.bookType === 'listen' ?
-        this.readnListenService.fetchPublishedAudioBooks(this.book.lanCode, 'difficulty1') :
-        this.readnListenService.fetchPublishedBooks(this.book.lanCode, 'difficulty1'),
+      this.readnListenService.fetchPublishedTypeBooks(this.bookType, this.book.lanCode),
       this.readnListenService.fetchUserBooks(this.userLanCode, this.bookType),
       this.readnListenService.fetchPreviousAnswers(this.book._id, this.userLanCode, this.bookType)
     )

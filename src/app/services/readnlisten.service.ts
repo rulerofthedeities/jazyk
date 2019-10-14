@@ -19,15 +19,9 @@ export class ReadnListenService {
 
   /*** Books ***/
 
-  fetchPublishedBooks(readLanCode: string, sort: string): Observable<Book[]> {
+  fetchPublishedTypeBooks(bookType: string, lanCode: string): Observable<Book[]> {
     return this.http
-    .get<Book[]>('/api/books/published/' + readLanCode + '/' + sort)
-    .pipe(retry(3));
-  }
-
-  fetchPublishedAudioBooks(readLanCode: string, sort: string): Observable<Book[]> {
-    return this.http
-    .get<Book[]>('/api/audiobooks/published/' + readLanCode + '/' + sort)
+    .get<Book[]>(`/api/books/publishedtype/${bookType}/${lanCode}`)
     .pipe(retry(3));
   }
 

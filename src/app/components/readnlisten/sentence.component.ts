@@ -163,7 +163,6 @@ export class SentenceComponent implements OnChanges {
                 notes.push(tl);
               }
             });
-
             // Add word section
             this.sentenceSections.push({
               text: text.substring(p.start, p.end + 1),

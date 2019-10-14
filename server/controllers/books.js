@@ -134,7 +134,7 @@ const isInArray = (value, array) => {
 
 module.exports = {
   getPublishedLanBooks: (req, res) => {
-    const languageId = req.params.lan,
+    const lanCode = req.params.lan,
           sort = req.params.sort,
           bookType = req.params.bookType,
           query = {
@@ -160,8 +160,8 @@ module.exports = {
             'difficulty.nrOfUniqueWords': 0
           };
     let options = {sort: {'difficulty.weight': 1}};
-    if (languageId !== 'eu') {
-      query['lanCode'] = languageId;
+    if (lanCode !== 'eu') {
+      query['lanCode'] = lanCode;
     }
     switch (sort) {
       case 'difficulty0':
@@ -176,6 +176,39 @@ module.exports = {
       case 'newest0':
         options['sort'] = bookType === 'glossary' ? {'dt.publishedGlossary': -1} : (bookType === 'listen' ? {'dt.publishedAudio': -1} : {'dt.published': -1});
         break;
+    }
+    Book.find(query, projection, options, (err, books) => {
+      response.handleError(err, res, 400, 'Error fetching books', () => {
+        response.handleSuccess(res, books);
+      });
+    });
+  },
+  getPublishedTypeBooks: (req, res) => {
+    const lanCode = req.params.lan,
+          bookType = req.params.bookType,
+          query = {
+            isPublished: true,
+            lanCode: lanCode
+          },
+          options = {sort: {'difficulty.weight': 1}},
+          projection = {
+            sourceLinkAudio: 0,
+            sourceLink: 0,
+            audioId: 0, // Link to audiobook
+            isLocked: 0,
+            isSlang: 0,
+            'difficulty.avgLongestSentences': 0,
+            'difficulty.tpeMultiplicator': 0,
+            'difficulty.slangMultiplicator': 0,
+            'difficulty.avgLengthScore': 0,
+            'difficulty.avgLength': 0,
+            'difficulty.uniqueWordScore': 0,
+            'difficulty.uniqueSentenceScore': 0,
+            'difficulty.totalScore': 0,
+            'difficulty.nrOfUniqueWords': 0
+          };;
+    if (bookType === 'listen') {
+      query.audioPublished = true;
     }
     Book.find(query, projection, options, (err, books) => {
       response.handleError(err, res, 400, 'Error fetching books', () => {

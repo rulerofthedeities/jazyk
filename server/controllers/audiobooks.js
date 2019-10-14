@@ -6,38 +6,6 @@ const response = require('../response'),
       Chapter = require('../models/audio').audiochapter;
 
 module.exports = {
-  getPublishedLanBooks: (req, res) => {
-    const languageId = req.params.lan,
-          sort = req.params.sort,
-          query = {
-            isPublished: true,
-            audioPublished: true
-          },
-          projection = {};
-    let options = {sort: {'difficulty.weight': 1}};
-    if (languageId !== 'eu') {
-      query['lanCode'] = languageId;
-    }
-    switch (sort) {
-      case 'difficulty0':
-        options['sort'] = {'difficulty.weight': -1};
-        break;
-      case 'sentences1':
-        options['sort'] = {'difficulty.nrOfSentences': 1, 'difficulty.weight': 1};
-        break;
-      case 'sentences0':
-        options['sort'] = {'difficulty.nrOfSentences': -1, 'difficulty.weight': -1};
-        break;
-      case 'newest0':
-        options['sort'] = {'dt.publishedAudio': -1};
-        break;
-    }
-    Book.find(query, projection, options, (err, books) => {
-      response.handleError(err, res, 400, 'Error fetching audio books', () => {
-        response.handleSuccess(res, books);
-      });
-    });
-  },
   getBooksCount: (req, res) => {
     const query = {
             isPublished: true,
