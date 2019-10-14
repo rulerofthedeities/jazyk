@@ -1,7 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, Renderer2 } from '@angular/core';
 import { Sentence, AudioSentence } from '../../models/book.model';
 import { SentenceWord, WordPosition, Word, File } from '../../models/word.model';
 import { awsPath } from '../../services/shared.service';
+import { PlatformService } from '../../services/platform.service';
 import { SharedService } from '../../services/shared.service';
 
 interface Position {
@@ -48,8 +49,17 @@ export class SentenceComponent implements OnChanges {
   wordType: string;
 
   constructor(
-    private sharedService: SharedService
-  ) {}
+    private platform: PlatformService,
+    private sharedService: SharedService,
+    renderer: Renderer2
+  )  {
+    if (this.platform.isBrowser) {
+      renderer.listen(document, 'click', (event) => {
+        // clicked, close popup
+        this.selected = null;
+      });
+    }
+  }
 
   ngOnChanges() {
     this.txt = this.sentence.text.trim();

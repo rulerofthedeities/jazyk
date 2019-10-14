@@ -36,10 +36,8 @@ module.exports = {
     Sentence.find({bookId, chapterId}, (err, sentences) => {
       response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
         if (sentences && sentences.length) {
-          console.log('sentences from sentences collection');
           response.handleSuccess(res, sentences);
         } else {
-          console.log('sentences from chapter collection');
           // No sentences found, check if they is legacy data in chapter
           Chapter.findById(chapterId, (err, chapter) => {
             response.handleError(err, res, 400, 'Error fetching chapter data', () => {

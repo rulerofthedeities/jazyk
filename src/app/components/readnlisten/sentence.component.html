@@ -23,13 +23,18 @@
   </div>
   <div *ngIf="hasWords">
     <span *ngFor="let section of sentenceSections; let i = index">
-      <span *ngIf="section.wordId && section.word && section.translations" class="hasId" (click)='onSelectWord($event, i)'>
+      <span *ngIf="section.wordId && section.word && section.translations"
+        class="hasId"
+        (click)='onSelectWord($event, i)'>
         <!-- WORD TRANSLATION POPUP -->
-        <span class="popup" [class.selected]="i===selected" (click)='onSelectWord($event, null)'>
+        <span class="popup"
+          [class.selected]="i===selected"
+          (click)='onSelectWord($event, null)'>
           <span class="fa fa-times pull-right"></span>
           <img src="/assets/img/flags/{{lanCode}}.png" class="flag from pull-left">
           <span *ngIf="section.word.audio && section.word.audio.length" class="pull-left">
-            <km-audio-file *ngFor="let audio of section.word.audio" class="word-audio"
+            <km-audio-file *ngFor="let audio of section.word.audio"
+              class="word-audio"
               [fileUrl]="'https://' + awsPath + 'words/' + lanCode + '/' + audio.s3"
               [autoPlay]="false">
             </km-audio-file>

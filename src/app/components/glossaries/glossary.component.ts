@@ -228,7 +228,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       msg: data.msg,
       i: data.i
     };
-    console.log('no translation', this.noTranslation);
   }
 
   onEditTranslation(word: Word, translation: WordTranslation) {
