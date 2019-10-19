@@ -369,8 +369,8 @@ span.canrecommend:hover {
   cursor: pointer;
 }
 .repeat-count.test {
-  border-color: #ffa500;
-  background-color: #f2b968;
+  border-color: #337ab7;
+  background-color: #518ec2;
 }
 .repeat-nr {
   position: relative;
@@ -414,7 +414,7 @@ span.canrecommend:hover {
   color: black;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
-  z-index: 9;
+  z-index: 8;
 }
 .corner-ribbon.shadow{
   box-shadow: 1px 1px 3px rgba(0,0,0,.5);

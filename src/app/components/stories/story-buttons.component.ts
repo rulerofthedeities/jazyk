@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, OnDestroy,
+import { Component, Input, ChangeDetectionStrategy, OnInit, OnDestroy,
          Renderer2, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlatformService } from '../../services/platform.service';
@@ -16,7 +16,7 @@ import { takeWhile } from 'rxjs/operators';
   styleUrls: ['story-buttons.component.css']
 })
 
-export class StoryButtonsComponent implements OnDestroy {
+export class StoryButtonsComponent implements OnInit, OnDestroy {
   @Input() text: Object;
   @Input() book: Book;
   @Input() bookType: string;
@@ -55,12 +55,18 @@ export class StoryButtonsComponent implements OnDestroy {
     }
   }
 
+  ngOnInit() {
+    if (!this.userBook) {
+      this.isFinished = false;
+    }
+  }
+
   onStartReadingListening(isRepeat = false, isTest = false, event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.userService.setLanCode(this.book.lanCode);
     this.userService.setUserLanCode(this.targetLanCode);
-    if (isRepeat) {
+    if (isRepeat && this.userBook) {
       this.readnListenService
       .subscribeRepeat(this.book._id, this.targetLanCode, this.bookType, this.userBook.bookmark, isTest)
       .pipe(takeWhile(() => this.componentActive))

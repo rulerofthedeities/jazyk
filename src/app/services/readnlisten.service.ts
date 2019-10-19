@@ -44,9 +44,9 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  fetchAudioChapter(book: Book, sequence: number): Observable<AudioChapter> {
+  fetchAudioChapter(book: Book, sequence: number, isTest): Observable<AudioChapter> {
     return this.http
-    .get<AudioChapter>(`/api/book/audiochapter/${book._id}/${sequence}`)
+    .get<AudioChapter>(`/api/book/audiochapter/${book._id}/${sequence}/${isTest ? '1' : '0'}`)
     .pipe(retry(3));
   }
 
@@ -56,10 +56,9 @@ export class ReadnListenService {
 
   /*** Chapters ***/
 
-  fetchChapter(bookId: string, bookType: string, sequence: number): Observable<Chapter> {
-    const bookPath = bookType === 'listen' ? 'audiobook' : 'book';
+  fetchChapter(bookId: string, sequence: number): Observable<Chapter> {
     return this.http
-    .get<Chapter>(`/api/${bookPath}/chapter/${bookId}/${sequence.toString()}`)
+    .get<Chapter>(`/api/book/chapter/${bookId}/${sequence.toString()}`)
     .pipe(retry(3));
   }
 

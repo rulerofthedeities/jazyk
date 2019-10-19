@@ -1,7 +1,7 @@
 <div class="audio-listen" *ngIf="bookType==='listen'">
   <!-- LISTEN -->
   <km-audio-file
-    [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + sentence?.s3"
+    [fileUrl]="'https://' + awsPath + 'audiobooks/' + lanCode + '/' + directory + '/' + s3"
     [size]="120"
     [autoPlay]="true"
     (ended)="onAudioEnded($event)">

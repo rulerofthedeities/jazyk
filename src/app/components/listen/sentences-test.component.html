@@ -38,6 +38,7 @@
             </div>
             <km-sentence
               [sentence]="currentSentence"
+              [audioSentence]="currentAudioSentence"
               [bookType]="bookType"
               [directory]="book.audioDirectory || ''"
               [lanCode]="book.lanCode"
@@ -45,7 +46,7 @@
             </km-sentence>
             <km-sentence-test
               [text]="text"
-              [sentence]="currentSentence"
+              [sentence]="currentAudioSentence"
               [difficulty]="book.difficulty.weight"
               (answered)="onAnswered($event)"
               (nextSentence)="onNextSentence($event)">

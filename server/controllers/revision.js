@@ -33,7 +33,7 @@ module.exports = {
   getSentences: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           chapterId = new mongoose.Types.ObjectId(req.params.chapterId);
-    Sentence.find({bookId, chapterId}, (err, sentences) => {
+    Sentence.find({bookId, chapterId}, {}, {sort: {sequence: 1}}, (err, sentences) => {
       response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
         if (sentences && sentences.length) {
           response.handleSuccess(res, sentences);

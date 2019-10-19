@@ -32,7 +32,7 @@
       </button>
     </li>
   </ul>
-  <div class="panel panel-default main-panel" *ngIf="!isLoading">
+  <div class="panel panel-default main-panel" *ngIf="!isLoading && !isLoadingTranslations">
     <div class="panel-body">
       <!-- PAGINATION -->
       <ul class="pagination col-xs-11" *ngIf="paginationReady">
@@ -107,7 +107,7 @@
   <km-error-msg [msg]="errMsg">
   </km-error-msg>
 
-  <km-loader *ngIf="isLoading && text && !isError"
+  <km-loader *ngIf="(isLoading || isLoadingTranslations) && text && !isError"
     [msg]="text['Loading'] || ''">
   </km-loader>
 

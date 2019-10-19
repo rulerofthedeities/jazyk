@@ -122,7 +122,7 @@ module.exports = {
     router.get('/book/user/:lan/:bookId/:bookType', books.getUserBook);
     router.get('/books/book/:bookId/:bookType', books.getBook);
     router.get('/book/chapter/:bookId/:sequence', books.getChapter);
-    router.get('/book/audiochapter/:bookId/:sequence', audio.getAudioChapter);
+    router.get('/book/audiochapter/:bookId/:sequence/:test', audio.getAudioChapter);
     router.get('/book/chapterheaders/:bookId', books.getChapterHeaders);
     router.get('/book/translations/:bookId/:lan/:chapterSequence/:sentence', books.getTranslations);
     router.post('/book/translation/', books.addTranslation);
@@ -150,7 +150,7 @@ module.exports = {
     router.put('/book/unrecommend', books.unRecommend);
 
     router.get('/books/count/listen', audio.getBooksCount);
-    router.get('/audiobook/chapter/:bookId/:sequence', audio.getChapter);
+    // router.get('/audiobook/chapter/:bookId/:sequence', audio.getChapter);
     router.get('/audiobook/chapterheaders/:bookId', audio.getChapterHeaders);
 
     router.get('/revision/sessions/:bookId/:bookType/:lan', revision.getSessionData);

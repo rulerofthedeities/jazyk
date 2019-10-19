@@ -317,7 +317,7 @@ module.exports = {
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching chapter', () => {
         if (chapter) {
-          Sentence.find({bookId, chapterId: chapter._id}, (err, sentences) => {
+          Sentence.find({bookId, chapterId: chapter._id}, {}, {sort: {sequence: 1}}, (err, sentences) => {
             response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
               if (sentences && sentences.length) {
                 chapter.sentences = sentences;

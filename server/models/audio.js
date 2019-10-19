@@ -3,15 +3,30 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-const sentenceSchema = new Schema({
+const wordScoreSchema = new Schema({
+  word: String,
+  pos: Number,
+  score: Number,
+  unselectable: Boolean
+}, {_id: false});
+
+/* Replaces legacy chapterSentenceSchema above */
+const audioSentenceSchema = new Schema({
+  bookId: {type: Schema.Types.ObjectId, required: true},
+  chapterId: {type: Schema.Types.ObjectId, required: true},
   fileName: {type: String, required: true},
+  s3: String,
+  words: [wordScoreSchema],
   text: {type: String, trim: true},
   isDisabled: Boolean,
   sequence: String, // For sorting
   isHeader: Boolean,
   isNewParagraph: Boolean,
   isEmptyLine: Boolean
-}, {_id: false});
+});
+
+audioSentenceSchema.index({bookId: 1, chapterId: 1, sequence: 1}, {unique: true});
+const SentenceModel = mongoose.model('Audiosentence', audioSentenceSchema);
 
 const audioChapterSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
@@ -20,7 +35,7 @@ const audioChapterSchema = new Schema({
   fileName: {type: String, required: true},
   level: Number,
   sequence: Number,
-  sentences: [sentenceSchema],
+  sentences: [audioSentenceSchema],
   nrOfWords: Number,
   nrOfUniqueWords: Number,
   wordLength: Number,
@@ -34,4 +49,5 @@ ChapterModel.ensureIndexes();
 
 module.exports = {
   audiochapter: ChapterModel,
+  audiosentence: SentenceModel,
 }

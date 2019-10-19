@@ -96,7 +96,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
       // Check if book is finished - in case abort right before end
       if (this.currentSentenceNr >= this.currentSentenceTotal && this.currentStep > SentenceSteps.Question) {
         this.readnListenService
-        .fetchChapter(this.book._id, this.bookType, this.currentChapter.sequence + 1)
+        .fetchChapter(this.book._id, this.currentChapter.sequence + 1)
         .pipe(takeWhile(() => this.componentActive))
         .subscribe(
           chapter => {
@@ -424,8 +424,8 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
 
   private getAudioAndChapter(bookId: string, position: Position) {
     zip(
-      this.readnListenService.fetchChapter(bookId, this.bookType, position.chapterSequence),
-      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence)
+      this.readnListenService.fetchChapter(bookId, position.chapterSequence),
+      this.readnListenService.fetchAudioChapter(this.book, position.chapterSequence, this.isTest)
     )
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(data => {
@@ -677,7 +677,7 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     if (this.currentSentenceNr >= this.currentSentenceTotal) {
       // Check if finished (see if the next chapter exists)
       this.readnListenService
-      .fetchChapter(this.book._id, this.bookType, this.currentChapter.sequence + 1)
+      .fetchChapter(this.book._id, this.currentChapter.sequence + 1)
       .pipe(takeWhile(() => this.componentActive))
       .subscribe(
         chapter => {
