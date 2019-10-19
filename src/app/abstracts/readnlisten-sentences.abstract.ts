@@ -469,16 +469,15 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
         sentencesMatch = true;
         activeSentences.forEach((sentence, i) => {
           if (sentence.text !== activeAudioSentences[i].text) {
-             // console.log('Error: TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
+            // console.log('Error: TEXT different', i, `>${sentence.text}<`, `>${activeAudioSentences[i].text}<`);
             // Prevent incorrect audio / sentence match
             sentencesMatch = false;
           }
         });
       }
       // console.log(sentencesMatch ? 'sentences match' : '!sentences don\'t match');
-
       chapter.activeSentences = activeSentences;
-      chapter.activeAudioSentences = sentencesMatch ? activeAudioSentences : [];
+      chapter.activeAudioSentences = sentencesMatch || this.bookType !== 'read' ? activeAudioSentences : [];
       this.emitChapter(chapter);
       this.currentSentenceTotal = activeSentences.length;
       this.currentSentenceNr = position.sentenceNrChapter || 0;
