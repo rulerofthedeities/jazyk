@@ -17,7 +17,7 @@ const userWordSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   userId: {type: Schema.Types.ObjectId, required: true},
   wordId: {type: Schema.Types.ObjectId, required: true},
-  chapterSequence: Number,
+  chapterSequences: [Number],
   bookLanCode: String,
   targetLanCode: String,
   pinned: Boolean,

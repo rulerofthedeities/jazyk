@@ -149,6 +149,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
         wordId: word._id,
         word: word.word,
         score: word.score || 50,
+        chapterSequences: word.chapterSequences,
         wordType: this.text[word.wordType],
         genus: word.genus ? this.text[word.genus.toLowerCase()] : null,
         verbProperties: this.getVerbProperties(word),

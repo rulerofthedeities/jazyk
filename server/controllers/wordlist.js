@@ -151,7 +151,7 @@ module.exports = {
           key = 'translationSummary.' + targetLanCode,
           query = {
             bookId,
-            chapterSequence
+            chapterSequences: chapterSequence
           },
           pipeline = [
             {$match: query},
@@ -179,7 +179,7 @@ module.exports = {
           query = {
             bookId,
             userId,
-            chapterSequence,
+            chapterSequences: chapterSequence,
             targetLanCode,
             pinned: true
           };
@@ -192,7 +192,10 @@ module.exports = {
   getSentenceWords: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
-          query = {bookId, chapterSequence};
+          query = {
+            bookId,
+            chapterSequence
+          };
     SentenceWords.find(query, (err, docs) => {
       response.handleError(err, res, 400, 'Error fetching sentence words', () => {
         response.handleSuccess(res, docs);
@@ -289,7 +292,7 @@ module.exports = {
             },
             $setOnInsert: {
               bookLanCode: word.lanCode,
-              chapterSequence: word.chapterSequence
+              chapterSequences: word.chapterSequences
             }
           },
           options = {
@@ -348,7 +351,7 @@ module.exports = {
               $setOnInsert: {
                 bookLanCode: word.lanCode,
                 translations: word.translationSummary,
-                chapterSequence: word.chapterSequence
+                chapterSequences: word.chapterSequences
               }
             },
             upsert: true
@@ -461,6 +464,7 @@ module.exports = {
               $setOnInsert: {
                 bookLanCode: bookLanCode,
                 translations: translations,
+                chapterSequences: flashcard.chapterSequences,
                 pinned: false
               }
             },

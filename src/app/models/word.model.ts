@@ -24,6 +24,7 @@ export interface Word {
   translations?: WordTranslation[];
   dictionaryLetter?: string;
   chapterSequence?: number;
+  chapterSequences?: [number];
   exclude?: boolean; // exclude from glossary list
 }
 
@@ -32,6 +33,7 @@ export interface UserWord {
   userId: string;
   wordId: string;
   chapterSequence?: number;
+  chapterSequences?: [number];
   bookLanCode: string;
   targetLanCode: string;
   pinned: boolean;
@@ -54,6 +56,7 @@ export interface FlashCard {
   translations: string;
   score: number;
   answers?: string;
+  chapterSequences: [number];
 }
 
 export interface FlashCardData {
