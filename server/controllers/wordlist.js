@@ -288,11 +288,11 @@ module.exports = {
           update = {
             $set: {
               pinned: pin,
-              translations: summary
+              translations: summary,
+              chapterSequences: word.chapterSequences
             },
             $setOnInsert: {
-              bookLanCode: word.lanCode,
-              chapterSequences: word.chapterSequences
+              bookLanCode: word.lanCode
             }
           },
           options = {
