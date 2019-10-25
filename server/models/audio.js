@@ -10,7 +10,6 @@ const wordScoreSchema = new Schema({
   unselectable: Boolean
 }, {_id: false});
 
-/* Replaces legacy chapterSentenceSchema above */
 const audioSentenceSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   chapterId: {type: Schema.Types.ObjectId, required: true},
@@ -35,7 +34,6 @@ const audioChapterSchema = new Schema({
   fileName: {type: String, required: true},
   level: Number,
   sequence: Number,
-  sentences: [audioSentenceSchema],
   nrOfWords: Number,
   nrOfUniqueWords: Number,
   wordLength: Number,

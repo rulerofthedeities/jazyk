@@ -28,12 +28,6 @@ var bookSchema = new Schema({
 bookSchema.index({isPublished: 1, audioPublished: 1, wordListPublished: 1, lanCode: 1});
 const BookModel = mongoose.model('Book', bookSchema);
 
-var sentenceSchema = new Schema({
-  text: {type: String, required: true},
-  isNewParagraph: Boolean
-}, {_id: false});
-
-/* Replaces legacy sentenceSchema above */
 const bookSentenceSchema = new Schema({
   bookId: {type: Schema.Types.ObjectId, required: true},
   chapterId: {type: Schema.Types.ObjectId, required: true},
@@ -52,7 +46,6 @@ var chapterSchema = new Schema({
   level: Number,
   sequence: Number,
   content: String,
-  sentences: [sentenceSchema],
   nrOfWords: Number,
   nrOfUniqueWords: Number,
   totalScore: Number,
