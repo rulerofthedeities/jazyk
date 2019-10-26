@@ -5,7 +5,7 @@ import { ReadnListenService } from '../services/readnlisten.service';
 import { UserService } from '../services/user.service';
 import { SharedService } from '../services/shared.service';
 import { ErrorService } from '../services/error.service';
-import { SessionData, UserBook, Bookmark, Book, Chapter,
+import { SessionData, UserBook, Bookmark, Book, Chapter, ChapterData, AudioChapterData,
          Sentence, SentenceSteps, AudioChapter, AudioSentence } from '../models/book.model';
 import { ReadSettings } from '../models/user.model';
 import { Word, UserWord, SentenceWord } from '../models/word.model';
@@ -445,8 +445,15 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
     }
   }
 
-  private processChapter(chapter: Chapter, audioChapter: AudioChapter, position: Position) {
-    if (chapter) {
+  private processChapter(chapterData: ChapterData, audioChapterData: AudioChapterData, position: Position) {
+    if (chapterData && chapterData.chapter) {
+      // Attach sentences to chapter & audiochapter
+      const chapter = chapterData.chapter;
+      chapter.sentences = chapterData.sentences;
+      const audioChapter = audioChapterData ? audioChapterData.chapter : null;
+      if (audioChapter) {
+        audioChapter.sentences = audioChapterData.sentences;
+      }
       this.getWordTranslations(chapter);
       this.currentChapter = chapter;
       this.currentAudioChapter = audioChapter;

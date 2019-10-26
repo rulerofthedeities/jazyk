@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book, Chapter, UserBook, UserData, TranslationData, Bookmark, UserBookActivity,
-         SessionData, Thumbs, Trophy, AudioChapter } from '../models/book.model';
+         SessionData, Thumbs, Trophy, ChapterData, AudioChapterData } from '../models/book.model';
 import { Word, SentenceWord, UserWord } from '../models/word.model';
 import { Observable, Subject, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -44,9 +44,9 @@ export class ReadnListenService {
     .pipe(retry(3));
   }
 
-  fetchAudioChapter(book: Book, sequence: number, isTest): Observable<AudioChapter> {
+  fetchAudioChapter(book: Book, sequence: number, isTest): Observable<AudioChapterData> {
     return this.http
-    .get<AudioChapter>(`/api/book/audiochapter/${book._id}/${sequence}/${isTest ? '1' : '0'}`)
+    .get<AudioChapterData>(`/api/book/audiochapter/${book._id}/${sequence}/${isTest ? '1' : '0'}`)
     .pipe(retry(3));
   }
 
@@ -56,9 +56,9 @@ export class ReadnListenService {
 
   /*** Chapters ***/
 
-  fetchChapter(bookId: string, sequence: number): Observable<Chapter> {
+  fetchChapter(bookId: string, sequence: number): Observable<ChapterData> {
     return this.http
-    .get<Chapter>(`/api/book/chapter/${bookId}/${sequence.toString()}`)
+    .get<ChapterData>(`/api/book/chapter/${bookId}/${sequence}`)
     .pipe(retry(3));
   }
 

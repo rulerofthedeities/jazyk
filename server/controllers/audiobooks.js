@@ -59,12 +59,10 @@ module.exports = {
     AudioChapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching audio chapter for read', () => {
         if (chapter) {
-          AudioSentence.find({bookId, chapterId: chapter._id}, sentenceProjection, {sort: {sequence: 1}}, (err, sentences) => {
+          const chapterId = new mongoose.Types.ObjectId(chapter._id);
+          AudioSentence.find({bookId, chapterId}, sentenceProjection, {sort: {sequence: 1}}, (err, sentences) => {
             response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
-              if (sentences && sentences.length) {
-                chapter.sentences = sentences;
-              }
-              response.handleSuccess(res, chapter);
+              response.handleSuccess(res, {chapter, sentences});
             });
           });
         } else {

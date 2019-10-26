@@ -52,6 +52,11 @@ export interface Chapter {
   toRemove?: boolean;
 }
 
+export interface ChapterData {
+  chapter: Chapter;
+  sentences: Sentence[];
+}
+
 export interface AudioSentence {
   sequence: string;
   s3: string;
@@ -62,6 +67,11 @@ export interface AudioSentence {
 export interface AudioChapter {
   title: string;
   directory: string;
+  sentences: AudioSentence[];
+}
+
+export interface AudioChapterData {
+  chapter: AudioChapter;
   sentences: AudioSentence[];
 }
 

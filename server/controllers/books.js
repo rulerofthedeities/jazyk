@@ -313,16 +313,16 @@ module.exports = {
             bookId,
             sequence
           },
-          projection = {content: 0};
+          projection = {
+            content: 0
+          };
     Chapter.findOne(query, projection, (err, chapter) => {
       response.handleError(err, res, 400, 'Error fetching chapter', () => {
         if (chapter) {
-          Sentence.find({bookId, chapterId: chapter._id}, {}, {sort: {sequence: 1}}, (err, sentences) => {
+          const chapterId = new mongoose.Types.ObjectId(chapter._id);
+          Sentence.find({bookId, chapterId}, {}, {sort: {sequence: 1}}, (err, sentences) => {
             response.handleError(err, res, 400, 'Error fetching chapter sentences', () => {
-              if (sentences && sentences.length) {
-                chapter.sentences = sentences;
-              }
-              response.handleSuccess(res, chapter);
+              response.handleSuccess(res, {chapter, sentences});
             });
           });
         } else {
