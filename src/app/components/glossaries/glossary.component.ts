@@ -287,7 +287,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
   }
 
   onGetWordSentences(wordId: string) {
-    console.log('getting sentences for word', wordId);
     this.fetchSentencesForWord(wordId);
   }
 
@@ -296,7 +295,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
   }
 
   onMyLanguageSelected(lan: Language) {
-    console.log('target language changed to', lan);
     this.userService.setUserLanCode(lan.code);
     this.tooltipLan = this.tooltipDirective.find(elem => elem.id === ('tooltipLan'));
     if (this.tooltipLan) {
@@ -327,7 +325,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
       this.setDisplayWords(this.tab);
       this.countWords();
       this.checkIfFlashcardsAvailable();
-      console.log('target lan', this.userLanCode);
     });
   }
 
@@ -519,7 +516,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
     .fetchSentencesForWord(this.book._id, wordId)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((sentences: SentenceWord[]) => {
-      console.log('sentences', sentences);
       this.sentenceSections[wordId] = [];
       sentences.forEach((sentence, i) => {
         this.getSentenceWordPositions(sentence, wordId, i);
