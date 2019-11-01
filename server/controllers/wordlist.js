@@ -204,7 +204,7 @@ module.exports = {
   },
   getSentenceWordsByWord: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
-          wordId = req.params.wordId,
+          wordId = new mongoose.Types.ObjectId(req.params.wordId),
           query = {
             bookId,
             'words.wordId': wordId
