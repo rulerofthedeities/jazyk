@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TooltipDirective } from 'ng2-tooltip-directive';
@@ -8,7 +8,8 @@ import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { TranslationService } from '../../services/translation.service';
 import { Book } from 'app/models/book.model';
-import { Word, UserWord, WordTranslations, WordTranslation } from 'app/models/word.model';
+import { Word, UserWord, WordTranslations, WordTranslation, SentenceWord,
+         WordPosition, SentencePosition, SentenceSection } from 'app/models/word.model';
 import { Language, Map } from '../../models/main.model';
 import { zip, BehaviorSubject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
@@ -18,7 +19,7 @@ import { takeWhile, filter, delay } from 'rxjs/operators';
   styleUrls: ['glossary.component.css']
 })
 
-export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BookGlossaryComponent implements OnInit, OnDestroy {
   @ViewChildren(TooltipDirective) tooltipDirective;
   private componentActive = true;
   text: Object;
@@ -41,7 +42,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   infoMsg: string;
   currentPage = 0;
   currentLetter = 0;
-  maxWordsPerPage = 500; // All tab is shown in paginator
+  maxWordsPerPage = 50; // All tab is shown in paginator
   nrOfPages: number;
   letters: string[];
   hasLetter: boolean[][] = [];
@@ -52,6 +53,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
   hasOmegaWikiTranslations: Map<boolean> = {};
   hasDeepLTranslations: Map<boolean> = {};
   hasMSTranslations: Map<boolean> = {};
+  sentenceSections: Map<SentenceSection[][]> = {};
   isDeeplAvailable = false;
   canEdit = false;
   userId: string;
@@ -62,7 +64,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     'z-index': 9000,
     'hide-delay': 0
   };
-  tooltip: any;
+  tooltipLan: any;
   tooltipRemove: any;
   tooltipEdit: any;
   isAllPinned = false;
@@ -90,10 +92,6 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.clearNoTranslationMsg();
     this.getBookType();
     this.getDependables(this.userService.user.main.lan);
-  }
-
-  ngAfterViewInit() {
-    this.tooltip = this.tooltipDirective.find(elem => elem.id === 'tooltip1');
   }
 
   onTrackWord(index: number, item: Word) {
@@ -288,17 +286,25 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     this.editingTranslationId = null;
   }
 
+  onGetWordSentences(wordId: string) {
+    console.log('getting sentences for word', wordId);
+    this.fetchSentencesForWord(wordId);
+  }
+
   onExpand(word: Word, expand: boolean) {
     word.expanded = expand;
   }
 
   onMyLanguageSelected(lan: Language) {
+    console.log('target language changed to', lan);
     this.userService.setUserLanCode(lan.code);
-    if (this.tooltip) {
-      this.tooltip.hide();
+    this.tooltipLan = this.tooltipDirective.find(elem => elem.id === ('tooltipLan'));
+    if (this.tooltipLan) {
+      this.tooltipLan.hide();
     }
     this.userLanCode = lan.code;
     this.translationLan = lan;
+    this.translationLanChanged = new BehaviorSubject(lan);
     this.location.go(`/glossaries/glossary/${this.bookId}/${this.userLanCode}`);
     // Clear data
     this.words.forEach(word => {
@@ -321,6 +327,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
       this.setDisplayWords(this.tab);
       this.countWords();
       this.checkIfFlashcardsAvailable();
+      console.log('target lan', this.userLanCode);
     });
   }
 
@@ -505,6 +512,85 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
     .subscribe(excluded => {
       word.exclude = exclude;
     });
+  }
+
+  private fetchSentencesForWord(wordId: string) {
+    this.wordListService
+    .fetchSentencesForWord(this.book._id, wordId)
+    .pipe(takeWhile(() => this.componentActive))
+    .subscribe((sentences: SentenceWord[]) => {
+      console.log('sentences', sentences);
+      this.sentenceSections[wordId] = [];
+      sentences.forEach((sentence, i) => {
+        this.getSentenceWordPositions(sentence, wordId, i);
+      });
+    });
+  }
+
+  private getSentenceWordPositions(sentenceWord: SentenceWord, wordId: string, i: number) {
+    this.sentenceSections[wordId][i] = [];
+    if (sentenceWord.words && sentenceWord.words.length) {
+      // Put all positions in one array
+      const positions: SentencePosition[] = [],
+      wordPositions: WordPosition[] = sentenceWord.words;
+      wordPositions.forEach(w => {
+        w.locations.forEach(p => {
+          if (!positions[p.start]) {
+            positions[p.start] = {
+              wordId: w.wordId,
+              translations: w.translations ? w.translations.replace(/\|/g, ', ') : '',
+              word: w.word,
+              actualNotes: w.actual && w.actual.note ? w.actual.note.split('|') : [],
+              start: p.start,
+              end: p.end,
+              notes: w.notes && w.notes.length ? w.notes.split('|') : []
+            };
+          }
+        });
+      });
+      // go through each wordPosition
+      // Split up sentence according to start and end of positions
+      let sentencePos = 0;
+      const text = sentenceWord.text;
+      positions.forEach(p => {
+        if (p && p.start >= sentencePos) {
+          if (p.start > sentencePos) {
+            // Add previous section
+            this.sentenceSections[wordId][i].push({
+              text: text.substring(sentencePos, p.start),
+              wordId: null
+            });
+          }
+          // Add word section
+          this.sentenceSections[wordId][i].push({
+            text: text.substring(p.start, p.end + 1),
+            wordId: p.wordId,
+            word: p.word,
+            translations: '',
+            actualNotes: '',
+            notes: ''
+          });
+          sentencePos = p.end + 1;
+        }
+      });
+      // Add trailing section
+      if (sentencePos < text.length) {
+        this.sentenceSections[wordId][i].push({
+          text: text.substring(sentencePos, text.length),
+          wordId: null
+        });
+      }
+      // Check if the sentence has the current wordId
+      this.sentenceSections[wordId].forEach((sentenceSection) => {
+        if (sentenceSection) {
+          const sections = sentenceSection.filter(s => s.wordId === wordId);
+          if (!sections || !sections.length) {
+            // remove this sentence
+            this.sentenceSections[wordId][i] = null;
+          }
+        }
+      });
+    }
   }
 
   private getBookType() {
@@ -892,8 +978,9 @@ export class BookGlossaryComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.componentActive = false;
-    if (this.tooltip) {
-      this.tooltip.hide();
+    this.tooltipLan = this.tooltipDirective.find(elem => elem.id === ('tooltipLan'));
+    if (this.tooltipLan) {
+      this.tooltipLan.hide();
     }
   }
 }

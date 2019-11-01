@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Word, UserWord, WordTranslations, UserWordData, FlashCardData, AnswerData, FlashCard, WordTranslation } from '../models/word.model';
+import { Word, UserWord, WordTranslations, FlashCardData,
+         FlashCard, WordTranslation, SentenceWord } from '../models/word.model';
 import { retry } from 'rxjs/operators';
 import { SessionData } from 'app/models/book.model';
 
@@ -27,6 +28,12 @@ export class WordListService {
   fetchUserWordList(bookId: string, userLanCode: string): Observable<UserWord[]> {
     return this.http
     .get<UserWord[]>(`/api/userwordlist/${bookId}/${userLanCode}`)
+    .pipe(retry(3));
+  }
+
+  fetchSentencesForWord(bookId: string, wordId: string): Observable<SentenceWord[]> {
+    return this.http
+    .get<SentenceWord[]>(`/api/wordlist/sentences/word/${bookId}/${wordId}`)
     .pipe(retry(3));
   }
 

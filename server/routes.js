@@ -180,7 +180,8 @@ module.exports = {
     router.get('/wordlist/words/:bookId', wordlist.getWordList);
     router.get('/wordlist/words/:bookId/:lan/:sequence', wordlist.getChapterWordList);
     router.get('/wordlist/userwords/:bookId/:lan/:sequence', wordlist.getChapterUserWordList);
-    router.get('/wordlist/sentences/:bookId/:sequence', wordlist.getSentenceWords);
+    router.get('/wordlist/sentences/:bookId/:sequence', wordlist.getSentenceWordsBySequence);
+    router.get('/wordlist/sentences/word/:bookId/:wordId', wordlist.getSentenceWordsByWord);
     router.get('/userwordlist/:bookId/:lan', wordlist.getUserWordList);
     router.get('/userwordlists/count/:lan/:targetLan', wordlist.getUserWordListCount);
     router.get('/bookwordlists/count/:lan/:targetLan', wordlist.getBookWordListCount);

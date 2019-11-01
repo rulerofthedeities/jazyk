@@ -184,3 +184,22 @@ export interface SentenceWord {
   text: string;
   words: WordPosition[];
 }
+
+export interface SentencePosition {
+  wordId: string;
+  word: Word;
+  translations: string;
+  start?: number;
+  end: number;
+  actualNotes: string[];
+  notes: string[];
+}
+
+export interface SentenceSection {
+  translations?: string;
+  word?: Word;
+  actualNotes?: string;
+  notes?: string;
+  text: string;
+  wordId: string;
+}

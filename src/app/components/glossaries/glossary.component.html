@@ -76,7 +76,8 @@
               <div
                 [tooltip]="text ? text['TranslationLanguage'] : ''"
                 show-delay="300"
-                [options]="tooltipOptions" id="tooltip1">
+                [options]="tooltipOptions"
+                id="tooltipLan">
                 <km-language-selector *ngIf="!isLoading"
                   [languages]="glossaryLanguages"
                   [language]="translationLanChanged"
@@ -290,6 +291,22 @@
     </div>
   </div>
   <!-- TRANSLATION BUTTONS -->
+  <div *ngIf="canEdit">
+    <button
+       type="button"
+       class="btn btn-xs btn-info"
+       (click)="onGetWordSentences(word._id, i)">
+      Fetch sentences
+    </button>
+    <div *ngIf="sentenceSections[word._id] && sentenceSections[word._id].length">
+      <div *ngFor="let sentence of sentenceSections[word._id]; let i=index">
+        <span *ngFor="let section of sentenceSections[word._id][i]"
+          [class.red]="section.wordId===word._id">
+          {{section.text}}
+        </span>
+      </div>
+    </div>
+  </div>
   <km-admin-translation *ngIf="!isLoadingTranslations && canEdit"
     [text]="text"
     [book]="book"

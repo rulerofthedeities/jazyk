@@ -578,13 +578,13 @@ export class StoryListComponent implements OnInit, OnDestroy {
           currentSearch = this.filterService.search[this.listTpe];
     let filteredBook: Book;
     this.isSingleBook = false;
-    if (currentSearch) {
-      // Search active, no filter
+    if (currentSearch && !(currentFilter && currentFilter.bookId)) {
+      // Search active, and no single story selected -> no filter
       this.searchBooks();
     } else if (currentFilter) {
       this.setSearchDisplayTxt('');
       if (currentFilter.bookId) {
-        // Check if book with this bookId exists
+        // Check if story with this bookId exists -> if so, show only this story
         filteredBook = this.books.find(book => book._id.toString() === currentFilter.bookId);
       }
       if (filteredBook) {

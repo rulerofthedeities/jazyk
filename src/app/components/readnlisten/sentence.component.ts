@@ -1,28 +1,9 @@
 import { Component, Input, OnChanges, Renderer2 } from '@angular/core';
 import { Sentence, AudioSentence } from '../../models/book.model';
-import { SentenceWord, WordPosition, Word, File } from '../../models/word.model';
+import { SentenceWord, WordPosition, Word, SentencePosition, SentenceSection } from '../../models/word.model';
 import { awsPath } from '../../services/shared.service';
 import { PlatformService } from '../../services/platform.service';
 import { SharedService } from '../../services/shared.service';
-
-interface Position {
-  wordId: string;
-  word: Word;
-  translations: string;
-  start?: number;
-  end: number;
-  actualNotes: string[];
-  notes: string[];
-}
-
-interface SentenceSection {
-  translations?: string;
-  word?: Word;
-  actualNotes?: string;
-  notes?: string;
-  text: string;
-  wordId: string;
-}
 
 @Component({
   selector: 'km-sentence',
@@ -114,7 +95,7 @@ export class SentenceComponent implements OnChanges {
       if (this.sentenceWords.words && this.sentenceWords.words.length) {
         this.sentenceSections = [];
         // Put all positions in one array
-        const positions: Position[] = [],
+        const positions: SentencePosition[] = [],
               wordPositions: WordPosition[] = this.sentenceWords.words;
         wordPositions.forEach(w => {
           w.locations.forEach(p => {

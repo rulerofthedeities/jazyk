@@ -189,7 +189,7 @@ module.exports = {
       });
     });
   },
-  getSentenceWords: (req, res) => {
+  getSentenceWordsBySequence: (req, res) => {
     const bookId = new mongoose.Types.ObjectId(req.params.bookId),
           chapterSequence = req.params.sequence ? parseInt(req.params.sequence) : 1,
           query = {
@@ -197,7 +197,20 @@ module.exports = {
             chapterSequence
           };
     SentenceWords.find(query, (err, docs) => {
-      response.handleError(err, res, 400, 'Error fetching sentence words', () => {
+      response.handleError(err, res, 400, 'Error fetching sentence words by sequence', () => {
+        response.handleSuccess(res, docs);
+      });
+    });
+  },
+  getSentenceWordsByWord: (req, res) => {
+    const bookId = new mongoose.Types.ObjectId(req.params.bookId),
+          wordId = req.params.wordId,
+          query = {
+            bookId,
+            'words.wordId': wordId
+          };
+    SentenceWords.find(query, (err, docs) => {
+      response.handleError(err, res, 400, 'Error fetching sentence words by wordId', () => {
         response.handleSuccess(res, docs);
       });
     });
