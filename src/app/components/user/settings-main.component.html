@@ -80,26 +80,14 @@
         hide-delay="50">
       </span>
     </label>
-    <div class="col-xs-8">
+    <div class="col-xs-2">
       <km-toggle id="countdown"
         [toggle]="mainForm.value.countDown"
         (toggled)="onSetFlag('countDown', $event)">
       </km-toggle>
     </div>
-  </div>
-  <!-- Delay -->
-  <div class="form-group" *ngIf="mainForm.value.countDown">
-    <label
-      for="delay"
-      class="control-label col-xs-4">
-      {{text["CountdownDelay"]}}
-      <span class="fa fa-info-circle"
-        [tooltip]="text['DelayInfo']"
-        hide-delay="50">
-      </span>
-    </label>
-    <div class="col-xs-8">
-      <div class="input-group ig-fixed">
+    <div class="col-xs-6">
+      <div class="input-group ig-fixed" *ngIf="mainForm.value.countDown">
         <select
           class="form-control"
           id="delay"
@@ -112,7 +100,37 @@
         </select>
         <span class="input-group-addon">
           {{mainForm.value.delay.toString() === "1" ? text["second"] : text["seconds"]}}
+          <span class="fa fa-info-circle"
+            [tooltip]="text['DelayInfo']"
+            hide-delay="50">
+          </span>
         </span>
+      </div>
+    </div>
+  </div>
+  <!-- Delay -->
+  <div class="form-group">
+    <label
+      for="flashcards"
+      class="control-label col-xs-4">
+      {{text["NrOfFlashCards"]}}
+      <span class="fa fa-info-circle"
+        [tooltip]="text['NrOfFlashCardsInfo']"
+        hide-delay="50">
+      </span>
+    </label>
+    <div class="col-xs-8">
+      <div class="select-nr">
+        <select
+          class="form-control"
+          id="flashcards"
+          formControlName="flashcards">
+          <option
+            *ngFor="let nr of formData.flashcards"
+            [value]="nr">
+            {{nr}}
+          </option>
+        </select>
       </div>
     </div>
   </div>

@@ -11,6 +11,7 @@ interface FormData {
   lans: Language[];
   myLans: Language[];
   delays: number[];
+  flashcards: number[];
 }
 
 @Component({
@@ -75,6 +76,7 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
       gender: [user.main.gender],
       countDown: [user.jazyk.read.countdown],
       delay: [user.jazyk.read.delay || 3],
+      flashcards: [user.jazyk.read.flashcards || 10]
     });
   }
 
@@ -110,7 +112,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
       read: {
         lan: this.userService.user.jazyk.read.lan,
         countdown: formValues['countDown'],
-        delay: formValues['delay']
+        delay: formValues['delay'],
+        flashcards: formValues['flashcards']
       }
     };
   }
@@ -119,7 +122,8 @@ export class UserSettingsMainComponent implements OnInit, OnDestroy {
     this.formData = {
       lans: this.interfaceLanguages,
       myLans: this.myLanguages,
-      delays: [1, 2, 3, 5, 9]
+      delays: [1, 2, 3, 5, 9],
+      flashcards: [5, 10, 15, 20, 25]
     };
   }
 

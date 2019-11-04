@@ -6,13 +6,13 @@
 .gen-selected {
   color: green;
 }
-.ig-fixed .form-control {
-  width: 68px;
-}
 .ig-fixed .input-group-addon {
   width: inherit;
 }
 .fa-info-circle {
   font-size: 16px;
   color: grey;
+}
+.select-nr {
+  width: 68px;
 }

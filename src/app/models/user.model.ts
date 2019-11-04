@@ -13,6 +13,7 @@ export interface ReadSettings {
   lan: string;
   countdown: boolean;
   delay: number; // countdown
+  flashcards: number; // max nr of flashcards per session
 }
 
 export interface AppSettings {

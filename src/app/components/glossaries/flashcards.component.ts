@@ -32,7 +32,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
   startedExercises = false;
   isFinished = false;
   modalActive = false;
-  nrofCards = 10;
+  nrofCards: number;
   flashCards: FlashCard[];
   flashCardsDone: FlashCard[]; // for results
   currentFlashCard: FlashCard;
@@ -55,6 +55,7 @@ export class BookFlashCardsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.settings = this.userService.user.jazyk.read;
+    this.nrofCards = this.settings.flashcards || 10;
     this.getType();
     this.getDependables(this.userService.user.main.lan);
   }

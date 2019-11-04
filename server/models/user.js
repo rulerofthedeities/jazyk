@@ -14,7 +14,8 @@ var mainSchema = new Schema({
 var jazykReadSchema = new Schema({
   lan: {type: String, required: true},
   countdown: Boolean,
-  delay: Number
+  delay: Number,
+  flashcards: Number
 }, {_id : false});
 
 var JazykProfileSchema = new Schema({

@@ -56,8 +56,8 @@
             <div><strong>{{stats?.nrOfTranslations | score}}</strong> {{text["Translations"]?.toLowerCase()}}</div>
           </span>
           <span class="stat col-xs-4">
-            <div><strong>{{stats?.nrOfGlossaries | score}}</strong> {{text["Glossaries"]?.toLowerCase()}}<span class="new">{{text["New"]?.toLowerCase()}}</span></div>
-            <div><strong>{{stats?.nrOfWords | score}}</strong> {{text["words"]?.toLowerCase()}}<span class="new">{{text["New"]?.toLowerCase()}}</span></div>
+            <div><strong>{{stats?.nrOfGlossaries | score}}</strong> {{text["Glossaries"]?.toLowerCase()}}</div>
+            <div><strong>{{stats?.nrOfWords | score}}</strong> {{text["words"]?.toLowerCase()}}</div>
           </span>
         </div>
         <km-loader *ngIf="isLoadingStats" style="height: 20px;"
