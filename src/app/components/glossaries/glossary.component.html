@@ -316,11 +316,20 @@
     [userId]="userId"
     (newTranslations)="onNewTranslations($event, word)">
   </km-admin-translation>
-  <div *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[word._id]">
+  <div *ngIf="canEdit && !isLoadingTranslations && !(hasDeepLTranslations[word._id] && hasMSTranslations[word._id] && hasOmegaWikiTranslations[word._id])"
+    class="tl-btn-line">
     <button type="button" *ngIf="canEdit"
-      class="btn btn-xs btn-danger ignore-translation pull-left"
+      class="btn btn-xs btn-success ignore-translation pull-left"
+      (click)="onFetchAllTranslations(i)">
+      <span class="fa fa-download fa-spacing"></span>All Translations
+    </button>
+  </div>
+
+  <div *ngIf="!isLoadingTranslations && word.wordType!=='phrase' && !hasOmegaWikiTranslations[word._id]" class="tl-btn-line">
+    <button type="button" *ngIf="canEdit"
+      class="btn btn-xs btn-danger pull-left"
       (click)="onSetTranslationAsNone(i, 'OmegaWiki', word)">
-      No OmegaWiki
+      <span class="fa fa-times-circle fa-spacing"></span>No OmegaWiki
     </button>
     <km-word-translation
       [text]="text"
@@ -334,11 +343,11 @@
       (noTranslations)="onNoTranslations($event)">
     </km-word-translation>
   </div>
-  <div *ngIf="isDeeplAvailable && !hasDeepLTranslations[word._id] && !isLoadingTranslations">
+  <div *ngIf="isDeeplAvailable && !hasDeepLTranslations[word._id] && !isLoadingTranslations" class="tl-btn-line">
     <button type="button" *ngIf="canEdit"
       class="btn btn-xs btn-danger ignore-translation pull-left"
       (click)="onSetTranslationAsNone(i, 'DeepL', word)">
-      No DeepL
+      <span class="fa fa-times-circle fa-spacing"></span>No DeepL
     </button>
     <km-word-translation
       [text]="text"
@@ -351,11 +360,11 @@
       (newTranslations)="onNewTranslations($event, word)">
     </km-word-translation>
   </div>
-  <div *ngIf="!hasMSTranslations[word._id] && !isLoadingTranslations">
+  <div *ngIf="!hasMSTranslations[word._id] && !isLoadingTranslations" class="tl-btn-line">
     <button type="button" *ngIf="canEdit"
       class="btn btn-xs btn-danger ignore-translation pull-left"
       (click)="onSetTranslationAsNone(i, 'Microsoft', word)">
-      No Microsoft
+      <span class="fa fa-times-circle fa-spacing"></span>No Microsoft
     </button>
     <km-word-translation
       [text]="text"

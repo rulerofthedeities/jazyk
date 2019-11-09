@@ -44,14 +44,10 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     }
   }
 
-  private getWord(): string {
-    return this.word.root ? this.word.root : this.word.word;
-  }
-
   private getOmegaDefinitionLocal() {
     this.isLoading = true;
     this.translationService
-    .fetchOmegaDefinitionLocal(this.getWord())
+    .fetchOmegaDefinitionLocal(this.word.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(omegaDefinitions => {
       if (omegaDefinitions.length) {
@@ -66,7 +62,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
   private getOmegaDefinitionExternal() {
     this.isLoading = true;
     this.translationService
-    .fetchOmegaDefinitionExternal(this.getWord())
+    .fetchOmegaDefinitionExternal(this.word.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(result => {
       if (result && result.omega && result.omega['ow_express']) {
@@ -108,7 +104,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     // note: also save if no data?
     this.definitions = {
       source: 'OmegaWiki',
-      word: this.getWord(),
+      word: this.word.word,
       omegaWord: data['expression'],
       omegaDefinitions: definitions
     };
@@ -204,7 +200,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     };
     this.isLoading = true;
     this.translationService
-    .fetchMachineTranslation('deepl', lanPair, this.getWord())
+    .fetchMachineTranslation('deepl', lanPair, this.word.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((translation: DeepLTranslations) => {
       this.isLoading = false;
@@ -230,7 +226,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
     };
     this.isLoading = true;
     this.translationService
-    .fetchMachineTranslation('microsoft', lanPair, this.getWord())
+    .fetchMachineTranslation('microsoft', lanPair, this.word.word)
     .pipe(takeWhile(() => this.componentActive))
     .subscribe((translation: MSTranslations) => {
       this.isLoading = false;
@@ -292,7 +288,7 @@ export class ExternalWordTranslationComponent implements OnDestroy {
             this.newTranslations.emit({
               translations: {
                 lanCode: this.bookLan.code,
-                word: this.getWord(),
+                word: this.word.word,
                 translations: addedTranslations
               },
               i: this.i

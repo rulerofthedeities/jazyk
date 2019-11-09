@@ -7,11 +7,12 @@ import { SharedService, awsPath } from '../../services/shared.service';
 import { WordListService } from '../../services/word-list.service';
 import { ReadnListenService } from '../../services/readnlisten.service';
 import { TranslationService } from '../../services/translation.service';
+import { ExternalWordTranslationComponent } from '../glossaries/external-translation.component';
 import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation, SentenceWord,
          WordPosition, SentencePosition, SentenceSection } from 'app/models/word.model';
 import { Language, Map } from '../../models/main.model';
-import { zip, BehaviorSubject } from 'rxjs';
+import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
 
 @Component({
@@ -21,6 +22,7 @@ import { takeWhile, filter, delay } from 'rxjs/operators';
 
 export class BookGlossaryComponent implements OnInit, OnDestroy {
   @ViewChildren(TooltipDirective) tooltipDirective;
+  @ViewChildren(ExternalWordTranslationComponent) wordTranslations;
   private componentActive = true;
   text: Object;
   book: Book;
@@ -184,6 +186,26 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
 
   onCancelUserTranslation() {
     this.editingWord = null;
+  }
+
+  onFetchAllTranslations(i: number) {
+      const word = this.displayWords[i],
+            deepL = this.wordTranslations.find(elem => elem.i === i && elem.source === 'DeepL'),
+            MS = this.wordTranslations.find(elem => elem.i === i && elem.source === 'Microsoft'),
+            Omega = this.wordTranslations.find(elem => elem.i === i && elem.source === 'OmegaWiki');
+      if (deepL && this.isDeeplAvailable) {
+        deepL.getDeepLTranslation();
+      }
+      if (MS) {
+        MS.getMSTranslation();
+      }
+      if (Omega && word) {
+        if (word.wordType !== 'phrase') {
+          Omega.getOmegaDefinitionLocal();
+        } else {
+          this.hasOmegaWikiTranslations[word._id] = true;
+        }
+      }
   }
 
   onNewTranslations(data: {translations: WordTranslations, i: number, _id: string}, word: Word) {

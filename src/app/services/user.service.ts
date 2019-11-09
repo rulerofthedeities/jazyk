@@ -187,7 +187,8 @@ export class UserService {
       read: {
         lan: lan,
         countdown: true,
-        delay: 3
+        delay: 3,
+        flashcards: 10
       },
       profile: {
         realName: '',

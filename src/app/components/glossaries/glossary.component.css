@@ -100,6 +100,10 @@ table {
   border-bottom: 1px dotted gray;
   margin-bottom: 4px;
 }
+.tl-btn-line {
+  display: flex;
+  margin-top: 1px;
+}
 .no-translation {
   color: orange;
 }
@@ -183,9 +187,6 @@ ul.nav li.active > a {
 }
 ul.nav-tabs li.active > a {
   border-color: none;
-}
-.ignore-translation {
-  margin-top: 1px;
 }
 .word-notes {
   color: orange;
