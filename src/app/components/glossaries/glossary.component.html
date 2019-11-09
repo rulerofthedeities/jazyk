@@ -214,7 +214,7 @@
       </div>
     </div>
     <div *ngIf="tab==='glossary' && word.expanded">
-      <div class="chevron pull-left" (click)="onExpand(word, false)">
+      <div class="chevron" (click)="onExpand(word, false)">
         <span class="fa fa-chevron-down"></span>
       </div>
       <ng-container *ngTemplateOutlet="wordDetail;context:{
@@ -291,18 +291,18 @@
     </div>
   </div>
   <!-- TRANSLATION BUTTONS -->
-  <div *ngIf="canEdit">
+  <div>
     <button
        type="button"
        class="btn btn-xs btn-info"
        (click)="onGetWordSentences(word._id, i)">
-      Fetch sentences
+       {{text["FetchSentences"]}}
     </button>
     <div *ngIf="sentenceSections[word._id] && sentenceSections[word._id].length">
       <div *ngFor="let sentence of sentenceSections[word._id]; let i=index">
-        <span *ngFor="let section of sentenceSections[word._id][i]"
-          [class.red]="section.wordId===word._id">
-          {{section.text}}
+        <span class="sentence-nr">{{i + 1}}.</span>
+        <span *ngFor="let section of sentenceSections[word._id][i]" [class.red]="section.wordId===word._id">
+          <span *ngIf="section.text">{{section.text}}</span>
         </span>
       </div>
     </div>

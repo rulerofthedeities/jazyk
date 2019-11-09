@@ -608,6 +608,7 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
           }
         }
       });
+      this.sentenceSections[wordId] = this.sentenceSections[wordId].filter(sentence => !!sentence);
     }
   }
 

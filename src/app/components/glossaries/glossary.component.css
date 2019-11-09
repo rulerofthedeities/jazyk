@@ -191,3 +191,7 @@ ul.nav-tabs li.active > a {
 .word-notes {
   color: orange;
 }
+.sentence-nr {
+  color: grey;
+  margin-right: 6px;
+}
