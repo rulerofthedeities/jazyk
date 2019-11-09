@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Map, Option } from '../models/main.model';
 import { ViewFilter } from '../models/book.model';
+import { defaultSort } from '../app.config';
 
 @Injectable()
 export class FilterService {
@@ -40,7 +41,7 @@ export class FilterService {
 
   initSort(bookType: string) {
     if (!this.sort[bookType]) {
-      this.sort[bookType] = 'difficulty1';
+      this.sort[bookType] = defaultSort;
     }
   }
 

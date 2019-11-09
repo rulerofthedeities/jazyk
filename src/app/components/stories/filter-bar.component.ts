@@ -7,6 +7,7 @@ import { Option } from '../../models/main.model';
 import { ViewFilter } from '../../models/book.model';
 import { Subject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
+import { defaultSort } from '../../app.config';
 
 @Component({
   selector: 'km-filter-bar',
@@ -31,6 +32,7 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   showDropDown = false;
   sort: string;
   sortOptions: Option[];
+  hasSort = false;
   hasFilter = false;
   filterTxt: string;
   filter: ViewFilter;
@@ -58,6 +60,9 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sort = this.filterService.sort[this.listType];
+    if (this.sort !== defaultSort) {
+      this.hasSort = true;
+    }
     this.sortOptions = this.filterService.getSortOptions(this.text);
     this.checkFilterChanged();
   }

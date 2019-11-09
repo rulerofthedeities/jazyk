@@ -9,6 +9,7 @@
       <select class="form-control sort-control"
         (change)="onChangeSort($event.target.value)"
         [tooltip]="text['SortOrder']"
+        [class.isactive]="hasSort"
         show-delay="300"
         placement="top">
         <option
@@ -24,11 +25,13 @@
       <div class="form-control activate-search"
         (click)="onActivateSearch()"
         [tooltip]="text['Search']"
+        [class.inactive]="!hasSearch"
+        [class.active]="hasSearch"
         show-delay="300"
         hide-delay="0"
         placement="top">
         <span class="fa fa-search fa-spacing" [class.active]="hasSearch"></span>
-        <span class="search-text">{{searchTxt}}</span>
+        <span>{{searchTxt}}</span>
       </div>
     </div>
     <div class="form-group form-group-sm pull-left clear-filter" [style.display]="!searchActive && !hasFilter && hasSearch ? 'block' : 'none'">
@@ -62,12 +65,13 @@
     <!-- FILTER -->
     <div class="form-group form-group-sm pull-left filter" #dropdown *ngIf="filter && !searchActive">
       <div class="form-control filter-filter"
-          on-mouseover="onShowDropDown(true)"
-          on-mouseout="onShowDropDown(false)"
-          (click)="onToggleDropDown()"
-          [tooltip]="text['Filter']"
-          show-delay="300"
-          placement="top">
+        [class.inactive]="!hasFilter"
+        on-mouseover="onShowDropDown(true)"
+        on-mouseout="onShowDropDown(false)"
+        (click)="onToggleDropDown()"
+        [tooltip]="text['Filter']"
+        show-delay="300"
+        placement="top">
         <span class="fa fa-filter fa-spacing" [class.active]="hasFilter"></span><span class="filter-text">{{filterTxt}}</span>
         <ul
           class="dropdown-menu"
@@ -159,6 +163,7 @@
     </div>
     <div class="form-group form-group-sm pull-left clear-filter" [style.display]="hasFilter ? 'block' : 'none'">
       <div class="form-control"
+        [class.inactive]="!hasFilter"
         (click)="onClearFilter()"
         [tooltip]="text['ClearFilter']"
         show-delay="300"

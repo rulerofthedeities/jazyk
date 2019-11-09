@@ -47,6 +47,7 @@
 .dropdown-menu {
   top: -2px;
   width: 242px;
+  color: black;
 }
 .form-group {
   margin: 0;
@@ -73,6 +74,13 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.isactive {
+  /*
+  border-width: 1px;
+  border-left-width: 12px;
+  border-color: #428bca;
+  */
 }
 
 /* Hide the browser's default checkbox */
