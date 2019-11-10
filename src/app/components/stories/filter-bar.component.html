@@ -5,8 +5,8 @@
       {{itemTxt}}
     </span>
     <!-- SORT -->
-    <div class="form-group form-group-sm pull-left sort">
-      <select class="form-control sort-control"
+    <div class="form-group form-group-sm pull-left">
+      <select class="form-control filter-sort"
         (change)="onChangeSort($event.target.value)"
         [tooltip]="text['SortOrder']"
         [class.isactive]="hasSort"
@@ -20,13 +20,20 @@
         </option>
       </select>
     </div>
+    <!-- MY -->
+    <div class="form-group form-group-sm pull-left">
+      <select class="form-control filter-my"
+        (change)="onChangeListType($event.target.value)">
+        <option value="all">{{text['AllLecture']}}</option>
+        <option value="my">{{text['MyLecture']}}</option>
+      </select>
+    </div>
     <!-- SEARCH -->
     <div class="form-group form-group-sm pull-left search" [style.display]="!searchActive && !hasFilter ? 'block' : 'none'">
       <div class="form-control activate-search"
         (click)="onActivateSearch()"
         [tooltip]="text['Search']"
-        [class.inactive]="!hasSearch"
-        [class.active]="hasSearch"
+        [class.isactive]="hasSearch"
         show-delay="300"
         hide-delay="0"
         placement="top">
@@ -65,7 +72,6 @@
     <!-- FILTER -->
     <div class="form-group form-group-sm pull-left filter" #dropdown *ngIf="filter && !searchActive">
       <div class="form-control filter-filter"
-        [class.inactive]="!hasFilter"
         on-mouseover="onShowDropDown(true)"
         on-mouseout="onShowDropDown(false)"
         (click)="onToggleDropDown()"
@@ -163,7 +169,6 @@
     </div>
     <div class="form-group form-group-sm pull-left clear-filter" [style.display]="hasFilter ? 'block' : 'none'">
       <div class="form-control"
-        [class.inactive]="!hasFilter"
         (click)="onClearFilter()"
         [tooltip]="text['ClearFilter']"
         show-delay="300"

@@ -26,6 +26,7 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   @Output() newSort = new EventEmitter<string>();
   @Output() newFilter = new EventEmitter<ViewFilter>();
   @Output() newSearch = new EventEmitter<string>();
+  @Output() newListType = new EventEmitter<string>();
   @ViewChild('dropdown') dropdown: ElementRef;
   @ViewChild('searchbox') query: ElementRef;
   private componentActive = true;
@@ -77,6 +78,10 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
 
   onChangeSort(sort: string) {
     this.newSort.emit(sort);
+  }
+
+  onChangeListType(tpe: string) {
+    this.newListType.emit(tpe);
   }
 
   onShowDropDown(show: boolean) {

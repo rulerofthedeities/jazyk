@@ -3,8 +3,12 @@
   position: relative;
   top: 4px;
 }
-.sort-control {
+.filter-sort {
   width: inherit;
+}
+.filter-my {
+  width: inherit;
+  margin-left: 6px;
 }
 .filter {
   margin-left: 3px;

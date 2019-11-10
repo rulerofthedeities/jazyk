@@ -10,7 +10,6 @@
       [myLanguage]="targetLanguageChanged"
       (newBookLanguage)="onBookLanguageSelected($event)"
       (newMyLanguage)="onMyLanguageSelected($event)"
-      (newListType)="onChangeMyList($event)"
     ></km-languages-bar>
   </div>
   <div class="filter" *ngIf="showFilter && isBooksReady">
@@ -23,7 +22,8 @@
       [searchChanged]="searchChanged"
       (newSort)="onChangeSort($event)"
       (newFilter)="onChangeFilter($event)"
-      (newSearch)="onChangeSearch($event)">
+      (newSearch)="onChangeSearch($event)"
+      (newListType)="onChangeMyList($event)">
     </km-filter-bar>
   </div>
   <!-- BOOKS LIST -->
