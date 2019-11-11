@@ -70,6 +70,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.showFilter = true;
     this.listTpe = 'read';
+    this.isMyList = this.filterService.my[this.listTpe] !== defaultMy;
     this.getListTpe();
     this.getDependables();
   }
@@ -91,7 +92,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.getBooks();
   }
 
-  onMyLanguageSelected(lan: Language) {
+  onTargetLanguageSelected(lan: Language) {
     this.userService.setUserLanCode(lan.code);
     this.targetLanguage = lan;
     this.resetScroll();

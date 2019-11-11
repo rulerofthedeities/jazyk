@@ -19,10 +19,10 @@ export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewIn
   @Input() text: Object = {};
   @Input() bookLanguages: Language[];
   @Input() bookLanguage: Language;
-  @Input() myLanguages: Language[];
-  @Input() myLanguage: Subject<Language>;
+  @Input() targetLanguages: Language[];
+  @Input() targetLanguage: Subject<Language>;
   @Output() newBookLanguage = new EventEmitter<Language>();
-  @Output() newMyLanguage = new EventEmitter<Language>();
+  @Output() newTargetLanguage = new EventEmitter<Language>();
   // @Output() newListType = new EventEmitter<string>();
   @ViewChildren(TooltipDirective) tooltipDirective: TooltipDirective[];
   private componentActive = true;
@@ -57,17 +57,13 @@ export class BookLanguagesBarComponent implements OnInit, OnDestroy, AfterViewIn
     this.newBookLanguage.emit(lan);
   }
 
-  onMyLanguageSelected(lan: Language) {
+  onTargetLanguageSelected(lan: Language) {
     if (this.tooltip2) {
       this.tooltip2.hide();
     }
-    this.newMyLanguage.emit(lan);
+    this.newTargetLanguage.emit(lan);
   }
-/*
-  onChangeListType(tpe: string) {
-    this.newListType.emit(tpe);
-  }
-*/
+
   private getBooksCount() {
     this.storiesService
     .fetchBooksCount(this.currentListType)

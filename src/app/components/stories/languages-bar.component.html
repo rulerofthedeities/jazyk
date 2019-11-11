@@ -10,16 +10,16 @@
       (languageSelected)="onBookLanguageSelected($event)">
     </km-language-selector>
   </div>
-  <div class="col-xs-6 selector my-lan-selector"
+  <div class="col-xs-6 selector target-lan-selector"
     [tooltip]="text['TranslationLanguage']"
     show-delay="300"
     [options]="tooltipOptions" id="tooltip2">
     <span class="fa fa-arrow-right sel-arrow"></span>
     <km-language-selector
-      [languages]="myLanguages"
-      [language]="myLanguage"
+      [languages]="targetLanguages"
+      [language]="targetLanguage"
       [text]="text"
-      (languageSelected)="onMyLanguageSelected($event)">
+      (languageSelected)="onTargetLanguageSelected($event)">
     </km-language-selector>
   </div>
 </div>

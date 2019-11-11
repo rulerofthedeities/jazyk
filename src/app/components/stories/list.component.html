@@ -6,10 +6,10 @@
       [text]="text"
       [bookLanguages]="bookLanguages"
       [bookLanguage]="bookLanguage"
-      [myLanguages]="targetLanguages"
-      [myLanguage]="targetLanguageChanged"
+      [targetLanguages]="targetLanguages"
+      [targetLanguage]="targetLanguageChanged"
       (newBookLanguage)="onBookLanguageSelected($event)"
-      (newMyLanguage)="onMyLanguageSelected($event)"
+      (newTargetLanguage)="onTargetLanguageSelected($event)"
     ></km-languages-bar>
   </div>
   <div class="filter" *ngIf="showFilter" [style.display]="isBooksReady ? 'block' : 'none'">

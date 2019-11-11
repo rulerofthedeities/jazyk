@@ -288,6 +288,14 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
     }
   }
 
+  onSetTranslationToTo(i: number, translation: WordTranslation, word: Word) {
+    // add to prefix to verbs in en
+    this.clearNoTranslationMsg();
+    if (this.canEdit) {
+      this.setTranslationToTo(word._id, translation._id, word);
+    }
+  }
+
   onSetTranslationToLowerCase(i: number, translation: WordTranslation, word: Word) {
     // Set first letter of translation to lowercase
     this.clearNoTranslationMsg();
@@ -918,6 +926,25 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe( result => {
         updatedTranslation.translation = caseTranslation;
+        const translations: WordTranslations = {
+          translations: word.translations,
+          lanCode: this.userLanCode,
+          word: word.word
+        }
+        this.setWordTranslationSummary(word, null, translations);
+      });
+    }
+  }
+
+  private setTranslationToTo(wordId: string, elementId: string, word: Word) {
+    const updatedTranslation = word.translations.find(tlElement => tlElement._id === elementId);
+    if (updatedTranslation) {
+      const newTranslation = 'to ' + updatedTranslation.translation;
+      this.translationService
+      .setWordTranslationToLowerCase(wordId, elementId, newTranslation)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe( result => {
+        updatedTranslation.translation = newTranslation;
         const translations: WordTranslations = {
           translations: word.translations,
           lanCode: this.userLanCode,

@@ -244,6 +244,12 @@
             (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
+          <button *ngIf="translation._id && translationLan.code==='en' && word && word.wordType==='verb' && translation.translation && translation.translation.substring(0, 2) !== 'to'"
+            type="button"
+            class="btn btn-success"
+            (click)="onSetTranslationToTo(i, translation, word)">
+            to
+          </button>
           <button *ngIf="translation._id && isUpperCase(translation) && translation.source !== 'Jazyk'"
             type="button"
             class="btn btn-warning"
