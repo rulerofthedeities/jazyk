@@ -7,7 +7,7 @@ import { Option } from '../../models/main.model';
 import { ViewFilter } from '../../models/book.model';
 import { Subject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { defaultSort } from '../../app.config';
+import { defaultSort, defaultMy } from '../../app.config';
 
 @Component({
   selector: 'km-filter-bar',
@@ -32,8 +32,10 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   private componentActive = true;
   showDropDown = false;
   sort: string;
+  my: string;
   sortOptions: Option[];
   hasSort = false;
+  hasMy = false;
   hasFilter = false;
   filterTxt: string;
   filter: ViewFilter;
@@ -60,11 +62,6 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sort = this.filterService.sort[this.listType];
-    if (this.sort !== defaultSort) {
-      this.hasSort = true;
-    }
-    this.sortOptions = this.filterService.getSortOptions(this.text);
     this.checkFilterChanged();
   }
 
@@ -131,6 +128,11 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
       this.filter = this.filterService.filter[this.listType];
       this.filterTxt = this.filterService.filterTxt[this.listType];
       this.hasFilter = this.filterService.hasFilter[this.listType];
+      this.sort = this.filterService.sort[this.listType];
+      this.hasSort = this.sort !== defaultSort;
+      this.sortOptions = this.filterService.getSortOptions(this.text);
+      this.my = this.filterService.my[this.listType];
+      this.hasMy = this.my !== defaultMy;
       this.sharedService.detectChanges(this.cdr);
     });
     this.searchChanged
@@ -139,6 +141,9 @@ export class BookFilterBarComponent implements OnInit, OnDestroy {
       this.search = this.filterService.search[this.listType];
       this.searchTxt = this.filterService.searchTxt[this.listType];
       this.hasSearch = this.filterService.hasSearch[this.listType];
+      if (this.hasSearch && this.searchTxt !== this.text['NoSearch']) {
+        this.searchActive = true;
+      }
       this.sharedService.detectChanges(this.cdr);
     });
   }

@@ -23,9 +23,13 @@
     <!-- MY -->
     <div class="form-group form-group-sm pull-left">
       <select class="form-control filter-my"
-        (change)="onChangeListType($event.target.value)">
-        <option value="all">{{text['AllLecture']}}</option>
-        <option value="my">{{text['MyLecture']}}</option>
+        (change)="onChangeListType($event.target.value)"
+        [tooltip]="text['FilterPinned']"
+        [class.isactive]="hasMy">
+        <option value="all"
+          [selected]="my==='all'">{{text['AllLecture']}}</option>
+        <option value="my"
+        [selected]="my==='my'">{{text['MyLecture']}}</option>
       </select>
     </div>
     <!-- SEARCH -->
@@ -33,7 +37,6 @@
       <div class="form-control activate-search"
         (click)="onActivateSearch()"
         [tooltip]="text['Search']"
-        [class.isactive]="hasSearch"
         show-delay="300"
         hide-delay="0"
         placement="top">
@@ -45,6 +48,7 @@
       <div class="form-control"
         (click)="onCancelSearch()"
         [tooltip]="text['ClearSearch']"
+        [class.isactive]="hasSearch"
         show-delay="300"
         hide-delay="0"
         placement="top">
@@ -58,12 +62,15 @@
           class="form-control"
           #searchbox
           [placeholder]="text['Search...']"
+          [class.isactive]="hasSearch"
+          [value]="searchTxt === text['NoSearch'] ? '' : searchTxt"
           autofocus>
         <span class="input-group-addon search-btn"
-          (click)="onSearch(searchbox.value)">
-            <i class="fa fa-search" [class.active]="hasSearch"></i>
+          (click)="onSearch(searchbox.value)" [class.isactive]="hasSearch">
+            <i class="fa fa-search"></i>
         </span>
         <span class="input-group-addon cancel-search"
+          [class.isactive]="hasSearch"
           (click)="onCancelSearch()">
           <i class="fa fa-times"></i>
         </span>
@@ -76,6 +83,7 @@
         on-mouseout="onShowDropDown(false)"
         (click)="onToggleDropDown()"
         [tooltip]="text['Filter']"
+        [class.isactive]="hasFilter"
         show-delay="300"
         placement="top">
         <span class="fa fa-filter fa-spacing" [class.active]="hasFilter"></span><span class="filter-text">{{filterTxt}}</span>
@@ -171,6 +179,7 @@
       <div class="form-control"
         (click)="onClearFilter()"
         [tooltip]="text['ClearFilter']"
+        [class.isactive]="hasFilter"
         show-delay="300"
         hide-delay="0"
         placement="top">

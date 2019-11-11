@@ -12,6 +12,7 @@ import { Book, UserBookActivity, UserBookLean, UserData, TranslationData,
 import { UserWordCount, UserWordData } from '../../models/word.model';
 import { takeWhile, filter, delay } from 'rxjs/operators';
 import { zip, of, BehaviorSubject } from 'rxjs';
+import { defaultMy } from '../../app.config';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -102,16 +103,17 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.getPostActivityData();
   }
 
-  onChangeMyList(tpe: string) {
-    this.isMyList = tpe === 'my';
-    this.filterBooks();
-    this.getTypeData();
-  }
-
   onChangeSort(newSort: string) {
     this.filterService.sort[this.listTpe] = newSort;
     this.resetScroll();
     this.getBooks(false);
+  }
+
+  onChangeMyList(tpe: string) {
+    this.isMyList = tpe !== defaultMy;
+    this.filterService.my[this.listTpe] = tpe;
+    this.filterBooks();
+    this.getTypeData();
   }
 
   onChangeFilter(newFilter: ViewFilter) {
@@ -720,6 +722,7 @@ export class StoryListComponent implements OnInit, OnDestroy {
     this.filterService.initFilter(this.listTpe);
     this.filterService.initSearch(this.listTpe);
     this.filterService.initSort(this.listTpe);
+    this.filterService.initMy(this.listTpe);
     // Clear previous book filter
     this.filterService.filter[this.listTpe].bookId = null;
     this.route.params

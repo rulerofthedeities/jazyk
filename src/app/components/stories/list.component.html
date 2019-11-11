@@ -12,7 +12,7 @@
       (newMyLanguage)="onMyLanguageSelected($event)"
     ></km-languages-bar>
   </div>
-  <div class="filter" *ngIf="showFilter && isBooksReady">
+  <div class="filter" *ngIf="showFilter" [style.display]="isBooksReady ? 'block' : 'none'">
     <km-filter-bar
       [text]="text"
       [hasBooks]="!!filteredBooks.length"

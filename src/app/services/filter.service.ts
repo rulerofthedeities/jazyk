@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Map, Option } from '../models/main.model';
 import { ViewFilter } from '../models/book.model';
-import { defaultSort } from '../app.config';
+import { defaultSort, defaultMy } from '../app.config';
 
 @Injectable()
 export class FilterService {
   sort: Map<string> = {};
+  my: Map<string> = {};
   filter: Map<ViewFilter> = {};
   filterTxt: Map<string> = {};
   hasFilter: Map<boolean> = {};
@@ -42,6 +43,12 @@ export class FilterService {
   initSort(bookType: string) {
     if (!this.sort[bookType]) {
       this.sort[bookType] = defaultSort;
+    }
+  }
+
+  initMy(bookType: string) {
+    if (!this.my[bookType]) {
+      this.my[bookType] = defaultMy;
     }
   }
 

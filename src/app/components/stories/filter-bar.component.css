@@ -45,9 +45,6 @@
   padding-left: 0;
   padding-top: 1px;
 }
-.fa.active {
-  color: #428bca;
-}
 .dropdown-menu {
   top: -2px;
   width: 242px;
@@ -80,13 +77,13 @@
   user-select: none;
 }
 .isactive {
-  /*
-  border-width: 1px;
-  border-left-width: 12px;
-  border-color: #428bca;
-  */
+  background-color: #5bc0de;
+  border-color: #5bc0de;
+  color: white;
 }
-
+.search-box input.isactive {
+  background-color: #54b0cc;
+}
 /* Hide the browser's default checkbox */
 .filter-label input {
   position: absolute;
