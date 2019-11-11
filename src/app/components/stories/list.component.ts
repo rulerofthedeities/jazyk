@@ -70,8 +70,8 @@ export class StoryListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.showFilter = true;
     this.listTpe = 'read';
-    this.isMyList = this.filterService.my[this.listTpe] !== defaultMy;
     this.getListTpe();
+    this.isMyList = this.filterService.my[this.listTpe] === 'my';
     this.getDependables();
   }
 
