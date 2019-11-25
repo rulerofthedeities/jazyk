@@ -4,13 +4,13 @@
       <div class="flip-card-front" (click)="onFlip()">
         <div class="front-content">
           <span *ngIf="answered">
-            <ng-container *ngTemplateOutlet="word;context:{side: 'front'}"></ng-container>
+            <ng-container *ngTemplateOutlet="wordTemplate;context:{side: 'front'}"></ng-container>
           </span>
         </div>
       </div>
       <div class="flip-card-back">
         <div *ngIf="!answered">
-          <ng-container *ngTemplateOutlet="word;context:{side: 'back'}"></ng-container>
+          <ng-container *ngTemplateOutlet="wordTemplate;context:{side: 'back'}"></ng-container>
           <h1 class="translations">
             <img src="/assets/img/flags/{{lanPair.to}}.png" class="flag to">
             {{card.translations}}
@@ -55,8 +55,27 @@
     </div>
   </div>
 </div>
+
+<!-- SENTENCES -->
+<div class="sentences">
+  <button *ngIf="card?.wordId && !sentenceSections[card.wordId]"
+    type="button"
+    class="btn btn-xs btn-info"
+    (click)="onGetWordSentences(card?.wordId)">
+    {{text["FetchSentences"]}}
+  </button>
+  <div *ngIf="card?.wordId && sentenceSections[card.wordId] && sentenceSections[card.wordId].length">
+    <div *ngFor="let sentence of sentenceSections[card.wordId]; let i=index">
+      <span class="sentence-nr">{{i + 1}}. </span>
+      <span *ngFor="let section of sentenceSections[card.wordId][i]" [class.red]="section.wordId===card.wordId">
+        <span *ngIf="section.text">{{section.text}}</span>
+      </span>
+    </div>
+  </div>
+</div>
+
 <!-- CARD -->
-<ng-template #word let-side=side>
+<ng-template #wordTemplate let-side=side>
   <km-glossary-word
     [text]="text"
     [flashCard]="card"

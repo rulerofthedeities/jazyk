@@ -1,6 +1,8 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { FlashCard } from 'app/models/word.model';
-import { LanPair } from '../../models/main.model';
+import { WordListService } from '../../services/word-list.service';
+import { Book } from 'app/models/book.model';
+import { FlashCard, SentenceSection, SentenceWord } from 'app/models/word.model';
+import { LanPair, Map } from '../../models/main.model';
 import { Subject } from 'rxjs';
 import { takeWhile, delay } from 'rxjs/operators';
 
@@ -12,6 +14,7 @@ import { takeWhile, delay } from 'rxjs/operators';
 
 export class BookFlashCardComponent implements OnInit, OnDestroy {
   @Input() text: Object;
+  @Input() book: Book;
   @Input() lanPair: LanPair;
   @Input() audioPath: string;
   @Input() private newFlashCard: Subject<FlashCard>;
@@ -22,11 +25,17 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
   isFlipped = false;
   showButtons = false;
   answered = false;
+  sentenceSections: Map<SentenceSection[][]> = {};
+
+  constructor(
+    private wordListService: WordListService
+  ) {}
 
   ngOnInit() {
     this.newFlashCard
     .pipe(takeWhile(() => this.componentActive))
     .subscribe(event => {
+      this.sentenceSections = {};
       this.isFlipped = false;
       this.showButtons = false;
       this.answered = true;
@@ -55,6 +64,30 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
 
   onAnswer(answer: string) {
     this.hasAnswered(answer);
+  }
+
+  onGetWordSentences(wordId: string) {
+    if (wordId) {
+      this.fetchSentencesForWord(wordId);
+    }
+  }
+
+  private fetchSentencesForWord(wordId: string) {
+    if (this.book) {
+      this.wordListService
+      .fetchSentencesForWord(this.book._id, wordId)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe((sentences: SentenceWord[]) => {
+        this.sentenceSections[wordId] = [];
+        if (sentences.length) {
+          sentences.forEach((sentence, i) => {
+            this.wordListService.getSentenceWordPositions(this.sentenceSections, sentence, wordId, i);
+          });
+        } else {
+          // this.wordListService.getTitleWordPositions(this.sentenceSections, this.book.title, wordId, i);
+        }
+      });
+    }
   }
 
   private flip() {

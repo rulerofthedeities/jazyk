@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Word, UserWord, WordTranslations, FlashCardData,
-         FlashCard, WordTranslation, SentenceWord } from '../models/word.model';
+         FlashCard, WordTranslation, SentenceWord,
+         WordPosition, SentencePosition, SentenceSection } from '../models/word.model';
+import { Map } from '../models/main.model';
 import { retry } from 'rxjs/operators';
 import { SessionData } from 'app/models/book.model';
 
@@ -143,4 +145,71 @@ export class WordListService {
     return summary.join(separator);
   }
 
+  getSentenceWordPositions(sentenceSections: Map<SentenceSection[][]>,
+    sentenceWord: SentenceWord, wordId: string, i: number) {
+    sentenceSections[wordId][i] = [];
+    if (sentenceWord.words && sentenceWord.words.length) {
+      // Put all positions in one array
+      const positions: SentencePosition[] = [],
+      wordPositions: WordPosition[] = sentenceWord.words;
+      wordPositions.forEach(w => {
+        w.locations.forEach(p => {
+          if (!positions[p.start]) {
+            positions[p.start] = {
+              wordId: w.wordId,
+              translations: w.translations ? w.translations.replace(/\|/g, ', ') : '',
+              word: w.word,
+              actualNotes: w.actual && w.actual.note ? w.actual.note.split('|') : [],
+              start: p.start,
+              end: p.end,
+              notes: w.notes && w.notes.length ? w.notes.split('|') : []
+            };
+          }
+        });
+      });
+      // go through each wordPosition
+      // Split up sentence according to start and end of positions
+      let sentencePos = 0;
+      const text = sentenceWord.text;
+      positions.forEach(p => {
+        if (p && p.start >= sentencePos) {
+          if (p.start > sentencePos) {
+            // Add previous section
+            sentenceSections[wordId][i].push({
+              text: text.substring(sentencePos, p.start),
+              wordId: null
+            });
+          }
+          // Add word section
+          sentenceSections[wordId][i].push({
+            text: text.substring(p.start, p.end + 1),
+            wordId: p.wordId,
+            word: p.word,
+            translations: '',
+            actualNotes: '',
+            notes: ''
+          });
+          sentencePos = p.end + 1;
+        }
+      });
+      // Add trailing section
+      if (sentencePos < text.length) {
+        sentenceSections[wordId][i].push({
+          text: text.substring(sentencePos, text.length),
+          wordId: null
+        });
+      }
+      // Check if the sentence has the current wordId
+      sentenceSections[wordId].forEach((sentenceSection) => {
+        if (sentenceSection) {
+          const sections = sentenceSection.filter(s => s.wordId === wordId);
+          if (!sections || !sections.length) {
+            // remove this sentence
+            sentenceSections[wordId][i] = null;
+          }
+        }
+      });
+      sentenceSections[wordId] = sentenceSections[wordId].filter(sentence => !!sentence);
+    }
+  }
 }

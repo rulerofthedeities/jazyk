@@ -10,7 +10,7 @@ import { TranslationService } from '../../services/translation.service';
 import { ExternalWordTranslationComponent } from '../glossaries/external-translation.component';
 import { Book } from 'app/models/book.model';
 import { Word, UserWord, WordTranslations, WordTranslation, SentenceWord,
-         WordPosition, SentencePosition, SentenceSection } from 'app/models/word.model';
+         SentenceSection } from 'app/models/word.model';
 import { Language, Map } from '../../models/main.model';
 import { zip, BehaviorSubject, Subject } from 'rxjs';
 import { takeWhile, filter, delay } from 'rxjs/operators';
@@ -548,76 +548,9 @@ export class BookGlossaryComponent implements OnInit, OnDestroy {
     .subscribe((sentences: SentenceWord[]) => {
       this.sentenceSections[wordId] = [];
       sentences.forEach((sentence, i) => {
-        this.getSentenceWordPositions(sentence, wordId, i);
+        this.wordListService.getSentenceWordPositions(this.sentenceSections, sentence, wordId, i);
       });
     });
-  }
-
-  private getSentenceWordPositions(sentenceWord: SentenceWord, wordId: string, i: number) {
-    this.sentenceSections[wordId][i] = [];
-    if (sentenceWord.words && sentenceWord.words.length) {
-      // Put all positions in one array
-      const positions: SentencePosition[] = [],
-      wordPositions: WordPosition[] = sentenceWord.words;
-      wordPositions.forEach(w => {
-        w.locations.forEach(p => {
-          if (!positions[p.start]) {
-            positions[p.start] = {
-              wordId: w.wordId,
-              translations: w.translations ? w.translations.replace(/\|/g, ', ') : '',
-              word: w.word,
-              actualNotes: w.actual && w.actual.note ? w.actual.note.split('|') : [],
-              start: p.start,
-              end: p.end,
-              notes: w.notes && w.notes.length ? w.notes.split('|') : []
-            };
-          }
-        });
-      });
-      // go through each wordPosition
-      // Split up sentence according to start and end of positions
-      let sentencePos = 0;
-      const text = sentenceWord.text;
-      positions.forEach(p => {
-        if (p && p.start >= sentencePos) {
-          if (p.start > sentencePos) {
-            // Add previous section
-            this.sentenceSections[wordId][i].push({
-              text: text.substring(sentencePos, p.start),
-              wordId: null
-            });
-          }
-          // Add word section
-          this.sentenceSections[wordId][i].push({
-            text: text.substring(p.start, p.end + 1),
-            wordId: p.wordId,
-            word: p.word,
-            translations: '',
-            actualNotes: '',
-            notes: ''
-          });
-          sentencePos = p.end + 1;
-        }
-      });
-      // Add trailing section
-      if (sentencePos < text.length) {
-        this.sentenceSections[wordId][i].push({
-          text: text.substring(sentencePos, text.length),
-          wordId: null
-        });
-      }
-      // Check if the sentence has the current wordId
-      this.sentenceSections[wordId].forEach((sentenceSection) => {
-        if (sentenceSection) {
-          const sections = sentenceSection.filter(s => s.wordId === wordId);
-          if (!sections || !sections.length) {
-            // remove this sentence
-            this.sentenceSections[wordId][i] = null;
-          }
-        }
-      });
-      this.sentenceSections[wordId] = this.sentenceSections[wordId].filter(sentence => !!sentence);
-    }
   }
 
   private getBookType() {

@@ -83,6 +83,13 @@ h1.translations {
   left: 0;
   width: 100%;
 }
+.sentence-nr {
+  color: grey;
+  margin-right: 6px;
+}
+.sentences {
+  margin-top: 4px;
+}
 
 @media screen and (max-width: 991px) {
   .btn-text-wrapper {
