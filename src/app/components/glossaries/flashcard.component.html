@@ -67,9 +67,12 @@
   <div *ngIf="card?.wordId && sentenceSections[card.wordId] && sentenceSections[card.wordId].length">
     <div *ngFor="let sentence of sentenceSections[card.wordId]; let i=index">
       <span class="sentence-nr">{{i + 1}}. </span>
-      <span *ngFor="let section of sentenceSections[card.wordId][i]" [class.red]="section.wordId===card.wordId">
-        <span *ngIf="section.text">{{section.text}}</span>
+      <span [class.sentence-title]="sentence[0]?.isTitle">
+        <span *ngFor="let section of sentenceSections[card.wordId][i]" [class.red]="section.wordId===card.wordId">
+          <span *ngIf="section.text">{{section.text}}</span>
+        </span>
       </span>
+      <span class="sentence-title-txt" *ngIf="sentence[0]?.isTitle"> ({{text["Title"]}})</span>
     </div>
   </div>
 </div>

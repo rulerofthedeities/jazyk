@@ -79,13 +79,12 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.componentActive))
       .subscribe((sentences: SentenceWord[]) => {
         this.sentenceSections[wordId] = [];
-        if (sentences.length) {
-          sentences.forEach((sentence, i) => {
-            this.wordListService.getSentenceWordPositions(this.sentenceSections, sentence, wordId, i);
-          });
-        } else {
-          // this.wordListService.getTitleWordPositions(this.sentenceSections, this.book.title, wordId, i);
-        }
+        sentences.forEach((sentence, i) => {
+          if (sentence.chapterSequence === 0 && sentence.sentenceSequence === 0) {
+            sentence.isTitle = true;
+          }
+          this.wordListService.getSentenceWordPositions(this.sentenceSections, sentence, wordId, i);
+        });
       });
     }
   }

@@ -177,7 +177,8 @@ export class WordListService {
             // Add previous section
             sentenceSections[wordId][i].push({
               text: text.substring(sentencePos, p.start),
-              wordId: null
+              wordId: null,
+              isTitle: sentenceWord.isTitle
             });
           }
           // Add word section
@@ -187,7 +188,8 @@ export class WordListService {
             word: p.word,
             translations: '',
             actualNotes: '',
-            notes: ''
+            notes: '',
+            isTitle: sentenceWord.isTitle
           });
           sentencePos = p.end + 1;
         }
@@ -196,7 +198,8 @@ export class WordListService {
       if (sentencePos < text.length) {
         sentenceSections[wordId][i].push({
           text: text.substring(sentencePos, text.length),
-          wordId: null
+          wordId: null,
+          isTitle: sentenceWord.isTitle
         });
       }
       // Check if the sentence has the current wordId

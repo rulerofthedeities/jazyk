@@ -183,6 +183,7 @@ export interface SentenceWord {
   sentenceSequence: number;
   text: string;
   words: WordPosition[];
+  isTitle?: boolean;
 }
 
 export interface SentencePosition {
@@ -202,4 +203,5 @@ export interface SentenceSection {
   notes?: string;
   text: string;
   wordId: string;
+  isTitle?: boolean;
 }

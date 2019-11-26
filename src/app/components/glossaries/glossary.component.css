@@ -195,3 +195,10 @@ ul.nav-tabs li.active > a {
   color: grey;
   margin-right: 6px;
 }
+.sentence-title{
+  font-weight: bold;
+}
+.sentence-title-txt {
+  color: grey;
+  font-style: italic;
+}

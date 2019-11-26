@@ -90,6 +90,13 @@ h1.translations {
 .sentences {
   margin-top: 4px;
 }
+.sentence-title{
+  font-weight: bold;
+}
+.sentence-title-txt {
+  color: grey;
+  font-style: italic;
+}
 
 @media screen and (max-width: 991px) {
   .btn-text-wrapper {

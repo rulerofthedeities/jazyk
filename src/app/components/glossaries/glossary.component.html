@@ -244,7 +244,7 @@
             (click)="onEditTranslation(word, translation)">
             <span class="fa fa-pencil fa-spacing"></span>Edit
           </button>
-          <button *ngIf="translation._id && translationLan.code==='en' && word && word.wordType==='verb' && translation.translation && translation.translation.substring(0, 2) !== 'to' && translation.translation.substring(0, 1) !== translation.translation.substring(0, 1).toUpperCase()"
+          <button *ngIf="translation._id && translationLan.code==='en' && word && word.wordType==='verb' && translation.translation && translation.translation.substring(0, 3) !== 'to ' && translation.translation.substring(0, 1) !== translation.translation.substring(0, 1).toUpperCase()"
             type="button"
             class="btn btn-success"
             (click)="onSetTranslationToTo(i, translation, word)">
@@ -307,9 +307,12 @@
     <div *ngIf="sentenceSections[word._id] && sentenceSections[word._id].length">
       <div *ngFor="let sentence of sentenceSections[word._id]; let i=index">
         <span class="sentence-nr">{{i + 1}}.</span>
-        <span *ngFor="let section of sentenceSections[word._id][i]" [class.red]="section.wordId===word._id">
-          <span *ngIf="section.text">{{section.text}}</span>
+        <span [class.sentence-title]="sentence[0]?.isTitle">
+          <span *ngFor="let section of sentenceSections[word._id][i]" [class.red]="section.wordId===word._id">
+            <span *ngIf="section.text">{{section.text}}</span>
+          </span>
         </span>
+        <span class="sentence-title-txt" *ngIf="sentence[0]?.isTitle"> ({{text["Title"]}})</span>
       </div>
     </div>
   </div>
