@@ -62,7 +62,7 @@
     "memwatch-next": "^0.3.0",
     "moment": "^2.22.1",
     "mongodb-uri": "^0.9.7",
-    "mongoose": "^5.4.15",
+    "mongoose": "^5.7.5",
     "mongoose-unique-validator": "^2.0.1",
     "ng2-charts": "^2.2.3",
     "ng2-tooltip-directive": "^2.1.5",
