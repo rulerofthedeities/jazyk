@@ -562,8 +562,10 @@ export abstract class ReadnListenSentencesComponent implements OnInit, OnDestroy
           w.word = word;
           // If there is a user word with a translation, use this translation, otherwise use bookword
           userWord = userWords.find(uw => uw.wordId === w.wordId);
+          w.pinned = false;
           if (userWord && !!userWord.translations) {
             w.translations = userWord.translations;
+            w.pinned = userWord.pinned;
           } else {
             if (word && word.translationSummary) {
               w.translations = word.translationSummary[this.userLanCode] || '';

@@ -1,7 +1,7 @@
 {
   "name": "jazyk",
   "description": "Language learning tool",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "scripts": {
     "ng": "ng",
     "start": "npm run serve:ssr",

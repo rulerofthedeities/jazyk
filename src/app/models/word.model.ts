@@ -174,6 +174,7 @@ export interface WordPosition {
   translations?: string;
   word?: Word;
   notes?: string;
+  pinned?: boolean;
 }
 
 export interface SentenceWord {
@@ -194,6 +195,7 @@ export interface SentencePosition {
   end: number;
   actualNotes: string[];
   notes: string[];
+  pinned?: boolean;
 }
 
 export interface SentenceSection {
@@ -204,4 +206,5 @@ export interface SentenceSection {
   text: string;
   wordId: string;
   isTitle?: boolean;
+  pinned?: boolean;
 }

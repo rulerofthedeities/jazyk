@@ -162,7 +162,8 @@ module.exports = {
               transitivity: 1,
               genus: 1,
               wordType: 1,
-              translationSummary: 1
+              translationSummary: 1,
+              chapterSequences: 1
             }}
           ];
     WordList.aggregate(pipeline, (err, words) => {
@@ -244,9 +245,10 @@ module.exports = {
           },
           userWordPipeline = [
             {$match: query},
-            {$sample: {size: parseInt(maxWords, 10)}}
+            {$sort: {lastAnswerMy: 1, dtFlashcard: 1}},
+            {$limit: parseInt(maxWords, 10)}
           ];
-    // Get uwer words first, then get corresponding words
+    // Get user words first, then get corresponding words
     UserWordList.aggregate(userWordPipeline, (err, userWords) => {
       response.handleError(err, res, 400, 'Error fetching user word list for my flashcards', () => {
         // For each user word, find matching word
@@ -268,7 +270,7 @@ module.exports = {
           query = {
             bookId,
             exclude: {$ne: true},
-            [key]: {$exists: true, $nin: [ null, "" ] }
+            [key]: {$exists: true, $nin: [ null, "" ]}
           },
           wordsPipeline = [
             {$match: query},

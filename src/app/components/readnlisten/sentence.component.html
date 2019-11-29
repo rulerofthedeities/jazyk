@@ -55,6 +55,12 @@
             <img src="/assets/img/flags/{{lanToCode}}.png" class="flag to">
             <span class="word-translations">{{section.translations}}</span>
           </div>
+          <button *ngIf="!section.pinned"
+            type="button"
+            class="btn btn-xs btn-primary"
+            (click)="onAddToMyGlossary($event, section)"
+          ><span class="fa fa-thumb-tack fa-spacing"></span>{{text["AddToMyWordList"]}}
+        </button>
         </span>
         <span class="text">{{section.text}}</span>
       </span>

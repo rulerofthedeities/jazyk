@@ -1,9 +1,11 @@
-import { Component, Input, OnChanges, Renderer2 } from '@angular/core';
+import { Component, Input, OnChanges, Renderer2, OnDestroy } from '@angular/core';
 import { Sentence, AudioSentence } from '../../models/book.model';
 import { SentenceWord, WordPosition, Word, SentencePosition, SentenceSection } from '../../models/word.model';
 import { awsPath } from '../../services/shared.service';
 import { PlatformService } from '../../services/platform.service';
 import { SharedService } from '../../services/shared.service';
+import { WordListService } from '../../services/word-list.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'km-sentence',
@@ -11,9 +13,10 @@ import { SharedService } from '../../services/shared.service';
   styleUrls: ['sentence.component.css']
 })
 
-export class SentenceComponent implements OnChanges {
+export class SentenceComponent implements OnChanges, OnDestroy {
   @Input() text: Object = null;
   @Input() sentence: Sentence;
+  @Input() bookId: string;
   @Input() audioSentence: AudioSentence = null; // Audio for read, ignored for listen
   @Input() bookType: string;
   @Input() directory: string;
@@ -21,6 +24,7 @@ export class SentenceComponent implements OnChanges {
   @Input() lanToCode = '';
   @Input() showSentence: boolean;
   @Input() sentenceWords: SentenceWord = null;
+  private componentActive = true;
   awsPath = awsPath;
   txt: string;
   s3: string;
@@ -32,6 +36,7 @@ export class SentenceComponent implements OnChanges {
   constructor(
     private platform: PlatformService,
     private sharedService: SharedService,
+    private wordListService: WordListService,
     renderer: Renderer2
   )  {
     if (this.platform.isBrowser) {
@@ -56,6 +61,28 @@ export class SentenceComponent implements OnChanges {
   onSelectWord(event: MouseEvent, i: number) {
     event.stopPropagation();
     this.selected = i === this.selected ? null : i;
+  }
+
+  onAddToMyGlossary(event: MouseEvent, section: SentenceSection) {
+    event.stopPropagation();
+    const word = section.word;
+    if (word && this.lanToCode) {
+      let translationSummary: string;
+      if (word.translationSummary) {
+        translationSummary = word.translationSummary[this.lanToCode];
+      }
+      word.lanCode = this.lanCode;
+      word.targetLanCode = this.lanToCode;
+
+      this.wordListService
+      .pinWord(word, this.bookId, translationSummary, true)
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(
+        pinned => {
+          section.pinned = pinned;
+        }
+      );
+    }
   }
 
   hasVerbProperty(word: Word): boolean {
@@ -107,7 +134,8 @@ export class SentenceComponent implements OnChanges {
                 actualNotes: w.actual && w.actual.note ? w.actual.note.split('|') : [],
                 start: p.start,
                 end: p.end,
-                notes: w.notes && w.notes.length ? w.notes.split('|') : []
+                notes: w.notes && w.notes.length ? w.notes.split('|') : [],
+                pinned: w.pinned
               };
             }
           });
@@ -151,7 +179,8 @@ export class SentenceComponent implements OnChanges {
               word: p.word,
               translations: p.translations || '',
               actualNotes: actualNotes.join(', '),
-              notes: notes.join(', ')
+              notes: notes.join(', '),
+              pinned: p.pinned
             });
             sentencePos = p.end + 1;
           }
@@ -166,5 +195,9 @@ export class SentenceComponent implements OnChanges {
         this.hasWords = true;
       }
     }
+  }
+
+  ngOnDestroy() {
+    this.componentActive = false;
   }
 }

@@ -80,7 +80,7 @@ export class BookFlashCardComponent implements OnInit, OnDestroy {
       .subscribe((sentences: SentenceWord[]) => {
         this.sentenceSections[wordId] = [];
         sentences.forEach((sentence, i) => {
-          if (sentence.chapterSequence === 0 && sentence.sentenceSequence === 0) {
+          if (sentence.chapterSequence === 0 && sentence.sentenceSequence === 1) {
             sentence.isTitle = true;
           }
           this.wordListService.getSentenceWordPositions(this.sentenceSections, sentence, wordId, i);
