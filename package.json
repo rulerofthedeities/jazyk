@@ -82,7 +82,7 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.8",
+    "@angular-devkit/build-angular": "^14.2.9",
     "@types/jasmine": "2.5.38",
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
