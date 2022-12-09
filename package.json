@@ -52,7 +52,7 @@
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "core-js": "^2.5.6",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-bearer-token": "^2.1.0",
     "express-rate-limit": "^3.4.1",
     "font-awesome": "^4.7.0",
